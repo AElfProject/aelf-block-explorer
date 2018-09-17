@@ -1,0 +1,36 @@
+@import "../assets/less/_variables.less";
+
+.anticon-close-circle {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s;
+  font-size: 12px;
+
+  &:hover {
+    color: #999;
+  }
+  &:active {
+    color: #666;
+  }
+}
+
+.header-search {
+  .search-icon {
+    color: #fff;
+  }
+  .ant-input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+
+    &:hover,
+    &:focus {
+      border: none;
+    }
+  }
+}
+
+.search-icon {
+  transform: scaleX(-1);
+}

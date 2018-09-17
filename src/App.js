@@ -1,19 +1,28 @@
-import './App.css'
+import "./App.less";
 
-import React, {Component} from 'react'
+import React, { Component } from "react";
+import { Switch } from "react-router-dom";
+import { Layout } from "antd";
+
+import BrowserHeader from "./components/Header";
+import BrowserFooter from "./components/Footer";
+import Container from "./components/Container";
+import AppRoutes from "./routes";
 
 class App extends Component {
   render() {
-    return <div className="App">
-      <div className="App-heading App-flex">
-        <h2>Welcome to <span className="App-react">React</span></h2>
-      </div>
-      <div className="App-instructions App-flex">
-        <img className="App-logo" src={require('./react.svg')}/>
-        <p>Edit <code>src/App.js</code> and save to hot reload your changes.</p>
-      </div>
-    </div>
+    return (
+      <Layout className="App">
+        <BrowserHeader />
+        <Container>
+          <Switch>
+            <AppRoutes />
+          </Switch>
+        </Container>
+        <BrowserFooter />
+      </Layout>
+    );
   }
 }
 
-export default App
+export default App;
