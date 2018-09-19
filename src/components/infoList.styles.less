@@ -1,10 +1,12 @@
+@import "../assets//less/_variables.less";
+
 .infoList {
   .infoList-panel-heading {
     display: flex;
-    color: #585f69;
-    background: #fff;
+    color: #222;
+    background: @bgWhite;
     padding: 7px 15px;
-    border-bottom: solid 3px #f7f7f7;
+    border: 1px solid #eee;
     overflow: hidden;
     justify-content: space-between;
     align-content: center;
@@ -25,6 +27,9 @@
 
   .list-container {
     height: 200px;
-    overflow: auto;
+    overflow: hidden;
+    margin-top: 16px;
+    padding: 0 15px;
+    border: 1px solid #eee;
   }
 }
