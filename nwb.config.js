@@ -13,9 +13,6 @@ module.exports = {
     ]
   },
   webpack: {
-    aliases: {
-      'react-virtualized/List': 'react-virtualized/dist/es/List',
-    },
     rules: {
       less: {
         javascriptEnabled: true
