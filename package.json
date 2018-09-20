@@ -15,6 +15,7 @@
     "antd": "^3.9.2",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",
+    "dayjs": "^1.7.5",
     "echarts": "^4.2.0-rc.1",
     "echarts-for-react": "^2.0.14",
     "lodash": "^4.17.11",
