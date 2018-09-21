@@ -4,7 +4,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
 
-import "react-virtualized/styles.css";
 import "./index.less";
 
 import App from "./App";
