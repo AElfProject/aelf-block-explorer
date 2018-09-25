@@ -1,14 +1,26 @@
-import React from 'react';
 import {
     notification
 } from 'antd';
 import {
     create
 } from 'apisauce';
+import * as Aelf from 'aelf-sdk';
+import dayjs from 'dayjs';
+import {
+    RPCSERVER
+} from './constants';
 
 const api = create({
     baseURL: '/api'
 });
+
+const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
+
+aelf.chain.connectChain(function (err, result) {
+    console.log('connectChain: ', err, result);
+});
+
+aelf.chain.connectChain();
 
 const httpErrorHandler = (message, des) => notification.open({
     message,
@@ -33,7 +45,11 @@ const post = async (url, data, config) => {
     httpErrorHandler(res.problem, res.problem);
 }
 
+const format = time => dayjs(time).format("YYYY-MM-DD HH:MM:ss Z");
+
 export {
     get,
-    post
+    post,
+    aelf,
+    format
 };
