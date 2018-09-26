@@ -16,12 +16,6 @@ const api = create({
 
 const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
 
-aelf.chain.connectChain(function (err, result) {
-    console.log('connectChain: ', err, result);
-});
-
-aelf.chain.connectChain();
-
 const httpErrorHandler = (message, des) => notification.open({
     message,
     description: des

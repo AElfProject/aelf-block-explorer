@@ -8,6 +8,12 @@ dayjs.extend(relativeTime);
 
 const ALL_BLOCKS_API_URL = "/all/blocks";
 const ALL_TXS_API_URL = "/all/transactions";
+const TXS_BLOCK_API_URL = "/block/transactions";
+const ADDRESS_TXS_API_URL = "/address/transactions";
+const ELF_REALTIME_PRICE_URL =
+  "https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY";
+const ELF_REST_TRADE_API = "https://www.bcex.top/Api_Market/getCoinTrade";
+
 const PAGE_SIZE = 25;
 const TXSSTATUS = {
   NotExisted: "不存在",
@@ -36,7 +42,7 @@ const BLOCKS_LIST_COLUMNS = [
     key: "tx_count",
     render: (text, row) =>
       !isNaN(+text) && +text !== 0 ? (
-        <Link to={`/tx/${row.block_hash}`}> {text} </Link>
+        <Link to={`/txs/block?${row.block_hash}`}> {text} </Link>
       ) : (
         text
       )
@@ -94,12 +100,35 @@ const ALL_TXS_LIST_COLUMNS = [
   }
 ];
 
+const ADDRESS_INFO_COLUMN = [
+  {
+    title: "钱包地址",
+    dataIndex: "address",
+    key: "address"
+  },
+  {
+    title: "余额",
+    dataIndex: "balance",
+    key: "balance"
+  },
+  {
+    title: "价值",
+    dataIndex: "value",
+    key: "value"
+  }
+];
+
 export {
   ALL_BLOCKS_API_URL,
   ALL_TXS_API_URL,
+  TXS_BLOCK_API_URL,
+  ADDRESS_TXS_API_URL,
+  ELF_REALTIME_PRICE_URL,
+  ELF_REST_TRADE_API,
   PAGE_SIZE,
   TXSSTATUS,
   RPCSERVER,
   BLOCKS_LIST_COLUMNS,
-  ALL_TXS_LIST_COLUMNS
+  ALL_TXS_LIST_COLUMNS,
+  ADDRESS_INFO_COLUMN
 };

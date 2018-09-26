@@ -1,7 +1,12 @@
 import React, { PureComponent } from "react";
 import { Table } from "antd";
 import { get } from "../utils";
-import { ALL_TXS_API_URL, PAGE_SIZE, ALL_TXS_LIST_COLUMNS } from "../constants";
+import {
+  ALL_TXS_API_URL,
+  TXS_BLOCK_API_URL,
+  PAGE_SIZE,
+  ALL_TXS_LIST_COLUMNS
+} from "../constants";
 
 import "./txs.styles.less";
 
@@ -17,11 +22,14 @@ export default class TxsPage extends PureComponent {
       loading: false
     };
   }
+
   async componentDidMount() {
-    const { fetch } = this;
+    const { fetch, props } = this;
+    const { location } = props;
     await fetch({
       page: 0,
-      limit: 25
+      limit: 25,
+      block_hash: (!!location.search && location.search.slice(1)) || undefined
     });
   }
 
@@ -30,7 +38,8 @@ export default class TxsPage extends PureComponent {
       loading: true
     });
 
-    const data = await get(ALL_TXS_API_URL, {
+    const url = !!params.block_hash ? TXS_BLOCK_API_URL : ALL_TXS_API_URL;
+    const data = await get(url, {
       order: "desc",
       ...params
     });

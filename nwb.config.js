@@ -20,17 +20,23 @@ module.exports = {
     }
   },
   devServer: {
+    disableHostCheck: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:7101',
+        target: 'http://explore.aelf.io:7101',
         changeOrigin: true,
         secure: false
       },
       '/chain': {
-        target: 'http://127.0.0.1:8100',
+        target: 'http://explore.aelf.io:8100',
         changeOrigin: true,
         secure: false
       },
+      '/trade': {
+        target: 'https://api.hadax.com/market',
+        changeOrigin: true,
+        secure: false
+      }
     }
   }
 }

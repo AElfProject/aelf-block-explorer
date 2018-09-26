@@ -8,6 +8,7 @@ const BREADCRUMBNAMEMAP = {
   "/blocks": "区块",
   "/block": "区块",
   "/txs": "交易",
+  "/txs/block": "区块交易",
   "/adresses": "地址",
   "/block": "区块信息",
   "/tx": "交易信息",
@@ -18,6 +19,7 @@ const pageNameMap = {
   blocks: "区块",
   block: "区块",
   txs: "交易",
+  tx: "交易详情",
   address: "地址"
 };
 

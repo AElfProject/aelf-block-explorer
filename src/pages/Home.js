@@ -2,17 +2,21 @@ import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Icon, List } from "antd";
 import InfoList from "../components/InfoList";
-import { get } from "../utils";
-import { ALL_BLOCKS_API_URL, ALL_TXS_API_URL, PAGE_SIZE } from "../constants";
+import TradeCards from "../components/TradeCards";
+import { get, format } from "../utils";
+import {
+  ALL_BLOCKS_API_URL,
+  ALL_TXS_API_URL,
+  PAGE_SIZE,
+  TXSSTATUS
+} from "../constants";
 
 import "./home.styles.less";
 
 export default class HomePage extends PureComponent {
   state = {
     blocksList: [],
-    transactionsList: [],
-    left_loading: false,
-    right_loading: false
+    transactionsList: []
   };
 
   async componentDidMount() {
@@ -35,27 +39,70 @@ export default class HomePage extends PureComponent {
     return res;
   }
 
-  renderItem = item => {
-    const content = item.block_hash.slice(0, 17);
+  blockRenderItem = item => {
+    const blockHeight = item.block_height;
+    const title = (
+      <span>
+        区块: <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
+      </span>
+    );
+    const desc = (
+      <span className="infoList-desc">
+        交易数:
+        <Link to={`/txs/block?${item.block_hash}`}>{item.tx_count}</Link>
+      </span>
+    );
     return (
-      <List.Item key={content}>
-        <List.Item.Meta
-          title={<a href="https://ant.design">{content}</a>}
-          description={content}
-        />
-        <div>Content</div>
+      <List.Item key={blockHeight}>
+        <List.Item.Meta title={title} description={desc} />
+        <div>{format(item.time)}</div>
+      </List.Item>
+    );
+  };
+
+  txsRenderItem = item => {
+    const blockHeight = item.block_height;
+    const title = (
+      <span>
+        交易:
+        <Link to={`/block/${item.block_height}`}>
+          {item.tx_id.slice(0, 20)}
+          ...
+        </Link>
+      </span>
+    );
+    const desc = (
+      <span className="infoList-desc">
+        发送方:
+        <Link to={`/address/${item.address_from}`}>
+          {item.address_from.slice(0, 6)}
+          ...
+        </Link>
+        接收方:
+        <Link to={`/address/${item.address_to}`}>
+          {item.address_to.slice(0, 6)}
+          ...
+        </Link>
+      </span>
+    );
+    return (
+      <List.Item key={blockHeight}>
+        <List.Item.Meta title={title} description={desc} />
+        <div>交易状态: {TXSSTATUS[item.tx_status]}</div>
       </List.Item>
     );
   };
 
   render() {
     const { blocksList, transactionsList } = this.state;
-    return (
+    return [
+      <TradeCards key="tradecards" />,
       <Row
         type="flex"
         justify="space-between"
         align="middle"
         className="content-container"
+        key="infolist"
       >
         <Col span="11" className="container-list">
           <div className="panel-heading">
@@ -71,7 +118,7 @@ export default class HomePage extends PureComponent {
             title="Blocks"
             iconType="gold"
             dataSource={blocksList}
-            renderItem={this.renderItem}
+            renderItem={this.blockRenderItem}
           />
         </Col>
         <Col span="11" className="container-list">
@@ -88,10 +135,10 @@ export default class HomePage extends PureComponent {
             title="Transaction"
             iconType="pay-circle"
             dataSource={transactionsList}
-            renderItem={this.renderItem}
+            renderItem={this.txsRenderItem}
           />
         </Col>
       </Row>
-    );
+    ];
   }
 }

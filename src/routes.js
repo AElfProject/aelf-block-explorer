@@ -13,9 +13,10 @@ export default () => [
   <Route exact path="/" component={HomePage} key="index" />,
   <Route path="/blocks" exact component={BlocksPage} key="blocks" />,
   <Route path="/block/:id" component={BlockDetailPage} key="blockdetail" />,
-  <Route path="/address" exact component={AddressPage} key="address" />,
-  // <Route path="/address/:id" component={AddressPage} key="address" />,
+  // <Route path="/address" exact component={AddressPage} key="address" />,
+  <Route path="/address/:id" component={AddressPage} key="address" />,
   <Route path="/txs" exact component={TxsPage} key="transcations" />,
-  <Route path="/txs/:id" component={TxsDetailPage} key="txsdetail" />,
+  <Route path="/txs/block" component={TxsPage} key="txsblock" />,
+  <Route path="/tx/:id" component={TxsDetailPage} key="txsdetail" />,
   <Route path="/apps" component={ApplicationPage} key="apps" />
 ];
