@@ -39,7 +39,7 @@ const post = async (url, data, config) => {
     httpErrorHandler(res.problem, res.problem);
 }
 
-const format = time => dayjs(time).format("YYYY-MM-DD HH:MM:ss Z");
+const format = (time, fmtStr = "YYYY-MM-DD HH:MM:ss Z") => dayjs(time).format(fmtStr);
 
 export {
     get,

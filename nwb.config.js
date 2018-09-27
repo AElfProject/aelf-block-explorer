@@ -23,17 +23,17 @@ module.exports = {
     disableHostCheck: true,
     proxy: {
       '/api': {
-        target: 'http://explore.aelf.io:7101',
+        target: 'http://localhost:7101',
         changeOrigin: true,
         secure: false
       },
       '/chain': {
-        target: 'http://explore.aelf.io:8100',
+        target: 'http://localhost:8100',
         changeOrigin: true,
         secure: false
       },
-      '/trade': {
-        target: 'https://api.hadax.com/market',
+      '/market': {
+        target: 'https://api.hadax.com',
         changeOrigin: true,
         secure: false
       }

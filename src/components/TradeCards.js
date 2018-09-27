@@ -13,19 +13,75 @@ export default class TradeCards extends PureComponent {
         USD: -1,
         CNY: -1,
         BTC: -1
+      },
+      tick: {
+        vol: 0,
+        open: 0,
+        close: 0,
+        count: 0,
+        low: 0,
+        high: 0
       }
     };
   }
 
   async componentDidMount() {
     const price = await get(ELF_REALTIME_PRICE_URL);
-    const tradeResult = await get("http://localhost:3000/trade", {
-      symbol: "elfbtc"
+    const { tick = { vol: 0 } } = await get(
+      "http://localhost:3000/market/detail",
+      {
+        symbol: "elfbtc"
+      }
+    );
+
+    this.setState({
+      price,
+      tick
     });
 
-    console.log(price, tradeResult);
+    // console.log(price, tradeResult);
   }
   render() {
-    return <div className="tradecards-container"> TradeCards is work </div>;
+    const { price, tick } = this.state;
+    return (
+      <div className="tradecards-container">
+        <div className="tradecard">
+          <h2 />
+          <ul className="card-left">
+            <li className="card-left-title">￥ {price.CNY}</li>
+            <li className="card-left-desc">
+              <span>
+                ≈$
+                {price.USD}
+              </span>
+              <span>
+                ≈{price.BTC}
+                BTC
+              </span>
+            </li>
+            <li className="card-left-desc">
+              开盘价: <span>{tick.open} BTC</span>
+            </li>
+            <li className="card-left-desc">
+              24H累计成交数: <span>{tick.count}</span>
+            </li>
+          </ul>
+          <ul className="card-right">
+            <li>
+              24H 最高 <span>{tick.high} BTC</span>
+            </li>
+            <li>
+              24H 最低 <span>{tick.low} BTC</span>
+            </li>
+            <li>
+              当前价: <span>{tick.open} BTC</span>
+            </li>
+            <li>
+              24H累计成交额: <span>{tick.vol.toFixed(6)} BTC</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    );
   }
 }

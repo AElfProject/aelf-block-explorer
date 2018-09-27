@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Row, Col, Icon, List } from "antd";
 import InfoList from "../components/InfoList";
 import TradeCards from "../components/TradeCards";
+import TradeChart from "../components/TradeChart";
 import { get, format } from "../utils";
 import {
   ALL_BLOCKS_API_URL,
@@ -96,15 +97,30 @@ export default class HomePage extends PureComponent {
   render() {
     const { blocksList, transactionsList } = this.state;
     return [
-      <TradeCards key="tradecards" />,
+      <Row
+        type="flex"
+        justify="space-between"
+        align="middle"
+        className="content-container"
+        key="tradeinfo"
+        gutter={16}
+      >
+        <Col span="12">
+          <TradeCards key="tradecards" />
+        </Col>
+        <Col span="12">
+          <TradeChart key="tradechart" />
+        </Col>
+      </Row>,
       <Row
         type="flex"
         justify="space-between"
         align="middle"
         className="content-container"
         key="infolist"
+        gutter={16}
       >
-        <Col span="11" className="container-list">
+        <Col span="12" className="container-list">
           <div className="panel-heading">
             <h2 className="panel-title">
               <Icon type="gold" className="anticon" />
@@ -121,7 +137,7 @@ export default class HomePage extends PureComponent {
             renderItem={this.blockRenderItem}
           />
         </Col>
-        <Col span="11" className="container-list">
+        <Col span="12" className="container-list">
           <div className="panel-heading">
             <h2 className="panel-title">
               <Icon type="gold" className="anticon" />

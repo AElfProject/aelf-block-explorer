@@ -1,4 +1,49 @@
 .tradecards-container {
   margin: 0 0 20px;
   padding: 0;
+
+  .tradecard {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+  }
+
+  .card-left,
+  .card-right {
+    width: 50%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      line-height: 32px;
+    }
+  }
+
+  .card-left {
+    color: #999;
+    .card-left-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #666;
+    }
+    .card-left-desc {
+      font-size: 14px;
+    }
+    span {
+      margin-right: 8px;
+    }
+  }
+
+  .card-right {
+    font-size: 12px;
+    text-align: right;
+    color: #aaa;
+
+    span {
+      font-size: 14px;
+      color: #666;
+    }
+  }
 }
