@@ -51,7 +51,7 @@ import { format, get } from "../utils";
 import "../assets/lib/shine";
 
 // The usage of ReactEchartsCore are same with above.
-export default class TradeChart extends React.PureComponent {
+export default class TradeChart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,18 +65,17 @@ export default class TradeChart extends React.PureComponent {
       loading: true
     });
 
-    const { data = [] } = await get(
-      "http://localhost:3000/market/history/trade",
-      {
+    try {
+      const { data = [] } = await get("/market/history/trade", {
         symbol: "elfbtc",
         size: 200
-      }
-    );
+      });
 
-    this.setState({
-      data,
-      loading: false
-    });
+      this.setState({
+        data,
+        loading: false
+      });
+    } catch (e) {}
   }
 
   getOption() {

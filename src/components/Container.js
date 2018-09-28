@@ -1,11 +1,11 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Layout } from "antd";
 
 import "./container.styles.less";
 
 const { Content } = Layout;
 
-export default class Container extends PureComponent {
+export default class Container extends Component {
   constructor(props) {
     super(props);
   }

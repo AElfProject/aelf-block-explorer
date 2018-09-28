@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Icon, List } from "antd";
 import InfoList from "../components/InfoList";
@@ -14,7 +14,7 @@ import {
 
 import "./home.styles.less";
 
-export default class HomePage extends PureComponent {
+export default class HomePage extends Component {
   state = {
     blocksList: [],
     transactionsList: []

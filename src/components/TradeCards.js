@@ -1,11 +1,11 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Row, Col } from "antd";
 import { get, post } from "../utils";
 import { ELF_REALTIME_PRICE_URL, ELF_REST_TRADE_API } from "../constants";
 
 import "./tradecards.style.less";
 
-export default class TradeCards extends PureComponent {
+export default class TradeCards extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,19 +27,15 @@ export default class TradeCards extends PureComponent {
 
   async componentDidMount() {
     const price = await get(ELF_REALTIME_PRICE_URL);
-    const { tick = { vol: 0 } } = await get(
-      "http://localhost:3000/market/detail",
-      {
+    try {
+      const { tick = { vol: 0 } } = await get("/market/detail", {
         symbol: "elfbtc"
-      }
-    );
-
-    this.setState({
-      price,
-      tick
-    });
-
-    // console.log(price, tradeResult);
+      });
+      this.setState({
+        price,
+        tick
+      });
+    } catch (e) {}
   }
   render() {
     const { price, tick } = this.state;

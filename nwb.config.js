@@ -33,7 +33,7 @@ module.exports = {
         secure: false
       },
       '/market': {
-        target: 'https://api.hadax.com',
+        target: 'https://api.huobi.pro',
         changeOrigin: true,
         secure: false
       }

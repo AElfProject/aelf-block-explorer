@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { Breadcrumb } from "antd";
 
@@ -23,7 +23,7 @@ const pageNameMap = {
   address: "地址"
 };
 
-class BrowserBreadcrumb extends PureComponent {
+class BrowserBreadcrumb extends Component {
   constructor(props) {
     super(props);
   }

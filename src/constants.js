@@ -21,7 +21,7 @@ const TXSSTATUS = {
   Failed: "失败",
   Mined: "成功"
 };
-const RPCSERVER = "http://localhost:3000/chain";
+const RPCSERVER = "http://explore.aelf.io/chain";
 
 const BLOCKS_LIST_COLUMNS = [
   {

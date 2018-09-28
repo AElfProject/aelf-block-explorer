@@ -10,7 +10,7 @@ import {
 
 import "./address.styles.less";
 
-export default class AddressPage extends React.PureComponent {
+export default class AddressPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

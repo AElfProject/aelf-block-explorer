@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Table } from "antd";
 import { get } from "../utils";
 import {
@@ -10,7 +10,7 @@ import {
 
 import "./txs.styles.less";
 
-export default class TxsPage extends PureComponent {
+export default class TxsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {

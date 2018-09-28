@@ -7,7 +7,7 @@ import "./blockdetail.styles.less";
 
 const ButtonGroup = Button.Group;
 
-export default class BlockDetailPage extends React.PureComponent {
+export default class BlockDetailPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

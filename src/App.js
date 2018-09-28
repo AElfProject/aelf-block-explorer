@@ -1,5 +1,3 @@
-import "./App.less";
-
 import React, { Component } from "react";
 import { Switch } from "react-router-dom";
 
@@ -8,6 +6,8 @@ import BrowserFooter from "./components/Footer";
 import BrowserBreadcrumb from "./components/Breadcrumb";
 import Container from "./components/Container";
 import AppRoutes from "./routes";
+
+import "./App.less";
 
 class App extends Component {
   render() {

@@ -6,7 +6,7 @@ import { TXSSTATUS } from "../constants";
 
 import "./txsdetail.styles.less";
 
-export default class TxsDetailPage extends React.PureComponent {
+export default class TxsDetailPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
