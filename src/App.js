@@ -10,6 +10,10 @@ import AppRoutes from "./routes";
 import "./App.less";
 
 class App extends Component {
+  componentDidCatch(error) {
+    console.log(`component occurred error: ${error}`);
+  }
+
   render() {
     return (
       <div className="App">

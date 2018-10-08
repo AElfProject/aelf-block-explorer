@@ -24,10 +24,6 @@ export default class TxsDetailPage extends React.Component {
       return;
     }
 
-    aelf.chain.connectChain(function(err, result) {
-      console.log("connectChain: ", err, result);
-    });
-
     const { result } = aelf.chain.getTxResult(txsId);
     this.setState({
       txsId,

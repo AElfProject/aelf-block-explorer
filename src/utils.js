@@ -6,6 +6,7 @@ import {
 } from 'apisauce';
 import * as Aelf from 'aelf-sdk';
 import dayjs from 'dayjs';
+import isEmpty from 'lodash/isEmpty';
 import {
     RPCSERVER
 } from './constants';
@@ -14,12 +15,21 @@ const api = create({
     baseURL: '/api'
 });
 
-const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
-
 const httpErrorHandler = (message, des) => notification.open({
     message,
     description: des
-})
+});
+
+const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
+
+aelf.chain.connectChain(function (err) {
+    if (isEmpty(err)) {
+        return;
+    }
+    console.error(err);
+    httpErrorHandler('Connect Error', 'can not connect chain.');
+});
+
 
 const get = async (url, params, config) => {
     const res = await api.get(url, params, config);

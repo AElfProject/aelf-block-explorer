@@ -30,9 +30,6 @@ export default class BlockDetailPage extends React.Component {
   }
 
   fetchBlockInfo = blockHeight => {
-    aelf.chain.connectChain(function(err, result) {
-      console.log("connectChain: ", err, result);
-    });
     const { result } = aelf.chain.getBlockInfo(blockHeight, 0);
     this.setState({
       txsCount: result.Body.TransactionsCount,

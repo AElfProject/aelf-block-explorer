@@ -6,6 +6,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
+const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : "production";
+
 const ALL_BLOCKS_API_URL = "/all/blocks";
 const ALL_TXS_API_URL = "/all/transactions";
 const TXS_BLOCK_API_URL = "/block/transactions";
@@ -21,7 +23,8 @@ const TXSSTATUS = {
   Failed: "失败",
   Mined: "成功"
 };
-const RPCSERVER = "http://explore.aelf.io/chain";
+const RPCSERVER =
+  NODE_ENV === "production" ? "http://explore.aelf.io/chain" : "/chain";
 
 const BLOCKS_LIST_COLUMNS = [
   {

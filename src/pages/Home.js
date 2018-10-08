@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Icon, List } from "antd";
+import { get as _get } from "lodash/get";
 import InfoList from "../components/InfoList";
 import TradeCards from "../components/TradeCards";
 import TradeChart from "../components/TradeChart";
-import { get, format } from "../utils";
+import { get, format, aelf } from "../utils";
 import {
   ALL_BLOCKS_API_URL,
   ALL_TXS_API_URL,
@@ -15,18 +16,63 @@ import {
 import "./home.styles.less";
 
 export default class HomePage extends Component {
+  loopId = 0;
+
   state = {
     blocksList: [],
     transactionsList: []
   };
 
+  componentDidCatch(error) {
+    console.error(error);
+    clearInterval(this.loopId);
+  }
+
   async componentDidMount() {
+    // it's making two xhr to get realtime block_height and transaction data.
+    // it's simplest that it do not need block_scan_api to get full chain data.
+    // but it need a some sugar.
     const { blocks } = await this.fetch(ALL_BLOCKS_API_URL);
     const { transactions } = await this.fetch(ALL_TXS_API_URL);
 
     this.setState({
       blocksList: blocks,
       transactionsList: transactions
+    });
+
+    // this.loopId = setInterval(() => {
+    //   this.fetchChain();
+    // }, 5000);
+    this.fetchChain();
+  }
+
+  // @TODO: take it work. gettting block info and transactions from chain.
+  fetchChain() {
+    const { blocksList, transactions } = this.state;
+    const {
+      result: { block_height }
+    } = aelf.chain.getBlockHeight();
+    const {
+      result: { Blockhash, Body, Header }
+    } = aelf.chain.getBlockInfo(block_height, 100);
+
+    const chainBlocks = {
+      block_hash: Blockhash,
+      block_height,
+      chain_id: Header.ChainId,
+      merkle_root_state: Header.MerkleTreeRootOfWorldState,
+      merkle_root_tx: Header.MerkleTreeRootOfTransactions,
+      pre_block_hash: Header.PreviousBlockHash,
+      time: Header.Time,
+      tx_count: Body.TransactionsCount
+    };
+
+    if (block_height === blocksList[0].block_height) {
+      return;
+    }
+
+    this.setState({
+      blocksList: [chainBlocks, ...blocksList]
     });
   }
 
