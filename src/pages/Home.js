@@ -1,27 +1,21 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer, inject } from "mobx-react";
 import { Row, Col, Icon, List } from "antd";
 import { get as _get } from "lodash/get";
+import isEmpty from "lodash/isEmpty";
 import InfoList from "../components/InfoList";
 import TradeCards from "../components/TradeCards";
 import TradeChart from "../components/TradeChart";
-import { get, format, aelf } from "../utils";
-import {
-  ALL_BLOCKS_API_URL,
-  ALL_TXS_API_URL,
-  PAGE_SIZE,
-  TXSSTATUS
-} from "../constants";
+import { format, aelf } from "../utils";
+import { TXSSTATUS } from "../constants";
 
 import "./home.styles.less";
 
+@inject("appStore")
+@observer
 export default class HomePage extends Component {
   loopId = 0;
-
-  state = {
-    blocksList: [],
-    transactionsList: []
-  };
 
   componentDidCatch(error) {
     console.error(error);
@@ -32,23 +26,20 @@ export default class HomePage extends Component {
     // it's making two xhr to get realtime block_height and transaction data.
     // it's simplest that it do not need block_scan_api to get full chain data.
     // but it need a some sugar.
-    const { blocks } = await this.fetch(ALL_BLOCKS_API_URL);
-    const { transactions } = await this.fetch(ALL_TXS_API_URL);
-
-    this.setState({
-      blocksList: blocks,
-      transactionsList: transactions
-    });
 
     // this.loopId = setInterval(() => {
     //   this.fetchChain();
     // }, 5000);
-    this.fetchChain();
+    const { appStore } = this.props;
+    appStore.blockList.load(() => this.fetchChain());
+    appStore.txsList.load(() => {});
+    // this.fetchChain();
   }
 
   // @TODO: take it work. gettting block info and transactions from chain.
   fetchChain() {
-    const { blocksList, transactions } = this.state;
+    const store = this.props.appStore;
+    const { blockList } = store;
     const {
       result: { block_height }
     } = aelf.chain.getBlockHeight();
@@ -56,9 +47,13 @@ export default class HomePage extends Component {
       result: { Blockhash, Body, Header }
     } = aelf.chain.getBlockInfo(block_height, 100);
 
+    if (isEmpty(block_height)) {
+      return;
+    }
+
     const chainBlocks = {
       block_hash: Blockhash,
-      block_height,
+      block_height: +block_height,
       chain_id: Header.ChainId,
       merkle_root_state: Header.MerkleTreeRootOfWorldState,
       merkle_root_tx: Header.MerkleTreeRootOfTransactions,
@@ -67,23 +62,11 @@ export default class HomePage extends Component {
       tx_count: Body.TransactionsCount
     };
 
-    if (block_height === blocksList[0].block_height) {
+    if (block_height === blockList.blocks[0].block_height) {
       return;
     }
 
-    this.setState({
-      blocksList: [chainBlocks, ...blocksList]
-    });
-  }
-
-  async fetch(url) {
-    const res = await get(url, {
-      page: 0,
-      limit: PAGE_SIZE,
-      order: "desc"
-    });
-
-    return res;
+    store.blockList.addBlock(chainBlocks);
   }
 
   blockRenderItem = item => {
@@ -141,7 +124,10 @@ export default class HomePage extends Component {
   };
 
   render() {
-    const { blocksList, transactionsList } = this.state;
+    const {
+      blockList: { blocks },
+      txsList: { transactions }
+    } = this.props.appStore;
     return [
       <Row
         type="flex"
@@ -179,7 +165,7 @@ export default class HomePage extends Component {
           <InfoList
             title="Blocks"
             iconType="gold"
-            dataSource={blocksList}
+            dataSource={blocks.toJSON()}
             renderItem={this.blockRenderItem}
           />
         </Col>
@@ -196,7 +182,7 @@ export default class HomePage extends Component {
           <InfoList
             title="Transaction"
             iconType="pay-circle"
-            dataSource={transactionsList}
+            dataSource={transactions.toJSON()}
             renderItem={this.txsRenderItem}
           />
         </Col>
