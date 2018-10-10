@@ -3,7 +3,7 @@
 NGINX_CONF="/etc/nginx/conf.d"
 ROOT_DIR="/opt/aelf/explore"
 
-npm i && npm build
+npm i && npm run build
 
 cp -rf dist $ROOT_DIR
 
