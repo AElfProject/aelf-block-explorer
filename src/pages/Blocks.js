@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Table } from "antd";
+import { inject, observer } from "mobx-react";
+import isEmpty from "lodash/isEmpty";
 import { get } from "../utils";
 import {
   ALL_BLOCKS_API_URL,
@@ -9,11 +11,13 @@ import {
 
 import "./blocks.styles.less";
 
+@inject("appIncrStore")
+@observer
 export default class BlcoksPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: null,
+      data: props.appIncrStore.blockList.blocks.toJSON(),
       pagination: {
         pageSize: PAGE_SIZE,
         showTotal: total => `Total ${total} items`
@@ -30,6 +34,7 @@ export default class BlcoksPage extends Component {
   }
 
   fetch = async (params = {}) => {
+    const storeBlocks = this.props.appIncrStore.blockList;
     this.setState({
       loading: true
     });
@@ -41,10 +46,17 @@ export default class BlcoksPage extends Component {
 
     const pagination = { ...this.state.pagination };
     if (data && data.blocks.length) {
-      pagination.total = data.total;
+      let res = data.blocks;
+      // make sure page === 0 , pagination total merge increament blocks length of appIncrStore
+      // when page === 0, blocks concat fetch data
+      if (params.page === 0) {
+        pagination.total = storeBlocks.total + data.total;
+        res = storeBlocks.blocks.toJSON().concat(data.blocks);
+      }
+
       this.setState({
         loading: false,
-        data: data.blocks,
+        data: res,
         pagination
       });
     } else {

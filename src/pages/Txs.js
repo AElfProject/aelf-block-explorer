@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import { Table } from "antd";
 import { get } from "../utils";
 import {
@@ -10,11 +11,13 @@ import {
 
 import "./txs.styles.less";
 
+@inject("appIncrStore")
+@observer
 export default class TxsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: null,
+      data: props.appIncrStore.txsList.transactions.toJSON(),
       pagination: {
         pageSize: PAGE_SIZE,
         showTotal: total => `Total ${total} items`
@@ -34,6 +37,7 @@ export default class TxsPage extends Component {
   }
 
   fetch = async (params = {}) => {
+    const storeTxs = this.props.appIncrStore.txsList;
     this.setState({
       loading: true
     });
@@ -46,10 +50,17 @@ export default class TxsPage extends Component {
 
     const pagination = { ...this.state.pagination };
     if (data && data.transactions.length) {
-      pagination.total = data.total;
+      let res = data.transactions;
+      // make sure page === 0 , pagination total merge increament txs length of appIncrStore
+      // when page === 0, txsList concat fetch data
+      if (params.page === 0) {
+        pagination.total = storeTxs.total + data.total;
+        res = storeTxs.transactions.toJSON().concat(data.transactions);
+      }
+
       this.setState({
         loading: false,
-        data: data.transactions,
+        data: res,
         pagination
       });
     } else {
