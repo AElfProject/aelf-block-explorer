@@ -26,8 +26,8 @@ aelf.chain.connectChain(function (e) {
     if (isEmpty(e)) {
         return;
     }
-    console.error(e);
-    httpErrorHandler('Connect Error', 'can not connect chain.');
+    console.error(e.message);
+    httpErrorHandler('Connect Error', e.message);
 });
 
 
