@@ -50,6 +50,6 @@ docker build exec `sh ./build-image.sh`
 
 ## Dependence libs
 
-1. (https://github.com/mobxjs/mobx-state-tree)[https://github.com/mobxjs/mobx-state-tree] it's a state manage lib, using the store to support realtime fetching data.
-2. (https://github.com/insin/nwb)[https://github.com/insin/nwb] it's a toolkit for React build. it's configuration of the nwb.config.js.
-3. (https://github.com/infinitered/apisauce)[https://github.com/infinitered/apisauce] it support Axios + standardized errors + request/response transforms.
+1. [https://github.com/mobxjs/mobx-state-tree](https://github.com/mobxjs/mobx-state-tree) it's a state manage lib, using the store to support realtime fetching data.
+2. [https://github.com/insin/nwb](https://github.com/insin/nwb) it's a toolkit for React build. it's configuration of the nwb.config.js.
+3. [https://github.com/infinitered/apisauce](https://github.com/infinitered/apisauce) it support Axios + standardized errors + request/response transforms.
