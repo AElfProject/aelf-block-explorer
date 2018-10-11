@@ -30,7 +30,7 @@ export default class BlockDetailPage extends React.Component {
   }
 
   fetchBlockInfo = blockHeight => {
-    const { result } = aelf.chain.getBlockInfo(blockHeight, 0);
+    const { result } = aelf.chain.getBlockInfo(blockHeight, 100);
     this.setState({
       txsCount: result.Body.TransactionsCount,
       blockHash: result.Blockhash,

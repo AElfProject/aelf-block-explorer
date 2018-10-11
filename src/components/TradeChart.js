@@ -1,4 +1,5 @@
 import React from "react";
+import isEmpty from "lodash/isEmpty";
 // import the core library.
 import ReactEchartsCore from "echarts-for-react/lib/core";
 
@@ -66,10 +67,12 @@ export default class TradeChart extends React.Component {
     });
 
     try {
-      const { data = [] } = await get("/market/history/trade", {
+      const res = await get("/market/history/trade", {
         symbol: "elfbtc",
         size: 200
       });
+
+      const data = isEmpty(res) ? [] : res.data;
 
       this.setState({
         data,

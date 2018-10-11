@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Row, Col } from "antd";
-import { get, post } from "../utils";
-import { ELF_REALTIME_PRICE_URL, ELF_REST_TRADE_API } from "../constants";
+import isEmpty from "lodash/isEmpty";
+import { get } from "../utils";
+import { ELF_REALTIME_PRICE_URL } from "../constants";
 
 import "./tradecards.style.less";
 
@@ -28,14 +28,18 @@ export default class TradeCards extends Component {
   async componentDidMount() {
     const price = await get(ELF_REALTIME_PRICE_URL);
     try {
-      const { tick = { vol: 0 } } = await get("/market/detail", {
+      const detail = await get("/market/detail", {
         symbol: "elfbtc"
       });
+      const tick = isEmpty(detail) ? { vol: 0 } : detail.tick;
+
       this.setState({
         price,
         tick
       });
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
   render() {
     const { price, tick } = this.state;
