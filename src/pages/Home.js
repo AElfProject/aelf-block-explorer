@@ -45,12 +45,10 @@ export default class HomePage extends Component {
       transactions
     });
 
-    // this.loopId = setInterval(() => {
-    this.fetchBlockByChain();
-    this.fetchTxByChain();
-    // }, 10000);
-
-    // this.fetchChain();
+    this.loopId = setInterval(() => {
+      this.fetchBlockByChain();
+      this.fetchTxByChain();
+    }, 10000);
   }
 
   async fetch(url) {
