@@ -23,8 +23,7 @@ const TXSSTATUS = {
   Failed: "失败",
   Mined: "成功"
 };
-const RPCSERVER =
-  NODE_ENV === "production" ? "http://explore.aelf.io/chain" : "/chain";
+const RPCSERVER = "/chain";
 
 const BLOCKS_LIST_COLUMNS = [
   {
