@@ -3,6 +3,8 @@
 NGINX_CONF="/etc/nginx/conf.d"
 ROOT_DIR="/opt/aelf/app/explorer"
 
+git pull origin master
+
 npm i && npm run build
 
 cp -rf dist/* $ROOT_DIR
