@@ -22,11 +22,11 @@ const httpErrorHandler = (message, des) => notification.open({
 
 const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
 
-aelf.chain.connectChain(function (err) {
-    if (isEmpty(err)) {
+aelf.chain.connectChain(function (e) {
+    if (isEmpty(e)) {
         return;
     }
-    console.error(err);
+    console.error(e);
     httpErrorHandler('Connect Error', 'can not connect chain.');
 });
 
