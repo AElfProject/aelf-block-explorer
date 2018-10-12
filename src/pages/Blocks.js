@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Table } from "antd";
 import { inject, observer } from "mobx-react";
-import isEmpty from "lodash/isEmpty";
+import merge from "lodash/merge";
 import { get } from "../utils";
 import {
   ALL_BLOCKS_API_URL,
@@ -51,7 +51,7 @@ export default class BlcoksPage extends Component {
       // when page === 0, blocks concat fetch data
       if (params.page === 0) {
         pagination.total = storeBlocks.total + data.total;
-        res = storeBlocks.blocks.toJSON().concat(data.blocks);
+        res = merge(storeBlocks.blocks.toJSON(), (data.blocks);
       }
 
       this.setState({

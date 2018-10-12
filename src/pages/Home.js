@@ -5,6 +5,8 @@ import { Row, Col, Icon, List } from "antd";
 import { get as _get } from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import flatten from "lodash/flatten";
+import uniq from "lodash/uniq";
+import merge from "lodash/merge";
 import InfoList from "../components/InfoList";
 import TradeCards from "../components/TradeCards";
 import TradeChart from "../components/TradeChart";
@@ -98,8 +100,10 @@ export default class HomePage extends Component {
 
     store.blockList.addBlock(chainBlocks);
 
+    const mergedBlocks = merge(store.blockList.blocks.toJSON(), preBlocks);
+
     this.setState({
-      blocks: store.blockList.blocks.toJSON().concat(preBlocks)
+      blocks: mergedBlocks
     });
   }
 
@@ -114,12 +118,11 @@ export default class HomePage extends Component {
     const flattenTxs = flatten(
       blocks
         .toJSON()
-        .filter(item => !isEmpty(item.transactions) && item.transactions)
+        .map(item => !isEmpty(item.transactions) && item.transactions)
     );
 
     flattenTxs.forEach(item => {
-
-      item.transactions.map(txid => {
+      uniq(item.transactions).map(txid => {
         const { result } = aelf.chain.getTxResult(txid);
 
         txsList.addTx({
@@ -134,15 +137,16 @@ export default class HomePage extends Component {
           tx_status: result.tx_status
         });
       });
-
     });
 
     if (isEmpty(txsList.transactions.toJSON())) {
       return;
     }
 
+    const mergedTxs = merge(store.txsList.transactions.toJSON(), preTxs);
+
     this.setState({
-      transactions: store.txsList.transactions.toJSON().concat(preTxs)
+      transactions: mergedTxs
     });
   }
 

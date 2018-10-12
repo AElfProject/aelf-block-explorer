@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Table } from "antd";
+import merge from "lodash/merge";
 import { get } from "../utils";
 import {
   ALL_TXS_API_URL,
@@ -55,7 +56,7 @@ export default class TxsPage extends Component {
       // when page === 0, txsList concat fetch data
       if (params.page === 0) {
         pagination.total = storeTxs.total + data.total;
-        res = storeTxs.transactions.toJSON().concat(data.transactions);
+        res = merge(storeTxs.transactions.toJSON(), data.transactions);
       }
 
       this.setState({
