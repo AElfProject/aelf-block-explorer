@@ -118,19 +118,23 @@ export default class HomePage extends Component {
     );
 
     flattenTxs.forEach(item => {
-      const { result } = aelf.chain.getTxResult(item);
 
-      txsList.addTx({
-        address_from: result.tx_info.From,
-        address_to: result.tx_info.To,
-        block_hash: result.block_hash,
-        block_height: result.block_number,
-        increment_id: result.tx_info.IncrementId,
-        method: result.tx_info.Method,
-        params: result.tx_info.params,
-        tx_id: result.tx_info.TxId,
-        tx_status: result.tx_status
+      item.transactions.map(txid => {
+        const { result } = aelf.chain.getTxResult(txid);
+
+        txsList.addTx({
+          address_from: result.tx_info.From,
+          address_to: result.tx_info.To,
+          block_hash: result.block_hash,
+          block_height: result.block_number,
+          increment_id: result.tx_info.IncrementId,
+          method: result.tx_info.Method,
+          params: result.tx_info.params,
+          tx_id: result.tx_info.TxId,
+          tx_status: result.tx_status
+        });
       });
+
     });
 
     if (isEmpty(txsList.transactions.toJSON())) {
