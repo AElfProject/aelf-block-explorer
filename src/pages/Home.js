@@ -4,9 +4,7 @@ import { observer, inject } from "mobx-react";
 import { Row, Col, Icon, List } from "antd";
 import { get as _get } from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import flatten from "lodash/flatten";
-import uniq from "lodash/uniq";
-import merge from "lodash/merge";
+import * as requestInterval from "request-interval";
 import InfoList from "../components/InfoList";
 import TradeCards from "../components/TradeCards";
 import TradeChart from "../components/TradeChart";
@@ -32,7 +30,7 @@ export default class HomePage extends Component {
 
   componentDidCatch(error) {
     console.error(error);
-    clearInterval(this.loopId);
+    requestInterval.clear(this.loopId);
   }
 
   async componentDidMount() {
@@ -47,10 +45,9 @@ export default class HomePage extends Component {
       transactions
     });
 
-    this.loopId = setInterval(() => {
-      this.fetchBlockByChain();
-      this.fetchTxByChain();
-    }, 10000);
+    this.loopId = requestInterval(5000, () => {
+      this.fetchInfoByChain();
+    });
   }
 
   async fetch(url) {
@@ -64,11 +61,13 @@ export default class HomePage extends Component {
   }
 
   // get increament block data
-  fetchBlockByChain() {
+  fetchInfoByChain() {
     const store = this.props.appIncrStore;
     const preBlocks = this.state.blocks;
+    const preTxs = this.state.transactions;
     const {
-      blockList: { blocks }
+      blockList: { blocks },
+      txsList
     } = store;
     const pureBlocks = blocks.toJSON();
     const {
@@ -98,32 +97,17 @@ export default class HomePage extends Component {
       return;
     }
 
+    // First step is getting and saving chain block info
     store.blockList.addBlock(chainBlocks);
 
-    const mergedBlocks = merge(store.blockList.blocks.toJSON(), preBlocks);
-
-    this.setState({
-      blocks: mergedBlocks
-    });
-  }
-
-  fetchTxByChain() {
-    const store = this.props.appIncrStore;
-    const preTxs = this.state.transactions;
-    const {
-      blockList: { blocks },
-      txsList
-    } = store;
-
-    const flattenTxs = flatten(
-      blocks
-        .toJSON()
-        .map(item => !isEmpty(item.transactions) && item.transactions)
-    );
-
-    flattenTxs.forEach(item => {
-      uniq(item.transactions).map(txid => {
-        const { result } = aelf.chain.getTxResult(txid);
+    // Second step is getting transactions infomation from block
+    if (isEmpty(chainBlocks.transactions)) {
+      this.setState({
+        blocks: store.blockList.blocks.toJSON().concat(preBlocks)
+      });
+    } else {
+      chainBlocks.forEach(txId => {
+        const { result } = aelf.chain.getTxResult(txId);
 
         txsList.addTx({
           address_from: result.tx_info.From,
@@ -137,16 +121,11 @@ export default class HomePage extends Component {
           tx_status: result.tx_status
         });
       });
-    });
-
-    if (isEmpty(txsList.transactions.toJSON())) {
-      return;
     }
 
-    const mergedTxs = merge(store.txsList.transactions.toJSON(), preTxs);
-
     this.setState({
-      transactions: mergedTxs
+      blocks: store.blockList.blocks.toJSON().concat(preBlocks),
+      transactions: store.txsList.transactions.toJSON().concat(preTxs)
     });
   }
 

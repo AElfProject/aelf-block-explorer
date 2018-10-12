@@ -6,7 +6,6 @@ import {
 } from 'apisauce';
 import * as Aelf from 'aelf-sdk';
 import dayjs from 'dayjs';
-import isEmpty from 'lodash/isEmpty';
 import {
     RPCSERVER
 } from './constants';
