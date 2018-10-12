@@ -51,7 +51,7 @@ export default class BlcoksPage extends Component {
       // when page === 0, blocks concat fetch data
       if (params.page === 0) {
         pagination.total = storeBlocks.total + data.total;
-        res = merge(storeBlocks.blocks.toJSON(), (data.blocks);
+        res = merge(storeBlocks.blocks.toJSON(), data.blocks);
       }
 
       this.setState({
