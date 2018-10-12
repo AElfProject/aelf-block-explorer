@@ -4,7 +4,6 @@ import { observer, inject } from "mobx-react";
 import { Row, Col, Icon, List } from "antd";
 import { get as _get } from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import * as requestInterval from "request-interval";
 import InfoList from "../components/InfoList";
 import TradeCards from "../components/TradeCards";
 import TradeChart from "../components/TradeChart";
@@ -21,7 +20,6 @@ import "./home.styles.less";
 @inject("appIncrStore")
 @observer
 export default class HomePage extends Component {
-  loopId = 0;
 
   state = {
     blocks: [],
@@ -30,7 +28,12 @@ export default class HomePage extends Component {
 
   componentDidCatch(error) {
     console.error(error);
-    requestInterval.clear(this.loopId);
+    // TODO 弹窗提示
+    clearInterval(this.interval);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   async componentDidMount() {
@@ -45,9 +48,9 @@ export default class HomePage extends Component {
       transactions
     });
 
-    this.loopId = requestInterval(10000, () => {
+    this.interval = setInterval(() => {
       this.fetchInfoByChain();
-    });
+    }, 10000);
   }
 
   async fetch(url) {
@@ -106,7 +109,7 @@ export default class HomePage extends Component {
         blocks: store.blockList.blocks.toJSON().concat(preBlocks)
       });
     } else {
-      chainBlocks.forEach(txId => {
+      chainBlocks.transactions.forEach(txId => {
         const { result } = aelf.chain.getTxResult(txId);
 
         txsList.addTx({
