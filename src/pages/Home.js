@@ -45,7 +45,7 @@ export default class HomePage extends Component {
       transactions
     });
 
-    this.loopId = requestInterval(5000, () => {
+    this.loopId = requestInterval(10000, () => {
       this.fetchInfoByChain();
     });
   }
