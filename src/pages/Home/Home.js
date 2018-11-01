@@ -1,21 +1,30 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { observer, inject } from "mobx-react";
-import { Row, Col, Icon, List } from "antd";
-import { get as _get } from "lodash/get";
+import {
+    Row,
+    Col,
+    Icon,
+    List,
+    message
+} from "antd";
+
+// object, array, string, or  jQuery - like
 import isEmpty from "lodash/isEmpty";
-import InfoList from "../components/InfoList";
-import TradeCards from "../components/TradeCards";
-import TradeChart from "../components/TradeChart";
-import { get, format, aelf } from "../utils";
+import InfoList from "../../components/InfoList";
+import TradeCards from "../../components/TradeCards";
+import TradeChart from "../../components/TradeChart";
+import { get, format, aelf } from "../../utils";
 import {
     TXSSTATUS,
     PAGE_SIZE,
     ALL_BLOCKS_API_URL,
     ALL_TXS_API_URL
-} from "../constants";
+} from "../../constants";
 
 import "./home.styles.less";
+
+const fetchInfoByChainIntervalTime = 4000;
 
 @inject("appIncrStore")
 @observer
@@ -25,6 +34,8 @@ export default class HomePage extends Component {
         blocks: [],
         transactions: []
     };
+
+    blockHeight = 0;
 
     componentDidCatch(error) {
         console.error(error);
@@ -50,7 +61,7 @@ export default class HomePage extends Component {
 
         this.interval = setInterval(() => {
             this.fetchInfoByChain();
-        }, 10000);
+        }, fetchInfoByChainIntervalTime);
     }
 
     async fetch(url) {
@@ -64,55 +75,66 @@ export default class HomePage extends Component {
     }
 
     // get increament block data
+    // 1. Get the lastest 100 Blocks Info from databases at first.
+    // 2. Get the new Blocks Info from Aelf Chain.
+    // 3. If the (block_height in Chain) - (block_height in Databases) > 10, 
+    //    Notice the users we have problem, and get New Block from Aelf Chain.
+    // 4. In the page, if block.length > 100, .length =100 ,then, unshift.
     fetchInfoByChain() {
-        const store = this.props.appIncrStore;
-        const preBlocks = this.state.blocks;
-        const preTxs = this.state.transactions;
-        const {
-            blockList: { blocks },
-            txsList
-        } = store;
-        const pureBlocks = blocks.toJSON();
-        const {
-            result: { block_height }
-        } = aelf.chain.getBlockHeight();
-        const {
-            result: { Blockhash, Body, Header }
-        } = aelf.chain.getBlockInfo(block_height, 100);
+        // const store = this.props.appIncrStore;
 
-        if (isEmpty(block_height)) {
+        let newBlocksList = this.state.blocks.concat([]);
+        let newTxsList = this.state.transactions.concat([]);
+
+        if (this.blockHeight) {
+            this.blockHeight++;
+        } else {
+            const {
+                result: {
+                    block_height
+                }
+            } = aelf.chain.getBlockHeight();
+            this.blockHeight = block_height;
+        }
+        
+        const {
+            result: { Blockhash = '', Body = '', Header = '' } = {}
+        } = aelf.chain.getBlockInfo(this.blockHeight, 100);
+
+        if (isEmpty('' + this.blockHeight)) {
+            message.error('Can not get Block Info from Aelf Node!!!.', 6);
+        }
+        if (isEmpty(Blockhash)) {
+            this.blockHeight--;
+            console.log(this.blockHeight, Blockhash);
             return;
         }
 
         const chainBlocks = {
             block_hash: Blockhash,
-            block_height: +block_height,
+            block_height: +this.blockHeight,
             chain_id: Header.ChainId,
             merkle_root_state: Header.MerkleTreeRootOfWorldState,
             merkle_root_tx: Header.MerkleTreeRootOfTransactions,
             pre_block_hash: Header.PreviousBlockHash,
             time: Header.Time,
-            tx_count: Body.TransactionsCount,
-            transactions: Body.Transactions
+            tx_count: Body.TransactionsCount
         };
-
-        if (pureBlocks[0] && +block_height === pureBlocks[0].block_height) {
-            return;
+        
+        let pre_block_height = newBlocksList[0].block_height;
+        if (this.blockHeight - pre_block_height > 10) {
+            message.warning('Notice: Blocks in Databases is behind more than 10 blocks in the Chain.', 6);
         }
+        if (newBlocksList.length > 100) {
+            newBlocksList.length = 100;
+        }
+        newBlocksList.unshift(chainBlocks);
 
-        // First step is getting and saving chain block info
-        store.blockList.addBlock(chainBlocks);
-
-        // Second step is getting transactions infomation from block
-        if (isEmpty(chainBlocks.transactions)) {
-            this.setState({
-                blocks: store.blockList.blocks.toJSON().concat(preBlocks)
-            });
-        } else {
-            chainBlocks.transactions.forEach(txId => {
+        if (!isEmpty(Body.Transactions)) {
+            Body.Transactions.forEach(txId => {
                 const { result } = aelf.chain.getTxResult(txId);
 
-                txsList.addTx({
+                let newTxs = {
                     address_from: result.tx_info.From,
                     address_to: result.tx_info.To,
                     block_hash: result.block_hash,
@@ -122,13 +144,21 @@ export default class HomePage extends Component {
                     params: result.tx_info.params,
                     tx_id: result.tx_info.TxId,
                     tx_status: result.tx_status
-                });
+                };
+
+                if (newTxsList.length > 100) {
+                    newTxsList.length = 100;
+                }
+
+                newTxsList.unshift(newTxs);
+
             });
         }
 
+        // console.log(newBlocksList.length, newTxsList.length);
         this.setState({
-            blocks: store.blockList.blocks.toJSON().concat(preBlocks),
-            transactions: store.txsList.transactions.toJSON().concat(preTxs)
+            blocks: newBlocksList,
+            transactions: newTxsList,
         });
     }
 
@@ -155,12 +185,20 @@ export default class HomePage extends Component {
 
     txsRenderItem = item => {
         const blockHeight = item.block_height;
+
+        let tx_id = item.tx_id;
+        let txIDlength = tx_id.length;
+        let txIDShow = tx_id.slice(0, 10) + '...' + tx_id.slice(txIDlength - 10, txIDlength);
+
         const title = (
             <span>
                 交易:
-                <Link to={`/block/${item.block_height}`}>
-                    {item.tx_id.slice(0, 20)}
-                    ...
+                < Link to = {
+                    `/block/${blockHeight}`
+                } >
+                    {
+                        txIDShow
+                    }
                 </Link>
             </span>
         );

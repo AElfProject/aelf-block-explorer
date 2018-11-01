@@ -1,5 +1,9 @@
-import React, { Component } from "react";
-import { Switch } from "react-router-dom";
+import React, {
+    Component
+} from "react";
+import {
+    Switch
+} from "react-router-dom";
 
 import BrowserHeader from "./components/Header";
 import BrowserFooter from "./components/Footer";
@@ -10,24 +14,24 @@ import AppRoutes from "./routes";
 import "./App.less";
 
 class App extends Component {
-  componentDidCatch(error) {
-    console.log(`component occurred error: ${error}`);
-  }
+    componentDidCatch(error) {
+        console.log(`component occurred error: ${error}`);
+    }
 
-  render() {
-    return (
-      <div className="App">
-        <BrowserHeader />
-        <BrowserBreadcrumb />
-        <Container>
-          <Switch>
-            <AppRoutes />
-          </Switch>
-        </Container>
-        <BrowserFooter />
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="App">
+                <BrowserHeader />
+                <BrowserBreadcrumb />
+                <Container>
+                <Switch>
+                    <AppRoutes />
+                </Switch>
+                </Container>
+                <BrowserFooter />
+            </div>
+        );
+    }
 }
 
 export default App;

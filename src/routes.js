@@ -1,7 +1,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
-import HomePage from "./pages/Home";
+import HomePage from "./pages/Home/Home";
 import BlocksPage from "./pages/Blocks";
 import BlockDetailPage from "./pages/BlockDetail";
 import AddressPage from "./pages/Address";

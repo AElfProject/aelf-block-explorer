@@ -37,7 +37,7 @@ export const BlocksStore = types.model('BlocksStore', {
     }))
     .actions(self => ({
         addBlock(block) {
-            self.blocks.push(block);
+            self.blocks.unshift(block);
         }
     }))
 
