@@ -19,7 +19,7 @@ docker build exec `sh ./build-image.sh`
 
 ## Project Struct
 
-```
+```text
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── README.md
