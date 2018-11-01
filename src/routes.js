@@ -5,7 +5,7 @@ import HomePage from "./pages/Home/Home";
 import BlocksPage from "./pages/Blocks/Blocks";
 import BlockDetailPage from "./pages/BlockDetail";
 import AddressPage from "./pages/Address";
-import TxsPage from "./pages/Txs";
+import TxsPage from "./pages/Txs/Txs";
 import TxsDetailPage from "./pages/TxsDetail";
 import ApplicationPage from "./pages/Applications";
 
