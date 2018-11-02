@@ -46,6 +46,10 @@ export default class TxsPage extends Component {
         });
     }
 
+    componentWillUnmount() {
+        this.setState = () => {};
+    }
+
     fetch = async (params = {}) => {
         this.setState({
             loading: true

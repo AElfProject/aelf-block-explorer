@@ -7,7 +7,7 @@ import {
 
 import BrowserHeader from "./components/Header";
 import BrowserFooter from "./components/Footer";
-import BrowserBreadcrumb from "./components/Breadcrumb";
+import BrowserBreadcrumb from "./components/Breadcrumb/Breadcrumb";
 import Container from "./components/Container";
 import AppRoutes from "./routes";
 

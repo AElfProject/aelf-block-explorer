@@ -22,6 +22,32 @@ import {
 
 import "./blocks.styles.less";
 
+// const BLOCKS_LIST_COLUMNS = [
+//     {
+//         title: "高度",
+//         dataIndex: "block_height",
+//         key: "block_height",
+//         render: text => <Link to={`/block/${text}`}> {text} </Link>
+//     },
+//     {
+//         title: "块龄",
+//         dataIndex: "time",
+//         key: "time",
+//         render: time => <span> {dayjs().from(dayjs(time), true)} </span>
+//     },
+//     {
+//         title: "交易",
+//         dataIndex: "tx_count",
+//         key: "tx_count",
+//         render: (text, row) =>
+//             !isNaN(+text) && +text !== 0 ? (
+//                 <Link to={`/txs/block?${row.block_hash}`}> {text} </Link>
+//             ) : (
+//                 text
+//             )
+//     }
+// ];
+
 // @inject("appIncrStore")
 // @observer
 export default class BlocksPage extends Component {
@@ -45,6 +71,10 @@ export default class BlocksPage extends Component {
             page: 0,
             limit: PAGE_SIZE
         });
+    }
+
+    componentWillUnmount() {
+        this.setState = () => {};
     }
 
     fetch = async (params = {}) => {

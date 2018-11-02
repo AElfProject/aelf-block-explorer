@@ -13,7 +13,7 @@ import {
 import isEmpty from "lodash/isEmpty";
 import InfoList from "../../components/InfoList";
 import TradeCards from "../../components/TradeCards";
-import TradeChart from "../../components/TradeChart";
+// import TradeChart from "../../components/TradeChart";
 import { get, format, aelf } from "../../utils";
 import {
     TXSSTATUS,
@@ -42,9 +42,10 @@ export default class HomePage extends Component {
         // TODO 弹窗提示
         clearInterval(this.interval);
     }
-
+ 
     componentWillUnmount() {
         clearInterval(this.interval);
+        this.setState = () => {};
     }
 
     async componentDidMount() {
@@ -106,7 +107,7 @@ export default class HomePage extends Component {
         }
         if (isEmpty(Blockhash)) {
             this.blockHeight--;
-            console.log(this.blockHeight, Blockhash);
+            // console.log(this.blockHeight, Blockhash);
             return;
         }
 

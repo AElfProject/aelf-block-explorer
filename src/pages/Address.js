@@ -62,7 +62,8 @@ export default class AddressPage extends React.Component {
 
     this.fetch({
       limit: pagination.pageSize,
-      page: pagination.current - 1
+      page: pagination.current - 1,
+      address: this.props.match.params.id
     });
   };
 
