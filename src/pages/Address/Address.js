@@ -4,13 +4,13 @@ import {
 } from "antd";
 import {
     get
-} from "../utils";
+} from "../../utils";
 import {
     ALL_TXS_LIST_COLUMNS,
     ADDRESS_TXS_API_URL,
     ADDRESS_INFO_COLUMN,
     PAGE_SIZE
-} from "../constants";
+} from "../../constants";
 
 import "./address.styles.less";
 

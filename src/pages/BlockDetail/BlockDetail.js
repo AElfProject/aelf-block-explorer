@@ -11,7 +11,7 @@ import {
 import {
     aelf,
     format
-} from "../utils";
+} from "../../utils";
 
 import "./blockdetail.styles.less";
 

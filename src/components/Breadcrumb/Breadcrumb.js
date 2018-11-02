@@ -44,6 +44,10 @@ const BREADCRUMBNAMESTATE = {
             url: ['/txs' , false], // 暂无地址列表
             name: [BREADCRUMBNAMEMAP['/txs'], BREADCRUMBNAMEMAP['/address']]
         },
+        'apps': {
+            url: ['/apps'],
+            name: ['TODO']
+        }
     }
 };
 
@@ -60,6 +64,7 @@ class BrowserBreadcrumb extends Component {
         );
     }
 
+    // TODO: 如果没有收录，则不展示面包屑。
     getExtraBreadcrumbItems(pathSnippets, reloadUrl) {
         const extraBreadcrumbItems = pathSnippets.map((item, index) => {
             if (index === 0) {

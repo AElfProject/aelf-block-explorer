@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Col } from "antd";
 import { isEmpty } from "lodash";
-import { aelf } from "../utils";
-import { TXSSTATUS } from "../constants";
+import { aelf } from "../../utils";
+import { TXSSTATUS } from "../../constants";
 
 import "./txsdetail.styles.less";
 
