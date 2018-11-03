@@ -195,7 +195,7 @@ export default class HomePage extends Component {
             <span>
                 交易:
                 < Link to = {
-                    `/block/${blockHeight}`
+                    `/tx/${tx_id}`
                 } >
                     {
                         txIDShow

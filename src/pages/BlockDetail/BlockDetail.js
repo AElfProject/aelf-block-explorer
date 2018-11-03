@@ -10,7 +10,8 @@ import {
 } from "antd";
 import {
     aelf,
-    format
+    format,
+    get
 } from "../../utils";
 
 import "./blockdetail.styles.less";
@@ -28,29 +29,45 @@ export default class BlockDetailPage extends React.Component {
         };
     }
 
-    static getDerivedStateFromProps(props, state) {
-        const {
-            params
-        } = props.match;
-        const {
-            blockHeight
-        } = state;
-        if (+params.id !== blockHeight) {
-            return {
-                blockHeight: +params.id
-            };
-        }
-        return null;
+    async getTxsList(blockhash) {
+        let getTxsOption = {
+            limit: 5,
+            page: 0,
+            order: 'asc',
+            block_hash: blockhash
+        };
+
+        return await get('/block/transactions', getTxsOption);
     }
 
-    fetchBlockInfo = blockHeight => {
-        const {
-            result
-        } = aelf.chain.getBlockInfo(blockHeight, 100);
+    // fetchBlockInfo = blockHeight => {
+    fetchBlockInfo = async (input) => {
+        // 先判断是高度还是hash，再执行后续的命令。
+
+        let result;
+        let blockHeight;
+        // BlockHeight
+        if (!/^0x/.test(input)) {
+            blockHeight = input;
+            result = aelf.chain.getBlockInfo(input, 100).result;
+            // const blockhash = result && result.Blockhash;
+            // if (blockhash) {
+            //     let txsList = await this.getTxsList(blockhash);
+            // }
+        } else {
+            let txsList = await this.getTxsList(input);
+            let {
+                transactions
+            } = txsList;
+            blockHeight = transactions[0] && transactions[0].block_height;
+            result = blockHeight ? aelf.chain.getBlockInfo(blockHeight, 100).result : undefined;
+        }
+
         this.setState({
-            txsCount: result.Body.TransactionsCount,
-            blockHash: result.Blockhash,
-            blockTime: result.Header.Time
+            txsCount: result && result.Body && result.Body.TransactionsCount || 'Unminned',
+            blockHash: result && result.Blockhash,
+            blockTime: result && result.Header && result.Header.Time || '1993-08-09 01:30:30',
+            blockHeight: +blockHeight
         });
     };
 
@@ -58,12 +75,15 @@ export default class BlockDetailPage extends React.Component {
         const {
             params
         } = this.props.match;
-        this.fetchBlockInfo(+params.id);
+        this.fetchBlockInfo(params.id);
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.blockHeight !== prevState.blockHeight) {
-            this.fetchBlockInfo(this.state.blockHeight);
+    componentDidUpdate() {
+         const {
+             params
+         } = this.props.match;
+        if (this.state.blockHeight != params.id && !/^0x/.test(params.id)) {
+            this.fetchBlockInfo(params.id);
         }
     }
 
@@ -75,12 +95,12 @@ export default class BlockDetailPage extends React.Component {
         const {
             txsCount,
             blockHash,
-            blockTime
+            blockTime,
+            blockHeight
         } = this.state;
         const {
             params
         } = this.props.match;
-        const blockHeight = +params.id;
         const prevLink = `/block/${blockHeight - 1}`;
         const nextLink = `/block/${blockHeight + 1}`;
 

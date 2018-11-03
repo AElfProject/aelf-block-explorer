@@ -3,7 +3,7 @@ import { Layout, Menu, Icon } from "antd";
 import { Link } from "react-router-dom";
 
 import "./header.styles.less";
-import Search from "./Search";
+import Search from "./Search/Search";
 
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;

@@ -79,8 +79,7 @@ const ALL_TXS_LIST_COLUMNS = [
     key: "address_from",
     render: text => (
       <Link to={`/address/${text}`} title={text}>
-        {text.slice(0, 17)}
-        ...
+        {text}
       </Link>
     )
   },
@@ -92,13 +91,12 @@ const ALL_TXS_LIST_COLUMNS = [
   {
     title: "接收方",
     dataIndex: "address_to",
-    key: "address_to"
-    // render: text => (
-    //   <Link to={`/address/${text}`} title={text}>
-    //     {text.slice(0, 17)}
-    //     ...
-    //   </Link>
-    // )
+    key: "address_to",
+    render: text => (
+      <Link to={`/address/${text}`} title={text}>
+        {text}
+      </Link>
+    )
   }
 ];
 
