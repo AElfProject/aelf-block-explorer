@@ -8,6 +8,7 @@ import {
 import {
     ALL_TXS_LIST_COLUMNS,
     ADDRESS_TXS_API_URL,
+    // ADDRESS_BALANCE_API_URL,
     ADDRESS_INFO_COLUMN,
     PAGE_SIZE
 } from "../../constants";
@@ -24,6 +25,7 @@ export default class AddressPage extends React.Component {
             txs: [],
             pagination: {
                 pageSize: PAGE_SIZE,
+                showQuickJumper: true,
                 showTotal: total => `Total ${total} items`
             },
             txs_loading: false
@@ -88,6 +90,14 @@ export default class AddressPage extends React.Component {
         });
     }
 
+    // async getAddressInfo () {
+    //     await get(ADDRESS_BALANCE_API_URL, {
+
+    //     });
+    //     // Get Balance
+    //     // Get Value
+    // }
+
     render() {
         const {
             match
@@ -103,8 +113,10 @@ export default class AddressPage extends React.Component {
         const address = match.params.id;
         const addressInfo = [{
             address,
-            balance: 243.245423465331,
-            value: "$ 23.23532342"
+            balance: 'TODO',
+            value: 'TODO'
+            // balance: 243.245423465331,
+            // value: "$ 23.23532342"
         }];
 
         return (

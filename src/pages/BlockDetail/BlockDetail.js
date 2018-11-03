@@ -6,13 +6,19 @@ import {
     Row,
     Col,
     Button,
-    Icon
+    Icon,
+    Table
 } from "antd";
 import {
     aelf,
     format,
     get
 } from "../../utils";
+
+import {
+    ALL_TXS_LIST_COLUMNS,
+    PAGE_SIZE
+} from "../../constants";
 
 import "./blockdetail.styles.less";
 
@@ -25,7 +31,15 @@ export default class BlockDetailPage extends React.Component {
             blockHeight: -1,
             txsCount: 0,
             blockHash: "",
-            blockTime: 0
+            blockTime: 0,
+
+            txs: [],
+            pagination: {
+                pageSize: PAGE_SIZE,
+                showQuickJumper: true,
+                showTotal: total => `Total ${total} items`
+            },
+            txs_loading: true
         };
     }
 
@@ -42,20 +56,25 @@ export default class BlockDetailPage extends React.Component {
 
     // fetchBlockInfo = blockHeight => {
     fetchBlockInfo = async (input) => {
+        this.setState({
+            txs_loading: true
+        });
         // 先判断是高度还是hash，再执行后续的命令。
 
         let result;
         let blockHeight;
+        let txsList;
         // BlockHeight
         if (!/^0x/.test(input)) {
             blockHeight = input;
             result = aelf.chain.getBlockInfo(input, 100).result;
-            // const blockhash = result && result.Blockhash;
-            // if (blockhash) {
-            //     let txsList = await this.getTxsList(blockhash);
-            // }
+            const blockhash = result && result.Blockhash;
+            if (blockhash) {
+                console.log('blockhash: ', blockhash, input)
+                txsList = await this.getTxsList(blockhash);
+            }
         } else {
-            let txsList = await this.getTxsList(input);
+            txsList = await this.getTxsList(input);
             let {
                 transactions
             } = txsList;
@@ -63,11 +82,19 @@ export default class BlockDetailPage extends React.Component {
             result = blockHeight ? aelf.chain.getBlockInfo(blockHeight, 100).result : undefined;
         }
 
+        const pagination = { ...this.state.pagination
+        };
+        pagination.total = txsList.total;
+
         this.setState({
             txsCount: result && result.Body && result.Body.TransactionsCount || 'Unminned',
             blockHash: result && result.Blockhash,
             blockTime: result && result.Header && result.Header.Time || '1993-08-09 01:30:30',
-            blockHeight: +blockHeight
+            blockHeight: +blockHeight,
+            // txs
+            txs_loading: false,
+            txs: txsList.transactions,
+            pagination
         });
     };
 
@@ -79,16 +106,56 @@ export default class BlockDetailPage extends React.Component {
     }
 
     componentDidUpdate() {
-         const {
-             params
-         } = this.props.match;
-        if (this.state.blockHeight != params.id && !/^0x/.test(params.id)) {
+        const {
+            params
+        } = this.props.match;
+        const {
+            blockHeight,
+            txs_loading
+        } = this.state;
+        if (blockHeight != params.id && !/^0x/.test(params.id) && !txs_loading) {
             this.fetchBlockInfo(params.id);
         }
     }
 
     componentWillUnmount() {
         this.setState = () => {};
+    }
+
+    handleTableChange = pagination => {
+        const pager = { ...this.state.pagination
+        };
+        pager.current = pagination.current;
+        this.setState({
+            pagination: pager
+        });
+
+        this.fetch({
+            limit: pagination.pageSize,
+            page: pagination.current - 1,
+            address: this.props.match.params.id
+        });
+    }
+
+    renderTxsList() {
+        const {
+            txs,
+            pagination,
+            txs_loading
+        } = this.state;
+        return (
+            <div>
+                <h3>交易</h3>
+                <Table
+                    columns={ALL_TXS_LIST_COLUMNS}
+                    dataSource={txs}
+                    pagination={pagination}
+                    rowKey = "tx_id"
+                    loading={txs_loading}
+                    onChange={this.handleTableChange}
+                />
+            </div>
+        );
     }
 
     render() {
@@ -103,6 +170,8 @@ export default class BlockDetailPage extends React.Component {
         } = this.props.match;
         const prevLink = `/block/${blockHeight - 1}`;
         const nextLink = `/block/${blockHeight + 1}`;
+
+        const txsListHtml = this.renderTxsList();
 
         return (
             <div className="block-detail-container">
@@ -127,6 +196,9 @@ export default class BlockDetailPage extends React.Component {
                     <Icon type="right" />
                 </Link>
                 </ButtonGroup>
+
+                {txsListHtml}
+                
             </div>
         );
     }

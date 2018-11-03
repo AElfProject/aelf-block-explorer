@@ -45,7 +45,7 @@ export default class TxsDetailPage extends React.Component {
 
     return (
       <div className="tx-detail-container">
-        <div className="tx-detail-panle">区块信息</div>
+        <div className="tx-detail-panle">交易详情</div>
         <Row gutter={16} className="tx-detail-body">
           <Col span={3}>交易哈希:</Col>
           <Col span={21}>{txsId}</Col>
