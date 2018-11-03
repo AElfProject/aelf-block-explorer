@@ -90,12 +90,17 @@ export default class HomePage extends Component {
         if (this.blockHeight) {
             this.blockHeight++;
         } else {
-            const {
-                result: {
-                    block_height
-                }
-            } = aelf.chain.getBlockHeight();
-            this.blockHeight = block_height;
+            try {
+                const {
+                    result: {
+                        block_height
+                    }
+                } = aelf.chain.getBlockHeight();
+                this.blockHeight = block_height;
+            } catch (e) {
+                message.error(e.message, 2);
+            }
+            
         }
         
         const {
