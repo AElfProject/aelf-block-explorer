@@ -87,6 +87,8 @@ export default class HomePage extends Component {
         let newBlocksList = this.state.blocks.concat([]);
         let newTxsList = this.state.transactions.concat([]);
 
+        const LISTLIMIT = PAGE_SIZE;
+
         if (this.blockHeight) {
             this.blockHeight++;
         } else {
@@ -100,7 +102,6 @@ export default class HomePage extends Component {
             } catch (e) {
                 message.error(e.message, 2);
             }
-            
         }
         
         const {
@@ -131,8 +132,8 @@ export default class HomePage extends Component {
         if (this.blockHeight - pre_block_height > 10) {
             message.warning('Notice: Blocks in Databases is behind more than 10 blocks in the Chain.', 6);
         }
-        if (newBlocksList.length > 100) {
-            newBlocksList.length = 100;
+        if (newBlocksList.length > LISTLIMIT) {
+            newBlocksList.length = LISTLIMIT;
         }
         newBlocksList.unshift(chainBlocks);
 
@@ -152,8 +153,8 @@ export default class HomePage extends Component {
                     tx_status: result.tx_status
                 };
 
-                if (newTxsList.length > 100) {
-                    newTxsList.length = 100;
+                if (newTxsList.length > LISTLIMIT) {
+                    newTxsList.length = LISTLIMIT;
                 }
 
                 newTxsList.unshift(newTxs);
