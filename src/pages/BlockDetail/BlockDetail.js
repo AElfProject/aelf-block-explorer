@@ -64,36 +64,46 @@ export default class BlockDetailPage extends React.Component {
         let result;
         let blockHeight;
         let txsList;
+        let error;
         // BlockHeight
-        if (!/^0x/.test(input)) {
+        if (parseInt(input) == input) {
             blockHeight = input;
-            result = aelf.chain.getBlockInfo(input, 100).result;
+            let output = aelf.chain.getBlockInfo(input, 100);
+            result = output.result;
+            error = output.error;
+
             const blockhash = result && result.Blockhash;
             if (blockhash) {
-                console.log('blockhash: ', blockhash, input)
                 txsList = await this.getTxsList(blockhash);
             }
         } else {
             txsList = await this.getTxsList(input);
+
             let {
                 transactions
             } = txsList;
+            error = transactions.length ? '' : 'Not Found';
             blockHeight = transactions[0] && transactions[0].block_height;
             result = blockHeight ? aelf.chain.getBlockInfo(blockHeight, 100).result : undefined;
         }
 
-        const pagination = { ...this.state.pagination
+        const pagination = {
+            ...this.state.pagination
         };
-        pagination.total = txsList.total;
+        pagination.total = txsList && txsList.total || 0;
 
         this.setState({
-            txsCount: result && result.Body && result.Body.TransactionsCount || 'Unminned',
-            blockHash: result && result.Blockhash,
-            blockTime: result && result.Header && result.Header.Time || '1993-08-09 01:30:30',
+            blockInfo: {
+                blockHeight: +blockHeight || 'Not Found',
+                blockHash: result && result.Blockhash,
+                txsCount: result && result.Body && result.Body.TransactionsCount || 'Not Found',
+                ...(result && result.Header || {})
+            },
+            error: error,
             blockHeight: +blockHeight,
-            // txs
+            // // txs
             txs_loading: false,
-            txs: txsList.transactions,
+            txs: txsList && txsList.transactions || [],
             pagination
         });
     };
@@ -113,7 +123,7 @@ export default class BlockDetailPage extends React.Component {
             blockHeight,
             txs_loading
         } = this.state;
-        if (blockHeight != params.id && !/^0x/.test(params.id) && !txs_loading) {
+        if (blockHeight != params.id && parseInt(params.id) == params.id && !txs_loading) {
             this.fetchBlockInfo(params.id);
         }
     }
@@ -158,47 +168,78 @@ export default class BlockDetailPage extends React.Component {
         );
     }
 
-    render() {
+    renderCol(key, value) {
+        return (
+            <div key={key + Math.random()}>
+                <Col span={6} style={{height: 34}}>{key}</Col>
+                <Col span={18} style={{height: 34}}>{value}</Col>
+            </div>
+        );
+    }
+
+    renderCols() {
+        const blockInfo = this.state.blockInfo;
+        let html = [];
+        let blackList = ['Index'];
+        for (const each in blockInfo) {
+            if (blackList.indexOf(each) >= 0) {
+            } else if (each === 'Time') {
+                html.push(this.renderCol(each, format(blockInfo[each])));
+            } else {
+                html.push(this.renderCol(each, blockInfo[each]));
+            }
+
+        }
+        return html;
+    }
+
+    renderMoreInfo() {
+        const txsListHtml = this.renderTxsList();
         const {
-            txsCount,
-            blockHash,
-            blockTime,
             blockHeight
         } = this.state;
-        const {
-            params
-        } = this.props.match;
+
         const prevLink = `/block/${blockHeight - 1}`;
         const nextLink = `/block/${blockHeight + 1}`;
 
-        const txsListHtml = this.renderTxsList();
+        return (
+            <div>
+                <ButtonGroup className="block-detail-footer">
+                    <Link className="ant-btn" to={prevLink}>
+                        <Icon type="left" />
+                        上一个
+                    </Link>
+                    <Link className="ant-btn" to={nextLink}>
+                        下一个
+                        <Icon type="right" />
+                    </Link>
+                </ButtonGroup>
+                {txsListHtml}
+            </div>
+        );
+    }
+
+    render() {
+        const error = this.state.error;
+
+        let moreInfoHtml;
+        let colsHtml;
+
+        if (error) {
+            colsHtml = this.renderCol('error', error);
+        } else {
+            colsHtml = this.renderCols();
+            moreInfoHtml = this.renderMoreInfo();
+        }
 
         return (
             <div className="block-detail-container">
                 <div className="block-detail-panle">区块信息</div>
                 <Row gutter={16} className="block-detail-body">
-                <Col span={3}>区块高度:</Col>
-                <Col span={21}>{blockHeight}</Col>
-                <Col span={3}>交易数量:</Col>
-                <Col span={21}>{txsCount}</Col>
-                <Col span={3}>区块哈希:</Col>
-                <Col span={21}>{blockHash}</Col>
-                <Col span={3}>时间戳:</Col>
-                <Col span={21}>{format(blockTime)}</Col>
+                    {colsHtml}
                 </Row>
-                <ButtonGroup className="block-detail-footer">
-                <Link className="ant-btn" to={prevLink}>
-                    <Icon type="left" />
-                    上一个
-                </Link>
-                <Link className="ant-btn" to={nextLink}>
-                    下一个
-                    <Icon type="right" />
-                </Link>
-                </ButtonGroup>
 
-                {txsListHtml}
-                
+                {moreInfoHtml}
             </div>
         );
     }

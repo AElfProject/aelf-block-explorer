@@ -1,68 +1,90 @@
 import React from "react";
 import { Row, Col } from "antd";
-import { isEmpty } from "lodash";
+import { isEmpty, map } from "lodash";
 import { aelf } from "../../utils";
-import { TXSSTATUS } from "../../constants";
 
 import "./txsdetail.styles.less";
 
 export default class TxsDetailPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      txsId: props.match.params.id || "",
-      status: "Pending",
-      blockHeight: -1,
-      from: "",
-      to: "",
-      blockHash: ""
-    };
-  }
-
-  fetchTxInfo = txsId => {
-    if (isEmpty(txsId)) {
-      return;
+    constructor(props) {
+        super(props);
+        this.state = {
+            txsId: props.match.params.id || "",
+            status: "Pending",
+            blockHeight: -1,
+            from: "",
+            to: "",
+            blockHash: ""
+        };
     }
 
-    const { result } = aelf.chain.getTxResult(txsId);
-    this.setState({
-      txsId,
-      blockHash: result.block_hash,
-      blockHeight: result.block_number,
-      from: result.tx_info.From,
-      to: result.tx_info.To,
-      status: result.tx_status
-    });
-  };
+    fetchTxInfo = txsId => {
+        if (isEmpty(txsId)) {
+            return;
+        }
 
-  componentDidMount() {
-    const { params } = this.props.match;
-    this.fetchTxInfo(params.id);
-  }
+        const { result = {
+            block_hash: 'Not found',
+            block_number: 'Not found',
+            tx_info: {},
+            tx_status: 'Not found',
+        }, error = '' } = aelf.chain.getTxResult(txsId);
+        this.setState({
+            result: result,
+            error: error
+        });
+    };
 
-  render() {
-    const { txsId, blockHash, blockHeight, from, to, status } = this.state;
+    componentDidMount() {
+        const { params } = this.props.match;
+        this.fetchTxInfo(params.id);
+    }
 
-    return (
-      <div className="tx-detail-container">
-        <div className="tx-detail-panle">交易详情</div>
-        <Row gutter={16} className="tx-detail-body">
-          <Col span={3}>交易哈希:</Col>
-          <Col span={21}>{txsId}</Col>
-          <Col span={3}>交易状态:</Col>
-          <Col span={21}>{TXSSTATUS[status]}</Col>
-          <Col span={3}>区块高度:</Col>
-          <Col span={21}>{blockHeight}</Col>
-          <Col span={3}>区块哈希:</Col>
-          <Col span={21}>{blockHash}</Col>
-          <Col span={3}>发送方:</Col>
-          <Col span={21}>{from}</Col>
-          <Col span={3}>接收方:</Col>
-          <Col span={21}>{to}</Col>
-          {/* <Col span={3}>交易费:</Col>
-          <Col span={21}>205</Col> */}
-        </Row>
-      </div>
-    );
-  }
+    renderCol (key, value) {
+        return (
+            <div key={key + Math.random()}>
+                <Col span={3} style={{height: 'auto'}}>{key}</Col>
+                <Col span={21} style={{height: 'auto'}}>{value}</Col>
+            </div>
+        );
+    }
+
+    renderCols () {
+        const result = this.state.result;
+        let html = [];
+        let blackList = ['tx_trc', 'return'];
+
+        for (const each in result) {
+            if (blackList.indexOf(each) >= 0) {
+
+            } else if (typeof result[each] === 'object') {
+                let resultItem = result[each];
+                for (const each in resultItem) {
+                    html.push(this.renderCol(each, resultItem[each]));
+                }
+            } else {
+                html.push(this.renderCol(each, result[each]));
+            }
+        }
+        return html;
+    }
+
+    render() {
+        const error = this.state.error;
+        let colsHtml;
+        if (error) {
+            colsHtml =  this.renderCol('error', error);
+        } else {
+            colsHtml = this.renderCols();
+        }
+
+        return (
+            <div className="tx-detail-container">
+                <div className="tx-detail-panle">交易详情</div>
+                <Row gutter={16} className="tx-detail-body">
+                    {colsHtml}
+                </Row>
+            </div>
+        );
+    }
 }

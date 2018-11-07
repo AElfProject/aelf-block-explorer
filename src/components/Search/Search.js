@@ -46,7 +46,8 @@ export default class Search extends PureComponent {
             const {
                 result
             } = aelf.chain.getTxResult(value);
-            if (result.block_hash) {
+            // if (result.block_hash) {
+            if (typeof result.tx_info === 'object') {
                 window.open(`/tx/${value}`);
                 message.info('open new window: Transaction Detail');
                 return;
