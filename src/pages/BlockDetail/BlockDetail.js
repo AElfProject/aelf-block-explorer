@@ -101,7 +101,7 @@ export default class BlockDetailPage extends React.Component {
             },
             error: error,
             blockHeight: +blockHeight,
-            // // txs
+            // txs
             txs_loading: false,
             txs: txsList && txsList.transactions || [],
             pagination
