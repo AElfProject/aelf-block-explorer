@@ -5,13 +5,19 @@ import { Breadcrumb } from "antd";
 import "./breadcrumb.styles.less";
 
 const BREADCRUMBNAMEMAP = {
-  "/blocks": "区块列表",
-  "/txs": "交易列表",
-  "/txs/block": "区块交易",
-  "/adresses": "地址",
-  "/block": "区块信息",
-  "/tx": "交易信息",
-  "/address": "地址信息"
+    // "/blocks": "区块列表",
+    // "/txs": "交易列表",
+    // "/txs/block": "区块交易",
+    // "/adresses": "地址",
+    // "/block": "区块信息",
+    // "/tx": "交易信息",
+    // "/address": "地址信息"
+    "/blocks": "Blocks List",
+    "/txs": "Transactions List",
+    "/txs/block": "Transactions of Block",
+    "/block": "Block",
+    "/tx": "Transaction",
+    "/address": "Address"
 };
 
 // demo block/26265
@@ -87,21 +93,26 @@ class BrowserBreadcrumb extends Component {
 
     getTitle(pathSnippets) {
         const pageNameMap = {
-            blocks: "区块",
-            block: "区块",
-            txs: "交易",
-            tx: "交易详情",
-            address: "地址"
+            // blocks: "区块",
+            // block: "区块",
+            // txs: "交易",
+            // tx: "交易详情",
+            // address: "地址",
+            blocks: "Blocks List",
+            block: "Block",
+            txs: "Transactions",
+            tx: "Transaction",
+            address: "Address"
         };
-        
+
         let title = [
-            pageNameMap[pathSnippets[0]], 
+            pageNameMap[pathSnippets[0]],
             !!pathSnippets[1] ? (
-                    <span className="breadcrumb-sub-title" key="breadcrumb-sub-title">
+                <span className="breadcrumb-sub-title" key="breadcrumb-sub-title">
                         #{pathSnippets[1]}
                     </span>
-                ) : '',
-            ];
+            ) : '',
+        ];
         return title;
     }
 

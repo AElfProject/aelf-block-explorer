@@ -155,7 +155,7 @@ export default class BlockDetailPage extends React.Component {
         } = this.state;
         return (
             <div>
-                <h3>交易</h3>
+                <h3>Transaction List</h3>
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}
@@ -207,10 +207,10 @@ export default class BlockDetailPage extends React.Component {
                 <ButtonGroup className="block-detail-footer">
                     <Link className="ant-btn" to={prevLink}>
                         <Icon type="left" />
-                        上一个
+                        pre
                     </Link>
                     <Link className="ant-btn" to={nextLink}>
-                        下一个
+                        next
                         <Icon type="right" />
                     </Link>
                 </ButtonGroup>
@@ -234,7 +234,7 @@ export default class BlockDetailPage extends React.Component {
 
         return (
             <div className="block-detail-container">
-                <div className="block-detail-panle">区块信息</div>
+                <div className="block-detail-panle">Overview</div>
                 <Row gutter={16} className="block-detail-body">
                     {colsHtml}
                 </Row>

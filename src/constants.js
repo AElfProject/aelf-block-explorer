@@ -28,19 +28,19 @@ const RPCSERVER = "/chain";
 
 const BLOCKS_LIST_COLUMNS = [
     {
-        title: "高度",
+        title: "Block Height",
         dataIndex: "block_height",
         key: "block_height",
         render: text => <Link to={`/block/${text}`}> {text} </Link>
     },
     {
-        title: "块龄",
+        title: "Age",
         dataIndex: "time",
         key: "time",
         render: time => <span> {dayjs().from(dayjs(time), true)} </span>
     },
     {
-        title: "交易",
+        title: "Number of Txs",
         dataIndex: "tx_count",
         key: "tx_count",
         render: (text, row) =>
@@ -54,7 +54,7 @@ const BLOCKS_LIST_COLUMNS = [
 
 const ALL_TXS_LIST_COLUMNS = [
     {
-        title: "交易哈希值",
+        title: "tx_id",
         dataIndex: "tx_id",
         key: "tx_id",
         render: (text, row) => (
@@ -65,7 +65,7 @@ const ALL_TXS_LIST_COLUMNS = [
         )
     },
     {
-        title: "区块",
+        title: "block height",
         dataIndex: "block_height",
         key: "block_height",
         render: text => (
@@ -75,7 +75,7 @@ const ALL_TXS_LIST_COLUMNS = [
         )
     },
     {
-        title: "发送方",
+        title: "from",
         dataIndex: "address_from",
         key: "address_from",
         render: text => (
@@ -90,7 +90,7 @@ const ALL_TXS_LIST_COLUMNS = [
         render: () => <Icon type="arrow-right" theme="outlined" />
     },
     {
-        title: "接收方",
+        title: "to",
         dataIndex: "address_to",
         key: "address_to",
         render: text => (
@@ -103,17 +103,17 @@ const ALL_TXS_LIST_COLUMNS = [
 
 const ADDRESS_INFO_COLUMN = [
     {
-        title: "钱包地址",
+        title: "address",
         dataIndex: "address",
         key: "address"
     },
     {
-        title: "余额",
+        title: "balance",
         dataIndex: "balance",
         key: "balance"
     },
     {
-        title: "价值",
+        title: "value",
         dataIndex: "value",
         key: "value"
     }

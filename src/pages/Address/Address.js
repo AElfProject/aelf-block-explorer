@@ -122,7 +122,7 @@ export default class AddressPage extends React.Component {
         return (
             <div className="address-container" key="body">
                 <div className="address-header-container">
-                    <h3>概况</h3>
+                    <h3>Overview</h3>
                     <Table
                         className="header-list"
                         columns={ADDRESS_INFO_COLUMN}
@@ -132,7 +132,7 @@ export default class AddressPage extends React.Component {
                         pagination={false}
                     />
                 </div>
-                <h3>交易</h3>
+                <h3>Transactions</h3>
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}

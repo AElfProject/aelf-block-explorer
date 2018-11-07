@@ -80,7 +80,7 @@ export default class TxsDetailPage extends React.Component {
 
         return (
             <div className="tx-detail-container">
-                <div className="tx-detail-panle">交易详情</div>
+                <div className="tx-detail-panle">Overview</div>
                 <Row gutter={16} className="tx-detail-body">
                     {colsHtml}
                 </Row>

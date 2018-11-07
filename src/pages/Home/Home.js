@@ -11,8 +11,8 @@ import {
 
 // object, array, string, or  jQuery - like
 import isEmpty from "lodash/isEmpty";
-import InfoList from "../../components/InfoList";
-import TradeCards from "../../components/TradeCards";
+import InfoList from "../../components/InfoList/InfoList";
+import TradeCards from "../../components/TradeCards/TradeCards";
 // import TradeChart from "../../components/TradeChart";
 import { get, format, aelf } from "../../utils";
 import {
@@ -173,12 +173,12 @@ export default class HomePage extends Component {
         const blockHeight = item.block_height;
         const title = (
             <span>
-                区块: <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
+                Block: <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
             </span>
         );
         const desc = (
             <span className="infoList-desc">
-                交易数:
+                Number of transactions:
                 <Link to={`/txs/block?${item.block_hash}`}>{item.tx_count}</Link>
             </span>
         );
@@ -199,7 +199,7 @@ export default class HomePage extends Component {
 
         const title = (
             <span>
-                交易:
+                Transaction:
                 < Link to = {
                     `/tx/${tx_id}`
                 } >
@@ -211,12 +211,12 @@ export default class HomePage extends Component {
         );
         const desc = (
             <span className="infoList-desc">
-                发送方:
+                From:
                 <Link to={`/address/${item.address_from}`}>
                     {item.address_from.slice(0, 6)}
                     ...
                 </Link>
-                接收方:
+                To:
                 <Link to={`/address/${item.address_to}`}>
                     {item.address_to.slice(0, 6)}
                     ...
@@ -226,7 +226,7 @@ export default class HomePage extends Component {
         return (
             <List.Item key={blockHeight}>
                 <List.Item.Meta title={title} description={desc} />
-                <div>交易状态: {TXSSTATUS[item.tx_status]}</div>
+                <div>Trading Status: {TXSSTATUS[item.tx_status]}</div>
             </List.Item>
         );
     };
@@ -261,10 +261,10 @@ export default class HomePage extends Component {
                     <div className="panel-heading">
                         <h2 className="panel-title">
                             <Icon type="gold" className="anticon" />
-                            区块
+                            Blocks
                         </h2>
                         <Link to="/blocks" className="pannel-btn">
-                            查看全部
+                            View all
                         </Link>
                     </div>
                     <InfoList
@@ -278,10 +278,10 @@ export default class HomePage extends Component {
                     <div className="panel-heading">
                         <h2 className="panel-title">
                             <Icon type="gold" className="anticon" />
-                            交易
+                            Transactions
                         </h2>
                         <Link to="/txs" className="pannel-btn">
-                            查看全部
+                            View all
                         </Link>
                     </div>
                     <InfoList

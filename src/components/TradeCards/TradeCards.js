@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import isEmpty from "lodash/isEmpty";
-import { get } from "../utils";
-import { ELF_REALTIME_PRICE_URL } from "../constants";
+import { get } from "../../utils";
+import { ELF_REALTIME_PRICE_URL } from "../../constants";
 
 import "./tradecards.style.less";
 

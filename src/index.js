@@ -18,14 +18,14 @@ const appIncrStore = AppIncrStore.create({});
 
 // @TODO: compose mst store to make app running.
 render(
-  < LocaleProvider locale = {
-      en_US
-  } >
-    <Provider appIncrStore={appIncrStore}>
-      <Router>
-        <App />
-      </Router>
-    </Provider>
-  </LocaleProvider>,
-  document.querySelector("#app")
+    < LocaleProvider locale = {
+        en_US
+    } >
+        <Provider appIncrStore={appIncrStore}>
+            <Router>
+                <App />
+            </Router>
+        </Provider>
+    </LocaleProvider>,
+    document.querySelector("#app")
 );
