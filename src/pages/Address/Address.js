@@ -5,9 +5,12 @@ import {
 import {
     get
 } from "../../utils";
+
 import {
     ALL_TXS_LIST_COLUMNS,
     ADDRESS_TXS_API_URL,
+    ELF_REALTIME_PRICE_URL,
+    ADDRESS_TOKENS_API_URL,
     // ADDRESS_BALANCE_API_URL,
     ADDRESS_INFO_COLUMN,
     PAGE_SIZE
@@ -20,8 +23,8 @@ export default class AddressPage extends React.Component {
         super(props);
         this.state = {
             address: "",
-            //   blance: -1,
-            //   value: -1,
+            blance: '-',
+            value: '-',
             txs: [],
             pagination: {
                 pageSize: PAGE_SIZE,
@@ -83,11 +86,37 @@ export default class AddressPage extends React.Component {
         const {
             match
         } = props;
+        const address = match.params.id;
         await fetch({
             page: 0,
             limit: 25,
-            address: match.params.id
+            address
         });
+
+        // {USD: 0.322, BTC: 0.00004967, CNY: 2.25}
+        const { USD = 0 } = await get(ELF_REALTIME_PRICE_URL);
+        const tokens = await this.getAddressTokens(address);
+
+        const { balance = 0 } = tokens && tokens[0] || {};
+        this.setState({
+            balance: balance.toLocaleString(),
+            value: (parseFloat(balance) * parseFloat(USD)).toLocaleString()
+        });
+        // console.log(price, tokens, balance);
+        // const balance = await get(ADDRESS_TOKENS_API_URL);
+        // this.setState({
+        //     price,
+        // });
+    }
+
+    async getAddressTokens(address) {
+        const balance = await get(ADDRESS_TOKENS_API_URL, {
+            limit: 20,
+            page: 0,
+            order: 'desc',
+            address
+        });
+        return balance;
     }
 
     // async getAddressInfo () {
@@ -113,8 +142,8 @@ export default class AddressPage extends React.Component {
         const address = match.params.id;
         const addressInfo = [{
             address,
-            balance: 'TODO',
-            value: 'TODO'
+            balance: this.state.balance,
+            value: this.state.value + ' USD',
             // balance: 243.245423465331,
             // value: "$ 23.23532342"
         }];
