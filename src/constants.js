@@ -20,10 +20,14 @@ const ELF_REST_TRADE_API = "https://www.bcex.top/Api_Market/getCoinTrade";
 
 const PAGE_SIZE = 25;
 const TXSSTATUS = {
-    NotExisted: "不存在",
-    Pending: "交易中",
-    Failed: "失败",
-    Mined: "成功"
+    // NotExisted: "不存在",
+    // Pending: "交易中",
+    // Failed: "失败",
+    // Mined: "成功",
+    NotExisted: "NotExisted",
+    Pending: "Pending",
+    Failed: "Failed",
+    Mined: "Mined"
 };
 const RPCSERVER = "/chain";
 
