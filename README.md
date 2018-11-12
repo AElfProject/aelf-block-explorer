@@ -4,8 +4,10 @@ AELF Block Explorer
 
 2 api rules:
 
-1. `/api/!${rpc}/*` => `scan server`;
-2. `/chain/*` => `aelf chain`
+1. `/api/!${rpc}/*` => `scan server`; [aelf-block-api](https://github.com/AElfProject/aelf-block-api)
+2. `/chain/*` => `aelf chain` [AElf Chain](https://github.com/AElfProject/AElf)
+
+Default Port: 3000
 
 ## Develop
 
