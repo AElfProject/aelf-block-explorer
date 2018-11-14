@@ -46,13 +46,31 @@ const post = async (url, data, config) => {
     }
 
     httpErrorHandler(res.problem, res.problem);
-}
+};
 
-const format = (time, fmtStr = "YYYY-MM-DD HH:MM:ss Z") => dayjs(time).format(fmtStr);
+const format = (time, fmtStr = "YYYY-MM-DD HH:mm:ss Z") => dayjs(time).format(fmtStr);
+
+const firstUpperCase = (inputString) => {
+    return inputString.replace(inputString[0] ,inputString[0].toUpperCase());
+};
+
+/*
+ * the style of the key of the result from the API are different
+ * like: block_hash, tx_info, ExecutionState, SignatureState
+ * format: block_hash -> BlockHash
+ */
+const formatKey = (inputString) => {
+    const pieces = inputString.split('_');
+    const piecesFormatted = pieces.map(item => {
+        return firstUpperCase(item);
+    });
+    return piecesFormatted.join('');
+};
 
 export {
     get,
     post,
     aelf,
-    format
+    format,
+    formatKey
 };

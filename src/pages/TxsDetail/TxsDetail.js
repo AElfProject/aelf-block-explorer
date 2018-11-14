@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col } from "antd";
 import { isEmpty, map } from "lodash";
-import { aelf } from "../../utils";
+import { aelf, formatKey } from "../../utils";
 
 import "./txsdetail.styles.less";
 
@@ -43,7 +43,7 @@ export default class TxsDetailPage extends React.Component {
     renderCol (key, value) {
         return (
             <div key={key + Math.random()}>
-                <Col span={3} style={{height: 'auto'}}>{key}</Col>
+                <Col span={3} style={{height: 'auto'}}>{formatKey(key)}</Col>
                 <Col span={21} style={{height: 'auto'}}>{value}</Col>
             </div>
         );

@@ -12,7 +12,8 @@ import {
 import {
     aelf,
     format,
-    get
+    get,
+    formatKey
 } from "../../utils";
 
 import {
@@ -171,7 +172,7 @@ export default class BlockDetailPage extends React.Component {
     renderCol(key, value) {
         return (
             <div key={key + Math.random()}>
-                <Col span={6} style={{height: 34}}>{key}</Col>
+                <Col span={6} style={{height: 34}}>{formatKey(key)}</Col>
                 <Col span={18} style={{height: 34}}>{value}</Col>
             </div>
         );
