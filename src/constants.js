@@ -59,7 +59,7 @@ const BLOCKS_LIST_COLUMNS = [
 
 const ALL_TXS_LIST_COLUMNS = [
     {
-        title: "tx_id",
+        title: "Tx Id",
         dataIndex: "tx_id",
         key: "tx_id",
         render: (text, row) => (
@@ -70,7 +70,7 @@ const ALL_TXS_LIST_COLUMNS = [
         )
     },
     {
-        title: "block height",
+        title: "Block Height",
         dataIndex: "block_height",
         key: "block_height",
         render: text => (
@@ -80,7 +80,7 @@ const ALL_TXS_LIST_COLUMNS = [
         )
     },
     {
-        title: "from",
+        title: "From",
         dataIndex: "address_from",
         key: "address_from",
         render: text => (
@@ -95,7 +95,7 @@ const ALL_TXS_LIST_COLUMNS = [
         render: () => <Icon type="arrow-right" theme="outlined" />
     },
     {
-        title: "to",
+        title: "To",
         dataIndex: "address_to",
         key: "address_to",
         render: text => (
