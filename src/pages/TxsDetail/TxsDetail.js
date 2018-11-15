@@ -41,6 +41,11 @@ export default class TxsDetailPage extends React.Component {
     }
 
     renderCol (key, value) {
+
+        if (formatKey(key) === 'ExecutedInBlock') {
+            return;
+        }
+
         return (
             <div key={key + Math.random()}>
                 <Col span={3} style={{height: 'auto'}}>{formatKey(key)}</Col>
