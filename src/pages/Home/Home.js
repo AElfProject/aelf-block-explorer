@@ -53,6 +53,8 @@ export default class HomePage extends Component {
         // it's simplest that it do not need block_scan_api to get full chain data.
         // but it need a some sugar.
         const { blocks } = await this.fetch(ALL_BLOCKS_API_URL);
+
+        // TODO: 链上会提供批量请求的接口，如果一个区块的交易数多于25个，我们只请求其中的25个交易来展示。
         const { transactions } = await this.fetch(ALL_TXS_API_URL);
 
         this.setState({

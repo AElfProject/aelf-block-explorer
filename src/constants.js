@@ -29,6 +29,8 @@ const TXSSTATUS = {
     Failed: "Failed",
     Mined: "Mined"
 };
+
+// TODO 用户可选RPCSERVER
 const RPCSERVER = "/chain";
 
 const BLOCKS_LIST_COLUMNS = [
