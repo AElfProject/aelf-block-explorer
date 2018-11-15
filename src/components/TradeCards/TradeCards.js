@@ -10,9 +10,9 @@ export default class TradeCards extends Component {
         super(props);
         this.state = {
             price: {
-                USD: -1,
-                CNY: -1,
-                BTC: -1
+                USD: '-',
+                CNY: '-',
+                BTC: '-'
             },
             tick: {
                 vol: 0,
