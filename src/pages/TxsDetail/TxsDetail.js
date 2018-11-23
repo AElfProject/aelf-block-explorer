@@ -49,7 +49,7 @@ export default class TxsDetailPage extends React.Component {
         return (
             <div key={key + Math.random()}>
                 <Col span={3} style={{height: 'auto'}}>{formatKey(key)}</Col>
-                <Col span={21} style={{height: 'auto'}}>{value}</Col>
+                <Col span={21} style={{height: 'auto', wordBreak: 'break-all'}}>{value}</Col>
             </div>
         );
     }
@@ -84,11 +84,13 @@ export default class TxsDetailPage extends React.Component {
         }
 
         return (
-            <div className="tx-detail-container">
-                <div className="tx-detail-panle">Overview</div>
-                <Row gutter={16} className="tx-detail-body">
+            <div className="tx-block-detail-container basic-container">
+                <div className="tx-block-detail-panle">Overview</div>
+                <Row className="tx-block-detail-body">
                     {colsHtml}
                 </Row>
+
+                <div className="basic-bottom-blank"></div>
             </div>
         );
     }

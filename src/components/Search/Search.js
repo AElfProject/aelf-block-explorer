@@ -68,7 +68,8 @@ export default class Search extends PureComponent {
     }
 
     handleSearch = e => {
-        const value = e.target.value || "";
+        console.log()
+        const value = e.target && e.target.value || e.searchValue || '';
         if (!value.trim()) {
             return;
         }
@@ -94,16 +95,27 @@ export default class Search extends PureComponent {
                 <Icon type="close-circle" onClick={this.emitEmpty} />
             ) : null;
         return (
-            <Input
-                className="header-search"
-                placeholder="Address / Tx / Block / Block Height"
-                prefix={<Icon type="search" className="search-icon" />}
-                suffix={suffix}
-                value={content}
-                onChange={this.onChangeUserName}
-                ref={node => (this.userNameInput = node)}
-                onPressEnter={this.handleSearch}
-            />
+            <div className="search-container">
+                <Input
+                    className="header-search"
+                    placeholder="Address / Tx / Block / Block Height"
+                    // prefix={<Icon type="search" className="search-icon" />}
+                    suffix={suffix}
+                    value={content}
+                    onChange={this.onChangeUserName}
+                    ref={node => (this.userNameInput = node)}
+                    onPressEnter={this.handleSearch}
+                />
+                <span
+                    className="search-icon-container"
+                    onClick={() => this.handleSearch({
+                        searchValue: this.state.content
+                    })}
+                >
+                    <Icon type="search" className="search-icon" />
+                </span>
+            </div>
+
         );
     }
 }

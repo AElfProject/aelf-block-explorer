@@ -22,11 +22,13 @@ export default class InfoList extends React.PureComponent {
     render() {
         const {
             dataSource,
-            renderItem
+            renderItem,
+            children
         } = this.props;
 
         return (
             <Scrollbar ref={c => (this.$container = c)}>
+                {/*{children}*/}
                 <List
                 dataSource={dataSource}
                 renderItem={renderItem}

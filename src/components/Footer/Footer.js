@@ -6,99 +6,85 @@ import "./footer.styles.less";
 
 const { Footer } = Layout;
 
+const iconListHTML = (() => {
+    const listInfo = [{
+        href: 'mailto:contact@aelf.io',
+        type: 'mail',
+    }, {
+        href: 'https://www.facebook.com/aelfofficial/',
+        target: '_blank',
+        type: 'facebook'
+    }, {
+        href: 'https://twitter.com/aelfblockchain',
+        target: '_blank',
+        type: 'twitter'
+    }, {
+        href: 'https://t.me/aelfblockchain',
+        target: '_blank',
+        component: SendIcon
+    }, {
+        href: 'https://www.reddit.com/r/aelfofficial/',
+        target: '_blank',
+        component: RedditIcon
+    }, {
+        href: 'https://medium.com/aelfblockchain',
+        target: '_blank',
+        type: 'medium'
+    }, {
+        href: 'https://github.com/aelfProject',
+        target: '_blank',
+        type: 'github'
+    }, {
+        href: 'http://slack.aelf.io/',
+        target: '_blank',
+        type: 'slack'
+    }, {
+        href: 'https://www.linkedin.com/company/aelfblockchain/',
+        target: '_blank',
+        type: 'linkedin'
+    }, {
+        href: 'http://www.youtube.com/c/aelfblockchain',
+        target: '_blank',
+        type: 'youtube'
+    }, {
+        href: 'https://0.plus/aelf_chs',
+        target: '_blank',
+        component: BitcoinIcon
+    }];
+
+    const html = listInfo.map(item => {
+        return (
+            <Button
+                key={item.href}
+                href={item.href}
+                rel="noopener noreferrer"
+                target={item.target || ''}
+                shape="circle">
+                <Icon
+                    style={{
+                        color: '#000'
+                    }}
+                    type={item.type || null}
+                    component={item.component || ''}
+                />
+            </Button>
+        );
+    });
+    return html;
+})();
+
 const BrowserFooter = props => (
     <Footer {...props} className="footer">
-        <div>
-            <p className="footer-logo">
-                <img alt="aelf" src="https://aelf.io/assets/images/logo2.jpg" />
-            </p>
-            <div className="footer-links-container">
-                <Button href="mailto:contact@aelf.io" shape="circle">
-                    <Icon type="mail" />
-                </Button>
-                <Button
-                    href="https://www.facebook.com/aelfofficial/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon type="facebook" />
-                </Button>
-                <Button
-                    href="https://twitter.com/aelfblockchain"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon type="twitter" />
-                </Button>
-                <Button
-                    href="https://t.me/aelfblockchain"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon component={SendIcon} />
-                </Button>
-                <Button
-                    href="https://www.reddit.com/r/aelfofficial/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon component={RedditIcon} />
-                </Button>
-                <Button
-                    href="https://medium.com/aelfblockchain"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon type="medium" />
-                </Button>
-                <Button
-                    href="https://github.com/aelfProject"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon type="github" />
-                </Button>
-                <Button
-                    href="http://slack.aelf.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon type="slack" />
-                </Button>
-                <Button
-                    href="https://www.linkedin.com/company/aelfblockchain/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon type="linkedin" />
-                </Button>
-                <Button
-                    href="http://www.youtube.com/c/aelfblockchain"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon type="youtube" />
-                </Button>
-                <Button
-                    href="https://0.plus/aelf_chs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    shape="circle"
-                >
-                    <Icon component={BitcoinIcon} />
-                </Button>
+        <div className='footer-container'>
+            <div className="footer-logo">
+                <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
+                <p>Contribute to communism around the world.</p>
             </div>
-            <p>Copyright © 2018 ælf</p>
+            <div className="footer-links-container">
+                {iconListHTML}
+            </div>
         </div>
+        <p>Copyright © 2018 ælf</p>
     </Footer>
 );
 

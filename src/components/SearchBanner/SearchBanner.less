@@ -1,0 +1,41 @@
+
+.search-banner-container {
+  text-align: center;
+  height: 205px;
+  .search-banner {
+    margin: auto;
+    max-width: 610px;
+
+    text-align: center;
+    h2{
+      font-size: 56px;
+      margin: 0;
+      font-weight: 400;
+      color: #FFF;
+    }
+    h3{
+      font-size: 24px;
+      margin: 0 0 46px 0;
+      font-weight: 100;
+      color: #FFF;
+    }
+
+    .header-search {
+      width: 538px;
+      .ant-input {
+        background: #FFF;
+        color: #333;
+      }
+    }
+
+  }
+}
+
+@media screen and (max-width: 768px){
+  .search-banner-container {
+    height: auto;
+    .search-banner-text {
+      display: none;
+    }
+  }
+}

@@ -1,11 +1,56 @@
 @import "../../assets/less/_variables.less";
 
+
+.header-fixed-contaier {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
+  background-color: rgba(0, 0, 0, 0.5);
+  height: @header-height;
+}
+
 .header-container {
   display: flex;
   justify-content: space-between;
-  width: @page-width;
+  //width: @page-width;
   height: @header-height;
   margin: 0 auto;
+
+  max-width: @maxWidth;
+  padding: @paddingLeftRight;
+
+  .ant-menu {
+    color: #FFF;
+    background: rgba(0, 0, 0, 0);
+    border: none;
+
+    .ant-menu-item {
+      > a {
+        color: @borderWhite;
+      }
+    }
+
+    .ant-menu-item-group-title {
+      color: @borderWhite;
+    }
+
+    .ant-menu-item-selected,.ant-menu-item-active,.ant-menu-submenu-active,.ant-menu-submenu-selected {
+      border-bottom: 2px solid @borderWhite;
+      color: @borderWhite;
+      > a {
+        color: @borderWhite;
+      }
+      > a:hover {
+        color: @borderWhite;
+      }
+    }
+    .ant-menu-submenu-title:hover {
+      color: @borderWhite;
+    }
+  }
 
   .header-navbar {
     display: flex;
@@ -21,6 +66,7 @@
     > .ant-menu-item {
       > a {
         display: inline-block;
+        color: @borderWhite;
       }
     }
   }
@@ -30,5 +76,21 @@
 .ant-menu-submenu {
   > a {
     display: inline-block;
+  }
+}
+
+.aelf-submenu-container {
+  .ant-menu {
+    background: rgba(57, 0, 57, 0.9);
+    color: #FFF;
+  }
+  .ant-menu-item-group-title {
+    color: #FFF;
+  }
+  a {
+    color: #FFF;
+  }
+  .ant-menu-item-selected {
+    background-color: rgba(255, 255, 255, 0.3) !important;
   }
 }

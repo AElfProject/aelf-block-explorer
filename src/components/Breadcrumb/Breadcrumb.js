@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
+
 import { Breadcrumb } from "antd";
 
 import "./breadcrumb.styles.less";
@@ -52,7 +53,7 @@ const BREADCRUMBNAMESTATE = {
         },
         'apps': {
             url: ['/apps'],
-            name: ['TODO']
+            name: ['App Center']
         }
     }
 };
@@ -65,7 +66,7 @@ class BrowserBreadcrumb extends Component {
     getFirstBreadcrumbItem() {
         return (
             <Breadcrumb.Item key="/">
-                <Link to="/"> Home </Link>
+                <Link to="/" onClick={this.handleClick}> Home </Link>
             </Breadcrumb.Item>
         );
     }
@@ -117,6 +118,7 @@ class BrowserBreadcrumb extends Component {
     }
 
     render() {
+
         const { location } = this.props;
         const pathname = location.pathname;
         const reloadUrl = pathname + location.search;
@@ -131,9 +133,7 @@ class BrowserBreadcrumb extends Component {
         const title = this.getTitle(pathSnippets);
 
         return (
-            < div className = {
-                className
-            } >
+            <div className={className}>
                 <h1 className="breadcrumb-title">{title}</h1>
                 <Breadcrumb>{breadcrumbItems}</Breadcrumb>
             </div>

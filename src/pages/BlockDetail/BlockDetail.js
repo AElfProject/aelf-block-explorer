@@ -156,7 +156,7 @@ export default class BlockDetailPage extends React.Component {
         } = this.state;
         return (
             <div>
-                <h3>Transaction List</h3>
+                <h3 className="block-detail-txs-title">Transaction List</h3>
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}
@@ -196,6 +196,15 @@ export default class BlockDetailPage extends React.Component {
 
     renderMoreInfo() {
         const txsListHtml = this.renderTxsList();
+
+        return (
+            <div>
+                {txsListHtml}
+            </div>
+        );
+    }
+
+    renderBlockPagination() {
         const {
             blockHeight
         } = this.state;
@@ -205,17 +214,15 @@ export default class BlockDetailPage extends React.Component {
 
         return (
             <div>
-                <ButtonGroup className="block-detail-footer">
-                    <Link className="ant-btn" to={prevLink}>
-                        <Icon type="left" />
-                        pre
-                    </Link>
-                    <Link className="ant-btn" to={nextLink}>
-                        next
-                        <Icon type="right" />
-                    </Link>
-                </ButtonGroup>
-                {txsListHtml}
+                <Link to={prevLink}>
+                    <Icon type="left" />
+                    pre
+                </Link>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                <Link to={nextLink}>
+                    next
+                    <Icon type="right" />
+                </Link>
             </div>
         );
     }
@@ -233,14 +240,20 @@ export default class BlockDetailPage extends React.Component {
             moreInfoHtml = this.renderMoreInfo();
         }
 
+        const blockPagination = this.renderBlockPagination();
+
         return (
-            <div className="block-detail-container">
-                <div className="block-detail-panle">Overview</div>
-                <Row gutter={16} className="block-detail-body">
+            <div className="tx-block-detail-container basic-container">
+                <div className="tx-block-detail-panle">
+                    <div>Overview</div>
+                    <div>{blockPagination}</div>
+                </div>
+                <Row className="tx-block-detail-body">
                     {colsHtml}
                 </Row>
-
+                <div>&nbsp;</div>
                 {moreInfoHtml}
+                <div className="basic-bottom-blank"></div>
             </div>
         );
     }

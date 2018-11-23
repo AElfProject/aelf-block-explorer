@@ -29,7 +29,10 @@ export default class AddressPage extends React.Component {
             pagination: {
                 pageSize: PAGE_SIZE,
                 showQuickJumper: true,
-                showTotal: total => `Total ${total} items`
+                showTotal: total => `Total ${total} items`,
+                onChange: () => {
+                    window.scrollTo(0, 0);
+                }
             },
             txs_loading: false
         };
@@ -50,6 +53,7 @@ export default class AddressPage extends React.Component {
         if (data && data.transactions.length) {
             pagination.total = data.total;
             this.setState({
+                txsNumber: data.total,
                 txs_loading: false,
                 txs: data.transactions,
                 pagination
@@ -109,6 +113,10 @@ export default class AddressPage extends React.Component {
         // });
     }
 
+    componentWillUnmount() {
+        this.setState = () => {};
+    }
+
     async getAddressTokens(address) {
         const balance = await get(ADDRESS_TOKENS_API_URL, {
             limit: 20,
@@ -149,7 +157,7 @@ export default class AddressPage extends React.Component {
         }];
 
         return (
-            <div className="address-container" key="body">
+            <div className="address-container basic-container" key="body">
                 <div className="address-header-container">
                     <h3>Overview</h3>
                     <Table
@@ -157,11 +165,12 @@ export default class AddressPage extends React.Component {
                         columns={ADDRESS_INFO_COLUMN}
                         dataSource={addressInfo}
                         rowKey = "address"
-                        size="small"
                         pagination={false}
                     />
                 </div>
-                <h3>Transactions</h3>
+                <h3 style={{
+                    color: '#93FF26'
+                }}> {this.state.txsNumber && this.state.txsNumber.toLocaleString() || '-'} Transactions</h3>
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}
@@ -170,6 +179,7 @@ export default class AddressPage extends React.Component {
                     loading={txs_loading}
                     onChange={handleTableChange}
                 />
+                <div className="basic-bottom-blank"></div>
             </div>
         );
     }

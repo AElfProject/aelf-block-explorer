@@ -5,6 +5,7 @@ import keys from 'lodash/keys';
 import {
     TXSSTATUS
 } from './constants';
+import {Component} from "react";
 
 // response is sorted
 // function sortBlocks(blocks) {
@@ -68,6 +69,14 @@ export const TxsStore = types.model('TxsStore', {
         }
     }));
 
+export const PathnameStore = types.model('PathnameStore', {
+    key: types.optional(types.string, '')
+}).actions(self => ({
+    changeKey(key) {
+        self.key = key;
+    }
+}));
+
 // save increament realtime data
 export const AppIncrStore = types.model('AppIncrStore', {
     blockList: types.optional(BlocksStore, {
@@ -77,5 +86,18 @@ export const AppIncrStore = types.model('AppIncrStore', {
     txsList: types.optional(TxsStore, {
         transactions: [],
         total: 0
+    }),
+    patheName: types.optional(PathnameStore, {
+        key: ''
     })
 })
+
+
+
+// Demo
+// import { observer, inject } from "mobx-react";
+// @inject("appIncrStore")
+// @observer
+// export default class HomePage extends Component {
+// // 引用 const store = this.props.appIncrStore;
+// // 写入 store.blockList.addBlock(chainBlocks); // 如何声明见40行
