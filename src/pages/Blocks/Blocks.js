@@ -34,7 +34,10 @@ export default class BlocksPage extends Component {
                 showQuickJumper: true,
                 pageSize: PAGE_SIZE,
                 total: 0,
-                showTotal: total => `Total ${total} items`
+                showTotal: total => `Total ${total} items`,
+                onChange: () => {
+                    window.scrollTo(0, 0);
+                }
             },
             loading: false
         };
@@ -98,7 +101,7 @@ export default class BlocksPage extends Component {
         } = this;
 
         return (
-            <div className="blocks-page-container" key="body">
+            <div className="blocks-page-container basic-container" key="body">
                 <Table
                     columns={BLOCKS_LIST_COLUMNS}
                     dataSource={data}
@@ -107,6 +110,7 @@ export default class BlocksPage extends Component {
                     loading={loading}
                     onChange={handleTableChange}
                 />
+                <div className="basic-bottom-blank"></div>
             </div>
         );
     }

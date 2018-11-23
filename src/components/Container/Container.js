@@ -12,6 +12,10 @@ export default class Container extends Component {
 
     render() {
         const { children } = this.props;
-        return <Content className="body-container">{children}</Content>;
+        return (
+            <Content className="body-container">
+                {children}
+            </Content>
+        );
     }
 }

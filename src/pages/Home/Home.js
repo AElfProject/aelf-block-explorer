@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer, inject } from "mobx-react";
+// import { observer, inject } from "mobx-react";
 import {
     Row,
     Col,
@@ -11,9 +11,20 @@ import {
 
 // object, array, string, or  jQuery - like
 import isEmpty from "lodash/isEmpty";
-import InfoList from "../../components/InfoList/InfoList";
-import TradeCards from "../../components/TradeCards/TradeCards";
+// import InfoList from "../../components/InfoList/InfoList";
+// import TradeCards from "../../components/TradeCards/TradeCards";
 // import TradeChart from "../../components/TradeChart";
+
+import SearchBanner from '../../components/SearchBanner/SearchBanner'
+import ContainerRichard from '../../components/ContainerRichard/ContainerRichard'
+import TPSChart from '../../components/TPSChart/TPSChart'
+
+import SmoothScrollbar from 'smooth-scrollbar';
+import OverscrollPlugin from 'smooth-scrollbar/plugins/overscroll';
+import Scrollbar from 'react-smooth-scrollbar';
+
+SmoothScrollbar.use(OverscrollPlugin);
+
 import { get, format, aelf } from "../../utils";
 import {
     TXSSTATUS,
@@ -26,8 +37,8 @@ import "./home.styles.less";
 
 const fetchInfoByChainIntervalTime = 4000;
 
-@inject("appIncrStore")
-@observer
+// @inject("appIncrStore")
+// @observer
 export default class HomePage extends Component {
 
     state = {
@@ -38,7 +49,7 @@ export default class HomePage extends Component {
     blockHeight = 0;
 
     componentDidCatch(error) {
-        console.error(error);
+        // console.error(error);
         // TODO 弹窗提示
         clearInterval(this.interval);
     }
@@ -52,14 +63,23 @@ export default class HomePage extends Component {
         // it's making two xhr to get realtime block_height and transaction data.
         // it's simplest that it do not need block_scan_api to get full chain data.
         // but it need a some sugar.
-        const { blocks } = await this.fetch(ALL_BLOCKS_API_URL);
+        const blocksResult = await this.fetch(ALL_BLOCKS_API_URL);
+
+        const blocks = blocksResult.blocks;
+        const totalBlocks = blocksResult.total;
+
+        this.blockHeightInDataBase = blocks[0].block_height;
 
         // TODO: 链上会提供批量请求的接口，如果一个区块的交易数多于25个，我们只请求其中的25个交易来展示。
-        const { transactions } = await this.fetch(ALL_TXS_API_URL);
+        const TXSResult = await this.fetch(ALL_TXS_API_URL);
+        const transactions = TXSResult.transactions;
+        const totalTransactions = TXSResult.total;
 
         this.setState({
             blocks,
-            transactions
+            transactions,
+            totalBlocks,
+            totalTransactions
         });
 
         this.interval = setInterval(() => {
@@ -100,11 +120,16 @@ export default class HomePage extends Component {
                         block_height
                     }
                 } = aelf.chain.getBlockHeight();
+
+                if (parseInt(block_height, 10) <= parseInt(this.blockHeightInDataBase, 10)) {
+                    return;
+                }
                 this.blockHeight = block_height;
             } catch (e) {
                 message.error(e.message, 2);
             }
         }
+
         
         const {
             result: { Blockhash = '', Body = '', Header = '' } = {}
@@ -171,60 +196,181 @@ export default class HomePage extends Component {
         });
     }
 
+    renderBasicInfoBlocks() {
+        // TODO:getBasicInfo data
+        const basicInfo = [{
+            title: 'Block Height',
+            // info: 233333,
+            info: this.blockHeight || this.state.totalBlocks,
+        }, {
+            title: 'Unconfirmed Block',
+            info: '-',
+        }, {
+            title: 'Total Transactions',
+            // info: 233333,
+            info: this.state.totalTransactions,
+        }, {
+            title: 'Total Applications',
+            info: '-',
+        }, {
+            title: 'Total Accounts',
+            info: '-',
+        }, {
+            title: 'Total Side Chains',
+            info: '-',
+        },];
+
+        const html = basicInfo.map(item => {
+            return (
+                <Col xs={12} sm={12} md={12} lg={8}
+                     className='home-basic-info-con'
+                     key={item.title + Math.random()}
+                >
+                    <ContainerRichard type='small'>
+                        <div
+                            className='home-basic-info-content-con'
+                        >
+                            <div className='home-basic-info-title'>{item.title}</div>
+                            <div className='home-basic-info-num'>{item.info && item.info.toLocaleString() || '-'}</div>
+                        </div>
+                    </ContainerRichard>
+                </Col>
+            );
+        });
+        return html;
+    }
+
+    renderFirstPage() {
+        const screenWidth = document.body.offsetWidth;
+        const screenHeight = screenWidth > 992 ? document.body.offsetHeight : 'auto';
+        const BasicInfoBlocksHTML = this.renderBasicInfoBlocks();
+
+        // TODO: getTPS data
+        return (
+            <section
+                className='home-bg-earth'
+                style={{
+                    height: screenHeight
+                }}
+            >
+                <div className='basic-container home-basic-information'>
+                    <div
+                        style={{
+                            height: 64 + 64
+                        }}
+                    ></div>
+                    <SearchBanner />
+                    <Row
+                        type="flex"
+                        justify="space-between"
+                        align="middle"
+                        key="firstpage"
+                        gutter={
+                            { xs: 8, sm: 16, md: 24, lg: 32 }
+                        }
+                    >
+                        <Col xs={24} sm={24} md={24} lg={12}>
+                            <div className='home-basic-title-con'>
+                                <span className='TPSChart-title'>TPS Monitor [Building]</span>
+                                <span className='TPSChart-text'>Realtime：233</span>
+                                <span>Peak：23333</span>
+                            </div>
+                            <ContainerRichard>
+                                <TPSChart/>
+                            </ContainerRichard>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={12}>
+                            <div className='home-basic-title-con'>&nbsp;</div>
+                            <Row
+                                type="flex"
+                                justify="space-between"
+                                align="middle"
+                                key="basicinfo-1"
+                                gutter={
+                                    { xs: 8, sm: 16, md: 16, lg: 16 }
+                                }
+                            >
+                                {BasicInfoBlocksHTML}
+                            </Row>
+                        </Col>
+                    </Row>
+                </div>
+            </section>
+        );
+    }
+
     blockRenderItem = item => {
         const blockHeight = item.block_height;
         const title = (
             <span>
-                Block: <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
+                <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
             </span>
         );
         const desc = (
             <span className="infoList-desc">
-                Number of transactions:
                 <Link to={`/txs/block?${item.block_hash}`}>{item.tx_count}</Link>
             </span>
         );
+
         return (
-            <List.Item key={blockHeight}>
-                <List.Item.Meta title={title} description={desc} />
-                <div>{format(item.time)}</div>
-            </List.Item>
+            <Row
+                type="flex"
+                align="middle"
+                className="blocks-list-container"
+                key={item.block_hash}
+            >
+                <Col span='4'>{title}</Col>
+                <Col span='4'>{desc}</Col>
+                <Col span='16'>{format(item.time)}</Col>
+                {/*<Col span='2'>hzz780</Col>*/}
+            </Row>
         );
+
     };
 
     txsRenderItem = item => {
         const blockHeight = item.block_height;
 
         let tx_id = item.tx_id;
-        let txIDlength = tx_id.length;
-        let txIDShow = tx_id.slice(0, 10) + '...' + tx_id.slice(txIDlength - 10, txIDlength);
+        // let txIDlength = tx_id.length;
+        // let txIDShow = tx_id.slice(0, 10) + '...' + tx_id.slice(txIDlength - 10, txIDlength);
+        let txIDShow = tx_id.slice(0, 12) + '...';
 
         const title = (
             <span>
-                Transaction:
-                < Link to = {
-                    `/tx/${tx_id}`
-                } >
-                    {
-                        txIDShow
-                    }
+                <Link to={`/tx/${tx_id}`}>
+                    {txIDShow}
                 </Link>
             </span>
         );
-        const desc = (
+
+        const from = (
             <span className="infoList-desc">
-                From:
                 <Link to={`/address/${item.address_from}`}>
-                    {item.address_from.slice(0, 6)}
-                    ...
-                </Link>
-                To:
-                <Link to={`/address/${item.address_to}`}>
-                    {item.address_to.slice(0, 6)}
-                    ...
+                    {item.address_from.slice(0, 12)}...
                 </Link>
             </span>
         );
+
+        const to = (
+            <Link to={`/address/${item.address_to}`}>
+                {item.address_to.slice(0, 12)}...
+            </Link>
+        );
+
+        return (
+            <Row
+                type="flex"
+                align="middle"
+                className="blocks-list-container"
+                key={tx_id}
+            >
+                <Col span='8'>{title}</Col>
+                <Col span='8'>{from}</Col>
+                <Col span='8'>{to}</Col>
+            </Row>
+        );
+
         return (
             <List.Item key={blockHeight}>
                 <List.Item.Meta title={title} description={desc} />
@@ -233,23 +379,32 @@ export default class HomePage extends Component {
         );
     };
 
-    render() {
+    renderBlocksAndTxsList() {
         const { blocks, transactions } = this.state;
+
+        const blocksHTML = blocks.map(item => {
+            return this.blockRenderItem(item);
+        });
+
+        const transactionsHTML = transactions.map(item => {
+            return this.txsRenderItem(item);
+        });
+
+        const screenHeight = document.documentElement.offsetHeight;
+        const heightStyle = {
+            height: screenHeight - 64 * 3 - 100,
+        };
+
         return [
             <Row
-                type="flex"
-                justify="space-between"
-                align="middle"
-                className="content-container"
-                key="tradeinfo"
-                gutter={16}
+                key='basicinfo'
             >
-                <Col span="12">
-                    <TradeCards key="tradecards" />
+                <Col
+
+                    span='24'
+                >
+                    <div></div>
                 </Col>
-                {/* <Col span="12">
-                    <TradeChart key="tradechart" />
-                </Col> */}
             </Row>,
             <Row
                 type="flex"
@@ -257,43 +412,98 @@ export default class HomePage extends Component {
                 align="middle"
                 className="content-container"
                 key="infolist"
-                gutter={16}
+                gutter={
+                    { xs: 8, sm: 16, md: 24, lg: 32 }
+                }
             >
-                <Col span="12" className="container-list">
+                {/*<Col span={12} className="container-list">*/}
+                <Col xs={24} sm={24} md={12} className="container-list">
                     <div className="panel-heading">
                         <h2 className="panel-title">
-                            <Icon type="gold" className="anticon" />
+                            {/*<Icon type="gold" className="anticon" />*/}
                             Blocks
                         </h2>
                         <Link to="/blocks" className="pannel-btn">
                             View all
                         </Link>
                     </div>
-                    <InfoList
-                        title="Blocks"
-                        iconType="gold"
-                        dataSource={blocks}
-                        renderItem={this.blockRenderItem}
-                    />
+                    <div>
+                        <Row
+                            type="flex"
+                            // justify="space-between"
+                            align="middle"
+                            className="home-blocksInfo-title"
+                            key='home-blocksInfo'
+                        >
+                            <Col span='4'>Height</Col>
+                            <Col span='4'>TXS</Col>
+                            <Col span='16'>Time</Col>
+                            {/*<Col span='2'>Miner</Col>*/}
+                        </Row>
+                    </div>
+                    <div
+                        className='home-blocksInfo-list-con'
+                    >
+                        <Scrollbar
+                            style={heightStyle}
+                        >
+                            {blocksHTML}
+                        </Scrollbar>
+                    </div>
                 </Col>
-                <Col span="12" className="container-list">
+                {/*<Col span={12} className="container-list">*/}
+                <Col xs={24} sm={24} md={12} className="container-list">
                     <div className="panel-heading">
                         <h2 className="panel-title">
-                            <Icon type="gold" className="anticon" />
+                            {/*<Icon type="gold" className="anticon" />*/}
                             Transactions
                         </h2>
                         <Link to="/txs" className="pannel-btn">
                             View all
                         </Link>
                     </div>
-                    <InfoList
-                        title="Transaction"
-                        iconType="pay-circle"
-                        dataSource={transactions}
-                        renderItem={this.txsRenderItem}
-                    />
+                    <div>
+                        <Row
+                            type="flex"
+                            // justify="space-between"
+                            align="middle"
+                            className="home-blocksInfo-title"
+                            key='home-blocksInfo'
+                        >
+                            <Col span='8'>Tx ID</Col>
+                            <Col span='8'>From</Col>
+                            <Col span='8'>To</Col>
+                            {/*<Col span='6'>Time</Col>*/}
+                        </Row>
+                    </div>
+                    <div
+                        className='home-blocksInfo-list-con'
+                    >
+                        <Scrollbar
+                            style={heightStyle}
+                        >
+                            {transactionsHTML}
+                        </Scrollbar>
+                    </div>
                 </Col>
             </Row>
         ];
+    }
+
+    render() {
+        const blocksAndTxsListHTML = this.renderBlocksAndTxsList();
+        const firstPageHTML = this.renderFirstPage();
+
+        return (
+            <div className='fullscreen-container'>
+                {firstPageHTML}
+                <section className='home-bg-blue'>
+                    <div className='basic-container'>
+                        {blocksAndTxsListHTML}
+                    </div>
+                </section>
+            </div>
+
+        )
     }
 }

@@ -1,10 +1,135 @@
 @import "./assets/less/_variables.less";
 
 .App {
-  height: 100%;
-  background-color: @bgWhite;
+  //height: 100%;
+  background: url("./assets/images/bg_purple@1x.jpg");
+  background-size: cover;
 
   .breadcrumb-container {
     background-color: @breadcrumbColor;
   }
+  .basic-container {
+    max-width: @maxWidth;
+    margin: auto;
+    padding: 0 56px 0 56px;
+  }
+  .basic-bottom-blank {
+    height: 64px;
+    width: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .basic-container {
+      padding: 0 16px 0 16px;
+    }
+    .basic-bottom-blank {
+      height: 16px;
+      width: 10px;
+    }
+  }
+}
+
+// rewriter ant table style
+thead {
+  th {
+    border: none !important;
+    color: #FFF !important;
+    border-radius: 0 !important;
+    background: rgba(57, 0, 57, 0.3) !important;
+  }
+}
+tbody {
+  tr {
+    color: #FFF;
+    background: rgba(57, 0, 57, 0.1) !important;
+    td {
+      color: #FFF;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+  tr:hover {
+    background: rgba(57, 0, 57, 0.2) !important;
+    td {
+      background: none !important;
+    }
+  }
+  a {
+    color: #FFF;
+  }
+}
+
+.ant-table-pagination.ant-pagination {
+  color: @fontColorLightPurple;
+  width: 100%;
+  text-align: center;
+  background: rgba(57, 0, 57, 0.1) !important;
+  margin: 0;
+  padding: 16px 0;
+}
+
+.ant-pagination-item-link {
+  background: none !important;
+  border: none !important;
+  color: @fontColorLightPurple !important;
+}
+
+.ant-pagination-item {
+  border: none;
+  background: none;
+  a {
+    color: @fontColorLightPurple
+  }
+}
+
+.ant-pagination-item:hover {
+  background: rgba(57, 0, 57, 0.2);
+}
+
+.ant-pagination-item-active {
+  border: none;
+  background: @hoverColor;
+}
+.ant-pagination-item-active:hover {
+  background: @hoverColor;
+  opacity: 0.8;
+}
+.ant-pagination-item-active a {
+  color: #FFF;
+}
+.ant-pagination-item-active a:hover {
+   color: #FFF !important;
+}
+.ant-pagination-item-active:hover a {
+  color: #FFF;
+}
+.ant-pagination-item-active:focus a {
+  color: #FFF;
+}
+.ant-pagination-item-ellipsis {
+  color: @fontColorLightPurple !important;
+}
+.ant-pagination-item-link-icon {
+  color: @fontColorLightPurple !important;
+}
+
+.ant-pagination-options-quick-jumper input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: @fontColorLightPurple;
+
+  outline: none;
+  &:hover,
+  &:focus {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+  }
+}
+
+.ant-table-small{
+  border: none;
+}
+// rewriter ant table style end
+
+a:hover {
+  color: @hoverColor !important;
 }

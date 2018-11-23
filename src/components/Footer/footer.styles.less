@@ -2,20 +2,34 @@
 
 .footer {
   text-align: center;
-  background-color: @headerbgColor;
+  background: url("../../assets/images/bg_purple_darker@1x.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color: #FFF;
+
+  .footer-container {
+    margin: auto;
+    max-width: @maxWidth;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .footer-logo {
-    margin-bottom: @mgb30;
+    text-align: left;
+    //margin-bottom: @mgb30;
   }
   .footer-links-container {
-    margin-bottom: @mgb30;
+    //margin-bottom: @mgb30;
 
     .ant-btn {
       width: 40px;
       height: 40px;
       line-height: 40px;
-      margin: 0 10px;
+      margin: 10px 10px 0 10px;
       color: @iconColor;
-      background-color: @bgColor;
+      //background-color: @bgColor;
+      background-color: #FFF;
       border-color: @bgColor;
 
       &:hover {

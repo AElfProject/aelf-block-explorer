@@ -25,7 +25,10 @@ export default class TxsPage extends Component {
                 pageSize: PAGE_SIZE,
                 showQuickJumper: true,
                 total: 0,
-                showTotal: total => `Total ${total} items`
+                showTotal: total => `Total ${total} items`,
+                onChange: () => {
+                    window.scrollTo(0, 0);
+                }
             },
             loading: false
         };
@@ -97,7 +100,7 @@ export default class TxsPage extends Component {
         } = this;
 
         return (
-            <div className="txs-page-container" key="body">
+            <div className="txs-page-container basic-container" key="body">
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={data}
@@ -106,6 +109,7 @@ export default class TxsPage extends Component {
                     loading={loading}
                     onChange={handleTableChange}
                 />
+                <div className="basic-bottom-blank"></div>
             </div>
         );
     }
