@@ -16,8 +16,25 @@ export default class BrowserHeader extends PureComponent {
         this.interval = 300;
         this.showSearchTop = 330;
         this.state = {
-            showSearch: false
+            showSearch: false,
+            current: location.pathname === '/' ? "/home" : location.pathname,
         };
+    }
+
+    getSearchStatus() {
+        const pathname = location.pathname;
+        let showSearch = false;
+        if (pathname === '/') {
+            const scrollTop = document.documentElement.scrollTop;
+            if (scrollTop >= this.showSearchTop) {
+                showSearch = true;
+            } else {
+                showSearch = false;
+            }
+        } else {
+            showSearch = true;
+        }
+        return showSearch;
     }
 
     // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
@@ -32,16 +49,18 @@ export default class BrowserHeader extends PureComponent {
                     pathname = '/blocks';
                 }
 
+                const showSearch = this.getSearchStatus();
+
                 this.setState({
-                    current: pathname
-                })
+                    current: pathname,
+                    showSearch
+                });
             }
         }, this.interval);
     }
 
     componentDidMount() {
         this.setSeleted();
-
         window.addEventListener('scroll', this.handleScroll.bind(this));
     }
 
@@ -51,26 +70,16 @@ export default class BrowserHeader extends PureComponent {
     }
 
     handleScroll() {
-        // console.log(document.documentElement.scrollTop);
+        if (location.pathname === '/') {
+            const showSearch = this.getSearchStatus();
 
-        const scrollTop = document.documentElement.scrollTop;
-        let showSearch = false;
-        if (scrollTop >= this.showSearchTop) {
-            showSearch = true;
-        } else {
-            showSearch = false;
-        }
-
-        if (showSearch !== this.state.showSearch) {
-            this.setState({
-                showSearch: showSearch
-            });
+            if (showSearch !== this.state.showSearch) {
+                this.setState({
+                    showSearch: showSearch
+                });
+            }
         }
     }
-
-    state = {
-        current: location.pathname === '/' ? "/home" : location.pathname,
-    };
 
     // handleClick = e => {
     //     clearTimeout(this.timerTimeout);

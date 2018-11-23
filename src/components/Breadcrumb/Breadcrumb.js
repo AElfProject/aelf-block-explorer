@@ -79,6 +79,12 @@ class BrowserBreadcrumb extends Component {
             }
 
             const STATE = BREADCRUMBNAMESTATE.states[BREADCRUMBNAMESTATE.currentState];
+
+            if (!STATE) {
+                this.props.history.push('/');
+                return;
+            }
+
             const breadcrumbTitle = STATE.name[index];
             const url = STATE.url[index] || reloadUrl;
 
