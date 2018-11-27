@@ -20,16 +20,45 @@
     color: #FFF;
     background-color: @bgPurpleDark01;
 
-    .ant-col-3,
-    .ant-col-21 {
-      height: 34px;
+    //.ant-col-3,
+    //.ant-col-21 {
+    //  height: 34px;
+    //  padding: 5px 0;
+    //  line-height: 34px;
+    //}
+    .ant-col-6, .ant-col-18 {
+      //line-height: 34px;
       padding: 5px 0;
-      line-height: 34px;
+      height: 34px;
     }
+
   }
 
   .tx-block-detail-footer {
     display: flex;
     justify-content: center;
   }
+}
+
+@media screen and (max-width: 768px) {
+  .tx-block-detail-container {
+    .tx-block-detail-body {
+      .ant-col-6, .ant-col-18 {
+        height: auto;
+        float: none;
+        flex: none;
+        padding: 0;
+      }
+      .ant-col-6 {
+        font-style: oblique;
+      }
+      .ant-col-18 {
+        margin: 4px 0 16px 0;
+        word-break: break-all;
+        width: 100%;
+        font-size: 12px;
+      }
+    }
+  }
+
 }

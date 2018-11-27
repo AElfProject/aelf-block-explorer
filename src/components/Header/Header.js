@@ -16,7 +16,8 @@ export default class BrowserHeader extends PureComponent {
         this.interval = 300;
         this.showSearchTop = 330;
         this.state = {
-            showSearch: false,
+            showSearch: this.getSearchStatus(),
+            showMobileMenu: false,
             current: location.pathname === '/' ? "/home" : location.pathname,
         };
     }
@@ -24,7 +25,7 @@ export default class BrowserHeader extends PureComponent {
     getSearchStatus() {
         const pathname = location.pathname;
         let showSearch = false;
-        if (pathname === '/') {
+        if (pathname === '/' && document.body.offsetWidth > 768) {
             const scrollTop = document.documentElement.scrollTop;
             if (scrollTop >= this.showSearchTop) {
                 showSearch = true;
@@ -90,14 +91,17 @@ export default class BrowserHeader extends PureComponent {
     //     }, this.interval);
     // };
 
-    renderMenu() {
+    renderMenu(menuMode, showMenu = true) {
+
+        const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
+
         return (
             <Menu
                 // onClick={this.handleClick}
                 selectedKeys={[this.state.current]}
-                mode="horizontal"
+                mode={menuMode}
                 key="navbar"
-                className="aelf-menu"
+                className={menuClass}
             >
                 <Menu.Item key="/home">
                     {/*<Icon type="home" />*/}
@@ -154,9 +158,35 @@ export default class BrowserHeader extends PureComponent {
         );
     }
 
+    toggleMenu() {
+        this.setState({
+            showMobileMenu: !this.state.showMobileMenu
+        });
+    }
+
+    renderMobileMore() {
+        return (
+            <div
+                className="header-navbar-mobile-more"
+                onClick={() => this.toggleMenu()}
+            >...</div>
+        );
+    }
+
 
     render() {
-        const menuHtml = this.renderMenu();
+        const screenWidth = document.body.offsetWidth;
+        const isSmallScreen = screenWidth <= 768;
+        const menuMode = isSmallScreen ? 'inline' : 'horizontal';
+
+        const mobileMoreHTML = isSmallScreen ? this.renderMobileMore() : '';
+
+        let menuHtml;
+        if (isSmallScreen) {
+            menuHtml = this.renderMenu(menuMode, this.state.showMobileMenu);
+        } else {
+            menuHtml = this.renderMenu(menuMode);
+        }
 
         return (
             <div className="header-fixed-contaier">
@@ -164,6 +194,9 @@ export default class BrowserHeader extends PureComponent {
                     <Link to="/" key="logo">
                         <img src="https://aelf.io/assets/images/logo.jpg" />
                     </Link>
+
+                    {mobileMoreHTML}
+
                     <nav className="header-navbar">
                         {menuHtml}
                         {this.state.showSearch && <Search />}

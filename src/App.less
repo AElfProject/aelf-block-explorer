@@ -1,9 +1,14 @@
 @import "./assets/less/_variables.less";
 
 .App {
-  //height: 100%;
   background: url("./assets/images/bg_purple@1x.jpg");
   background-size: cover;
+  // TODO 在iOS下还有问题。header会跟着滚动。
+  //position: fixed;
+  //width: 100%;
+  //height: 100%;
+  //overflow: auto;
+  //-webkit-overflow-scrolling: touch;
 
   .breadcrumb-container {
     background-color: @breadcrumbColor;

@@ -48,8 +48,8 @@ export default class TxsDetailPage extends React.Component {
 
         return (
             <div key={key + Math.random()}>
-                <Col span={3} style={{height: 'auto'}}>{formatKey(key)}</Col>
-                <Col span={21} style={{height: 'auto', wordBreak: 'break-all'}}>{value}</Col>
+                <Col span={6} style={{height: 'auto'}}>{formatKey(key)}</Col>
+                <Col span={18} style={{height: 'auto', wordBreak: 'break-all'}}>{value}</Col>
             </div>
         );
     }

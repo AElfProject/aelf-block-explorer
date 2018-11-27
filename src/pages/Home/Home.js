@@ -240,6 +240,14 @@ export default class HomePage extends Component {
         return html;
     }
 
+    // 小屏幕不渲染
+    renderSearcBanner() {
+        if (document.body.offsetWidth <= 768) {
+            return '';
+        }
+        return <SearchBanner />;
+    }
+
     renderFirstPage() {
         const screenWidth = document.body.offsetWidth;
         const screenHeight = screenWidth > 992 ? document.body.offsetHeight : 'auto';
@@ -254,12 +262,8 @@ export default class HomePage extends Component {
                 }}
             >
                 <div className='basic-container home-basic-information'>
-                    <div
-                        style={{
-                            height: 64 + 64
-                        }}
-                    ></div>
-                    <SearchBanner />
+                    <div className="home-header-blank"></div>
+                    {this.renderSearcBanner()}
                     <Row
                         type="flex"
                         justify="space-between"
