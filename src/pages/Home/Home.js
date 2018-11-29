@@ -275,9 +275,10 @@ export default class HomePage extends Component {
                     >
                         <Col xs={24} sm={24} md={24} lg={12}>
                             <div className='home-basic-title-con'>
-                                <span className='TPSChart-title'>TPS Monitor [Building]</span>
-                                <span className='TPSChart-text'>Realtime：233</span>
-                                <span>Peak：23333</span>
+                                {/*<span className='TPSChart-title'>TPS Monitor</span>*/}
+                                <span className='TPSChart-title'>Transaction Per Minute</span>
+                                {/*<span className='TPSChart-text'>Realtime：233</span>*/}
+                                {/*<span>Peak：23333</span>*/}
                             </div>
                             <ContainerRichard>
                                 <TPSChart/>

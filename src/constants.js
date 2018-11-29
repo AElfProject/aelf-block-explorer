@@ -13,6 +13,7 @@ const ALL_TXS_API_URL = "/all/transactions";
 const TXS_BLOCK_API_URL = "/block/transactions";
 const ADDRESS_TXS_API_URL = "/address/transactions";
 const ADDRESS_BALANCE_API_URL = '/api/address/balance';
+const TPS_LIST_API_URL = '/tps/list';
 const ADDRESS_TOKENS_API_URL = '/address/tokens';
 const ELF_REALTIME_PRICE_URL =
     "https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY";
@@ -132,6 +133,7 @@ export {
     TXS_BLOCK_API_URL,
     ADDRESS_TXS_API_URL,
     ADDRESS_TOKENS_API_URL,
+    TPS_LIST_API_URL,
     ELF_REALTIME_PRICE_URL,
     ELF_REST_TRADE_API,
     PAGE_SIZE,
