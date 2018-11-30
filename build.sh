@@ -5,7 +5,15 @@ ROOT_DIR="/opt/aelf/app/explorer"
 
 git pull origin master
 
-npm i && npm run build
+if [ $2 == 'reinstall' ]
+then
+    echo 'rm -rf node_modules';
+    rm -rf node_modules;
+    echo 'npm install';
+    npm install;
+fi
+#npm i && npm run build
+npm run build
 
 cp -rf dist/* $ROOT_DIR
 
