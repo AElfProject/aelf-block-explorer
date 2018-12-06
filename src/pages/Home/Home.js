@@ -1,39 +1,43 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+/**
+ * @file Home.js
+ * @author longyue, huangzongzhe
+ */
+/* eslint-disable fecs-camelcase */
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 // import { observer, inject } from "mobx-react";
 import {
     Row,
     Col,
-    Icon,
     List,
     message
-} from "antd";
+} from 'antd';
 
 // object, array, string, or  jQuery - like
-import isEmpty from "lodash/isEmpty";
+import isEmpty from 'lodash/isEmpty';
 // import InfoList from "../../components/InfoList/InfoList";
 // import TradeCards from "../../components/TradeCards/TradeCards";
 // import TradeChart from "../../components/TradeChart";
 
-import SearchBanner from '../../components/SearchBanner/SearchBanner'
-import ContainerRichard from '../../components/ContainerRichard/ContainerRichard'
-import TPSChart from '../../components/TPSChart/TPSChart'
+import SearchBanner from '../../components/SearchBanner/SearchBanner';
+import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
+import TPSChart from '../../components/TPSChart/TPSChart';
 
 import SmoothScrollbar from 'smooth-scrollbar';
 import OverscrollPlugin from 'smooth-scrollbar/plugins/overscroll';
 import Scrollbar from 'react-smooth-scrollbar';
 
-SmoothScrollbar.use(OverscrollPlugin);
-
-import { get, format, aelf } from "../../utils";
+import {get, format, aelf, transactionFormat} from '../../utils';
 import {
     TXSSTATUS,
     PAGE_SIZE,
     ALL_BLOCKS_API_URL,
     ALL_TXS_API_URL
-} from "../../constants";
+} from '../../constants';
 
-import "./home.styles.less";
+import './home.styles.less';
+
+SmoothScrollbar.use(OverscrollPlugin);
 
 const fetchInfoByChainIntervalTime = 4000;
 
@@ -53,7 +57,7 @@ export default class HomePage extends Component {
         // TODO 弹窗提示
         clearInterval(this.interval);
     }
- 
+
     componentWillUnmount() {
         clearInterval(this.interval);
         this.setState = () => {};
@@ -91,7 +95,7 @@ export default class HomePage extends Component {
         const res = await get(url, {
             page: 0,
             limit: PAGE_SIZE,
-            order: "desc"
+            order: 'desc'
         });
 
         return res;
@@ -100,20 +104,21 @@ export default class HomePage extends Component {
     // get increament block data
     // 1. Get the lastest 100 Blocks Info from databases at first.
     // 2. Get the new Blocks Info from Aelf Chain.
-    // 3. If the (block_height in Chain) - (block_height in Databases) > 10, 
+    // 3. If the (block_height in Chain) - (block_height in Databases) > 10,
     //    Notice the users we have problem, and get New Block from Aelf Chain.
     // 4. In the page, if block.length > 100, .length =100 ,then, unshift.
     fetchInfoByChain() {
         // const store = this.props.appIncrStore;
 
-        let newBlocksList = this.state.blocks.concat([]);
-        let newTxsList = this.state.transactions.concat([]);
+        let newBlocksList = [].concat(...this.state.blocks);
+        let newTxsList = [].concat(...this.state.transactions);
 
         const LISTLIMIT = PAGE_SIZE;
 
         if (this.blockHeight) {
             this.blockHeight++;
-        } else {
+        }
+        else {
             try {
                 const {
                     result: {
@@ -130,9 +135,9 @@ export default class HomePage extends Component {
             }
         }
 
-        
+
         const {
-            result: { Blockhash = '', Body = '', Header = '' } = {}
+            result: {Blockhash = '', Body = '', Header = ''} = {}
         } = aelf.chain.getBlockInfo(this.blockHeight, 100);
 
         if (isEmpty('' + this.blockHeight)) {
@@ -154,7 +159,7 @@ export default class HomePage extends Component {
             time: Header.Time,
             tx_count: Body.TransactionsCount
         };
-        
+
         let pre_block_height = newBlocksList[0].block_height;
         if (this.blockHeight - pre_block_height > 10) {
             message.warning('Notice: Blocks in Databases is behind more than 10 blocks in the Chain.', 6);
@@ -165,35 +170,30 @@ export default class HomePage extends Component {
         newBlocksList.unshift(chainBlocks);
 
         if (!isEmpty(Body.Transactions)) {
-            Body.Transactions.forEach(txId => {
-                const { result } = aelf.chain.getTxResult(txId);
 
-                let newTxs = {
-                    address_from: result.tx_info.From,
-                    address_to: result.tx_info.To,
-                    block_hash: result.block_hash,
-                    block_height: result.block_number,
-                    increment_id: result.tx_info.IncrementId,
-                    method: result.tx_info.Method,
-                    params: result.tx_info.params,
-                    tx_id: result.tx_info.TxId,
-                    tx_status: result.tx_status
-                };
-
-                if (newTxsList.length > LISTLIMIT) {
-                    newTxsList.length = LISTLIMIT;
+            console.log('Body', Blockhash, Body.TransactionsCount);
+            aelf.chain.getTxsResult(Blockhash, 0, LISTLIMIT, (error, result) => {
+                if (error || !result || !result.result) {
+                    message.error(error.message, 2);
                 }
+                else {
+                    const txsList = result.result || [];
 
-                newTxsList.unshift(newTxs);
+                    const txsFormatted = txsList.map(tx => {
+                        return transactionFormat(tx);
+                    });
 
+                    newTxsList.unshift(...txsFormatted);
+                    newTxsList.length = LISTLIMIT;
+
+                    this.setState({
+                        blocks: newBlocksList,
+                        transactions: newTxsList,
+                    });
+                }
             });
         }
-
         // console.log(newBlocksList.length, newTxsList.length);
-        this.setState({
-            blocks: newBlocksList,
-            transactions: newTxsList,
-        });
     }
 
     renderBasicInfoBlocks() {
@@ -204,20 +204,20 @@ export default class HomePage extends Component {
             info: this.blockHeight || this.state.totalBlocks,
         }, {
             title: 'Unconfirmed Block',
-            info: '-',
+            info: '-'
         }, {
             title: 'Total Transactions',
             // info: 233333,
             info: this.state.totalTransactions,
         }, {
             title: 'Total Applications',
-            info: '-',
+            info: '-'
         }, {
             title: 'Total Accounts',
-            info: '-',
+            info: '-'
         }, {
             title: 'Total Side Chains',
-            info: '-',
+            info: '-'
         },];
 
         const html = basicInfo.map(item => {
@@ -292,7 +292,7 @@ export default class HomePage extends Component {
                                 align="middle"
                                 key="basicinfo-1"
                                 gutter={
-                                    { xs: 8, sm: 16, md: 16, lg: 16 }
+                                    {xs: 8, sm: 16, md: 16, lg: 16}
                                 }
                             >
                                 {BasicInfoBlocksHTML}
