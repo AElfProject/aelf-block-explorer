@@ -15,6 +15,8 @@ just run `npm start`
 
 ## build
 
+Notice: Change 'location /chain' in Nignx to your own rpc server.
+
 deploy exec `sh ./build.sh`
 
 docker build exec `sh ./build-image.sh`

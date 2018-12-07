@@ -101,6 +101,33 @@ export default class HomePage extends Component {
         return res;
     }
 
+    getBlockHeightPromise() {
+        return new Promise((resolve, reject) => {
+            if (this.blockHeight) {
+                resolve(+this.blockHeight + 1);
+            }
+            else {
+                aelf.chain.getBlockHeight((err, result) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        const {
+                            result: {
+                                block_height
+                            }
+                        } = result;
+                        if (parseInt(block_height, 10) <= parseInt(this.blockHeightInDataBase, 10)) {
+                            resolve(false);
+                            return;
+                        }
+                        resolve(block_height);
+                    }
+                });
+            }
+        });
+    }
+
     // get increament block data
     // 1. Get the lastest 100 Blocks Info from databases at first.
     // 2. Get the new Blocks Info from Aelf Chain.
@@ -109,91 +136,79 @@ export default class HomePage extends Component {
     // 4. In the page, if block.length > 100, .length =100 ,then, unshift.
     fetchInfoByChain() {
         // const store = this.props.appIncrStore;
-
         let newBlocksList = [].concat(...this.state.blocks);
         let newTxsList = [].concat(...this.state.transactions);
 
-        const LISTLIMIT = PAGE_SIZE;
-
-        if (this.blockHeight) {
-            this.blockHeight++;
-        }
-        else {
-            try {
-                const {
-                    result: {
-                        block_height
-                    }
-                } = aelf.chain.getBlockHeight();
-
-                if (parseInt(block_height, 10) <= parseInt(this.blockHeightInDataBase, 10)) {
-                    return;
-                }
-                this.blockHeight = block_height;
-            } catch (e) {
-                message.error(e.message, 2);
+        this.getBlockHeightPromise().then(blockHeight => {
+            if (!blockHeight) {
             }
-        }
+            else {
+                aelf.chain.getBlockInfo(blockHeight, true, (err, result) => {
+                    if (err) {
+                        message.error('Can not get Block Info from Aelf Node!!!.', 6);
+                    }
+                    else {
+                        const {
+                            result: {Blockhash = '', Body = '', Header = ''} = {}
+                        } = result;
+                        if (isEmpty(Blockhash)) {
+                            return;
+                        }
 
+                        const chainBlocks = {
+                            block_hash: Blockhash,
+                            block_height: +blockHeight,
+                            chain_id: Header.ChainId,
+                            merkle_root_state: Header.MerkleTreeRootOfWorldState,
+                            merkle_root_tx: Header.MerkleTreeRootOfTransactions,
+                            pre_block_hash: Header.PreviousBlockHash,
+                            time: Header.Time,
+                            tx_count: Body.TransactionsCount
+                        };
 
-        const {
-            result: {Blockhash = '', Body = '', Header = ''} = {}
-        } = aelf.chain.getBlockInfo(this.blockHeight, 100);
+                        let pre_block_height = newBlocksList[0].block_height;
+                        if (blockHeight - pre_block_height > 10) {
+                            message.warning(
+                                'Notice: Blocks in Databases is behind more than 10 blocks in the Chain.',
+                                6
+                            );
+                        }
+                        if (newBlocksList.length > PAGE_SIZE) {
+                            newBlocksList.length = PAGE_SIZE;
+                        }
+                        newBlocksList.unshift(chainBlocks);
 
-        if (isEmpty('' + this.blockHeight)) {
-            message.error('Can not get Block Info from Aelf Node!!!.', 6);
-        }
-        if (isEmpty(Blockhash)) {
-            this.blockHeight--;
-            // console.log(this.blockHeight, Blockhash);
-            return;
-        }
+                        if (!isEmpty(Body.Transactions)) {
 
-        const chainBlocks = {
-            block_hash: Blockhash,
-            block_height: +this.blockHeight,
-            chain_id: Header.ChainId,
-            merkle_root_state: Header.MerkleTreeRootOfWorldState,
-            merkle_root_tx: Header.MerkleTreeRootOfTransactions,
-            pre_block_hash: Header.PreviousBlockHash,
-            time: Header.Time,
-            tx_count: Body.TransactionsCount
-        };
+                            console.log('Body', Blockhash, Body.TransactionsCount);
+                            aelf.chain.getTxsResult(Blockhash, 0, PAGE_SIZE, (error, result) => {
+                                if (error || !result || !result.result) {
+                                    message.error(error.message, 2);
+                                }
+                                else {
+                                    const txsList = result.result || [];
 
-        let pre_block_height = newBlocksList[0].block_height;
-        if (this.blockHeight - pre_block_height > 10) {
-            message.warning('Notice: Blocks in Databases is behind more than 10 blocks in the Chain.', 6);
-        }
-        if (newBlocksList.length > LISTLIMIT) {
-            newBlocksList.length = LISTLIMIT;
-        }
-        newBlocksList.unshift(chainBlocks);
+                                    const txsFormatted = txsList.map(tx => {
+                                        return transactionFormat(tx);
+                                    });
 
-        if (!isEmpty(Body.Transactions)) {
+                                    newTxsList.unshift(...txsFormatted);
+                                    newTxsList.length = PAGE_SIZE;
 
-            console.log('Body', Blockhash, Body.TransactionsCount);
-            aelf.chain.getTxsResult(Blockhash, 0, LISTLIMIT, (error, result) => {
-                if (error || !result || !result.result) {
-                    message.error(error.message, 2);
-                }
-                else {
-                    const txsList = result.result || [];
-
-                    const txsFormatted = txsList.map(tx => {
-                        return transactionFormat(tx);
-                    });
-
-                    newTxsList.unshift(...txsFormatted);
-                    newTxsList.length = LISTLIMIT;
-
-                    this.setState({
-                        blocks: newBlocksList,
-                        transactions: newTxsList,
-                    });
-                }
-            });
-        }
-        // console.log(newBlocksList.length, newTxsList.length);
+                                    this.setState({
+                                        blocks: newBlocksList,
+                                        transactions: newTxsList,
+                                    });
+                                    this.blockHeight = blockHeight;
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }).catch(err => {
+            message.error(err.message, 2);
+        });
     }
 
     renderBasicInfoBlocks() {
