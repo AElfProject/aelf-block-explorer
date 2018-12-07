@@ -14,31 +14,36 @@ NGINX_CONF="/etc/nginx/conf.d"
 ROOT_DIR="/opt/aelf/app/explorer"
 
 #当变量a为null或为空字符串时则var=b
-start_mode=${1:-'production'}
-node_modules_action=${2:-'default'}
+start_mode=${1:-"production"}
+node_modules_action=${2:-"default"}
+nginx_action=${3:-"default"}
 echo ${node_modules_action} ${start_mode}
 
 git pull origin master
 
-if [ ${node_modules_action} = 'reinstall' ]
+if [ ${node_modules_action} = "reinstall" ]
 then
-    echo 'npm install'
-    npm install && echo 'install done'
+    echo "npm install"
+    npm install && echo "install done"
     sleep 3
-    npm install && echo 'install check done'
+    npm install && echo "install check done"
     sleep 3
 fi
 
-if [ ${start_mode} = 'dev' ]
+if [ ${start_mode} = "dev" ]
 then
     npm start
-    echo 'npm start'
+    echo "npm start"
 else
     #npm i && npm run build
     npm run build
     cp -rf dist/* $ROOT_DIR
-    cp -f explore.conf $NGINX_CONF
-    nginx -s reload
-    echo 'npm run build && nginx -s reload'
+    echo "npm run build"
 fi
 
+if [ ${nginx_action} = "reload" ]
+then
+    cp -f explore.conf $NGINX_CONF
+    nginx -s reload
+    echo "nginx -s reload"
+fi
