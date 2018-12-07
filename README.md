@@ -1,23 +1,43 @@
-# browser
+# AELF Block Explorer
 
-AELF Block Explorer
+## Quick Start
 
-2 api rules:
+Please ensure your dependencies are ready.
+
+If you meet some permission problem, please use 'sudo'.
+
+```shell
+bash build.sh < type|optional > < node_moduels|optinal >
+// if you only want to use the second param, you must set the type=""
+bash build.sh dev
+bash build.sh dev reinstall
+bash build.sh "" reinstall
+
+bash build.sh === bash build.sh pro
+```
+
+Default Port: 3000
+
+## Dependencise
+
+### api rules:
 
 1. `/api/!${rpc}/*` => `scan server`; [aelf-block-api](https://github.com/AElfProject/aelf-block-api)
 2. `/chain/*` => `aelf chain` [AElf Chain](https://github.com/AElfProject/AElf)
 
-Default Port: 3000
+It means you need run aelf-block-api & AElf at first.
+
+### nginx.conf
+
+cp explore.https.conf explore.conf
+
+Change 'location /chain' in Nignx to your own RPC URL.
 
 ## Develop
 
 just run `npm start`
 
-## build
-
-Notice: Change 'location /chain' in Nignx to your own rpc server.
-
-deploy exec `sh ./build.sh`
+## Docker[TODO]
 
 docker build exec `sh ./build-image.sh`
 
