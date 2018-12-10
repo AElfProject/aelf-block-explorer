@@ -6,14 +6,17 @@ Please ensure your dependencies are ready.
 
 If you meet some permission problem, please use 'sudo'.
 
-```shell
-bash build.sh < type|optional > < node_moduels|optinal >
-// if you only want to use the second param, you must set the type=""
+```bash
+bash build.sh < type|optional > < node_moduels|optinal > < nginx action | optinal>
+# if you only want to use the second param, you must set the type=""
+# Demos
 bash build.sh dev
 bash build.sh dev reinstall
 bash build.sh "" reinstall
+bash build.sh "" reinstall reload
+bash build.sh pro reinstall reload
 
-bash build.sh === bash build.sh pro
+# bash build.sh === bash build.sh pro
 ```
 
 Default Port: 3000
@@ -29,9 +32,19 @@ It means you need run aelf-block-api & AElf at first.
 
 ### nginx.conf
 
+```bash
 cp explore.https.conf explore.conf
+```
 
 Change 'location /chain' in Nignx to your own RPC URL.
+
+### RPC conf
+
+```bash
+cp config/config.example.js config/config.js
+```
+
+set your own rpc url.
 
 ## Develop
 
