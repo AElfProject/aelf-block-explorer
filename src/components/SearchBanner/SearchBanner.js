@@ -1,11 +1,15 @@
+/**
+ * @file SearchBanner.js
+ * @author huangzongzhe
+ */
 import React, {
     Component
-} from "react";
+} from 'react';
 
-import Search from '../Search/Search'
-import "./SearchBanner.less";
+import Search from '../Search/Search';
+import './SearchBanner.less';
 
-class SearchBanner extends Component {
+export default class SearchBanner extends Component {
 
     render() {
         return (
@@ -19,5 +23,3 @@ class SearchBanner extends Component {
         );
     }
 }
-
-export default SearchBanner;
