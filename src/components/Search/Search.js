@@ -1,31 +1,32 @@
+/**
+ * @file Search.js
+ * @author huangzongzhe
+ */
 import React, {
     PureComponent
-} from "react";
+} from 'react';
 import {
     Input,
     Icon,
     message
-} from "antd";
+} from 'antd';
 
 import {
     aelf
-} from "../../utils";
+} from '../../utils';
 
-import "./search.styles.less";
+import './search.styles.less';
 
 export default class Search extends PureComponent {
-    constructor(props) {
-        super(props);
-    }
 
     state = {
-        content: ""
+        content: ''
     };
 
     emitEmpty = () => {
         this.userNameInput.focus();
         this.setState({
-            content: ""
+            content: ''
         });
     };
 
@@ -68,13 +69,12 @@ export default class Search extends PureComponent {
     }
 
     handleSearch = e => {
-        console.log()
         const value = e.target && e.target.value || e.searchValue || '';
         if (!value.trim()) {
             return;
         }
         const length = value.length;
-        const isAddress = [53, 54];
+        const isAddress = [49, 50, 51, 52, 53];
         const isTxid = [64];
 
         // address.length === 38/66 && address.match(/^0x/)
@@ -93,7 +93,7 @@ export default class Search extends PureComponent {
     };
 
     render() {
-        const { content } = this.state;
+        const {content} = this.state;
         const suffix = content ? (
                 <Icon type="close-circle" onClick={this.emitEmpty} />
             ) : null;
@@ -118,7 +118,6 @@ export default class Search extends PureComponent {
                     <Icon type="search" className="search-icon" />
                 </span>
             </div>
-
         );
     }
 }

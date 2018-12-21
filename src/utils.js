@@ -1,3 +1,7 @@
+/**
+ * @file utils.js
+ * @author huangzongzhe, longyue
+ */
 import {
     notification
 } from 'antd';
@@ -28,7 +32,6 @@ aelf.chain.connectChain(function (e) {
     // httpErrorHandler('Connect Error', e.message);
     // console.error(e.message);
 });
-
 
 const get = async (url, params, config) => {
     const res = await api.get(url, params, config);

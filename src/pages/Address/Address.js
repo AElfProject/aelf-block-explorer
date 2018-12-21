@@ -56,6 +56,7 @@ export default class AddressPage extends React.Component {
 
         const pagination = {...this.state.pagination};
         if (data && data.transactions.length) {
+            pagination.total = data.total;
             this.setState({
                 txsNumber: data.total,
                 txs_loading: false,
@@ -197,7 +198,7 @@ export default class AddressPage extends React.Component {
                     pagination={pagination}
                     rowKey = "tx_id"
                     loading={txs_loading}
-                    onChange={() => this.handleTableChange()}
+                    onChange={pagination => this.handleTableChange(pagination)}
                 />
                 <div className="basic-bottom-blank"></div>
             </div>
