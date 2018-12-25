@@ -19,7 +19,7 @@ node_modules_action=${2:-"default"}
 nginx_action=${3:-"default"}
 echo ${node_modules_action} ${start_mode}
 
-git pull origin master
+git pull && echo "git pull done"
 
 if [ ${node_modules_action} = "reinstall" ]
 then
