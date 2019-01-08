@@ -1,12 +1,15 @@
-import React, { Component } from "react";
+/**
+ * @file
+ * @author huangzongzhe
+*/
 
-import "./ContainerRichard.less";
+
+import React, {Component} from 'react';
+
+import './ContainerRichard.less';
 
 
 export default class ContainerRichard extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
 

@@ -1,27 +1,31 @@
+/**
+ * @file App
+ * @author huangzongzhe
+*/
 import React, {
     Component
-} from "react";
+} from 'react';
 import {
     Switch
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import BrowserHeader from "./components/Header/Header";
-import HeaderBlank from "./components/Header/HeaderBlank";
-import BrowserFooter from "./components/Footer/Footer";
-import BrowserBreadcrumb from "./components/Breadcrumb/Breadcrumb";
-import Container from "./components/Container/Container";
-import AppRoutes from "./routes";
+import BrowserHeader from './components/Header/Header';
+import HeaderBlank from './components/Header/HeaderBlank';
+import BrowserFooter from './components/Footer/Footer';
+import BrowserBreadcrumb from './components/Breadcrumb/Breadcrumb';
+import Container from './components/Container/Container';
+import AppRoutes from './routes';
 
-import "./App.less";
+import './App.less';
 
-class App extends Component {
+export default class App extends Component {
     componentDidCatch(error) {
         console.log(`component occurred error: ${error}`);
     }
 
     render() {
         return (
-            <div className="App">
+            <div className='App'>
                 <BrowserHeader />
                 <HeaderBlank />
                 <BrowserBreadcrumb />
@@ -35,5 +39,3 @@ class App extends Component {
         );
     }
 }
-
-export default App;

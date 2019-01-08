@@ -180,8 +180,9 @@ export default class HomePage extends Component {
 
                         if (!isEmpty(Body.Transactions)) {
 
-                            console.log('Body', Blockhash, Body.TransactionsCount);
+                            // console.log('Body', Blockhash, Body.TransactionsCount);
                             aelf.chain.getTxsResult(Blockhash, 0, PAGE_SIZE, (error, result) => {
+                                console.log(result);
                                 if (error || !result || !result.result) {
                                     message.error(error.message, 2);
                                 }

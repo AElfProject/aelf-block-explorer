@@ -10,6 +10,10 @@ import {
     RPCSERVER
 } from './constants';
 
+import {MINERSPRIVATEKEY} from '../config/config';
+
+// import apisauce from './utils/apisauce';
+
 const api = create({
     baseURL: '/api'
 });
@@ -20,6 +24,13 @@ const httpErrorHandler = (message, des) => notification.open({
 });
 
 const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
+const allAddress = Object.values(aelf.chain.connectChain().result);
+// console.log(aelf.chain.connectChain().result, allAddress);
+const TOKENADDRESS = allAddress[3];
+const CONSENSUSADDRESS = allAddress[4];
+const DIVIDENDSADDRESS = allAddress[5];
+
+
 
 aelf.chain.connectChain(function (e) {
     // if (isEmpty(e.message)) {
@@ -28,7 +39,6 @@ aelf.chain.connectChain(function (e) {
     // httpErrorHandler('Connect Error', e.message);
     // console.error(e.message);
 });
-
 
 const get = async (url, params, config) => {
     const res = await api.get(url, params, config);
@@ -84,11 +94,64 @@ function transactionFormat(result) {
     return newTxs;
 }
 
+const getVoting = (value) => {
+    console.log('投票' + value);
+}
+
+const getRedeem = (value) => {
+    console.log('赎回' + value);
+}
+
+const hexCharCodeToStr = (hexCharCodeStr) => {
+    　　var trimedStr = hexCharCodeStr.trim();
+    　　var rawStr = 
+    　　trimedStr.substr(0,2).toLowerCase() === "0x"
+    　　? 
+    　　trimedStr.substr(2) 
+    　　: 
+    　　trimedStr;
+    　　var len = rawStr.length;
+    　　if(len % 2 !== 0) {
+    　　　　alert("Illegal Format ASCII Code!");
+    　　　　return "";
+    　　}
+    　　var curCharCode;
+    　　var resultStr = [];
+    　　for(var i = 0; i < len;i = i + 2) {
+    　　　　curCharCode = parseInt(rawStr.substr(i, 2), 16); // ASCII Code Value
+    　　　　resultStr.push(String.fromCharCode(curCharCode));
+    　　}
+    　　return resultStr.join("");
+    }
+
+const transactionInfo = (hash) => {
+    return aelf.chain.getTxResult(hash);
+}
+// minesrs 可以留着 让用户在没有绑定钱包的时候可以看到链上的信息
+const wallet = Aelf.wallet.getWalletByPrivateKey(MINERSPRIVATEKEY);
+// console.log(wallet);
+// 投票合约
+const consensus = aelf.chain.contractAt(CONSENSUSADDRESS, wallet);
+// 分红合约
+const dividends = aelf.chain.contractAt(DIVIDENDSADDRESS, wallet);
+// token合约
+const tokenContract = aelf.chain.contractAt(TOKENADDRESS, wallet);
+
 export {
     get,
     post,
     aelf,
     format,
     formatKey,
-    transactionFormat
-};
+    transactionFormat,
+    formatNumber,
+    getVoting,
+    getRedeem,
+    consensus,
+    dividends,
+    tokenContract,
+    CONSENSUSADDRESS,
+    DIVIDENDSADDRESS,
+    TOKENADDRESS,
+    transactionInfo
+}
