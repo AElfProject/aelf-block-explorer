@@ -1,18 +1,13 @@
 /**
- * @file
+ * @file ContainerRichard.js
  * @author huangzongzhe
-*/
-
-
+ */
 import React, {Component} from 'react';
 
 import './ContainerRichard.less';
 
-
 export default class ContainerRichard extends Component {
-
     render() {
-
         // large | small
         const contentClass = `conri-center-content-${this.props.type}`;
 

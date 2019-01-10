@@ -170,10 +170,12 @@ export default class BlockDetailPage extends React.Component {
     }
 
     renderCol(key, value) {
+        // If you want double click & select, you need the extra <div>.
+        // Because of the 'float'? I do not clear it.
         return (
             <div key={key + Math.random()}>
                 <Col span={6}>{formatKey(key)}</Col>
-                <Col span={18}>{value}</Col>
+                <Col span={18}><div>{value}</div></Col>
             </div>
         );
     }

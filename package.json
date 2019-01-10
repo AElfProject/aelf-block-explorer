@@ -12,7 +12,11 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
+<<<<<<< HEAD
     "aelf-sdk": "^1.1.14",
+=======
+    "aelf-sdk": "^1.1.13",
+>>>>>>> 717251a054feec83fa666d3e029cb20301f3d400
     "antd": "^3.9.2",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",
