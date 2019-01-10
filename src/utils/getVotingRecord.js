@@ -29,41 +29,38 @@ import formatUtcToDate from './formatUtcToDate';
 //     }
 // ];
 
-export default function getVotingRecord(currentWallet) {
+export default function getVotingRecord(currentWallet, startIndex) {
     let dataList = [];
-    let key = 0;
     if (!currentWallet) {
         return dataList;
     }
     const wallet = getWallet(currentWallet.privateKey);
     const consensus = getConsensus(wallet);
-    let votingRecordData = JSON.parse(
-        hexCharCodeToStr(consensus.GetTicketsInfoToFriendlyString(currentWallet.publicKey).return)
-    ).VotingRecords;
-    if (votingRecordData) {
-        for (let i = 0; i < votingRecordData.length; i++) {
-            let data = {};
-            data.key = key++;
-            data.serialNumber = key;
-            data.nodeName = hexCharCodeToStr(consensus.QueryAlias(votingRecordData[i].To).return);
-            data.type = 'Vote';
-            data.number = votingRecordData[i].Count;
-            data.state = 'succed';
-            data.time = formatUtcToDate(votingRecordData[i].VoteTimestamp);
+    let ticketsHistoriesData = JSON.parse(
+        hexCharCodeToStr(
+            consensus.GetPageableTicketsHistoriesToFriendlyString(
+                currentWallet.publicKey, startIndex.page, startIndex.pageSize
+            ).return
+        )
+    );
+    console.log(ticketsHistoriesData);
+    const historiesNumber = ticketsHistoriesData.HistoriesNumber;
+    if (ticketsHistoriesData.Values) {
+        const ticketsList = ticketsHistoriesData.Values;
+        for (let i = 0; i < ticketsList.length; i++) {
+            const ticketsData = ticketsList[i];
+            let data = {
+                key: startIndex.page + i + 1,
+                serialNumber: startIndex.page + i + 1,
+                nodeName: ticketsData.CandidateAlias || '-',
+                type: ticketsData.Type || '-',
+                number: ticketsData.VotesNumber || '-',
+                state: ticketsData.State ? 'success' : 'failed',
+                time: formatUtcToDate(ticketsData.Timestamp) || '-'
+            };
             dataList.push(data);
-
-            if (votingRecordData[i].IsWithdrawn) {
-                data = {};
-                data.key = key++;
-                data.serialNumber = key;
-                data.nodeName = hexCharCodeToStr(consensus.QueryAlias(votingRecordData[i].To).return);
-                data.type = 'Redeem';
-                data.number = votingRecordData[i].Count;
-                data.state = 'succed';
-                data.time = formatUtcToDate(votingRecordData[i].WithdrawTimestamp);
-                dataList.push(data);
-            }
         }
+
     }
-    return dataList.reverse();
+    return {dataList, historiesNumber};
 }

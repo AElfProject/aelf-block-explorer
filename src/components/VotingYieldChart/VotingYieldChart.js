@@ -4,13 +4,14 @@
 */
 
 import React, {PureComponent} from 'react';
-import {Row, Col} from 'antd';
+import {Row, Col, Spin} from 'antd';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/toolbox';
-import {dividends, consensus} from '../../utils';
+import {dividends} from '../../utils';
+import hexCharCodeToStr from '../../utils/hexCharCodeToStr';
 import './VotingYieldChart.less';
 import Svg from '../Svg/Svg';
 
@@ -18,7 +19,8 @@ export default class VotingYieldChart extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            data: null
+            data: null,
+            loading: false
         };
     }
 
@@ -30,19 +32,23 @@ export default class VotingYieldChart extends PureComponent {
 
     onRefresh() {
         this.setState({
-            data: this.getdata()
+            loading: true
         });
+
+        setTimeout(() => {
+            this.setState({
+                data: this.getdata(),
+                loading: false
+            });
+        }, 2000);
     }
 
     getdata() {
-        let times = [30, 180, 365, 730, 1095];
-        let wheels = parseInt(consensus.GetCurrentRoundNumber().return, 16);
-        let session = parseInt(consensus.GetTermNumberByRoundNumber(wheels).return, 16);
-        let data = [];
-        for (let i = 0; i < times.length; i++) {
-            let profit = parseInt(dividends.CheckDividends(10000, times[i], session - 1).return, 16);
-            data[i] = profit;
-        }
+        let data = JSON.parse(
+            hexCharCodeToStr(
+                dividends.CheckDividendsOfPreviousTermToFriendlyString().return
+            )
+        ).Values;
         return data;
     }
 
@@ -105,32 +111,39 @@ export default class VotingYieldChart extends PureComponent {
                 <div className='voting-yield-chart-title'>
                     {this.props.title}
                 </div>
-                <Row className='voting-yield-chart-Row'>
-                    <Col xl={6} lg={6} md={0} sm={0} xs={0} >
-                        <div className='voting-yield-chart-left'>
-                            <div className='left-title'>
-                                Historic Income Voting Dividends
+                <Spin
+                    tip='Loading...'
+                    size='large'
+                    spinning={this.state.loading}
+                >
+                    <Row className='voting-yield-chart-Row'>
+                        <Col xl={6} lg={6} md={0} sm={0} xs={0} >
+                            <div className='voting-yield-chart-left'>
+                                <div className='left-title'>
+                                    Historic Income Voting Dividends
+                                </div>
                             </div>
-                        </div>
-                    </Col>
-                    <Col xl={16} lg={16} md={22} sm={22} xs={22} >
-                        <ReactEchartsCore
-                            echarts={echarts}
-                            showLoading={loading}
-                            option={this.getOption()}
-                            style={{height: '416px'}}
-                            notMerge={true}
-                            lazyUpdate={true}
-                        />
-                    </Col>
-                    <Col xl={2} lg={2} md={2} sm={2} xs={2} type="flex" align="end">
-                        <Svg
-                            icon='refresh'
-                            style={{marginTop: '30px', width: '60px', height: '60px', float: 'right'}}
-                            onClick={e => this.onRefresh()}
-                        />
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col xl={16} lg={16} md={22} sm={22} xs={22} >
+                            <ReactEchartsCore
+                                echarts={echarts}
+                                showLoading={loading}
+                                option={this.getOption()}
+                                style={{height: '416px'}}
+                                notMerge={true}
+                                lazyUpdate={true}
+                            />
+                        </Col>
+                        <Col xl={2} lg={2} md={2} sm={2} xs={2} type="flex" align="end">
+                            <Svg
+                                className={this.state.loading ? 'refresh-animate' : ''}
+                                icon='refresh'
+                                style={{marginTop: '30px', width: '60px', height: '45px', float: 'right'}}
+                                onClick={e => this.onRefresh()}
+                            />
+                        </Col>
+                    </Row>
+                </Spin>
             </div>
         );
     }

@@ -10,37 +10,72 @@ import getMyVoteData from '../../../utils/getMyVoteData';
 
 import './MyVote.less';
 
+let page = 0;
+let pageSize = 10;
 export default class MyVote extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             currentWallet: this.props.currentWallet,
+            pageSize,
             pagination: {
                 showQuickJumper: true,
-                showSizeChanger: true,
                 total: 0,
                 showTotal: total => `Total ${total} items`,
                 onChange: () => {
-                    const setTop = this.refs.voting.offsetTop;
-                    window.scrollTo(0, setTop);
-                },
-                onShowSizeChange: (current, size) => {
-                    console.log(current);
-                    console.log(size);
+                    // const setTop = this.refs.voting.offsetTop;
+                    // window.scrollTo(0, setTop);
                 }
             },
+            loading: false,
             data: null
         };
     }
 
-    componentDidMount() {
-        this.pushMyVoteData();
+    async componentDidMount() {
+        await this.votingRecordInformation(
+            {
+                page,
+                pageSize
+            }
+        );
     }
 
-    pushMyVoteData() {
+    votingRecordInformation = async (params = {}) => {
         this.setState({
-            data: getMyVoteData(this.state.currentWallet)
+            loading: true
         });
+
+        const data = getMyVoteData(this.state.currentWallet, ...params);
+        let dataList = null;
+        if (data.dataList) {
+            dataList = data.dataList;
+            let pagination = this.state.pagination;
+            pagination.total = parseInt(data.VotingRecordsCount, 10);
+            this.setState({
+                loading: false,
+                data: dataList || null,
+                pagination
+            });
+        }
+    }
+
+    handleTableChange = pagination => {
+        let pageOption = this.state.pagination;
+        pageOption.current = pagination.current;
+        this.setState({
+            pagination: pageOption
+        });
+        page = 10 * (pagination.current - 1);
+        pageSize = page + 10;
+        this.votingRecordInformation({
+            page,
+            pageSize
+        });
+    };
+
+    componentWillUnmount() {
+        this.setState = () => {};
     }
 
     getVoting(publicKey) {
@@ -74,11 +109,37 @@ export default class MyVote extends PureComponent {
         return null;
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (prevProps.currentWallet !== this.props.currentWallet) {
+            page = 0;
+            pageSize = 10;
+            let pageOption = this.state.pagination;
+            pageOption.current = 1;
             this.setState({
-                data: getMyVoteData(this.state.currentWallet)
+                pagination: pageOption
             });
+            await this.votingRecordInformation(
+                {
+                    page,
+                    pageSize
+                }
+            );
+        }
+
+        if (prevProps.refresh !== this.props.refresh) {
+            page = 0;
+            pageSize = 10;
+            let pageOption = this.state.pagination;
+            pageOption.current = 1;
+            this.setState({
+                pagination: pageOption
+            });
+            await this.votingRecordInformation(
+                {
+                    page,
+                    pageSize
+                }
+            );
         }
     }
 
@@ -103,18 +164,12 @@ export default class MyVote extends PureComponent {
                 align: 'center'
             },
             {
-                title: 'Current block',
-                dataIndex: 'block',
-                key: 'block',
-                align: 'center'
-            },
-            {
                 title: 'Number of votes obtained',
                 dataIndex: 'vote',
                 key: 'vote',
                 align: 'center',
                 render: vote => {
-                    let barWidth = parseInt(vote, 10) / 10000;
+                    let barWidth = parseInt(vote, 10) / 100000;
                     return (
                         <div className='vote-progress'>
                             <div className='progress-out'>
@@ -178,14 +233,17 @@ export default class MyVote extends PureComponent {
     }
 
     render() {
-        const {pagination, data} = this.state;
+        const {pagination, data, loading} = this.state;
+        const {handleTableChange} = this;
         const getMyVoteInfoColumn = this.getMyVoteInfoColumn();
         return (
             <div className='my-vote' style={this.props.style} ref='voting'>
                 <Table
                     pagination={pagination}
                     columns={getMyVoteInfoColumn}
+                    onChange={handleTableChange}
                     dataSource={data}
+                    loading={loading}
                 />
             </div>
         );

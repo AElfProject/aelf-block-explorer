@@ -6,15 +6,16 @@
 */
 
 import React, {PureComponent} from 'react';
-import {Row, Col, Radio, Message} from 'antd';
+import {Row, Col, Radio, Message, Spin} from 'antd';
 import Button from '../Button/Button';
 import Svg from '../Svg/Svg';
-import {tokenContract} from '../../utils';
+import {tokenContract, aelf} from '../../utils';
 import formatNumber from '../../utils/formatNumber';
 import hexCharCodeToStr from '../../utils/hexCharCodeToStr';
 import getDividends from '../../utils/getDividends';
 import getConsensus from '../../utils/getConsensus';
 import getWallet from '../../utils/getWallet';
+import getStateJudgment from '../../utils/getStateJudgment';
 import './AElfWallet.less';
 
 const RadioGroup = Radio.Group;
@@ -31,15 +32,17 @@ export default class AElfWallet extends PureComponent {
         this.state = {
             walletInfo: this.walletInfo,
             value: JSON.parse(localStorage.currentWallet).privateKey,
-            refresh: 0
+            refresh: 0,
+            loading: false,
+            loadingTip: null
         };
     }
 
-    componentDidMount() {
-        this.pushWalletInfo();
+    async componentDidMount() {
+        await this.pushWalletInfo();
     }
 
-    pushWalletInfo() {
+    pushWalletInfo = async () => {
         let walletInfo = this.state.walletInfo;
         if (walletInfo != null) {
             for (let i = 0; i < walletInfo.length; i++) {
@@ -67,7 +70,7 @@ export default class AElfWallet extends PureComponent {
     }
 
 
-    onChange(e) {
+    changeRadio(e) {
         this.setState({
             value: e.target.value
         });
@@ -82,30 +85,6 @@ export default class AElfWallet extends PureComponent {
         }
     }
 
-
-
-    getWalletInfo() {
-        const walletHtml = this.state.walletInfo.map((item, index) => {
-            return (
-                <Radio key={index} value={item.privateKey} >
-                    <span className='wallet-name'>{item.walletName}</span>
-                </Radio>
-            );
-        });
-
-        return walletHtml;
-    }
-
-    getUnbindButton() {
-        const unbindButton = this.state.walletInfo.map((item, index) => {
-            return (
-                <div className='wallet-button-box' key={index} >
-                    <Button title='Unbind' click={this.unbindWallet.bind(this, item.address)} />
-                </div>
-            );
-        });
-        return unbindButton;
-    }
 
     getWalletAssetInfo() {
         const walletAssetInfo = this.state.walletInfo.map((item, index) => {
@@ -132,19 +111,32 @@ export default class AElfWallet extends PureComponent {
             }
 
             return (
-                <Row key={index} type='flex' align='middle'>
-                    <Col xxl={6} xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Row key={index} type='flex' align='middle' style={{padding: '10px 0'}}>
+                    <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
+                        <Radio key={index} value={item.privateKey} style={{marginLeft: '10px'}}>
+                            <span className='wallet-name'>{item.walletName}</span>
+                        </Radio>
+                    </Col>
+                    <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
+                        <div className='wallet-button-box' key={index} >
+                            <Button title='Unbind' click={this.unbindWallet.bind(this, item.address)} />
+                        </div>
+                    </Col>
+                    <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
                         Assets: <span className='total-assets'>{balance}</span>
                     </Col>
-                    <Col xxl={6} xl={12} lg={12} md={12} sm={24} xs={24}>
+                    <Col xxl={{span: 4, offset: 0}} xl={{span: 4, offset: 0}} lg={{span: 6, offset: 0}} md={{span: 8, offset: 16}} sm={{span: 8, offset: 16}} xs={{span: 8, offset: 16}}>
                         Votes: <span className='total-votes'>{tirkets}</span>
                     </Col>
-                    <Col xxl={12} xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <Col xxl={{span: 8, offset: 0}} xl={{span: 8, offset: 0}} lg={{span: 12, offset: 12}} md={{span: 8, offset: 16}} sm={{span: 8, offset: 16}} xs={{span: 8, offset: 16}}>
                         Dividends: <span className='pending-dividend'>{dividends}</span>
                             <Button
                                 title='Receive'
                                 click={this.getAllDividends.bind(this)}
-                                style={this.state.value === item.privateKey ? {display: 'inline-block'} : {display: 'none'}}
+                                style={
+                                    this.state.value === item.privateKey
+                                    ? {display: 'inline-block'} : {display: 'none'}
+                                }
                             />
                     </Col>
                 </Row>
@@ -159,18 +151,43 @@ export default class AElfWallet extends PureComponent {
 
     getAllDividends() {
         // GetAllDividends
-        this.consensus.ReceiveAllDividends();
-        Message.success('Redemption success!');
+        this.setState({
+            loadingTip: 'In redemption, please wait...'
+        });
+        const dividends = this.consensus.ReceiveAllDividends().hash;
+        if (dividends) {
+            console.log(dividends);
+            this.setState({
+                loading: true
+            });
+            const state = aelf.chain.getTxResult(dividends);
+            setTimeout(() => {
+                getStateJudgment(state.result.tx_status);
+                this.setState({
+                    loading: false
+                });
+            }, 4000);
+        }
     }
 
     onRefresh() {
-        this.pushWalletInfo();
+        this.setState({
+            loadingTip: 'Loading......'
+        });
+        if (!this.state.isRefresh) {
+            this.setState({
+                loading: true
+            });
+            setTimeout(() => {
+                this.pushWalletInfo();
+                this.setState({
+                    loading: false
+                });
+            }, 4000);
+        }
     }
 
     render() {
-        console.log('更新了');
-        const walletHtml = this.getWalletInfo();
-        const unbindButton = this.getUnbindButton();
         const walletAssetInfo = this.getWalletAssetInfo();
         return (
             <div className='AElf-Wallet'>
@@ -182,31 +199,34 @@ export default class AElfWallet extends PureComponent {
                         <Button title='+ New Wallet' />
                     </div>
                 </div>
-                <div className='AElf-Wallet-body'>
-                <Row>
-                    <Col span='12' className='AElf-Wallet-name'>
-                        <Col span='14'>
-                            <RadioGroup onChange={this.onChange.bind(this)} value={this.state.value}>
-                                {walletHtml}
-                            </RadioGroup>
+                <Spin
+                    tip={this.state.loadingTip}
+                    size='large'
+                    spinning={this.state.loading}
+                >
+                    <div className='AElf-Wallet-body'>
+                    <Row>
+                        <Col span='22'>
+                                <RadioGroup
+                                    onChange={this.changeRadio.bind(this)}
+                                    value={JSON.parse(localStorage.currentWallet).privateKey}
+                                    className='AElf-Wallet-info'
+                                >
+                                    {walletAssetInfo}
+                                </RadioGroup>
                         </Col>
-                        <Col span='10'>
-                            {unbindButton}
+                        <Col span='2'>
+                            <div onClick={this.onRefresh.bind(this)}>
+                                <Svg
+                                    className={this.state.loading ? 'refresh-animate' : ''}
+                                    icon='refresh'
+                                    style={{marginTop: '30px', width: '60px', height: '45px', float: 'right'}}
+                                />
+                            </div>
                         </Col>
-                    </Col>
-                    <Col span='10' className='AElf-Wallet-info'>
-                        {walletAssetInfo}
-                    </Col>
-                    <Col span='2'>
-                        <div onClick={this.onRefresh.bind(this)}>
-                            <Svg
-                                icon='refresh'
-                                style={{marginTop: '30px', width: '60px', height: '60px', float: 'right'}}
-                            />
-                        </div>
-                    </Col>
-                </Row>
-                </div>
+                    </Row>
+                    </div>
+                </Spin>
             </div>
         );
     }

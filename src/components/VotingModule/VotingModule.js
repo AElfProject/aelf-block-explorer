@@ -4,7 +4,7 @@
 */
 
 import React, {PureComponent} from 'react';
-import {Row, Col, Modal} from 'antd';
+import {Row, Col, Modal, Spin} from 'antd';
 import MyVote from './MyVote/MyVote';
 import VoteTable from './VoteTable/VoteTable';
 import Svg from '../../components/Svg/Svg';
@@ -32,7 +32,8 @@ export default class VotingModule extends PureComponent {
             showVote: true,
             showVotingRecord: false,
             showMyVote: false,
-            refresh: 0
+            refresh: 0,
+            isRefresh: false
         };
     }
 
@@ -114,20 +115,75 @@ export default class VotingModule extends PureComponent {
     }
 
     onRefresh() {
-        this.setState({
-            showVotingRecord: false,
-            showMyVote: false,
-            showVote: true,
-            refresh: this.state.refresh + 1
-        });
+        if (!this.state.isRefresh) {
+            this.setState({
+                isRefresh: true
+            });
+            setTimeout(() => {
+                let wheels = parseInt(consensus.GetCurrentRoundNumber().return, 16);
+                let session = parseInt(consensus.GetTermNumberByRoundNumber(wheels).return, 16);
+                this.setState({
+                    session,
+                    refresh: ++this.state.refresh,
+                    isRefresh: false
+                });
+            }, 4000);
+        }
+    }
+
+    getVoteTable() {
+        return (
+            <VoteTable
+                style={this.state.showVote ? {display: 'block'} : {display: 'none'}}
+                showVote={this.showVote.bind(this)}
+                showRedeem={this.showRedeem.bind(this)}
+                handleClose={this.handleClose.bind(this)}
+                obtainInfo={this.obtainInfo.bind(this)}
+                currentWallet={this.state.currentWallet}
+                showMyVote={this.showMyVote.bind(this)}
+                refresh={this.state.refresh}
+            />
+        );
+    }
+
+    getMyVote() {
+        return (
+            <MyVote
+                style={this.state.showMyVote ? {display: 'block'} : {display: 'none'}}
+                showVote={this.showVote.bind(this)}
+                showRedeem={this.showRedeem.bind(this)}
+                handleClose={this.handleClose.bind(this)}
+                obtainInfo={this.obtainInfo.bind(this)}
+                currentWallet={this.state.currentWallet}
+                refresh={this.state.refresh}
+            />
+        );
+    }
+
+    getVotingRecord() {
+        return (
+            <VotingRecord
+                style={this.state.showVotingRecord ? {display: 'block'} : {display: 'none'}}
+                currentWallet={this.state.currentWallet}
+                refresh={this.state.refresh}
+            />
+        );
     }
 
     render() {
         const {isVote, isRedeem} = this.state;
+        const voteTable = this.getVoteTable();
+        const myVote = this.getMyVote();
+        const votingRecord = this.getVotingRecord();
         return (
             <div className='voting-module' ref='voting'>
+                <Spin
+                    spinning={this.state.isRefresh}
+                    tip='Loading...'
+                    size='large'
+                >
                 <div className='voting-module-head'>
-                    <Row>
+                    <Row type='flex' align='middle'>
                         <Col
                             xs={10} sm={10} md={10} lg={9} xl={16}
                         >
@@ -165,37 +221,20 @@ export default class VotingModule extends PureComponent {
                         </Col>
                         <Col xs={2} sm={2} md={2} lg={1} xl={1}>
                             <Svg
+                                className={this.state.isRefresh ? 'refresh-animate' : ''}
                                 icon='refresh'
-                                style={{marginTop: '-20px', width: '60px', height: '60px', float: 'right'}}
+                                style={{width: '60px', height: '45px', float: 'right'}}
                                 onClick={this.onRefresh.bind(this)}
                             />
                         </Col>
                     </Row>
                 </div>
                 <div className='voting-module-module'>
-                    <VoteTable
-                        style={this.state.showVote ? {display: 'block'} : {display: 'none'}}
-                        showVote={this.showVote.bind(this)}
-                        showRedeem={this.showRedeem.bind(this)}
-                        handleClose={this.handleClose.bind(this)}
-                        obtainInfo={this.obtainInfo.bind(this)}
-                        currentWallet={this.state.currentWallet}
-                        showMyVote={this.showMyVote.bind(this)}
-                        refresh={this.state.refresh}
-                    />
-                    <MyVote
-                        style={this.state.showMyVote ? {display: 'block'} : {display: 'none'}}
-                        showVote={this.showVote.bind(this)}
-                        showRedeem={this.showRedeem.bind(this)}
-                        handleClose={this.handleClose.bind(this)}
-                        obtainInfo={this.obtainInfo.bind(this)}
-                        currentWallet={this.state.currentWallet}
-                    />
-                    <VotingRecord
-                        style={this.state.showVotingRecord ? {display: 'block'} : {display: 'none'}}
-                        currentWallet={this.state.currentWallet}
-                    />
+                    {voteTable}
+                    {myVote}
+                    {votingRecord}
                 </div>
+                </Spin>
                 <Modal
                     visible={isVote}
                     title='Vote'

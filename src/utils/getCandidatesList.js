@@ -26,7 +26,7 @@ import {MINERSPRIVATEKEY} from '../../config/config';
 //     }
 // };
 
-export default function getCandidatesList(currentWallet) {
+export default function getCandidatesList(currentWallet, startIndex) {
     let wallet = null;
     let isVote = null;
     if (currentWallet.publicKey === '') {
@@ -37,56 +37,36 @@ export default function getCandidatesList(currentWallet) {
         wallet = getWallet(currentWallet.privateKey);
         isVote = true;
     }
-
-    const consensus = getConsensus(wallet);
-    let candidatesList = JSON.parse(hexCharCodeToStr(consensus.GetCandidatesListToFriendlyString().return));
-    console.log(JSON.parse(hexCharCodeToStr(consensus.GetCurrentElectionInfoToFriendlyString(0, 20, 0).return)));
     let dataList = [];
-    if (JSON.stringify(candidatesList) !== '{}') {
-        for (let i = 0, len = candidatesList.Values.length; i < len; i++) {
-            let data = {};
-            let information = JSON.parse(
-                hexCharCodeToStr(consensus.GetCandidateHistoryInfoToFriendlyString(candidatesList.Values[i]).return)
-            );
-            let ticketsInfo = JSON.parse(
-                hexCharCodeToStr(consensus.GetTicketsInfoToFriendlyString(candidatesList.Values[i]).return)
-            );
-            let nodeName = hexCharCodeToStr(consensus.QueryAlias(candidatesList.Values[i]).return);
-            let votingRecords = ticketsInfo.VotingRecords;
-            let myVote = 0;
-            let vote = 0;
-            let redeem = true;
-            if (votingRecords) {
-                for (let j = 0; j < votingRecords.length; j++) {
-                    if (
-                        votingRecords[j].From === JSON.parse(localStorage.currentWallet).publicKey
-                        && !votingRecords[j].IsWithdrawn
-                    ) {
-                        myVote += parseInt(votingRecords[j].Count, 10);
-                    }
-
-                    if (
-                        votingRecords[j].To === candidatesList.Values[i]
-                        && !votingRecords[j].IsWithdrawn
-                    ) {
-                        vote += parseInt(votingRecords[j].Count, 10);
-                    }
+    const consensus = getConsensus(wallet);
+    const nodeList = JSON.parse(
+        hexCharCodeToStr(
+            consensus.GetPageableCandidatesHistoryInfoToFriendlyString(startIndex.page, startIndex.pageSize).return
+        )
+    );
+    let CandidatesNumber = nodeList.CandidatesNumber;
+    let nodeListMaps = nodeList.Maps;
+    let nodePublicKeyList = null;
+    if (nodeListMaps) {
+        nodePublicKeyList = Object.keys(nodeListMaps);
+        for (let i = 0; i < nodePublicKeyList.length; i++) {
+            let nodeInformation = nodeListMaps[nodePublicKeyList[i]];
+            let data = {
+                key: startIndex.page + i + 1,
+                serialNumber: startIndex.page + i + 1,
+                nodeName: nodeInformation.CurrentAlias,
+                term: nodeInformation.ReappointmentCount || '-',
+                block: nodeInformation.ProducedBlocks || '-',
+                vote: nodeInformation.CurrentVotesNumber || '-',
+                myVote: 0 || '-',
+                operation: {
+                    publicKey: nodePublicKeyList[i] || '',
+                    vote: isVote,
+                    redeem: true
                 }
-            }
-            data.key = i + 1;
-            data.serialNumber = data.key;
-            data.term = information.ContinualAppointmentCount || '-';
-            data.block = information.ProducedBlocks || '-';
-            data.vote = vote || '-';
-            data.nodeName = nodeName;
-            data.myVote = myVote || '-';
-            data.operation = {
-                publicKey: information.PublicKey,
-                vote: isVote,
-                redeem
             };
             dataList.push(data);
         }
     }
-    return dataList;
+    return {dataList, CandidatesNumber, nodePublicKeyList};
 }

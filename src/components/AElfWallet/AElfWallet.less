@@ -2,6 +2,8 @@
 
 .AElf-Wallet {
     margin: 44px 160px;
+    color: #fff;
+
     .AElf-Wallet-head {
         height: 50px;
         line-height: 50px;
@@ -23,9 +25,14 @@
     }
     .AElf-Wallet-body {
         background: rgba(57, 0, 77, 0.3);
+        color: #fff;
 
         .wallet-name {
             font-size: 16px;
+            color: #fff;
+        }
+
+        .ant-row {
             color: #fff;
         }
     }
@@ -70,12 +77,11 @@
 }
 
 .wallet-name {
-    text-indent: 17px;
+    text-indent: 10px;
     display: inline-block;
 }
 
 .AElf-Wallet-info {
-    padding: 46px 0 56px 28px;
     color: #fff;
     font-size: 16px;
     // border-left: 1px solid #76399c;
@@ -96,110 +102,15 @@
 .AElf-Wallet-info .ant-row-flex {
     margin-bottom: 15px;
 }
-@media (min-width: 1600px) {
-    .ant-radio-wrapper {
-        height: 29px !important;
-        font-size: 16px;
-    }
 
-    .wallet-button-box {
-        height: 29px !important;
-        font-size: 16px;
-    }
-
-    .AElf-Wallet-info {
-        border-left: none;
-        font-size: 16px;
-    }
+.refresh-animate {
+    transition: All 4s linear;
+    transform: rotate(1440deg);
 }
 
-@media (min-width: 1200px) {
-    .ant-radio-wrapper {
-        height: 50px;
-        font-size: 14px;
-    }
 
-    .wallet-button-box {
-        height: 50px;
-        font-size: 14px;
-    }
-
-    .AElf-Wallet-info {
-        border-left: none;
-        font-size: 14px;
-    }
-}
-
-@media (min-width: 992px) {
-    .AElf-Wallet .AElf-Wallet-body .wallet-name {
-        text-indent: 0;
-        font-size: 14px;
-    }
-
-    .ant-radio-wrapper {
-        height: 50px;
-        font-size: 14px;
-    }
-
-    .wallet-button-box {
-        height: 50px;
-        font-size: 14px;
-    }
-
-    .AElf-Wallet-info {
-        border-left: none;
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 992px) {
+@media screen and (max-width: 990px){
     .AElf-Wallet {
-        margin: 44px 20px;
-    }
-    
-    .AElf-Wallet-name {
-        padding: 46px 0 56px 12px;
-    }
-
-    .AElf-Wallet .AElf-Wallet-body .wallet-name {
-        text-indent: 0;
-        font-size: 14px;
-    }
-
-    .ant-radio-wrapper {
-        height: 50px;
-        font-size: 14px;
-    }
-
-    .wallet-button-box {
-        height: 50px;
-        font-size: 14px;
-    }
-
-    .AElf-Wallet-info {
-        border-left: none;
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 768px) {
-    .ant-radio-wrapper {
-        height: 62px;
-        font-size: 12px;
-    }
-
-    .AElf-Wallet .AElf-Wallet-body .wallet-name {
-        text-indent: 0;
-        font-size: 12px;
-    }
-
-    .wallet-button-box {
-        height: 62px;
-        font-size: 12px;
-    }
-
-    .AElf-Wallet-info {
-        border-left: none;
-        font-size: 12px;
+        margin: 20px;
     }
 }

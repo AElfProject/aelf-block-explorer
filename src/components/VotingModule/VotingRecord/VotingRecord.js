@@ -8,32 +8,48 @@ import {Table} from 'antd';
 import './VotingRecord.less';
 import getVotingRecord from '../../../utils/getVotingRecord';
 
+let page = 0;
+let pageSize = 10;
 export default class VotingRecord extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             currentWallet: this.props.currentWallet,
             refresh: 0,
+            loading: false,
             pagination: {
                 showQuickJumper: true,
-                showSizeChanger: true,
                 total: 0,
                 showTotal: total => `Total ${total} items`,
                 onChange: () => {
-                    const setTop = this.refs.voting.offsetTop;
-                    window.scrollTo(0, setTop);
-                },
-                onShowSizeChange: (current, size) => {
-                    console.log(current);
-                    console.log(size);
+                    // const setTop = this.refs.voting.offsetTop;
+                    // window.scrollTo(0, setTop);
                 }
             },
             data: null
         };
     }
 
-    componentDidMount() {
-        this.getVotingRecordData();
+    votingRecordsData = async (params = {}) => {
+        this.setState({
+            loading: true
+        });
+        const data = getVotingRecord(this.state.currentWallet, ...params);
+        let pagination = this.state.pagination;
+        pagination.total = parseInt(data.historiesNumber, 10);
+        if (data.dataList) {
+            this.setState({
+                data: data.dataList,
+                loading: false
+            });
+        }
+    }
+
+    async componentDidMount() {
+        await this.votingRecordsData({
+            page,
+            pageSize
+        });
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -54,23 +70,52 @@ export default class VotingRecord extends PureComponent {
 
     componentDidUpdate(prevProps) {
         if (prevProps.currentWallet !== this.props.currentWallet) {
+            page = 0;
+            pageSize = 10;
+            let pageOption = this.state.pagination;
+            pageOption.current = 1;
             this.setState({
-                data: getVotingRecord(this.state.currentWallet)
+                pagination: pageOption
             });
+            this.votingRecordsData(
+                {
+                    page,
+                    pageSize
+                }
+            );
         }
 
         if (prevProps.refresh !== this.props.refresh) {
+            console.log('aaaa');
+            page = 0;
+            pageSize = 10;
+            let pageOption = this.state.pagination;
+            pageOption.current = 1;
             this.setState({
-                data: getVotingRecord(this.state.currentWallet)
+                pagination: pageOption
             });
+            this.votingRecordsData(
+                {
+                    page,
+                    pageSize
+                }
+            );
         }
     }
 
-    getVotingRecordData() {
+    handleTableChange = pagination => {
+        let pageOption = {...this.state.pagination};
+        pageOption.current = pagination.current;
         this.setState({
-            data: getVotingRecord(this.state.currentWallet)
+            pagination: pageOption
         });
-    }
+        page = 10 * (pagination.current - 1);
+        pageSize = page + 10;
+        this.votingRecordsData({
+            page,
+            pageSize
+        });
+    };
 
     getVotingInfoColumn() {
         const voteInfoColumn = [
@@ -115,7 +160,8 @@ export default class VotingRecord extends PureComponent {
     }
 
     render() {
-        const {pagination, data} = this.state;
+        const {pagination, data, loading} = this.state;
+        const {handleTableChange} = this;
         const getVotingInfoColumn = this.getVotingInfoColumn();
         return (
             <div className='Voting-Record' style={this.props.style} ref='voting'>
@@ -123,6 +169,8 @@ export default class VotingRecord extends PureComponent {
                     columns={getVotingInfoColumn}
                     pagination={pagination}
                     dataSource={data}
+                    onChange={handleTableChange}
+                    loading={loading}
                 />
             </div>
         );
