@@ -60,10 +60,9 @@ export default class Redeem extends PureComponent {
             this.setState({
                 loading: true
             });
-            const state = aelf.chain.getTxResult(redeem);
-            console.log(state);
             setTimeout(() => {
                 message.info('No withdrawal and transfer operations during the voting lock period!');
+                const state = aelf.chain.getTxResult(redeem);
                 getStateJudgment(state.result.tx_status);
                 this.setState({
                     loading: false

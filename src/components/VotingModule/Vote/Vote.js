@@ -92,9 +92,9 @@ export default class Vote extends PureComponent {
                 this.setState({
                     loading: true
                 });
-                const state = aelf.chain.getTxResult(vote);
                 setTimeout(() => {
                     message.info('No withdrawal and transfer operations during the voting lock period!');
+                    const state = aelf.chain.getTxResult(vote);
                     getStateJudgment(state.result.tx_status);
                     this.setState({
                         loading: false

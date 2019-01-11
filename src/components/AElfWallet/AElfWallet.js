@@ -156,12 +156,11 @@ export default class AElfWallet extends PureComponent {
         });
         const dividends = this.consensus.ReceiveAllDividends().hash;
         if (dividends) {
-            console.log(dividends);
             this.setState({
                 loading: true
             });
-            const state = aelf.chain.getTxResult(dividends);
             setTimeout(() => {
+                const state = aelf.chain.getTxResult(dividends);
                 getStateJudgment(state.result.tx_status);
                 this.setState({
                     loading: false
