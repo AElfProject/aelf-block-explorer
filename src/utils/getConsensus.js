@@ -3,8 +3,8 @@
  * @author zhouminghui
 */
 
-import {aelf, CONSENSUSADDRESS} from '../utils';
-export default function getConsensus(wallet) {
+import {aelf} from '../utils';
+export default function getConsensus(CONSENSUSADDRESS, wallet) {
     const consensus = aelf.chain.contractAt(CONSENSUSADDRESS, wallet);
     return consensus;
 }

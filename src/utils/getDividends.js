@@ -3,8 +3,8 @@
  * @author zhouminghui
  */
 
-import {aelf, DIVIDENDSADDRESS} from '../utils';
-export default function getDividends(wallet) {
+import {aelf} from '../utils';
+export default function getDividends(DIVIDENDSADDRESS, wallet) {
     const dividends = aelf.chain.contractAt(DIVIDENDSADDRESS, wallet);
     return dividends;
 }

@@ -28,7 +28,8 @@ export default class MyVote extends PureComponent {
                 }
             },
             loading: false,
-            data: null
+            data: null,
+            contracts: this.props.contracts
         };
     }
 
@@ -42,11 +43,12 @@ export default class MyVote extends PureComponent {
     }
 
     votingRecordInformation = async (params = {}) => {
+        const {contracts} = this.state;
         this.setState({
             loading: true
         });
 
-        const data = getMyVoteData(this.state.currentWallet, ...params);
+        const data = getMyVoteData(this.state.currentWallet, ...params, contracts.CONSENSUSADDRESS);
         let dataList = null;
         if (data.dataList) {
             dataList = data.dataList;

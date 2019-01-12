@@ -8,9 +8,9 @@ import getConsensus from './getConsensus';
 import getWallet from './getWallet';
 import hexCharCodeToStr from './hexCharCodeToStr';
 
-export default function getCurrentVoting(currentWallet) {
+export default function getCurrentVotingRecord(CONSENSUSADDRESS, currentWallet) {
     const wallet = getWallet(currentWallet.privateKey);
-    const consensus = getConsensus(wallet);
+    const consensus = getConsensus(CONSENSUSADDRESS, wallet);
     const votingRecord = JSON.parse(
         hexCharCodeToStr(
             consensus.GetTicketsInfoToFriendlyString(currentWallet.publicKey).return

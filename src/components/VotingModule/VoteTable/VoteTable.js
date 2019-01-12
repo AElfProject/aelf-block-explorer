@@ -30,9 +30,13 @@ export default class VoteTable extends PureComponent {
                     // const setTop = this.refs.voting.offsetTop;
                     // window.scrollTo(0, setTop);
                 }
-            }
+            },
+            contracts: this.props.contracts
         };
-        this.currentVotingRecord = getCurrentVotingRecord(this.props.currentWallet).VotingRecords;
+        this.currentVotingRecord = getCurrentVotingRecord(
+            this.props.contracts.CONSENSUSADDRESS,
+            this.props.currentWallet
+        ).VotingRecords;
     }
     // 定义表格的字段与数据
     // 拆出去没办法获取state的状态
@@ -105,7 +109,10 @@ export default class VoteTable extends PureComponent {
                             }
                             />
                             <Button title='Redeem' style={isVote} click={() => {
-                                    this.props.showMyVote();
+                                    if (text.redeem) {
+                                        this.props.showMyVote();
+                                    }
+                                    
                                 }
                             }
                             />
@@ -127,36 +134,28 @@ export default class VoteTable extends PureComponent {
     }
 
     nodeListInformation = async (params = {}) => {
+        const {contracts} = this.state;
         this.setState({
             loading: true
         });
-        const data = getCandidatesList(this.state.currentWallet, ...params);
-        let dataList = null;
-        let currentVotingRecord = this.currentVotingRecord;
+        const data = getCandidatesList(this.state.currentWallet, ...params, contracts.CONSENSUSADDRESS);
+        let dataList = data.dataList || [];
+        let currentVotingRecord = this.currentVotingRecord || [];
         let pagination = this.state.pagination;
         pagination.total = data.CandidatesNumber;
-        if (data.dataList) {
-            dataList = data.dataList;
-            for (let i = 0; i < dataList.length; i++) {
-                let myVote = 0;
-                if (currentVotingRecord) {
-                    for (let j = 0; j < currentVotingRecord.length; j++) {
-                        if (currentVotingRecord[j].To === dataList[i].operation.publicKey) {
-                            myVote += parseInt(currentVotingRecord[j].Count, 10);
-                        }
-                    }
-                }
-                if (myVote === 0) {
-                    dataList[i].myVote = '-';
-                }
-                else {
-                    dataList[i].myVote = myVote;
+        dataList.map((item, index) => {
+            let myVote = 0;
+            for (let j = 0, len = currentVotingRecord.length; j < len; j++) {
+                if (currentVotingRecord[j].To === item.operation.publicKey) {
+                    myVote += parseInt(currentVotingRecord[j].Count, 10);
                 }
             }
-        }
+            item.myVote = myVote === 0 ? '-' : myVote.toLocaleString();
+            item.operation.redeem = item.myVote === '-' ? false : true;
+        });
         this.setState({
             loading: false,
-            data: dataList || null,
+            data: dataList || [],
             pagination
         });
     }
@@ -204,7 +203,10 @@ export default class VoteTable extends PureComponent {
             this.setState({
                 pagination: pageOption
             });
-            this.currentVotingRecord = getCurrentVotingRecord(this.props.currentWallet).VotingRecords;
+            this.currentVotingRecord = getCurrentVotingRecord(
+                this.state.contracts.CONSENSUSADDRESS,
+                this.props.currentWallet
+            ).VotingRecords;
             await this.nodeListInformation(
                 {
                     page,
@@ -213,7 +215,10 @@ export default class VoteTable extends PureComponent {
             );
         }
         if (prevProps.refresh !== this.props.refresh) {
-            this.currentVotingRecord = getCurrentVotingRecord(this.props.currentWallet).VotingRecords;
+            this.currentVotingRecord = getCurrentVotingRecord(
+                this.state.contracts.CONSENSUSADDRESS,
+                this.props.currentWallet
+            ).VotingRecords;
             await this.nodeListInformation(
                 {
                     page,

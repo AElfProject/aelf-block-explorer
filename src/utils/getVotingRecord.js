@@ -7,7 +7,9 @@
 import getWallet from './getWallet';
 import getConsensus from './getConsensus';
 import hexCharCodeToStr from './hexCharCodeToStr';
-import formatUtcToDate from './formatUtcToDate';
+import dayjs from 'dayjs';
+
+// Data formatted format
 // const data = [
 //     {
 //         key: '1',
@@ -17,25 +19,16 @@ import formatUtcToDate from './formatUtcToDate';
 //         number: '2000',
 //         state: '成功',
 //         time: '2018-11-11'
-//     },
-//     {
-//         key: '2',
-//         serialNumber: '2',
-//         nodeName: 'aelf-hdbo-1234',
-//         type: '投票',
-//         number: '30',
-//         state: '成功',
-//         time: '2018-11-11'
 //     }
 // ];
 
-export default function getVotingRecord(currentWallet, startIndex) {
+export default function getVotingRecord(currentWallet, startIndex, CONSENSUSADDRESS) {
     let dataList = [];
     if (!currentWallet) {
         return dataList;
     }
     const wallet = getWallet(currentWallet.privateKey);
-    const consensus = getConsensus(wallet);
+    const consensus = getConsensus(CONSENSUSADDRESS, wallet);
     let ticketsHistoriesData = JSON.parse(
         hexCharCodeToStr(
             consensus.GetPageableTicketsHistoriesToFriendlyString(
@@ -43,24 +36,19 @@ export default function getVotingRecord(currentWallet, startIndex) {
             ).return
         )
     );
-    console.log(ticketsHistoriesData);
     const historiesNumber = ticketsHistoriesData.HistoriesNumber;
-    if (ticketsHistoriesData.Values) {
-        const ticketsList = ticketsHistoriesData.Values;
-        for (let i = 0; i < ticketsList.length; i++) {
-            const ticketsData = ticketsList[i];
-            let data = {
-                key: startIndex.page + i + 1,
-                serialNumber: startIndex.page + i + 1,
-                nodeName: ticketsData.CandidateAlias || '-',
-                type: ticketsData.Type || '-',
-                number: ticketsData.VotesNumber || '-',
-                state: ticketsData.State ? 'success' : 'failed',
-                time: formatUtcToDate(ticketsData.Timestamp) || '-'
-            };
-            dataList.push(data);
-        }
-
-    }
+    let values = ticketsHistoriesData.Values || [];
+    values.map((item, index) => {
+        let data = {
+            key: startIndex.page + index + 1,
+            serialNumber: startIndex.page + index + 1,
+            nodeName: item.CandidateAlias || '-',
+            type: item.Type || '-',
+            number: item.VotesNumber || '-',
+            state: item.State ? 'success' : 'failed',
+            time: dayjs(item.Timestamp).format('YYYY-MM-DD') || '-'
+        };
+        dataList.push(data);
+    });
     return {dataList, historiesNumber};
 }

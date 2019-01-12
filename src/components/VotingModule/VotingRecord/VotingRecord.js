@@ -26,15 +26,17 @@ export default class VotingRecord extends PureComponent {
                     // window.scrollTo(0, setTop);
                 }
             },
-            data: null
+            data: null,
+            contracts: this.props.contracts
         };
     }
 
     votingRecordsData = async (params = {}) => {
+        const {contracts} = this.state;
         this.setState({
             loading: true
         });
-        const data = getVotingRecord(this.state.currentWallet, ...params);
+        const data = getVotingRecord(this.state.currentWallet, ...params, contracts.CONSENSUSADDRESS);
         let pagination = this.state.pagination;
         pagination.total = parseInt(data.historiesNumber, 10);
         if (data.dataList) {
@@ -86,7 +88,6 @@ export default class VotingRecord extends PureComponent {
         }
 
         if (prevProps.refresh !== this.props.refresh) {
-            console.log('aaaa');
             page = 0;
             pageSize = 10;
             let pageOption = this.state.pagination;

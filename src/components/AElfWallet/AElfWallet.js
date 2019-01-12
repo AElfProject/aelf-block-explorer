@@ -1,16 +1,15 @@
 /**
  * @file AElfWallet
  * @author zhouminghui
- * 最小屏适配可能会出现一些小问题 待查看
- * 每次重新获取资产大概都需要把this.balance重置 直到我找到更好的解决办法。
+ * // TODO waiting for web extension
 */
 
 import React, {PureComponent} from 'react';
-import {Row, Col, Radio, Message, Spin} from 'antd';
+import {Row, Col, Radio, Spin} from 'antd';
 import Button from '../Button/Button';
 import Svg from '../Svg/Svg';
-import {tokenContract, aelf} from '../../utils';
-import formatNumber from '../../utils/formatNumber';
+import {aelf} from '../../utils';
+import getHexNumber from '../../utils/getHexNumber';
 import hexCharCodeToStr from '../../utils/hexCharCodeToStr';
 import getDividends from '../../utils/getDividends';
 import getConsensus from '../../utils/getConsensus';
@@ -23,18 +22,21 @@ const RadioGroup = Radio.Group;
 export default class AElfWallet extends PureComponent {
     constructor(props) {
         super(props);
+        let contracts = this.props.contracts;
         this.walletInfo = JSON.parse(localStorage.walletInfoList);
         if (this.walletInfo != null) {
             this.wallet = getWallet(JSON.parse(localStorage.currentWallet).privateKey);
         }
-        this.consensus = getConsensus(this.wallet);
-        this.dividends = getDividends(this.wallet);
+        this.consensus = getConsensus(contracts.CONSENSUSADDRESS, this.wallet);
+        this.dividends = getDividends(contracts.DIVIDENDSADDRESS, this.wallet);
+        this.tokenContract = contracts.tokenContract;
         this.state = {
             walletInfo: this.walletInfo,
             value: JSON.parse(localStorage.currentWallet).privateKey,
             refresh: 0,
             loading: false,
-            loadingTip: null
+            loadingTip: null,
+            contracts: this.props.contracts
         };
     }
 
@@ -43,26 +45,22 @@ export default class AElfWallet extends PureComponent {
     }
 
     pushWalletInfo = async () => {
-        let walletInfo = this.state.walletInfo;
-        if (walletInfo != null) {
-            for (let i = 0; i < walletInfo.length; i++) {
-                walletInfo[i].balance = parseInt(tokenContract.BalanceOf(walletInfo[i].address).return, 16) || '-';
-                walletInfo[i].dividends = parseInt(
-                    this.dividends.GetAllAvailableDividends(walletInfo[i].publicKey).return, 16
-                ) || '-';
-                walletInfo[i].tirkets = 0;
-                let tirkets = JSON.parse(
-                    hexCharCodeToStr(this.consensus.GetTicketsInfoToFriendlyString(walletInfo[i].publicKey).return)
-                ).VotingRecords;
-                if (tirkets !== undefined) {
-                    for (let j = 0; j < tirkets.length; j++) {
-                        if (tirkets[j].From === walletInfo[i].publicKey) {
-                            walletInfo[i].tirkets += parseInt(tirkets[j].Count, 10);
-                        }
-                    }
+        let walletInfo = this.state.walletInfo || [];
+        walletInfo.map((item, index) => {
+            walletInfo[index].balance = getHexNumber(this.tokenContract.BalanceOf(item.address).return) || '-';
+            walletInfo[index].dividends = getHexNumber(
+                this.dividends.GetAllAvailableDividends(item.publicKey).return
+            ) || '-';
+            walletInfo[index].tikets = 0;
+            let tickets = JSON.parse(
+                hexCharCodeToStr(this.consensus.GetTicketsInfoToFriendlyString(item.publicKey).return)
+            ).VotingRecords || [];
+            for (let j = 0, len = tickets.length; j < len; j++) {
+                if (tickets[j].From === item.publicKey) {
+                    item.tikets += parseInt(tickets[j].Count, 10);
                 }
             }
-        }
+        });
         this.setState({
             walletInfo,
             refresh: this.state.refresh + 1
@@ -71,12 +69,13 @@ export default class AElfWallet extends PureComponent {
 
 
     changeRadio(e) {
+        const {contracts} = this.state;
         this.setState({
             value: e.target.value
         });
         this.wallet = getWallet(e.target.value);
-        this.consensus = getConsensus(this.wallet);
-        this.dividends = getDividends(this.wallet);
+        this.consensus = getConsensus(contracts.CONSENSUSADDRESS, this.wallet);
+        this.dividends = getDividends(contracts.DIVIDENDSADDRESS, this.wallet);
         for (let i = 0, len = this.state.walletInfo.length; i < len; i++) {
             if (e.target.value === this.state.walletInfo[i].privateKey) {
                 localStorage.setItem('currentWallet', JSON.stringify(this.state.walletInfo[i]));
@@ -88,27 +87,10 @@ export default class AElfWallet extends PureComponent {
 
     getWalletAssetInfo() {
         const walletAssetInfo = this.state.walletInfo.map((item, index) => {
-            let balance = item.balance;
-            let tirkets = item.tirkets;
-            let dividends = item.dividends;
-            if (tirkets === 0) {
-                tirkets = '-';
-            }
-            else {
-                tirkets = formatNumber(item.tirkets);
-            }
-            if (balance === 0) {
-                balance = '-';
-            }
-            else {
-                balance = formatNumber(item.balance);
-            }
-            if (dividends === 0) {
-                dividends = '-';
-            }
-            else {
-                dividends = formatNumber(item.dividends);
-            }
+            let {balance, tikets, dividends} = item;
+            balance = !!item.balance ? item.balance.toLocaleString() : '-';
+            tikets = !!item.tikets ? item.tikets.toLocaleString() : '-';
+            dividends = !!item.dividends ? item.dividends.toLocaleString() : '-';
 
             return (
                 <Row key={index} type='flex' align='middle' style={{padding: '10px 0'}}>
@@ -125,10 +107,24 @@ export default class AElfWallet extends PureComponent {
                     <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
                         Assets: <span className='total-assets'>{balance}</span>
                     </Col>
-                    <Col xxl={{span: 4, offset: 0}} xl={{span: 4, offset: 0}} lg={{span: 6, offset: 0}} md={{span: 8, offset: 16}} sm={{span: 8, offset: 16}} xs={{span: 8, offset: 16}}>
-                        Votes: <span className='total-votes'>{tirkets}</span>
+                    <Col
+                        xxl={{span: 4, offset: 0}}
+                        xl={{span: 4, offset: 0}}
+                        lg={{span: 6, offset: 0}}
+                        md={{span: 8, offset: 16}}
+                        sm={{span: 8, offset: 16}}
+                        xs={{span: 8, offset: 16}}
+                    >
+                        Votes: <span className='total-votes'>{tikets}</span>
                     </Col>
-                    <Col xxl={{span: 8, offset: 0}} xl={{span: 8, offset: 0}} lg={{span: 12, offset: 12}} md={{span: 8, offset: 16}} sm={{span: 8, offset: 16}} xs={{span: 8, offset: 16}}>
+                    <Col
+                        xxl={{span: 8, offset: 0}}
+                        xl={{span: 8, offset: 0}}
+                        lg={{span: 12, offset: 12}}
+                        md={{span: 8, offset: 16}}
+                        sm={{span: 8, offset: 16}}
+                        xs={{span: 8, offset: 16}}
+                    >
                         Dividends: <span className='pending-dividend'>{dividends}</span>
                             <Button
                                 title='Receive'
@@ -162,6 +158,7 @@ export default class AElfWallet extends PureComponent {
             setTimeout(() => {
                 const state = aelf.chain.getTxResult(dividends);
                 getStateJudgment(state.result.tx_status);
+                this.pushWalletInfo();
                 this.setState({
                     loading: false
                 });

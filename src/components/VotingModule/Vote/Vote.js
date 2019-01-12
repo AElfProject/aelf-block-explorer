@@ -7,7 +7,6 @@ import React, {PureComponent} from 'react';
 import getConsensus from '../../../utils/getConsensus';
 import getWallet from '../../../utils/getWallet';
 import getHexNumber from '../../../utils/getHexNumber';
-import {tokenContract} from '../../../utils';
 import {Row, Col, Select, Input, message, Spin} from 'antd';
 import getStateJudgment from '../../../utils/getStateJudgment';
 import {aelf} from '../../../utils';
@@ -21,7 +20,7 @@ export default class Vote extends PureComponent {
         super(props);
         if (localStorage.currentWallet != null) {
             this.wallet = getWallet(JSON.parse(localStorage.currentWallet).privateKey);
-            this.consensus = getConsensus(this.wallet);
+            this.consensus = getConsensus(this.props.contracts.CONSENSUSADDRESS, this.wallet);
         }
         this.state = {
             period: null,
@@ -32,13 +31,17 @@ export default class Vote extends PureComponent {
             password: null,
             balance: null,
             publicKey: this.props.publicKey,
-            loading: false
+            loading: false,
+            contracts: this.props.contracts
         };
     }
 
     componentDidMount() {
+        const {contracts} = this.state;
         this.setState({
-            balance: getHexNumber(tokenContract.BalanceOf(JSON.parse(localStorage.currentWallet).address)) || 0
+            balance: getHexNumber(
+                contracts.tokenContract.BalanceOf(JSON.parse(localStorage.currentWallet).address).return
+            ) || 0
         });
     }
 

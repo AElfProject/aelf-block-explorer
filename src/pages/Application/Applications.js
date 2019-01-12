@@ -1,7 +1,8 @@
 /**
  * @file
  * @author huangzongzhe  zhouminghui
- * Vote 暂时先放这了 之后会看为何跳转不了的问题  哈哈哈哈哈哈哈哈嗝
+ * 233333
+ * TODO: Vote Resource To migrate out of Application
 */
 
 import React, {Component} from 'react';
@@ -12,9 +13,9 @@ import VotingYieldChart from '../../components/VotingYieldChart/VotingYieldChart
 import AElfWallet from '../../components/AElfWallet/AElfWallet';
 import VotingModule from '../../components/VotingModule/VotingModule';
 import Svg from '../../components/Svg/Svg';
-import {consensus} from '../../utils';
-import formatNumber from '../../utils/formatNumber';
-import {MINERSPRIVATEKEY} from '../../../config/config';
+import {commonPrivateKey} from '../../../config/config';
+import voteContracts from '../../utils/voteContracts';
+import getHexNumber from '../../utils/getHexNumber';
 import './apps.styles.less';
 
 const walletInfo = [
@@ -39,22 +40,21 @@ export default class ApplicationPage extends Component {
         super(props);
         if (walletInfo.length !== 0) {
             localStorage.setItem('walletInfoList', JSON.stringify(walletInfo));
+            if (localStorage.currentWallet === undefined) {
+                localStorage.setItem('currentWallet', JSON.stringify(walletInfo[0]));
+            }
+            if (JSON.parse(localStorage.currentWallet).publicKey === '') {
+                localStorage.setItem('currentWallet', JSON.stringify(walletInfo[0]));
+            }
         }
         else {
             let wallet = {
                 address: '',
                 walletName: '',
-                privateKey: MINERSPRIVATEKEY,
+                privateKey: commonPrivateKey,
                 publicKey: ''
             };
             localStorage.setItem('currentWallet', JSON.stringify(wallet));
-        }
-
-        if (localStorage.currentWallet === undefined) {
-            localStorage.setItem('currentWallet', JSON.stringify(walletInfo[0]));
-            if (JSON.parse(localStorage.currentWallet).publicKey === '') {
-                localStorage.setItem('currentWallet', JSON.stringify(walletInfo[0]));
-            }
         }
 
         this.informationTimer;
@@ -76,7 +76,8 @@ export default class ApplicationPage extends Component {
 
         this.state = {
             currentWallet: JSON.parse(localStorage.currentWallet),
-            information: []
+            information: [],
+            contracts: voteContracts()
         };
     }
 
@@ -85,8 +86,13 @@ export default class ApplicationPage extends Component {
     }
 
     getAElfWallet() {
+        const {contracts} = this.state;
         if (walletInfo.length > 0) {
-            return <AElfWallet title='AElf Wallet' getCurrentWallet={this.getCurrentWallet.bind(this)}/>;
+            return <AElfWallet
+            title='AElf Wallet'
+            getCurrentWallet={this.getCurrentWallet.bind(this)}
+            contracts={contracts}
+        />;
         }
     }
 
@@ -95,9 +101,10 @@ export default class ApplicationPage extends Component {
     }
 
     async getInformation() {
-        this.information[0].info = formatNumber(parseInt(consensus.GetTicketsCount().return, 16));
-        this.information[1].info = formatNumber(parseInt(consensus.GetVotesCount().return, 16));
-        this.information[2].info = formatNumber(parseInt(consensus.QueryCurrentDividends().return, 16));
+        const {contracts} = this.state;
+        this.information[0].info = getHexNumber(contracts.consensus.GetVotesCount().return).toLocaleString();
+        this.information[1].info = getHexNumber(contracts.consensus.GetTicketsCount().return).toLocaleString();
+        this.information[2].info = getHexNumber(contracts.consensus.QueryCurrentDividends().return).toLocaleString();
         this.setState({
             information: this.information || []
         });
@@ -139,6 +146,7 @@ export default class ApplicationPage extends Component {
     }
 
     render() {
+        const {contracts} = this.state;
         const VoteHtml = this.renderVoteInformation();
         return (
             <div className='VotePage'>
@@ -148,10 +156,13 @@ export default class ApplicationPage extends Component {
                         {VoteHtml}
                     </Row>
                 </div>
-                <VotingYieldChart title='Historical voting gains'/>
+                <VotingYieldChart title='Historical voting gains' dividends={contracts.dividends}/>
                 {this.getAElfWallet()}
                 <div className='vote-box' >
-                    <VotingModule currentWallet={this.state.currentWallet} />
+                    <VotingModule
+                        currentWallet={this.state.currentWallet}
+                        contracts={contracts}
+                    />
                 </div>
             </div>
             // <div className='apps-page-container'>AELF Applications List Page.</div>

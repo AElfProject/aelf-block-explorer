@@ -7,7 +7,7 @@
 import getWallet from './getWallet';
 import getConsensus from './getConsensus';
 import hexCharCodeToStr from './hexCharCodeToStr';
-import {MINERSPRIVATEKEY} from '../../config/config';
+import {commonPrivateKey} from '../../config/config';
 
 // let a = {
 //     key: '2',
@@ -26,47 +26,47 @@ import {MINERSPRIVATEKEY} from '../../config/config';
 //     }
 // };
 
-export default function getCandidatesList(currentWallet, startIndex) {
+export default function getCandidatesList(currentWallet, startIndex, CONSENSUSADDRESS) {
     let wallet = null;
-    let isVote = null;
+    let isVote = true;
+    let isRedee = true;
     if (currentWallet.publicKey === '') {
-        wallet = getWallet(MINERSPRIVATEKEY);
+        wallet = getWallet(commonPrivateKey);
         isVote = false;
+        isRedee = false;
     }
     else {
         wallet = getWallet(currentWallet.privateKey);
-        isVote = true;
     }
     let dataList = [];
-    const consensus = getConsensus(wallet);
+    const consensus = getConsensus(CONSENSUSADDRESS, wallet);
     const nodeList = JSON.parse(
         hexCharCodeToStr(
             consensus.GetPageableCandidatesHistoryInfoToFriendlyString(startIndex.page, startIndex.pageSize).return
         )
     );
     let CandidatesNumber = nodeList.CandidatesNumber;
-    let nodeListMaps = nodeList.Maps;
+    let nodeListMaps = nodeList.Maps || [];
     let nodePublicKeyList = null;
-    if (nodeListMaps) {
-        nodePublicKeyList = Object.keys(nodeListMaps);
-        for (let i = 0; i < nodePublicKeyList.length; i++) {
-            let nodeInformation = nodeListMaps[nodePublicKeyList[i]];
-            let data = {
-                key: startIndex.page + i + 1,
-                serialNumber: startIndex.page + i + 1,
-                nodeName: nodeInformation.CurrentAlias,
-                term: nodeInformation.ReappointmentCount || '-',
-                block: nodeInformation.ProducedBlocks || '-',
-                vote: nodeInformation.CurrentVotesNumber || '-',
-                myVote: 0 || '-',
-                operation: {
-                    publicKey: nodePublicKeyList[i] || '',
-                    vote: isVote,
-                    redeem: true
-                }
-            };
-            dataList.push(data);
-        }
+    let serial = 0;
+    for (let i in nodeListMaps) {
+        let nodeInformation = nodeListMaps[i];
+        let data = {
+            key: startIndex.page + serial + 1,
+            serialNumber: startIndex.page + serial + 1,
+            nodeName: nodeInformation.CurrentAlias,
+            term: nodeInformation.ReappointmentCount || '-',
+            block: nodeInformation.ProducedBlocks || '-',
+            vote: nodeInformation.CurrentVotesNumber || '-',
+            myVote: 0 || '-',
+            operation: {
+                publicKey: i || '',
+                vote: isVote,
+                redeem: isRedee
+            }
+        };
+        serial++;
+        dataList.push(data);
     }
     return {dataList, CandidatesNumber, nodePublicKeyList};
 }
