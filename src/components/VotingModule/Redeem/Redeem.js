@@ -54,7 +54,7 @@ export default class Redeem extends PureComponent {
             message.error('Password cannot be empty');
             return;
         }
-        const redeem = this.consensus.WithdrawByTransactionId(this.state.txId).hash;
+        const redeem = this.consensus.WithdrawByTransactionId(this.state.txId, true).hash;
         if (redeem) {
             this.setState({
                 loading: true

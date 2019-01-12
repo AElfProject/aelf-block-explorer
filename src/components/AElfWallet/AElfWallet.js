@@ -57,7 +57,8 @@ export default class AElfWallet extends PureComponent {
             ).VotingRecords || [];
             for (let j = 0, len = tickets.length; j < len; j++) {
                 if (tickets[j].From === item.publicKey) {
-                    item.tikets += parseInt(tickets[j].Count, 10);
+                    let IsWithdrawn = tickets[j].IsWithdrawn || false;
+                    IsWithdrawn ? item.tikets : item.tikets += parseInt(tickets[j].Count, 10);
                 }
             }
         });

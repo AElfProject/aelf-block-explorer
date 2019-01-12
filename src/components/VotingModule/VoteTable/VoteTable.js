@@ -147,7 +147,8 @@ export default class VoteTable extends PureComponent {
             let myVote = 0;
             for (let j = 0, len = currentVotingRecord.length; j < len; j++) {
                 if (currentVotingRecord[j].To === item.operation.publicKey) {
-                    myVote += parseInt(currentVotingRecord[j].Count, 10);
+                    let IsWithdrawn = currentVotingRecord[j].IsWithdrawn || false;
+                    IsWithdrawn ? myVote : myVote += parseInt(currentVotingRecord[j].Count, 10);
                 }
             }
             item.myVote = myVote === 0 ? '-' : myVote.toLocaleString();
