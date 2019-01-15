@@ -1,7 +1,7 @@
 /**
  * @file getMyVoteData.js
  * @author zhouminghui
- * = W = 注释我之后补一下，见谅。。。。
+ * Get my voting list data
  */
 import getWallet from './getWallet';
 import getConsensus from './getConsensus';
@@ -18,12 +18,13 @@ export default function getMyVoteData(currentWallet, startIndex, CONSENSUSADDRES
     const consensus = getConsensus(CONSENSUSADDRESS, wallet);
     const ticketsInfo = JSON.parse(
         hexCharCodeToStr(
-            consensus.GetPageableTicketsInfoToFriendlyString(
+            consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString(
                 currentWallet.publicKey, startIndex.page, startIndex.pageSize
             ).return
         )
     );
     const ticketsInfoList = ticketsInfo.VotingRecords || [];
+    console.log(ticketsInfoList);
     const VotingRecordsCount = ticketsInfo.VotingRecordsCount;
     ticketsInfoList.map((item, index) => {
         let data = {
@@ -31,7 +32,7 @@ export default function getMyVoteData(currentWallet, startIndex, CONSENSUSADDRES
             serialNumber: startIndex.page + index + 1,
             nodeName: hexCharCodeToStr(consensus.QueryAlias(item.To).return),
             term: item.TermNumber,
-            vote: getHexNumber(consensus.QueryObtainedNotExpiredVotes(item.To).return) || '-',
+            vote: getHexNumber(consensus.QueryObtainedVotes(item.To).return) || '-',
             myVote: item.Count,
             lockDate: dayjs(item.VoteTimestamp).format('YYYY-MM-DD'),
             dueDate: dayjs(item.UnlockTimestamp).format('YYYY-MM-DD'),

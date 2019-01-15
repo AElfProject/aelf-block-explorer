@@ -7,6 +7,7 @@ import React, {PureComponent} from 'react';
 import Button from '../../Button/Button';
 import {Table} from 'antd';
 import getMyVoteData from '../../../utils/getMyVoteData';
+import getHexNumber from '../../../utils/getHexNumber';
 
 import './MyVote.less';
 
@@ -34,6 +35,10 @@ export default class MyVote extends PureComponent {
     }
 
     async componentDidMount() {
+        const {contracts} = this.state;
+        this.setState({
+            allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
+        });
         await this.votingRecordInformation(
             {
                 page,
@@ -113,12 +118,14 @@ export default class MyVote extends PureComponent {
 
     async componentDidUpdate(prevProps) {
         if (prevProps.currentWallet !== this.props.currentWallet) {
+            const {contracts} = this.state;
             page = 0;
             pageSize = 10;
             let pageOption = this.state.pagination;
             pageOption.current = 1;
             this.setState({
-                pagination: pageOption
+                pagination: pageOption,
+                allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
             });
             await this.votingRecordInformation(
                 {
@@ -129,12 +136,14 @@ export default class MyVote extends PureComponent {
         }
 
         if (prevProps.refresh !== this.props.refresh) {
+            const {contracts} = this.state;
             page = 0;
             pageSize = 10;
             let pageOption = this.state.pagination;
             pageOption.current = 1;
             this.setState({
-                pagination: pageOption
+                pagination: pageOption,
+                allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
             });
             await this.votingRecordInformation(
                 {
@@ -171,7 +180,7 @@ export default class MyVote extends PureComponent {
                 key: 'vote',
                 align: 'center',
                 render: vote => {
-                    let barWidth = parseInt(vote, 10) / 100000;
+                    let barWidth = (parseInt(vote, 10) / this.state.allVotes) * 100;
                     return (
                         <div className='vote-progress'>
                             <div className='progress-out'>

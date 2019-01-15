@@ -9,6 +9,7 @@ import Button from '../../Button/Button';
 import {Table} from 'antd';
 import getCurrentVotingRecord from '../../../utils/getCurrentVotingRecord';
 import getCandidatesList from '../../../utils/getCandidatesList';
+import getHexNumber from '../../../utils/getHexNumber';
 import './VoteTable.less';
 
 let pageSize = 20;
@@ -31,7 +32,8 @@ export default class VoteTable extends PureComponent {
                     // window.scrollTo(0, setTop);
                 }
             },
-            contracts: this.props.contracts
+            contracts: this.props.contracts,
+            allVotes: 0
         };
         this.currentVotingRecord = getCurrentVotingRecord(
             this.props.contracts.CONSENSUSADDRESS,
@@ -41,6 +43,7 @@ export default class VoteTable extends PureComponent {
     // 定义表格的字段与数据
     // 拆出去没办法获取state的状态
     getVoteInfoColumn() {
+        const {contracts} = this.state;
         const voteInfoColumn = [
             {
                 title: 'Serial number',
@@ -72,7 +75,7 @@ export default class VoteTable extends PureComponent {
                 key: 'vote',
                 align: 'center',
                 render: vote => {
-                    let barWidth = parseInt(vote, 10) / 100000;
+                    let barWidth = (parseInt(vote, 10) / this.state.allVotes) * 100;
                     return (
                         <div className='vote-progress'>
                             <div className='progress-out'>
@@ -125,6 +128,10 @@ export default class VoteTable extends PureComponent {
     }
 
     async componentDidMount() {
+        const {contracts} = this.state;
+        this.setState({
+            allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
+        });
         await this.nodeListInformation(
             {
                 page,
@@ -197,12 +204,14 @@ export default class VoteTable extends PureComponent {
 
     async componentDidUpdate(prevProps) {
         if (prevProps.currentWallet !== this.props.currentWallet) {
+            const {contracts} = this.state;
             page = 0;
             pageSize = 10;
             let pageOption = this.state.pagination;
             pageOption.current = 1;
             this.setState({
-                pagination: pageOption
+                pagination: pageOption,
+                allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
             });
             this.currentVotingRecord = getCurrentVotingRecord(
                 this.state.contracts.CONSENSUSADDRESS,
@@ -216,6 +225,15 @@ export default class VoteTable extends PureComponent {
             );
         }
         if (prevProps.refresh !== this.props.refresh) {
+            const {contracts} = this.state;
+            page = 0;
+            pageSize = 10;
+            let pageOption = this.state.pagination;
+            pageOption.current = 1;
+            this.setState({
+                pagination: pageOption,
+                allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
+            });
             this.currentVotingRecord = getCurrentVotingRecord(
                 this.state.contracts.CONSENSUSADDRESS,
                 this.props.currentWallet
