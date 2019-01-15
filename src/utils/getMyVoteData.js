@@ -40,7 +40,7 @@ export default function getMyVoteData(currentWallet, startIndex, CONSENSUSADDRES
                 txId: item.TransactionId,
                 publicKey: item.To,
                 vote: true,
-                redeem: dayjs(new Date()).unix() < dayjs(item.UnlockTimestamp).unix()
+                redeem: dayjs(new Date()).unix() > dayjs(item.UnlockTimestamp).unix()
             }
         };
         dataList.push(data);

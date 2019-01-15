@@ -18,7 +18,6 @@ import './Redeem.less';
 export default class Redeem extends PureComponent {
     constructor(props) {
         super(props);
-        console.log(this.props);
         if (localStorage.currentWallet != null) {
             this.wallet = getWallet(JSON.parse(localStorage.currentWallet).privateKey);
             this.consensus = getConsensus(this.props.contracts.CONSENSUSADDRESS, this.wallet);
@@ -54,7 +53,7 @@ export default class Redeem extends PureComponent {
             message.error('Password cannot be empty');
             return;
         }
-        const redeem = this.consensus.WithdrawByTransactionId(this.state.txId, true).hash;
+        const redeem = this.consensus.WithdrawByTransactionId(this.state.txId).hash;
         if (redeem) {
             this.setState({
                 loading: true
