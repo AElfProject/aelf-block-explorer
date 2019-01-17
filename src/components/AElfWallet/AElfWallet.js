@@ -158,7 +158,7 @@ export default class AElfWallet extends PureComponent {
             });
             setTimeout(() => {
                 const state = aelf.chain.getTxResult(dividends);
-                getStateJudgment(state.result.tx_status);
+                getStateJudgment(state.result.tx_status, dividends);
                 this.pushWalletInfo();
                 this.setState({
                     loading: false

@@ -5,16 +5,17 @@
 
 import {Message} from 'antd';
 
-export default function getStateJudgment(status) {
+export default function getStateJudgment(status, hash) {
     switch (status) {
         case 'Pending':
-            Message.info('Operation in progress... , Please check the results later', 1);
+            Message.info('The transaction is in progress. Please query the transaction ID', 10);
+            Message.info('Transaction ID: ' + hash, 10);
             break;
         case 'Mined' :
-            Message.success('Successful operation', 1);
+            Message.success('Successful operation', 3);
             break;
         case 'Failed' :
-            Message.error('Operation failed', 1);
+            Message.error('Operation failed', 3);
             break;
     }
 }
