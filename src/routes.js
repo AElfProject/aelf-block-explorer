@@ -1,6 +1,7 @@
 /**
  * @file
  * @author huangzongzhe
+ * TODO: details modified to Resource
 */
 
 import React from 'react';
@@ -25,5 +26,6 @@ export default () => [
     <Route path='/txs/block' component={TxsPage} key='txsblock' />,
     <Route path='/tx/:id' component={TxsDetailPage} key='txsdetail' />,
     <Route path='/apps' component={ApplicationPage} key='apps' />,
-    <Route path='/vote' component={VotePage} key='vote' />
+    <Route path='/vote' component={VotePage} key='vote' />,
+    <Route path='/apps/details/:id' component={VotePage} key='transcationdetails' />
 ];
