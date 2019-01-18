@@ -61,6 +61,9 @@ export default class Redeem extends PureComponent {
             setTimeout(() => {
                 message.info('No withdrawal and transfer operations during the voting lock period!');
                 const state = aelf.chain.getTxResult(redeem);
+                if (state.result.tx_status === 'Mined') {
+                    this.props.onRefresh();
+                }
                 getStateJudgment(state.result.tx_status, redeem);
                 this.setState({
                     loading: false

@@ -43,7 +43,6 @@ export default class VoteTable extends PureComponent {
     // 定义表格的字段与数据
     // 拆出去没办法获取state的状态
     getVoteInfoColumn() {
-        const {contracts} = this.state;
         const voteInfoColumn = [
             {
                 title: 'Serial number',
@@ -75,7 +74,8 @@ export default class VoteTable extends PureComponent {
                 key: 'vote',
                 align: 'center',
                 render: vote => {
-                    let barWidth = (parseInt(vote, 10) / this.state.allVotes) * 100;
+                    let barVote = vote === '-' ? 0 : vote;
+                    let barWidth = (parseInt(barVote, 10) / this.state.allVotes) * 100;
                     return (
                         <div className='vote-progress'>
                             <div className='progress-out'>
