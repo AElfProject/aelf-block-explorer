@@ -256,6 +256,7 @@ export default class VotingModule extends PureComponent {
                         publicKey={this.state.publicKey}
                         handleClose={this.handleClose.bind(this)}
                         contracts={contracts}
+                        onRefresh={this.onRefresh.bind(this)}
                     />
                 </Modal>
                 <Modal
@@ -272,6 +273,7 @@ export default class VotingModule extends PureComponent {
                         txId={this.state.txId}
                         myVote={this.state.myVote}
                         contracts={contracts}
+                        onRefresh={this.onRefresh.bind(this)}
                     />
                 </Modal>
             </div>

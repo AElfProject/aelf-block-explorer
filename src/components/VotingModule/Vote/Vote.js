@@ -98,6 +98,9 @@ export default class Vote extends PureComponent {
                 setTimeout(() => {
                     message.info('No withdrawal and transfer operations during the voting lock period!');
                     const state = aelf.chain.getTxResult(vote);
+                    if (state.result.tx_status === 'Mined') {
+                        this.props.onRefresh();
+                    }
                     getStateJudgment(state.result.tx_status, vote);
                     this.setState({
                         loading: false
