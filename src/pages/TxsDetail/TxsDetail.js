@@ -1,7 +1,7 @@
 import React from "react";
-import { Row, Col } from "antd";
-import { isEmpty, map } from "lodash";
-import { aelf, formatKey } from "../../utils";
+import {Row, Col} from "antd";
+import {isEmpty, map} from "lodash";
+import {aelf, formatKey} from "../../utils";
 
 import "./txsdetail.styles.less";
 

@@ -174,18 +174,18 @@ export default class AddressPage extends React.Component {
             balance,
             value: this.state.value + ' USD',
             // balance: 243.245423465331,
-            // value: "$ 23.23532342"
+            // value: '$ 23.23532342'
         }];
 
         return (
-            <div className="address-container basic-container" key="body">
-                <div className="address-header-container">
+            <div className='address-container basic-container' key='body'>
+                <div className='address-header-container'>
                     <h3>Overview</h3>
                     <Table
-                        className="header-list"
+                        className='header-list'
                         columns={ADDRESS_INFO_COLUMN}
                         dataSource={addressInfo}
-                        rowKey = "address"
+                        rowKey = 'address'
                         pagination={false}
                     />
                 </div>
@@ -196,11 +196,11 @@ export default class AddressPage extends React.Component {
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}
                     pagination={pagination}
-                    rowKey = "tx_id"
+                    rowKey = 'tx_id'
                     loading={txs_loading}
                     onChange={pagination => this.handleTableChange(pagination)}
                 />
-                <div className="basic-bottom-blank"></div>
+                <div className='basic-bottom-blank'></div>
             </div>
         );
     }

@@ -1,9 +1,14 @@
-import React, { PureComponent } from "react";
-import { Menu } from "antd";
-import { Link } from "react-router-dom";
+/**
+ * @file
+ * @author huangzongzhe
+*/
 
-import "./header.styles.less";
-import Search from "./../Search/Search";
+import React, {PureComponent} from 'react';
+import {Menu} from 'antd';
+import {Link} from 'react-router-dom';
+
+import './header.styles.less';
+import Search from './../Search/Search';
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -18,7 +23,7 @@ export default class BrowserHeader extends PureComponent {
         this.state = {
             showSearch: this.getSearchStatus(),
             showMobileMenu: false,
-            current: location.pathname === '/' ? "/home" : location.pathname,
+            current: location.pathname === '/' ? '/home' : location.pathname,
         };
     }
 
@@ -32,7 +37,8 @@ export default class BrowserHeader extends PureComponent {
             } else {
                 showSearch = false;
             }
-        } else {
+        }
+        else {
             showSearch = true;
         }
         return showSearch;
@@ -42,16 +48,15 @@ export default class BrowserHeader extends PureComponent {
     setSeleted() {
         this.timerInterval = setInterval(() => {
             let pathname = '/' + location.pathname.split('/')[1];
-            pathname = pathname === '/' ? "/home" : pathname;
+            pathname = pathname === '/' ? '/home' : pathname;
             if (this.state.current !== pathname) {
                 // white list
-                const whiteList = ['/block', '/address'];
+                const whiteList = ['/block', '/address', '/vote'];
                 if (whiteList.indexOf(pathname) > -1) {
                     pathname = '/blocks';
                 }
 
                 const showSearch = this.getSearchStatus();
-
                 this.setState({
                     current: pathname,
                     showSearch
@@ -100,56 +105,61 @@ export default class BrowserHeader extends PureComponent {
                 // onClick={this.handleClick}
                 selectedKeys={[this.state.current]}
                 mode={menuMode}
-                key="navbar"
+                key='navbar'
                 className={menuClass}
             >
-                <Menu.Item key="/home">
-                    {/*<Icon type="home" />*/}
-                    <Link to="/">HOME</Link>
+                <Menu.Item key='/home'>
+                    {/*<Icon type='home' />*/}
+                    <Link to='/'>HOME</Link>
                 </Menu.Item>
                 <SubMenu
                     title={
-                        <span className="submenu-title-wrapper">
-                            {/*<Icon type="gold" />*/}
+                        <span className='submenu-title-wrapper'>
+                            {/*<Icon type='gold' />*/}
                             BLOCKCHAIN
                         </span>
                     }
-                    className="aelf-submenu-container"
+                    className='aelf-submenu-container'
                 >
-                    <MenuItemGroup title="Block">
-                        <Menu.Item key="/blocks">
-                            {/*<Icon type="gold" />*/}
-                            <Link to="/blocks">View Blocks</Link>
+                    <MenuItemGroup title='Block'>
+                        <Menu.Item key='/blocks'>
+                            {/*<Icon type='gold' />*/}
+                            <Link to='/blocks'>View Blocks</Link>
                         </Menu.Item>
                     </MenuItemGroup>
-                    <MenuItemGroup title="Transaction">
-                        <Menu.Item key="/txs">
-                            {/*<Icon type="pay-circle" />*/}
-                            <Link to="/txs">View Transactions</Link>
+                    <MenuItemGroup title='Transaction'>
+                        <Menu.Item key='/txs'>
+                            {/*<Icon type='pay-circle' />*/}
+                            <Link to='/txs'>View Transactions</Link>
                         </Menu.Item>
                     </MenuItemGroup>
                 </SubMenu>
-                <Menu.Item key="/wallet">
-                    {/*<Icon type="wallet" />*/}
+                <Menu.Item key='/vote'>
+                    {/*<Icon type='appstore' />*/}
+                    <Link to='/vote'>VOTE</Link>
+                    {/* <span>APP CENTER [Building]</span> */}
+                </Menu.Item>
+                <Menu.Item key='/wallet'>
+                    {/*<Icon type='wallet' />*/}
                     <a
-                        href="https://wallet-test.aelf.io/"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href='https://wallet-test.aelf.io/'
+                        target='_blank'
+                        rel='noopener noreferrer'
                     >
                         WALLET
                     </a>
                 </Menu.Item>
-                <Menu.Item key="/apps">
-                    {/*<Icon type="appstore" />*/}
-                    {/*<Link to="/apps">APP CENTER[Building]</Link>*/}
-                    <span>APP CENTER [Building]</span>
+                <Menu.Item key='/apps'>
+                    {/*<Icon type='appstore' />*/}
+                    <Link to='/apps'>APP CENTER[Building]</Link>
+                    {/* <span>APP CENTER [Building]</span> */}
                 </Menu.Item>
-                <Menu.Item key="/about">
-                    {/*<Icon type="profile" />*/}
+                <Menu.Item key='/about'>
+                    {/*<Icon type='profile' />*/}
                     <a
-                        href="https://www.aelf.io/"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href='https://www.aelf.io/'
+                        target='_blank'
+                        rel='noopener noreferrer'
                     >
                         ABOUT
                     </a>
@@ -167,7 +177,7 @@ export default class BrowserHeader extends PureComponent {
     renderMobileMore() {
         return (
             <div
-                className="header-navbar-mobile-more"
+                className='header-navbar-mobile-more'
                 onClick={() => this.toggleMenu()}
             >...</div>
         );
@@ -189,15 +199,15 @@ export default class BrowserHeader extends PureComponent {
         }
 
         return (
-            <div className="header-fixed-contaier">
-                <div className="header-container">
-                    <Link to="/" key="logo">
-                        <img src="https://aelf.io/assets/images/logo.jpg" />
+            <div className='header-fixed-contaier'>
+                <div className='header-container'>
+                    <Link to='/' key='logo'>
+                        <img src='https://aelf.io/assets/images/logo.jpg' />
                     </Link>
 
                     {mobileMoreHTML}
 
-                    <nav className="header-navbar">
+                    <nav className='header-navbar'>
                         {menuHtml}
                         {this.state.showSearch && <Search />}
                     </nav>

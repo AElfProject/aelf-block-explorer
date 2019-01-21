@@ -1,50 +1,48 @@
 @borderWhite: #FFF;
-
 .conri-container {
-  //border: 5px solid red;
+    //border: 5px solid red;
 }
 
-.conri-top-border,.conri-bottom-border {
-  height: 3px;
-  border-left: 7px solid @borderWhite;
-  border-right: 7px solid @borderWhite;
-  padding-top: 1px;
-
-  .conri-horizontal-line {
-    height: 1px;
-    width: 100%;
-    background: rgba(151, 151, 151, 0.5);
-  }
+.conri-top-border,
+.conri-bottom-border {
+    height: 3px;
+    border-left: 7px solid @borderWhite;
+    border-right: 7px solid @borderWhite;
+    padding-top: 1px;
+    .conri-horizontal-line {
+        height: 1px;
+        width: 100%;
+        background: rgba(151, 151, 151, 0.5);
+    }
 }
 
 .conri-center {
-  display: flex;
-  justify-content: space-between;
-  //overflow: hidden;
+    display: flex;
+    justify-content: space-between; //overflow: hidden;
 }
 
 .conri-center-content {
-  flex: 1;
-  margin: 8px;
-  background: rgba(57, 0, 77, 0.3);
+    flex: 1;
+    margin: 8px;
+    background: rgba(57, 0, 77, 0.3);
 }
 
 .conri-center-content-small {
-  margin: 4px;
+    margin: 4px;
 }
 
-.conri-center-left,.conri-center-right {
-  width: 3px;
-  border-top: 4px solid @borderWhite;
-  border-bottom: 4px solid @borderWhite;
-  padding-left: 1px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  .conri-vertical-line {
-    width: 1px;
-    height: 20%;
-    background: rgba(151, 151, 151, 0.5);
-  }
+.conri-center-left,
+.conri-center-right {
+    width: 3px;
+    border-top: 4px solid @borderWhite;
+    border-bottom: 4px solid @borderWhite;
+    padding-left: 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .conri-vertical-line {
+        width: 1px;
+        height: 20%;
+        background: rgba(151, 151, 151, 0.5);
+    }
 }

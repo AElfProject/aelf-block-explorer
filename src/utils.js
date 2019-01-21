@@ -14,6 +14,10 @@ import {
     RPCSERVER
 } from './constants';
 
+import {commonPrivateKey} from '../config/config';
+
+// import apisauce from './utils/apisauce';
+
 const api = create({
     baseURL: '/api'
 });
@@ -24,7 +28,6 @@ const httpErrorHandler = (message, des) => notification.open({
 });
 
 const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
-
 aelf.chain.connectChain(function (e) {
     // if (isEmpty(e.message)) {
     //     return;
@@ -87,11 +90,16 @@ function transactionFormat(result) {
     return newTxs;
 }
 
+const transactionInfo = (hash) => {
+    return aelf.chain.getTxResult(hash);
+}
+
 export {
     get,
     post,
     aelf,
     format,
     formatKey,
-    transactionFormat
-};
+    transactionFormat,
+    transactionInfo
+}
