@@ -17,9 +17,10 @@ export default class ResourceMoneyMarket extends PureComponent {
         super(props);
         // 这个组件作为一个集合可以用作组件之间数据交互
         this.state = {
-            menuIndex: 0
+            menuIndex: 0,
+            currentWallet: this.props.currentWallet,
+            voteContracts: this.props.voteContracts
         };
-
     }
 
     getMenuClick(index) {
@@ -32,6 +33,16 @@ export default class ResourceMoneyMarket extends PureComponent {
     componentDidMount() {
         // TODO 数据加载
     }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.currentWallet !== state.currentWallet) {
+            return {
+                currentWallet: props.currentWallet
+            };
+        }
+
+        return null;
+    } 
 
     getMenuHTML() {
         const menuNames = ['RAM', 'CPU', 'NET', 'STO'];
@@ -63,7 +74,7 @@ export default class ResourceMoneyMarket extends PureComponent {
 
     render() {
         const menu = this.getMenuHTML();
-        const {menuIndex} = this.state;
+        const {menuIndex, currentWallet, voteContracts} = this.state;
         return (
             <div className='resource-market-body'>
                 <div className='resource-head'>
@@ -90,6 +101,8 @@ export default class ResourceMoneyMarket extends PureComponent {
                         >
                             <ResourceTrading
                                 menuIndex={menuIndex}
+                                currentWallet={currentWallet}
+                                voteContracts={voteContracts}
                             />
                         </Col>
                         <Col
@@ -98,7 +111,7 @@ export default class ResourceMoneyMarket extends PureComponent {
                             lg={24}
                         >
                             <RealTimeTransactions
-                                menuIndex={menu}
+                                menuIndex={menuIndex}
                             />
                         </Col>
                     </Row>

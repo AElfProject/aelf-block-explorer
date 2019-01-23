@@ -10,6 +10,7 @@ import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ResourceAElfWallet from '../../components/ResourceAElfWallet/ResourceAElfWallet';
 import {commonPrivateKey} from '../../../config/config';
 import ResourceMoneyMarket from '../../components/ResourceMoneyMarket/ResourceMoneyMarket';
+import voteContracts from '../../utils/voteContracts';
 import ResourceTransacitionDetails from '../../components/ResourceTransacitionDetails/ResourceTransacitionDetails';
 import './apps.styles.less';
 
@@ -49,25 +50,43 @@ export default class ApplicationPage extends Component {
             };
             localStorage.setItem('currentWallet', JSON.stringify(wallet));
         }
+        this.state = {
+            currentWallet: JSON.parse(localStorage.currentWallet),
+            voteContracts: voteContracts()
+        };
+    }
+
+    getChangeWallet() {
+        this.setState({
+            currentWallet: JSON.parse(localStorage.currentWallet)
+        });
     }
 
     resourceAElfWalletHtml() {
         if (walletInfo.length !== 0) {
             return (
-                <ResourceAElfWallet title='AElf Wallet' />
+                <ResourceAElfWallet
+                    title='AElf Wallet'
+                    getChangeWallet={this.getChangeWallet.bind(this)}
+                    voteContracts={this.state.voteContracts}
+                />
             );
         }
     }
     render() {
         const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
+        const {currentWallet, voteContracts} = this.state;
         return (
             <div>
                 <DownloadPlugins />
                 {resourceAElfWalletHtml}
                 <div className='resource-money-market'>
-                    <ResourceMoneyMarket />
+                    <ResourceMoneyMarket
+                        currentWallet={currentWallet}
+                        voteContracts={voteContracts}
+                    />
                 </div>
-                <ResourceTransacitionDetails />
+                {/* <ResourceTransacitionDetails /> */}
             </div>
         );
     }

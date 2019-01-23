@@ -79,6 +79,7 @@ export default class ResourceTransacitionDetails extends PureComponent {
     getTestData() {
         let data = [
             {
+                key: 0,
                 time: '2019-01-01',
                 resourceType: 'RAM',
                 direction: 'Buy',
@@ -88,6 +89,7 @@ export default class ResourceTransacitionDetails extends PureComponent {
                 serviceCharge: 20
             },
             {
+                key: 1,
                 time: '2019-01-01',
                 resourceType: 'RAM',
                 direction: 'Sell',

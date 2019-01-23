@@ -9,27 +9,63 @@ import Button from '../../components/Button/Button';
 import Svg from '../../components/Svg/Svg';
 import {Link} from 'react-router-dom';
 import './ResourceAElfWallet.less';
-
+import getWallet from '../../utils/getWallet';
+import getResource from '../../utils/getResource';
+import getHexNumber from '../../utils/getHexNumber';
 const RadioGroup = Radio.Group;
 
 export default class ResourceAElfWallet extends PureComponent {
     constructor(props) {
         super(props);
+        const walletInfoList = JSON.parse(localStorage.walletInfoList) || [];
+        const currentWallet = JSON.parse(localStorage.currentWallet) || '';
+        this.resource = null;
+        this.wallet = null;
+        if (currentWallet !== '') {
+            this.wallet = getWallet(currentWallet.privateKey);
+            this.resource = getResource(this.wallet);
+        }
         this.state = {
-            value: JSON.parse(localStorage.currentWallet).privateKey,
-            walletInfoList: JSON.parse(localStorage.walletInfoList)
+            currentWallet,
+            walletInfoList,
+            voteContracts: this.props.voteContracts,
+            resource: this.resource,
+            wallet: this.wallet,
+            balance: null,
+            RAM: null,
+            CPU: null,
+            NET: null,
+            STO: null
         };
+    }
+
+    componentDidMount() {
+        const {currentWallet} = this.state;
+        this.initializeWallet(currentWallet.address);
     }
 
     onChangeRadio(e) {
         const {walletInfoList} = this.state;
-        this.setState({
-            value: e.target.value
-        });
         walletInfoList.map(item => {
             if (e.target.value === item.privateKey) {
+                this.setState({
+                    currentWallet: item
+                });
+                this.initializeWallet(item.address);
                 localStorage.setItem('currentWallet', JSON.stringify(item));
+                this.props.getChangeWallet();
             }
+        });
+    }
+
+    initializeWallet(address) {
+        const {resource, voteContracts} = this.state;
+        this.setState({
+            balance: getHexNumber(voteContracts.tokenContract.BalanceOf(address).return).toLocaleString(),
+            RAM: getHexNumber(resource.GetUserBalance(address, 'RAM').return) || '--.--',
+            CPU: getHexNumber(resource.GetUserBalance(address, 'CPU').return) || '--.--',
+            NET: getHexNumber(resource.GetUserBalance(address, 'NET').return) || '--.--',
+            STO: getHexNumber(resource.GetUserBalance(address, 'STO').return) || '--.--'
         });
     }
 
@@ -55,7 +91,7 @@ export default class ResourceAElfWallet extends PureComponent {
 
     render() {
         const walltetHTML = this.accountListHTML();
-        const {value} = this.state;
+        const {currentWallet, balance, RAM, CPU, NET, STO} = this.state;
         return (
             <div className='resource-wallet'>
                 <div className='resource-wallet-head'>
@@ -77,16 +113,16 @@ export default class ResourceAElfWallet extends PureComponent {
                     <Row type='flex' align='middle'>
                         <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={6} className='list-border'>
                             <RadioGroup
-                                value={value}
+                                value={currentWallet.privateKey}
                                 onChange={this.onChangeRadio.bind(this)}
                             >
                                 {walltetHTML}
                             </RadioGroup>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={24} xl={18} xxl={18} style={{paddingLeft: '1%'}}>
-                            <Row gutter={16}>
+                            <Row gutter={16} type='flex' align='middle'>
                                 <Col span={19} style={{marginTop: '10px'}}>
-                                    Account balance: <span className='number' >9999</span>
+                                    Account balance: <span className='number' >{balance} ELF</span>
                                 </Col>
                             </Row>
                             <Row style={{marginTop: '20px'}} gutter={16}>
@@ -95,28 +131,28 @@ export default class ResourceAElfWallet extends PureComponent {
                                     lg={5} xl={5} xxl={5}
                                     style={{margin: '10px 0'}}
                                 >
-                                    RAM quantity: <span className='number'>--.--</span>
+                                    RAM quantity: <span className='number'>{RAM}</span>
                                 </Col>
                                 <Col
                                     xs={12} sm={12} md={5}
                                     lg={5} xl={5} xxl={5}
                                     style={{margin: '10px 0'}}
                                 >
-                                    CPU quantity: <span className='number'>--.--</span>
+                                    CPU quantity: <span className='number'>{CPU}</span>
                                 </Col>
                                 <Col
                                     xs={12} sm={12} md={5}
                                     lg={5} xl={5} xxl={5}
                                     style={{margin: '10px 0'}}
                                 >
-                                    NET quantity: <span className='number'>--.--</span>
+                                    NET quantity: <span className='number'>{NET}</span>
                                 </Col>
                                 <Col
                                     xs={12} sm={12} md={5}
                                     lg={5} xl={5} xxl={5}
                                     style={{margin: '10px 0'}}
                                 >
-                                    STO quantity: <span className='number'>--.--</span>
+                                    STO quantity: <span className='number'>{STO}</span>
                                 </Col>
                                 <Col
                                     xs={12} sm={12} md={4}
