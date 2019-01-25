@@ -4,8 +4,7 @@
  * 获取当前候选节点列表
  */
 
-import getWallet from './getWallet';
-import getConsensus from './getConsensus';
+
 import hexCharCodeToStr from './hexCharCodeToStr';
 import {commonPrivateKey} from '../../config/config';
 
@@ -26,20 +25,22 @@ import {commonPrivateKey} from '../../config/config';
 //     }
 // };
 
-export default function getCandidatesList(currentWallet, startIndex, CONSENSUSADDRESS) {
-    let wallet = null;
+export default function getCandidatesList(currentWallet, startIndex, contracts) {
     let isVote = true;
     let isRedee = true;
-    if (currentWallet.publicKey === '') {
-        wallet = getWallet(commonPrivateKey);
+    if (currentWallet) {
+        if (currentWallet.publicKey === '') {
+            isVote = false;
+            isRedee = false;
+        }
+    }
+    else {
         isVote = false;
         isRedee = false;
     }
-    else {
-        wallet = getWallet(currentWallet.privateKey);
-    }
+
     let dataList = [];
-    const consensus = getConsensus(CONSENSUSADDRESS, wallet);
+    const consensus = contracts.consensus;
     const nodeList = JSON.parse(
         hexCharCodeToStr(
             consensus.GetPageableCandidatesHistoryInfoToFriendlyString(startIndex.page, startIndex.pageSize).return
@@ -47,7 +48,6 @@ export default function getCandidatesList(currentWallet, startIndex, CONSENSUSAD
     );
     let CandidatesNumber = nodeList.CandidatesNumber;
     let nodeListMaps = nodeList.Maps || [];
-    let nodePublicKeyList = null;
     let serial = 0;
     for (let i in nodeListMaps) {
         let nodeInformation = nodeListMaps[i];
@@ -68,5 +68,5 @@ export default function getCandidatesList(currentWallet, startIndex, CONSENSUSAD
         serial++;
         dataList.push(data);
     }
-    return {dataList, CandidatesNumber, nodePublicKeyList};
+    return {dataList, CandidatesNumber};
 }

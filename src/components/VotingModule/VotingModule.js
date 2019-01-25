@@ -34,23 +34,20 @@ export default class VotingModule extends PureComponent {
             showMyVote: false,
             refresh: 0,
             isRefresh: false,
-            contracts: this.props.contracts
+            contracts: null
         };
     }
 
-    componentDidMount() {
-        const {contracts} = this.state;
-        let wheels = getHexNumber(contracts.consensus.GetCurrentRoundNumber().return);
-        let session = getHexNumber(contracts.consensus.GetTermNumberByRoundNumber(wheels).return);
-        this.setState({
-            session
-        });
-    }
-
     static getDerivedStateFromProps(props, state) {
-        if (props.currentWallet !== state.walletInfo) {
+        if (props.currentWallet !== state.currentWallet) {
             return {
                 currentWallet: props.currentWallet
+            };
+        }
+
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
             };
         }
 
@@ -58,10 +55,15 @@ export default class VotingModule extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.currentWallet !== this.props.currentWallet) {
-            this.setState({
-                currentWallet: this.props.currentWallet
-            });
+        if (prevProps.contracts !== this.props.contracts) {
+            const {contracts} = this.state;
+            if (contracts) {
+                let wheels = getHexNumber(contracts.consensus.GetCurrentRoundNumber().return);
+                let session = getHexNumber(contracts.consensus.GetTermNumberByRoundNumber(wheels).return);
+                this.setState({
+                    session
+                });
+            }
         }
     }
 

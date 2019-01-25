@@ -5,6 +5,7 @@
 
 import React, {PureComponent} from 'react';
 import {Row, Col, Spin} from 'antd';
+import {aelf} from '../../utils';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/bar';
@@ -20,14 +21,28 @@ export default class VotingYieldChart extends PureComponent {
         this.state = {
             data: null,
             loading: false,
-            dividends: this.props.dividends
+            contracts: this.props.contracts
         };
     }
 
-    componentDidMount() {
-        this.setState({
-            data: this.getdata()
-        });
+    static getDerivedStateFromProps(props, state) {
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
+        return null;
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.contracts !== this.props.contracts) {
+            this.getData().then(result => {
+                this.setState({
+                    data: result
+                });
+            });
+        }
     }
 
     onRefresh() {
@@ -36,21 +51,22 @@ export default class VotingYieldChart extends PureComponent {
         });
 
         setTimeout(() => {
-            this.setState({
-                data: this.getdata(),
-                loading: false
+            this.getData().then(result => {
+                this.setState({
+                    data: result,
+                    loading: false
+                });
             });
         }, 2000);
     }
 
-    getdata() {
-        const {dividends} = this.state;
-        let data = JSON.parse(
+    getData = async () => {
+        const {contracts} = this.state;
+        return JSON.parse(
             hexCharCodeToStr(
-                dividends.CheckDividendsOfPreviousTermToFriendlyString().return
+                contracts.dividends.CheckDividendsOfPreviousTermToFriendlyString().return
             )
         ).Values;
-        return data;
     }
 
     getOption() {

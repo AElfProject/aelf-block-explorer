@@ -4,9 +4,8 @@
  * 获取投票记录
 */
 
-import getWallet from './getWallet';
-import getConsensus from './getConsensus';
 import hexCharCodeToStr from './hexCharCodeToStr';
+import getPublicKey from './getPublicKey';
 import dayjs from 'dayjs';
 
 // Data formatted format
@@ -22,17 +21,23 @@ import dayjs from 'dayjs';
 //     }
 // ];
 
-export default function getVotingRecord(currentWallet, startIndex, CONSENSUSADDRESS) {
+export default function getVotingRecord(currentWallet, startIndex, contracts) {
     let dataList = [];
-    if (!currentWallet) {
+    if (currentWallet) {
+        if (currentWallet.address === '') {
+            return dataList;
+        }
+    }
+    else {
         return dataList;
     }
-    const wallet = getWallet(currentWallet.privateKey);
-    const consensus = getConsensus(CONSENSUSADDRESS, wallet);
+
+    const consensus = contracts.consensus;
+    const key = getPublicKey(currentWallet.publicKey);
     let ticketsHistoriesData = JSON.parse(
         hexCharCodeToStr(
             consensus.GetPageableTicketsHistoriesToFriendlyString(
-                currentWallet.publicKey, startIndex.page, startIndex.pageSize
+                key, startIndex.page, startIndex.pageSize
             ).return
         )
     );

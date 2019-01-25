@@ -27,7 +27,7 @@ export default class VotingRecord extends PureComponent {
                 }
             },
             data: null,
-            contracts: this.props.contracts
+            contracts: null
         };
     }
 
@@ -36,26 +36,17 @@ export default class VotingRecord extends PureComponent {
         this.setState({
             loading: true
         });
-        const data = getVotingRecord(this.state.currentWallet, ...params, contracts.CONSENSUSADDRESS);
+        const data = getVotingRecord(this.state.currentWallet, ...params, contracts);
         let pagination = this.state.pagination;
         pagination.total = parseInt(data.historiesNumber, 10);
-        if (data.dataList) {
-            this.setState({
-                data: data.dataList,
-                loading: false
-            });
-        }
-    }
-
-    async componentDidMount() {
-        await this.votingRecordsData({
-            page,
-            pageSize
-        });
+        return {
+            data: data.dataList || [],
+            pagination
+        };
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.currentWallet !== state.walletInfo) {
+        if (props.currentWallet !== state.currentWallet) {
             return {
                 currentWallet: props.currentWallet
             };
@@ -67,54 +58,92 @@ export default class VotingRecord extends PureComponent {
             };
         }
 
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
         return null;
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.currentWallet !== this.props.currentWallet) {
-            page = 0;
-            pageSize = 10;
-            let pageOption = this.state.pagination;
-            pageOption.current = 1;
-            this.setState({
-                pagination: pageOption
-            });
-            this.votingRecordsData(
-                {
-                    page,
-                    pageSize
-                }
-            );
+            const {contracts} = this.state;
+            if (contracts) {
+                page = 0;
+                pageSize = 10;
+                let pageOption = this.state.pagination;
+                pageOption.current = 1;
+                this.votingRecordsData(
+                    {
+                        page,
+                        pageSize
+                    }
+                ).then(result => {
+                    this.setState({
+                        data: result.data,
+                        loading: false,
+                        pagination: pageOption
+                    });
+                });
+            }
         }
 
         if (prevProps.refresh !== this.props.refresh) {
-            page = 0;
-            pageSize = 10;
-            let pageOption = this.state.pagination;
-            pageOption.current = 1;
-            this.setState({
-                pagination: pageOption
-            });
-            this.votingRecordsData(
-                {
-                    page,
-                    pageSize
-                }
-            );
+            const {contracts} = this.state;
+            if (contracts) {
+                page = 0;
+                pageSize = 10;
+                let pageOption = this.state.pagination;
+                pageOption.current = 1;
+                this.votingRecordsData(
+                    {
+                        page,
+                        pageSize
+                    }
+                ).then(result => {
+                    this.setState({
+                        data: result.data,
+                        loading: false,
+                        pagination: pageOption
+                    });
+                });
+            }
+        }
+
+        if (prevProps.contracts !== this.props.contracts) {
+            const {contracts} = this.state;
+            if (contracts) {
+                this.votingRecordsData(
+                    {
+                        page,
+                        pageSize
+                    }
+                ).then(result => {
+                    this.setState({
+                        data: result.data,
+                        loading: false
+                    });
+                });
+            }
         }
     }
 
     handleTableChange = pagination => {
         let pageOption = {...this.state.pagination};
         pageOption.current = pagination.current;
-        this.setState({
-            pagination: pageOption
-        });
         page = 10 * (pagination.current - 1);
         pageSize = page + 10;
         this.votingRecordsData({
             page,
             pageSize
+        }).then(result => {
+            this.setState({
+                data: result.data,
+                loading: false,
+                pagination: pageOption
+            });
         });
     };
 

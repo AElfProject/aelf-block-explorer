@@ -5,15 +5,13 @@
 */
 
 import React, {PureComponent} from 'react';
-import {Row, Col, Radio, Spin} from 'antd';
+import {Row, Col, Radio, Spin, message} from 'antd';
 import Button from '../Button/Button';
 import Svg from '../Svg/Svg';
 import {aelf} from '../../utils';
 import getHexNumber from '../../utils/getHexNumber';
+import getPublicKey from '../../utils/getPublicKey';
 import hexCharCodeToStr from '../../utils/hexCharCodeToStr';
-import getDividends from '../../utils/getDividends';
-import getConsensus from '../../utils/getConsensus';
-import getWallet from '../../utils/getWallet';
 import getStateJudgment from '../../utils/getStateJudgment';
 import './AElfWallet.less';
 
@@ -22,17 +20,9 @@ const RadioGroup = Radio.Group;
 export default class AElfWallet extends PureComponent {
     constructor(props) {
         super(props);
-        let contracts = this.props.contracts;
-        this.walletInfo = JSON.parse(localStorage.walletInfoList);
-        if (this.walletInfo != null) {
-            this.wallet = getWallet(JSON.parse(localStorage.currentWallet).privateKey);
-        }
-        this.consensus = getConsensus(contracts.CONSENSUSADDRESS, this.wallet);
-        this.dividends = getDividends(contracts.DIVIDENDSADDRESS, this.wallet);
-        this.tokenContract = contracts.tokenContract;
         this.state = {
-            walletInfo: this.walletInfo,
-            value: JSON.parse(localStorage.currentWallet).privateKey,
+            walletInfoList: this.props.walletInfoList || [],
+            value: JSON.parse(localStorage.currentWallet).address,
             refresh: 0,
             loading: false,
             loadingTip: null,
@@ -40,46 +30,65 @@ export default class AElfWallet extends PureComponent {
         };
     }
 
-    async componentDidMount() {
-        await this.pushWalletInfo();
+    static getDerivedStateFromProps(props, state) {
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
+        return null;
     }
 
-    pushWalletInfo = async () => {
-        let walletInfo = this.state.walletInfo || [];
-        walletInfo.map((item, index) => {
-            walletInfo[index].balance = getHexNumber(this.tokenContract.BalanceOf(item.address).return) || '-';
-            walletInfo[index].dividends = getHexNumber(
-                this.dividends.GetAllAvailableDividends(item.publicKey).return
+    componentDidUpdate(prevProps) {
+        if (prevProps.contracts !== this.props.contracts) {
+            this.pushWalletInfo();
+        }
+    }
+
+    componentDidMount() {
+        const {contracts} = this.state;
+        if (contracts) {
+            this.pushWalletInfo();
+        }
+    }
+
+    pushWalletInfo() {
+        const {contracts, walletInfoList, refresh} = this.state;
+        walletInfoList.map((item, index) => {
+            const key = getPublicKey(item.publicKey);
+            walletInfoList[index].balance = getHexNumber(
+                contracts.tokenContract.BalanceOf(item.address).return
             ) || '-';
-            walletInfo[index].tikets = 0;
+            walletInfoList[index].dividends = getHexNumber(
+                contracts.dividends.GetAllAvailableDividends(key).return
+            ) || '-';
+            walletInfoList[index].tikets = 0;
             let tickets = JSON.parse(
-                hexCharCodeToStr(this.consensus.GetTicketsInfoToFriendlyString(item.publicKey).return)
+                hexCharCodeToStr(contracts.consensus.GetTicketsInfoToFriendlyString(key).return)
             ).VotingRecords || [];
             for (let j = 0, len = tickets.length; j < len; j++) {
-                if (tickets[j].From === item.publicKey) {
+                if (tickets[j].From === key) {
                     let IsWithdrawn = tickets[j].IsWithdrawn || false;
                     IsWithdrawn ? item.tikets : item.tikets += parseInt(tickets[j].Count, 10);
                 }
             }
-        });
-        this.setState({
-            walletInfo,
-            refresh: this.state.refresh + 1
+            this.setState({
+                walletInfoList,
+                refresh: refresh + 1
+            });
         });
     }
 
 
     changeRadio(e) {
-        const {contracts} = this.state;
+        const {walletInfoList} = this.state;
         this.setState({
             value: e.target.value
         });
-        this.wallet = getWallet(e.target.value);
-        this.consensus = getConsensus(contracts.CONSENSUSADDRESS, this.wallet);
-        this.dividends = getDividends(contracts.DIVIDENDSADDRESS, this.wallet);
-        for (let i = 0, len = this.state.walletInfo.length; i < len; i++) {
-            if (e.target.value === this.state.walletInfo[i].privateKey) {
-                localStorage.setItem('currentWallet', JSON.stringify(this.state.walletInfo[i]));
+        for (let i = 0, len = walletInfoList.length; i < len; i++) {
+            if (e.target.value === walletInfoList[i].address) {
+                localStorage.setItem('currentWallet', JSON.stringify(walletInfoList[i]));
                 this.props.getCurrentWallet();
             }
         }
@@ -87,23 +96,22 @@ export default class AElfWallet extends PureComponent {
 
 
     getWalletAssetInfo() {
-        const walletAssetInfo = this.state.walletInfo.map((item, index) => {
+        const walletAssetInfo = this.state.walletInfoList.map((item, index) => {
             let {balance, tikets, dividends} = item;
             balance = !!item.balance ? item.balance.toLocaleString() : '-';
             tikets = !!item.tikets ? item.tikets.toLocaleString() : '-';
             dividends = !!item.dividends ? item.dividends.toLocaleString() : '-';
-
             return (
                 <Row key={index} type='flex' align='middle' style={{padding: '10px 0'}}>
                     <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
-                        <Radio key={index} value={item.privateKey} style={{marginLeft: '10px'}}>
-                            <span className='wallet-name'>{item.walletName}</span>
+                        <Radio key={index} value={item.address} style={{marginLeft: '10px'}}>
+                            <span className='wallet-name'>{item.name}</span>
                         </Radio>
                     </Col>
                     <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
-                        <div className='wallet-button-box' key={index} >
+                        {/* <div className='wallet-button-box' key={index} >
                             <Button title='Unbind' click={this.unbindWallet.bind(this, item.address)} />
-                        </div>
+                        </div> */}
                     </Col>
                     <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
                         Assets: <span className='total-assets'>{balance}</span>
@@ -131,7 +139,7 @@ export default class AElfWallet extends PureComponent {
                                 title='Receive'
                                 click={this.getAllDividends.bind(this)}
                                 style={
-                                    this.state.value === item.privateKey
+                                    this.state.value === item.address
                                     ? {display: 'inline-block'} : {display: 'none'}
                                 }
                             />
@@ -142,29 +150,154 @@ export default class AElfWallet extends PureComponent {
         return walletAssetInfo;
     }
 
-    unbindWallet(address) {
-        console.log('unbind:' + address);
-    }
+    // unbindWallet(address) {
+    //     console.log('unbind:' + address);
+    // }
 
     getAllDividends() {
         // GetAllDividends
-        this.setState({
-            loadingTip: 'In redemption, please wait...'
-        });
-        const dividends = this.consensus.ReceiveAllDividends().hash;
-        if (dividends) {
-            this.setState({
-                loading: true
-            });
-            setTimeout(() => {
-                const state = aelf.chain.getTxResult(dividends);
-                getStateJudgment(state.result.tx_status, dividends);
-                this.pushWalletInfo();
-                this.setState({
-                    loading: false
+        const {contracts} = this.state;
+        const currentWallet = JSON.parse(localStorage.currentWallet);
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'CHECK_PERMISSION',
+            type: 'address', // if you did not set type, it aways get by domain.
+            address: currentWallet.address
+        }).then(result => {
+            if (result.permissions.length === 0) {
+                window.NightElf.api({
+                    appName: 'hzzTest',
+                    method: 'OPEN_PROMPT',
+                    chainId: 'AELF',
+                    hostname: 'aelf.io',
+                    payload: {
+                        method: 'SET_PERMISSION',
+                        payload: {
+                            address: currentWallet.address,
+                            contracts: [{
+                                chainId: 'AELF',
+                                contractAddress: contracts.TOKENADDRESS,
+                                contractName: 'token',
+                                description: 'token contract'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: contracts.DIVIDENDSADDRESS,
+                                contractName: 'dividends',
+                                description: 'contract dividends'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: contracts.CONSENSUSADDRESS,
+                                contractName: 'consensus',
+                                description: 'contract consensus'
+                            }]
+                        }
+                    }
+                }).then(result => {
+                    if (result.error === 0) {
+                        window.NightElf.api({
+                            appName: 'hzzTest',
+                            method: 'INIT_AELF_CONTRACT',
+                            // hostname: 'aelf.io',
+                            chainId: 'AELF',
+                            payload: {
+                                address: currentWallet.address,
+                                contractName: 'consensus',
+                                contractAddress: contracts.CONSENSUSADDRESS
+                            }
+                        }).then(result => {
+                            if (result.error === 0) {
+                                window.NightElf.api({
+                                    appName: 'hzzTest',
+                                    method: 'CALL_AELF_CONTRACT',
+                                    chainId: 'AELF',
+                                    payload: {
+                                        contractName: 'consensus',
+                                        method: 'ReceiveAllDividends',
+                                        params: []
+                                    }
+                                }).then(result => {
+                                    console.log(result);
+                                    this.setState({
+                                        loading: true
+                                    });
+                                    setTimeout(() => {
+                                        const state = aelf.chain.getTxResult(result.result.hash);
+                                        getStateJudgment(state.result.tx_status, result.result.hash);
+                                        this.pushWalletInfo();
+                                        this.setState({
+                                            loading: false
+                                        });
+                                    }, 4000);
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        message.error(result.errorMessage, 5);
+                    }
                 });
-            }, 4000);
-        }
+            }
+            else {
+                result.permissions.map((item, index) => {
+                    if (item.address === currentWallet.address) {
+                        window.NightElf.api({
+                            appName: 'hzzTest',
+                            method: 'INIT_AELF_CONTRACT',
+                            // hostname: 'aelf.io',
+                            chainId: 'AELF',
+                            payload: {
+                                address: currentWallet.address,
+                                contractName: 'consensus',
+                                contractAddress: contracts.CONSENSUSADDRESS
+                            }
+                        }).then(result => {
+                            if (result.error === 0) {
+                                window.NightElf.api({
+                                    appName: 'hzzTest',
+                                    method: 'CALL_AELF_CONTRACT',
+                                    chainId: 'AELF',
+                                    payload: {
+                                        contractName: 'consensus',
+                                        method: 'ReceiveAllDividends',
+                                        params: []
+                                    }
+                                }).then(result => {
+                                    console.log(result);
+                                    this.setState({
+                                        loading: true
+                                    });
+                                    setTimeout(() => {
+                                        const state = aelf.chain.getTxResult(result.result.hash);
+                                        getStateJudgment(state.result.tx_status, result.result.hash);
+                                        this.pushWalletInfo();
+                                        this.setState({
+                                            loading: false
+                                        });
+                                    }, 4000);
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        // this.setState({
+        //     loadingTip: 'In redemption, please wait...'
+        // });
+        // const dividends = this.consensus.ReceiveAllDividends().hash;
+        // if (dividends) {
+        //     this.setState({
+        //         loading: true
+        //     });
+        //     setTimeout(() => {
+        //         const state = aelf.chain.getTxResult(dividends);
+        //         getStateJudgment(state.result.tx_status, dividends);
+        //         this.pushWalletInfo();
+        //         this.setState({
+        //             loading: false
+        //         });
+        //     }, 4000);
+        // }
     }
 
     onRefresh() {
@@ -175,12 +308,21 @@ export default class AElfWallet extends PureComponent {
             this.setState({
                 loading: true
             });
-            setTimeout(() => {
+            window.NightElf.api({
+                appName: 'hzzTest',
+                method: 'GET_ADDRESS'
+            }).then(result => {
+                localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
+                this.setState({
+                    walletInfoList: result.addressList,
+                    currentWallet: JSON.parse(localStorage.currentWallet)
+                });
+            }).then(() => {
                 this.pushWalletInfo();
                 this.setState({
                     loading: false
                 });
-            }, 4000);
+            });
         }
     }
 
@@ -193,7 +335,7 @@ export default class AElfWallet extends PureComponent {
                         {this.props.title}
                     </div>
                     <div className='AElf-Wallet-create'>
-                        <Button title='+ New Wallet' />
+                        {/* <Button title='+ New Wallet' /> */}
                     </div>
                 </div>
                 <Spin
@@ -206,7 +348,7 @@ export default class AElfWallet extends PureComponent {
                         <Col span='22'>
                                 <RadioGroup
                                     onChange={this.changeRadio.bind(this)}
-                                    value={JSON.parse(localStorage.currentWallet).privateKey}
+                                    value={JSON.parse(localStorage.currentWallet).address}
                                     className='AElf-Wallet-info'
                                 >
                                     {walletAssetInfo}

@@ -22,6 +22,7 @@ export default function voteContract() {
         TOKENADDRESS,
         consensus,
         dividends,
+        wallet,
         tokenContract
     };
     return output;

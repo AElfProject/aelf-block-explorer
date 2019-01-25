@@ -4,8 +4,6 @@
 */
 
 import React, {PureComponent} from 'react';
-import getConsensus from '../../../utils/getConsensus';
-import getWallet from '../../../utils/getWallet';
 import getHexNumber from '../../../utils/getHexNumber';
 import {Row, Col, Select, Input, message, Spin} from 'antd';
 import getStateJudgment from '../../../utils/getStateJudgment';
@@ -18,31 +16,40 @@ const Option = Select.Option;
 export default class Vote extends PureComponent {
     constructor(props) {
         super(props);
-        if (localStorage.currentWallet != null) {
-            this.wallet = getWallet(JSON.parse(localStorage.currentWallet).privateKey);
-            this.consensus = getConsensus(this.props.contracts.CONSENSUSADDRESS, this.wallet);
-        }
         this.state = {
             period: null,
             votes: null,
             buttonTitle: 'Next',
             step: true,
-            currentWallet: JSON.parse(localStorage.currentWallet),
             password: null,
             balance: null,
             publicKey: this.props.publicKey,
-            loading: false,
-            contracts: this.props.contracts
+            currentWallet: JSON.parse(localStorage.currentWallet),
+            loading: false
         };
     }
 
     componentDidMount() {
-        const {contracts} = this.state;
-        this.setState({
-            balance: getHexNumber(
-                contracts.tokenContract.BalanceOf(JSON.parse(localStorage.currentWallet).address).return
-            ) || 0
+        const {currentWallet} = this.state;
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'CALL_AELF_CONTRACT',
+            chainId: 'AELF',
+            payload: {
+                contractName: 'token',
+                method: 'BalanceOf',
+                params: [currentWallet.address]
+            }
+        }).then(result => {
+            this.setState({
+                balance: getHexNumber(result.result.return)
+            });
         });
+        // this.setState({
+        //     balance: getHexNumber(
+        //         contracts.tokenContract.BalanceOf(JSON.parse(localStorage.currentWallet).address).return
+        //     ) || 0
+        // });
     }
 
     // 获取所选周期
@@ -86,32 +93,35 @@ export default class Vote extends PureComponent {
             });
         }
         else {
-            if (this.state.password == null) {
-                message.error('Password cannot be empty');
-                return;
-            }
-            const vote = this.consensus.Vote(this.state.publicKey, this.state.votes, this.state.period).hash;
-            if (vote) {
+            window.NightElf.api({
+                appName: 'hzzTest',
+                method: 'CALL_AELF_CONTRACT',
+                chainId: 'AELF',
+                payload: {
+                    contractName: 'consensus',
+                    method: 'Vote',
+                    params: [this.state.publicKey, this.state.votes, this.state.perio]
+                }
+            }).then(result => {
+                console.log(result);
                 this.setState({
                     loading: true
                 });
                 setTimeout(() => {
                     message.info('No withdrawal and transfer operations during the voting lock period!');
-                    const state = aelf.chain.getTxResult(vote);
+                    const state = aelf.chain.getTxResult(result.result.hash);
                     if (state.result.tx_status === 'Mined') {
                         this.props.onRefresh();
                     }
-                    getStateJudgment(state.result.tx_status, vote);
+                    getStateJudgment(state.result.tx_status, result.result.hash);
                     this.setState({
                         loading: false
                     });
                     this.props.handleClose();
                 }, 4000);
-            }
+            });
         }
     }
-
-
 
     render() {
         return (
@@ -180,15 +190,6 @@ export default class Vote extends PureComponent {
                         <Row type='flex' align='middle'>
                             <Col span='8'>Lock period: </Col>
                             <Col span='16'>{this.state.period} days</Col>
-                        </Row>
-                        <Row type='flex' align='middle'>
-                            <Col span='8'>Password: </Col>
-                            <Col span='16'>
-                                <Input
-                                    type='password'
-                                    onChange={this.changePassword.bind(this)}
-                                />
-                            </Col>
                         </Row>
                     </div>
                     <div className='vote-step1-button'>

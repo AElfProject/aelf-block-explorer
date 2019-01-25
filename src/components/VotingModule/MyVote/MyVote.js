@@ -5,7 +5,7 @@
 
 import React, {PureComponent} from 'react';
 import Button from '../../Button/Button';
-import {Table} from 'antd';
+import {Table, message} from 'antd';
 import getMyVoteData from '../../../utils/getMyVoteData';
 import getHexNumber from '../../../utils/getHexNumber';
 
@@ -34,36 +34,22 @@ export default class MyVote extends PureComponent {
         };
     }
 
-    async componentDidMount() {
-        const {contracts} = this.state;
-        this.setState({
-            allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
-        });
-        await this.votingRecordInformation(
-            {
-                page,
-                pageSize
-            }
-        );
-    }
-
     votingRecordInformation = async (params = {}) => {
-        const {contracts} = this.state;
+        const {contracts, currentWallet} = this.state;
         this.setState({
             loading: true
         });
-
-        const data = getMyVoteData(this.state.currentWallet, ...params, contracts.CONSENSUSADDRESS);
+        const data = getMyVoteData(currentWallet, ...params, contracts);
         let dataList = null;
         if (data.dataList) {
             dataList = data.dataList;
             let pagination = this.state.pagination;
             pagination.total = parseInt(data.VotingRecordsCount, 10);
-            this.setState({
+            return {
                 loading: false,
                 data: dataList || null,
                 pagination
-            });
+            };
         }
     }
 
@@ -75,9 +61,17 @@ export default class MyVote extends PureComponent {
         });
         page = 10 * (pagination.current - 1);
         pageSize = page + 10;
-        this.votingRecordInformation({
-            page,
-            pageSize
+        this.votingRecordInformation(
+            {
+                page,
+                pageSize
+            }
+        ).then(result => {
+            this.setState({
+                pagination: result.pagination,
+                loading: result.loading,
+                data: result.data
+            });
         });
     };
 
@@ -86,25 +80,206 @@ export default class MyVote extends PureComponent {
     }
 
     getVoting(publicKey) {
-        const data = this.state.data;
+        const {data, currentWallet, contracts} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.publicKey === publicKey) {
-                this.props.obtainInfo(data[i].nodeName, publicKey);
+                this.props.obtainInfo(data[i].nodeName, data[i].operation.publicKey);
             }
         }
-        this.props.showVote();
+
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'CHECK_PERMISSION',
+            type: 'address', // if you did not set type, it aways get by domain.
+            address: currentWallet.address
+        }).then(result => {
+            if (result.permissions.length === 0) {
+                window.NightElf.api({
+                    appName: 'hzzTest',
+                    method: 'OPEN_PROMPT',
+                    chainId: 'AELF',
+                    hostname: 'aelf.io',
+                    payload: {
+                        method: 'SET_PERMISSION',
+                        payload: {
+                            address: currentWallet.address,
+                            contracts: [{
+                                chainId: 'AELF',
+                                contractAddress: contracts.TOKENADDRESS,
+                                contractName: 'token',
+                                description: 'token contract'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: contracts.DIVIDENDSADDRESS,
+                                contractName: 'dividends',
+                                description: 'contract dividends'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: contracts.CONSENSUSADDRESS,
+                                contractName: 'consensus',
+                                description: 'contract consensus'
+                            }]
+                        }
+                    }
+                }).then(result => {
+                    if (result.error === 0) {
+                        window.NightElf.api({
+                            appName: 'hzzTest',
+                            method: 'INIT_AELF_CONTRACT',
+                            // hostname: 'aelf.io',
+                            chainId: 'AELF',
+                            payload: {
+                                address: currentWallet.address,
+                                contractName: 'token',
+                                contractAddress: contracts.TOKENADDRESS
+                            }
+                        }).then(
+                            window.NightElf.api({
+                                appName: 'hzzTest',
+                                method: 'INIT_AELF_CONTRACT',
+                                // hostname: 'aelf.io',
+                                chainId: 'AELF',
+                                payload: {
+                                    address: currentWallet.address,
+                                    contractName: 'consensus',
+                                    contractAddress: contracts.CONSENSUSADDRESS
+                                }
+                            })
+                        ).then(result => {
+                            if (result.error === 0) {
+                                this.props.showVote();
+                            }
+                        });
+                    }
+                    else {
+                        message.error(result.errorMessage, 5);
+                    }
+                });
+            }
+            else {
+                result.permissions.map((item, index) => {
+                    if (item.address === currentWallet.address) {
+                        window.NightElf.api({
+                            appName: 'hzzTest',
+                            method: 'INIT_AELF_CONTRACT',
+                            // hostname: 'aelf.io',
+                            chainId: 'AELF',
+                            payload: {
+                                address: currentWallet.address,
+                                contractName: 'token',
+                                contractAddress: contracts.TOKENADDRESS
+                            }
+                        }).then(
+                            window.NightElf.api({
+                                appName: 'hzzTest',
+                                method: 'INIT_AELF_CONTRACT',
+                                // hostname: 'aelf.io',
+                                chainId: 'AELF',
+                                payload: {
+                                    address: currentWallet.address,
+                                    contractName: 'consensus',
+                                    contractAddress: contracts.CONSENSUSADDRESS
+                                }
+                            })
+                        ).then(result => {
+                            if (result.error === 0) {
+                                this.props.showVote();
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     getRedeem(publicKey, txId) {
-        const data = this.state.data;
+        const {data, currentWallet, contracts} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.txId === txId) {
                 this.props.obtainInfo(data[i].nodeName, publicKey, data[i].myVote, txId);
             }
         }
-        this.props.showRedeem();
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'CHECK_PERMISSION',
+            type: 'address', // if you did not set type, it aways get by domain.
+            address: currentWallet.address
+        }).then(result => {
+            if (result.permissions.length === 0) {
+                window.NightElf.api({
+                    appName: 'hzzTest',
+                    method: 'OPEN_PROMPT',
+                    chainId: 'AELF',
+                    hostname: 'aelf.io',
+                    payload: {
+                        method: 'SET_PERMISSION',
+                        payload: {
+                            address: currentWallet.address,
+                            contracts: [{
+                                chainId: 'AELF',
+                                contractAddress: contracts.TOKENADDRESS,
+                                contractName: 'token',
+                                description: 'token contract'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: contracts.DIVIDENDSADDRESS,
+                                contractName: 'dividends',
+                                description: 'contract dividends'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: contracts.CONSENSUSADDRESS,
+                                contractName: 'consensus',
+                                description: 'contract consensus'
+                            }]
+                        }
+                    }
+                }).then(result => {
+                    if (result.error === 0) {
+                        window.NightElf.api({
+                            appName: 'hzzTest',
+                            method: 'INIT_AELF_CONTRACT',
+                            // hostname: 'aelf.io',
+                            chainId: 'AELF',
+                            payload: {
+                                address: currentWallet.address,
+                                contractName: 'consensus',
+                                contractAddress: contracts.CONSENSUSADDRESS
+                            }
+                        }).then(result => {
+                            if (result.error === 0) {
+                                this.props.showRedeem();
+                            }
+                        });
+                    }
+                    else {
+                        message.error(result.errorMessage, 5);
+                    }
+                });
+            }
+            else {
+                result.permissions.map((item, index) => {
+                    if (item.address === currentWallet.address) {
+                        window.NightElf.api({
+                            appName: 'hzzTest',
+                            method: 'INIT_AELF_CONTRACT',
+                            // hostname: 'aelf.io',
+                            chainId: 'AELF',
+                            payload: {
+                                address: currentWallet.address,
+                                contractName: 'consensus',
+                                contractAddress: contracts.CONSENSUSADDRESS
+                            }
+                        }).then(result => {
+                            if (result.error === 0) {
+                                this.props.showRedeem();
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -113,26 +288,42 @@ export default class MyVote extends PureComponent {
                 currentWallet: props.currentWallet
             };
         }
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
+        if (props.refresh !== state.refresh) {
+            return {
+                refresh: props.refresh
+            };
+        }
         return null;
     }
 
-    async componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps) {
         if (prevProps.currentWallet !== this.props.currentWallet) {
             const {contracts} = this.state;
-            page = 0;
-            pageSize = 10;
-            let pageOption = this.state.pagination;
-            pageOption.current = 1;
-            this.setState({
-                pagination: pageOption,
-                allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
-            });
-            await this.votingRecordInformation(
-                {
-                    page,
-                    pageSize
-                }
-            );
+            if (contracts) {
+                page = 0;
+                pageSize = 10;
+                let pageOption = this.state.pagination;
+                pageOption.current = 1;
+                this.votingRecordInformation(
+                    {
+                        page,
+                        pageSize
+                    }
+                ).then(result => {
+                    this.setState({
+                        pagination: pageOption,
+                        allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return),
+                        loading: false,
+                        data: result.data
+                    });
+                });
+            }
         }
 
         if (prevProps.refresh !== this.props.refresh) {
@@ -141,16 +332,37 @@ export default class MyVote extends PureComponent {
             pageSize = 10;
             let pageOption = this.state.pagination;
             pageOption.current = 1;
-            this.setState({
-                pagination: pageOption,
-                allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
-            });
-            await this.votingRecordInformation(
+            this.votingRecordInformation(
                 {
                     page,
                     pageSize
                 }
-            );
+            ).then(result => {
+                this.setState({
+                    loading: false,
+                    data: result.data,
+                    pagination: pageOption,
+                    allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
+                });
+            });
+        }
+
+        if (prevProps.contracts !== this.props.contracts) {
+            const {contracts} = this.state;
+            if (contracts) {
+                this.votingRecordInformation(
+                    {
+                        page,
+                        pageSize
+                    }
+                ).then(result => {
+                    this.setState({
+                        loading: false,
+                        data: result.data,
+                        allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
+                    });
+                });
+            }
         }
     }
 
