@@ -5,7 +5,6 @@
 
 import React, {PureComponent} from 'react';
 import {Row, Col, Spin} from 'antd';
-import {aelf} from '../../utils';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/bar';
@@ -21,7 +20,7 @@ export default class VotingYieldChart extends PureComponent {
         this.state = {
             data: null,
             loading: false,
-            contracts: this.props.contracts
+            contracts: null
         };
     }
 
@@ -37,11 +36,13 @@ export default class VotingYieldChart extends PureComponent {
 
     componentDidUpdate(prevProps) {
         if (prevProps.contracts !== this.props.contracts) {
-            this.getData().then(result => {
-                this.setState({
-                    data: result
+            if (!prevProps.contracts) {
+                this.getData().then(result => {
+                    this.setState({
+                        data: result
+                    });
                 });
-            });
+            }
         }
     }
 
@@ -64,7 +65,7 @@ export default class VotingYieldChart extends PureComponent {
         const {contracts} = this.state;
         return JSON.parse(
             hexCharCodeToStr(
-                contracts.dividends.CheckDividendsOfPreviousTermToFriendlyString().return
+                contracts.CheckDividendsOfPreviousTermToFriendlyString().return
             )
         ).Values;
     }

@@ -8,15 +8,14 @@
 import React, {Component} from 'react';
 import {Row, Col, message} from 'antd';
 import {DEFAUTRPCSERVER} from '../../../config/config';
-import {aelf} from '../../utils';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
 import VotingYieldChart from '../../components/VotingYieldChart/VotingYieldChart';
 import AElfWallet from '../../components/AElfWallet/AElfWallet';
 import VotingModule from '../../components/VotingModule/VotingModule';
+import {aelf} from '../../utils';
 import Svg from '../../components/Svg/Svg';
 import {commonPrivateKey} from '../../../config/config';
-import voteContracts from '../../utils/voteContracts';
 import getHexNumber from '../../utils/getHexNumber';
 import getContractAddress from '../../utils/getContractAddress';
 import NightElfCheck from '../../utils/NightElfCheck';
@@ -28,7 +27,7 @@ export default class ApplicationPage extends Component {
         super(props);
         this.informationTimer;
         let wallet = null;
-        if (localStorage.currentWallet.length === 0) {
+        if (localStorage.currentWallet) {
             wallet = {
                 address: '',
                 walletName: '',
@@ -56,6 +55,9 @@ export default class ApplicationPage extends Component {
             currentWallet: wallet,
             information: this.information,
             contracts: null,
+            consensus: null,
+            dividends: null,
+            tokenContract: null,
             showDownloadPlugins: false,
             showWallet: false
         };
@@ -63,6 +65,29 @@ export default class ApplicationPage extends Component {
 
     componentDidMount() {
         let httpProvider = DEFAUTRPCSERVER;
+        getContractAddress().then(result => {
+            this.setState({
+                contracts: result
+            });
+            aelf.chain.contractAtAsync(result.CONSENSUSADDRESS, result.wallet, (error, result) => {
+                this.setState({
+                    consensus: result
+                });
+                this.getInformation(result);
+            });
+
+            aelf.chain.contractAtAsync(result.DIVIDENDSADDRESS, result.wallet, (error, result) => {
+                this.setState({
+                    dividends: result
+                });
+            });
+
+            aelf.chain.contractAtAsync(result.TOKENADDRESS, result.wallet, (error, result) => {
+                this.setState({
+                    tokenContract: result
+                });
+            });
+        });
         NightElfCheck.getInstance().check.then(item => {
             window.NightElf.api({
                 appName: 'hzzTest',
@@ -114,28 +139,10 @@ export default class ApplicationPage extends Component {
                         walletInfoList: result.addressList
                     });
                 });
-            }).then(() => {
-                getContractAddress().then(result => {
-                    this.setState({
-                        contracts: result
-                    });
-                }).then(() => {
-                    this.getInformation();
-                });
-            }).catch(error => {
-                this.setState({
-                    showDownloadPlugins: true
-                });
             });
         }).catch(error => {
-            console.log(error);
-        }).then(() => {
-            getContractAddress().then(result => {
-                this.setState({
-                    contracts: result
-                });
-            }).then(() => {
-                this.getInformation();
+            this.setState({
+                showDownloadPlugins: true
             });
         });
     }
@@ -144,27 +151,29 @@ export default class ApplicationPage extends Component {
         clearTimeout(this.informationTimer);
     }
 
-    getInformation() {
+    getInformation(consensus) {
         const {information} = this.state;
-        this.getVotesCount().then(result => {
+        this.getVotesCount(consensus).then(result => {
             let temp = information;
             temp[0].info = result;
             this.setState({
                 information: temp
             });
-            this.getTicketsCount().then(result => {
-                let temp = information;
-                temp[1].info = result;
-                this.setState({
-                    information: temp
-                });
-                this.queryCurrentDividends().then(result => {
-                    let temp = information;
-                    temp[2].info = result;
-                    this.setState({
-                        information: temp
-                    });
-                });
+        });
+
+        this.getTicketsCount(consensus).then(result => {
+            let temp = information;
+            temp[1].info = result;
+            this.setState({
+                information: temp
+            });
+        });
+
+        this.queryCurrentDividends(consensus).then(result => {
+            let temp = information;
+            temp[2].info = result;
+            this.setState({
+                information: temp
             });
         });
         this.informationTimer = setTimeout(() => {
@@ -172,20 +181,12 @@ export default class ApplicationPage extends Component {
         }, 60000);
     }
 
-    getVotesCount = async () => {
-        const {contracts} = this.state;
-        return getHexNumber(contracts.consensus.GetVotesCount().return).toLocaleString();
-    }
+    getVotesCount = async consensus => getHexNumber(consensus.GetVotesCount().return).toLocaleString();
 
-    getTicketsCount = async () => {
-        const {contracts} = this.state;
-        return getHexNumber(contracts.consensus.GetTicketsCount().return).toLocaleString();
-    }
+    getTicketsCount = async consensus => getHexNumber(consensus.GetTicketsCount().return).toLocaleString();
 
-    queryCurrentDividends = async () => {
-        const {contracts} = this.state;
-        return getHexNumber(contracts.consensus.QueryCurrentDividends().return).toLocaleString();
-    }
+    queryCurrentDividends = async consensus => getHexNumber(consensus.QueryCurrentDividends().return).toLocaleString();
+
 
     renderVoteInformation() {
         const VoteHtml = this.state.information.map(item =>
@@ -217,13 +218,15 @@ export default class ApplicationPage extends Component {
     }
 
     getAElfWallet() {
-        const {contracts, showWallet, walletInfoList} = this.state;
+        const {showWallet, walletInfoList, consensus, dividends, tokenContract} = this.state;
         if (showWallet) {
             return <AElfWallet
                 title='AElf Wallet'
                 walletInfoList={walletInfoList}
                 getCurrentWallet={this.getCurrentWallet.bind(this)}
-                contracts={contracts}
+                consensus={consensus}
+                dividends={dividends}
+                tokenContract={tokenContract}
             />;
         }
     }
@@ -235,7 +238,7 @@ export default class ApplicationPage extends Component {
     }
 
     render() {
-        const {contracts, showDownloadPlugins, currentWallet} = this.state;
+        const {contracts, showDownloadPlugins, currentWallet, dividends} = this.state;
         const VoteHtml = this.renderVoteInformation();
         const aelfWalletHTML = this.getAElfWallet();
         let downloadPlugins = null;
@@ -250,14 +253,14 @@ export default class ApplicationPage extends Component {
                         {VoteHtml}
                     </Row>
                 </div>
-                <VotingYieldChart title='Historical voting gains' contracts={contracts}/>
+                <VotingYieldChart title='Historical voting gains' contracts={dividends}/>
                 {aelfWalletHTML}
-                <div className='vote-box' >
+                {/* <div className='vote-box' >
                     <VotingModule
                         currentWallet={currentWallet}
                         contracts={contracts}
                     />
-                </div>
+                </div> */}
             </div>
             // <div className='apps-page-container'>AELF Applications List Page.</div>
         );

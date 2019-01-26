@@ -14,31 +14,30 @@ export default function getContractAddress() {
             const DIVIDENDSADDRESS = result.result['AElf.Contracts.Dividends'];
             const TOKENADDRESS = result.result['AElf.Contracts.Token'];
             const wallet = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey);
-            let contractFn = {};
-            const consensus = new Promise((resolve, reject) => {
-                const consensus = aelf.chain.contractAt(CONSENSUSADDRESS, wallet);
-                contractFn.consensus = consensus;
-            });
+            // const consensus = new Promise(() => {
+            //     const consensus = aelf.chain.contractAt(CONSENSUSADDRESS, wallet);
+            //     contractFn.consensus = consensus;
+            // });
 
-            const dividends = new Promise((resolve, reject) => {
-                const dividends = aelf.chain.contractAt(DIVIDENDSADDRESS, wallet);
-                contractFn.dividends = dividends;
-            });
+            // const dividends = new Promise(() => {
+            //     const dividends = aelf.chain.contractAt(DIVIDENDSADDRESS, wallet);
+            //     contractFn.dividends = dividends;
+            // });
 
-            const tokenContract = new Promise((resolve, reject) => {
-                const tokenContract = aelf.chain.contractAt(TOKENADDRESS, wallet);
-                contractFn.tokenContract = tokenContract;
-            });
+            // const tokenContract = new Promise(() => {
+            //     const tokenContract = aelf.chain.contractAt(TOKENADDRESS, wallet);
+            //     contractFn.tokenContract = tokenContract;
+            // });
 
-            consensus.then(dividends).then(tokenContract);
+            // consensus.then(dividends).then(tokenContract);
             const output = {
                 CONSENSUSADDRESS,
                 DIVIDENDSADDRESS,
                 TOKENADDRESS,
                 wallet,
-                consensus: contractFn.consensus,
-                dividends: contractFn.dividends,
-                tokenContract: contractFn.tokenContract
+                consensus: null,
+                dividends: null,
+                tokenContract: null
             };
             resolve(output);
         });

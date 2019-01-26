@@ -28,13 +28,6 @@ const httpErrorHandler = (message, des) => notification.open({
 });
 
 const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
-aelf.chain.connectChain(function (e) {
-    // if (isEmpty(e.message)) {
-    //     return;
-    // }
-    // httpErrorHandler('Connect Error', e.message);
-    // console.error(e.message);
-});
 
 const get = async (url, params, config) => {
     const res = await api.get(url, params, config);

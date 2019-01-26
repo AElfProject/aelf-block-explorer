@@ -26,22 +26,43 @@ export default class AElfWallet extends PureComponent {
             refresh: 0,
             loading: false,
             loadingTip: null,
-            contracts: this.props.contracts
+            consensus: this.props.consensus,
+            dividends: this.props.dividends,
+            tokenContract: this.props.tokenContract
         };
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.contracts !== state.contracts) {
+        if (props.consensus !== state.consensus) {
             return {
-                contracts: props.contracts
+                consensus: props.consensus
             };
         }
 
+        if (props.dividends !== state.dividends) {
+            return {
+                dividends: props.dividends
+            };
+        }
+
+        if (props.tokenContract !== state.tokenContract) {
+            return {
+                tokenContract: props.tokenContract
+            };
+        }
         return null;
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.contracts !== this.props.contracts) {
+        if (prevProps.consensus !== this.props.consensus) {
+            this.pushWalletInfo();
+        }
+
+        if (prevProps.dividends !== this.props.dividends) {
+            this.pushWalletInfo();
+        }
+
+        if (prevProps.tokenContract !== this.props.tokenContract) {
             this.pushWalletInfo();
         }
     }
@@ -54,32 +75,73 @@ export default class AElfWallet extends PureComponent {
     }
 
     pushWalletInfo() {
-        const {contracts, walletInfoList, refresh} = this.state;
-        walletInfoList.map((item, index) => {
-            const key = getPublicKey(item.publicKey);
-            walletInfoList[index].balance = getHexNumber(
-                contracts.tokenContract.BalanceOf(item.address).return
-            ) || '-';
-            walletInfoList[index].dividends = getHexNumber(
-                contracts.dividends.GetAllAvailableDividends(key).return
-            ) || '-';
-            walletInfoList[index].tikets = 0;
-            let tickets = JSON.parse(
-                hexCharCodeToStr(contracts.consensus.GetTicketsInfoToFriendlyString(key).return)
-            ).VotingRecords || [];
-            for (let j = 0, len = tickets.length; j < len; j++) {
-                if (tickets[j].From === key) {
-                    let IsWithdrawn = tickets[j].IsWithdrawn || false;
-                    IsWithdrawn ? item.tikets : item.tikets += parseInt(tickets[j].Count, 10);
-                }
-            }
-            this.setState({
-                walletInfoList,
-                refresh: refresh + 1
+        let {walletInfoList} = this.state;
+        const {consensus, dividends, tokenContract} = this.state;
+        if (tokenContract) {
+            walletInfoList.map((item, index) => {
+                this.getBalance(item.address).then(result => {
+                    walletInfoList[index].balance = result;
+                    const temp = Array.from(walletInfoList);
+                    this.setState({
+                        walletInfoList: temp
+                    });
+                });
             });
-        });
+        }
+
+
+        
+        // walletInfoList.map((item, index) => {
+        //     const key = getPublicKey(item.publicKey);
+        //     this.getBalance(item.address).then(result => {
+        //         walletInfoList[index].balance = result;
+        //         const temp = Array.from(walletInfoList);
+        //         this.setState({
+        //             walletInfoList: temp
+        //         });
+        //     });
+
+        //     this.getDividends(key).then(result => {
+        //         walletInfoList[index].dividends = result;
+        //         const temp = Array.from(walletInfoList);
+        //         this.setState({
+        //             walletInfoList: temp
+        //         });
+        //     });
+
+        //     this.getTirckets(key).then(result => {
+        //         let ticket = 0;
+        //         result.map(item => {
+        //             if (item.From === key) {
+        //                 let IsWithdrawn = item.IsWithdrawn || false;
+        //                 IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
+        //             }
+        //         });
+        //         walletInfoList[index].ticket = ticket;
+        //         const temp = Array.from(walletInfoList);
+        //         this.setState({
+        //             walletInfoList: temp
+        //         });
+        //     });
+        // });
     }
 
+    getBalance = async key => {
+        const {tokenContract} = this.state;
+        return getHexNumber(tokenContract.BalanceOf(key).return) || '-';
+    }
+
+    getDividends = async key => {
+        const {dividends} = this.state;
+        return getHexNumber(dividends.dividends.GetAllAvailableDividends(key).return) || '-';
+    }
+
+    getTirckets = async key => {
+        const {consensus} = this.state;
+        return JSON.parse(
+            hexCharCodeToStr(consensus.GetTicketsInfoToFriendlyString(key).return)
+        ).VotingRecords || [];
+    }
 
     changeRadio(e) {
         const {walletInfoList} = this.state;
@@ -97,9 +159,9 @@ export default class AElfWallet extends PureComponent {
 
     getWalletAssetInfo() {
         const walletAssetInfo = this.state.walletInfoList.map((item, index) => {
-            let {balance, tikets, dividends} = item;
+            let {balance, ticket, dividends} = item;
             balance = !!item.balance ? item.balance.toLocaleString() : '-';
-            tikets = !!item.tikets ? item.tikets.toLocaleString() : '-';
+            ticket = !!item.ticket ? item.ticket.toLocaleString() : '-';
             dividends = !!item.dividends ? item.dividends.toLocaleString() : '-';
             return (
                 <Row key={index} type='flex' align='middle' style={{padding: '10px 0'}}>
@@ -124,7 +186,7 @@ export default class AElfWallet extends PureComponent {
                         sm={{span: 8, offset: 16}}
                         xs={{span: 8, offset: 16}}
                     >
-                        Votes: <span className='total-votes'>{tikets}</span>
+                        Votes: <span className='total-votes'>{ticket}</span>
                     </Col>
                     <Col
                         xxl={{span: 8, offset: 0}}
@@ -216,7 +278,6 @@ export default class AElfWallet extends PureComponent {
                                         params: []
                                     }
                                 }).then(result => {
-                                    console.log(result);
                                     this.setState({
                                         loading: true
                                     });
@@ -262,7 +323,6 @@ export default class AElfWallet extends PureComponent {
                                         params: []
                                     }
                                 }).then(result => {
-                                    console.log(result);
                                     this.setState({
                                         loading: true
                                     });
@@ -281,23 +341,6 @@ export default class AElfWallet extends PureComponent {
                 });
             }
         });
-        // this.setState({
-        //     loadingTip: 'In redemption, please wait...'
-        // });
-        // const dividends = this.consensus.ReceiveAllDividends().hash;
-        // if (dividends) {
-        //     this.setState({
-        //         loading: true
-        //     });
-        //     setTimeout(() => {
-        //         const state = aelf.chain.getTxResult(dividends);
-        //         getStateJudgment(state.result.tx_status, dividends);
-        //         this.pushWalletInfo();
-        //         this.setState({
-        //             loading: false
-        //         });
-        //     }, 4000);
-        // }
     }
 
     onRefresh() {
