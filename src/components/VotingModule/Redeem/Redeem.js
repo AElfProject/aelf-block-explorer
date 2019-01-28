@@ -20,7 +20,8 @@ export default class Redeem extends PureComponent {
             txId: null,
             myVote: null,
             password: null,
-            loading: false
+            loading: false,
+            contracts: this.props.contracts
         };
     }
 
@@ -36,13 +37,14 @@ export default class Redeem extends PureComponent {
     }
 
     getSubmit() {
-        const {txId} = this.state;
+        const {txId, contracts} = this.state;
         window.NightElf.api({
             appName: 'hzzTest',
             method: 'CALL_AELF_CONTRACT',
             chainId: 'AELF',
             payload: {
                 contractName: 'consensus',
+                contractAddress: contracts.CONSENSUSADDRESS,
                 method: 'WithdrawByTransactionId',
                 params: [txId]
             }

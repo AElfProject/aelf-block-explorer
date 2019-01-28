@@ -25,9 +25,9 @@ export default class VotingYieldChart extends PureComponent {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.contracts !== state.contracts) {
+        if (props.dividends !== state.dividends) {
             return {
-                contracts: props.contracts
+                dividends: props.dividends
             };
         }
 
@@ -35,11 +35,15 @@ export default class VotingYieldChart extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.contracts !== this.props.contracts) {
-            if (!prevProps.contracts) {
-                this.getData().then(result => {
+        if (prevProps.dividends !== this.props.dividends) {
+            if (!prevProps.dividends) {
+                this.setState({
+                    loading: true
+                });
+                this.props.dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
                     this.setState({
-                        data: result
+                        data: JSON.parse(hexCharCodeToStr(result.return)).Values,
+                        loading: false
                     });
                 });
             }
@@ -47,27 +51,16 @@ export default class VotingYieldChart extends PureComponent {
     }
 
     onRefresh() {
+        const {dividends} = this.state;
         this.setState({
             loading: true
         });
-
-        setTimeout(() => {
-            this.getData().then(result => {
-                this.setState({
-                    data: result,
-                    loading: false
-                });
+        dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
+            this.setState({
+                data: JSON.parse(hexCharCodeToStr(result.return)).Values,
+                loading: false
             });
-        }, 2000);
-    }
-
-    getData = async () => {
-        const {contracts} = this.state;
-        return JSON.parse(
-            hexCharCodeToStr(
-                contracts.CheckDividendsOfPreviousTermToFriendlyString().return
-            )
-        ).Values;
+        });
     }
 
     getOption() {

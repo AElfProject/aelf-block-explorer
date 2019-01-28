@@ -24,18 +24,20 @@ export default class Vote extends PureComponent {
             password: null,
             balance: null,
             publicKey: this.props.publicKey,
+            contracts: this.props.contracts,
             currentWallet: JSON.parse(localStorage.currentWallet),
             loading: false
         };
     }
 
     componentDidMount() {
-        const {currentWallet} = this.state;
+        const {currentWallet, contracts} = this.state;
         window.NightElf.api({
             appName: 'hzzTest',
             method: 'CALL_AELF_CONTRACT',
             chainId: 'AELF',
             payload: {
+                contractAddress: contracts.TOKENADDRESS,
                 contractName: 'token',
                 method: 'BalanceOf',
                 params: [currentWallet.address]
@@ -72,6 +74,7 @@ export default class Vote extends PureComponent {
     }
 
     getNextStep() {
+        const {contracts} = this.state;
         let reg = /^[0-9]*$/;
         if (this.state.step) {
             if (!reg.test(this.state.votes)) {
@@ -98,6 +101,7 @@ export default class Vote extends PureComponent {
                 method: 'CALL_AELF_CONTRACT',
                 chainId: 'AELF',
                 payload: {
+                    contractAddress: contracts.CONSENSUSADDRESS,
                     contractName: 'consensus',
                     method: 'Vote',
                     params: [this.state.publicKey, this.state.votes, this.state.perio]

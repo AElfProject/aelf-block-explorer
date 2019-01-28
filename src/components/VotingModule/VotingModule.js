@@ -19,12 +19,12 @@ export default class VotingModule extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            currentWallet: this.props.currentWallet,
             session: null,
             isVote: false,
             isRedeem: false,
             confirmLoading: false,
             votingAmount: null,
-            currentWallet: this.props.currentWallet,
             myVote: null,
             txId: null,
             nodeName: null,
@@ -34,6 +34,7 @@ export default class VotingModule extends PureComponent {
             showMyVote: false,
             refresh: 0,
             isRefresh: false,
+            consensus: null,
             contracts: null
         };
     }
@@ -42,6 +43,12 @@ export default class VotingModule extends PureComponent {
         if (props.currentWallet !== state.currentWallet) {
             return {
                 currentWallet: props.currentWallet
+            };
+        }
+
+        if (props.consensus !== state.consensus) {
+            return {
+                consensus: props.consensus
             };
         }
 
@@ -55,13 +62,15 @@ export default class VotingModule extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.contracts !== this.props.contracts) {
-            const {contracts} = this.state;
-            if (contracts) {
-                let wheels = getHexNumber(contracts.consensus.GetCurrentRoundNumber().return);
-                let session = getHexNumber(contracts.consensus.GetTermNumberByRoundNumber(wheels).return);
-                this.setState({
-                    session
+        if (prevProps.consensus !== this.props.consensus) {
+            const {consensus} = this.state;
+            if (consensus) {
+                consensus.GetCurrentRoundNumber((error, result) => {
+                    consensus.GetTermNumberByRoundNumber(getHexNumber(result.return), (error, result) => {
+                        this.setState({
+                            session: getHexNumber(result.return)
+                        });
+                    });
                 });
             }
         }
@@ -119,42 +128,51 @@ export default class VotingModule extends PureComponent {
     }
 
     onRefresh() {
-        const {contracts} = this.state;
-        if (!this.state.isRefresh) {
+        const {consensus, isRefresh, refresh} = this.state;
+        if (!isRefresh) {
             this.setState({
                 isRefresh: true
             });
-            setTimeout(() => {
-                let wheels = getHexNumber(contracts.consensus.GetCurrentRoundNumber().return);
-                let session = getHexNumber(contracts.consensus.GetTermNumberByRoundNumber(wheels).return);
-                this.setState({
-                    session,
-                    refresh: ++this.state.refresh,
-                    isRefresh: false
+
+            consensus.GetCurrentRoundNumber((error, result) => {
+                consensus.GetTermNumberByRoundNumber(getHexNumber(result.return), (error, result) => {
+                    this.setState({
+                        session: getHexNumber(result.return),
+                        refresh: refresh + 1
+                    });
                 });
-            }, 4000);
+            });
         }
     }
 
+    endRefresh() {
+        this.setState({
+            isRefresh: false
+        });
+    }
+
     getVoteTable() {
-        const {contracts} = this.state;
+        const {consensus, currentWallet, refresh, showVote, contracts} = this.state;
         return (
             <VoteTable
                 style={this.state.showVote ? {display: 'block'} : {display: 'none'}}
-                showVote={this.showVote.bind(this)}
+                showVoteFn={this.showVote.bind(this)}
                 showRedeem={this.showRedeem.bind(this)}
                 handleClose={this.handleClose.bind(this)}
                 obtainInfo={this.obtainInfo.bind(this)}
-                currentWallet={this.state.currentWallet}
+                currentWallet={currentWallet}
                 showMyVote={this.showMyVote.bind(this)}
-                refresh={this.state.refresh}
+                endRefresh={this.endRefresh.bind(this)}
+                refresh={refresh}
+                showVote={showVote}
+                consensus={consensus}
                 contracts={contracts}
             />
         );
     }
 
     getMyVote() {
-        const {contracts} = this.state;
+        const {consensus, contracts, refresh, currentWallet, showMyVote} = this.state;
         return (
             <MyVote
                 style={this.state.showMyVote ? {display: 'block'} : {display: 'none'}}
@@ -162,27 +180,32 @@ export default class VotingModule extends PureComponent {
                 showRedeem={this.showRedeem.bind(this)}
                 handleClose={this.handleClose.bind(this)}
                 obtainInfo={this.obtainInfo.bind(this)}
-                currentWallet={this.state.currentWallet}
-                refresh={this.state.refresh}
+                endRefresh={this.endRefresh.bind(this)}
+                currentWallet={currentWallet}
+                refresh={refresh}
+                consensus={consensus}
                 contracts={contracts}
+                showMyVote={showMyVote}
             />
         );
     }
 
     getVotingRecord() {
-        const {contracts} = this.state;
+        const {consensus, currentWallet, refresh, showVotingRecord} = this.state;
         return (
             <VotingRecord
                 style={this.state.showVotingRecord ? {display: 'block'} : {display: 'none'}}
-                currentWallet={this.state.currentWallet}
-                refresh={this.state.refresh}
-                contracts={contracts}
+                currentWallet={currentWallet}
+                refresh={refresh}
+                consensus={consensus}
+                showVotingRecord={showVotingRecord}
+                
             />
         );
     }
 
     render() {
-        const {isVote, isRedeem, contracts} = this.state;
+        const {isVote, isRedeem, consensus, contracts} = this.state;
         const voteTable = this.getVoteTable();
         const myVote = this.getMyVote();
         const votingRecord = this.getVotingRecord();
@@ -257,8 +280,8 @@ export default class VotingModule extends PureComponent {
                         nodeName={this.state.nodeName}
                         publicKey={this.state.publicKey}
                         handleClose={this.handleClose.bind(this)}
-                        contracts={contracts}
                         onRefresh={this.onRefresh.bind(this)}
+                        contracts={contracts}
                     />
                 </Modal>
                 <Modal

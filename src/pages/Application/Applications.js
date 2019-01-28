@@ -149,44 +149,39 @@ export default class ApplicationPage extends Component {
 
     componentWillUnMount() {
         clearTimeout(this.informationTimer);
+        this.setState = () => {};
     }
 
     getInformation(consensus) {
         const {information} = this.state;
-        this.getVotesCount(consensus).then(result => {
+        consensus.GetVotesCount((error, result) => {
             let temp = information;
-            temp[0].info = result;
+            temp[0].info = getHexNumber(result.return).toLocaleString();
             this.setState({
                 information: temp
             });
         });
 
-        this.getTicketsCount(consensus).then(result => {
+        consensus.GetTicketsCount((error, result) => {
             let temp = information;
-            temp[1].info = result;
+            temp[1].info = getHexNumber(result.return).toLocaleString();
             this.setState({
                 information: temp
             });
         });
 
-        this.queryCurrentDividends(consensus).then(result => {
+        consensus.QueryCurrentDividends((error, result) => {
             let temp = information;
-            temp[2].info = result;
+            temp[2].info = getHexNumber(result.return).toLocaleString();
             this.setState({
                 information: temp
             });
         });
+
         this.informationTimer = setTimeout(() => {
-            this.getInformation();
+            this.getInformation(consensus);
         }, 60000);
     }
-
-    getVotesCount = async consensus => getHexNumber(consensus.GetVotesCount().return).toLocaleString();
-
-    getTicketsCount = async consensus => getHexNumber(consensus.GetTicketsCount().return).toLocaleString();
-
-    queryCurrentDividends = async consensus => getHexNumber(consensus.QueryCurrentDividends().return).toLocaleString();
-
 
     renderVoteInformation() {
         const VoteHtml = this.state.information.map(item =>
@@ -238,7 +233,7 @@ export default class ApplicationPage extends Component {
     }
 
     render() {
-        const {contracts, showDownloadPlugins, currentWallet, dividends} = this.state;
+        const {consensus, showDownloadPlugins, currentWallet, dividends, contracts} = this.state;
         const VoteHtml = this.renderVoteInformation();
         const aelfWalletHTML = this.getAElfWallet();
         let downloadPlugins = null;
@@ -253,14 +248,15 @@ export default class ApplicationPage extends Component {
                         {VoteHtml}
                     </Row>
                 </div>
-                <VotingYieldChart title='Historical voting gains' contracts={dividends}/>
+                <VotingYieldChart title='Historical voting gains' dividends={dividends}/>
                 {aelfWalletHTML}
-                {/* <div className='vote-box' >
+                <div className='vote-box' >
                     <VotingModule
                         currentWallet={currentWallet}
+                        consensus={consensus}
                         contracts={contracts}
                     />
-                </div> */}
+                </div>
             </div>
             // <div className='apps-page-container'>AELF Applications List Page.</div>
         );

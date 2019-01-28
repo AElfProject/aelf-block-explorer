@@ -6,10 +6,13 @@
 import React, {PureComponent} from 'react';
 import Button from '../../Button/Button';
 import {Table, message} from 'antd';
+import getPublicKey from '../../../utils/getPublicKey';
 import getMyVoteData from '../../../utils/getMyVoteData';
 import getHexNumber from '../../../utils/getHexNumber';
+import dayjs from 'dayjs';
 
 import './MyVote.less';
+import hexCharCodeToStr from '../../../utils/hexCharCodeToStr';
 
 let page = 0;
 let pageSize = 10;
@@ -22,34 +25,92 @@ export default class MyVote extends PureComponent {
             pagination: {
                 showQuickJumper: true,
                 total: 0,
-                showTotal: total => `Total ${total} items`,
-                onChange: () => {
-                    // const setTop = this.refs.voting.offsetTop;
-                    // window.scrollTo(0, setTop);
-                }
+                showTotal: total => `Total ${total} items`
             },
             loading: false,
             data: null,
-            contracts: this.props.contracts
+            contracts: this.props.contracts,
+            consensus: this.props.consensus,
+            showMyVote: this.props.showMyVote
         };
     }
 
     votingRecordInformation = async (params = {}) => {
-        const {contracts, currentWallet} = this.state;
+        const {currentWallet, consensus} = this.state;
+        let {pagination, page, pageSize} = params;
         this.setState({
             loading: true
         });
-        const data = getMyVoteData(currentWallet, ...params, contracts);
-        let dataList = null;
-        if (data.dataList) {
-            dataList = data.dataList;
-            let pagination = this.state.pagination;
-            pagination.total = parseInt(data.VotingRecordsCount, 10);
-            return {
-                loading: false,
-                data: dataList || null,
+        let dataList = [];
+        if (currentWallet) {
+            if (currentWallet.address === '') {
+                return {dataList, VotingRecordsCount: 0};
+            }
+        }
+        else {
+            return {dataList, VotingRecordsCount: 0};
+        }
+
+        const key = getPublicKey(currentWallet.publicKey);
+        consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString(key, page, pageSize, (error, result) => {
+            const ticketsInfoList = JSON.parse(hexCharCodeToStr(result.return)).VotingRecords || [];
+            const VotingRecordsCount = parseInt(
+                JSON.parse(hexCharCodeToStr(result.return)).VotingRecordsCount, 10
+            ) || 0;
+
+            if (ticketsInfoList.length === 0) {
+                this.setState({
+                    data: [],
+                    loading: false,
+                    pagination
+                });
+                return;
+            }
+
+            ticketsInfoList.map((item, index) => {
+                let data = {
+                    key: page + index + 1,
+                    serialNumber: page + index + 1,
+                    nodeName: null,
+                    term: item.TermNumber,
+                    To: item.To,
+                    From: item.From,
+                    vote: item.Count,
+                    myVote: item.Count,
+                    lockDate: dayjs(item.VoteTimestamp).format('YYYY-MM-DD'),
+                    dueDate: dayjs(item.UnlockTimestamp).format('YYYY-MM-DD'),
+                    operation: {
+                        txId: item.TransactionId,
+                        publicKey: item.To,
+                        vote: true,
+                        redeem: dayjs(new Date()).unix() < dayjs(item.UnlockTimestamp).unix()
+                    }
+                };
+                dataList.push(data);
+                pagination.total = VotingRecordsCount;
+                this.getNodeName(dataList, index, item, pagination);
+            });
+
+        });
+    }
+
+
+
+    getNodeName = async (dataList, index, item, pagination) => {
+        const {consensus} = this.state;
+        consensus.QueryAlias(item.To, (error, result) => {
+            dataList[index].nodeName = hexCharCodeToStr(result.return);
+            let temp = Array.from(dataList);
+            this.setState({
+                data: temp,
                 pagination
-            };
+            });
+        });
+
+        if (dataList.length - 1 === index) {
+            this.setState({
+                loading: false
+            });
         }
     }
 
@@ -64,15 +125,10 @@ export default class MyVote extends PureComponent {
         this.votingRecordInformation(
             {
                 page,
-                pageSize
+                pageSize,
+                pagination: pageOption
             }
-        ).then(result => {
-            this.setState({
-                pagination: result.pagination,
-                loading: result.loading,
-                data: result.data
-            });
-        });
+        );
     };
 
     componentWillUnmount() {
@@ -294,6 +350,18 @@ export default class MyVote extends PureComponent {
             };
         }
 
+        if (props.consensus !== state.consensus) {
+            return {
+                consensus: props.consensus
+            };
+        }
+
+        if (props.showMyVote !== state.showMyVote) {
+            return {
+                showMyVote: props.showMyVote
+            };
+        }
+
         if (props.refresh !== state.refresh) {
             return {
                 refresh: props.refresh
@@ -303,63 +371,73 @@ export default class MyVote extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.currentWallet !== this.props.currentWallet) {
-            const {contracts} = this.state;
-            if (contracts) {
+        if (prevProps.showMyVote !== this.props.showMyVote) {
+            const {consensus, showMyVote, pagination} = this.state;
+            if (consensus && showMyVote) {
                 page = 0;
                 pageSize = 10;
-                let pageOption = this.state.pagination;
-                pageOption.current = 1;
+                pagination.current = 1;
                 this.votingRecordInformation(
                     {
                         page,
-                        pageSize
+                        pageSize,
+                        pagination
                     }
-                ).then(result => {
-                    this.setState({
-                        pagination: pageOption,
-                        allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return),
-                        loading: false,
-                        data: result.data
+                ).then(() => {
+                    consensus.GetTicketsCount((error, result) => {
+                        this.setState({
+                            allVotes: getHexNumber(result.return),
+                            loading: false
+                        });
+                        this.props.endRefresh();
+                    });
+                });
+            }
+        }
+
+        if (prevProps.currentWallet !== this.props.currentWallet) {
+            const {consensus, showMyVote, pagination} = this.state;
+            if (consensus && showMyVote) {
+                page = 0;
+                pageSize = 10;
+                pagination.current = 1;
+                this.votingRecordInformation(
+                    {
+                        page,
+                        pageSize,
+                        pagination
+                    }
+                ).then(() => {
+                    consensus.GetTicketsCount((error, result) => {
+                        this.setState({
+                            allVotes: getHexNumber(result.return),
+                            loading: false
+                        });
+                        this.props.endRefresh();
                     });
                 });
             }
         }
 
         if (prevProps.refresh !== this.props.refresh) {
-            const {contracts} = this.state;
-            page = 0;
-            pageSize = 10;
-            let pageOption = this.state.pagination;
-            pageOption.current = 1;
-            this.votingRecordInformation(
-                {
-                    page,
-                    pageSize
-                }
-            ).then(result => {
-                this.setState({
-                    loading: false,
-                    data: result.data,
-                    pagination: pageOption,
-                    allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
-                });
-            });
-        }
-
-        if (prevProps.contracts !== this.props.contracts) {
-            const {contracts} = this.state;
-            if (contracts) {
+            const {consensus, showMyVote, pagination} = this.state;
+            if (consensus && showMyVote) {
+                page = 0;
+                pageSize = 10;
+                pagination.current = 1;
                 this.votingRecordInformation(
                     {
                         page,
-                        pageSize
+                        pageSize,
+                        pagination
                     }
-                ).then(result => {
-                    this.setState({
-                        loading: false,
-                        data: result.data,
-                        allVotes: getHexNumber(contracts.consensus.GetTicketsCount().return)
+                ).then(() => {
+                    consensus.GetTicketsCount((error, result) => {
+                        this.setState({
+                            allVotes: getHexNumber(result.return),
+                            loading: false
+                        });
+                        this.props.endRefresh();
                     });
                 });
             }
