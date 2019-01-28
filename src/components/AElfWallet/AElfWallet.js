@@ -30,6 +30,7 @@ export default class AElfWallet extends PureComponent {
             dividends: this.props.dividends,
             tokenContract: this.props.tokenContract,
             consensusLoad: false,
+            contracts: this.props.contracts,
             dividendsLoad: false,
             tokenLoad: false
         };
@@ -53,6 +54,12 @@ export default class AElfWallet extends PureComponent {
                 tokenContract: props.tokenContract
             };
         }
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+        
         return null;
     }
 
@@ -198,128 +205,144 @@ export default class AElfWallet extends PureComponent {
     getAllDividends() {
         // GetAllDividends
         const {contracts} = this.state;
-        const currentWallet = JSON.parse(localStorage.currentWallet);
-        window.NightElf.api({
-            appName: 'hzzTest',
-            method: 'CHECK_PERMISSION',
-            type: 'address', // if you did not set type, it aways get by domain.
-            address: currentWallet.address
-        }).then(result => {
-            if (result.permissions.length === 0) {
-                window.NightElf.api({
-                    appName: 'hzzTest',
-                    method: 'OPEN_PROMPT',
-                    chainId: 'AELF',
-                    hostname: 'aelf.io',
-                    payload: {
-                        method: 'SET_PERMISSION',
+        if (contracts) {
+            const currentWallet = JSON.parse(localStorage.currentWallet);
+            window.NightElf.api({
+                appName: 'hzzTest',
+                method: 'CHECK_PERMISSION',
+                type: 'address', // if you did not set type, it aways get by domain.
+                address: currentWallet.address
+            }).then(result => {
+                if (result.permissions.length === 0) {
+                    window.NightElf.api({
+                        appName: 'hzzTest',
+                        method: 'OPEN_PROMPT',
+                        chainId: 'AELF',
+                        hostname: 'aelf.io',
                         payload: {
-                            address: currentWallet.address,
-                            contracts: [{
-                                chainId: 'AELF',
-                                contractAddress: contracts.TOKENADDRESS,
-                                contractName: 'token',
-                                description: 'token contract'
-                            }, {
-                                chainId: 'AELF',
-                                contractAddress: contracts.DIVIDENDSADDRESS,
-                                contractName: 'dividends',
-                                description: 'contract dividends'
-                            }, {
-                                chainId: 'AELF',
-                                contractAddress: contracts.CONSENSUSADDRESS,
-                                contractName: 'consensus',
-                                description: 'contract consensus'
-                            }]
+                            method: 'SET_PERMISSION',
+                            payload: {
+                                address: currentWallet.address,
+                                contracts: [{
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.TOKENADDRESS,
+                                    contractName: 'token',
+                                    description: 'token contract'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.DIVIDENDSADDRESS,
+                                    contractName: 'dividends',
+                                    description: 'contract dividends'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.CONSENSUSADDRESS,
+                                    contractName: 'consensus',
+                                    description: 'contract consensus'
+                                }]
+                            }
                         }
-                    }
-                }).then(result => {
-                    if (result.error === 0) {
-                        window.NightElf.api({
-                            appName: 'hzzTest',
-                            method: 'INIT_AELF_CONTRACT',
-                            // hostname: 'aelf.io',
-                            chainId: 'AELF',
-                            payload: {
-                                address: currentWallet.address,
-                                contractName: 'consensus',
-                                contractAddress: contracts.CONSENSUSADDRESS
-                            }
-                        }).then(result => {
-                            if (result.error === 0) {
-                                window.NightElf.api({
-                                    appName: 'hzzTest',
-                                    method: 'CALL_AELF_CONTRACT',
-                                    chainId: 'AELF',
-                                    payload: {
-                                        contractName: 'consensus',
-                                        method: 'ReceiveAllDividends',
-                                        params: []
-                                    }
-                                }).then(result => {
-                                    this.setState({
-                                        loading: true
-                                    });
-                                    setTimeout(() => {
-                                        const state = aelf.chain.getTxResult(result.result.hash);
-                                        getStateJudgment(state.result.tx_status, result.result.hash);
-                                        this.pushWalletInfo();
+                    }).then(result => {
+                        if (result.error === 0) {
+                            window.NightElf.api({
+                                appName: 'hzzTest',
+                                method: 'INIT_AELF_CONTRACT',
+                                // hostname: 'aelf.io',
+                                chainId: 'AELF',
+                                payload: {
+                                    address: currentWallet.address,
+                                    contractName: 'consensus',
+                                    contractAddress: contracts.CONSENSUSADDRESS
+                                }
+                            }).then(result => {
+                                if (result.error === 0) {
+                                    window.NightElf.api({
+                                        appName: 'hzzTest',
+                                        method: 'CALL_AELF_CONTRACT',
+                                        chainId: 'AELF',
+                                        payload: {
+                                            contractAddress: contracts.CONSENSUSADDRESS,
+                                            contractName: 'consensus',
+                                            method: 'ReceiveAllDividends',
+                                            params: []
+                                        }
+                                    }).then(result => {
                                         this.setState({
-                                            loading: false
+                                            loading: true
                                         });
-                                    }, 4000);
-                                });
-                            }
-                        });
-                    }
-                    else {
-                        message.error(result.errorMessage, 5);
-                    }
-                });
-            }
-            else {
-                result.permissions.map((item, index) => {
-                    if (item.address === currentWallet.address) {
-                        window.NightElf.api({
-                            appName: 'hzzTest',
-                            method: 'INIT_AELF_CONTRACT',
-                            // hostname: 'aelf.io',
-                            chainId: 'AELF',
-                            payload: {
-                                address: currentWallet.address,
-                                contractName: 'consensus',
-                                contractAddress: contracts.CONSENSUSADDRESS
-                            }
-                        }).then(result => {
-                            if (result.error === 0) {
-                                window.NightElf.api({
-                                    appName: 'hzzTest',
-                                    method: 'CALL_AELF_CONTRACT',
-                                    chainId: 'AELF',
-                                    payload: {
-                                        contractName: 'consensus',
-                                        method: 'ReceiveAllDividends',
-                                        params: []
-                                    }
-                                }).then(result => {
-                                    this.setState({
-                                        loading: true
+                                        setTimeout(() => {
+                                            const state = aelf.chain.getTxResult(result.result.hash);
+                                            getStateJudgment(state.result.tx_status, result.result.hash);
+                                            this.pushWalletBalance()
+                                            .then(this.pushWalletTicket())
+                                            .then(this.pushWalletDividends())
+                                            .then(() => {
+                                                this.setState({
+                                                    loading: false
+                                                });
+                                            });
+                                        }, 4000);
                                     });
-                                    setTimeout(() => {
-                                        const state = aelf.chain.getTxResult(result.result.hash);
-                                        getStateJudgment(state.result.tx_status, result.result.hash);
-                                        this.pushWalletInfo();
+                                }
+                            });
+                        }
+                        else {
+                            message.error(result.errorMessage, 5);
+                        }
+                    });
+                }
+                else {
+                    result.permissions.map((item, index) => {
+                        if (item.address === currentWallet.address) {
+                            console.log(contracts);
+                            window.NightElf.api({
+                                appName: 'hzzTest',
+                                method: 'INIT_AELF_CONTRACT',
+                                // hostname: 'aelf.io',
+                                chainId: 'AELF',
+                                payload: {
+                                    address: currentWallet.address,
+                                    contractName: 'consensus',
+                                    contractAddress: contracts.CONSENSUSADDRESS
+                                }
+                            }).then(result => {
+                                if (result.error === 0) {
+                                    window.NightElf.api({
+                                        appName: 'hzzTest',
+                                        method: 'CALL_AELF_CONTRACT',
+                                        chainId: 'AELF',
+                                        payload: {
+                                            contractAddress: contracts.CONSENSUSADDRESS,
+                                            contractName: 'consensus',
+                                            method: 'ReceiveAllDividends',
+                                            params: []
+                                        }
+                                    }).then(result => {
                                         this.setState({
-                                            loading: false
+                                            loading: true
                                         });
-                                    }, 4000);
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
+                                        setTimeout(() => {
+                                            const state = aelf.chain.getTxResult(result.result.hash);
+                                            getStateJudgment(state.result.tx_status, result.result.hash);
+                                            this.pushWalletBalance()
+                                            .then(this.pushWalletTicket())
+                                            .then(this.pushWalletDividends())
+                                            .then(() => {
+                                                this.setState({
+                                                    loading: false
+                                                });
+                                            });
+                                        }, 4000);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            message.info('Please wait......', 5);
+        }
     }
 
     onRefresh() {

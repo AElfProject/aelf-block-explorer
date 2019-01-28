@@ -213,7 +213,7 @@ export default class ApplicationPage extends Component {
     }
 
     getAElfWallet() {
-        const {showWallet, walletInfoList, consensus, dividends, tokenContract} = this.state;
+        const {showWallet, walletInfoList, consensus, dividends, tokenContract, contracts} = this.state;
         if (showWallet) {
             return <AElfWallet
                 title='AElf Wallet'
@@ -221,6 +221,7 @@ export default class ApplicationPage extends Component {
                 getCurrentWallet={this.getCurrentWallet.bind(this)}
                 consensus={consensus}
                 dividends={dividends}
+                contracts={contracts}
                 tokenContract={tokenContract}
             />;
         }
