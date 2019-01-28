@@ -199,13 +199,13 @@ export default class VotingModule extends PureComponent {
                 refresh={refresh}
                 consensus={consensus}
                 showVotingRecord={showVotingRecord}
-                
+                endRefresh={this.endRefresh.bind(this)}
             />
         );
     }
 
     render() {
-        const {isVote, isRedeem, consensus, contracts} = this.state;
+        const {isVote, isRedeem, contracts} = this.state;
         const voteTable = this.getVoteTable();
         const myVote = this.getMyVote();
         const votingRecord = this.getVotingRecord();

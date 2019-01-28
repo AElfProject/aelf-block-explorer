@@ -198,10 +198,6 @@ export default class AElfWallet extends PureComponent {
         return walletAssetInfo;
     }
 
-    // unbindWallet(address) {
-    //     console.log('unbind:' + address);
-    // }
-
     getAllDividends() {
         // GetAllDividends
         const {contracts} = this.state;
