@@ -83,7 +83,7 @@ export default class MyVote extends PureComponent {
                         txId: item.TransactionId,
                         publicKey: item.To,
                         vote: true,
-                        redeem: dayjs(new Date()).unix() < dayjs(item.UnlockTimestamp).unix()
+                        redeem: dayjs(new Date()).unix() > dayjs(item.UnlockTimestamp).unix()
                     }
                 };
                 dataList.push(data);
@@ -214,7 +214,7 @@ export default class MyVote extends PureComponent {
                         });
                     }
                     else {
-                        message.error(result.errorMessage, 5);
+                        message.error(result.errorMessage.message, 5);
                     }
                 });
             }

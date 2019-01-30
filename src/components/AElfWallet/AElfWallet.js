@@ -244,6 +244,7 @@ export default class AElfWallet extends PureComponent {
                             }
                         }
                     }).then(result => {
+                        console.log('>>>>>>>>', result);
                         if (result.error === 0) {
                             window.NightElf.api({
                                 appName: 'hzzTest',
@@ -288,7 +289,7 @@ export default class AElfWallet extends PureComponent {
                             });
                         }
                         else {
-                            message.error(result.errorMessage, 5);
+                            message.error(result.errorMessage.message, 5);
                         }
                     });
                 }
