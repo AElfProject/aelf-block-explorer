@@ -200,6 +200,7 @@ export default class AElfWallet extends PureComponent {
 
     getAllDividends() {
         // GetAllDividends
+        console.log(resourceAddress);
         const {contracts} = this.state;
         if (contracts) {
             const currentWallet = JSON.parse(localStorage.currentWallet);
