@@ -47,11 +47,6 @@ export default class Vote extends PureComponent {
                 balance: getHexNumber(result.result.return)
             });
         });
-        // this.setState({
-        //     balance: getHexNumber(
-        //         contracts.tokenContract.BalanceOf(JSON.parse(localStorage.currentWallet).address).return
-        //     ) || 0
-        // });
     }
 
     // 获取所选周期

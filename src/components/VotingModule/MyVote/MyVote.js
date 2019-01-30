@@ -10,7 +10,7 @@ import getPublicKey from '../../../utils/getPublicKey';
 import getMyVoteData from '../../../utils/getMyVoteData';
 import getHexNumber from '../../../utils/getHexNumber';
 import dayjs from 'dayjs';
-
+import {resourceAddress} from '../../../../config/config';
 import './MyVote.less';
 import hexCharCodeToStr from '../../../utils/hexCharCodeToStr';
 
@@ -175,6 +175,11 @@ export default class MyVote extends PureComponent {
                                 contractAddress: contracts.CONSENSUSADDRESS,
                                 contractName: 'consensus',
                                 description: 'contract consensus'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: resourceAddress,
+                                contractName: 'resource',
+                                description: 'contract resource'
                             }]
                         }
                     }

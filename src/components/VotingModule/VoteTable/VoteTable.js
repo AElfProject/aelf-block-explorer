@@ -8,10 +8,8 @@ import React, {PureComponent} from 'react';
 import Button from '../../Button/Button';
 import {Table, message} from 'antd';
 import getPublicKey from '../../../utils/getPublicKey';
-// import getCurrentVotingRecord from '../../../utils/getCurrentVotingRecord';
-// import getCandidatesList from '../../../utils/getCandidatesList';
 import getHexNumber from '../../../utils/getHexNumber';
-import {commonPrivateKey} from '../../../../config/config';
+import {commonPrivateKey, resourceAddress} from '../../../../config/config';
 import hexCharCodeToStr from '../../../utils/hexCharCodeToStr';
 import * as Aelf from 'aelf-sdk';
 import './VoteTable.less';
@@ -385,6 +383,11 @@ export default class VoteTable extends PureComponent {
                                 contractAddress: contracts.CONSENSUSADDRESS,
                                 contractName: 'consensus',
                                 description: 'contract consensus'
+                            }, {
+                                chainId: 'AELF',
+                                contractAddress: resourceAddress,
+                                contractName: 'resource',
+                                description: 'contract resource'
                             }]
                         }
                     }

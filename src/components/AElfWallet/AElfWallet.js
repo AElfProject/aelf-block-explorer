@@ -9,6 +9,7 @@ import {Row, Col, Radio, Spin, message} from 'antd';
 import Button from '../Button/Button';
 import Svg from '../Svg/Svg';
 import {aelf} from '../../utils';
+import {resourceAddress} from '../../../config/config';
 import getHexNumber from '../../utils/getHexNumber';
 import getPublicKey from '../../utils/getPublicKey';
 import hexCharCodeToStr from '../../utils/hexCharCodeToStr';
@@ -59,7 +60,6 @@ export default class AElfWallet extends PureComponent {
                 contracts: props.contracts
             };
         }
-        
         return null;
     }
 
@@ -234,6 +234,11 @@ export default class AElfWallet extends PureComponent {
                                     contractAddress: contracts.CONSENSUSADDRESS,
                                     contractName: 'consensus',
                                     description: 'contract consensus'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: resourceAddress,
+                                    contractName: 'resource',
+                                    description: 'contract resource'
                                 }]
                             }
                         }
