@@ -5,20 +5,22 @@
  * TODO:未计算手续费
 */
 
-import getResource from './getResource';
-import getWallet from './getWallet';
 import calculateCrossConnectorReturn from './calculateCrossConnectorReturn';
 import hexCharCodeToStr from './hexCharCodeToStr';
 
-export default function getEstimatedValueRes(type, privateKey, paidElf) {
-    const wallet = getWallet(privateKey);
-    const resource = getResource(wallet);
-    const converter = JSON.parse(hexCharCodeToStr(resource.GetConverter(type).return));
-    const resourcePayout = calculateCrossConnectorReturn(
-        converter.ElfBalance, converter.ElfWeight,
-        converter.ResBalance, converter.ResWeight,
-        paidElf
-    );
-    console.log(resourcePayout);
-    return resourcePayout;
+
+export default function getEstimatedValueRes(type, paidElf, resourceContract) {
+    return new Promise((resolve, reject) => {
+        resourceContract.GetConverter(type, (error, result) => {
+            const converter = JSON.parse(hexCharCodeToStr(result.return));
+            let elfCont = paidElf || 0;
+            const elfPayout = calculateCrossConnectorReturn(
+                converter.ElfBalance, converter.ElfWeight,
+                converter.ResBalance, converter.ResWeight,
+                elfCont
+            );
+            resolve(elfPayout);
+        });
+    });
 }
+

@@ -20,37 +20,47 @@ export default class VotingYieldChart extends PureComponent {
         this.state = {
             data: null,
             loading: false,
-            dividends: this.props.dividends
+            contracts: null
         };
     }
 
-    componentDidMount() {
-        this.setState({
-            data: this.getdata()
-        });
+    static getDerivedStateFromProps(props, state) {
+        if (props.dividends !== state.dividends) {
+            return {
+                dividends: props.dividends
+            };
+        }
+
+        return null;
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.dividends !== this.props.dividends) {
+            if (!prevProps.dividends) {
+                this.setState({
+                    loading: true
+                });
+                this.props.dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
+                    this.setState({
+                        data: JSON.parse(hexCharCodeToStr(result.return)).Values,
+                        loading: false
+                    });
+                });
+            }
+        }
     }
 
     onRefresh() {
+        const {dividends} = this.state;
         this.setState({
             loading: true
         });
-
-        setTimeout(() => {
+        dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
             this.setState({
-                data: this.getdata(),
+                data: JSON.parse(hexCharCodeToStr(result.return)).Values,
                 loading: false
             });
-        }, 2000);
-    }
-
-    getdata() {
-        const {dividends} = this.state;
-        let data = JSON.parse(
-            hexCharCodeToStr(
-                dividends.CheckDividendsOfPreviousTermToFriendlyString().return
-            )
-        ).Values;
-        return data;
+        });
     }
 
     getOption() {

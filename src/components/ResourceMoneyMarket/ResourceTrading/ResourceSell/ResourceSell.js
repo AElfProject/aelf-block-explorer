@@ -7,7 +7,6 @@
 import React, {Component} from 'react';
 import {Row, Col, Input, Slider, message} from 'antd';
 import getMenuName from '../../../../utils/getMenuName';
-import getWallet from '../../../../utils/getWallet';
 import getHexNumber from '../../../../utils/getHexNumber';
 import getResource from '../../../../utils/getResource';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';

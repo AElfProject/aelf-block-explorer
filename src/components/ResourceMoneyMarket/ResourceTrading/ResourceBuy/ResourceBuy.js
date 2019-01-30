@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import {Row, Col, Input, Slider, message} from 'antd';
 import getMenuName from '../../../../utils/getMenuName';
-import getHexNumber from '../../../../utils/getHexNumber';
+import {resourceAddress} from '../../../../../config/config';
 import getEstimatedValueRes from '../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../utils/getFees';
@@ -20,27 +20,21 @@ export default class ResourceBuy extends Component {
             menuName: null,
             menuIndex: this.props.menuIndex,
             currentWallet: this.props.currentWallet || JSON.parse(localStorage.currentWallet),
-            voteContracts: this.props.voteContracts,
-            balance: 0,
+            contracts: null,
             ELFValue: 0,
-            region: 500,
+            region: 0,
             value: null,
             purchaseQuantity: 0,
-            getSlideMarks: null
+            getSlideMarks: null,
+            noCanInput: true,
+            account: {
+                balabce: 0,
+                CPU: 0,
+                RAM: 0,
+                NET: 0,
+                STO: 0
+            }
         };
-    }
-
-    componentDidMount() {
-        const {menuIndex, currentWallet, voteContracts} = this.state;
-        const balance = getHexNumber(
-            voteContracts.tokenContract.BalanceOf(currentWallet.address).return
-        );
-        this.setState({
-            menuName: getMenuName(menuIndex),
-            balance,
-            region: balance / 4,
-            getSlideMarks: this.getSlideMarks()
-        });
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -50,41 +44,82 @@ export default class ResourceBuy extends Component {
             };
         }
 
+        if (props.account !== state.account) {
+            return {
+                account: props.account
+            };
+        }
+
         if (props.menuIndex !== state.menuIndex) {
             return {
                 menuIndex: props.menuIndex
             };
         }
 
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
+        if (props.resourceContract !== state.resourceContract) {
+            return {
+                resourceContract: props.resourceContract
+            };
+        }
+
         return null;
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.currentWallet !== this.props.currentWallet) {
-            const {voteContracts} = this.state;
-            const balance = getHexNumber(
-                voteContracts.tokenContract.BalanceOf(this.props.currentWallet.address).return
-            );
-            this.setState({
-                currentWallet: this.props.currentWallet,
-                balance,
-                region: balance / 4,
-                getSlideMarks: this.getSlideMarks(),
-                purchaseQuantity: 0
-            });
-        }
+    componentDidMount() {
+        this.setState({
+            menuName: getMenuName(this.state.menuIndex)
+        });
+    }
 
+
+    componentDidUpdate(prevProps) {
         if (prevProps.menuIndex !== this.props.menuIndex) {
-            console.log('aaa');
             this.setState({
                 menuName: getMenuName(this.props.menuIndex)
             });
         }
+
+        if (prevProps.account !== this.props.account) {
+            this.getRegion();
+        }
+
+        if (prevProps.resourceContract !== this.props.resourceContract) {
+            this.setState({
+                noCanInput: false
+            });
+        }
+    }
+
+    getRegion() {
+        const {account} = this.state;
+        this.setState({
+            region: Math.floor(account.balabce / 4)
+        });
     }
 
     getSlideMarks() {
         const {region} = this.state;
-        const regionLine = [0, region, region * 2, region * 3, region * 4];
+        if (region < 4) {
+            const regionLine = [0, 25, 50, 75, 100];
+            let marks = {};
+            regionLine.map(item => {
+                marks[item] = '';
+            });
+            return marks;
+        }
+        const regionLine = [
+            0,
+            region,
+            region * 2,
+            region * 3,
+            region * 4
+        ];
         let marks = {};
         regionLine.map(item => {
             marks[item] = '';
@@ -93,62 +128,147 @@ export default class ResourceBuy extends Component {
     }
 
     onChangeSlide(e) {
-        const {menuName, currentWallet} = this.state;
+        const {menuName, resourceContract} = this.state;
+        let ElfCont = e;
+        ElfCont = ElfCont - 1;
+        ElfCont -= getFees(ElfCont);
+        getEstimatedValueRes(menuName, ElfCont, resourceContract).then(result => {
+            this.setState({
+                value: Math.floor(result)
+            });
+        });
         this.setState({
             purchaseQuantity: e,
-            ELFValue: e,
-            value: parseInt(getEstimatedValueRes(menuName, currentWallet.privateKey, e), 10)
+            ELFValue: e
         });
     }
 
     getSlideMarksHTML() {
-        const {region, purchaseQuantity, balance} = this.state;
-        if (balance) {
-            return (
-                <Slider
-                    marks={this.getSlideMarks()}
-                    step={region}
-                    min={0}
-                    value={purchaseQuantity}
-                    onChange={e => this.onChangeSlide(e) }
-                    max={balance}
-                    tooltipVisible={false}
-                />
-            );
+        let {region, purchaseQuantity, account} = this.state;
+        let disabled = false;
+        let balance = account.balabce;
+        if (region < 4) {
+            region = 25;
+            balance = 100;
+            disabled = true;
         }
+        return (
+            <Slider
+                marks={this.getSlideMarks()}
+                step={region}
+                disabled={disabled}
+                min={0}
+                value={purchaseQuantity}
+                onChange={e => this.onChangeSlide(e) }
+                max={balance}
+                tooltipVisible={false}
+            />
+        );
     }
 
     onChangeResourceValue(e) {
-        const {menuName, currentWallet} = this.state;
-        let ELFValue = Math.ceil(getEstimatedValueELF(menuName, currentWallet.privateKey, e.target.value), 10) || 0;
-        ELFValue += getFees(ELFValue) + 1;
-        console.log(ELFValue);
-        this.setState({
-            ELFValue,
-            value: e.target.value
+        const {menuName, resourceContract} = this.state;
+        getEstimatedValueELF(menuName, e.target.value, resourceContract).then(result => {
+            let ELFValue = Math.ceil(result);
+            if (ELFValue !== 0) {
+                ELFValue += getFees(ELFValue) + 1;
+                this.setState({
+                    ELFValue
+                });
+            }
+            else {
+                this.setState({
+                    ELFValue
+                });
+            }
         });
+
+        if (e.target.value) {
+            this.setState({
+                value: e.target.value
+            });
+        }
+        else {
+            this.setState({
+                value: ''
+            });
+        }
     }
 
     getBuyModalShow() {
-        const {value, balance} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts} = this.state;
         let reg = /^[0-9]*$/;
         if (!reg.test(value) || parseInt(value, 10) === 0) {
             message.error('The value must be numeric and greater than 0');
             return;
         }
-        else if (parseInt(value, 10) > parseFloat(balance, 10)) {
+        else if (parseInt(value, 10) > parseFloat(account.balabce, 10)) {
             message.warning('More votes than available assets');
             return;
         }
         else {
-            if (value && value !== 0) {
-                this.props.handleBuyModalShow(value);
-            }
+            window.NightElf.api({
+                appName: 'hzzTest',
+                method: 'CHECK_PERMISSION',
+                type: 'address', // if you did not set type, it aways get by domain.
+                address: currentWallet.address
+            }).then(result => {
+                console.log('1>>>>>>>>>>>>>', result);
+                if (result.permissions.length === 0) {
+                    window.NightElf.api({
+                        appName: 'hzzTest',
+                        method: 'OPEN_PROMPT',
+                        chainId: 'AELF',
+                        hostname: 'aelf.io',
+                        payload: {
+                            method: 'SET_PERMISSION',
+                            payload: {
+                                address: currentWallet.address,
+                                contracts: [{
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.TOKENADDRESS,
+                                    contractName: 'token',
+                                    description: 'token contract'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.DIVIDENDSADDRESS,
+                                    contractName: 'dividends',
+                                    description: 'contract dividends'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.CONSENSUSADDRESS,
+                                    contractName: 'consensus',
+                                    description: 'contract consensus'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: resourceAddress,
+                                    contractName: 'resource',
+                                    description: 'contract resource'
+                                }]
+                            }
+                        }
+                    }).then(result => {
+                        if (result.error === 0) {
+                            if (value && value !== 0) {
+                                this.props.handleBuyModalShow(value, ELFValue);
+                            }
+                        }
+                        else {
+                            message.error(result.errorMessage.message, 5);
+                        }
+                    });
+                }
+                else {
+                    if (value && value !== 0) {
+                        this.props.handleBuyModalShow(value, ELFValue);
+                    }
+                }
+            });
         }
     }
 
     render() {
-        const {purchaseQuantity, menuName, value} = this.state;
+        const {purchaseQuantity, menuName, value, account, noCanInput} = this.state;
         const sliderHTML = this.getSlideMarksHTML();
         return (
             <div className='trading-box trading-buy'>
@@ -164,6 +284,7 @@ export default class ResourceBuy extends Component {
                                     addonAfter={menuName}
                                     value={value}
                                     onChange={this.onChangeResourceValue.bind(this)}
+                                    disabled={noCanInput}
                                 />
                             </Col>
                         </Row>
@@ -172,7 +293,7 @@ export default class ResourceBuy extends Component {
                             <Col span={6} style={{color: '#fff'}}>Available</Col>
                             <Col span={18}>
                                 <Input
-                                    value={this.state.balance}
+                                    value={account.balabce}
                                     addonAfter={'ELF'}
                                     disabled={true}
                                 />

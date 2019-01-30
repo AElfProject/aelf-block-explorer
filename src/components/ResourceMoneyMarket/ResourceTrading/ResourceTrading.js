@@ -18,11 +18,21 @@ export default class ResourceTrading extends PureComponent {
         this.state = {
             currentWallet: this.props.currentWallet || null,
             menuIndex: this.props.menuIndex,
-            voteContracts: this.props.voteContracts,
+            contracts: this.props.contracts,
             buyVisible: false,
             sellVisible: false,
             buyNum: null,
-            sellNum: null
+            sellNum: null,
+            resourceContract: null,
+            tokenContract: null,
+            ELFValue: 0,
+            account: {
+                balabce: 0,
+                CPU: 0,
+                RAM: 0,
+                NET: 0,
+                STO: 0
+            }
         };
     }
 
@@ -39,13 +49,38 @@ export default class ResourceTrading extends PureComponent {
             };
         }
 
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
+        if (props.resourceContract !== state.resourceContract) {
+            return {
+                resourceContract: props.resourceContract
+            };
+        }
+
+        if (props.tokenContract !== state.tokenContract) {
+            return {
+                tokenContract: props.tokenContract
+            };
+        }
+
+        if (props.account !== state.account) {
+            return {
+                account: props.account
+            };
+        }
+
         return null;
     }
 
-    handleBuyModalShow(e) {
+    handleBuyModalShow(value, ELFValue) {
         this.setState({
             buyVisible: true,
-            buyNum: e
+            buyNum: value,
+            ELFValue
         });
     }
 
@@ -64,7 +99,19 @@ export default class ResourceTrading extends PureComponent {
     }
 
     render() {
-        const {menuIndex, sellVisible, buyVisible, currentWallet, voteContracts, buyNum, sellNum} = this.state;
+        const {
+            menuIndex,
+            sellVisible,
+            buyVisible,
+            buyNum,
+            sellNum,
+            currentWallet,
+            contracts,
+            resourceContract,
+            tokenContract,
+            ELFValue,
+            account
+        } = this.state;
         return (
             <div className='resource-trading'>
                 <div className='resource-trading-head'>
@@ -77,16 +124,18 @@ export default class ResourceTrading extends PureComponent {
                                 menuIndex={menuIndex}
                                 currentWallet={currentWallet}
                                 handleBuyModalShow={this.handleBuyModalShow.bind(this)}
-                                voteContracts={voteContracts}
+                                contracts={contracts}
+                                resourceContract={resourceContract}
+                                account={account}
                             />
                         </Col>
-                        <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        {/* <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                             <ResourceSell
                                 handleSellModalShow={this.handleSellModalShow.bind(this)}
                                 currentWallet={currentWallet}
                                 menuIndex={menuIndex}
                             />
-                        </Col>
+                        </Col> */}
                     </Row>
                 </div>
                 <Modal
@@ -104,11 +153,13 @@ export default class ResourceTrading extends PureComponent {
                         currentWallet={currentWallet}
                         menuIndex={menuIndex}
                         buyNum={buyNum}
-                        voteContracts={voteContracts}
+                        ELFValue={ELFValue}
+                        resourceContract={resourceContract}
                         handleCancel={this.handleCancel}
+                        
                     />
                 </Modal>
-                <Modal
+                {/* <Modal
                     className='modal-display-box'
                     title="Resource selling"
                     destroyOnClose={true}
@@ -126,7 +177,7 @@ export default class ResourceTrading extends PureComponent {
                         sellNum={sellNum}
                         handleCancel={this.handleCancel}
                     />
-                </Modal>
+                </Modal> */}
             </div>
         );
     }

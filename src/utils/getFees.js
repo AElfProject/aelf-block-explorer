@@ -3,9 +3,9 @@
  * @author zhouminghui
 */
 
-export default function getFees(fees) {
-    let resourceFees = fees * 0.005;
-    Number.isInteger(resourceFees) ? resourceFees += 1 : resourceFees = Math.ceil(resourceFees);
-    console.log(resourceFees);
+export default function getFees(pidElf) {
+    let resourceFees = pidElf / 1.005;
+    resourceFees = pidElf - resourceFees;
+    Number.isInteger(resourceFees) ? resourceFees : resourceFees = Math.ceil(resourceFees);
     return resourceFees;
 }

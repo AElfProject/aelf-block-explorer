@@ -18,8 +18,17 @@ export default class ResourceMoneyMarket extends PureComponent {
         // 这个组件作为一个集合可以用作组件之间数据交互
         this.state = {
             menuIndex: 0,
-            currentWallet: this.props.currentWallet,
-            voteContracts: this.props.voteContracts
+            currentWallet: null,
+            contracts: null,
+            tokenContract: null,
+            resourceContract: null,
+            account: {
+                balabce: 0,
+                CPU: 0,
+                RAM: 0,
+                NET: 0,
+                STO: 0
+            }
         };
     }
 
@@ -30,14 +39,34 @@ export default class ResourceMoneyMarket extends PureComponent {
         });
     }
 
-    componentDidMount() {
-        // TODO 数据加载
-    }
-
     static getDerivedStateFromProps(props, state) {
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
         if (props.currentWallet !== state.currentWallet) {
             return {
                 currentWallet: props.currentWallet
+            };
+        }
+
+        if (props.tokenContract !== state.tokenContract) {
+            return {
+                tokenContract: props.tokenContract
+            };
+        }
+
+        if (props.resourceContract !== state.resourceContract) {
+            return {
+                resourceContract: props.resourceContract
+            };
+        }
+
+        if (props.account !== state.account) {
+            return {
+                account: props.account
             };
         }
 
@@ -74,7 +103,7 @@ export default class ResourceMoneyMarket extends PureComponent {
 
     render() {
         const menu = this.getMenuHTML();
-        const {menuIndex, currentWallet, voteContracts} = this.state;
+        const {menuIndex, currentWallet, contracts, resourceContract, tokenContract, account} = this.state;
         return (
             <div className='resource-market-body'>
                 <div className='resource-head'>
@@ -102,7 +131,12 @@ export default class ResourceMoneyMarket extends PureComponent {
                             <ResourceTrading
                                 menuIndex={menuIndex}
                                 currentWallet={currentWallet}
-                                voteContracts={voteContracts}
+                                contracts={contracts}
+                                resourceContract={resourceContract}
+                                tokenContract={tokenContract}
+                                account={account}
+                                onRefresh={this.props.onRefresh}
+                                endRefresh={this.props.endRefresh}
                             />
                         </Col>
                         <Col

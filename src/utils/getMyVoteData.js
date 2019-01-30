@@ -3,28 +3,32 @@
  * @author zhouminghui
  * Get my voting list data
  */
-import getWallet from './getWallet';
-import getConsensus from './getConsensus';
 import hexCharCodeToStr from './hexCharCodeToStr';
+import getPublicKey from './getPublicKey';
 import dayjs from 'dayjs';
 import getHexNumber from './getHexNumber';
 
-export default function getMyVoteData(currentWallet, startIndex, CONSENSUSADDRESS) {
+export default function getMyVoteData(currentWallet, startIndex, contracts) {
     let dataList = [];
-    if (!currentWallet) {
-        return dataList;
+    if (currentWallet) {
+        if (currentWallet.address === '') {
+            return {dataList, VotingRecordsCount: 0};
+        }
     }
-    const wallet = getWallet(currentWallet.privateKey);
-    const consensus = getConsensus(CONSENSUSADDRESS, wallet);
+    else {
+        return {dataList, VotingRecordsCount: 0};
+    }
+    
+    const key = getPublicKey(currentWallet.publicKey);
+    const consensus = contracts.consensus;
     const ticketsInfo = JSON.parse(
         hexCharCodeToStr(
             consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString(
-                currentWallet.publicKey, startIndex.page, startIndex.pageSize
+                key, startIndex.page, startIndex.pageSize
             ).return
         )
     );
     const ticketsInfoList = ticketsInfo.VotingRecords || [];
-    console.log(ticketsInfoList);
     const VotingRecordsCount = ticketsInfo.VotingRecordsCount;
     ticketsInfoList.map((item, index) => {
         let data = {
@@ -40,7 +44,7 @@ export default function getMyVoteData(currentWallet, startIndex, CONSENSUSADDRES
                 txId: item.TransactionId,
                 publicKey: item.To,
                 vote: true,
-                redeem: dayjs(new Date()).unix() > dayjs(item.UnlockTimestamp).unix()
+                redeem: dayjs(new Date()).unix() < dayjs(item.UnlockTimestamp).unix()
             }
         };
         dataList.push(data);

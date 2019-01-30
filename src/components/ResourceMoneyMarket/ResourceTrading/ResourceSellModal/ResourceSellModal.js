@@ -10,7 +10,6 @@ import getMenuName from '../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';
 import addressOmit from '../../../../utils/addressOmit';
 import getResource from '../../../../utils/getResource';
-import getWallet from '../../../../utils/getWallet';
 import getStateJudgment from '../../../../utils/getStateJudgment';
 import getFees from '../../../../utils/getFees';
 import './ResourceSellModal.less';
