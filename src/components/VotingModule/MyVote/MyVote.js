@@ -7,10 +7,10 @@ import React, {PureComponent} from 'react';
 import Button from '../../Button/Button';
 import {Table, message} from 'antd';
 import getPublicKey from '../../../utils/getPublicKey';
-import getMyVoteData from '../../../utils/getMyVoteData';
 import getHexNumber from '../../../utils/getHexNumber';
 import dayjs from 'dayjs';
 import {resourceAddress} from '../../../../config/config';
+import testingContract from '../../../utils/testingContract';
 import './MyVote.less';
 import hexCharCodeToStr from '../../../utils/hexCharCodeToStr';
 
@@ -221,33 +221,38 @@ export default class MyVote extends PureComponent {
             else {
                 result.permissions.map((item, index) => {
                     if (item.address === currentWallet.address) {
-                        window.NightElf.api({
-                            appName: 'hzzTest',
-                            method: 'INIT_AELF_CONTRACT',
-                            // hostname: 'aelf.io',
-                            chainId: 'AELF',
-                            payload: {
-                                address: currentWallet.address,
-                                contractName: 'token',
-                                contractAddress: contracts.TOKENADDRESS
-                            }
-                        }).then(
-                            window.NightElf.api({
-                                appName: 'hzzTest',
-                                method: 'INIT_AELF_CONTRACT',
-                                // hostname: 'aelf.io',
-                                chainId: 'AELF',
-                                payload: {
-                                    address: currentWallet.address,
-                                    contractName: 'consensus',
-                                    contractAddress: contracts.CONSENSUSADDRESS
-                                }
-                            })
-                        ).then(result => {
-                            if (result.error === 0) {
-                                this.props.showVote();
+                        testingContract(result, contracts, currentWallet).then(result => {
+                            if (result) {
+                                window.NightElf.api({
+                                    appName: 'hzzTest',
+                                    method: 'INIT_AELF_CONTRACT',
+                                    // hostname: 'aelf.io',
+                                    chainId: 'AELF',
+                                    payload: {
+                                        address: currentWallet.address,
+                                        contractName: 'token',
+                                        contractAddress: contracts.TOKENADDRESS
+                                    }
+                                }).then(
+                                    window.NightElf.api({
+                                        appName: 'hzzTest',
+                                        method: 'INIT_AELF_CONTRACT',
+                                        // hostname: 'aelf.io',
+                                        chainId: 'AELF',
+                                        payload: {
+                                            address: currentWallet.address,
+                                            contractName: 'consensus',
+                                            contractAddress: contracts.CONSENSUSADDRESS
+                                        }
+                                    })
+                                ).then(result => {
+                                    if (result.error === 0) {
+                                        this.props.showVote();
+                                    }
+                                });
                             }
                         });
+                        
                     }
                 });
             }
@@ -322,19 +327,23 @@ export default class MyVote extends PureComponent {
             else {
                 result.permissions.map((item, index) => {
                     if (item.address === currentWallet.address) {
-                        window.NightElf.api({
-                            appName: 'hzzTest',
-                            method: 'INIT_AELF_CONTRACT',
-                            // hostname: 'aelf.io',
-                            chainId: 'AELF',
-                            payload: {
-                                address: currentWallet.address,
-                                contractName: 'consensus',
-                                contractAddress: contracts.CONSENSUSADDRESS
-                            }
-                        }).then(result => {
-                            if (result.error === 0) {
-                                this.props.showRedeem();
+                        testingContract(result, contracts, currentWallet).then(result => {
+                            if (result) {
+                                window.NightElf.api({
+                                    appName: 'hzzTest',
+                                    method: 'INIT_AELF_CONTRACT',
+                                    // hostname: 'aelf.io',
+                                    chainId: 'AELF',
+                                    payload: {
+                                        address: currentWallet.address,
+                                        contractName: 'consensus',
+                                        contractAddress: contracts.CONSENSUSADDRESS
+                                    }
+                                }).then(result => {
+                                    if (result.error === 0) {
+                                        this.props.showRedeem();
+                                    }
+                                });
                             }
                         });
                     }

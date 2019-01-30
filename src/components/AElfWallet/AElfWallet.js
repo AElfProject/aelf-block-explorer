@@ -6,6 +6,7 @@
 
 import React, {PureComponent} from 'react';
 import {Row, Col, Radio, Spin, message} from 'antd';
+import testingContract from '../../utils/testingContract';
 import Button from '../Button/Button';
 import Svg from '../Svg/Svg';
 import {aelf} from '../../utils';
@@ -296,45 +297,48 @@ export default class AElfWallet extends PureComponent {
                 else {
                     result.permissions.map((item, index) => {
                         if (item.address === currentWallet.address) {
-                            console.log(contracts);
-                            window.NightElf.api({
-                                appName: 'hzzTest',
-                                method: 'INIT_AELF_CONTRACT',
-                                // hostname: 'aelf.io',
-                                chainId: 'AELF',
-                                payload: {
-                                    address: currentWallet.address,
-                                    contractName: 'consensus',
-                                    contractAddress: contracts.CONSENSUSADDRESS
-                                }
-                            }).then(result => {
-                                if (result.error === 0) {
+                            testingContract(result, contracts, currentWallet).then(result => {
+                                if (result) {
                                     window.NightElf.api({
                                         appName: 'hzzTest',
-                                        method: 'CALL_AELF_CONTRACT',
+                                        method: 'INIT_AELF_CONTRACT',
+                                        // hostname: 'aelf.io',
                                         chainId: 'AELF',
                                         payload: {
-                                            contractAddress: contracts.CONSENSUSADDRESS,
+                                            address: currentWallet.address,
                                             contractName: 'consensus',
-                                            method: 'ReceiveAllDividends',
-                                            params: []
+                                            contractAddress: contracts.CONSENSUSADDRESS
                                         }
                                     }).then(result => {
-                                        this.setState({
-                                            loading: true
-                                        });
-                                        setTimeout(() => {
-                                            const state = aelf.chain.getTxResult(result.result.hash);
-                                            getStateJudgment(state.result.tx_status, result.result.hash);
-                                            this.pushWalletBalance()
-                                            .then(this.pushWalletTicket())
-                                            .then(this.pushWalletDividends())
-                                            .then(() => {
+                                        if (result.error === 0) {
+                                            window.NightElf.api({
+                                                appName: 'hzzTest',
+                                                method: 'CALL_AELF_CONTRACT',
+                                                chainId: 'AELF',
+                                                payload: {
+                                                    contractAddress: contracts.CONSENSUSADDRESS,
+                                                    contractName: 'consensus',
+                                                    method: 'ReceiveAllDividends',
+                                                    params: []
+                                                }
+                                            }).then(result => {
                                                 this.setState({
-                                                    loading: false
+                                                    loading: true
                                                 });
+                                                setTimeout(() => {
+                                                    const state = aelf.chain.getTxResult(result.result.hash);
+                                                    getStateJudgment(state.result.tx_status, result.result.hash);
+                                                    this.pushWalletBalance()
+                                                    .then(this.pushWalletTicket())
+                                                    .then(this.pushWalletDividends())
+                                                    .then(() => {
+                                                        this.setState({
+                                                            loading: false
+                                                        });
+                                                    });
+                                                }, 4000);
                                             });
-                                        }, 4000);
+                                        }
                                     });
                                 }
                             });

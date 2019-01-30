@@ -11,6 +11,7 @@ import getPublicKey from '../../../utils/getPublicKey';
 import getHexNumber from '../../../utils/getHexNumber';
 import {commonPrivateKey, resourceAddress} from '../../../../config/config';
 import hexCharCodeToStr from '../../../utils/hexCharCodeToStr';
+import testingContract from '../../../utils/testingContract';
 import * as Aelf from 'aelf-sdk';
 import './VoteTable.less';
 
@@ -392,7 +393,6 @@ export default class VoteTable extends PureComponent {
                         }
                     }
                 }).then(result => {
-                    console.log(result);
                     if (result.error === 0) {
                         window.NightElf.api({
                             appName: 'hzzTest',
@@ -428,33 +428,38 @@ export default class VoteTable extends PureComponent {
                 });
             }
             else {
+                console.log('3>>>>>>>>>>>>>>>>>>>>', result);
                 result.permissions.map((item, index) => {
                     if (item.address === currentWallet.address) {
-                        window.NightElf.api({
-                            appName: 'hzzTest',
-                            method: 'INIT_AELF_CONTRACT',
-                            // hostname: 'aelf.io',
-                            chainId: 'AELF',
-                            payload: {
-                                address: currentWallet.address,
-                                contractName: 'token',
-                                contractAddress: contracts.TOKENADDRESS
-                            }
-                        }).then(
-                            window.NightElf.api({
-                                appName: 'hzzTest',
-                                method: 'INIT_AELF_CONTRACT',
-                                // hostname: 'aelf.io',
-                                chainId: 'AELF',
-                                payload: {
-                                    address: currentWallet.address,
-                                    contractName: 'consensus',
-                                    contractAddress: contracts.CONSENSUSADDRESS
-                                }
-                            })
-                        ).then(result => {
-                            if (result.error === 0) {
-                                this.props.showVoteFn();
+                        testingContract(result, contracts, currentWallet).then(result => {
+                            if (result) {
+                                window.NightElf.api({
+                                    appName: 'hzzTest',
+                                    method: 'INIT_AELF_CONTRACT',
+                                    // hostname: 'aelf.io',
+                                    chainId: 'AELF',
+                                    payload: {
+                                        address: currentWallet.address,
+                                        contractName: 'token',
+                                        contractAddress: contracts.TOKENADDRESS
+                                    }
+                                }).then(
+                                    window.NightElf.api({
+                                        appName: 'hzzTest',
+                                        method: 'INIT_AELF_CONTRACT',
+                                        // hostname: 'aelf.io',
+                                        chainId: 'AELF',
+                                        payload: {
+                                            address: currentWallet.address,
+                                            contractName: 'consensus',
+                                            contractAddress: contracts.CONSENSUSADDRESS
+                                        }
+                                    })
+                                ).then(result => {
+                                    if (result.error === 0) {
+                                        this.props.showVoteFn();
+                                    }
+                                });
                             }
                         });
                     }
