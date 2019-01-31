@@ -34,7 +34,13 @@ export default class ResourceBuyModal extends PureComponent {
         getEstimatedValueELF(menuName, buyNum, resourceContract, 'Buy').then(result => {
             let ELFValue = Math.abs(Math.ceil(result));
             let buyRes = ELFValue;
-            ELFValue += getFees(ELFValue) + 1;
+            if (buyNum < 1000 ) {
+                ELFValue += getFees(ELFValue) - 1;
+            }
+            else {
+                ELFValue += getFees(ELFValue) + 1;
+            }
+           
             if (ELFValue !== 0) {
                 this.setState({
                     ELFValue,
