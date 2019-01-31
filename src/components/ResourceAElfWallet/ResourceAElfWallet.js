@@ -72,7 +72,6 @@ export default class ResourceAElfWallet extends PureComponent {
 
         if (prevState.loading !== this.state.loading) {
             const {resourceContract, tokenContract, currentWallet} = this.state;
-            console.log(this.state.loading);
             if (resourceContract && tokenContract && currentWallet) {
                 if (this.state.loading) {
                     this.getCurrentWalletResource();
@@ -81,7 +80,6 @@ export default class ResourceAElfWallet extends PureComponent {
             }
         }
 
-        console.log(this.state.resourceReady);
         if (this.state.resourceReady === 5) {
             this.setState({
                 resourceReady: 0

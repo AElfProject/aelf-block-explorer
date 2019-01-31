@@ -30,21 +30,21 @@ export default class ResourceBuyModal extends PureComponent {
     }
 
     componentDidMount() {
-        const {menuIndex, buyNum, menuName, resourceContract} = this.state;
+        const {buyNum, menuName, resourceContract} = this.state;
         getEstimatedValueELF(menuName, buyNum, resourceContract).then(result => {
-            let ELFValue = Math.ceil(result);
+            let ELFValue = Math.floor(result);
             if (ELFValue !== 0) {
                 ELFValue += getFees(ELFValue) + 1;
                 this.setState({
                     ELFValue,
-                    menuName: getMenuName(menuIndex),
+                    menuName,
                     serviceCharge: getFees(ELFValue) + 1
                 });
             }
             else {
                 this.setState({
                     ELFValue,
-                    menuName: getMenuName(menuIndex),
+                    menuName,
                     serviceCharge: getFees(ELFValue) + 1
                 });
             }
@@ -58,6 +58,7 @@ export default class ResourceBuyModal extends PureComponent {
             loading: true
         });
         let buyNum = ELFValue - 1;
+        console.log(buyNum);
         window.NightElf.api({
             appName: 'hzzTest',
             method: 'INIT_AELF_CONTRACT',

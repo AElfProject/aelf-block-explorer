@@ -233,6 +233,7 @@ export default class ApplicationPage extends Component {
                         resourceContract={resourceContract}
                         account={account}
                         onRefresh={this.onRefresh.bind(this)}
+                        endRefresh={this.endRefresh.bind(this)}
                     />
                 </div>
                 {/* <ResourceTransacitionDetails /> */}

@@ -257,5 +257,9 @@ export default function testingContract(values, contracts, currentWallet) {
                 }
             });
         }
+
+        if (!token && !consensus && !dividend) {
+            resolve(true);
+        }
     });
 }

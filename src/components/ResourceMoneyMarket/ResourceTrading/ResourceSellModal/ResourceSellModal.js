@@ -4,15 +4,15 @@
 */
 
 import React, {PureComponent} from 'react';
-import {Row, Col, Spin} from 'antd';
+import {Row, Col, Spin, message} from 'antd';
 import {aelf} from '../../../../utils';
-import getMenuName from '../../../../utils/getMenuName';
+import {resourceAddress} from '../../../../../config/config';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';
 import addressOmit from '../../../../utils/addressOmit';
-import getResource from '../../../../utils/getResource';
 import getStateJudgment from '../../../../utils/getStateJudgment';
 import getFees from '../../../../utils/getFees';
 import './ResourceSellModal.less';
+import getMenuName from '../../../../utils/getMenuName';
 
 export default class ResourceSellModal extends PureComponent {
     constructor(props) {
@@ -21,52 +21,80 @@ export default class ResourceSellModal extends PureComponent {
             menuIndex: this.props.menuIndex,
             currentWallet: this.props.currentWallet,
             sellNum: this.props.sellNum,
+            resourceContract: this.props.resourceContract,
             serviceCharge: 0,
-            menuName: null,
-            loading: false
+            menuName: this.props.menuName,
+            loading: false,
+            ELFValue: null
         };
     }
 
     componentDidMount() {
-        const {menuIndex, currentWallet, sellNum} = this.state;
-        let actualPayment = parseInt(
-            getEstimatedValueELF(getMenuName(menuIndex), currentWallet.privateKey, sellNum)
-        , 10);
-        const fees = getFees(actualPayment);
-        let elfValue = actualPayment + fees;
-        this.setState({
-            menuName: getMenuName(menuIndex),
-            elfValue: elfValue,
-            serviceCharge: fees,
-            actualPayment
+        const {sellNum, menuIndex, resourceContract} = this.state;
+        let menuName = getMenuName(menuIndex);
+        console.log(sellNum, menuName, resourceContract);
+        getEstimatedValueELF(menuName, sellNum, resourceContract).then(result => {
+            let ELFValue = Math.ceil(result);
+            this.setState({
+                ELFValue,
+                menuName,
+                serviceCharge: getFees(ELFValue) + 1
+            });
         });
     }
 
     getSellRes() {
-        const {currentWallet, menuName, actualPayment} = this.state;
-        this.wallet = getWallet(currentWallet.privateKey);
-        this.resource = getResource(this.wallet);
-        const hash = this.resource.SellResource(menuName, actualPayment).hash;
-        console.log(hash);
+        const {currentWallet, menuName, sellNum} = this.state;
         this.setState({
             loading: true
         });
-        setTimeout(() => {
-            const state = aelf.chain.getTxResult(hash);
-            // TODO:状态判断后的刷新放在之后在做
-            // if (state.result.tx_status === 'Mined') {
-            //     this.props.onRefresh();
-            // }
-            getStateJudgment(state.result.tx_status, hash);
-            this.setState({
-                loading: false
-            });
-            this.props.handleCancel();
-        }, 4000);
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'INIT_AELF_CONTRACT',
+            // hostname: 'aelf.io',
+            chainId: 'AELF',
+            payload: {
+                address: currentWallet.address,
+                contractName: 'resource',
+                contractAddress: resourceAddress
+            }
+        }).then(result => {
+            if (result.error === 0) {
+                window.NightElf.api({
+                    appName: 'hzzTest',
+                    method: 'CALL_AELF_CONTRACT',
+                    hostname: 'aelf.io',
+                    chainId: 'AELF',
+                    payload: {
+                        contractName: 'resource',
+                        contractAddress: resourceAddress,
+                        method: 'SellResource',
+                        params: [menuName, sellNum]
+                    }
+                }).then(result => {
+                    console.log('>>>>>>>>>>>>>>>>>>>', result);
+                    if (result.error === 0) {
+                        setTimeout(() => {
+                            aelf.chain.getTxResult(result.result.hash, (error, result) => {
+                                getStateJudgment(result.result.tx_status, result.result.tx_info.TxId);
+                                this.props.onRefresh();
+                                this.setState({
+                                    loading: false
+                                });
+                                this.props.handleCancel();
+                            });
+                        }, 4000);
+                    }
+                });
+            }
+            else {
+                message.error(result.errorMessage.message, 5);
+            }
+        });
     }
 
     render() {
-        const {serviceCharge, menuName, currentWallet, sellNum, actualPayment} = this.state;
+        const {serviceCharge, menuName, currentWallet, sellNum, ELFValue} = this.state;
         return (
             <div className='modal'>
                 <Spin
@@ -83,7 +111,7 @@ export default class ResourceSellModal extends PureComponent {
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>ELF</Col>
-                        <Col span={16}>{actualPayment}</Col>
+                        <Col span={16}>{ELFValue}</Col>
                     </Row>
                     <div className='service-charge'>
                         *手续费: {serviceCharge} ELF

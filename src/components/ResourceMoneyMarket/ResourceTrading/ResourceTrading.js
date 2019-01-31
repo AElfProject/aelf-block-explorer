@@ -84,10 +84,11 @@ export default class ResourceTrading extends PureComponent {
         });
     }
 
-    handleSellModalShow(e) {
+    handleSellModalShow(value, ELFValue) {
         this.setState({
             sellVisible: true,
-            sellNum: e
+            sellNum: value,
+            ELFValue
         });
     }
 
@@ -108,7 +109,7 @@ export default class ResourceTrading extends PureComponent {
             currentWallet,
             contracts,
             resourceContract,
-            tokenContract,
+            menuName,
             ELFValue,
             account
         } = this.state;
@@ -129,13 +130,16 @@ export default class ResourceTrading extends PureComponent {
                                 account={account}
                             />
                         </Col>
-                        {/* <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                             <ResourceSell
-                                handleSellModalShow={this.handleSellModalShow.bind(this)}
-                                currentWallet={currentWallet}
                                 menuIndex={menuIndex}
+                                currentWallet={currentWallet}
+                                handleSellModalShow={this.handleSellModalShow.bind(this)}
+                                contracts={contracts}
+                                resourceContract={resourceContract}
+                                account={account}
                             />
-                        </Col> */}
+                        </Col>
                     </Row>
                 </div>
                 <Modal
@@ -152,14 +156,15 @@ export default class ResourceTrading extends PureComponent {
                     <ResourceBuyModal
                         currentWallet={currentWallet}
                         menuIndex={menuIndex}
+                        menuName={menuName}
                         buyNum={buyNum}
                         ELFValue={ELFValue}
                         resourceContract={resourceContract}
                         handleCancel={this.handleCancel}
-                        
+                        onRefresh={this.props.onRefresh}
                     />
                 </Modal>
-                {/* <Modal
+                <Modal
                     className='modal-display-box'
                     title="Resource selling"
                     destroyOnClose={true}
@@ -173,11 +178,13 @@ export default class ResourceTrading extends PureComponent {
                     <ResourceSellModal
                         currentWallet={currentWallet}
                         menuIndex={menuIndex}
-                        voteContracts={voteContracts}
+                        resourceContract={resourceContract}
                         sellNum={sellNum}
+                        menuName={menuName}
                         handleCancel={this.handleCancel}
+                        onRefresh={this.props.onRefresh}
                     />
-                </Modal> */}
+                </Modal>
             </div>
         );
     }

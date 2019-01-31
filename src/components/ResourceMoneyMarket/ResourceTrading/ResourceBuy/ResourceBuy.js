@@ -104,7 +104,7 @@ export default class ResourceBuy extends Component {
     }
 
     getSlideMarks() {
-        const {region} = this.state;
+        const {region, account} = this.state;
         if (region < 4) {
             const regionLine = [0, 25, 50, 75, 100];
             let marks = {};
@@ -118,7 +118,7 @@ export default class ResourceBuy extends Component {
             region,
             region * 2,
             region * 3,
-            region * 4
+            account.balabce
         ];
         let marks = {};
         regionLine.map(item => {
@@ -129,12 +129,16 @@ export default class ResourceBuy extends Component {
 
     onChangeSlide(e) {
         const {menuName, resourceContract} = this.state;
-        let ElfCont = e;
-        ElfCont = ElfCont - 1;
-        ElfCont -= getFees(ElfCont);
-        getEstimatedValueRes(menuName, ElfCont, resourceContract).then(result => {
+        let elfCont = e;
+        elfCont = elfCont - 1;
+        elfCont -= getFees(elfCont);
+        getEstimatedValueRes(menuName, elfCont, resourceContract).then(result => {
+            let value = 0;
+            if (Math.floor(result) > 0) {
+                value = Math.floor(result);
+            }
             this.setState({
-                value: Math.floor(result)
+                value
             });
         });
         this.setState({
@@ -169,7 +173,7 @@ export default class ResourceBuy extends Component {
     onChangeResourceValue(e) {
         const {menuName, resourceContract} = this.state;
         getEstimatedValueELF(menuName, e.target.value, resourceContract).then(result => {
-            let ELFValue = Math.ceil(result);
+            let ELFValue = Math.floor(result);
             if (ELFValue !== 0) {
                 ELFValue += getFees(ELFValue) + 1;
                 this.setState({

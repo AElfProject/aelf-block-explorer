@@ -6,9 +6,10 @@
 
 import React, {Component} from 'react';
 import {Row, Col, Input, Slider, message} from 'antd';
+import {resourceAddress} from '../../../../../config/config';
+import testingResource from '../../../../utils/testingResource';
 import getMenuName from '../../../../utils/getMenuName';
 import getHexNumber from '../../../../utils/getHexNumber';
-import getResource from '../../../../utils/getResource';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../utils/getFees';
 import './ResourceSell.less';
@@ -18,40 +19,44 @@ export default class ResourceBuy extends Component {
         super(props);
         this.state = {
             menuName: null,
-            currentWallet: JSON.parse(localStorage.currentWallet) || null,
             menuIndex: this.props.menuIndex,
-            value: null,
-            resValue: 0,
-            region: 0,
-            purchaseQuantity: 0,
+            currentWallet: this.props.currentWallet || JSON.parse(localStorage.currentWallet),
+            contracts: null,
             ELFValue: 0,
-            loading: false
+            region: 0,
+            value: null,
+            purchaseQuantity: 0,
+            getSlideMarks: null,
+            noCanInput: true,
+            account: {
+                balabce: 0,
+                CPU: 0,
+                RAM: 0,
+                NET: 0,
+                STO: 0
+            }
         };
     }
 
-    componentDidMount() {
-        const {menuIndex, currentWallet} = this.state;
-        this.wallet = getWallet(currentWallet.privateKey);
-        this.resource = getResource(this.wallet);
-        const resValue = getHexNumber(
-            this.resource.GetUserBalance(currentWallet.address, getMenuName(menuIndex)).return
-        );
-        this.setState({
-            menuName: getMenuName(menuIndex),
-            resValue,
-            region: resValue / 4
-        });
-    }
-
     onChangeResourceValue(e) {
-        const {menuName, currentWallet} = this.state;
-        let ELFValue = parseInt(getEstimatedValueELF(menuName, currentWallet.privateKey, e.target.value), 10) || 0;
-        ELFValue ? ELFValue -= getFees(ELFValue) : 0;
-        this.setState({
-            ELFValue,
-            value: e.target.value,
-            menuName
+        const {menuName, resourceContract} = this.state;
+        getEstimatedValueELF(menuName, e.target.value, resourceContract).then(result => {
+            let ELFValue = Math.ceil(result);
+            this.setState({
+                ELFValue
+            });
         });
+
+        if (e.target.value) {
+            this.setState({
+                value: e.target.value
+            });
+        }
+        else {
+            this.setState({
+                value: ''
+            });
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -61,47 +66,85 @@ export default class ResourceBuy extends Component {
             };
         }
 
+        if (props.account !== state.account) {
+            return {
+                account: props.account
+            };
+        }
+
         if (props.menuIndex !== state.menuIndex) {
             return {
                 menuIndex: props.menuIndex
             };
         }
 
+        if (props.contracts !== state.contracts) {
+            return {
+                contracts: props.contracts
+            };
+        }
+
+        if (props.resourceContract !== state.resourceContract) {
+            return {
+                resourceContract: props.resourceContract
+            };
+        }
+
         return null;
     }
 
+    componentDidMount() {
+        this.setState({
+            menuName: getMenuName(this.state.menuIndex)
+        });
+    }
+
     componentDidUpdate(prevProps) {
-        if (prevProps.currentWallet !== this.props.currentWallet) {
-            const {menuIndex} = this.state;
-            this.wallet = getWallet(this.props.currentWallet.privateKey);
-            this.resource = getResource(this.wallet);
-            const resValue = getHexNumber(
-                this.resource.GetUserBalance(this.props.currentWallet.address, getMenuName(menuIndex)).return
-            );
+        if (prevProps.menuIndex !== this.props.menuIndex) {
             this.setState({
-                currentWallet: this.props.currentWallet,
-                menuName: getMenuName(menuIndex),
-                resValue,
-                region: resValue / 4
+                menuName: getMenuName(this.props.menuIndex)
             });
+            this.getRegion(this.state.menuIndex);
         }
 
-        if (prevProps.menuIndex !== this.props.menuIndex) {
-            const {menuIndex} = this.state;
-            const resValue = getHexNumber(
-                this.resource.GetUserBalance(this.props.currentWallet.address, getMenuName(menuIndex)).return
-            );
+        if (prevProps.account !== this.props.account) {
+            this.getRegion(this.state.menuIndex);
+        }
+
+        if (prevProps.resourceContract !== this.props.resourceContract) {
             this.setState({
-                menuName: getMenuName(menuIndex),
-                resValue,
-                region: resValue / 4
+                noCanInput: false
             });
         }
     }
 
+    getRegion(index) {
+        const {account} = this.state;
+        const menuName = getMenuName(index);
+        let value = account[menuName];
+        this.setState({
+            region: Math.ceil(value / 4)
+        });
+    }
+
     getSlideMarks() {
-        const {region} = this.state;
-        const regionLine = [0, region, region * 2, region * 3, region * 4];
+        const {region, account, menuIndex} = this.state;
+        let menuName = getMenuName(menuIndex);
+        if (region < 4) {
+            const regionLine = [0, 25, 50, 75, 100];
+            let marks = {};
+            regionLine.map(item => {
+                marks[item] = '';
+            });
+            return marks;
+        }
+        const regionLine = [
+            0,
+            region,
+            region * 2,
+            region * 3,
+            account[menuName]
+        ];
         let marks = {};
         regionLine.map(item => {
             marks[item] = '';
@@ -110,49 +153,122 @@ export default class ResourceBuy extends Component {
     }
 
     onChangeSlide(e) {
-        this.setState({
-            purchaseQuantity: e
+        const {menuName, resourceContract} = this.state;
+        getEstimatedValueELF(menuName, e, resourceContract).then(result => {
+            let ELFValue = Math.ceil(result);
+            this.setState({
+                ELFValue,
+                value: e,
+                purchaseQuantity: e
+            });
         });
     }
 
 
-    
     getSellModalShow() {
-        let {value, resValue} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts, menuIndex} = this.state;
+        let menuName = getMenuName(menuIndex);
         let reg = /^[0-9]*$/;
         if (!reg.test(value) || parseInt(value, 10) === 0) {
             message.error('The value must be numeric and greater than 0');
             return;
         }
-        else if (parseInt(value, 10) > resValue) {
+        else if (parseInt(value, 10) > account[menuName]) {
             message.warning('More votes than available assets');
             return;
         }
         else {
-            if (value && value !== 0) {
-                this.props.handleSellModalShow(value);
-            }
+            window.NightElf.api({
+                appName: 'hzzTest',
+                method: 'CHECK_PERMISSION',
+                type: 'address', // if you did not set type, it aways get by domain.
+                address: currentWallet.address
+            }).then(result => {
+                console.log('1>>>>>>>>>>>>>', result);
+                if (result.permissions.length === 0) {
+                    window.NightElf.api({
+                        appName: 'hzzTest',
+                        method: 'OPEN_PROMPT',
+                        chainId: 'AELF',
+                        hostname: 'aelf.io',
+                        payload: {
+                            method: 'SET_PERMISSION',
+                            payload: {
+                                address: currentWallet.address,
+                                contracts: [{
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.TOKENADDRESS,
+                                    contractName: 'token',
+                                    description: 'token contract'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.DIVIDENDSADDRESS,
+                                    contractName: 'dividends',
+                                    description: 'contract dividends'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: contracts.CONSENSUSADDRESS,
+                                    contractName: 'consensus',
+                                    description: 'contract consensus'
+                                }, {
+                                    chainId: 'AELF',
+                                    contractAddress: resourceAddress,
+                                    contractName: 'resource',
+                                    description: 'contract resource'
+                                }]
+                            }
+                        }
+                    }).then(result => {
+                        if (result.error === 0) {
+                            testingResource(result, contracts, currentWallet).then(result => {
+                                if (result) {
+                                    this.props.handleSellModalShow(value, ELFValue);
+                                }
+                            });
+                        }
+                        else {
+                            message.error(result.errorMessage.message, 5);
+                        }
+                    });
+                }
+                else {
+                    testingResource(result, contracts, currentWallet).then(result => {
+                        if (result) {
+                            this.props.handleSellModalShow(value, ELFValue);
+                        }
+                    });
+                }
+            });
         }
     }
 
-    getSlideHTML() {
-        const {resValue, region} = this.state;
-        if (resValue && resValue !== 0) {
-            return (
-                <Slider
-                    marks={this.getSlideMarks()}
-                    step={region}
-                    min={0}
-                    onChange={e => this.onChangeSlide(e) }
-                    max={resValue}
-                    tooltipVisible={false}
-                />
-            );
+    getSlideMarksHTML() {
+        let {region, purchaseQuantity, account, menuIndex} = this.state;
+        let menuName = getMenuName(menuIndex);
+        let disabled = false;
+        let balance = account[menuName];
+        if (region < 4) {
+            region = 25;
+            balance = 100;
+            disabled = true;
         }
+        return (
+            <Slider
+                marks={this.getSlideMarks()}
+                step={region}
+                disabled={disabled}
+                min={0}
+                value={purchaseQuantity}
+                onChange={e => this.onChangeSlide(e) }
+                max={balance}
+                tooltipVisible={false}
+            />
+        );
     }
+
     render() {
-        const {purchaseQuantity, menuName, value} = this.state;
-        const slideHTML = this.getSlideHTML();
+        const {purchaseQuantity, menuName, value, account} = this.state;
+        const slideHTML = this.getSlideMarksHTML();
         return (
             <div className='trading-box trading-sell'>
                 <div className='trading'>
@@ -175,7 +291,7 @@ export default class ResourceBuy extends Component {
                             <Col span={6} style={{color: '#fff'}}>Available</Col>
                             <Col span={18}>
                                 <Input
-                                    value={this.state.resValue}
+                                    value={account[menuName]}
                                     addonAfter={menuName}
                                     disabled={true}
                                 />
