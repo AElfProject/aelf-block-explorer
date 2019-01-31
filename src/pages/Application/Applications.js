@@ -147,9 +147,9 @@ export default class ApplicationPage extends Component {
         });
     }
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         clearTimeout(this.informationTimer);
-        this.setState = function () {};
+        this.setState = () => {};
     }
 
     getInformation(consensus) {
