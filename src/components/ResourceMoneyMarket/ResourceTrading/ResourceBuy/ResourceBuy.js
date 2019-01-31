@@ -11,6 +11,7 @@ import {resourceAddress} from '../../../../../config/config';
 import getEstimatedValueRes from '../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../utils/getFees';
+import testingResource from '../../../../utils/testingResource';
 import './ResourceBuy.less';
 
 export default class ResourceBuy extends Component {
@@ -253,9 +254,11 @@ export default class ResourceBuy extends Component {
                         }
                     }).then(result => {
                         if (result.error === 0) {
-                            if (value && value !== 0) {
-                                this.props.handleBuyModalShow(value, ELFValue);
-                            }
+                            testingResource(result, contracts, currentWallet).then(result => {
+                                if (value && value !== 0) {
+                                    this.props.handleBuyModalShow(value, ELFValue);
+                                }
+                            });
                         }
                         else {
                             message.error(result.errorMessage.message, 5);
@@ -264,7 +267,11 @@ export default class ResourceBuy extends Component {
                 }
                 else {
                     if (value && value !== 0) {
-                        this.props.handleBuyModalShow(value, ELFValue);
+                        testingResource(result, contracts, currentWallet).then(result => {
+                            if (value && value !== 0) {
+                                this.props.handleBuyModalShow(value, ELFValue);
+                            }
+                        });
                     }
                 }
             });
