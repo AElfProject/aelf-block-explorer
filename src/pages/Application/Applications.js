@@ -131,6 +131,10 @@ export default class ApplicationPage extends Component {
         });
     }
 
+    componentWillUnmount() {
+        this.setState = function () {};
+    }
+
     getCurrentBalance(value) {
         this.setState({
             currentBalance: value
