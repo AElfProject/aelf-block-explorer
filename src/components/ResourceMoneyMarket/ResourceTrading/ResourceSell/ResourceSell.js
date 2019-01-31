@@ -155,7 +155,7 @@ export default class ResourceBuy extends Component {
     onChangeSlide(e) {
         const {menuName, resourceContract} = this.state;
         getEstimatedValueELF(menuName, e, resourceContract).then(result => {
-            let ELFValue = Math.ceil(result);
+            let ELFValue = -Math.ceil(result);
             this.setState({
                 ELFValue,
                 value: e,

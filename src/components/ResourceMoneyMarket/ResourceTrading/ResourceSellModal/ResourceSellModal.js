@@ -34,7 +34,7 @@ export default class ResourceSellModal extends PureComponent {
         let menuName = getMenuName(menuIndex);
         console.log(sellNum, menuName, resourceContract);
         getEstimatedValueELF(menuName, sellNum, resourceContract).then(result => {
-            let ELFValue = Math.ceil(result);
+            let ELFValue = -Math.ceil(result);
             this.setState({
                 ELFValue,
                 menuName,
