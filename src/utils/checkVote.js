@@ -10,7 +10,6 @@ export default function checkVote(contracts, currentWallet) {
         type: 'address', // if you did not set type, it aways get by domain.
         address: currentWallet.address
     }).then(result => {
-        console.log('>>>>>>>>>>>>>>>>>>>', result);
         if (result.permissions.length === 0) {
             window.NightElf.api({
                 appName: 'hzzTest',
