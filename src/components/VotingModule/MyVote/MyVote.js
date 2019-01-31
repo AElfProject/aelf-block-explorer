@@ -132,7 +132,7 @@ export default class MyVote extends PureComponent {
     };
 
     componentWillUnmount() {
-        this.setState = () => {};
+        this.setState = function () {};
     }
 
     getVoting(publicKey) {

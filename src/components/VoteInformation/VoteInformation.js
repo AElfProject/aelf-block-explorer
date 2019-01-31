@@ -68,6 +68,7 @@ export default class voteInfomation extends PureComponent {
 
     componentWillUnMount() {
         clearTimeout(this.informationTimer);
+        this.setState = function () {}
     }
 
     renderVoteInformation() {
