@@ -182,7 +182,7 @@ export default class ResourceBuy extends Component {
             let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
             if (regPos.test(result) || regNeg.test(result)) {
-                let ELFValue = Math.abs(Math.floor(result));
+                let ELFValue = Math.abs(Math.ceil(result));
                 if (ELFValue !== 0) {
                     ELFValue += getFees(ELFValue) + 1;
                     this.setState({

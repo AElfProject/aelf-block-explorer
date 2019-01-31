@@ -255,7 +255,7 @@ export default class VoteTable extends PureComponent {
     };
 
     componentWillUnmount() {
-        this.setState = () => {};
+        this.setState = function () {};
     }
 
 

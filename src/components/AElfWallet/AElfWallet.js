@@ -352,6 +352,10 @@ export default class AElfWallet extends PureComponent {
         }
     }
 
+    componentWillUnmount() {
+        this.setState = function () {};
+    }
+
     onRefresh() {
         this.setState({
             loadingTip: 'Loading......'

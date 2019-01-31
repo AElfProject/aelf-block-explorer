@@ -173,6 +173,10 @@ export default class VotingRecord extends PureComponent {
         }
     }
 
+    componentWillUnmount() {
+        this.setState = function () {};
+    }
+
     handleTableChange = pagination => {
         let pageOption = {...this.state.pagination};
         pageOption.current = pagination.current;

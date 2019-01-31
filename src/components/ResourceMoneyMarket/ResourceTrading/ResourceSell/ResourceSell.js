@@ -39,10 +39,11 @@ export default class ResourceBuy extends Component {
 
     onChangeResourceValue(e) {
         const {menuName, resourceContract} = this.state;
-        getEstimatedValueELF(menuName, e.target.value, resourceContract).then(result => {
+        getEstimatedValueELF(menuName, e.target.value, resourceContract, 'Sell').then(result => {
             let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
             if (regPos.test(result) || regNeg.test(result)) {
+                console.log(Math.ceil(result));
                 let ELFValue = Math.abs(Math.ceil(result));
                 this.setState({
                     ELFValue,
@@ -166,7 +167,7 @@ export default class ResourceBuy extends Component {
 
     onChangeSlide(e) {
         const {menuName, resourceContract} = this.state;
-        getEstimatedValueELF(menuName, e, resourceContract).then(result => {
+        getEstimatedValueELF(menuName, e, resourceContract, 'Sell').then(result => {
             let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
             let ELFValue = Math.abs(Math.ceil(result));
