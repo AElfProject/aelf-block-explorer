@@ -9,9 +9,7 @@ import {Row, Col, Input, Slider, message} from 'antd';
 import {resourceAddress} from '../../../../../config/config';
 import testingResource from '../../../../utils/testingResource';
 import getMenuName from '../../../../utils/getMenuName';
-import getHexNumber from '../../../../utils/getHexNumber';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';
-import getFees from '../../../../utils/getFees';
 import './ResourceSell.less';
 
 export default class ResourceBuy extends Component {
@@ -34,17 +32,28 @@ export default class ResourceBuy extends Component {
                 RAM: 0,
                 NET: 0,
                 STO: 0
-            }
+            },
+            toSell: false
         };
     }
 
     onChangeResourceValue(e) {
         const {menuName, resourceContract} = this.state;
         getEstimatedValueELF(menuName, e.target.value, resourceContract).then(result => {
-            let ELFValue = Math.ceil(result);
-            this.setState({
-                ELFValue
-            });
+            let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+            let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+            if (regPos.test(result) || regNeg.test(result)) {
+                let ELFValue = Math.abs(Math.ceil(result));
+                this.setState({
+                    ELFValue,
+                    toSell: true
+                });
+            }
+            else {
+                this.setState({
+                    toSell: false
+                });
+            }
         });
 
         if (e.target.value) {
@@ -102,7 +111,10 @@ export default class ResourceBuy extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.menuIndex !== this.props.menuIndex) {
             this.setState({
-                menuName: getMenuName(this.props.menuIndex)
+                menuName: getMenuName(this.props.menuIndex),
+                value: null,
+                purchaseQuantity: 0,
+                ELFValue: 0
             });
             this.getRegion(this.state.menuIndex);
         }
@@ -155,18 +167,32 @@ export default class ResourceBuy extends Component {
     onChangeSlide(e) {
         const {menuName, resourceContract} = this.state;
         getEstimatedValueELF(menuName, e, resourceContract).then(result => {
-            let ELFValue = -Math.ceil(result);
+            let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+            let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+            let ELFValue = Math.abs(Math.ceil(result));
+            if (regPos.test(result) || regNeg.test(result)) {
+                this.setState({
+                    toSell: true,
+                    purchaseQuantity: 0,
+                    ELFValue: 0
+                });
+            }
+            else {
+                this.setState({
+                    toSell: false,
+                    ELFValue: ELFValue,
+                    purchaseQuantity: e
+                });
+            }
             this.setState({
-                ELFValue,
-                value: e,
-                purchaseQuantity: e
+                value: e
             });
         });
     }
 
 
     getSellModalShow() {
-        const {value, account, ELFValue, currentWallet, contracts, menuIndex} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts, menuIndex, toSell} = this.state;
         let menuName = getMenuName(menuIndex);
         let reg = /^[0-9]*$/;
         if (!reg.test(value) || parseInt(value, 10) === 0) {
@@ -177,6 +203,10 @@ export default class ResourceBuy extends Component {
             message.warning('More votes than available assets');
             return;
         }
+        else if (!toSell) {
+            message.warning('Please purchase or sell a smaller amount of resources than the inventory in the resource contract.');
+            return;
+        }
         else {
             window.NightElf.api({
                 appName: 'hzzTest',
@@ -184,7 +214,6 @@ export default class ResourceBuy extends Component {
                 type: 'address', // if you did not set type, it aways get by domain.
                 address: currentWallet.address
             }).then(result => {
-                console.log('1>>>>>>>>>>>>>', result);
                 if (result.permissions.length === 0) {
                     window.NightElf.api({
                         appName: 'hzzTest',

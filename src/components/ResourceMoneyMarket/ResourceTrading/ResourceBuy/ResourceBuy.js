@@ -34,7 +34,8 @@ export default class ResourceBuy extends Component {
                 RAM: 0,
                 NET: 0,
                 STO: 0
-            }
+            },
+            toBuy: true
         };
     }
 
@@ -82,7 +83,10 @@ export default class ResourceBuy extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.menuIndex !== this.props.menuIndex) {
             this.setState({
-                menuName: getMenuName(this.props.menuIndex)
+                menuName: getMenuName(this.props.menuIndex),
+                value: null,
+                purchaseQuantity: 0,
+                ELFValue: 0
             });
         }
 
@@ -136,7 +140,7 @@ export default class ResourceBuy extends Component {
         getEstimatedValueRes(menuName, elfCont, resourceContract).then(result => {
             let value = 0;
             if (Math.floor(result) > 0) {
-                value = Math.floor(result);
+                value = Math.abs(Math.floor(result));
             }
             this.setState({
                 value
@@ -173,17 +177,29 @@ export default class ResourceBuy extends Component {
 
     onChangeResourceValue(e) {
         const {menuName, resourceContract} = this.state;
-        getEstimatedValueELF(menuName, e.target.value, resourceContract).then(result => {
-            let ELFValue = Math.floor(result);
-            if (ELFValue !== 0) {
-                ELFValue += getFees(ELFValue) + 1;
-                this.setState({
-                    ELFValue
-                });
+        console.log(e.target.value);
+        getEstimatedValueELF(menuName, e.target.value, resourceContract, 'Buy').then(result => {
+            let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+            let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+            if (regPos.test(result) || regNeg.test(result)) {
+                let ELFValue = Math.abs(Math.floor(result));
+                if (ELFValue !== 0) {
+                    ELFValue += getFees(ELFValue) + 1;
+                    this.setState({
+                        ELFValue,
+                        toBuy: true
+                    });
+                }
+                else {
+                    this.setState({
+                        ELFValue,
+                        toBuy: true
+                    });
+                }
             }
             else {
                 this.setState({
-                    ELFValue
+                    toBuy: false
                 });
             }
         });
@@ -201,7 +217,7 @@ export default class ResourceBuy extends Component {
     }
 
     getBuyModalShow() {
-        const {value, account, ELFValue, currentWallet, contracts} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts, toBuy} = this.state;
         let reg = /^[0-9]*$/;
         if (!reg.test(value) || parseInt(value, 10) === 0) {
             message.error('The value must be numeric and greater than 0');
@@ -209,6 +225,10 @@ export default class ResourceBuy extends Component {
         }
         else if (parseInt(value, 10) > parseFloat(account.balabce, 10)) {
             message.warning('More votes than available assets');
+            return;
+        }
+        else if (!toBuy) {
+            message.warning('Please purchase or sell a smaller amount of resources than the inventory in the resource contract.');
             return;
         }
         else {
