@@ -33,19 +33,20 @@ export default class ResourceBuyModal extends PureComponent {
         const {buyNum, menuName, resourceContract} = this.state;
         getEstimatedValueELF(menuName, buyNum, resourceContract, 'Buy').then(result => {
             let ELFValue = Math.abs(Math.ceil(result));
+            let buyRes = ELFValue;
+            ELFValue += getFees(ELFValue) + 1;
             if (ELFValue !== 0) {
-                ELFValue += getFees(ELFValue) + 1;
                 this.setState({
                     ELFValue,
                     menuName,
-                    serviceCharge: getFees(ELFValue) + 1
+                    serviceCharge: getFees(buyRes) + 1
                 });
             }
             else {
                 this.setState({
                     ELFValue,
                     menuName,
-                    serviceCharge: getFees(ELFValue) + 1
+                    serviceCharge: getFees(buyRes) + 1
                 });
             }
         });
@@ -57,8 +58,6 @@ export default class ResourceBuyModal extends PureComponent {
         this.setState({
             loading: true
         });
-        let buyNum = ELFValue - 1;
-        console.log(buyNum);
         window.NightElf.api({
             appName: 'hzzTest',
             method: 'INIT_AELF_CONTRACT',
@@ -70,6 +69,7 @@ export default class ResourceBuyModal extends PureComponent {
                 contractAddress: resourceAddress
             }
         }).then(result => {
+            console.log(ELFValue);
             if (result.error === 0) {
                 window.NightElf.api({
                     appName: 'hzzTest',
@@ -80,7 +80,7 @@ export default class ResourceBuyModal extends PureComponent {
                         contractName: 'resource',
                         contractAddress: resourceAddress,
                         method: 'BuyResource',
-                        params: [menuName, buyNum]
+                        params: [menuName, ELFValue]
                     }
                 }).then(result => {
                     console.log('>>>>>>>>>>>>>>>>>>>', result);
@@ -122,7 +122,7 @@ export default class ResourceBuyModal extends PureComponent {
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>ELF</Col>
-                        <Col span={16}>{ELFValue}</Col>
+                        <Col span={16}>{ELFValue + 1}</Col>
                     </Row>
                     <div className='service-charge'>
                         *手续费: {serviceCharge} ELF

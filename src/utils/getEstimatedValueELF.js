@@ -19,7 +19,6 @@ export default function getEstimatedValueELF(type, pidRes, resourceContract, tTy
                         converter.ElfBalance, converter.ElfWeight,
                         resCont
                     );
-                    console.log(isNaN('123'));
                     resolve(elfPayout);
                 }
                 else {

@@ -139,8 +139,8 @@ export default class ResourceBuy extends Component {
         elfCont -= getFees(elfCont);
         getEstimatedValueRes(menuName, elfCont, resourceContract).then(result => {
             let value = 0;
-            if (Math.floor(result) > 0) {
-                value = Math.abs(Math.floor(result));
+            if (Math.ceil(result) > 0) {
+                value = Math.abs(Math.ceil(result));
             }
             this.setState({
                 value
@@ -177,14 +177,15 @@ export default class ResourceBuy extends Component {
 
     onChangeResourceValue(e) {
         const {menuName, resourceContract} = this.state;
-        console.log(e.target.value);
         getEstimatedValueELF(menuName, e.target.value, resourceContract, 'Buy').then(result => {
             let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
             if (regPos.test(result) || regNeg.test(result)) {
                 let ELFValue = Math.abs(Math.ceil(result));
+                console.log(ELFValue, getFees(ELFValue));
+                ELFValue += getFees(ELFValue) + 1;
                 if (ELFValue !== 0) {
-                    ELFValue += getFees(ELFValue) + 1;
+                   
                     this.setState({
                         ELFValue,
                         toBuy: true
