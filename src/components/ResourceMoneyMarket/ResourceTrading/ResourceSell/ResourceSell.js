@@ -169,18 +169,18 @@ export default class ResourceBuy extends Component {
         getEstimatedValueELF(menuName, e, resourceContract, 'Sell').then(result => {
             let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
-            let ELFValue = Math.abs(Math.ceil(result));
+            let ELFValue = Math.abs(Math.floor(result));
             if (regPos.test(result) || regNeg.test(result)) {
                 this.setState({
                     toSell: true,
-                    purchaseQuantity: 0,
-                    ELFValue: 0
+                    purchaseQuantity: e,
+                    ELFValue
                 });
             }
             else {
                 this.setState({
                     toSell: false,
-                    ELFValue: ELFValue,
+                    ELFValue,
                     purchaseQuantity: e
                 });
             }
