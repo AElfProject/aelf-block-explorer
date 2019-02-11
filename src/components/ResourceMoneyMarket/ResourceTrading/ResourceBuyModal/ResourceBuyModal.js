@@ -32,15 +32,9 @@ export default class ResourceBuyModal extends PureComponent {
     componentDidMount() {
         const {buyNum, menuName, resourceContract} = this.state;
         getEstimatedValueELF(menuName, buyNum, resourceContract, 'Buy').then(result => {
-            let ELFValue = Math.abs(Math.ceil(result));
+            let ELFValue = Math.abs(Math.floor(result));
             let buyRes = ELFValue;
-            if (buyNum < 1000 ) {
-                ELFValue += getFees(ELFValue) - 1;
-            }
-            else {
-                ELFValue += getFees(ELFValue) + 1;
-            }
-           
+            ELFValue += getFees(buyRes) + 1;
             if (ELFValue !== 0) {
                 this.setState({
                     ELFValue,
@@ -75,7 +69,6 @@ export default class ResourceBuyModal extends PureComponent {
                 contractAddress: resourceAddress
             }
         }).then(result => {
-            console.log(ELFValue);
             if (result.error === 0) {
                 window.NightElf.api({
                     appName: 'hzzTest',
@@ -86,7 +79,7 @@ export default class ResourceBuyModal extends PureComponent {
                         contractName: 'resource',
                         contractAddress: resourceAddress,
                         method: 'BuyResource',
-                        params: [menuName, ELFValue]
+                        params: [menuName, ELFValue - 1]
                     }
                 }).then(result => {
                     console.log('>>>>>>>>>>>>>>>>>>>', result);
@@ -128,7 +121,7 @@ export default class ResourceBuyModal extends PureComponent {
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>ELF</Col>
-                        <Col span={16}>{ELFValue + 1}</Col>
+                        <Col span={16}>{ELFValue}</Col>
                     </Row>
                     <div className='service-charge'>
                         *手续费: {serviceCharge} ELF

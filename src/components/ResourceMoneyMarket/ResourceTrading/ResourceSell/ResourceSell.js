@@ -43,7 +43,6 @@ export default class ResourceBuy extends Component {
             let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
             if (regPos.test(result) || regNeg.test(result)) {
-                console.log(Math.ceil(result));
                 let ELFValue = Math.abs(Math.ceil(result));
                 this.setState({
                     ELFValue,
@@ -273,7 +272,7 @@ export default class ResourceBuy extends Component {
     }
 
     getSlideMarksHTML() {
-        let {region, purchaseQuantity, account, menuIndex} = this.state;
+        let {region, account, menuIndex, purchaseQuantity} = this.state;
         let menuName = getMenuName(menuIndex);
         let disabled = false;
         let balance = account[menuName];

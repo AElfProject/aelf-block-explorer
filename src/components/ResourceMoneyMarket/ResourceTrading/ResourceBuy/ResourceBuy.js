@@ -135,6 +135,14 @@ export default class ResourceBuy extends Component {
     onChangeSlide(e) {
         const {menuName, resourceContract} = this.state;
         let elfCont = e;
+        if (e === 0) {
+            this.setState({
+                purchaseQuantity: 0,
+                ELFValue: 0,
+                value: 0
+            });
+            return;
+        }
         elfCont = elfCont - 1;
         elfCont -= getFees(elfCont);
         getEstimatedValueRes(menuName, elfCont, resourceContract).then(result => {
@@ -177,42 +185,41 @@ export default class ResourceBuy extends Component {
 
     onChangeResourceValue(e) {
         const {menuName, resourceContract} = this.state;
-        getEstimatedValueELF(menuName, e.target.value, resourceContract, 'Buy').then(result => {
-            let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
-            let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
-            if (regPos.test(result) || regNeg.test(result)) {
-                let ELFValue = Math.abs(Math.ceil(result));
-                console.log(ELFValue, getFees(ELFValue));
-                ELFValue += getFees(ELFValue) + 1;
-                if (ELFValue !== 0) {
-                   
-                    this.setState({
-                        ELFValue,
-                        toBuy: true
-                    });
+        if (e.target.value) {
+            getEstimatedValueELF(menuName, e.target.value, resourceContract, 'Buy').then(result => {
+                let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+                let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+                if (regPos.test(result) || regNeg.test(result)) {
+                    let ELFValue = Math.abs(Math.floor(result));
+                    ELFValue += getFees(ELFValue);
+                    ELFValue += 1;
+                    if (ELFValue !== 0) {
+                        this.setState({
+                            ELFValue,
+                            toBuy: true
+                        });
+                    }
+                    else {
+                        this.setState({
+                            ELFValue,
+                            toBuy: true
+                        });
+                    }
                 }
                 else {
                     this.setState({
-                        ELFValue,
-                        toBuy: true
+                        toBuy: false
                     });
                 }
-            }
-            else {
-                this.setState({
-                    toBuy: false
-                });
-            }
-        });
-
-        if (e.target.value) {
+            });
             this.setState({
                 value: e.target.value
             });
         }
         else {
             this.setState({
-                value: ''
+                value: '',
+                ELFValue: 0
             });
         }
     }

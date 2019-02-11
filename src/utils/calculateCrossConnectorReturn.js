@@ -7,11 +7,11 @@
 import getLn from './getLn';
 export default function scalculateCrossConnectorReturn(ResBalance, ResWeight, ElfBalance, ElfWeight, pidRes) {
     console.log('bf:', ResBalance, 'wf:', ResWeight, 'bt', ElfBalance, 'wt:', ElfWeight, 'a:', pidRes);
-    const bf = parseFloat(ResBalance);
-    const wf = parseFloat(ResWeight);
-    const bt = parseFloat(ElfBalance);
-    const wt = parseFloat(ElfWeight);
-    const a = parseFloat(pidRes);
+    const bf = parseInt(ResBalance, 10);
+    const wf = parseInt(ResWeight, 10);
+    const bt = parseInt(ElfBalance, 10);
+    const wt = parseInt(ElfWeight, 10);
+    const a = parseInt(pidRes, 10);
     if (wf === wt) {
         // if both weights are the same, the formula can be reduced
         console.log((bt * Math.abs(a) / (bf + a)));
