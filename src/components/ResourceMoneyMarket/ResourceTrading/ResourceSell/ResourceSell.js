@@ -200,7 +200,7 @@ export default class ResourceBuy extends Component {
             return;
         }
         else if (parseInt(value, 10) > account[menuName]) {
-            message.warning('More votes than available assets');
+            message.warning('Buy and sell more than available assets');
             return;
         }
         else if (!toSell) {

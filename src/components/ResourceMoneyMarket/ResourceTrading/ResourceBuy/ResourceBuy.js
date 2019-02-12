@@ -231,8 +231,8 @@ export default class ResourceBuy extends Component {
             message.error('The value must be numeric and greater than 0');
             return;
         }
-        else if (parseInt(value, 10) > parseFloat(account.balabce, 10)) {
-            message.warning('More votes than available assets');
+        else if (parseInt(ELFValue, 10) > parseFloat(account.balabce, 10)) {
+            message.warning('Buy and sell more than available assets');
             return;
         }
         else if (!toBuy) {
