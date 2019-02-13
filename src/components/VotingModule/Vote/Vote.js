@@ -99,7 +99,7 @@ export default class Vote extends PureComponent {
                     contractAddress: contracts.CONSENSUSADDRESS,
                     contractName: 'consensus',
                     method: 'Vote',
-                    params: [this.state.publicKey, this.state.votes, this.state.perio]
+                    params: [this.state.publicKey, this.state.votes, this.state.period]
                 }
             }).then(result => {
                 console.log(result);
