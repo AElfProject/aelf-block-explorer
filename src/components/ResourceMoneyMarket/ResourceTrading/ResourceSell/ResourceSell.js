@@ -12,13 +12,13 @@ import getMenuName from '../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../utils/getEstimatedValueELF';
 import './ResourceSell.less';
 
-export default class ResourceBuy extends Component {
+export default class ResourceSell extends Component {
     constructor(props) {
         super(props);
         this.state = {
             menuName: null,
             menuIndex: this.props.menuIndex,
-            currentWallet: this.props.currentWallet || JSON.parse(localStorage.currentWallet),
+            currentWallet: this.props.currentWallet || JSON.parse(localStorage.getItem('currentWallet')),
             contracts: null,
             ELFValue: 0,
             region: 0,

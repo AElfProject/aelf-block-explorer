@@ -20,8 +20,18 @@ export default class Resource extends Component {
     constructor(props) {
         super(props);
         this.informationTimer;
+        let wallet = null;
+        if (localStorage.currentWallet) {
+            wallet = {
+                address: '',
+                walletName: '',
+                privateKey: commonPrivateKey,
+                publicKey: ''
+            };
+            localStorage.setItem('currentWallet', JSON.stringify(wallet));
+        }
         this.state = {
-            currentWallet: JSON.parse(localStorage.currentWallet),
+            currentWallet: wallet,
             contracts: null,
             tokenContract: null,
             resourceContract: null,

@@ -88,6 +88,7 @@ export default class VotePage extends Component {
             });
         });
         NightElfCheck.getInstance().check.then(item => {
+            
             window.NightElf.api({
                 appName: 'hzzTest',
                 method: 'CONNECT_AELF_CHAIN',

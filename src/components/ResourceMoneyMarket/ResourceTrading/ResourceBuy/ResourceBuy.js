@@ -20,7 +20,7 @@ export default class ResourceBuy extends Component {
         this.state = {
             menuName: null,
             menuIndex: this.props.menuIndex,
-            currentWallet: this.props.currentWallet || JSON.parse(localStorage.currentWallet),
+            currentWallet: this.props.currentWallet || JSON.parse(localStorage.getItem('currentWallet')) || [],
             contracts: null,
             ELFValue: 0,
             region: 0,
