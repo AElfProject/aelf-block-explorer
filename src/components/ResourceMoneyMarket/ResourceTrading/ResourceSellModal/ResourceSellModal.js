@@ -31,9 +31,7 @@ export default class ResourceSellModal extends PureComponent {
 
     componentDidMount() {
         const {sellNum, menuIndex, resourceContract} = this.state;
-        console.log(sellNum);
         let menuName = getMenuName(menuIndex);
-        console.log(sellNum, menuName, resourceContract);
         getEstimatedValueELF(menuName, sellNum, resourceContract, 'Sell').then(result => {
             let ELFValue = Math.abs(Math.ceil(result));
             this.setState({
@@ -46,6 +44,7 @@ export default class ResourceSellModal extends PureComponent {
 
     getSellRes() {
         const {currentWallet, menuName, sellNum} = this.state;
+        this.props.maskClosable();
         this.setState({
             loading: true
         });
@@ -83,6 +82,7 @@ export default class ResourceSellModal extends PureComponent {
                                     loading: false
                                 });
                                 this.props.handleCancel();
+                                this.props.unMaskClosable();
                             });
                         }, 4000);
                     }

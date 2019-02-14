@@ -6,7 +6,7 @@
 
 
 import React, {PureComponent} from 'react';
-import {Row, Col} from 'antd';
+import {Row, Col, Spin} from 'antd';
 import ResourceCurrencyChart from './ResourceCurrencyChart/ResourceCurrencyChart';
 import ResourceTrading from './ResourceTrading/ResourceTrading';
 import RealTimeTransactions from './RealTimeTransactions/RealTimeTransactions';
@@ -22,6 +22,9 @@ export default class ResourceMoneyMarket extends PureComponent {
             contracts: null,
             tokenContract: null,
             resourceContract: null,
+            loading: false,
+            echartsLoading: false,
+            realTimeTransactionLoaidng: false,
             account: {
                 balabce: 0,
                 CPU: 0,
@@ -35,7 +38,22 @@ export default class ResourceMoneyMarket extends PureComponent {
     getMenuClick(index) {
         // TODO 切换所有模块数据源  写一个状态判断用来判断当前是哪一个数据
         this.setState({
-            menuIndex: index
+            menuIndex: index,
+            loading: true,
+            realTimeTransactionLoaidng: true,
+            echartsLoading: true
+        });
+    }
+
+    getEchartsLoading() {
+        this.setState({
+            echartsLoading: false
+        });
+    }
+
+    getRealTimeTransactionLoading() {
+        this.setState({
+            realTimeTransactionLoaidng: false
         });
     }
 
@@ -71,7 +89,7 @@ export default class ResourceMoneyMarket extends PureComponent {
         }
 
         return null;
-    } 
+    }
 
     getMenuHTML() {
         const menuNames = ['RAM', 'CPU', 'NET', 'STO'];
@@ -104,52 +122,64 @@ export default class ResourceMoneyMarket extends PureComponent {
     render() {
         const menu = this.getMenuHTML();
         const {menuIndex, currentWallet, contracts, resourceContract, tokenContract, account} = this.state;
+        const {realTimeTransactionLoaidng, echartsLoading} = this.state;
+        let loading = true;
+        if (!realTimeTransactionLoaidng && !echartsLoading) {
+            loading = false;
+        }
         return (
             <div className='resource-market-body'>
                 <div className='resource-head'>
                     Resource Money Market
                 </div>
-                <div className='resource-body'>
-                    <Row>
-                        <Col xxl={4} xl={4} lg={24}>
-                            <Row>
-                                {menu}
-                            </Row>
-                        </Col>
-                        <Col xxl={20} xl={20} lg={24}>
-                            <ResourceCurrencyChart
-                                menuIndex={menuIndex}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col
-                            xxl={14}
-                            xl={24}
-                            lg={24}
-                        >
-                            <ResourceTrading
-                                menuIndex={menuIndex}
-                                currentWallet={currentWallet}
-                                contracts={contracts}
-                                resourceContract={resourceContract}
-                                tokenContract={tokenContract}
-                                account={account}
-                                onRefresh={this.props.onRefresh}
-                                endRefresh={this.props.endRefresh}
-                            />
-                        </Col>
-                        <Col
-                            xxl={{span: 8, offset: 2}}
-                            xl={24}
-                            lg={24}
-                        >
-                            <RealTimeTransactions
-                                menuIndex={menuIndex}
-                            />
-                        </Col>
-                    </Row>
-                </div>
+                <Spin
+                    size='large'
+                    spinning={loading}
+                >
+                    <div className='resource-body'>
+                        <Row>
+                            <Col xxl={4} xl={4} lg={24}>
+                                <Row>
+                                    {menu}
+                                </Row>
+                            </Col>
+                            <Col xxl={20} xl={20} lg={24}>
+                                <ResourceCurrencyChart
+                                    menuIndex={menuIndex}
+                                    getEchartsLoading={this.getEchartsLoading.bind(this)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col
+                                xxl={14}
+                                xl={24}
+                                lg={24}
+                            >
+                                <ResourceTrading
+                                    menuIndex={menuIndex}
+                                    currentWallet={currentWallet}
+                                    contracts={contracts}
+                                    resourceContract={resourceContract}
+                                    tokenContract={tokenContract}
+                                    account={account}
+                                    onRefresh={this.props.onRefresh}
+                                    endRefresh={this.props.endRefresh}
+                                />
+                            </Col>
+                            <Col
+                                xxl={{span: 8, offset: 2}}
+                                xl={24}
+                                lg={24}
+                            >
+                                <RealTimeTransactions
+                                    menuIndex={menuIndex}
+                                    getRealTimeTransactionLoading={this.getRealTimeTransactionLoading.bind(this)}
+                                />
+                            </Col>
+                        </Row>
+                    </div>
+                </Spin>
             </div>
         );
     }

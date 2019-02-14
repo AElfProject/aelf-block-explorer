@@ -24,7 +24,6 @@ export default class NightElfCheck {
         });
     }
     static getInstance() {
-        console.log('1');
         if (!nightElfInstance) {
             nightElfInstance = new NightElfCheck();
             return nightElfInstance;

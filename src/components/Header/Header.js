@@ -81,20 +81,20 @@ export default class BrowserHeader extends PureComponent {
 
             if (showSearch !== this.state.showSearch) {
                 this.setState({
-                    showSearch: showSearch
+                    showSearch
                 });
             }
         }
     }
 
-    // handleClick = e => {
-    //     clearTimeout(this.timerTimeout);
-    //     this.timerTimeout = setTimeout(() => {
-    //         this.setState({
-    //             current: e.key
-    //         });
-    //     }, this.interval);
-    // };
+    handleClick = e => {
+        clearTimeout(this.timerTimeout);
+        this.timerTimeout = setTimeout(() => {
+            this.setState({
+                current: e.key
+            });
+        }, this.interval);
+    };
 
     renderMenu(menuMode, showMenu = true) {
 
@@ -102,7 +102,7 @@ export default class BrowserHeader extends PureComponent {
 
         return (
             <Menu
-                // onClick={this.handleClick}
+                onClick={this.handleClick}
                 selectedKeys={[this.state.current]}
                 mode={menuMode}
                 key='navbar'
@@ -134,11 +134,6 @@ export default class BrowserHeader extends PureComponent {
                         </Menu.Item>
                     </MenuItemGroup>
                 </SubMenu>
-                <Menu.Item key='/vote'>
-                    {/*<Icon type='appstore' />*/}
-                    <Link to='/vote'>VOTE</Link>
-                    {/* <span>APP CENTER [Building]</span> */}
-                </Menu.Item>
                 <Menu.Item key='/wallet'>
                     {/*<Icon type='wallet' />*/}
                     <a
@@ -152,6 +147,16 @@ export default class BrowserHeader extends PureComponent {
                 <Menu.Item key='/apps'>
                     {/*<Icon type='appstore' />*/}
                     <Link to='/apps'>APP CENTER[Building]</Link>
+                    {/* <span>APP CENTER [Building]</span> */}
+                </Menu.Item>
+                <Menu.Item key='/vote'>
+                    {/*<Icon type='appstore' />*/}
+                    <Link to='/vote'>VOTE</Link>
+                    {/* <span>APP CENTER [Building]</span> */}
+                </Menu.Item>
+                <Menu.Item key='/resource'>
+                    {/*<Icon type='appstore' />*/}
+                    <Link to='/resource'>RESOURCE</Link>
                     {/* <span>APP CENTER [Building]</span> */}
                 </Menu.Item>
                 <Menu.Item key='/about'>

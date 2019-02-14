@@ -241,7 +241,7 @@ export default class ResourceAElfWallet extends PureComponent {
                                         lg={4} xl={4} xxl={4}
                                         style={{margin: '10px 0'}}
                                     >
-                                        <Link to='/app/details/'>
+                                        <Link to={'/resourceDetail/' + currentWallet.address}>
                                             <span style={{marginRight: '10px'}}>Transaction details</span>
                                         </Link>
                                     </Col>

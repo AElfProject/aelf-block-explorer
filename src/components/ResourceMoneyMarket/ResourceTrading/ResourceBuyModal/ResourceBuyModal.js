@@ -55,6 +55,7 @@ export default class ResourceBuyModal extends PureComponent {
 
     getBuyRes() {
         const {currentWallet, menuName, ELFValue} = this.state;
+        this.props.maskClosable();
         this.setState({
             loading: true
         });
@@ -92,6 +93,7 @@ export default class ResourceBuyModal extends PureComponent {
                                     loading: false
                                 });
                                 this.props.handleCancel();
+                                this.props.unMaskClosable();
                             });
                         }, 4000);
                     }

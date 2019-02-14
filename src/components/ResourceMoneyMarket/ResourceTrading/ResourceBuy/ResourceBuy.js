@@ -191,7 +191,7 @@ export default class ResourceBuy extends Component {
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
                     let ELFValue = Math.abs(Math.floor(result));
-                    ELFValue += getFees(ELFValue);
+                    ELFValue += getFees(result);
                     ELFValue += 1;
                     if (ELFValue !== 0) {
                         this.setState({
@@ -281,12 +281,11 @@ export default class ResourceBuy extends Component {
                             }
                         }
                     }).then(result => {
+                        console.log(result);
                         if (result.error === 0) {
-                            testingResource(result, contracts, currentWallet).then(result => {
-                                if (value && value !== 0) {
-                                    this.props.handleBuyModalShow(value, ELFValue);
-                                }
-                            });
+                            if (value && value !== 0) {
+                                this.props.handleBuyModalShow(value, ELFValue);
+                            }
                         }
                         else {
                             message.error(result.errorMessage.message, 5);

@@ -36,6 +36,9 @@ const TPS_LIST_API_URL = '/tps/list';
 const ADDRESS_TOKENS_API_URL = '/address/tokens';
 const ELF_REALTIME_PRICE_URL = 'https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY';
 const ELF_REST_TRADE_API = 'https://www.bcex.top/Api_Market/getCoinTrade';
+const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
+const RESOURCE_TURNOVER = '/resource/turnover';
+const RESOURCE_RECORDS = '/resource/records';
 
 const PAGE_SIZE = 25;
 const TXSSTATUS = {
@@ -52,6 +55,8 @@ const TXSSTATUS = {
 // TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
 
+
+// TODO: Why is this undefined?
 const BLOCKS_LIST_COLUMNS = [{
         title: 'Block Height',
         dataIndex: 'block_height',
@@ -78,13 +83,13 @@ const BLOCKS_LIST_COLUMNS = [{
         dataIndex: 'tx_count ',
         key: 'tx_count ',
         render: (text, row) =>
-            !isNaN(+text) && +text !== 0 ? (<Link to = {
+            !isNaN(+row.tx_count) && +row.tx_count !== 0 ? (<Link to = {
                     `/txs/block?${row.block_hash}`
                 } > {
-                    text
+                    row.tx_count
                 } </Link>
             ) : (
-                text
+                row.tx_count
             )
     }
 ];
@@ -97,9 +102,9 @@ const ALL_TXS_LIST_COLUMNS = [{
                 `/tx/${row.tx_id}`
             }
             title = {
-                text
+                row.tx_id
             } > {
-                text.slice(0, 17)
+                row.tx_id.slice(0, 17)
             }
             ...
             </Link>
@@ -109,13 +114,13 @@ const ALL_TXS_LIST_COLUMNS = [{
         title: 'Block Height ',
         dataIndex: 'block_height ',
         key: 'block_height ',
-        render: text => (<Link to = {
-                `/block/${text}`
+        render: (text, row) => (<Link to = {
+                `/block/${row.block_height}`
             }
             title = {
-                text
+                row.block_height
             } > {
-                text
+                row.block_height
             } </Link>
         )
     },
@@ -123,13 +128,13 @@ const ALL_TXS_LIST_COLUMNS = [{
         title: 'From ',
         dataIndex: 'address_from ',
         key: 'address_from ',
-        render: text => (<Link to = {
-                `/address/${text}`
+        render: (text, row) => (<Link to = {
+                `/address/${row.address_from}`
             }
             title = {
-                text
+                row.address_from
             } > {
-                text
+                row.address_from
             } </Link>
         )
     },
@@ -143,13 +148,13 @@ const ALL_TXS_LIST_COLUMNS = [{
         title: 'To ',
         dataIndex: 'address_to ',
         key: 'address_to ',
-        render: text => (<Link to = {
-                `/address/${text}`
+        render: (text, row) => (<Link to = {
+                `/address/${row.address_to}`
             }
             title = {
-                text
+                row.address_to
             } > {
-                text
+                row.address_to
             } </Link>
         )
     },
@@ -178,6 +183,128 @@ const ADDRESS_INFO_COLUMN = [{
     }
 ];
 
+const RESOURCE_DETAILS_COLUMN  = [
+    {
+        title: 'Time',
+        dataIndex: 'time',
+        key: 'time',
+        align: 'center',
+        render: (text, row) => (<Link to = {
+                `/tx/${row.tx_id}`
+            }
+            title = {
+                dayjs(row.time).format('YYYY-MM-DD HH:mm:ss')
+            } > {
+                dayjs(row.time).format('YYYY-MM-DD HH:mm:ss')
+            }
+            </Link>
+        )
+    },
+    {
+        title: 'Resource type',
+        dataIndex: 'resourceType',
+        key: 'resourceType',
+        align: 'center',
+        render: (text, row) => (<Link to = {
+            `/tx/${row.tx_id}`
+        }
+        title = {
+            row.type
+        } > {
+            row.type
+        }
+        </Link>
+    )
+    },
+    {
+        title: 'Direction',
+        dataIndex: 'direction',
+        key: 'direction',
+        align: 'center',
+        render: (text, row) => (<Link to = {
+                `/tx/${row.tx_id}`
+            }
+            title = {
+                row.method
+            } > {
+                row.method === 'BuyResource' ? <span style={{color: '#007230'}}>Buy</span> : <span style={{color: '#a30100'}}>Sell</span>
+            }
+            </Link>
+        )
+    },
+    {
+        title: 'Price',
+        dataIndex: 'price',
+        key: 'price',
+        align: 'center',
+        render: (text, row) => {
+            let price = 0;
+            const fee = Math.ceil(row.fee / 1000);
+            price = (row.resource / (row.elf - fee)).toFixed(9);
+            return (
+                <Link to = {
+                    `/tx/${row.tx_id}`
+                }
+                title = 'price' >
+                {
+                    price
+                }
+                </Link>
+            );
+        }
+    },
+    {
+        title: 'Number',
+        dataIndex: 'resource',
+        key: 'number',
+        align: 'center',
+        render: (text, row) => (<Link to = {
+            `/tx/${row.tx_id}`
+        }
+        title = {
+            row.resource
+        } > {
+            row.resource
+        }
+        </Link>
+    )
+    },
+    {
+        title: 'ELF Number',
+        dataIndex: 'elf',
+        key: 'elfNumber',
+        align: 'center',
+        render: (text, row) => (<Link to = {
+            `/tx/${row.tx_id}`
+        }
+        title = {
+            row.elf
+        } > {
+            row.elf
+        }
+        </Link>
+    )
+    },
+    {
+        title: 'Service Charge',
+        dataIndex: 'fee',
+        key: 'serviceCharge',
+        align: 'center',
+        render: (text, row) => {
+            const fee = Math.ceil(row.fee / 1000);
+            return (
+                <Link to = {
+                    `/tx/${row.tx_id}`
+                }
+                title = {fee} >
+                {
+                    fee
+                }
+                </Link>
+            );
+        }
+    }
+];
 
 // button 判断是否可点击 在数据上做判断操作
 
@@ -196,5 +323,9 @@ export {
     RPCSERVER,
     BLOCKS_LIST_COLUMNS,
     ALL_TXS_LIST_COLUMNS,
-    ADDRESS_INFO_COLUMN
+    ADDRESS_INFO_COLUMN,
+    RESOURCE_REALTIME_RECORDS,
+    RESOURCE_TURNOVER,
+    RESOURCE_RECORDS,
+    RESOURCE_DETAILS_COLUMN
 }

@@ -12,7 +12,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
-    "aelf-sdk": "^1.1.16",
+    "aelf-sdk": "^1.1.17",
     "antd": "^3.9.2",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",
@@ -30,6 +30,7 @@
     "react-router-dom": "^4.3.1",
     "react-smooth-scrollbar": "^8.0.6",
     "react-transition-group": "^2.5.0",
+    "react-websocket": "^2.0.1",
     "smooth-scrollbar": "^8.3.1"
   },
   "devDependencies": {

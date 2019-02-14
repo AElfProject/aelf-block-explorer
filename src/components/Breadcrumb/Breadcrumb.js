@@ -18,15 +18,14 @@ const BREADCRUMBNAMEMAP = {
     "/txs/block": "Transactions of Block",
     "/block": "Block",
     "/tx": "Transaction",
-    "/address": "Address"
+    "/address": "Address",
+    "/vote" : 'Vote',
+    "/resource": 'Resource',
+    "/resourceDetail": 'Resource Detail List'
 };
 
-// demo block/26265
-// match states['block'];
-// means
-// Home / BREADCRUMBNAMEMAP['/blocks'] / BREADCRUMBNAMEMAP['/block']
-// Linkto
-// ('/') / ('/blocks'_ / (pathname + location.search)
+// Notice: we need register the route in Breadcurmb.js.
+// If not, we will always turn to '/'
 const BREADCRUMBNAMESTATE = {
     currentState: '',
     states: {
@@ -48,12 +47,24 @@ const BREADCRUMBNAMESTATE = {
         },
         'address': {
             // url: ['/address', false],
-            url: ['/txs' , false], // 暂无地址列表
+            url: ['/txs', false], // 暂无地址列表
             name: [BREADCRUMBNAMEMAP['/txs'], BREADCRUMBNAMEMAP['/address']]
         },
         'apps': {
             url: ['/apps'],
             name: ['App Center']
+        },
+        'vote': {
+            url: ['/vote'],
+            name: ['Vote']
+        },
+        'resource': {
+            url: ['/resource', false],
+            name: ['Resource']
+        },
+        'resourceDetail': {
+            url: ['/resource', '/resourceDetail'],
+            name: [BREADCRUMBNAMEMAP['/resource'], BREADCRUMBNAMEMAP['/resourceDetail']]
         }
     }
 };

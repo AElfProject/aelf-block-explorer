@@ -249,11 +249,9 @@ export default class ResourceBuy extends Component {
                         }
                     }).then(result => {
                         if (result.error === 0) {
-                            testingResource(result, contracts, currentWallet).then(result => {
-                                if (result) {
-                                    this.props.handleSellModalShow(value, ELFValue);
-                                }
-                            });
+                            if (result) {
+                                this.props.handleSellModalShow(value, ELFValue);
+                            }
                         }
                         else {
                             message.error(result.errorMessage.message, 5);

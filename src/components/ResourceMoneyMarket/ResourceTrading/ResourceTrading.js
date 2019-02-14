@@ -26,6 +26,7 @@ export default class ResourceTrading extends PureComponent {
             resourceContract: null,
             tokenContract: null,
             ELFValue: 0,
+            maskClosable: true,
             account: {
                 balabce: 0,
                 CPU: 0,
@@ -99,6 +100,18 @@ export default class ResourceTrading extends PureComponent {
         });
     }
 
+    modalMaskClosable() {
+        this.setState({
+            maskClosable: false
+        });
+    }
+
+    modalUnMaskClosable() {
+        this.setState({
+            maskClosable: true
+        });
+    }
+
     render() {
         const {
             menuIndex,
@@ -111,7 +124,8 @@ export default class ResourceTrading extends PureComponent {
             resourceContract,
             menuName,
             ELFValue,
-            account
+            account,
+            maskClosable
         } = this.state;
         return (
             <div className='resource-trading'>
@@ -150,7 +164,7 @@ export default class ResourceTrading extends PureComponent {
                     footer={null}
                     visible={buyVisible}
                     centered={true}
-                    maskClosable={true}
+                    maskClosable={maskClosable}
                     onCancel={this.handleCancel}
                 >
                     <ResourceBuyModal
@@ -162,6 +176,8 @@ export default class ResourceTrading extends PureComponent {
                         resourceContract={resourceContract}
                         handleCancel={this.handleCancel}
                         onRefresh={this.props.onRefresh}
+                        maskClosable={this.modalMaskClosable.bind(this)}
+                        unMaskClosable={this.modalUnMaskClosable.bind(this)}
                     />
                 </Modal>
                 <Modal
@@ -172,7 +188,7 @@ export default class ResourceTrading extends PureComponent {
                     footer={null}
                     visible={sellVisible}
                     centered={true}
-                    maskClosable={true}
+                    maskClosable={maskClosable}
                     onCancel={this.handleCancel}
                 >
                     <ResourceSellModal
@@ -183,6 +199,8 @@ export default class ResourceTrading extends PureComponent {
                         menuName={menuName}
                         handleCancel={this.handleCancel}
                         onRefresh={this.props.onRefresh}
+                        maskClosable={this.modalMaskClosable.bind(this)}
+                        unMaskClosable={this.modalUnMaskClosable.bind(this)}
                     />
                 </Modal>
             </div>

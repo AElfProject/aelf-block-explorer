@@ -95,7 +95,7 @@ export default class BlocksPage extends Component {
             pagination,
             loading
         } = this.state;
-
+        console.log(data);
         const {
             handleTableChange
         } = this;

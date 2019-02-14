@@ -44,10 +44,16 @@ export default class MyVote extends PureComponent {
         let dataList = [];
         if (currentWallet) {
             if (currentWallet.address === '') {
+                this.setState({
+                    loading: false
+                });
                 return {dataList, VotingRecordsCount: 0};
             }
         }
         else {
+            this.setState({
+                loading: false
+            });
             return {dataList, VotingRecordsCount: 0};
         }
 
@@ -519,20 +525,20 @@ export default class MyVote extends PureComponent {
                 key: 'operation',
                 align: 'center',
                 render: text => {
-                    let isRedeem = text.vote
+                    let isVote = text.vote
                     ? {background: '#097d25', margin: '5px'} : {background: '#aaa', margin: '5px'};
-                    let isVote = text.redeem
+                    let isRedeem = text.redeem
                     ? {background: '#feb000', margin: '5px'} : {background: '#aaa', margin: '5px'};
                     return (
                         <div style={{textAlign: 'center'}}>
-                            <Button title='Vote' style={isRedeem} click={() => {
+                            <Button title='Vote' style={isVote} click={() => {
                                     if (text.vote) {
                                         this.getVoting(text.publicKey);
                                     }
                                 }
                             }
                             />
-                            <Button title='Redeem' style={isVote} click={() => {
+                            <Button title='Redeem' style={isRedeem} click={() => {
                                     if (text.redeem) {
                                         this.getRedeem(text.publicKey, text.txId);
                                     }

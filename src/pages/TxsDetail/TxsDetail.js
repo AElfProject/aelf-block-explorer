@@ -19,6 +19,7 @@ export default class TxsDetailPage extends React.Component {
     }
 
     fetchTxInfo = txsId => {
+        // console.log(aelf.chain.getTxResult(txsId));
         if (isEmpty(txsId)) {
             return;
         }
@@ -41,11 +42,12 @@ export default class TxsDetailPage extends React.Component {
     }
 
     renderCol (key, value) {
-
+        if (typeof value === 'object') {
+            value = JSON.stringify(value);
+        }
         if (formatKey(key) === 'ExecutedInBlock') {
             return;
         }
-
         return (
             <div key={key + Math.random()}>
                 <Col span={6} style={{height: 'auto'}}>{formatKey(key)}</Col>
@@ -58,7 +60,6 @@ export default class TxsDetailPage extends React.Component {
         const result = this.state.result;
         let html = [];
         let blackList = ['tx_trc', 'return'];
-
         for (const each in result) {
             if (blackList.indexOf(each) >= 0) {
 

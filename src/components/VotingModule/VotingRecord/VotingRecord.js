@@ -40,10 +40,16 @@ export default class VotingRecord extends PureComponent {
         let dataList = [];
         if (currentWallet) {
             if (currentWallet.address === '') {
+                this.setState({
+                    loading: false
+                });
                 return dataList;
             }
         }
         else {
+            this.setState({
+                loading: false
+            });
             return dataList;
         }
 

@@ -5,8 +5,13 @@
 */
 
 import React, {PureComponent} from 'react';
+import {Spin} from 'antd';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
+import {get} from '../../../utils';
+import formateTurnoverList from '../../../utils/formateTurnoverList';
+import {RESOURCE_TURNOVER} from '../../../constants';
+import dayjs from 'dayjs';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/chart/line';
 import 'echarts/lib/component/tooltip';
@@ -16,20 +21,149 @@ import './ResourceCurrencyChart.less';
 export default class ResourceCurrencyChart extends PureComponent {
     constructor(props) {
         super(props);
+        this.getEchartDataTime;
         this.state = {
             loading: false,
             menuIndex: this.props.menuIndex,
-            buttonIndex: 0
+            buttonIndex: 0,
+            intervalTimeList: [
+                300000,
+                1800000,
+                3600000,
+                14400000,
+                432000000,
+                604800000
+            ],
+            menuName: [
+                'Ram',
+                'Cpu',
+                'Net',
+                'Sto'
+            ],
+            intervalTime: 300000,
+            buyResource: null,
+            sellResource: null,
+            xAxisData: [],
+            yAxisData: [],
+            maxValue: null
         };
     }
 
+    componentDidMount() {
+        this.getEchartData();
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.menuIndex !== state.menuIndex) {
+            return {
+                menuIndex: props.menuIndex
+            };
+        }
+
+        return null;
+    }
+
+    componentDidUpdate(prevProps, prevStates) {
+        if (prevStates.buttonIndex !== this.state.buttonIndex) {
+            clearTimeout(this.getEchartDataTime);
+            this.getEchartData();
+        }
+        if (prevProps.menuIndex !== this.props.menuIndex) {
+            clearTimeout(this.getEchartDataTime);
+            this.getEchartData();
+        }
+    }
+
+    async getEchartData() {
+        const {intervalTime, menuIndex, menuName, buttonIndex} = this.state;
+        this.setState({
+            loading: true
+        });
+        let xAxisData = [];
+        let yAxisData = [];
+        const time = new Date().getTime();
+        const data = await get(RESOURCE_TURNOVER, {
+            limit: 10,
+            page: 0,
+            order: 'desc',
+            interval: intervalTime,
+            type: menuName[menuIndex]
+        }) || [];
+        const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 10, 'asc', time);
+        const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 10, 'asc', time);
+        buyRecords.map((item, index) => {
+            if (buttonIndex > 3) {
+                xAxisData.push(dayjs(item.time).format('MM-DD'));
+            }
+            else {
+                xAxisData.push(dayjs(item.time).format('HH:mm'));
+            }
+            if (item.count > sellRecords[index].count || item.count === sellRecords[index].count) {
+                let data = {
+                    value: item.count,
+                    itemStyle: {
+                        color: '#007130'
+                    }
+                };
+                if (index === 0 || index === 9) {
+                    data.value = 0;
+                }
+                yAxisData.push(data);
+            }
+            else {
+                let data = {
+                    value: sellRecords[index].count,
+                    itemStyle: {
+                        color: '#a40000'
+                    }
+                };
+                if (index === 0 || index === 9) {
+                    data.value = 0;
+                }
+                yAxisData.push(data);
+            }
+        });
+        this.setState({
+            xAxisData,
+            yAxisData,
+            loading: false
+        });
+        this.props.getEchartsLoading();
+        this.getEchartDataTime = setTimeout(() => {
+            this.getEchartData();
+        }, intervalTime);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.getEchartDataTime);
+    }
+
+    handleButtonClick(index) {
+        // TODO 切换数据展示时间
+        const {intervalTimeList} = this.state;
+        this.setState({
+            buttonIndex: index,
+            intervalTime: intervalTimeList[index]
+        });
+    }
+
     getOption() {
+        const {xAxisData, yAxisData} = this.state;
+        let maxValue =  Math.max.apply(Math, yAxisData.map((item, index) => {
+            return item.value;
+        }));
+        if (maxValue % 2 === 0) {
+            maxValue += 10;
+        }
+        else {
+            maxValue += 11;
+        }
         let option = {
             grid: {
-                left: '0%',
-                right: '16px',
-                bottom: '16px',
-                top: '16px',
+                left: '3%',
+                right: '3%',
+                bottom: '3%',
+                top: '6%',
                 containLabel: true,
                 show: true,
                 // backgroundColor: '#1b1f6a',
@@ -41,7 +175,7 @@ export default class ResourceCurrencyChart extends PureComponent {
             xAxis: [
                 {
                     type: 'category',
-                    data: ['4:30', '4:40', '4:50', '5:00', '5:10', '5:20', '5:30', '5:40', '5:50', '6:00', '6:10', '6:20', '4:30', '4:40', '4:50', '5:00', '5:10', '5:20', '5:30', '5:40', '5:50', '6:00', '6:10', '6:20'],
+                    data: xAxisData,
                     axisLine: {
                         show: true,
                         lineStyle: {
@@ -60,15 +194,15 @@ export default class ResourceCurrencyChart extends PureComponent {
             yAxis: [
                 {
                     type: 'value',
-                    name: '买卖量',
-                    show: false,
+                    name: '占位不显示',
                     min: 0,
-                    max: 200,
+                    max: maxValue,
+                    show: false,
                     splitLine: false
                 },
                 {
                     type: 'value',
-                    name: '价格',
+                    name: '买卖量',
                     show: true,
                     label: {
                         normal: {
@@ -89,7 +223,7 @@ export default class ResourceCurrencyChart extends PureComponent {
                         }
                     },
                     min: 0,
-                    max: 500
+                    max: maxValue
                 }
             ],
             markLine: {
@@ -102,45 +236,12 @@ export default class ResourceCurrencyChart extends PureComponent {
                     name: '买卖量',
                     type: 'bar',
                     zlevel: 2,
-                    data: [{value: 0}, {value: 4.9, itemStyle: {color: '#486a00'}}, {value: 7.0, itemStyle: {color: '#158df3'}}, {value:4.9, itemStyle: {color: '#486a00'}}, {value:7.8, itemStyle: {color: '#158df3'}}, 76.7, 20.6, 40.2, 32.6, 20.0, 6.4, 0]
+                    data: yAxisData
                 }
-                // {
-                //     name: '价格',
-                //     type: 'line',
-                //     zlevel: 1,
-                //     lineStyle: {
-                //         color: '#fff'
-                //     },
-                //     areaStyle: {
-                //         color: {
-                //                 type: 'linear',
-                //                 x: 0,
-                //                 y: 0,
-                //                 x2: 0,
-                //                 y2: 1,
-                //                 colorStops: [{
-                //                     offset: 0, color: '#4169E1'
-                //                 }, {
-                //                     offset: 1, color: '#1b1f6a'
-                //                 }],
-                //                 globalCoord: false
-                //             }
-                //     },
-                //     yAxisIndex: 1,
-                //     smooth: true,
-                //     data: [100, 124, 324, 354, 365, 324, 333, 356, 354, 323, 323, 423]
-                // }
             ]
         };
 
         return option;
-    }
-
-    handleButtonClick(index) {
-        // TODO 切换数据展示时间
-        this.setState({
-            buttonIndex: index
-        });
     }
 
     selectButtonHTML() {
@@ -178,17 +279,21 @@ export default class ResourceCurrencyChart extends PureComponent {
         const selectButton = this.selectButtonHTML();
         return (
             <div className='resource-currency-chart'>
-                <div className='select-button'>
-                   {selectButton}
-                </div>
-                <ReactEchartsCore
-                    echarts={echarts}
-                    showLoading={loading}
-                    option={this.getOption()}
-                    style={{height: '574px'}}
-                    notMerge={true}
-                    lazyUpdate={true}
-                />
+                    <Spin
+                        size='large'
+                        spinning={loading}
+                    >
+                        <div className='select-button'>
+                        {selectButton}
+                        </div>
+                        <ReactEchartsCore
+                            echarts={echarts}
+                            option={this.getOption()}
+                            style={{height: '574px'}}
+                            notMerge={true}
+                            lazyUpdate={true}
+                    />
+                    </Spin>
             </div>
         );
     }
