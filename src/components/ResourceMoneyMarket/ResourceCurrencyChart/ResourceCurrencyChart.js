@@ -100,7 +100,7 @@ export default class ResourceCurrencyChart extends PureComponent {
             }
             if (item.count > sellRecords[index].count || item.count === sellRecords[index].count) {
                 let data = {
-                    value: item.count,
+                    value: item.count + sellRecords[index].count,
                     itemStyle: {
                         color: '#007130'
                     }
@@ -112,7 +112,7 @@ export default class ResourceCurrencyChart extends PureComponent {
             }
             else {
                 let data = {
-                    value: sellRecords[index].count,
+                    value: item.count + sellRecords[index].count,
                     itemStyle: {
                         color: '#a40000'
                     }
