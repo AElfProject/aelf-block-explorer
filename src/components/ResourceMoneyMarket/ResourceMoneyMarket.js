@@ -37,6 +37,9 @@ export default class ResourceMoneyMarket extends PureComponent {
 
     getMenuClick(index) {
         // TODO 切换所有模块数据源  写一个状态判断用来判断当前是哪一个数据
+        if (this.state.menuIndex === index) {
+            return;
+        }
         this.setState({
             menuIndex: index,
             loading: true,

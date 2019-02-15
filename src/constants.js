@@ -240,7 +240,7 @@ const RESOURCE_DETAILS_COLUMN  = [
         render: (text, row) => {
             let price = 0;
             const fee = Math.ceil(row.fee / 1000);
-            price = (row.resource / (row.elf - fee)).toFixed(9);
+            price = ((row.elf - fee) / row.resource).toFixed(9);
             return (
                 <Link to = {
                     `/tx/${row.tx_id}`
