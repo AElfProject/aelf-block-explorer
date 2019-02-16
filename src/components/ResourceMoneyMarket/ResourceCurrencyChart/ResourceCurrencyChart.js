@@ -31,7 +31,7 @@ export default class ResourceCurrencyChart extends PureComponent {
                 1800000,
                 3600000,
                 14400000,
-                // 86400000,
+                86400000,
                 432000000,
                 604800000
             ],
