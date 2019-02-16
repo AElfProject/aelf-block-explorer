@@ -82,7 +82,9 @@ export default class ResourceCurrencyChart extends PureComponent {
         });
         let xAxisData = [];
         let yAxisData = [];
-        const time = new Date().getTime();
+        let time = new Date().getTime();
+        time = JSON.stringify(time);
+        time = parseInt(time.substring(0, time.length - 4) + '0000', 10) + intervalTime;
         const data = await get(RESOURCE_TURNOVER, {
             limit: 20,
             page: 0,
@@ -93,10 +95,7 @@ export default class ResourceCurrencyChart extends PureComponent {
         const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'asc', time);
         const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'asc', time);
         buyRecords.map((item, index) => {
-            if (buttonIndex === 4) {
-                xAxisData.push(dayjs(item.time + intervalTime).format('MM-DD'));
-            }
-            if (buttonIndex > 5) {
+            if (buttonIndex > 3) {
                 xAxisData.push(dayjs(item.time).format('MM-DD'));
             }
             else {
