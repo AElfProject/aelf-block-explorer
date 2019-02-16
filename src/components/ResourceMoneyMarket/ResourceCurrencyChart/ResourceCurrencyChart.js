@@ -169,6 +169,12 @@ export default class ResourceCurrencyChart extends PureComponent {
                 // backgroundColor: '#1b1f6a',
                 borderWidth: 0
             },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
             legend: {
                 data: ['买卖量', '价格']
             },
