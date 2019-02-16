@@ -93,11 +93,14 @@ export default class ResourceCurrencyChart extends PureComponent {
         const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'asc', time);
         const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'asc', time);
         buyRecords.map((item, index) => {
-            if (buttonIndex > 3) {
-                xAxisData.push(dayjs(item.time).format('MM-DD'));
+            if (buttonIndex === 4) {
+                xAxisData.push(dayjs(item.time + 86400000).format('MM-DD'));
+            }
+            else if (buttonIndex > 4) {
+                xAxisData.push(dayjs(item.time).format('MM-DD') + '-' + dayjs(buyRecords[index + 1].time).format('MM-DD'));
             }
             else {
-                xAxisData.push(dayjs(item.time).format('HH:mm'));
+                xAxisData.push(dayjs(item.time).format('HH:mm') + '-' + dayjs(buyRecords[index + 1].time).format('MM-DD'));
             }
             if (item.count > sellRecords[index].count || item.count === sellRecords[index].count) {
                 let data = {
