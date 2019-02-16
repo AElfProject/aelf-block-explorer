@@ -89,13 +89,12 @@ export default class RealTimeTransactions extends PureComponent {
                 const fee = Math.ceil(item.fee / 1000);
                 return (
                     <Row className='table-sell' type='flex' align='middle' key={index}>
-                        <Link to={`/tx/${item.tx_id}`} >
-                            <Col span={4}>{date}</Col>
+                            <Col span={4}><Link to={`/tx/${item.tx_id}`} >{date}</Link></Col>
                             <Col span={3} className='sell'>sell</Col>
                             <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
                             <Col span={6}>{item.resource}</Col>
                             <Col span={6}>{item.elf}</Col>
-                        </Link>
+                        
                     </Row>
                 );
             });
@@ -109,17 +108,15 @@ export default class RealTimeTransactions extends PureComponent {
         if (recordsData) {
             data = recordsData.buyRecords || [];
             const recordsDataHtml = data.map((item, index) => {
-                const date = dayjs(item.time).format('HH:mm:ss');
+                const date = dayjs(item.time).format('HH:mm:ss.SSS');
                 const fee = Math.ceil(item.fee / 1000);
                 return (
                     <Row className='table-buy' type='flex' align='middle' key={index}>
-                        <Link to={`/tx/${item.tx_id}`} >
-                            <Col span={4}>{date}</Col>
+                            <Col span={4}><Link to={`/tx/${item.tx_id}`} >{date}</Link></Col>
                             <Col span={3} className='sell'>buy</Col>
                             <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
                             <Col span={6}>{item.resource}</Col>
                             <Col span={6}>{item.elf}</Col>
-                        </Link>
                     </Row>
                 );
             });
