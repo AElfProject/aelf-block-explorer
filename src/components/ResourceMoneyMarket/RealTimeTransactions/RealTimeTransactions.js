@@ -8,6 +8,7 @@ import {Row, Col, Divider} from 'antd';
 import {RESOURCE_REALTIME_RECORDS} from '../../../constants';
 import dayjs from 'dayjs';
 import {get} from '../../../utils';
+import {Link} from 'react-router-dom';
 // import Websocket from 'react-websocket';
 import './RealTimeTransactions.less';
 
@@ -84,15 +85,17 @@ export default class RealTimeTransactions extends PureComponent {
         if (recordsData) {
             data = recordsData.soldRecords || [];
             const recordsDataHtml = data.map((item, index) => {
-                const date = dayjs(item.time).format('HH:mm:ss');
+                const date = dayjs(item.time).format('HH:mm:ss.SSS');
                 const fee = Math.ceil(item.fee / 1000);
                 return (
                     <Row className='table-sell' type='flex' align='middle' key={index}>
-                        <Col span={4}>{date}</Col>
-                        <Col span={3} className='sell'>sell</Col>
-                        <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
-                        <Col span={6}>{item.resource}</Col>
-                        <Col span={6}>{item.elf}</Col>
+                        <Link to={`/tx/${item.tx_id}`} >
+                            <Col span={4}>{date}</Col>
+                            <Col span={3} className='sell'>sell</Col>
+                            <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
+                            <Col span={6}>{item.resource}</Col>
+                            <Col span={6}>{item.elf}</Col>
+                        </Link>
                     </Row>
                 );
             });
@@ -110,11 +113,13 @@ export default class RealTimeTransactions extends PureComponent {
                 const fee = Math.ceil(item.fee / 1000);
                 return (
                     <Row className='table-buy' type='flex' align='middle' key={index}>
-                        <Col span={4}>{date}</Col>
-                        <Col span={3} className='sell'>buy</Col>
-                        <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
-                        <Col span={6}>{item.resource}</Col>
-                        <Col span={6}>{item.elf}</Col>
+                        <Link to={`/tx/${item.tx_id}`} >
+                            <Col span={4}>{date}</Col>
+                            <Col span={3} className='sell'>buy</Col>
+                            <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
+                            <Col span={6}>{item.resource}</Col>
+                            <Col span={6}>{item.elf}</Col>
+                        </Link>
                     </Row>
                 );
             });
