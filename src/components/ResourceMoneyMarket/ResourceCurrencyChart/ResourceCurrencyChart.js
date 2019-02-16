@@ -31,6 +31,7 @@ export default class ResourceCurrencyChart extends PureComponent {
                 1800000,
                 3600000,
                 14400000,
+                86400000,
                 432000000,
                 604800000
             ],
@@ -251,7 +252,7 @@ export default class ResourceCurrencyChart extends PureComponent {
     }
 
     selectButtonHTML() {
-        const buttons = ['5min', '30min', '1hour', '4hour', '5day', '1week'];
+        const buttons = ['5 minutes', '30 minutes', '1 hours', '4 hours', '1 days', '5 days', '1 weeks'];
         const {buttonIndex} = this.state;
         const buttonsHTML = buttons.map((item, index) => {
                 if (index !== buttonIndex) {
