@@ -176,7 +176,7 @@ export default class ResourceCurrencyChart extends PureComponent {
                 }
             },
             legend: {
-                data: ['Trading volume', 'Price']
+                data: ['Total volume of business', 'Price']
             },
             xAxis: [
                 {
