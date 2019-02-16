@@ -93,7 +93,10 @@ export default class ResourceCurrencyChart extends PureComponent {
         const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'asc', time);
         const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'asc', time);
         buyRecords.map((item, index) => {
-            if (buttonIndex > 3) {
+            if (buttonIndex === 4) {
+                xAxisData.push(dayjs(item.time + intervalTime).format('MM-DD'));
+            }
+            if (buttonIndex > 5) {
                 xAxisData.push(dayjs(item.time).format('MM-DD'));
             }
             else {
@@ -253,7 +256,7 @@ export default class ResourceCurrencyChart extends PureComponent {
 
     selectButtonHTML() {
         // 'days'
-        const buttons = ['5 minutes', '30 minutes', 'hours', '4 hours', '5 days', 'weeks'];
+        const buttons = ['5 minutes', '30 minutes', 'hours', '4 hours', 'days','5 days', 'weeks'];
         const {buttonIndex} = this.state;
         const buttonsHTML = buttons.map((item, index) => {
                 if (index !== buttonIndex) {
