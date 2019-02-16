@@ -83,14 +83,14 @@ export default class ResourceCurrencyChart extends PureComponent {
         let yAxisData = [];
         const time = new Date().getTime();
         const data = await get(RESOURCE_TURNOVER, {
-            limit: 10,
+            limit: 20,
             page: 0,
             order: 'desc',
             interval: intervalTime,
             type: menuName[menuIndex]
         }) || [];
-        const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 10, 'asc', time);
-        const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 10, 'asc', time);
+        const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'asc', time);
+        const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'asc', time);
         buyRecords.map((item, index) => {
             if (buttonIndex > 3) {
                 xAxisData.push(dayjs(item.time).format('MM-DD'));
@@ -153,10 +153,10 @@ export default class ResourceCurrencyChart extends PureComponent {
             return item.value;
         }));
         if (maxValue % 2 === 0) {
-            maxValue += 10;
+            maxValue += Math.ceil(maxValue / 10);
         }
         else {
-            maxValue += 11;
+            maxValue += Math.ceil(maxValue / 10) + 1;
         }
         let option = {
             grid: {
@@ -202,7 +202,7 @@ export default class ResourceCurrencyChart extends PureComponent {
                 },
                 {
                     type: 'value',
-                    name: '买卖量',
+                    name: 'Trading volume',
                     show: true,
                     label: {
                         normal: {

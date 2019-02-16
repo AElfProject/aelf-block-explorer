@@ -115,7 +115,7 @@ export default class ResourceSellModal extends PureComponent {
                         <Col span={16}>{ELFValue}</Col>
                     </Row>
                     <div className='service-charge'>
-                        *手续费: {serviceCharge} ELF
+                        *Service Charge: {serviceCharge} ELF
                     </div>
                     <div
                         className='modal-button'
