@@ -62,7 +62,7 @@ const BLOCKS_LIST_COLUMNS = [{
         dataIndex: 'block_height',
         key: 'block_height',
         render: text => < Link to = {
-            `/ block /${text}`
+            `/block/${text}`
         } > {
             text
         } </Link>
