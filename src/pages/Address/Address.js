@@ -169,10 +169,11 @@ export default class AddressPage extends React.Component {
             txs_loading,
             balance
         } = this.state;
+        console.log(address, balance, this.state.value);
         const addressInfo = [{
             address,
             balance,
-            value: this.state.value + ' USD',
+            value: this.state.value + ' USD'
             // balance: 243.245423465331,
             // value: '$ 23.23532342'
         }];

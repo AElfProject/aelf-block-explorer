@@ -114,11 +114,11 @@ export default class ResourceBuyModal extends PureComponent {
                      spinning={this.state.loading}
                 >
                     <Row className='display-box'>
-                        <Col span={8} style={{color: '#c8c7c7'}}>地址信息</Col>
+                        <Col span={8} style={{color: '#c8c7c7'}}>Address</Col>
                         <Col span={16}>{addressOmit(currentWallet.address)}</Col>
                     </Row>
                     <Row className='display-box'>
-                        <Col span={8} style={{color: '#c8c7c7'}}>买入{menuName}数量</Col>
+                        <Col span={8} style={{color: '#c8c7c7'}}>Buy{menuName}Quantity</Col>
                         <Col span={16}>{buyNum}</Col>
                     </Row>
                     <Row className='display-box'>
