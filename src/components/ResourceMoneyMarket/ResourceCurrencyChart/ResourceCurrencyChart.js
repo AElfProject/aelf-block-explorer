@@ -82,19 +82,6 @@ export default class ResourceCurrencyChart extends PureComponent {
         });
         let xAxisData = [];
         let yAxisData = [];
-        let time = new Date();
-        if (buttonIndex > 3) {
-            time.setHours(0);
-            time.setMinutes(0);
-            time.setSeconds(0);
-            time.setMilliseconds(0);
-            time = time.getTime() + intervalTime;
-        }
-        else {
-            time = time.getTime();
-            time = JSON.stringify(time);
-            time = parseInt(time.substring(0, time.length - 4) + '0000', 10) + intervalTime;
-        }
 
         const data = await get(RESOURCE_TURNOVER, {
             limit: 20,
