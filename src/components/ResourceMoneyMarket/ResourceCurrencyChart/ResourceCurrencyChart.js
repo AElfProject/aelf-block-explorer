@@ -103,14 +103,15 @@ export default class ResourceCurrencyChart extends PureComponent {
             interval: intervalTime,
             type: menuName[menuIndex]
         }) || [];
-        const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'asc', time);
-        const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'asc', time);
+        const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'des');
+        const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'des');
+
         buyRecords.map((item, index) => {
             if (buttonIndex > 3) {
-                xAxisData.push(dayjs(item.time).format('MM-DD'));
+                xAxisData.push(dayjs(item.date).format('MM-DD'));
             }
             else {
-                xAxisData.push(dayjs(item.time).format('HH:mm'));
+                xAxisData.push(dayjs(item.date).format('HH:mm'));
             }
             if (item.count > sellRecords[index].count || item.count === sellRecords[index].count) {
                 let data = {
@@ -145,7 +146,7 @@ export default class ResourceCurrencyChart extends PureComponent {
         this.props.getEchartsLoading();
         this.getEchartDataTime = setTimeout(() => {
             this.getEchartData();
-        }, intervalTime);
+        }, 300000);
     }
 
     componentWillUnmount() {
@@ -266,7 +267,7 @@ export default class ResourceCurrencyChart extends PureComponent {
 
     selectButtonHTML() {
         // 'days'
-        const buttons = ['5 minutes', '30 minutes', 'hours', '4 hours', 'days','5 days', 'weeks'];
+        const buttons = ['5 minutes', '30 minutes', 'hours', '4 hours', 'days', '5 days', 'weeks'];
         const {buttonIndex} = this.state;
         const buttonsHTML = buttons.map((item, index) => {
                 if (index !== buttonIndex) {
