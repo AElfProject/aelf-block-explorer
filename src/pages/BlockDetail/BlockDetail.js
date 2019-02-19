@@ -33,7 +33,6 @@ export default class BlockDetailPage extends React.Component {
             txsCount: 0,
             blockHash: '',
             blockTime: 0,
-
             txs: [],
             pagination: {
                 pageSize: 5,
@@ -44,10 +43,10 @@ export default class BlockDetailPage extends React.Component {
         };
     }
 
-    async getTxsList(blockhash) {
+    async getTxsList(blockhash, page) {
         let getTxsOption = {
             limit: 5,
-            page: 0,
+            page: page || 0,
             order: 'asc',
             block_hash: blockhash
         };
@@ -134,17 +133,16 @@ export default class BlockDetailPage extends React.Component {
     }
 
     handleTableChange = pagination => {
-        const pager = { ...this.state.pagination
+        const pager = {...this.state.pagination
         };
         pager.current = pagination.current;
         this.setState({
             pagination: pager
         });
-
-        this.fetch({
-            limit: pagination.pageSize,
-            page: pagination.current - 1,
-            address: this.props.match.params.id
+        const {blockInfo} = this.state;
+        const tsx = this.getTxsList(blockInfo.blockHash, pagination.current - 1);
+        this.setState({
+            tsx
         });
     }
 
