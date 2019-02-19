@@ -67,18 +67,18 @@ export default class ResourceCurrencyChart extends PureComponent {
     componentDidUpdate(prevProps, prevStates) {
         if (prevStates.buttonIndex !== this.state.buttonIndex) {
             clearTimeout(this.getEchartDataTime);
-            this.getEchartData();
+            this.getEchartData(true);
         }
         if (prevProps.menuIndex !== this.props.menuIndex) {
             clearTimeout(this.getEchartDataTime);
-            this.getEchartData();
+            this.getEchartData(false);
         }
     }
 
-    async getEchartData() {
+    async getEchartData(bool) {
         const {intervalTime, menuIndex, menuName, buttonIndex} = this.state;
         this.setState({
-            loading: true
+            loading: bool
         });
         let xAxisData = [];
         let yAxisData = [];
@@ -107,9 +107,6 @@ export default class ResourceCurrencyChart extends PureComponent {
                         color: '#007130'
                     }
                 };
-                // if (index === 0 || index === 9) {
-                //     data.value = 0;
-                // }
                 yAxisData.push(data);
             }
             else {
@@ -119,9 +116,6 @@ export default class ResourceCurrencyChart extends PureComponent {
                         color: '#a40000'
                     }
                 };
-                // if (index === 0 || index === 9) {
-                //     data.value = 0;
-                // }
                 yAxisData.push(data);
             }
         });
