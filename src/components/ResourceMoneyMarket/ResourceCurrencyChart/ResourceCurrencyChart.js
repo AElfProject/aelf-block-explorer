@@ -241,7 +241,7 @@ export default class ResourceCurrencyChart extends PureComponent {
             },
             series: [
                 {
-                    name: '买卖量',
+                    name: 'Total volume of business',
                     type: 'bar',
                     zlevel: 2,
                     data: yAxisData
