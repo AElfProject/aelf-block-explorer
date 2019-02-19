@@ -140,9 +140,10 @@ export default class BlockDetailPage extends React.Component {
             pagination: pager
         });
         const {blockInfo} = this.state;
-        const tsx = this.getTxsList(blockInfo.blockHash, pagination.current - 1);
-        this.setState({
-            tsx
+        this.getTxsList(blockInfo.blockHash, pagination.current - 1).then(result => {
+            this.setState({
+                txs: result.transactions
+            });
         });
     }
 
@@ -232,7 +233,7 @@ export default class BlockDetailPage extends React.Component {
 
         let moreInfoHtml;
         let colsHtml;
-
+        console.log('aaa');
         if (error) {
             colsHtml = this.renderCol('error', error);
         } else {
