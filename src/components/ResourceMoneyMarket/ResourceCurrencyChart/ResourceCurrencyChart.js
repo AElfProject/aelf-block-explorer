@@ -107,9 +107,9 @@ export default class ResourceCurrencyChart extends PureComponent {
                         color: '#007130'
                     }
                 };
-                if (index === 0 || index === 9) {
-                    data.value = 0;
-                }
+                // if (index === 0 || index === 9) {
+                //     data.value = 0;
+                // }
                 yAxisData.push(data);
             }
             else {
@@ -119,9 +119,9 @@ export default class ResourceCurrencyChart extends PureComponent {
                         color: '#a40000'
                     }
                 };
-                if (index === 0 || index === 9) {
-                    data.value = 0;
-                }
+                // if (index === 0 || index === 9) {
+                //     data.value = 0;
+                // }
                 yAxisData.push(data);
             }
         });
