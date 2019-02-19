@@ -31,12 +31,12 @@ export default class BlockDetailPage extends React.Component {
         this.state = {
             blockHeight: -1,
             txsCount: 0,
-            blockHash: "",
+            blockHash: '',
             blockTime: 0,
 
             txs: [],
             pagination: {
-                pageSize: PAGE_SIZE,
+                pageSize: 5,
                 showQuickJumper: true,
                 showTotal: total => `Total ${total} items`
             },
