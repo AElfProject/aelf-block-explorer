@@ -173,8 +173,8 @@ export default class BlockDetailPage extends React.Component {
         // Because of the 'float'? I do not clear it.
         return (
             <Row key={key + Math.random()}>
-                <Col span={6}>{formatKey(key)}</Col>
-                <Col span={18}><div>{value}</div></Col>
+                <Col span={8}>{formatKey(key)}</Col>
+                <Col span={16}><div>{value}</div></Col>
             </Row>
         );
     }
