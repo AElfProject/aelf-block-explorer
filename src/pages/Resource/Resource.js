@@ -87,7 +87,7 @@ export default class Resource extends Component {
                                 publicKey: ''
                             };
                             localStorage.setItem('currentWallet', JSON.stringify(wallet));
-                            message.error(result.errorMessage.message, 5);
+                            message.warning(result.errorMessage.message, 5);
                             showWallet = false;
                         }
                         else if (result.addressList.length !== 0) {

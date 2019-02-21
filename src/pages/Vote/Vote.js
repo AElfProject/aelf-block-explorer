@@ -109,7 +109,7 @@ export default class VotePage extends Component {
                             publicKey: ''
                         };
                         localStorage.setItem('currentWallet', JSON.stringify(wallet));
-                        message.error(result.errorMessage.message, 5);
+                        message.warning(result.errorMessage.message, 5);
                         showWallet = false;
                     }
                     else if (result.addressList.length !== 0) {
@@ -211,6 +211,12 @@ export default class VotePage extends Component {
         return <DownloadPlugins />;
     }
 
+    hideWallet() {
+        this.setState({
+            showWallet: false
+        });
+    }
+
     getAElfWallet() {
         const {showWallet, walletInfoList, consensus, dividends, tokenContract, contracts} = this.state;
         if (showWallet) {
@@ -218,6 +224,7 @@ export default class VotePage extends Component {
                 title='AElf Wallet'
                 walletInfoList={walletInfoList}
                 getCurrentWallet={this.getCurrentWallet.bind(this)}
+                hideWallet={this.hideWallet.bind(this)}
                 consensus={consensus}
                 dividends={dividends}
                 contracts={contracts}

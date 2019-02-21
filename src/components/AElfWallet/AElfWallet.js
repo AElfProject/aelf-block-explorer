@@ -399,6 +399,7 @@ export default class AElfWallet extends PureComponent {
                     this.setState({
                         loading: false
                     });
+                    this.props.hideWallet();
                 }
                 else {
                     localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
