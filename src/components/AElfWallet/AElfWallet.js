@@ -231,6 +231,13 @@ export default class AElfWallet extends PureComponent {
     toAllDividends(result) {
         const {contracts} = this.state;
         const currentWallet = JSON.parse(localStorage.currentWallet);
+        if (result.error === 200005) {
+            message.warning(result.errorMessage.message, 5);
+            this.setState({
+                loading: false
+            });
+            this.props.hideWallet();
+        }
         if (result.permissions.length === 0) {
             this.initContract(result);
         }
@@ -373,7 +380,7 @@ export default class AElfWallet extends PureComponent {
                 });
             }
             else {
-                message.error(result.errorMessage.message, 5);
+                message.warning(result.errorMessage.message, 5);
             }
         });
     }
@@ -395,7 +402,7 @@ export default class AElfWallet extends PureComponent {
                 method: 'GET_ADDRESS'
             }).then(result => {
                 if (result.error === 200005) {
-                    message.error(result.errorMessage.message, 5);
+                    message.warning(result.errorMessage.message, 5);
                     this.setState({
                         loading: false
                     });
