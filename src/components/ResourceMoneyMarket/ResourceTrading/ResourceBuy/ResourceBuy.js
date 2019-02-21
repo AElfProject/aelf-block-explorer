@@ -247,6 +247,10 @@ export default class ResourceBuy extends Component {
                 address: currentWallet.address
             }).then(result => {
                 console.log('1>>>>>>>>>>>>>', result);
+                if (result.error === 200005) {
+                    message.warning(result.message, 3);
+                    return;
+                }
                 if (result.permissions.length === 0) {
                     window.NightElf.api({
                         appName: 'hzzTest',
@@ -281,7 +285,6 @@ export default class ResourceBuy extends Component {
                             }
                         }
                     }).then(result => {
-                        console.log(result);
                         if (result.error === 0) {
                             if (value && value !== 0) {
                                 this.props.handleBuyModalShow(value, ELFValue);

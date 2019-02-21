@@ -214,6 +214,10 @@ export default class ResourceSell extends Component {
                 type: 'address', // if you did not set type, it aways get by domain.
                 address: currentWallet.address
             }).then(result => {
+                if (result.error === 200005) {
+                    message.warning(result.message, 3);
+                    return;
+                }
                 if (result.permissions.length === 0) {
                     window.NightElf.api({
                         appName: 'hzzTest',

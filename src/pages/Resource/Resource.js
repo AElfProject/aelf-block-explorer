@@ -21,10 +21,10 @@ export default class Resource extends Component {
         super(props);
         this.informationTimer;
         let wallet = null;
-        if (localStorage.currentWallet) {
+        if (localStorage.currentWallet == null) {
             wallet = {
                 address: '',
-                walletName: '',
+                name: '',
                 privateKey: commonPrivateKey,
                 publicKey: ''
             };
@@ -82,7 +82,7 @@ export default class Resource extends Component {
                         if (result.error === 200005) {
                             let wallet = {
                                 address: '',
-                                walletName: '',
+                                name: '',
                                 privateKey: commonPrivateKey,
                                 publicKey: ''
                             };
@@ -92,10 +92,10 @@ export default class Resource extends Component {
                         }
                         else if (result.addressList.length !== 0) {
                             localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
-                            if (localStorage.currentWallet === undefined) {
+                            if (localStorage.getItem('currentWallet') === null) {
                                 localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
                             }
-                            if (JSON.parse(localStorage.currentWallet).publicKey === '') {
+                            if (JSON.parse(localStorage.getItem('currentWallet')).name === '') {
                                 localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
                             }
                             showWallet = true;
@@ -103,11 +103,12 @@ export default class Resource extends Component {
                         else {
                             let wallet = {
                                 address: '',
-                                walletName: '',
+                                name: '',
                                 privateKey: commonPrivateKey,
                                 publicKey: ''
                             };
                             localStorage.setItem('currentWallet', JSON.stringify(wallet));
+                            localStorage.setItem('walletInfoList', '');
                             showWallet = false;
                         }
                         this.setState({
@@ -170,8 +171,49 @@ export default class Resource extends Component {
     }
 
     onRefresh() {
-        this.setState({
-            loading: true
+        let {showWallet} = this.state;
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'GET_ADDRESS'
+        }).then(result => {
+            if (result.error === 200005) {
+                let wallet = {
+                    address: '',
+                    name: '',
+                    privateKey: commonPrivateKey,
+                    publicKey: ''
+                };
+                localStorage.setItem('currentWallet', JSON.stringify(wallet));
+                message.error(result.errorMessage.message, 5);
+                showWallet = false;
+            }
+            else if (result.addressList.length !== 0) {
+                localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
+                if (localStorage.getItem('currentWallet') === null) {
+                    localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
+                }
+                if (JSON.parse(localStorage.getItem('currentWallet')).name === '') {
+                    localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
+                }
+                showWallet = true;
+            }
+            else {
+                let wallet = {
+                    address: '',
+                    name: '',
+                    privateKey: commonPrivateKey,
+                    publicKey: ''
+                };
+                localStorage.setItem('currentWallet', JSON.stringify(wallet));
+                localStorage.setItem('walletInfoList', '');
+                showWallet = false;
+            }
+            this.setState({
+                showWallet,
+                currentWallet: JSON.parse(localStorage.currentWallet),
+                walletInfoList: result.addressList,
+                loading: true
+            });
         });
     }
 

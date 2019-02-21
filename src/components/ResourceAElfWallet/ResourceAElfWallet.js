@@ -152,6 +152,11 @@ export default class ResourceAElfWallet extends PureComponent {
         });
     }
 
+    componentWillUnmount() {
+        this.state = {};
+        this.setState = () => {};
+    }
+
     accountListHTML() {
         const {walletInfoList} = this.state;
         let walletHTMl = walletInfoList.map((item, index) =>

@@ -8,7 +8,7 @@ import Scrollbar from "react-smooth-scrollbar";
 
 SmoothScrollbar.use(OverscrollPlugin);
 
-import "./infoList.styles.less";
+import './infoList.styles.less';
 
 export default class InfoList extends React.PureComponent {
     constructor(props) {
