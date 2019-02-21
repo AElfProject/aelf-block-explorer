@@ -333,8 +333,11 @@ export default class MyVote extends PureComponent {
                             }
                         });
                     }
+                    else if (result.error === 200005) {
+                        message.warning(result.errorMessage.message, 3);
+                    }
                     else {
-                        message.error(result.errorMessage, 3);
+                        message.error(result.errorMessage.message, 3);
                     }
                 });
             }
