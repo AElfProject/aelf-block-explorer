@@ -50,8 +50,8 @@ export default class ResourceCurrencyChart extends PureComponent {
         };
     }
 
-    componentDidMount() {
-        this.getEchartData();
+    async componentDidMount() {
+        await this.getEchartData();
     }
 
     static getDerivedStateFromProps(props, state) {

@@ -104,7 +104,7 @@ export default class VotePage extends Component {
                     if (result.error === 200005) {
                         let wallet = {
                             address: '',
-                            walletName: '',
+                            name: '',
                             privateKey: commonPrivateKey,
                             publicKey: ''
                         };
@@ -117,7 +117,7 @@ export default class VotePage extends Component {
                         if (localStorage.currentWallet === undefined) {
                             localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
                         }
-                        if (JSON.parse(localStorage.currentWallet).publicKey === '') {
+                        if (JSON.parse(localStorage.currentWallet).name === '') {
                             localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
                         }
                         showWallet = true;
@@ -125,7 +125,7 @@ export default class VotePage extends Component {
                     else {
                         let wallet = {
                             address: '',
-                            walletName: '',
+                            name: '',
                             privateKey: commonPrivateKey,
                             publicKey: ''
                         };
