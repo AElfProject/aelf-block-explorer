@@ -156,6 +156,10 @@ export default class MyVote extends PureComponent {
             type: 'address', // if you did not set type, it aways get by domain.
             address: currentWallet.address
         }).then(result => {
+            if (result.error === 200005) {
+                message.warning(result.errorMessage.message, 3);
+                return;
+            }
             if (result.permissions.length === 0) {
                 window.NightElf.api({
                     appName: 'hzzTest',
@@ -279,6 +283,10 @@ export default class MyVote extends PureComponent {
             type: 'address', // if you did not set type, it aways get by domain.
             address: currentWallet.address
         }).then(result => {
+            if (result.error === 200005) {
+                message.warning(result.errorMessage, 3);
+                return;
+            }
             if (result.permissions.length === 0) {
                 window.NightElf.api({
                     appName: 'hzzTest',
@@ -326,7 +334,7 @@ export default class MyVote extends PureComponent {
                         });
                     }
                     else {
-                        message.error(result.errorMessage, 5);
+                        message.error(result.errorMessage, 3);
                     }
                 });
             }

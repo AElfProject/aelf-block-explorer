@@ -359,6 +359,10 @@ export default class VoteTable extends PureComponent {
             type: 'address', // if you did not set type, it aways get by domain.
             address: currentWallet.address
         }).then(result => {
+            if (result.error === 200005) {
+                message.warning(result.errorMessage.message, 3);
+                return;
+            }
             if (result.permissions.length === 0) {
                 window.NightElf.api({
                     appName: 'hzzTest',
@@ -423,7 +427,7 @@ export default class VoteTable extends PureComponent {
                         });
                     }
                     else {
-                        message.error(result.errorMessage.message, 5);
+                        message.error(result.errorMessage.message, 3);
                     }
                 });
             }

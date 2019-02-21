@@ -248,7 +248,7 @@ export default class ResourceBuy extends Component {
             }).then(result => {
                 console.log('1>>>>>>>>>>>>>', result);
                 if (result.error === 200005) {
-                    message.warning(result.message, 3);
+                    message.warning(result.errorMessage.message, 3);
                     return;
                 }
                 if (result.permissions.length === 0) {
@@ -291,7 +291,7 @@ export default class ResourceBuy extends Component {
                             }
                         }
                         else {
-                            message.error(result.errorMessage.message, 5);
+                            message.error(result.errorMessage.message, 3);
                         }
                     });
                 }
