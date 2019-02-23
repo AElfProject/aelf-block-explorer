@@ -283,7 +283,7 @@ export default class MyVote extends PureComponent {
             type: 'address', // if you did not set type, it aways get by domain.
             address: currentWallet.address
         }).then(result => {
-            if (result.error === 200005) {
+            if (result.error !== 0) {
                 message.warning(result.errorMessage, 3);
                 return;
             }

@@ -79,7 +79,7 @@ export default class Resource extends Component {
                         appName: 'hzzTest',
                         method: 'GET_ADDRESS'
                     }).then(result => {
-                        if (result.error === 200005) {
+                        if (result.error !== 0) {
                             let wallet = {
                                 address: '',
                                 name: '',
@@ -91,13 +91,11 @@ export default class Resource extends Component {
                             showWallet = false;
                         }
                         else if (result.addressList.length !== 0) {
-                            console.log('aaaa');
                             localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
                             if (localStorage.getItem('currentWallet') === null) {
                                 localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
                             }
                             if (JSON.parse(localStorage.getItem('currentWallet')).name === '') {
-                                console.log('aaaa');
                                 localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
                             }
                             showWallet = true;

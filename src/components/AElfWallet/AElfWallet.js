@@ -231,7 +231,7 @@ export default class AElfWallet extends PureComponent {
     toAllDividends(result) {
         const {contracts} = this.state;
         const currentWallet = JSON.parse(localStorage.currentWallet);
-        if (result.error === 200005) {
+        if (result.error !== 0) {
             message.warning(result.errorMessage.message, 5);
             this.setState({
                 loading: false
@@ -401,7 +401,7 @@ export default class AElfWallet extends PureComponent {
                 appName: 'hzzTest',
                 method: 'GET_ADDRESS'
             }).then(result => {
-                if (result.error === 200005) {
+                if (result.error !== 0) {
                     message.warning(result.errorMessage.message, 5);
                     this.setState({
                         loading: false

@@ -247,7 +247,7 @@ export default class ResourceBuy extends Component {
                 address: currentWallet.address
             }).then(result => {
                 console.log('1>>>>>>>>>>>>>', result);
-                if (result.error === 200005) {
+                if (result.error !== 0) {
                     message.warning(result.errorMessage.message, 3);
                     return;
                 }

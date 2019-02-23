@@ -214,7 +214,7 @@ export default class ResourceSell extends Component {
                 type: 'address', // if you did not set type, it aways get by domain.
                 address: currentWallet.address
             }).then(result => {
-                if (result.error === 200005) {
+                if (result.error !== 0) {
                     message.warning(result.errorMessage.message, 3);
                     return;
                 }

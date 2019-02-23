@@ -101,7 +101,7 @@ export default class VotePage extends Component {
                     method: 'GET_ADDRESS'
                 }).then(result => {
                     let showWallet = null;
-                    if (result.error === 200005) {
+                    if (result.error !== 0) {
                         let wallet = {
                             address: '',
                             name: '',
