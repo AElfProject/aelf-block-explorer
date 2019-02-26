@@ -25,7 +25,8 @@ export default class ResourceSellModal extends PureComponent {
             serviceCharge: 0,
             menuName: this.props.menuName,
             loading: false,
-            ELFValue: null
+            ELFValue: null,
+            nightElf: this.props.nightElf
         };
     }
 
@@ -43,53 +44,43 @@ export default class ResourceSellModal extends PureComponent {
     }
 
     getSellRes() {
-        const {currentWallet, menuName, sellNum} = this.state;
+        const {currentWallet, nightElf} = this.state;
         this.props.maskClosable();
+        const wallet = {
+            address: currentWallet.address
+        };
         this.setState({
             loading: true
         });
-        window.NightElf.api({
-            appName: 'hzzTest',
-            method: 'INIT_AELF_CONTRACT',
-            // hostname: 'aelf.io',
-            chainId: 'AELF',
-            payload: {
-                address: currentWallet.address,
-                contractName: 'resource',
-                contractAddress: resourceAddress
+        nightElf.chain.contractAtAsync(
+            resourceAddress,
+            wallet,
+            (err, result) => {
+                if (result) {
+                    this.requestSell(result);
+                }
             }
-        }).then(result => {
-            if (result.error === 0) {
-                window.NightElf.api({
-                    appName: 'hzzTest',
-                    method: 'CALL_AELF_CONTRACT',
-                    hostname: 'aelf.io',
-                    chainId: 'AELF',
-                    payload: {
-                        contractName: 'resource',
-                        contractAddress: resourceAddress,
-                        method: 'SellResource',
-                        params: [menuName, sellNum]
-                    }
-                }).then(result => {
-                    console.log('>>>>>>>>>>>>>>>>>>>', result);
-                    if (result.error === 0) {
-                        setTimeout(() => {
-                            aelf.chain.getTxResult(result.result.hash, (error, result) => {
-                                getStateJudgment(result.result.tx_status, result.result.tx_info.TxId);
-                                this.props.onRefresh();
-                                this.setState({
-                                    loading: false
-                                });
-                                this.props.handleCancel();
-                                this.props.unMaskClosable();
-                            });
-                        }, 4000);
-                    }
-                });
+        );
+    }
+
+    requestSell(result) {
+        const {menuName, sellNum} = this.state;
+        result.SellResource(menuName, sellNum, (error, result) => {
+            if (result) {
+                setTimeout(() => {
+                    aelf.chain.getTxResult(result.hash, (error, result) => {
+                        getStateJudgment(result.result.tx_status, result.result.tx_info.TxId);
+                        this.props.onRefresh();
+                        this.setState({
+                            loading: false
+                        });
+                        this.props.handleCancel();
+                        this.props.unMaskClosable();
+                    });
+                }, 4000);
             }
             else {
-                message.error(result.errorMessage.message, 5);
+                message.error('Purchase failure', 5);
             }
         });
     }

@@ -27,6 +27,7 @@ export default class ResourceTrading extends PureComponent {
             tokenContract: null,
             ELFValue: 0,
             maskClosable: true,
+            nightElf: this.props.nightElf,
             account: {
                 balabce: 0,
                 CPU: 0,
@@ -41,6 +42,12 @@ export default class ResourceTrading extends PureComponent {
         if (props.currentWallet !== state.currentWallet) {
             return {
                 currentWallet: props.currentWallet
+            };
+        }
+
+        if (props.nightElf !== state.nightElf) {
+            return {
+                nightElf: props.nightElf
             };
         }
 
@@ -125,7 +132,8 @@ export default class ResourceTrading extends PureComponent {
             menuName,
             ELFValue,
             account,
-            maskClosable
+            maskClosable,
+            nightElf
         } = this.state;
         return (
             <div className='resource-trading'>
@@ -178,6 +186,7 @@ export default class ResourceTrading extends PureComponent {
                         onRefresh={this.props.onRefresh}
                         maskClosable={this.modalMaskClosable.bind(this)}
                         unMaskClosable={this.modalUnMaskClosable.bind(this)}
+                        nightElf={nightElf}
                     />
                 </Modal>
                 <Modal
@@ -201,6 +210,7 @@ export default class ResourceTrading extends PureComponent {
                         onRefresh={this.props.onRefresh}
                         maskClosable={this.modalMaskClosable.bind(this)}
                         unMaskClosable={this.modalUnMaskClosable.bind(this)}
+                        nightElf={nightElf}
                     />
                 </Modal>
             </div>

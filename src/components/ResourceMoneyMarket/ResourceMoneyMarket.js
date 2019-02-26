@@ -25,6 +25,7 @@ export default class ResourceMoneyMarket extends PureComponent {
             loading: false,
             echartsLoading: false,
             realTimeTransactionLoaidng: false,
+            nightElf: this.props.nightElf,
             account: {
                 balabce: 0,
                 CPU: 0,
@@ -70,6 +71,12 @@ export default class ResourceMoneyMarket extends PureComponent {
         if (props.currentWallet !== state.currentWallet) {
             return {
                 currentWallet: props.currentWallet
+            };
+        }
+
+        if (props.nightElf !== state.nightElf) {
+            return {
+                nightElf: props.nightElf
             };
         }
 
@@ -125,7 +132,7 @@ export default class ResourceMoneyMarket extends PureComponent {
     render() {
         const menu = this.getMenuHTML();
         const {menuIndex, currentWallet, contracts, resourceContract, tokenContract, account} = this.state;
-        const {realTimeTransactionLoaidng, echartsLoading} = this.state;
+        const {realTimeTransactionLoaidng, echartsLoading, nightElf} = this.state;
         let loading = true;
         if (!realTimeTransactionLoaidng && !echartsLoading) {
             loading = false;
@@ -168,6 +175,7 @@ export default class ResourceMoneyMarket extends PureComponent {
                                     account={account}
                                     onRefresh={this.props.onRefresh}
                                     endRefresh={this.props.endRefresh}
+                                    nightElf={nightElf}
                                 />
                             </Col>
                             <Col

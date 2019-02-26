@@ -97,7 +97,7 @@ export default class VotePage extends Component {
             if (item) {
                 nightElf = new window.NightElf.AElf({
                     httpProvider,
-                    appName: 'AELF.io'
+                    appName: 'aelf.io' // TODO: 这个需要content.js 主动获取
                 });
                 if (nightElf) {
                     this.setState({
