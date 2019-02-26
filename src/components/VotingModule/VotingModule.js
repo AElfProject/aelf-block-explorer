@@ -35,7 +35,8 @@ export default class VotingModule extends PureComponent {
             refresh: 0,
             isRefresh: false,
             consensus: null,
-            contracts: null
+            contracts: null,
+            nightElf: this.props.nightElf
         };
     }
 
@@ -55,6 +56,12 @@ export default class VotingModule extends PureComponent {
         if (props.contracts !== state.contracts) {
             return {
                 contracts: props.contracts
+            };
+        }
+
+        if (props.nightElf !== state.nightElf) {
+            return {
+                nightElf: props.nightElf
             };
         }
 
@@ -205,7 +212,7 @@ export default class VotingModule extends PureComponent {
     }
 
     render() {
-        const {isVote, isRedeem, contracts} = this.state;
+        const {isVote, isRedeem, contracts, nightElf} = this.state;
         const voteTable = this.getVoteTable();
         const myVote = this.getMyVote();
         const votingRecord = this.getVotingRecord();
@@ -282,6 +289,7 @@ export default class VotingModule extends PureComponent {
                         handleClose={this.handleClose.bind(this)}
                         onRefresh={this.onRefresh.bind(this)}
                         contracts={contracts}
+                        nightElf={nightElf}
                     />
                 </Modal>
                 <Modal
@@ -292,6 +300,7 @@ export default class VotingModule extends PureComponent {
                     destroyOnClose={true}
                 >
                     <Redeem
+                        nightElf={nightElf}
                         nodeName={this.state.nodeName}
                         publicKey={this.state.publicKey}
                         handleClose={this.handleClose.bind(this)}

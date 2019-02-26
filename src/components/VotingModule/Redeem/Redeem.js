@@ -21,7 +21,9 @@ export default class Redeem extends PureComponent {
             myVote: null,
             password: null,
             loading: false,
-            contracts: this.props.contracts
+            contracts: this.props.contracts,
+            nightElf: this.props.nightElf,
+            currentWallet: JSON.parse(localStorage.currentWallet)
         };
     }
 
@@ -37,33 +39,40 @@ export default class Redeem extends PureComponent {
     }
 
     getSubmit() {
-        const {txId, contracts} = this.state;
-        window.NightElf.api({
-            appName: 'hzzTest',
-            method: 'CALL_AELF_CONTRACT',
-            chainId: 'AELF',
-            payload: {
-                contractName: 'consensus',
-                contractAddress: contracts.CONSENSUSADDRESS,
-                method: 'WithdrawByTransactionId',
-                params: [txId]
-            }
-        }).then(result => {
-            console.log(result);
-            this.setState({
-                loading: true
-            });
-            setTimeout(() => {
-                const state = aelf.chain.getTxResult(result.result.hash);
-                if (state.result.tx_status === 'Mined') {
-                    this.props.onRefresh();
+        const {contracts, nightElf, currentWallet} = this.state;
+        const wallet = {
+            address: currentWallet.address
+        };
+        nightElf.chain.contractAtAsync(
+            contracts.CONSENSUSADDRESS,
+            wallet,
+            (err, result) => {
+                if (result) {
+                    this.getRedeem(result);
                 }
-                getStateJudgment(state.result.tx_status, result.result.hash);
+            }
+        );
+    }
+
+    getRedeem(result) {
+        const {txId} = this.state;
+        result.WithdrawByTransactionId(txId, (error, result) => {
+            if (result) {
                 this.setState({
-                    loading: false
+                    loading: true
                 });
-                this.props.handleClose();
-            }, 4000);
+                setTimeout(() => {
+                    const state = aelf.chain.getTxResult(result.hash);
+                    if (state.result.tx_status === 'Mined') {
+                        this.props.onRefresh();
+                    }
+                    getStateJudgment(state.result.tx_status, result.hash);
+                    this.setState({
+                        loading: false
+                    });
+                    this.props.handleClose();
+                }, 4000);
+            }
         });
     }
 

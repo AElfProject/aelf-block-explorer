@@ -19,6 +19,8 @@ import getHexNumber from '../../utils/getHexNumber';
 import getContractAddress from '../../utils/getContractAddress';
 import NightElfCheck from '../../utils/NightElfCheck';
 import './Vote.styles.less';
+
+let nightElf;
 export default class VotePage extends Component {
 
     // currenrWallet 默认应该取第一个钱包 因为 Wallet 和 VoteList 都需要钱包的信息
@@ -58,12 +60,14 @@ export default class VotePage extends Component {
             dividends: null,
             tokenContract: null,
             showDownloadPlugins: false,
-            showWallet: false
+            showWallet: false,
+            nightElf: null
         };
     }
 
     componentDidMount() {
         let httpProvider = DEFAUTRPCSERVER;
+        // getContract
         getContractAddress().then(result => {
             this.setState({
                 contracts: result
@@ -87,58 +91,25 @@ export default class VotePage extends Component {
                 });
             });
         });
+
+        // getExtensionKeypairList
         NightElfCheck.getInstance().check.then(item => {
-            window.NightElf.api({
-                appName: 'hzzTest',
-                method: 'CONNECT_AELF_CHAIN',
-                hostname: 'aelf.io', // TODO: 这个需要content.js 主动获取
-                payload: {
-                    httpProvider
-                }
-            }).then(result => {
-                window.NightElf.api({
-                    appName: 'hzzTest',
-                    method: 'GET_ADDRESS'
-                }).then(result => {
-                    let showWallet = null;
-                    if (result.error !== 0) {
-                        let wallet = {
-                            address: '',
-                            name: '',
-                            privateKey: commonPrivateKey,
-                            publicKey: ''
-                        };
-                        localStorage.setItem('currentWallet', JSON.stringify(wallet));
-                        message.warning(result.errorMessage.message, 5);
-                        showWallet = false;
-                    }
-                    else if (result.addressList.length !== 0) {
-                        localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
-                        if (localStorage.currentWallet === undefined) {
-                            localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
-                        }
-                        if (JSON.parse(localStorage.currentWallet).name === '') {
-                            localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
-                        }
-                        showWallet = true;
-                    }
-                    else {
-                        let wallet = {
-                            address: '',
-                            name: '',
-                            privateKey: commonPrivateKey,
-                            publicKey: ''
-                        };
-                        localStorage.setItem('currentWallet', JSON.stringify(wallet));
-                        showWallet = false;
-                    }
-                    this.setState({
-                        showWallet,
-                        currentWallet: JSON.parse(localStorage.currentWallet),
-                        walletInfoList: result.addressList
-                    });
+            if (item) {
+                nightElf = new window.NightElf.AElf({
+                    httpProvider,
+                    appName: 'AELF.io'
                 });
-            });
+                if (nightElf) {
+                    this.setState({
+                        nightElf
+                    });
+                    nightElf.chain.connectChain((error, result) => {
+                        if (result) {
+                            this.getNightElfKeypairList();
+                        }
+                    });
+                }
+            }
         }).catch(error => {
             this.setState({
                 showDownloadPlugins: true
@@ -150,6 +121,7 @@ export default class VotePage extends Component {
         clearTimeout(this.informationTimer);
         this.setState = () => {};
     }
+
 
     getInformation(consensus) {
         const {information} = this.state;
@@ -182,6 +154,63 @@ export default class VotePage extends Component {
         }, 60000);
     }
 
+    getNightElfKeypairList() {
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'GET_ADDRESS'
+        }).then(result => {
+            let showWallet = null;
+            if (result.error !== 0) {
+                let wallet = {
+                    address: '',
+                    name: '',
+                    privateKey: commonPrivateKey,
+                    publicKey: ''
+                };
+                localStorage.setItem('currentWallet', JSON.stringify(wallet));
+                message.warning(result.errorMessage.message, 5);
+                showWallet = false;
+            }
+            else if (result.addressList.length !== 0) {
+                localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
+                if (localStorage.currentWallet === undefined) {
+                    localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
+                }
+                if (JSON.parse(localStorage.currentWallet).name === '') {
+                    localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
+                }
+                showWallet = true;
+            }
+            else {
+                let wallet = {
+                    address: '',
+                    name: '',
+                    privateKey: commonPrivateKey,
+                    publicKey: ''
+                };
+                localStorage.setItem('currentWallet', JSON.stringify(wallet));
+                showWallet = false;
+            }
+            this.setState({
+                showWallet,
+                currentWallet: JSON.parse(localStorage.currentWallet),
+                walletInfoList: result.addressList
+            });
+        });
+    }
+
+    hideWallet() {
+        this.setState({
+            showWallet: false
+        });
+    }
+
+    getCurrentWallet() {
+        this.setState({
+            currentWallet: JSON.parse(localStorage.currentWallet)
+        });
+    }
+
     renderVoteInformation() {
         const VoteHtml = this.state.information.map(item =>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}
@@ -211,14 +240,8 @@ export default class VotePage extends Component {
         return <DownloadPlugins />;
     }
 
-    hideWallet() {
-        this.setState({
-            showWallet: false
-        });
-    }
-
     getAElfWallet() {
-        const {showWallet, walletInfoList, consensus, dividends, tokenContract, contracts} = this.state;
+        const {showWallet, walletInfoList, consensus, dividends, tokenContract, contracts, nightElf} = this.state;
         if (showWallet) {
             return <AElfWallet
                 title='AElf Wallet'
@@ -229,18 +252,13 @@ export default class VotePage extends Component {
                 dividends={dividends}
                 contracts={contracts}
                 tokenContract={tokenContract}
+                nightElf={nightElf}
             />;
         }
     }
 
-    getCurrentWallet() {
-        this.setState({
-            currentWallet: JSON.parse(localStorage.currentWallet)
-        });
-    }
-
     render() {
-        const {consensus, showDownloadPlugins, currentWallet, dividends, contracts} = this.state;
+        const {consensus, showDownloadPlugins, currentWallet, dividends, contracts, nightElf} = this.state;
         const VoteHtml = this.renderVoteInformation();
         const aelfWalletHTML = this.getAElfWallet();
         let downloadPlugins = null;
@@ -262,6 +280,7 @@ export default class VotePage extends Component {
                         currentWallet={currentWallet}
                         consensus={consensus}
                         contracts={contracts}
+                        nightElf={nightElf}
                     />
                 </div>
             </div>

@@ -176,7 +176,7 @@ export default class Resource extends Component {
             appName: 'hzzTest',
             method: 'GET_ADDRESS'
         }).then(result => {
-            if (result.error === 200005) {
+            if (result.error !== 0) {
                 let wallet = {
                     address: '',
                     name: '',

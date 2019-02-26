@@ -161,110 +161,119 @@ export default class MyVote extends PureComponent {
                 return;
             }
             if (result.permissions.length === 0) {
-                window.NightElf.api({
-                    appName: 'hzzTest',
-                    method: 'OPEN_PROMPT',
-                    chainId: 'AELF',
-                    hostname: 'aelf.io',
-                    payload: {
-                        method: 'SET_PERMISSION',
-                        payload: {
-                            address: currentWallet.address,
-                            contracts: [{
-                                chainId: 'AELF',
-                                contractAddress: contracts.TOKENADDRESS,
-                                contractName: 'token',
-                                description: 'token contract'
-                            }, {
-                                chainId: 'AELF',
-                                contractAddress: contracts.DIVIDENDSADDRESS,
-                                contractName: 'dividends',
-                                description: 'contract dividends'
-                            }, {
-                                chainId: 'AELF',
-                                contractAddress: contracts.CONSENSUSADDRESS,
-                                contractName: 'consensus',
-                                description: 'contract consensus'
-                            }, {
-                                chainId: 'AELF',
-                                contractAddress: resourceAddress,
-                                contractName: 'resource',
-                                description: 'contract resource'
-                            }]
-                        }
-                    }
-                }).then(result => {
-                    if (result.error === 0) {
-                        window.NightElf.api({
-                            appName: 'hzzTest',
-                            method: 'INIT_AELF_CONTRACT',
-                            // hostname: 'aelf.io',
-                            chainId: 'AELF',
-                            payload: {
-                                address: currentWallet.address,
-                                contractName: 'token',
-                                contractAddress: contracts.TOKENADDRESS
-                            }
-                        }).then(
-                            window.NightElf.api({
-                                appName: 'hzzTest',
-                                method: 'INIT_AELF_CONTRACT',
-                                // hostname: 'aelf.io',
-                                chainId: 'AELF',
-                                payload: {
-                                    address: currentWallet.address,
-                                    contractName: 'consensus',
-                                    contractAddress: contracts.CONSENSUSADDRESS
-                                }
-                            })
-                        ).then(result => {
-                            if (result.error === 0) {
-                                this.props.showVote();
-                            }
-                        });
-                    }
-                    else {
-                        message.error(result.errorMessage.message, 5);
-                    }
-                });
+                this.noPermission();
             }
             else {
                 result.permissions.map((item, index) => {
                     if (item.address === currentWallet.address) {
                         testingContract(result, contracts, currentWallet).then(result => {
                             if (result) {
-                                window.NightElf.api({
-                                    appName: 'hzzTest',
-                                    method: 'INIT_AELF_CONTRACT',
-                                    // hostname: 'aelf.io',
-                                    chainId: 'AELF',
-                                    payload: {
-                                        address: currentWallet.address,
-                                        contractName: 'token',
-                                        contractAddress: contracts.TOKENADDRESS
-                                    }
-                                }).then(
-                                    window.NightElf.api({
-                                        appName: 'hzzTest',
-                                        method: 'INIT_AELF_CONTRACT',
-                                        // hostname: 'aelf.io',
-                                        chainId: 'AELF',
-                                        payload: {
-                                            address: currentWallet.address,
-                                            contractName: 'consensus',
-                                            contractAddress: contracts.CONSENSUSADDRESS
-                                        }
-                                    })
-                                ).then(result => {
-                                    if (result.error === 0) {
-                                        this.props.showVote();
-                                    }
-                                });
+                                this.hasPermission();
                             }
                         });
-                        
                     }
                 });
+            }
+        });
+    }
+
+    noPermission() {
+        const {currentWallet, contracts} = this.state;
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'OPEN_PROMPT',
+            chainId: 'AELF',
+            hostname: 'aelf.io',
+            payload: {
+                method: 'SET_PERMISSION',
+                payload: {
+                    address: currentWallet.address,
+                    contracts: [{
+                        chainId: 'AELF',
+                        contractAddress: contracts.TOKENADDRESS,
+                        contractName: 'token',
+                        description: 'token contract'
+                    }, {
+                        chainId: 'AELF',
+                        contractAddress: contracts.DIVIDENDSADDRESS,
+                        contractName: 'dividends',
+                        description: 'contract dividends'
+                    }, {
+                        chainId: 'AELF',
+                        contractAddress: contracts.CONSENSUSADDRESS,
+                        contractName: 'consensus',
+                        description: 'contract consensus'
+                    }, {
+                        chainId: 'AELF',
+                        contractAddress: resourceAddress,
+                        contractName: 'resource',
+                        description: 'contract resource'
+                    }]
+                }
+            }
+        }).then(result => {
+            if (result.error === 0) {
+                window.NightElf.api({
+                    appName: 'hzzTest',
+                    method: 'INIT_AELF_CONTRACT',
+                    // hostname: 'aelf.io',
+                    chainId: 'AELF',
+                    payload: {
+                        address: currentWallet.address,
+                        contractName: 'token',
+                        contractAddress: contracts.TOKENADDRESS
+                    }
+                }).then(
+                    window.NightElf.api({
+                        appName: 'hzzTest',
+                        method: 'INIT_AELF_CONTRACT',
+                        // hostname: 'aelf.io',
+                        chainId: 'AELF',
+                        payload: {
+                            address: currentWallet.address,
+                            contractName: 'consensus',
+                            contractAddress: contracts.CONSENSUSADDRESS
+                        }
+                    })
+                ).then(result => {
+                    if (result.error === 0) {
+                        this.props.showVote();
+                    }
+                });
+            }
+            else {
+                message.error(result.errorMessage.message, 5);
+            }
+        });
+    }
+
+    hasPermission() {
+        const {currentWallet, contracts} = this.state;
+        window.NightElf.api({
+            appName: 'hzzTest',
+            method: 'INIT_AELF_CONTRACT',
+            // hostname: 'aelf.io',
+            chainId: 'AELF',
+            payload: {
+                address: currentWallet.address,
+                contractName: 'token',
+                contractAddress: contracts.TOKENADDRESS
+            }
+        }).then(
+            window.NightElf.api({
+                appName: 'hzzTest',
+                method: 'INIT_AELF_CONTRACT',
+                // hostname: 'aelf.io',
+                chainId: 'AELF',
+                payload: {
+                    address: currentWallet.address,
+                    contractName: 'consensus',
+                    contractAddress: contracts.CONSENSUSADDRESS
+                }
+            })
+        ).then(result => {
+            if (result.error === 0) {
+                this.props.showVote();
             }
         });
     }

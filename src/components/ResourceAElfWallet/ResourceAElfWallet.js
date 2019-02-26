@@ -19,8 +19,8 @@ export default class ResourceAElfWallet extends PureComponent {
         this.state = {
             walletInfoList: this.props.walletInfoList || [],
             currentWallet: JSON.parse(localStorage.currentWallet),
-            resourceContract: null,
-            tokenContract: null,
+            resourceContract: this.props.resourceContract,
+            tokenContract: this.props.tokenContract,
             balance: null,
             RAM: 0,
             CPU: 0,
@@ -51,6 +51,23 @@ export default class ResourceAElfWallet extends PureComponent {
         }
 
         return null;
+    }
+
+    componentDidMount() {
+        const {currentWallet, resourceContract, tokenContract} = this.state;
+        if (currentWallet.length > 0) {
+            this.props.onRefresh();
+            this.getCurrentWalletBalance();
+        }
+
+        if (tokenContract) {
+            this.props.onRefresh();
+            this.getCurrentWalletBalance();
+        }
+
+        if (resourceContract) {
+            this.getCurrentWalletResource();
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {

@@ -26,25 +26,55 @@ export default class Vote extends PureComponent {
             publicKey: this.props.publicKey,
             contracts: this.props.contracts,
             currentWallet: JSON.parse(localStorage.currentWallet),
-            loading: false
+            loading: false,
+            nightElf: this.props.nightElf
         };
     }
 
     componentDidMount() {
-        const {currentWallet, contracts} = this.state;
-        window.NightElf.api({
-            appName: 'hzzTest',
-            method: 'CALL_AELF_CONTRACT',
-            chainId: 'AELF',
-            payload: {
-                contractAddress: contracts.TOKENADDRESS,
-                contractName: 'token',
-                method: 'BalanceOf',
-                params: [currentWallet.address]
+        const {contracts, nightElf, currentWallet} = this.state;
+        const wallet = {
+            address: currentWallet.address
+        };
+        nightElf.chain.contractAtAsync(
+            contracts.TOKENADDRESS,
+            wallet,
+            (err, result) => {
+                if (result) {
+                    this.getKeypairBalanceOf(result);
+                }
             }
-        }).then(result => {
+        );
+
+        // nightElf = new window.NightElf.AElf({
+        //     httpProvider: DEFAUTRPCSERVER,
+        //     appName: 'nightElf'
+        // });
+        // if (nightElf) {
+        //     this.setState({
+        //         nightElf
+        //     });
+        //     nightElf.chain.getContractAbi(
+        //         contracts.TOKENADDRESS,
+        //         (err, result) => {
+        //             if (result) {
+        //                 this.getKeypairBalanceOf(result);
+        //             }
+        //         }
+        //     );
+        // }
+    }
+
+    componentWillUnmount() {
+        this.setState = () => {};
+    }
+
+
+    getKeypairBalanceOf(result) {
+        const {currentWallet} = this.state;
+        result.BalanceOf(currentWallet.address, (error, result) => {
             this.setState({
-                balance: getHexNumber(result.result.return)
+                balance: getHexNumber(result.return)
             });
         });
     }
@@ -69,7 +99,7 @@ export default class Vote extends PureComponent {
     }
 
     getNextStep() {
-        const {contracts} = this.state;
+        const {contracts, currentWallet, nightElf} = this.state;
         let reg = /^[0-9]*$/;
         if (this.state.step) {
             if (!reg.test(this.state.votes)) {
@@ -91,34 +121,66 @@ export default class Vote extends PureComponent {
             });
         }
         else {
-            window.NightElf.api({
-                appName: 'hzzTest',
-                method: 'CALL_AELF_CONTRACT',
-                chainId: 'AELF',
-                payload: {
-                    contractAddress: contracts.CONSENSUSADDRESS,
-                    contractName: 'consensus',
-                    method: 'Vote',
-                    params: [this.state.publicKey, this.state.votes, this.state.period]
-                }
-            }).then(result => {
-                this.setState({
-                    loading: true
-                });
-                setTimeout(() => {
-                    message.info('No withdrawal and transfer operations during the voting lock period!');
-                    const state = aelf.chain.getTxResult(result.result.hash);
-                    if (state.result.tx_status === 'Mined') {
-                        this.props.onRefresh();
+            const wallet = {
+                address: currentWallet.address
+            };
+            nightElf.chain.contractAtAsync(
+                contracts.CONSENSUSADDRESS,
+                wallet,
+                (err, result) => {
+                    if (result) {
+                        this.getExtensionVote(result);
                     }
-                    getStateJudgment(state.result.tx_status, result.result.hash);
-                    this.setState({
-                        loading: false
-                    });
-                    this.props.handleClose();
-                }, 4000);
-            });
+                }
+            );
+            // window.NightElf.api({
+            //     appName: 'hzzTest',
+            //     method: 'CALL_AELF_CONTRACT',
+            //     chainId: 'AELF',
+            //     payload: {
+            //         contractAddress: contracts.CONSENSUSADDRESS,
+            //         contractName: 'consensus',
+            //         method: 'Vote',
+            //         params: [this.state.publicKey, this.state.votes, this.state.period]
+            //     }
+            // }).then(result => {
+            //     this.setState({
+            //         loading: true
+            //     });
+            //     setTimeout(() => {
+            //         message.info('No withdrawal and transfer operations during the voting lock period!');
+            //         const state = aelf.chain.getTxResult(result.result.hash);
+            //         if (state.result.tx_status === 'Mined') {
+            //             this.props.onRefresh();
+            //         }
+            //         getStateJudgment(state.result.tx_status, result.result.hash);
+            //         this.setState({
+            //             loading: false
+            //         });
+            //         this.props.handleClose();
+            //     }, 4000);
+            // });
         }
+    }
+
+    getExtensionVote(result) {
+        result.Vote(this.state.publicKey, this.state.votes, this.state.period, (error, result) => {
+            this.setState({
+                loading: true
+            });
+            setTimeout(() => {
+                message.info('No withdrawal and transfer operations during the voting lock period!');
+                const state = aelf.chain.getTxResult(result.hash);
+                if (state.result.tx_status === 'Mined') {
+                    this.props.onRefresh();
+                }
+                getStateJudgment(state.result.tx_status, result.hash);
+                this.setState({
+                    loading: false
+                });
+                this.props.handleClose();
+            }, 4000);
+        });
     }
 
     render() {
