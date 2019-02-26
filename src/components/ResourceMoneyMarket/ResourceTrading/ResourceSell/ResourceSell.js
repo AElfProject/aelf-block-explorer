@@ -15,6 +15,7 @@ import './ResourceSell.less';
 export default class ResourceSell extends Component {
     constructor(props) {
         super(props);
+        this.debounceTimer;
         this.state = {
             menuName: null,
             menuIndex: this.props.menuIndex,
@@ -37,26 +38,33 @@ export default class ResourceSell extends Component {
         };
     }
 
-    onChangeResourceValue(e) {
-        const {menuName, resourceContract} = this.state;
-        getEstimatedValueELF(menuName, e.target.value, resourceContract, 'Sell').then(result => {
-            let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
-            let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
-            if (regPos.test(result) || regNeg.test(result)) {
-                let ELFValue = Math.abs(Math.ceil(result));
-                this.setState({
-                    ELFValue,
-                    toSell: true
-                });
-            }
-            else {
-                this.setState({
-                    toSell: false
-                });
-            }
-        });
 
+    debounce(value) {
+        const {menuName, resourceContract} = this.state;
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
+            getEstimatedValueELF(menuName, value, resourceContract, 'Sell').then(result => {
+                let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+                let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+                if (regPos.test(result) || regNeg.test(result)) {
+                    let ELFValue = Math.abs(Math.ceil(result));
+                    this.setState({
+                        ELFValue,
+                        toSell: true
+                    });
+                }
+                else {
+                    this.setState({
+                        toSell: false
+                    });
+                }
+            });
+        }, 500);
+    }
+
+    onChangeResourceValue(e) {
         if (e.target.value) {
+            this.debounce(e.target.value);
             this.setState({
                 value: e.target.value
             });

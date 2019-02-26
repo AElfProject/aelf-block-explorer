@@ -17,6 +17,7 @@ import './ResourceBuy.less';
 export default class ResourceBuy extends Component {
     constructor(props) {
         super(props);
+        this.debounceTimer;
         this.state = {
             menuName: null,
             menuIndex: this.props.menuIndex,
@@ -160,33 +161,11 @@ export default class ResourceBuy extends Component {
         });
     }
 
-    getSlideMarksHTML() {
-        let {region, purchaseQuantity, account} = this.state;
-        let disabled = false;
-        let balance = account.balabce;
-        if (region < 4) {
-            region = 25;
-            balance = 100;
-            disabled = true;
-        }
-        return (
-            <Slider
-                marks={this.getSlideMarks()}
-                step={region}
-                disabled={disabled}
-                min={0}
-                value={purchaseQuantity}
-                onChange={e => this.onChangeSlide(e) }
-                max={balance}
-                tooltipVisible={false}
-            />
-        );
-    }
-
-    onChangeResourceValue(e) {
+    debounce(value) {
         const {menuName, resourceContract} = this.state;
-        if (e.target.value) {
-            getEstimatedValueELF(menuName, e.target.value, resourceContract, 'Buy').then(result => {
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
+            getEstimatedValueELF(menuName, value, resourceContract, 'Buy').then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
@@ -212,6 +191,35 @@ export default class ResourceBuy extends Component {
                     });
                 }
             });
+        }, 500);
+    }
+
+    getSlideMarksHTML() {
+        let {region, purchaseQuantity, account} = this.state;
+        let disabled = false;
+        let balance = account.balabce;
+        if (region < 4) {
+            region = 25;
+            balance = 100;
+            disabled = true;
+        }
+        return (
+            <Slider
+                marks={this.getSlideMarks()}
+                step={region}
+                disabled={disabled}
+                min={0}
+                value={purchaseQuantity}
+                onChange={e => this.onChangeSlide(e) }
+                max={balance}
+                tooltipVisible={false}
+            />
+        );
+    }
+
+    onChangeResourceValue(e) {
+        if (e.target.value) {
+            this.debounce(e.target.value);
             this.setState({
                 value: e.target.value
             });
