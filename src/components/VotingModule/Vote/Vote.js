@@ -73,8 +73,14 @@ export default class Vote extends PureComponent {
     getKeypairBalanceOf(result) {
         const {currentWallet} = this.state;
         result.BalanceOf(currentWallet.address, (error, result) => {
+            if (result.error && result.error !== 0) {
+                message.error(result.errorMessage.message, 3);
+                this.props.handleClose();
+                return;
+            }
+            const balance = result.result ? result.result.return : result.return;
             this.setState({
-                balance: getHexNumber(result.return)
+                balance: getHexNumber(balance)
             });
         });
     }
@@ -133,48 +139,27 @@ export default class Vote extends PureComponent {
                     }
                 }
             );
-            // window.NightElf.api({
-            //     appName: 'hzzTest',
-            //     method: 'CALL_AELF_CONTRACT',
-            //     chainId: 'AELF',
-            //     payload: {
-            //         contractAddress: contracts.CONSENSUSADDRESS,
-            //         contractName: 'consensus',
-            //         method: 'Vote',
-            //         params: [this.state.publicKey, this.state.votes, this.state.period]
-            //     }
-            // }).then(result => {
-            //     this.setState({
-            //         loading: true
-            //     });
-            //     setTimeout(() => {
-            //         message.info('No withdrawal and transfer operations during the voting lock period!');
-            //         const state = aelf.chain.getTxResult(result.result.hash);
-            //         if (state.result.tx_status === 'Mined') {
-            //             this.props.onRefresh();
-            //         }
-            //         getStateJudgment(state.result.tx_status, result.result.hash);
-            //         this.setState({
-            //             loading: false
-            //         });
-            //         this.props.handleClose();
-            //     }, 4000);
-            // });
         }
     }
 
     getExtensionVote(result) {
         result.Vote(this.state.publicKey, this.state.votes, this.state.period, (error, result) => {
+            if (result.error && result.error !== 0) {
+                message.error(result.errorMessage.message, 3);
+                this.props.handleClose();
+                return;
+            }
             this.setState({
                 loading: true
             });
+            const hash = result.result ? result.result.hash : result.hash;
             setTimeout(() => {
                 message.info('No withdrawal and transfer operations during the voting lock period!');
-                const state = aelf.chain.getTxResult(result.hash);
+                const state = aelf.chain.getTxResult(hash);
                 if (state.result.tx_status === 'Mined') {
                     this.props.onRefresh();
                 }
-                getStateJudgment(state.result.tx_status, result.hash);
+                getStateJudgment(state.result.tx_status, hash);
                 this.setState({
                     loading: false
                 });

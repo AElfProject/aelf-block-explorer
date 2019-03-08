@@ -57,16 +57,24 @@ export default class Redeem extends PureComponent {
     getRedeem(result) {
         const {txId} = this.state;
         result.WithdrawByTransactionId(txId, (error, result) => {
+
+            if (result.error && result.error !== 0) {
+                message.error(result.errorMessage.message, 3);
+                this.props.handleClose();
+                return;
+            }
+
             if (result) {
+                const hash = result.result ? result.result.hash : result.hash;
                 this.setState({
                     loading: true
                 });
                 setTimeout(() => {
-                    const state = aelf.chain.getTxResult(result.hash);
+                    const state = aelf.chain.getTxResult(hash);
                     if (state.result.tx_status === 'Mined') {
                         this.props.onRefresh();
                     }
-                    getStateJudgment(state.result.tx_status, result.hash);
+                    getStateJudgment(state.result.tx_status, hash);
                     this.setState({
                         loading: false
                     });

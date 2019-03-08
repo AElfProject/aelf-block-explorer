@@ -19,12 +19,11 @@ import getStateJudgment from '../../utils/getStateJudgment';
 import './AElfWallet.less';
 
 const RadioGroup = Radio.Group;
-let nightElf;
 export default class AElfWallet extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            walletInfoList: this.props.walletInfoList || [],
+            currentWallet: this.props.currentWallet || null,
             value: JSON.parse(localStorage.currentWallet).address,
             refresh: 0,
             loading: false,
@@ -36,7 +35,12 @@ export default class AElfWallet extends PureComponent {
             contracts: this.props.contracts,
             dividendsLoad: false,
             tokenLoad: false,
-            nightElf: this.props.nightElf
+            nightElf: this.props.nightElf,
+            balanceNum: null,
+            ticketsNum: null,
+            dividendsNum: null
+
+
         };
     }
 
@@ -101,123 +105,44 @@ export default class AElfWallet extends PureComponent {
 
     pushWalletDividends = async () => {
         const {dividends} = this.state;
-        let {walletInfoList} = this.state;
-        walletInfoList.map((item, index) => {
-            const key = getPublicKey(item.publicKey);
-            dividends.GetAllAvailableDividends(key, (error, result) => {
-                walletInfoList[index].dividends = getHexNumber(result.return);
-                const temp = Array.from(walletInfoList);
-                this.setState({
-                    walletInfoList: temp
-                });
+        let {currentWallet} = this.state;
+        const key = getPublicKey(currentWallet.publicKey);
+        dividends.GetAllAvailableDividends(key, (error, result) => {
+            let dividends = getHexNumber(result.return);
+            this.setState({
+                dividendsNum: dividends
             });
         });
     }
 
     pushWalletBalance = async () => {
         const {tokenContract} = this.state;
-        let {walletInfoList} = this.state;
-        walletInfoList.map((item, index) => {
-            tokenContract.BalanceOf(item.address, (error, result) => {
-                walletInfoList[index].balance = getHexNumber(result.return);
-                const temp = Array.from(walletInfoList);
-                this.setState({
-                    walletInfoList: temp
-                });
+        let {currentWallet} = this.state;
+        tokenContract.BalanceOf(currentWallet.address, (error, result) => {
+            let balance = getHexNumber(result.return);
+            this.setState({
+                balanceNum: balance
             });
         });
     }
 
     pushWalletTicket = async () => {
         const {consensus} = this.state;
-        let {walletInfoList} = this.state;
-        walletInfoList.map((item, index) => {
-            const key = getPublicKey(item.publicKey);
-            consensus.GetTicketsInfoToFriendlyString(key, (error, result) => {
-                let tickets = JSON.parse(hexCharCodeToStr(result.return)).VotingRecords || [];
-                let ticket = 0;
-                tickets.map((item, index) => {
-                    if (item.From === key) {
-                        let IsWithdrawn = item.IsWithdrawn || false;
-                        IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
-                    }
-                });
-                walletInfoList[index].tickets = ticket;
-                const temp = Array.from(walletInfoList);
-                this.setState({
-                    walletInfoList: temp
-                });
+        let {currentWallet} = this.state;
+        const key = getPublicKey(currentWallet.publicKey);
+        consensus.GetTicketsInfoToFriendlyString(key, (error, result) => {
+            let tickets = JSON.parse(hexCharCodeToStr(result.return)).VotingRecords || [];
+            let ticket = 0;
+            tickets.map((item, index) => {
+                if (item.From === key) {
+                    let IsWithdrawn = item.IsWithdrawn || false;
+                    IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
+                }
+            });
+            this.setState({
+                ticketsNum: ticket
             });
         });
-    }
-
-    changeRadio(e) {
-        const {walletInfoList} = this.state;
-        this.setState({
-            value: e.target.value
-        });
-        for (let i = 0, len = walletInfoList.length; i < len; i++) {
-            if (e.target.value === walletInfoList[i].address) {
-                localStorage.setItem('currentWallet', JSON.stringify(walletInfoList[i]));
-                this.props.getCurrentWallet();
-            }
-        }
-    }
-
-
-    getWalletAssetInfo() {
-        const walletAssetInfo = this.state.walletInfoList.map((item, index) => {
-            let {balance, tickets, dividends} = item;
-            balance = !!item.balance ? item.balance.toLocaleString() : '-';
-            tickets = !!item.tickets ? item.tickets.toLocaleString() : '-';
-            dividends = !!item.dividends ? item.dividends.toLocaleString() : '-';
-            return (
-                <Row key={index} type='flex' align='middle' style={{padding: '10px 0'}}>
-                    <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
-                        <Radio key={index} value={item.address} style={{marginLeft: '10px'}}>
-                            <span className='wallet-name'>{item.name}</span>
-                        </Radio>
-                    </Col>
-                    <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
-                        {/* <div className='wallet-button-box' key={index} >
-                            <Button title='Unbind' click={this.unbindWallet.bind(this, item.address)} />
-                        </div> */}
-                    </Col>
-                    <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={8}>
-                        Assets: <span className='total-assets'>{balance}</span>
-                    </Col>
-                    <Col
-                        xxl={{span: 4, offset: 0}}
-                        xl={{span: 4, offset: 0}}
-                        lg={{span: 6, offset: 0}}
-                        md={{span: 8, offset: 16}}
-                        sm={{span: 8, offset: 16}}
-                        xs={{span: 8, offset: 16}}
-                    >
-                        Votes: <span className='total-votes'>{tickets}</span>
-                    </Col>
-                    <Col
-                        xxl={{span: 8, offset: 0}}
-                        xl={{span: 8, offset: 0}}
-                        lg={{span: 12, offset: 12}}
-                        md={{span: 8, offset: 16}}
-                        sm={{span: 8, offset: 16}}
-                        xs={{span: 8, offset: 16}}
-                    >
-                        Dividends: <span className='pending-dividend'>{dividends}</span>
-                            <Button
-                                title='Receive'
-                                click={this.getAllDividends.bind(this)}
-                                style={
-                                    this.state.value === item.address
-                                    ? {display: 'inline-block'} : {display: 'none'}
-                                }
-                            />
-                    </Col>
-                </Row>
-            );
-        });
-        return walletAssetInfo;
     }
 
     getAllDividends() {
@@ -227,21 +152,11 @@ export default class AElfWallet extends PureComponent {
             const currentWallet = JSON.parse(localStorage.currentWallet);
             window.NightElf.api({
                 appName: 'hzzTest',
-                method: 'GET_ADDRESS'
+                method: 'CHECK_PERMISSION',
+                type: 'address', // if you did not set type, it aways get by domain.
+                address: currentWallet.address
             }).then(result => {
-                if (result.error !== 0) {
-                    message.error(result.errorMessage.message, 5);
-                }
-                else {
-                    window.NightElf.api({
-                        appName: 'hzzTest',
-                        method: 'CHECK_PERMISSION',
-                        type: 'address', // if you did not set type, it aways get by domain.
-                        address: currentWallet.address
-                    }).then(result => {
-                        this.toAllDividends(result);
-                    });
-                }
+                this.toAllDividends(result);
             });
         }
         else {
@@ -252,7 +167,7 @@ export default class AElfWallet extends PureComponent {
     toAllDividends(result) {
         const {contracts} = this.state;
         const currentWallet = JSON.parse(localStorage.currentWallet);
-        if (result.error !== 0) {
+        if (result.error && result.error !== 0) {
             message.warning(result.errorMessage.message, 5);
             this.setState({
                 loading: false
@@ -357,9 +272,10 @@ export default class AElfWallet extends PureComponent {
         this.setState({
             loading: true
         });
+        const hash = result.result ? result.result.hash : result.hash;
         setTimeout(() => {
-            const state = aelf.chain.getTxResult(result.hash);
-            getStateJudgment(state.result.tx_status, result.hash);
+            const state = aelf.chain.getTxResult(hash);
+            getStateJudgment(state.result.tx_status, hash);
             this.pushWalletBalance()
             .then(this.pushWalletTicket())
             .then(this.pushWalletDividends())
@@ -409,21 +325,46 @@ export default class AElfWallet extends PureComponent {
                         });
                     });
                 }
-               
             });
         }
     }
 
+    renderWalletAssetInfo() {
+        const {currentWallet, balanceNum, ticketsNum, dividendsNum} = this.state;
+        if (currentWallet) {
+            let balance = !!balanceNum ? balanceNum.toLocaleString() : '-';
+            let tickets = !!ticketsNum ? ticketsNum.toLocaleString() : '-';
+            let dividends = !!dividendsNum ? dividendsNum.toLocaleString() : '-';
+            return (
+                <Row key={currentWallet.address} type='flex' align='middle' justify='center' style={{padding: '10px 0'}} className='wallet-info'>
+                    <Col xl={6} xs={8} >
+                        <span className='wallet-name'>{currentWallet.name}</span>
+                    </Col>
+                    <Col xl={6} xs={8}>
+                        Balances: <span className='total-assets'>{balance}</span>
+                    </Col>
+                    <Col xl={6} xs={8}>
+                        Votes: <span className='total-votes'>{tickets}</span>
+                    </Col>
+                    <Col xl={6} xs={8}>
+                        Dividends: <span className='pending-dividend'>{dividends}</span>
+                        <Button
+                            title='Receive'
+                            click={this.getAllDividends.bind(this)}
+                        />
+                    </Col>
+                </Row>
+            );
+        }
+    }
+
     render() {
-        const walletAssetInfo = this.getWalletAssetInfo();
+        const walletAssetInfo = this.renderWalletAssetInfo();
         return (
             <div className='AElf-Wallet'>
                 <div className='AElf-Wallet-head'>
                     <div className='AElf-Wallet-title'>
                         {this.props.title}
-                    </div>
-                    <div className='AElf-Wallet-create'>
-                        {/* <Button title='+ New Wallet' /> */}
                     </div>
                 </div>
                 <Spin
@@ -434,20 +375,14 @@ export default class AElfWallet extends PureComponent {
                     <div className='AElf-Wallet-body'>
                     <Row>
                         <Col span='22'>
-                                <RadioGroup
-                                    onChange={this.changeRadio.bind(this)}
-                                    value={JSON.parse(localStorage.currentWallet).address}
-                                    className='AElf-Wallet-info'
-                                >
-                                    {walletAssetInfo}
-                                </RadioGroup>
+                            {walletAssetInfo}
                         </Col>
                         <Col span='2'>
                             <div onClick={this.onRefresh.bind(this)}>
                                 <Svg
                                     className={this.state.loading ? 'refresh-animate' : ''}
                                     icon='refresh'
-                                    style={{marginTop: '30px', width: '60px', height: '45px', float: 'right'}}
+                                    style={{width: '60px', height: '45px', float: 'right'}}
                                 />
                             </div>
                         </Col>
