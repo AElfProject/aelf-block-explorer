@@ -1,0 +1,119 @@
+@import "../../../../assets/less/_variables.less";
+
+.AElf-Wallet {
+    margin: 44px 160px;
+    color: #fff;
+
+    .AElf-Wallet-head {
+        height: 50px;
+        line-height: 50px;
+        background: #4a0873;
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+    }
+
+    .AElf-Wallet-title {
+        padding-left: 28px;
+        color: #fff;
+        float: left;
+    }
+
+    .AElf-Wallet-create {
+        line-height: 28px;
+        margin-top: 6px;
+    }
+    .AElf-Wallet-body {
+        background: rgba(57, 0, 77, 0.3);
+        color: #fff;
+
+        .wallet-name {
+            font-size: 16px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .ant-row {
+            color: #fff;
+        }
+    }
+}
+
+.wallet-info {
+    word-break: break-all;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.AElf-Wallet-name {
+    padding: 46px 0 56px 28px;
+}
+
+.AElf-Wallet-Row {
+    margin-bottom: 24px;
+}
+
+.AElf-Wallet .ant-radio-group {
+    width: 100%;
+}
+.AElf-Wallet .ant-radio-wrapper {
+    display: block;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.AElf-Wallet .ant-radio-wrapper:nth-last-child(1) {
+    margin-bottom: 0;
+}
+
+.AElf-Wallet .ant-radio-checked .ant-radio-inner {
+    border-color: #618c01;
+}
+
+.AElf-Wallet .ant-radio-inner:after {
+    background: #618c01;
+}
+
+.wallet-button-box {
+    margin-bottom: 15px;
+}
+
+.wallet-button-box:nth-last-child(1) {
+    margin-bottom: 0;
+}
+
+.wallet-name {
+    text-indent: 10px;
+    display: inline-block;
+}
+
+
+.total-assets {
+    color: #e09d1b;
+}
+
+.total-votes {
+    color: #e09d1b;
+}
+
+.pending-dividend {
+    color: #e09d1b;
+}
+
+
+.AElf-Wallet-info .ant-row-flex {
+    margin-bottom: 15px;
+}
+
+.refresh-animate {
+    transition: All 4s infinite linear;
+    transform: rotate(1440deg);
+}
+
+
+@media screen and (max-width: 990px){
+    .AElf-Wallet {
+        margin: 20px;
+    }
+}

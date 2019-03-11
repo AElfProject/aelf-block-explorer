@@ -7,12 +7,12 @@
 
 import React, {Component} from 'react';
 import {Row, Col, message} from 'antd';
-import {DEFAUTRPCSERVER, commonPrivateKey, resourceAddress} from '../../../config/config';
+import {DEFAUTRPCSERVER, resourceAddress} from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
-import VotingYieldChart from '../../components/VotingYieldChart/VotingYieldChart';
-import AElfWallet from '../../components/AElfWallet/AElfWallet';
-import VotingModule from '../../components/VotingModule/VotingModule';
+import VotingYieldChart from './components/VotingYieldChart/VotingYieldChart';
+import AElfWallet from './components/AElfWallet/AElfWallet';
+import VotingModule from './components/VotingModule/VotingModule';
 import {aelf} from '../../utils';
 import Svg from '../../components/Svg/Svg';
 import getHexNumber from '../../utils/getHexNumber';
@@ -62,8 +62,10 @@ export default class VotePage extends Component {
         let httpProvider = DEFAUTRPCSERVER;
         // getContract
         getContractAddress().then(result => {
+            let contracts = result;
+            contracts['RESOURCEADDRESS'] = resourceAddress;
             this.setState({
-                contracts: result
+                contracts
             });
             aelf.chain.contractAtAsync(result.CONSENSUSADDRESS, result.wallet, (error, result) => {
                 this.setState({
@@ -115,7 +117,7 @@ export default class VotePage extends Component {
                                         this.checkPermissionRepeat(result);
                                     }
                                     else {
-                                        localStorage.setItem('currentWallet', '');
+                                        localStorage.setItem('currentWallet', null);
                                         this.getLogin(result);
                                     }
                                 }
@@ -144,7 +146,10 @@ export default class VotePage extends Component {
                 return item;
             }
         });
+        console.log(permission[0].contracts);
+        console.log(connectChain);
         permission[0].contracts.map(item => {
+            console.log(item.contractAddress);
             if (connectChain.indexOf(item.contractAddress) === -1) {
                 this.setNewPermission(address);
             }
@@ -196,13 +201,6 @@ export default class VotePage extends Component {
                 this.setState({
                     showWallet: false
                 });
-                // let wallet = {
-                //     address: '',
-                //     name: '',
-                //     privateKey: commonPrivateKey,
-                //     publicKey: ''
-                // };
-                // localStorage.setItem('currentWallet', JSON.stringify(wallet));
                 console.log(result);
                 message.error(result.errorMessage.message, 3);
             }
@@ -319,7 +317,6 @@ export default class VotePage extends Component {
                 });
             });
         }
-
     }
 
     hideWallet() {
@@ -384,6 +381,7 @@ export default class VotePage extends Component {
                 contracts={contracts}
                 tokenContract={tokenContract}
                 nightElf={nightElf}
+                appName={appName}
             />;
         }
     }
