@@ -108,17 +108,17 @@ export default class ResourceAElfWallet extends PureComponent {
         const {tokenContract, currentWallet} = this.state;
         tokenContract.BalanceOf(currentWallet.address, (error, result) => {
             this.setState({
-                balance: getHexNumber(result.return).toLocaleString(),
+                balance: getHexNumber(result).toLocaleString(),
                 resourceReady: this.state.resourceReady + 1
             });
-            this.props.getCurrentBalance(getHexNumber(result.return));
+            this.props.getCurrentBalance(getHexNumber(result));
         });
     }
 
     getCurrentWalletResource = async () => {
         const {resourceContract, currentWallet} = this.state;
         resourceContract.GetUserBalance(currentWallet.address, 'RAM', (error, result) => {
-            let resource = getHexNumber(result.return);
+            let resource = getHexNumber(result);
             this.setState({
                 RAM: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1
@@ -127,7 +127,7 @@ export default class ResourceAElfWallet extends PureComponent {
         });
 
         resourceContract.GetUserBalance(currentWallet.address, 'CPU', (error, result) => {
-            let resource = getHexNumber(result.return);
+            let resource = getHexNumber(result);
             this.setState({
                 CPU: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1
@@ -136,7 +136,7 @@ export default class ResourceAElfWallet extends PureComponent {
         });
 
         resourceContract.GetUserBalance(currentWallet.address, 'NET', (error, result) => {
-            let resource = getHexNumber(result.return);
+            let resource = getHexNumber(result);
             this.setState({
                 NET: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1
@@ -145,7 +145,7 @@ export default class ResourceAElfWallet extends PureComponent {
         });
 
         resourceContract.GetUserBalance(currentWallet.address, 'STO', (error, result) => {
-            let resource = getHexNumber(result.return);
+            let resource = getHexNumber(result);
             this.setState({
                 STO: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1

@@ -68,6 +68,7 @@ export default class VotePage extends Component {
                 contracts
             });
             aelf.chain.contractAtAsync(result.CONSENSUSADDRESS, result.wallet, (error, result) => {
+                console.log(result);
                 this.setState({
                     consensus: result
                 });

@@ -26,7 +26,8 @@ export default class ResourceSellModal extends PureComponent {
             menuName: this.props.menuName,
             loading: false,
             ELFValue: null,
-            nightElf: this.props.nightElf
+            nightElf: this.props.nightElf,
+            contracts: this.props.contracts
         };
     }
 
@@ -44,7 +45,7 @@ export default class ResourceSellModal extends PureComponent {
     }
 
     getSellRes() {
-        const {currentWallet, nightElf} = this.state;
+        const {currentWallet, nightElf, contracts} = this.state;
         this.props.maskClosable();
         const wallet = {
             address: currentWallet.address
@@ -53,7 +54,7 @@ export default class ResourceSellModal extends PureComponent {
             loading: true
         });
         nightElf.chain.contractAtAsync(
-            resourceAddress,
+            contracts.RESOURCEADDRESS,
             wallet,
             (err, result) => {
                 if (result) {
@@ -74,10 +75,10 @@ export default class ResourceSellModal extends PureComponent {
             this.setState({
                 loading: true
             });
-            const hash = result.result ? result.result.hash : result.hash;
+            const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
             setTimeout(() => {
-                aelf.chain.getTxResult(hash, (error, result) => {
-                    getStateJudgment(result.result.tx_status, hash);
+                aelf.chain.getTxResult(transactionId, (error, result) => {
+                    getStateJudgment(result.Status, transactionId);
                     this.props.onRefresh();
                     this.setState({
                         loading: false

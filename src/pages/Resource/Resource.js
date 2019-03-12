@@ -8,7 +8,7 @@
 import React, {Component} from 'react';
 import {message} from 'antd';
 import {aelf} from '../../utils';
-import {DEFAUTRPCSERVER, resourceAddress} from '../../../config/config';
+import {DEFAUTRPCSERVER} from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ResourceAElfWallet from './components/ResourceAElfWallet/ResourceAElfWallet';
 import NightElfCheck from '../../utils/NightElfCheck';
@@ -23,18 +23,8 @@ export default class Resource extends Component {
     constructor(props) {
         super(props);
         this.informationTimer;
-        let wallet = null;
-        // if (localStorage.currentWallet == null) {
-        //     wallet = {
-        //         address: '',
-        //         name: '',
-        //         privateKey: commonPrivateKey,
-        //         publicKey: ''
-        //     };
-        //     localStorage.setItem('currentWallet', JSON.stringify(wallet));
-        // }
         this.state = {
-            currentWallet: wallet,
+            currentWallet: null,
             contracts: null,
             tokenContract: null,
             resourceContract: null,
@@ -53,17 +43,17 @@ export default class Resource extends Component {
     componentDidMount() {
         let httpProvider = DEFAUTRPCSERVER;
         getContractAddress().then(result => {
-            let contracts = result;
-            contracts['RESOURCEADDRESS'] = resourceAddress;
+            // let contracts = result;
+            // contracts['RESOURCEADDRESS'] = resourceAddress;
             this.setState({
-                contracts
+                contracts: result
             });
             aelf.chain.contractAtAsync(result.TOKENADDRESS, result.wallet, (error, result) => {
                 this.setState({
                     tokenContract: result
                 });
             });
-            aelf.chain.contractAtAsync(resourceAddress, result.wallet, (error, result) => {
+            aelf.chain.contractAtAsync(result.RESOURCEADDRESS, result.wallet, (error, result) => {
                 this.setState({
                     resourceContract: result
                 });
@@ -86,8 +76,7 @@ export default class Resource extends Component {
                             return;
                         }
                         if (result) {
-                            this.connectChain = result.result;
-                            this.connectChain['AElf.Contracts.Resource'] = resourceAddress;
+                            this.connectChain = result;
                             window.NightElf.api({
                                 appName,
                                 method: 'CHECK_PERMISSION',
@@ -156,26 +145,25 @@ export default class Resource extends Component {
                     address,
                     contracts: [{
                         chainId: 'AELF',
-                        // contractAddress: 'asdasdasdasdadasdasdasdasdasasdasd',
                         contractAddress: this.connectChain['AElf.Contracts.Token'],
-                        contractName: 'token',
-                        description: 'contract token'
+                        contractName: 'Token',
+                        description: 'contract Token'
                     }, {
                         chainId: 'AELF',
                         contractAddress: this.connectChain['AElf.Contracts.Dividends'],
-                        contractName: 'dividends',
-                        description: 'contract dividends'
+                        contractName: 'Dividends',
+                        description: 'contract Dividends'
                     }, {
                         chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Consensus'],
-                        contractName: 'consensus',
-                        description: 'contract consensus'
+                        contractAddress: this.connectChain['AElf.Contracts.Consensus.DPoS'],
+                        contractName: 'Consensus.Dpos',
+                        description: 'contract Consensus'
                     },
                     {
                         chainId: 'AELF',
-                        contractAddress: resourceAddress,
-                        contractName: 'resource',
-                        description: 'contract resource'
+                        contractAddress: this.connectChain['AElf.Contracts.Resource'],
+                        contractName: 'Resource',
+                        description: 'contract Resource'
                     }]
                     // appName: message.appName,
                     // domain: message.hostname
@@ -197,6 +185,7 @@ export default class Resource extends Component {
             appName,
             domain: 'aelf.io',
             method: 'LOGIN',
+            chainId: 'AELF',
             payload: {
                 payload: {
                     // appName: message.appName,
@@ -204,27 +193,25 @@ export default class Resource extends Component {
                     method: 'LOGIN',
                     contracts: [{
                         chainId: 'AELF',
-                        // contractAddress: 'asdasdasdasdadasdasdasdasdasasdasd',
                         contractAddress: this.connectChain['AElf.Contracts.Token'],
-                        contractName: 'token',
-                        description: 'token contract'
+                        contractName: 'Token',
+                        description: 'contract Token'
                     }, {
                         chainId: 'AELF',
                         contractAddress: this.connectChain['AElf.Contracts.Dividends'],
-                        contractName: 'dividends',
-                        description: 'contract dividends'
+                        contractName: 'Dividends',
+                        description: 'contract Dividends'
                     }, {
                         chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Consensus'],
-                        contractName: 'consensus',
-                        description: 'contract consensus'
+                        contractAddress: this.connectChain['AElf.Contracts.Consensus.DPoS'],
+                        contractName: 'Consensus.Dpos',
+                        description: 'contract Consensus'
                     },
                     {
                         chainId: 'AELF',
                         contractAddress: this.connectChain['AElf.Contracts.Resource'],
-                        // contractAddress: 'asdasdasdasdadasdasdasdasdasasdasd',
-                        contractName: 'resource',
-                        description: 'contract resource'
+                        contractName: 'Resource',
+                        description: 'contract Resource'
                     }]
                 }
             }
@@ -264,51 +251,6 @@ export default class Resource extends Component {
             });
         }
     }
-
-    // getNightElfKeypairList() {
-    //     window.NightElf.api({
-    //         appName: 'hzzTest',
-    //         method: 'GET_ADDRESS'
-    //     }).then(result => {
-    //         let showWallet = null;
-    //         if (result.error !== 0) {
-    //             let wallet = {
-    //                 address: '',
-    //                 name: '',
-    //                 privateKey: commonPrivateKey,
-    //                 publicKey: ''
-    //             };
-    //             localStorage.setItem('currentWallet', JSON.stringify(wallet));
-    //             message.warning(result.errorMessage.message, 5);
-    //             showWallet = false;
-    //         }
-    //         else if (result.addressList.length !== 0) {
-    //             localStorage.setItem('walletInfoList', JSON.stringify(result.addressList));
-    //             if (localStorage.currentWallet === undefined) {
-    //                 localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
-    //             }
-    //             if (JSON.parse(localStorage.currentWallet).name === '') {
-    //                 localStorage.setItem('currentWallet', JSON.stringify(result.addressList[0]));
-    //             }
-    //             showWallet = true;
-    //         }
-    //         else {
-    //             let wallet = {
-    //                 address: '',
-    //                 name: '',
-    //                 privateKey: commonPrivateKey,
-    //                 publicKey: ''
-    //             };
-    //             localStorage.setItem('currentWallet', JSON.stringify(wallet));
-    //             showWallet = false;
-    //         }
-    //         this.setState({
-    //             showWallet,
-    //             currentWallet: JSON.parse(localStorage.currentWallet),
-    //             walletInfoList: result.addressList
-    //         });
-    //     });
-    // }
 
     getCurrentBalance(value) {
         this.setState({

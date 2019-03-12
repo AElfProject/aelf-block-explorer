@@ -37,30 +37,28 @@ export default function contractChange(values, contracts, currentWallet, appName
                     method: 'SET_CONTRACT_PERMISSION',
                     payload: {
                         address: currentWallet.address,
-                        contracts: [
-                            {
-                                chainId: 'AELF',
-                                contractAddress: contracts.TOKENADDRESS,
-                                contractName: 'token',
-                                description: 'contract token'
-                            }, {
-                                chainId: 'AELF',
-                                contractAddress: contracts.DIVIDENDSADDRESS,
-                                contractName: 'dividends',
-                                description: 'contract dividends'
-                            }, {
-                                chainId: 'AELF',
-                                contractAddress: contracts.CONSENSUSADDRESS,
-                                contractName: 'consensus',
-                                description: 'contract consensus'
-                            },
-                            {
-                                chainId: 'AELF',
-                                contractAddress: resourceAddress,
-                                contractName: 'resource',
-                                description: 'contract resource'
-                            }
-                        ]
+                        contracts: [{
+                            chainId: 'AELF',
+                            contractAddress: contracts['AElf.Contracts.Token'],
+                            contractName: 'Token',
+                            description: 'contract Token'
+                        }, {
+                            chainId: 'AELF',
+                            contractAddress: contracts['AElf.Contracts.Dividends'],
+                            contractName: 'Dividends',
+                            description: 'contract Dividends'
+                        }, {
+                            chainId: 'AELF',
+                            contractAddress: contracts['AElf.Contracts.Consensus.DPoS'],
+                            contractName: 'Consensus.Dpos',
+                            description: 'contract Consensus'
+                        },
+                        {
+                            chainId: 'AELF',
+                            contractAddress: contracts['AElf.Contracts.Resource'],
+                            contractName: 'Resource',
+                            description: 'contract Resource'
+                        }]
                     }
                 }
             }).then(result => {

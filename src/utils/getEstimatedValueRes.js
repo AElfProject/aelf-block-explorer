@@ -12,7 +12,8 @@ import hexCharCodeToStr from './hexCharCodeToStr';
 export default function getEstimatedValueRes(type, paidElf, resourceContract) {
     return new Promise((resolve, reject) => {
         resourceContract.GetConverter(type, (error, result) => {
-            const converter = JSON.parse(hexCharCodeToStr(result.return));
+            console.log(result);
+            const converter = JSON.parse(hexCharCodeToStr(result));
             let elfCont = paidElf || 0;
             const elfPayout = calculateCrossConnectorReturn(
                 converter.ElfBalance, converter.ElfWeight,

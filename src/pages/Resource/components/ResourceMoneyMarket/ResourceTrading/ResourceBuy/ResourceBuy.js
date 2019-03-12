@@ -28,6 +28,7 @@ export default class ResourceBuy extends Component {
             purchaseQuantity: 0,
             getSlideMarks: null,
             noCanInput: true,
+            nightElf: null,
             account: {
                 balabce: 0,
                 CPU: 0,
@@ -61,6 +62,12 @@ export default class ResourceBuy extends Component {
         if (props.contracts !== state.contracts) {
             return {
                 contracts: props.contracts
+            };
+        }
+
+        if (props.nightElf !== state.nightElf) {
+            return {
+                nightElf: props.nightElf
             };
         }
 
@@ -232,7 +239,10 @@ export default class ResourceBuy extends Component {
     }
 
     getBuyModalShow() {
-        const {value, account, ELFValue, currentWallet, contracts, toBuy} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts, toBuy, nightElf} = this.state;
+        const wallet = {
+            address: currentWallet.address
+        };
         let reg = /^[0-9]*$/;
         if (!reg.test(value) || parseInt(value, 10) === 0) {
             message.error('The value must be numeric and greater than 0');
@@ -253,18 +263,36 @@ export default class ResourceBuy extends Component {
                 type: 'address', // if you did not set type, it aways get by domain.
                 address: currentWallet.address
             }).then(result => {
-                console.log('1>>>>>>>>>>>>>', result);
                 if (result.error !== 0) {
                     message.warning(result.errorMessage.message, 3);
                     return;
                 }
                 contractChange(result, contracts, currentWallet, appName).then(result => {
                     if (value && value !== 0) {
-                        this.props.handleBuyModalShow(value, ELFValue);
+                        nightElf.chain.contractAtAsync(
+                            contracts.TOKENADDRESS,
+                            wallet,
+                            (err, result) => {
+                                if (result) {
+                                    this.getApprove(result);
+                                }
+                            }
+                        );
+                        
                     }
                 });
             });
         }
+    }
+
+    getApprove(result) {
+        const {value, contracts, ELFValue} = this.state;
+        console.log(ELFValue);
+        result.Approve(contracts.RESOURCEADDRESS, ELFValue - 1, (error, result) => {
+            if (result) {
+                this.props.handleBuyModalShow(value, ELFValue);
+            }
+        });
     }
 
     render() {

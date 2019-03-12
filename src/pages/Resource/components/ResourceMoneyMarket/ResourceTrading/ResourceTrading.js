@@ -150,6 +150,7 @@ export default class ResourceTrading extends PureComponent {
                                 contracts={contracts}
                                 resourceContract={resourceContract}
                                 account={account}
+                                nightElf={nightElf}
                             />
                         </Col>
                         <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
@@ -187,6 +188,7 @@ export default class ResourceTrading extends PureComponent {
                         maskClosable={this.modalMaskClosable.bind(this)}
                         unMaskClosable={this.modalUnMaskClosable.bind(this)}
                         nightElf={nightElf}
+                        contracts={contracts}
                     />
                 </Modal>
                 <Modal
@@ -211,6 +213,7 @@ export default class ResourceTrading extends PureComponent {
                         maskClosable={this.modalMaskClosable.bind(this)}
                         unMaskClosable={this.modalUnMaskClosable.bind(this)}
                         nightElf={nightElf}
+                        contracts={contracts}
                     />
                 </Modal>
             </div>
