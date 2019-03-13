@@ -1,27 +1,27 @@
-import React from "react";
+import React from 'react';
 import {
     Link
-} from "react-router-dom";
+} from 'react-router-dom';
 import {
     Row,
     Col,
     Button,
     Icon,
     Table
-} from "antd";
+} from 'antd';
 import {
     aelf,
     format,
     get,
     formatKey
-} from "../../utils";
+} from '../../utils';
 
 import {
     ALL_TXS_LIST_COLUMNS,
     PAGE_SIZE
-} from "../../constants";
+} from '../../constants';
 
-import "./blockdetail.styles.less";
+import './blockdetail.styles.less';
 
 const ButtonGroup = Button.Group;
 
@@ -60,7 +60,6 @@ export default class BlockDetailPage extends React.Component {
             txs_loading: true
         });
         // 先判断是高度还是hash，再执行后续的命令。
-
         let result;
         let blockHeight;
         let txsList;
@@ -68,17 +67,15 @@ export default class BlockDetailPage extends React.Component {
         // BlockHeight
         if (parseInt(input) == input) {
             blockHeight = input;
-            let output = aelf.chain.getBlockInfo(input, 100);
-            result = output.result;
-            error = output.error;
+            result = aelf.chain.getBlockInfo(input, 100);
+            error = result.error;
 
-            const blockhash = result && result.Blockhash;
+            const blockhash = result && result.BlockHash;
             if (blockhash) {
                 txsList = await this.getTxsList(blockhash);
             }
         } else {
             txsList = await this.getTxsList(input);
-
             let {
                 transactions
             } = txsList;
@@ -91,11 +88,10 @@ export default class BlockDetailPage extends React.Component {
             ...this.state.pagination
         };
         pagination.total = txsList && txsList.total || 0;
-
         this.setState({
             blockInfo: {
                 blockHeight: +blockHeight || 'Not Found',
-                blockHash: result && result.Blockhash,
+                blockHash: result && result.BlockHash,
                 txsCount: result && result.Body && result.Body.TransactionsCount || 'Not Found',
                 ...(result && result.Header || {})
             },
@@ -155,12 +151,12 @@ export default class BlockDetailPage extends React.Component {
         } = this.state;
         return (
             <div>
-                <h3 className="block-detail-txs-title">Transaction List</h3>
+                <h3 className='block-detail-txs-title'>Transaction List</h3>
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}
                     pagination={pagination}
-                    rowKey = "tx_id"
+                    rowKey = 'tx_id'
                     loading={txs_loading}
                     onChange={this.handleTableChange}
                 />
@@ -216,13 +212,13 @@ export default class BlockDetailPage extends React.Component {
         return (
             <div>
                 <Link to={prevLink}>
-                    <Icon type="left" />
+                    <Icon type='left' />
                     pre
                 </Link>
                 <span>&nbsp;&nbsp;&nbsp;</span>
                 <Link to={nextLink}>
                     next
-                    <Icon type="right" />
+                    <Icon type='right' />
                 </Link>
             </div>
         );
@@ -233,7 +229,6 @@ export default class BlockDetailPage extends React.Component {
 
         let moreInfoHtml;
         let colsHtml;
-        console.log('aaa');
         if (error) {
             colsHtml = this.renderCol('error', error);
         } else {
@@ -244,17 +239,17 @@ export default class BlockDetailPage extends React.Component {
         const blockPagination = this.renderBlockPagination();
 
         return (
-            <div className="tx-block-detail-container basic-container">
-                <div className="tx-block-detail-panle">
+            <div className='tx-block-detail-container basic-container'>
+                <div className='tx-block-detail-panle'>
                     <div>Overview</div>
                     <div>{blockPagination}</div>
                 </div>
-                <Row className="tx-block-detail-body">
+                <Row className='tx-block-detail-body'>
                     {colsHtml}
                 </Row>
                 <div>&nbsp;</div>
                 {moreInfoHtml}
-                <div className="basic-bottom-blank"></div>
+                <div className='basic-bottom-blank'></div>
             </div>
         );
     }

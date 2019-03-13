@@ -9,8 +9,7 @@ export default function hexCharCodeToStr(hexCharCodeStr) {
     let rawStr = trimedStr.substr(0, 2).toLowerCase() === '0x' ? trimedStr.substr(2) : trimedStr;
     let len = rawStr.length;
     if (len % 2 !== 0) {
-        alert('Illegal Format ASCII Code!');
-        return '';
+        throw Error('Illegal Format ASCII Code!');
     }
     let curCharCode;
     let resultStr = [];

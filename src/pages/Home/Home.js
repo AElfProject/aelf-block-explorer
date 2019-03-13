@@ -29,7 +29,6 @@ import Scrollbar from 'react-smooth-scrollbar';
 
 import {get, format, aelf, transactionFormat} from '../../utils';
 import {
-    TXSSTATUS,
     PAGE_SIZE,
     ALL_BLOCKS_API_URL,
     ALL_TXS_API_URL
@@ -80,7 +79,7 @@ export default class HomePage extends Component {
         const blocksResult = await this.fetch(ALL_BLOCKS_API_URL);
 
         const blocks = blocksResult.blocks;
-
+        console.log(blocksResult);
         const block_height = blocks[0].block_height;
         this.blockHeightInDataBase = block_height;
         this.blockHeight = block_height;
@@ -149,14 +148,17 @@ export default class HomePage extends Component {
                     return;
                 }
                 const {
-                    result: {Blockhash = '', Body = '', Header = ''} = {}
+                    // result: {BlockHash = '', Body = '', Header = ''} = {}
+                    BlockHash,
+                    Body,
+                    Header
                 } = result;
-                if (isEmpty(Blockhash)) {
+                if (isEmpty(BlockHash)) {
                     return;
                 }
 
                 const chainBlocks = {
-                    block_hash: Blockhash,
+                    block_hash: BlockHash,
                     block_height: +blockHeight,
                     chain_id: Header.ChainId,
                     merkle_root_state: Header.MerkleTreeRootOfWorldState,
@@ -176,15 +178,14 @@ export default class HomePage extends Component {
 
                 newBlocksList.unshift(chainBlocks);
                 newBlocksList.length = PAGE_SIZE;
-
                 if (!isEmpty(Body.Transactions)) {
-                    console.log('Body', Blockhash, Body.TransactionsCount);
-                    aelf.chain.getTxsResult(Blockhash, 0, PAGE_SIZE, (error, result) => {
-                        if (error || !result || !result.result) {
+                    // console.log('Body', BlockHash, Body.TransactionsCount);
+                    aelf.chain.getTxsResult(BlockHash, 0, PAGE_SIZE, (error, result) => {
+                        if (error || !result) {
                             message.error(error.message, 2);
                             return;
                         }
-                        const txsList = result.result || [];
+                        const txsList = result || [];
 
                         const txsFormatted = txsList.map(tx => {
                             return transactionFormat(tx);
@@ -196,7 +197,7 @@ export default class HomePage extends Component {
                         this.blockHeight = blockHeight;
                         this.setState({
                             blocks: newBlocksList,
-                            transactions: newTxsList,
+                            transactions: newTxsList
                         });
                     });
                 }
@@ -216,7 +217,7 @@ export default class HomePage extends Component {
             info: '-'
         }, {
             title: 'Total Transactions',
-            info: this.state.totalTransactions,
+            info: this.state.totalTransactions
         }, {
             title: 'Total Applications',
             info: '-'
@@ -341,7 +342,7 @@ export default class HomePage extends Component {
     };
 
     txsRenderItem = item => {
-        const blockHeight = item.block_height;
+        // const blockHeight = item.block_height;
 
         let tx_id = item.tx_id;
         // let txIDlength = tx_id.length;
@@ -383,12 +384,12 @@ export default class HomePage extends Component {
             </Row>
         );
 
-        return (
-            <List.Item key={blockHeight}>
-                <List.Item.Meta title={title} description={desc} />
-                <div>Trading Status: {TXSSTATUS[item.tx_status]}</div>
-            </List.Item>
-        );
+        // return (
+        //     <List.Item key={blockHeight}>
+        //         <List.Item.Meta title={title} description={desc} />
+        //         <div>Trading Status: {TXSSTATUS[item.tx_status]}</div>
+        //     </List.Item>
+        // );
     };
 
     renderBlocksAndTxsList() {

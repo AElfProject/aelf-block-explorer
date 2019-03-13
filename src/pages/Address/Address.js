@@ -54,6 +54,7 @@ export default class AddressPage extends React.Component {
             ...params
         });
 
+        console.log(data);
         const pagination = {...this.state.pagination};
         if (data && data.transactions.length) {
             pagination.total = data.total;
@@ -169,7 +170,7 @@ export default class AddressPage extends React.Component {
             txs_loading,
             balance
         } = this.state;
-        console.log(address, balance, this.state.value);
+
         const addressInfo = [{
             address,
             balance,

@@ -44,11 +44,9 @@ export default class Search extends PureComponent {
         },
         transaction: async function (value) {
             // 先请求一下...如果有结果，就跳转到对应的结果页，都没有就提示查不到东西。
-            const {
-                result
-            } = aelf.chain.getTxResult(value);
+            const result = aelf.chain.getTxResult(value);
             // if (result.block_hash) {
-            if (typeof result.tx_info === 'object') {
+            if (typeof result.Transaction === 'object') {
                 window.open(`/tx/${value}`);
                 message.info('open new window: Transaction Detail');
                 return;
@@ -74,7 +72,7 @@ export default class Search extends PureComponent {
             return;
         }
         const length = value.length;
-        const isAddress = [49, 50, 51, 52, 53];
+        const isAddress = [49, 50, 51, 52, 53, 47];
         const isTxid = [64];
 
         // address.length === 38/66 && address.match(/^0x/)

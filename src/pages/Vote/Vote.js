@@ -7,17 +7,21 @@
 
 import React, {Component} from 'react';
 import {Row, Col, message} from 'antd';
-import {DEFAUTRPCSERVER, resourceAddress} from '../../../config/config';
+import proto from 'protobufjs';
+import {aelf} from '../../utils';
+import {DEFAUTRPCSERVER} from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
 import VotingYieldChart from './components/VotingYieldChart/VotingYieldChart';
 import AElfWallet from './components/AElfWallet/AElfWallet';
 import VotingModule from './components/VotingModule/VotingModule';
-import {aelf} from '../../utils';
 import Svg from '../../components/Svg/Svg';
-import getHexNumber from '../../utils/getHexNumber';
+import getLogin from '../../utils/getLogin';
+import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
+import hexToArrayBuffer from '../../utils/hexToArrayBuffer';
 import getContractAddress from '../../utils/getContractAddress';
 import NightElfCheck from '../../utils/NightElfCheck';
+
 import './Vote.styles.less';
 
 let nightElf;
@@ -62,13 +66,11 @@ export default class VotePage extends Component {
         let httpProvider = DEFAUTRPCSERVER;
         // getContract
         getContractAddress().then(result => {
-            let contracts = result;
-            contracts['RESOURCEADDRESS'] = resourceAddress;
             this.setState({
-                contracts
+                contracts: result
             });
             aelf.chain.contractAtAsync(result.CONSENSUSADDRESS, result.wallet, (error, result) => {
-                console.log(result);
+                // console.log(result);
                 this.setState({
                     consensus: result
                 });
@@ -105,26 +107,13 @@ export default class VotePage extends Component {
                             return;
                         }
                         if (result) {
-                            this.connectChain = result.result;
-                            this.connectChain['AElf.Contracts.Resource'] = resourceAddress;
+                            this.connectChain = result;
                             window.NightElf.api({
                                 appName,
                                 method: 'CHECK_PERMISSION',
                                 type: 'domain'
                             }).then(result => {
-                                if (result && result.error === 0) {
-                                    const permissions = result.permissions;
-                                    if (permissions.length) {
-                                        this.checkPermissionRepeat(result);
-                                    }
-                                    else {
-                                        localStorage.setItem('currentWallet', null);
-                                        this.getLogin(result);
-                                    }
-                                }
-                                else {
-                                    message.error(result.errorMessage.message, 3);
-                                }
+                                this.insertKeypairs(result);
                             });
                         }
                     });
@@ -137,165 +126,45 @@ export default class VotePage extends Component {
         });
     }
 
-    checkPermissionRepeat(result) {
-        const {permissions} = result;
-        const {address} = permissions[0];
-        this.getNightElfKeypair(address);
-        const connectChain = JSON.stringify(this.connectChain);
-        const permission = result.permissions.map(item => {
-            if (item.appName === appName) {
-                return item;
-            }
-        });
-        console.log(permission[0].contracts);
-        console.log(connectChain);
-        permission[0].contracts.map(item => {
-            console.log(item.contractAddress);
-            if (connectChain.indexOf(item.contractAddress) === -1) {
-                this.setNewPermission(address);
-            }
-        });
-    }
-
-    getLogin() {
-        window.NightElf.api({
+    // EXPLAIN: Update browser keypair status
+    insertKeypairs(result) {
+        const getLoginPayload = {
             appName,
-            domain: 'aelf.io',
-            method: 'LOGIN',
-            payload: {
-                payload: {
-                    // appName: message.appName,
-                    // domain: message.hostname
-                    method: 'LOGIN',
-                    contracts: [{
-                        chainId: 'AELF',
-                        // contractAddress: 'asdasdasdasdadasdasdasdasdasasdasd',
-                        contractAddress: this.connectChain['AElf.Contracts.Token'],
-                        contractName: 'token',
-                        description: 'token contract'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Dividends'],
-                        contractName: 'dividends',
-                        description: 'contract dividends'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Consensus'],
-                        contractName: 'consensus',
-                        description: 'contract consensus'
-                    },
-                    {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Resource'],
-                        contractName: 'resource',
-                        description: 'contract resource'
-                    }]
-                }
-            }
-        }).then(result => {
-            if (result && result.error === 0) {
-                const address = JSON.parse(result.detail).address;
-                this.getNightElfKeypair(address);
-                message.success('Login success!!', 3);
+            connectChain: this.connectChain
+        };
+        if (result && result.error === 0) {
+            const {
+                permissions
+            } = result;
+            const payload = {
+                appName,
+                connectChain: this.connectChain,
+                result
+            };
+            if (permissions.length) {
+                // EXPLAIN: Need to redefine this scope
+                checkPermissionRepeat(payload, this.getNightElfKeypair.bind(this));
             }
             else {
-                this.setState({
-                    showWallet: false
+                localStorage.setItem('currentWallet', null);
+                getLogin(getLoginPayload, result => {
+                    if (result && result.error === 0) {
+                        const address = JSON.parse(result.detail).address;
+                        this.getNightElfKeypair(address);
+                        message.success('Login success!!', 3);
+                    }
+                    else {
+                        this.setState({
+                            showWallet: false
+                        });
+                        message.error(result.errorMessage.message, 3);
+                    }
                 });
-                console.log(result);
-                message.error(result.errorMessage.message, 3);
             }
-        });
-    }
-
-    setNewPermission(address) {
-        window.NightElf.api({
-            appName,
-            method: 'OPEN_PROMPT',
-            chainId: 'AELF',
-            hostname: 'aelf.io',
-            payload: {
-                // 在中间层会补齐
-                // appName: 'hzzTest',
-                // method 使用payload的
-                // chainId: 'AELF',
-                // hostname: 'aelf.io',
-                payload: {
-                    method: 'SET_CONTRACT_PERMISSION',
-                    address,
-                    contracts: [{
-                        chainId: 'AELF',
-                        // contractAddress: 'asdasdasdasdadasdasdasdasdasasdasd',
-                        contractAddress: this.connectChain['AElf.Contracts.Token'],
-                        contractName: 'token',
-                        description: 'token contract'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Dividends'],
-                        contractName: 'dividends',
-                        description: 'contract dividends'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Consensus'],
-                        contractName: 'consensus',
-                        description: 'contract consensus'
-                    },
-                    {
-                        chainId: 'AELF',
-                        contractAddress: resourceAddress,
-                        contractName: 'resource',
-                        description: 'contract resource'
-                    }]
-                    // appName: message.appName,
-                    // domain: message.hostname
-                }
-            }
-        }).then(result => {
-            console.log('>>>>>>>>>>>>>>>>>>>', result);
-            if (result && result.error === 0) {
-                message.success('Update Permission success!!', 3);
-            }
-            else {
-                message.error(result.errorMessage.message, 3);
-            }
-        });
-    }
-
-    componentWillUnmount() {
-        clearTimeout(this.informationTimer);
-        this.setState = () => {};
-    }
-
-
-    getInformation(consensus) {
-        const {information} = this.state;
-        consensus.GetVotesCount((error, result) => {
-            let temp = information;
-            temp[0].info = getHexNumber(result.return).toLocaleString();
-            this.setState({
-                information: temp
-            });
-        });
-
-        consensus.GetTicketsCount((error, result) => {
-            let temp = information;
-            temp[1].info = getHexNumber(result.return).toLocaleString();
-            this.setState({
-                information: temp
-            });
-        });
-
-        consensus.QueryCurrentDividends((error, result) => {
-            let temp = information;
-            temp[2].info = getHexNumber(result.return).toLocaleString();
-            this.setState({
-                information: temp
-            });
-        });
-
-        this.informationTimer = setTimeout(() => {
-            this.getInformation(consensus);
-        }, 60000);
+        }
+        else {
+            message.error(result.errorMessage.message, 3);
+        }
     }
 
     getNightElfKeypair(address) {
@@ -318,6 +187,45 @@ export default class VotePage extends Component {
                 });
             });
         }
+    }
+
+    getInformation(consensus) {
+        const {information} = this.state;
+        consensus.GetVotesCount((error, result) => {
+            let temp = information;
+
+            // temp[0].info = getHexNumber(result.return).toLocaleString();
+            temp[0].info = new proto.Reader(hexToArrayBuffer(result)).uint64();
+            this.setState({
+                information: temp
+            });
+        });
+
+        consensus.GetTicketsCount((error, result) => {
+            let temp = information;
+            temp[1].info = new proto.Reader(hexToArrayBuffer(result)).uint64();
+            this.setState({
+                information: temp
+            });
+        });
+
+        consensus.QueryCurrentDividends((error, result) => {
+            let temp = information;
+            console.log(hexToArrayBuffer(result));
+            temp[2].info = new proto.Reader(hexToArrayBuffer(result)).uint64();
+            this.setState({
+                information: temp
+            });
+        });
+
+        this.informationTimer = setTimeout(() => {
+            this.getInformation(consensus);
+        }, 60000);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.informationTimer);
+        this.setState = () => {};
     }
 
     hideWallet() {
@@ -404,15 +312,15 @@ export default class VotePage extends Component {
                     </Row>
                 </div>
                 <VotingYieldChart title='Historical voting gains' dividends={dividends}/>
-                {aelfWalletHTML}
-                <div className='vote-box' >
+                {/* {aelfWalletHTML} */}
+                {/* <div className='vote-box' >
                     <VotingModule
                         currentWallet={currentWallet}
                         consensus={consensus}
                         contracts={contracts}
                         nightElf={nightElf}
                     />
-                </div>
+                </div> */}
             </div>
             // <div className='apps-page-container'>AELF Applications List Page.</div>
         );

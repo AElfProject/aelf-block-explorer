@@ -69,15 +69,15 @@ const formatKey = (inputString) => {
 
 function transactionFormat(result) {
     let newTxs = {
-        address_from: result.tx_info.From,
-        address_to: result.tx_info.To,
-        block_hash: result.block_hash,
-        block_height: result.block_number,
-        increment_id: result.tx_info.IncrementId,
-        method: result.tx_info.Method,
-        params: result.tx_info.params,
-        tx_id: result.tx_info.TxId,
-        tx_status: result.tx_status
+        address_from: result.Transaction.From,
+        address_to: result.Transaction.To,
+        block_hash: result.BlockHash,
+        block_height: result.BlockNumber,
+        increment_id: result.Transaction.IncrementId || '',
+        method: result.Transaction.MethodName,
+        params: result.Transaction.Params,
+        tx_id: result.TransactionId,
+        tx_status: result.Status
     };
     return newTxs;
 }
