@@ -3,7 +3,7 @@
  * @author huangzongzhe
 */
 
-import proto from 'protobufjs';
+import proto from '@aelfqueen/protobufjs';
 export default function hexToArrayBuffer(input) {
     let resultArray = [];
     console.log(input);
