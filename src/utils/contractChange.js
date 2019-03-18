@@ -39,7 +39,7 @@ export default function contractChange(values, contracts, currentWallet, appName
                         address: currentWallet.address,
                         contracts: [{
                             chainId: 'AELF',
-                            contractAddress: contracts['AElf.Contracts.Token'],
+                            contractAddress: contracts['AElf.Contracts.MultiToken'],
                             contractName: 'Token',
                             description: 'contract Token'
                         }, {

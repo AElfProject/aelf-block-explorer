@@ -26,7 +26,7 @@ export default function setNewPermission(payload) {
                 address,
                 contracts: [{
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Token'],
+                    contractAddress: connectChain['AElf.Contracts.MultiToken'],
                     contractName: 'token',
                     description: 'token contract'
                 }, {

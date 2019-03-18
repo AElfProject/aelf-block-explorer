@@ -14,6 +14,7 @@ import './VotingModule.less';
 import VotingRecord from './VotingRecord/VotingRecord';
 import getHexNumber from '../../../../utils/getHexNumber';
 import {NONE} from 'apisauce';
+import hexToArrayBuffer from '../../../../utils/hexToArrayBuffer';
 
 export default class VotingModule extends PureComponent {
     constructor(props) {
@@ -36,7 +37,8 @@ export default class VotingModule extends PureComponent {
             isRefresh: false,
             consensus: null,
             contracts: null,
-            nightElf: this.props.nightElf
+            nightElf: this.props.nightElf,
+            appName: this.props.appName
         };
     }
 
@@ -73,11 +75,14 @@ export default class VotingModule extends PureComponent {
             const {consensus} = this.state;
             if (consensus) {
                 consensus.GetCurrentRoundNumber((error, result) => {
-                    consensus.GetTermNumberByRoundNumber(getHexNumber(result.return), (error, result) => {
-                        this.setState({
-                            session: getHexNumber(result.return)
+                    if (result && !result.error) {
+                        const round = hexToArrayBuffer(result);
+                        consensus.GetCurrentTermNumber(round, (error, result) => {
+                            this.setState({
+                                session: hexToArrayBuffer(result)
+                            });
                         });
-                    });
+                    }
                 });
             }
         }
@@ -140,14 +145,20 @@ export default class VotingModule extends PureComponent {
             this.setState({
                 isRefresh: true
             });
-
             consensus.GetCurrentRoundNumber((error, result) => {
-                consensus.GetTermNumberByRoundNumber(getHexNumber(result.return), (error, result) => {
-                    this.setState({
-                        session: getHexNumber(result.return),
-                        refresh: refresh + 1
+                if (result && !result.error) {
+                    const round = hexToArrayBuffer(result);
+                    consensus.GetCurrentTermNumber(round, (error, result) => {
+                        this.endRefresh();
+                        this.setState({
+                            session: hexToArrayBuffer(result),
+                            refresh: refresh + 1
+                        });
                     });
-                });
+                }
+                else {
+                    this.endRefresh();
+                }
             });
         }
     }
@@ -159,7 +170,7 @@ export default class VotingModule extends PureComponent {
     }
 
     getVoteTable() {
-        const {consensus, currentWallet, refresh, showVote, contracts} = this.state;
+        const {consensus, currentWallet, refresh, showVote, contracts, appName} = this.state;
         return (
             <VoteTable
                 style={this.state.showVote ? {display: 'block'} : {display: 'none'}}
@@ -174,12 +185,13 @@ export default class VotingModule extends PureComponent {
                 showVote={showVote}
                 consensus={consensus}
                 contracts={contracts}
+                appName={appName}
             />
         );
     }
 
     getMyVote() {
-        const {consensus, contracts, refresh, currentWallet, showMyVote} = this.state;
+        const {consensus, contracts, refresh, currentWallet, showMyVote, appName} = this.state;
         return (
             <MyVote
                 style={this.state.showMyVote ? {display: 'block'} : {display: 'none'}}
@@ -193,12 +205,13 @@ export default class VotingModule extends PureComponent {
                 consensus={consensus}
                 contracts={contracts}
                 showMyVote={showMyVote}
+                appName={appName}
             />
         );
     }
 
     getVotingRecord() {
-        const {consensus, currentWallet, refresh, showVotingRecord} = this.state;
+        const {consensus, currentWallet, refresh, showVotingRecord, appName} = this.state;
         return (
             <VotingRecord
                 style={this.state.showVotingRecord ? {display: 'block'} : {display: 'none'}}
@@ -207,12 +220,13 @@ export default class VotingModule extends PureComponent {
                 consensus={consensus}
                 showVotingRecord={showVotingRecord}
                 endRefresh={this.endRefresh.bind(this)}
+                appName={appName}
             />
         );
     }
 
     render() {
-        const {isVote, isRedeem, contracts, nightElf} = this.state;
+        const {isVote, isRedeem, contracts, nightElf, appName} = this.state;
         const voteTable = this.getVoteTable();
         const myVote = this.getMyVote();
         const votingRecord = this.getVotingRecord();
@@ -290,6 +304,7 @@ export default class VotingModule extends PureComponent {
                         onRefresh={this.onRefresh.bind(this)}
                         contracts={contracts}
                         nightElf={nightElf}
+                        appName={appName}
                     />
                 </Modal>
                 <Modal
@@ -308,6 +323,7 @@ export default class VotingModule extends PureComponent {
                         myVote={this.state.myVote}
                         contracts={contracts}
                         onRefresh={this.onRefresh.bind(this)}
+                        appName={appName}
                     />
                 </Modal>
             </div>

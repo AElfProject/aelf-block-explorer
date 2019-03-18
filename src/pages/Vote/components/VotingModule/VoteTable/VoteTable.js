@@ -14,6 +14,7 @@ import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
 import contractChange from '../../../../../utils/contractChange';
 import * as Aelf from 'aelf-sdk';
 import './VoteTable.less';
+import hexToArrayBuffer from '../../../../../utils/hexToArrayBuffer';
 
 let pageSize = 20;
 let page = 0;
@@ -149,55 +150,64 @@ export default class VoteTable extends PureComponent {
         });
         let {pagination, page, pageSize} = params;
         consensus.GetTicketsCount((error, result) => {
-            this.setState({
-                allVotes: getHexNumber(result.return)
-            });
+            if (result && !result.error) {
+                this.setState({
+                    allVotes: hexToArrayBuffer(result)
+                });
+            }
         });
         consensus.GetPageableCandidatesHistoryInfoToFriendlyString(page, pageSize, (error, result) => {
-            let isVote = true;
-            let isRedee = true;
-            if (currentWallet) {
-                if (currentWallet.publicKey === '') {
+            if (result && !result.error) {
+                let isVote = true;
+                let isRedee = true;
+                if (currentWallet) {
+                    if (currentWallet.publicKey === '') {
+                        isVote = false;
+                        isRedee = false;
+                    }
+                }
+                else {
                     isVote = false;
                     isRedee = false;
                 }
+                pagination.total = result.CandidatesNumber;
+                let nodeList = JSON.parse(hexCharCodeToStr(result)).Maps || [];
+                if (nodeList.length === 0) {
+                    this.setState({
+                        data: [],
+                        loading: false
+                    });
+                    return;
+                }
+
+                let serial = 0;
+                let dataList = [];
+                for (let i in nodeList) {
+                    let nodeInformation = nodeList[i];
+                    let data = {
+                        key: page + serial + 1,
+                        serialNumber: page + serial + 1,
+                        nodeName: nodeInformation.CurrentAlias,
+                        term: nodeInformation.ReappointmentCount || '-',
+                        block: nodeInformation.ProducedBlocks || '-',
+                        vote: nodeInformation.CurrentVotesNumber || '-',
+                        myVote: 0 || '-',
+                        operation: {
+                            publicKey: i || '',
+                            vote: isVote,
+                            redeem: isRedee
+                        }
+                    };
+                    serial++;
+                    dataList.push(data);
+                }
+                this.getCurrentWalletVote(dataList);
             }
             else {
-                isVote = false;
-                isRedee = false;
-            };
-            pagination.total = result.CandidatesNumber;
-            let nodeList = JSON.parse(hexCharCodeToStr(result.return)).Maps || [];
-            if (nodeList.length === 0) {
                 this.setState({
-                    data: [],
                     loading: false
                 });
-                return;
             }
-
-            let serial = 0;
-            let dataList = [];
-            for (let i in nodeList) {
-                let nodeInformation = nodeList[i];
-                let data = {
-                    key: page + serial + 1,
-                    serialNumber: page + serial + 1,
-                    nodeName: nodeInformation.CurrentAlias,
-                    term: nodeInformation.ReappointmentCount || '-',
-                    block: nodeInformation.ProducedBlocks || '-',
-                    vote: nodeInformation.CurrentVotesNumber || '-',
-                    myVote: 0 || '-',
-                    operation: {
-                        publicKey: i || '',
-                        vote: isVote,
-                        redeem: isRedee
-                    }
-                };
-                serial++;
-                dataList.push(data);
-            }
-            this.getCurrentWalletVote(dataList);
         });
     }
 
@@ -217,8 +227,11 @@ export default class VoteTable extends PureComponent {
             key = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey).keyPair.getPublic().encode('hex');
         }
 
-        consensus.GetTicketsInfoToFriendlyString(key, (error, result) => {
-            let votingRecords = JSON.parse(hexCharCodeToStr(result.return)).VotingRecords || [];
+        consensus.GetTicketsInformationToFriendlyString(key, (error, result) => {
+            let votingRecords = [];
+            if (result && !result.error) {
+                votingRecords = JSON.parse(hexCharCodeToStr(result)).VotingRecords || [];
+            }
             dataList.map((item, index) => {
                 let myVote = 0;
                 for (let j = 0, len = votingRecords.length; j < len; j++) {

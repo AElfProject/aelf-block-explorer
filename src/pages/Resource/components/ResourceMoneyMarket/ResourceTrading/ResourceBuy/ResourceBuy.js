@@ -13,13 +13,13 @@ import getFees from '../../../../../../utils/getFees';
 import contractChange from '../../../../../../utils/contractChange';
 import './ResourceBuy.less';
 
-const appName = 'aelf.io';
 export default class ResourceBuy extends Component {
     constructor(props) {
         super(props);
         this.debounceTimer;
         this.state = {
             menuName: null,
+            appName: this.props.appName,
             menuIndex: this.props.menuIndex,
             contracts: null,
             ELFValue: 0,
@@ -239,7 +239,7 @@ export default class ResourceBuy extends Component {
     }
 
     getBuyModalShow() {
-        const {value, account, ELFValue, currentWallet, contracts, toBuy, nightElf} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts, toBuy, nightElf, appName} = this.state;
         const wallet = {
             address: currentWallet.address
         };
@@ -258,7 +258,7 @@ export default class ResourceBuy extends Component {
         }
         else {
             window.NightElf.api({
-                appName: 'hzzTest',
+                appName,
                 method: 'CHECK_PERMISSION',
                 type: 'address', // if you did not set type, it aways get by domain.
                 address: currentWallet.address
@@ -286,9 +286,8 @@ export default class ResourceBuy extends Component {
     }
 
     getApprove(result) {
-        const {value, contracts, ELFValue} = this.state;
-        console.log(ELFValue);
-        result.Approve(contracts.RESOURCEADDRESS, ELFValue - 1, (error, result) => {
+        const {value, ELFValue, currentWallet} = this.state;
+        result.Approve2('ELF', ELFValue - 1, currentWallet.address, (error, result) => {
             if (result) {
                 this.props.handleBuyModalShow(value, ELFValue);
             }

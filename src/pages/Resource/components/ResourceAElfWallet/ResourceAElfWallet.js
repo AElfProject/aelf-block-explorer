@@ -7,8 +7,9 @@ import React, {PureComponent} from 'react';
 import {Row, Col, Spin} from 'antd';
 import Svg from '../../../../components/Svg/Svg';
 import {Link} from 'react-router-dom';
+import hexCharCodeToStr from '../../../../utils/hexCharCodeToStr';
 import hexToArrayBuffer from '../../../../utils/hexToArrayBuffer';
-import proto from 'protobufjs';
+// import proto from 'protobufjs';
 import './ResourceAElfWallet.less';
 
 export default class ResourceAElfWallet extends PureComponent {
@@ -54,23 +55,13 @@ export default class ResourceAElfWallet extends PureComponent {
     }
 
     componentDidMount() {
-        const {currentWallet, resourceContract, tokenContract} = this.state;
-        if (currentWallet.length > 0) {
-            this.props.onRefresh();
-            this.getCurrentWalletBalance();
-        }
+        this.getCurrentWalletBalance();
+        this.getCurrentWalletResource();
 
-        if (tokenContract) {
-            this.props.onRefresh();
-            this.getCurrentWalletBalance();
-        }
-
-        if (resourceContract) {
-            this.getCurrentWalletResource();
-        }
     }
 
     componentDidUpdate(prevProps, prevState) {
+
         if (prevProps.resourceContract !== this.props.resourceContract) {
             this.props.onRefresh();
             this.getCurrentWalletResource();
@@ -109,20 +100,32 @@ export default class ResourceAElfWallet extends PureComponent {
 
     getCurrentWalletBalance = async () => {
         const {tokenContract, currentWallet} = this.state;
-        tokenContract.BalanceOf(currentWallet.address, (error, result) => {
-            const balance = new proto.Reader(hexToArrayBuffer(result)).uint64();
-            this.setState({
-                balance: balance.toLocaleString(),
-                resourceReady: this.state.resourceReady + 1
-            });
-            this.props.getCurrentBalance(balance);
+        // tokenContract.BalanceOf(currentWallet.address, (error, result) => {
+        //     const balance = new proto.Reader(hexToArrayBuffer(result)).uint64();
+        //     this.setState({
+        //         balance: balance.toLocaleString(),
+        //         resourceReady: this.state.resourceReady + 1
+        //     });
+        //     this.props.getCurrentBalance(balance);
+        // });
+        console.log(tokenContract);
+        tokenContract.GetBalance2('ELF', currentWallet.address, (error, result) => {
+            if (result && !result.error) {
+                const balance = JSON.parse(hexCharCodeToStr(result)).balance;
+                this.setState({
+                    balance: parseInt(balance, 10),
+                    resourceReady: this.state.resourceReady + 1
+                });
+                this.props.getCurrentBalance(parseInt(balance, 10));
+            }
+            
         });
     }
 
     getCurrentWalletResource = async () => {
         const {resourceContract, currentWallet} = this.state;
         resourceContract.GetUserBalance(currentWallet.address, 'RAM', (error, result) => {
-            const resource = new proto.Reader(hexToArrayBuffer(result)).uint64();
+            const resource = hexToArrayBuffer(result);
             this.setState({
                 RAM: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1
@@ -131,7 +134,7 @@ export default class ResourceAElfWallet extends PureComponent {
         });
 
         resourceContract.GetUserBalance(currentWallet.address, 'CPU', (error, result) => {
-            const resource = new proto.Reader(hexToArrayBuffer(result)).uint64();
+            const resource = hexToArrayBuffer(result);
             this.setState({
                 CPU: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1
@@ -140,7 +143,7 @@ export default class ResourceAElfWallet extends PureComponent {
         });
 
         resourceContract.GetUserBalance(currentWallet.address, 'NET', (error, result) => {
-            const resource = new proto.Reader(hexToArrayBuffer(result)).uint64();
+            const resource = hexToArrayBuffer(result);
             this.setState({
                 NET: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1
@@ -149,7 +152,7 @@ export default class ResourceAElfWallet extends PureComponent {
         });
 
         resourceContract.GetUserBalance(currentWallet.address, 'STO', (error, result) => {
-            const resource = new proto.Reader(hexToArrayBuffer(result)).uint64();
+            const resource = hexToArrayBuffer(result);
             this.setState({
                 STO: resource === 0 ? '--.--' : resource.toLocaleString(),
                 resourceReady: this.state.resourceReady + 1

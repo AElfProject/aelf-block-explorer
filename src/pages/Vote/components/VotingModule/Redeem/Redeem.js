@@ -63,16 +63,16 @@ export default class Redeem extends PureComponent {
                 return;
             }
             if (result) {
-                const hash = result.result ? result.result.hash : result.hash;
+                const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
                 this.setState({
                     loading: true
                 });
                 setTimeout(() => {
-                    aelf.chain.getTxResult(hash, (error, result) => {
-                        if (result.result.tx_status === 'Mined') {
+                    aelf.chain.getTxResult(transactionId, (error, result) => {
+                        if (result.Status === 'Mined') {
                             this.props.onRefresh();
                         }
-                        getStateJudgment(result.result.tx_status, hash);
+                        getStateJudgment(result.Status, transactionId);
                         this.setState({
                             loading: false
                         });
@@ -93,12 +93,12 @@ export default class Redeem extends PureComponent {
                 >
                     <div className='redeem-step-1'>
                         <Row type='flex' align='middle'>
-                            <Col span='10'>Node name: </Col>
-                            <Col span='14'>{this.props.nodeName}</Col>
+                            <Col span={10}>Node name: </Col>
+                            <Col span={14}>{this.props.nodeName}</Col>
                         </Row>
                         <Row type='flex' align='middle'>
-                            <Col span='10'>Quantity of redemption: </Col>
-                            <Col span='14'>{this.state.myVote} ELF</Col>
+                            <Col span={10}>Quantity of redemption: </Col>
+                            <Col span={14}>{this.state.myVote} ELF</Col>
                         </Row>
                     </div>
                     <div className='vote-step1-button'>

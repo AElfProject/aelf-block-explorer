@@ -55,27 +55,29 @@ export default class VotingRecord extends PureComponent {
 
         const key = getPublicKey(currentWallet.publicKey);
         consensus.GetPageableTicketsHistoriesToFriendlyString(key, page, pageSize, (error, result) => {
-            const ticketsHistoriesData = JSON.parse(hexCharCodeToStr(result.return)).Values || [];
-            const historiesNumber = JSON.parse(hexCharCodeToStr(result.return)).HistoriesNumber || 0;
-            pagination.total = parseInt(historiesNumber, 10);
-            ticketsHistoriesData.map((item, index) => {
-                let data = {
-                    key: page + index + 1,
-                    serialNumber: page + index + 1,
-                    nodeName: item.CandidateAlias || '-',
-                    type: item.Type || '-',
-                    number: item.VotesNumber || '-',
-                    state: item.State ? 'success' : 'failed',
-                    time: dayjs(item.Timestamp).format('YYYY-MM-DD') || '-'
-                };
-                dataList.push(data);
-            });
-            this.props.endRefresh();
-            this.setState({
-                data: dataList,
-                pagination,
-                loading: false
-            });
+            if (result && !result.error) {
+                const ticketsHistoriesData = JSON.parse(hexCharCodeToStr(result)).Values || [];
+                const historiesNumber = JSON.parse(hexCharCodeToStr(result)).HistoriesNumber || 0;
+                pagination.total = parseInt(historiesNumber, 10);
+                ticketsHistoriesData.map((item, index) => {
+                    let data = {
+                        key: page + index + 1,
+                        serialNumber: page + index + 1,
+                        nodeName: item.CandidateAlias || '-',
+                        type: item.Type || '-',
+                        number: item.VotesNumber || '-',
+                        state: item.State ? 'success' : 'failed',
+                        time: dayjs(item.Timestamp).format('YYYY-MM-DD') || '-'
+                    };
+                    dataList.push(data);
+                });
+                this.props.endRefresh();
+                this.setState({
+                    data: dataList,
+                    pagination,
+                    loading: false
+                });
+            }
         });
     }
 

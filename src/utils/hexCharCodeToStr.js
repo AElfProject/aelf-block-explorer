@@ -5,6 +5,9 @@
  */
 
 export default function hexCharCodeToStr(hexCharCodeStr) {
+    if (typeof hexCharCodeStr !== 'string' || hexCharCodeStr.length % 2 !== 0) {
+        throw Error('invalid input');
+    }
     let trimedStr = hexCharCodeStr.trim();
     let rawStr = trimedStr.substr(0, 2).toLowerCase() === '0x' ? trimedStr.substr(2) : trimedStr;
     let len = rawStr.length;

@@ -105,10 +105,13 @@ export default class AElfWallet extends PureComponent {
         if (currentWallet) {
             const key = getPublicKey(currentWallet.publicKey);
             dividends.GetAllAvailableDividends(key, (error, result) => {
-                let dividends = getHexNumber(result.return);
-                this.setState({
-                    dividendsNum: dividends
-                });
+                if (result && !result.error) {
+                    console.log(result);
+                    let dividends = getHexNumber(result);
+                    this.setState({
+                        dividendsNum: dividends
+                    });
+                }
             });
         }
         else {
@@ -120,11 +123,14 @@ export default class AElfWallet extends PureComponent {
         const {tokenContract} = this.state;
         let {currentWallet} = this.state;
         if (currentWallet) {
-            tokenContract.BalanceOf(currentWallet.address, (error, result) => {
-                let balance = getHexNumber(result.return);
-                this.setState({
-                    balanceNum: balance
-                });
+            tokenContract.GetBalance2('ELF', currentWallet.address, (error, result) => {
+                if (result && !result.error) {
+                    const balance = JSON.parse(hexCharCodeToStr(result)).balance;
+                    this.setState({
+                        balanceNum: parseInt(balance, 10),
+                        resourceReady: this.state.resourceReady + 1
+                    });
+                }
             });
         }
         else {
@@ -137,18 +143,20 @@ export default class AElfWallet extends PureComponent {
         let {currentWallet} = this.state;
         if (currentWallet) {
             const key = getPublicKey(currentWallet.publicKey);
-            consensus.GetTicketsInfoToFriendlyString(key, (error, result) => {
-                let tickets = JSON.parse(hexCharCodeToStr(result.return)).VotingRecords || [];
-                let ticket = 0;
-                tickets.map((item, index) => {
-                    if (item.From === key) {
-                        let IsWithdrawn = item.IsWithdrawn || false;
-                        IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
-                    }
-                });
-                this.setState({
-                    ticketsNum: ticket
-                });
+            consensus.GetTicketsInformationToFriendlyString(key, (error, result) => {
+                if (result && !result.error) {
+                    let tickets = JSON.parse(hexCharCodeToStr(result)).VotingRecords || [];
+                    let ticket = 0;
+                    tickets.map((item, index) => {
+                        if (item.From === key) {
+                            let IsWithdrawn = item.IsWithdrawn || false;
+                            IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
+                        }
+                    });
+                    this.setState({
+                        ticketsNum: ticket
+                    });
+                }
             });
         }
         else {
@@ -342,10 +350,10 @@ export default class AElfWallet extends PureComponent {
                 >
                     <div className='AElf-Wallet-body'>
                     <Row>
-                        <Col span='22'>
+                        <Col span={22}>
                             {walletAssetInfo}
                         </Col>
-                        <Col span='2'>
+                        <Col span={2}>
                             <div onClick={this.onRefresh.bind(this)}>
                                 <Svg
                                     className={this.state.loading ? 'refresh-animate' : ''}

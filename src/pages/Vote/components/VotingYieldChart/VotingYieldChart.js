@@ -41,11 +41,14 @@ export default class VotingYieldChart extends PureComponent {
                     loading: true
                 });
                 this.props.dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
-                    console.log(result);
-                    // this.setState({
-                    //     data: JSON.parse(hexCharCodeToStr(result.return)).Values,
-                    //     loading: false
-                    // });
+                    if (result && !result.error) {
+                        this.setState({
+                            data: JSON.parse(hexCharCodeToStr(result)).Values
+                        });
+                    }
+                    this.setState({
+                        loading: false
+                    });
                 });
             }
         }
@@ -57,8 +60,12 @@ export default class VotingYieldChart extends PureComponent {
             loading: true
         });
         dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
+            if (result && !result.error) {
+                this.setState({
+                    data: JSON.parse(hexCharCodeToStr(result)).Values
+                });
+            }
             this.setState({
-                data: JSON.parse(hexCharCodeToStr(result.return)).Values,
                 loading: false
             });
         });

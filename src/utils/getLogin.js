@@ -19,7 +19,7 @@ export default function getLogin(payload, callback) {
                 method: 'LOGIN',
                 contracts: [{
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Token'],
+                    contractAddress: connectChain['AElf.Contracts.MultiToken'],
                     contractName: 'Token',
                     description: 'contract Token'
                 }, {

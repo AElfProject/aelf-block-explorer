@@ -176,6 +176,7 @@ export default class ResourceMoneyMarket extends PureComponent {
                                     onRefresh={this.props.onRefresh}
                                     endRefresh={this.props.endRefresh}
                                     nightElf={nightElf}
+                                    appName={this.props.appName}
                                 />
                             </Col>
                             <Col

@@ -17,6 +17,7 @@ export default class ResourceSell extends Component {
         this.debounceTimer;
         this.state = {
             menuName: null,
+            appName: this.props.appName,
             menuIndex: this.props.menuIndex,
             contracts: null,
             ELFValue: 0,
@@ -198,7 +199,7 @@ export default class ResourceSell extends Component {
 
 
     getSellModalShow() {
-        const {value, account, ELFValue, currentWallet, contracts, menuIndex, toSell} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts, menuIndex, toSell, appName} = this.state;
         let menuName = getMenuName(menuIndex);
         let reg = /^[0-9]*$/;
         if (!reg.test(value) || parseInt(value, 10) === 0) {
@@ -215,7 +216,7 @@ export default class ResourceSell extends Component {
         }
         else {
             window.NightElf.api({
-                appName: 'hzzTest',
+                appName,
                 method: 'CHECK_PERMISSION',
                 type: 'address', // if you did not set type, it aways get by domain.
                 address: currentWallet.address

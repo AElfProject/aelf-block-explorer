@@ -21,7 +21,6 @@ import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
 import hexToArrayBuffer from '../../utils/hexToArrayBuffer';
 import getContractAddress from '../../utils/getContractAddress';
 import NightElfCheck from '../../utils/NightElfCheck';
-
 import './Vote.styles.less';
 
 let nightElf;
@@ -192,30 +191,35 @@ export default class VotePage extends Component {
     getInformation(consensus) {
         const {information} = this.state;
         consensus.GetVotesCount((error, result) => {
-            let temp = information;
-
-            // temp[0].info = getHexNumber(result.return).toLocaleString();
-            temp[0].info = new proto.Reader(hexToArrayBuffer(result)).uint64();
-            this.setState({
-                information: temp
-            });
+            if (result && !result.error) {
+                console.log('GetVotesCount:', result);
+                let temp = information;
+                temp[0].info = hexToArrayBuffer(result);
+                this.setState({
+                    information: temp
+                });
+            }
         });
 
         consensus.GetTicketsCount((error, result) => {
-            let temp = information;
-            temp[1].info = new proto.Reader(hexToArrayBuffer(result)).uint64();
-            this.setState({
-                information: temp
-            });
+            if (result && !result.error) {
+                console.log('GetTicketsCount:', result);
+                let temp = information;
+                temp[1].info = hexToArrayBuffer(result);
+                this.setState({
+                    information: temp
+                });
+            }
         });
 
         consensus.QueryCurrentDividends((error, result) => {
-            let temp = information;
-            console.log(hexToArrayBuffer(result));
-            temp[2].info = new proto.Reader(hexToArrayBuffer(result)).uint64();
-            this.setState({
-                information: temp
-            });
+            if (result && !result.error) {
+                let temp = information;
+                temp[2].info = hexToArrayBuffer(result);
+                this.setState({
+                    information: temp
+                });
+            }
         });
 
         this.informationTimer = setTimeout(() => {
@@ -312,15 +316,16 @@ export default class VotePage extends Component {
                     </Row>
                 </div>
                 <VotingYieldChart title='Historical voting gains' dividends={dividends}/>
-                {/* {aelfWalletHTML} */}
-                {/* <div className='vote-box' >
+                {aelfWalletHTML}
+                <div className='vote-box' >
                     <VotingModule
                         currentWallet={currentWallet}
                         consensus={consensus}
                         contracts={contracts}
                         nightElf={nightElf}
+                        appName={appName}
                     />
-                </div> */}
+                </div>
             </div>
             // <div className='apps-page-container'>AELF Applications List Page.</div>
         );

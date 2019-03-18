@@ -10,9 +10,10 @@ import {commonPrivateKey} from '../../config/config';
 export default function getContractAddress() {
     return new Promise((resolve, reject) => {
         aelf.chain.connectChain((error, result) => {
+            console.log(result);
             const CONSENSUSADDRESS = result['AElf.Contracts.Consensus.DPoS'];
             const DIVIDENDSADDRESS = result['AElf.Contracts.Dividends'];
-            const TOKENADDRESS = result['AElf.Contracts.Token'];
+            const TOKENADDRESS = result['AElf.Contracts.MultiToken'];
             const RESOURCEADDRESS = result['AElf.Contracts.Resource'];
             const wallet = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey);
             const output = {

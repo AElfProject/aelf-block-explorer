@@ -13,7 +13,9 @@ import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ResourceAElfWallet from './components/ResourceAElfWallet/ResourceAElfWallet';
 import NightElfCheck from '../../utils/NightElfCheck';
 import getContractAddress from '../../utils/getContractAddress.js';
+import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
 import ResourceMoneyMarket from './components/ResourceMoneyMarket/ResourceMoneyMarket';
+import getLogin from '../../utils/getLogin';
 // import ResourceTransacitionDetails from '../../components/ResourceTransacitionDetails/ResourceTransacitionDetails';
 import './Resource.less';
 
@@ -83,14 +85,7 @@ export default class Resource extends Component {
                                 type: 'domain'
                             }).then(result => {
                                 if (result && result.error === 0) {
-                                    const permissions = result.permissions;
-                                    if (permissions.length) {
-                                        this.checkPermissionRepeat(result);
-                                    }
-                                    else {
-                                        localStorage.setItem('currentWallet', null);
-                                        this.getLogin(result);
-                                    }
+                                    this.insertKeypairs(result);
                                 }
                                 else {
                                     message.error(result.errorMessage.message, 3);
@@ -107,77 +102,48 @@ export default class Resource extends Component {
         });
     }
 
-    componentWillUnmount() {
-        this.setState = function () {};
-    }
-
-    checkPermissionRepeat(result) {
-        const {permissions} = result;
-        const {address} = permissions[0];
-        this.getNightElfKeypair(address);
-        const connectChain = JSON.stringify(this.connectChain);
-        const permission = result.permissions.map(item => {
-            if (item.appName === appName) {
-                return item;
-            }
-        });
-        permission[0].contracts.map(item => {
-            if (connectChain.indexOf(item.contractAddress) === -1) {
-                this.setNewPermission(address);
-            }
-        });
-    }
-
-    setNewPermission(address) {
-        window.NightElf.api({
+    insertKeypairs(result) {
+        const getLoginPayload = {
             appName,
-            method: 'OPEN_PROMPT',
-            chainId: 'AELF',
-            hostname: 'aelf.io',
-            payload: {
-                // 在中间层会补齐
-                // appName: 'hzzTest',
-                // method 使用payload的
-                // chainId: 'AELF',
-                // hostname: 'aelf.io',
-                payload: {
-                    method: 'SET_CONTRACT_PERMISSION',
-                    address,
-                    contracts: [{
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Token'],
-                        contractName: 'Token',
-                        description: 'contract Token'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Dividends'],
-                        contractName: 'Dividends',
-                        description: 'contract Dividends'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Consensus.DPoS'],
-                        contractName: 'Consensus.Dpos',
-                        description: 'contract Consensus'
-                    },
-                    {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Resource'],
-                        contractName: 'Resource',
-                        description: 'contract Resource'
-                    }]
-                    // appName: message.appName,
-                    // domain: message.hostname
-                }
-            }
-        }).then(result => {
-            console.log('>>>>>>>>>>>>>>>>>>>', result);
-            if (result && result.error === 0) {
-                message.success('Update Permission success!!', 3);
+            connectChain: this.connectChain
+        };
+        if (result && result.error === 0) {
+            const {
+                permissions
+            } = result;
+            const payload = {
+                appName,
+                connectChain: this.connectChain,
+                result
+            };
+            if (permissions.length) {
+                // EXPLAIN: Need to redefine this scope
+                checkPermissionRepeat(payload, this.getNightElfKeypair.bind(this));
             }
             else {
-                message.error(result.errorMessage.message, 3);
+                localStorage.setItem('currentWallet', null);
+                getLogin(getLoginPayload, result => {
+                    if (result && result.error === 0) {
+                        const address = JSON.parse(result.detail).address;
+                        this.getNightElfKeypair(address);
+                        message.success('Login success!!', 3);
+                    }
+                    else {
+                        this.setState({
+                            showWallet: false
+                        });
+                        message.error(result.errorMessage.message, 3);
+                    }
+                });
             }
-        });
+        }
+        else {
+            message.error(result.errorMessage.message, 3);
+        }
+    }
+
+    componentWillUnmount() {
+        this.setState = function () {};
     }
 
     getLogin() {
@@ -360,7 +326,7 @@ export default class Resource extends Component {
     }
     render() {
         const {showDownloadPlugins, currentWallet, contracts, tokenContract, resourceContract} = this.state;
-        const {currentBalance, currentCpu, currentRam, currentNet, currentSto} = this.state;
+        const {currentBalance, currentCpu, currentRam, currentNet, currentSto, appName} = this.state;
         let account = {
             balabce: currentBalance,
             CPU: currentCpu,
@@ -388,6 +354,7 @@ export default class Resource extends Component {
                         onRefresh={this.onRefresh.bind(this)}
                         endRefresh={this.endRefresh.bind(this)}
                         nightElf={nightElf}
+                        appName={appName}
                     />
                 </div>
                 {/* <ResourceTransacitionDetails /> */}

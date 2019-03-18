@@ -10,6 +10,7 @@ import getStateJudgment from '../../../../../utils/getStateJudgment';
 import {aelf} from '../../../../../utils';
 import Button from '../../../../../components/Button/Button';
 import './Vote.less';
+import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
 
 const Option = Select.Option;
 
@@ -73,16 +74,16 @@ export default class Vote extends PureComponent {
 
     getKeypairBalanceOf(result) {
         const {currentWallet} = this.state;
-        result.BalanceOf(currentWallet.address, (error, result) => {
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>', result);
+        result.GetBalance2('ELF', currentWallet.address, (error, result) => {
             if (result.error && result.error !== 0) {
                 message.error(result.errorMessage.message, 3);
                 this.props.handleClose();
                 return;
             }
-            const balance = result.result ? result.result.return : result.return;
+            const str = result.result ? result.result : result;
+            const balance = JSON.parse(hexCharCodeToStr(str)).balance;
             this.setState({
-                balance: getHexNumber(balance)
+                balance: parseInt(balance, 10)
             });
         });
     }
@@ -154,15 +155,14 @@ export default class Vote extends PureComponent {
             this.setState({
                 loading: true
             });
-            const hash = result.result ? result.result.hash : result.hash;
+            const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
             setTimeout(() => {
                 message.info('No withdrawal and transfer operations during the voting lock period!');
-                aelf.chain.getTxResult(hash, (error, result) => {
-                    if (result.result.tx_status === 'Mined') {
+                aelf.chain.getTxResult(transactionId, (error, result) => {
+                    if (result.Status === 'Mined') {
                         this.props.onRefresh();
                     }
-                    console.log(result);
-                    getStateJudgment(result.result.tx_status, hash);
+                    getStateJudgment(result.Status, transactionId);
                     this.setState({
                         loading: false
                     });
@@ -186,16 +186,16 @@ export default class Vote extends PureComponent {
                         style={this.state.step ? {display: 'block'} : {display: ' none'}}
                     >
                         <Row type='flex' align='middle'>
-                            <Col span='6'>Node name: </Col>
-                            <Col span='18'>{this.props.nodeName}</Col>
+                            <Col span={6}>Node name: </Col>
+                            <Col span={18}>{this.props.nodeName}</Col>
                         </Row>
                         <Row type='flex' align='middle'>
-                            <Col span='10'>Available voting amount: </Col>
-                            <Col span='14'>{this.state.balance}</Col>
+                            <Col span={10}>Available voting amount: </Col>
+                            <Col span={14}>{this.state.balance}</Col>
                         </Row>
                         <Row type='flex' align='middle'>
-                            <Col span='8'>Number of votes: </Col>
-                            <Col span='16'>
+                            <Col span={8}>Number of votes: </Col>
+                            <Col span={16}>
                                 <Input
                                     addonAfter='ELF'
                                     placeholder='Minimum number of votes 1 ELF'
@@ -204,8 +204,8 @@ export default class Vote extends PureComponent {
                             </Col>
                         </Row>
                         <Row type='flex' align='middle'>
-                            <Col span='6'>Voting cycle: </Col>
-                            <Col span='18'>
+                            <Col span={6}>Voting cycle: </Col>
+                            <Col span={18}>
                                 <Select
                                     placeholder='Voting cycles do not support withdrawal and transfer operations'
                                     optionFilterProp='children'
@@ -225,20 +225,20 @@ export default class Vote extends PureComponent {
                         style={this.state.step ? {display: 'none'} : {display: ' block'}}
                     >
                         <Row type='flex' align='middle'>
-                            <Col span='8'>Transaction name: </Col>
-                            <Col span='16'>Node voting</Col>
+                            <Col span={8}>Transaction name: </Col>
+                            <Col span={16}>Node voting</Col>
                         </Row>
                         <Row type='flex' align='middle'>
-                            <Col span='8'>Node name: </Col>
-                            <Col span='16'>{this.props.nodeName}</Col>
+                            <Col span={8}>Node name: </Col>
+                            <Col span={16}>{this.props.nodeName}</Col>
                         </Row>
                         <Row type='flex' align='middle'>
-                            <Col span='8'>Number of votes: </Col>
-                            <Col span='16'>{this.state.votes} ELF</Col>
+                            <Col span={8}>Number of votes: </Col>
+                            <Col span={16}>{this.state.votes} ELF</Col>
                         </Row>
                         <Row type='flex' align='middle'>
-                            <Col span='8'>Lock period: </Col>
-                            <Col span='16'>{this.state.period} days</Col>
+                            <Col span={8}>Lock period: </Col>
+                            <Col span={16}>{this.state.period} days</Col>
                         </Row>
                     </div>
                     <div className='vote-step1-button'>

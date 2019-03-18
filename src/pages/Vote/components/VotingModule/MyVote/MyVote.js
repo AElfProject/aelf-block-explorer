@@ -12,10 +12,10 @@ import getHexNumber from '../../../../../utils/getHexNumber';
 import contractChange from '../../../../../utils/contractChange';
 import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
 import './MyVote.less';
+import hexToArrayBuffer from '../../../../../utils/hexToArrayBuffer';
 
 let page = 0;
 let pageSize = 10;
-const appName = 'aelf.io'
 export default class MyVote extends PureComponent {
     constructor(props) {
         super(props);
@@ -60,44 +60,45 @@ export default class MyVote extends PureComponent {
 
         const key = getPublicKey(currentWallet.publicKey);
         consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString(key, page, pageSize, (error, result) => {
-            const ticketsInfoList = JSON.parse(hexCharCodeToStr(result.return)).VotingRecords || [];
-            const VotingRecordsCount = parseInt(
-                JSON.parse(hexCharCodeToStr(result.return)).VotingRecordsCount, 10
-            ) || 0;
+            if (result && !result.error) {
+                const ticketsInfoList = JSON.parse(hexCharCodeToStr(result)).VotingRecords || []
+                const VotingRecordsCount = parseInt(
+                    JSON.parse(hexCharCodeToStr(result)).VotingRecordsCount, 10
+                ) || 0;
+                if (ticketsInfoList.length === 0) {
+                    this.setState({
+                        data: [],
+                        loading: false,
+                        pagination
+                    });
+                    return;
+                }
 
-            if (ticketsInfoList.length === 0) {
-                this.setState({
-                    data: [],
-                    loading: false,
-                    pagination
+                ticketsInfoList.map((item, index) => {
+                    console.log(item);
+                    let data = {
+                        key: page + index + 1,
+                        serialNumber: page + index + 1,
+                        nodeName: null,
+                        term: item.TermNumber,
+                        To: item.To,
+                        From: item.From,
+                        vote: item.Count,
+                        myVote: item.Count,
+                        lockDate: dayjs(item.VoteTimestamp).format('YYYY-MM-DD'),
+                        dueDate: dayjs(item.UnlockTimestamp).format('YYYY-MM-DD'),
+                        operation: {
+                            txId: item.TransactionId,
+                            publicKey: item.To,
+                            vote: true,
+                            redeem: dayjs(new Date()).unix() > dayjs(item.UnlockTimestamp).unix()
+                        }
+                    };
+                    dataList.push(data);
+                    pagination.total = VotingRecordsCount;
+                    this.getNodeName(dataList, index, item, pagination);
                 });
-                return;
             }
-
-            ticketsInfoList.map((item, index) => {
-                let data = {
-                    key: page + index + 1,
-                    serialNumber: page + index + 1,
-                    nodeName: null,
-                    term: item.TermNumber,
-                    To: item.To,
-                    From: item.From,
-                    vote: item.Count,
-                    myVote: item.Count,
-                    lockDate: dayjs(item.VoteTimestamp).format('YYYY-MM-DD'),
-                    dueDate: dayjs(item.UnlockTimestamp).format('YYYY-MM-DD'),
-                    operation: {
-                        txId: item.TransactionId,
-                        publicKey: item.To,
-                        vote: true,
-                        redeem: dayjs(new Date()).unix() > dayjs(item.UnlockTimestamp).unix()
-                    }
-                };
-                dataList.push(data);
-                pagination.total = VotingRecordsCount;
-                this.getNodeName(dataList, index, item, pagination);
-            });
-
         });
     }
 
@@ -106,12 +107,14 @@ export default class MyVote extends PureComponent {
     getNodeName = async (dataList, index, item, pagination) => {
         const {consensus} = this.state;
         consensus.QueryAlias(item.To, (error, result) => {
-            dataList[index].nodeName = hexCharCodeToStr(result.return);
-            let temp = Array.from(dataList);
-            this.setState({
-                data: temp,
-                pagination
-            });
+            if (result && !result.error) {
+                dataList[index].nodeName = hexCharCodeToStr(result);
+                let temp = Array.from(dataList);
+                this.setState({
+                    data: temp,
+                    pagination
+                });
+            }
         });
 
         if (dataList.length - 1 === index) {
@@ -143,7 +146,7 @@ export default class MyVote extends PureComponent {
     }
 
     getVoting(publicKey) {
-        const {data, currentWallet, contracts} = this.state;
+        const {data, currentWallet, contracts, appName} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.publicKey === publicKey) {
@@ -168,10 +171,8 @@ export default class MyVote extends PureComponent {
         });
     }
 
-   
-
     hasPermission() {
-        const {currentWallet, contracts} = this.state;
+        const {currentWallet, contracts, appName} = this.state;
         window.NightElf.api({
             appName,
             method: 'INIT_AELF_CONTRACT',
@@ -201,7 +202,7 @@ export default class MyVote extends PureComponent {
         });
     }
 
-    getRedeem(publicKey, txId) {
+    getRedeem(publicKey, txId, appName) {
         const {data, currentWallet, contracts} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
@@ -273,13 +274,7 @@ export default class MyVote extends PureComponent {
                         pagination
                     }
                 ).then(() => {
-                    consensus.GetTicketsCount((error, result) => {
-                        this.setState({
-                            allVotes: getHexNumber(result.return),
-                            loading: false
-                        });
-                        this.props.endRefresh();
-                    });
+                    this.getTickets();
                 });
             }
         }
@@ -297,13 +292,7 @@ export default class MyVote extends PureComponent {
                         pagination
                     }
                 ).then(() => {
-                    consensus.GetTicketsCount((error, result) => {
-                        this.setState({
-                            allVotes: getHexNumber(result.return),
-                            loading: false
-                        });
-                        this.props.endRefresh();
-                    });
+                    this.getTickets();
                 });
             }
         }
@@ -321,18 +310,24 @@ export default class MyVote extends PureComponent {
                         pagination
                     }
                 ).then(() => {
-                    consensus.GetTicketsCount((error, result) => {
-                        this.setState({
-                            allVotes: getHexNumber(result.return),
-                            loading: false
-                        });
-                        this.props.endRefresh();
-                    });
+                    this.getTickets();
                 });
             }
         }
     }
 
+    getTickets() {
+        const {consensus} = this.state;
+        consensus.GetTicketsCount((error, result) => {
+            if (result && !result.error) {
+                this.setState({
+                    allVotes: hexToArrayBuffer(result),
+                    loading: false
+                });
+            }
+            this.props.endRefresh();
+        });
+    }
     getMyVoteInfoColumn() {
         const voteInfoColumn = [
             {
@@ -402,7 +397,6 @@ export default class MyVote extends PureComponent {
                         <div style={{textAlign: 'center'}}>
                             <Button title='Vote' style={isVote} click={() => {
                                     if (text.vote) {
-                                        console.log(appName);
                                         this.getVoting(text.publicKey);
                                     }
                                 }
