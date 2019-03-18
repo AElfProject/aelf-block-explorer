@@ -7,7 +7,7 @@
 
 import React, {Component} from 'react';
 import {Row, Col, message} from 'antd';
-import proto from 'protobufjs';
+import proto from '@aelfqueen/protobufjs';
 import {aelf} from '../../utils';
 import {DEFAUTRPCSERVER} from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';

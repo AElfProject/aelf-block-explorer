@@ -81,7 +81,7 @@ export default class BlockDetailPage extends React.Component {
             } = txsList;
             error = transactions.length ? '' : 'Not Found';
             blockHeight = transactions[0] && transactions[0].block_height;
-            result = blockHeight ? aelf.chain.getBlockInfo(blockHeight, 100).result : undefined;
+            result = blockHeight ? aelf.chain.getBlockInfo(blockHeight, 100) : undefined;
         }
 
         const pagination = {
