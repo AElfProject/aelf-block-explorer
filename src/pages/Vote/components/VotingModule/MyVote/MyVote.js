@@ -61,7 +61,7 @@ export default class MyVote extends PureComponent {
         const key = getPublicKey(currentWallet.publicKey);
         consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString(key, page, pageSize, (error, result) => {
             if (result && !result.error) {
-                const ticketsInfoList = JSON.parse(hexCharCodeToStr(result)).VotingRecords || []
+                const ticketsInfoList = JSON.parse(hexCharCodeToStr(result)).VotingRecords || [];
                 const VotingRecordsCount = parseInt(
                     JSON.parse(hexCharCodeToStr(result)).VotingRecordsCount, 10
                 ) || 0;
@@ -75,7 +75,6 @@ export default class MyVote extends PureComponent {
                 }
 
                 ticketsInfoList.map((item, index) => {
-                    console.log(item);
                     let data = {
                         key: page + index + 1,
                         serialNumber: page + index + 1,

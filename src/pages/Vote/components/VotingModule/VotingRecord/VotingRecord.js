@@ -78,6 +78,11 @@ export default class VotingRecord extends PureComponent {
                     loading: false
                 });
             }
+            else {
+                this.setState({
+                    loading: false
+                });
+            }
         });
     }
 

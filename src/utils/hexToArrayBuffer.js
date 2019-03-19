@@ -6,7 +6,6 @@
 import proto from '@aelfqueen/protobufjs';
 export default function hexToArrayBuffer(input) {
     let resultArray = [];
-    console.log(input);
     if (typeof input !== 'string' || input.length % 2 !== 0) {
         throw Error('invalid input');
     }

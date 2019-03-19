@@ -31,9 +31,9 @@ export default function setNewPermission(payload) {
                     description: 'token contract'
                 }, {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Dividends'],
-                    contractName: 'dividends',
-                    description: 'contract dividends'
+                    contractAddress: connectChain['AElf.Contracts.Dividend'],
+                    contractName: 'dividend',
+                    description: 'contract dividend'
                 }, {
                     chainId: 'AELF',
                     contractAddress: connectChain['AElf.Contracts.Consensus.Dpos'],

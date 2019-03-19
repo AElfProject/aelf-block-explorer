@@ -24,9 +24,9 @@ export default function getLogin(payload, callback) {
                     description: 'contract Token'
                 }, {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Dividends'],
-                    contractName: 'Dividends',
-                    description: 'contract Dividends'
+                    contractAddress: connectChain['AElf.Contracts.Dividend'],
+                    contractName: 'Dividend',
+                    description: 'contract Dividend'
                 }, {
                     chainId: 'AELF',
                     contractAddress: connectChain['AElf.Contracts.Consensus.DPoS'],

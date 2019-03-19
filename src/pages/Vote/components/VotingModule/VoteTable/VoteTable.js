@@ -8,7 +8,6 @@ import React, {PureComponent} from 'react';
 import Button from '../../../../../components/Button/Button';
 import {Table, message} from 'antd';
 import getPublicKey from '../../../../../utils/getPublicKey';
-import getHexNumber from '../../../../../utils/getHexNumber';
 import {commonPrivateKey} from '../../../../../../config/config';
 import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
 import contractChange from '../../../../../utils/contractChange';
@@ -41,7 +40,6 @@ export default class VoteTable extends PureComponent {
 
     static getDerivedStateFromProps(props, state) {
         if (props.currentWallet !== state.currentWallet) {
-            
             return {
                 currentWallet: props.currentWallet
             };
@@ -202,11 +200,6 @@ export default class VoteTable extends PureComponent {
                     dataList.push(data);
                 }
                 this.getCurrentWalletVote(dataList);
-            }
-            else {
-                this.setState({
-                    loading: false
-                });
             }
         });
     }

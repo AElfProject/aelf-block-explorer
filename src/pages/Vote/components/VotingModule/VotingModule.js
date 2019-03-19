@@ -12,7 +12,6 @@ import Vote from './Vote/Vote';
 import Redeem from './Redeem/Redeem';
 import './VotingModule.less';
 import VotingRecord from './VotingRecord/VotingRecord';
-import getHexNumber from '../../../../utils/getHexNumber';
 import {NONE} from 'apisauce';
 import hexToArrayBuffer from '../../../../utils/hexToArrayBuffer';
 
@@ -74,13 +73,10 @@ export default class VotingModule extends PureComponent {
         if (prevProps.consensus !== this.props.consensus) {
             const {consensus} = this.state;
             if (consensus) {
-                consensus.GetCurrentRoundNumber((error, result) => {
+                consensus.GetCurrentTermNumber((error, result) => {
                     if (result && !result.error) {
-                        const round = hexToArrayBuffer(result);
-                        consensus.GetCurrentTermNumber(round, (error, result) => {
-                            this.setState({
-                                session: hexToArrayBuffer(result)
-                            });
+                        this.setState({
+                            session: hexToArrayBuffer(result)
                         });
                     }
                 });
@@ -145,19 +141,12 @@ export default class VotingModule extends PureComponent {
             this.setState({
                 isRefresh: true
             });
-            consensus.GetCurrentRoundNumber((error, result) => {
+            consensus.GetCurrentTermNumber((error, result) => {
                 if (result && !result.error) {
-                    const round = hexToArrayBuffer(result);
-                    consensus.GetCurrentTermNumber(round, (error, result) => {
-                        this.endRefresh();
-                        this.setState({
-                            session: hexToArrayBuffer(result),
-                            refresh: refresh + 1
-                        });
+                    this.setState({
+                        session: hexToArrayBuffer(result),
+                        refresh: refresh + 1
                     });
-                }
-                else {
-                    this.endRefresh();
                 }
             });
         }

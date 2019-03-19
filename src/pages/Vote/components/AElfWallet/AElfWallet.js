@@ -15,6 +15,7 @@ import getPublicKey from '../../../../utils/getPublicKey';
 import hexCharCodeToStr from '../../../../utils/hexCharCodeToStr';
 import getStateJudgment from '../../../../utils/getStateJudgment';
 import './AElfWallet.less';
+import hexToArrayBuffer from '../../../../utils/hexToArrayBuffer';
 
 
 export default class AElfWallet extends PureComponent {
@@ -106,10 +107,9 @@ export default class AElfWallet extends PureComponent {
             const key = getPublicKey(currentWallet.publicKey);
             dividends.GetAllAvailableDividends(key, (error, result) => {
                 if (result && !result.error) {
-                    console.log(result);
-                    let dividends = getHexNumber(result);
+                    let dividend = hexToArrayBuffer(result);
                     this.setState({
-                        dividendsNum: dividends
+                        dividendsNum: dividend
                     });
                 }
             });
@@ -228,10 +228,10 @@ export default class AElfWallet extends PureComponent {
         this.setState({
             loading: true
         });
-        const hash = result.result ? result.result.hash : result.hash;
+        const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
         setTimeout(() => {
-            const state = aelf.chain.getTxResult(hash);
-            getStateJudgment(state.result.tx_status, hash);
+            const state = aelf.chain.getTxResult(transactionId);
+            getStateJudgment(state.Status, transactionId);
             this.pushWalletBalance()
             .then(this.pushWalletTicket())
             .then(this.pushWalletDividends())
@@ -312,7 +312,7 @@ export default class AElfWallet extends PureComponent {
             let tickets = !!ticketsNum ? ticketsNum.toLocaleString() : '-';
             let dividends = !!dividendsNum ? dividendsNum.toLocaleString() : '-';
             return (
-                <Row key={currentWallet.address} type='flex' align='middle' justify='center' style={{padding: '10px 0'}} className='wallet-info'>
+                <Row key={currentWallet.address} type='flex' align='middle' style={{padding: '10px 0'}} className='wallet-info'>
                     <Col xl={6} xs={8} >
                         <span className='wallet-name'>{currentWallet.name}</span>
                     </Col>

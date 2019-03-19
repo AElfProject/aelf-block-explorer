@@ -12,7 +12,7 @@ export default function getContractAddress() {
         aelf.chain.connectChain((error, result) => {
             console.log(result);
             const CONSENSUSADDRESS = result['AElf.Contracts.Consensus.DPoS'];
-            const DIVIDENDSADDRESS = result['AElf.Contracts.Dividends'];
+            const DIVIDENDSADDRESS = result['AElf.Contracts.Dividend'];
             const TOKENADDRESS = result['AElf.Contracts.MultiToken'];
             const RESOURCEADDRESS = result['AElf.Contracts.Resource'];
             const wallet = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey);

@@ -7,7 +7,6 @@
 
 import React, {Component} from 'react';
 import {Row, Col, message} from 'antd';
-import proto from '@aelfqueen/protobufjs';
 import {aelf} from '../../utils';
 import {DEFAUTRPCSERVER} from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
@@ -192,9 +191,8 @@ export default class VotePage extends Component {
         const {information} = this.state;
         consensus.GetVotesCount((error, result) => {
             if (result && !result.error) {
-                console.log('GetVotesCount:', result);
                 let temp = information;
-                temp[0].info = hexToArrayBuffer(result);
+                temp[0].info = hexToArrayBuffer(result).toLocaleString();
                 this.setState({
                     information: temp
                 });
@@ -203,9 +201,8 @@ export default class VotePage extends Component {
 
         consensus.GetTicketsCount((error, result) => {
             if (result && !result.error) {
-                console.log('GetTicketsCount:', result);
                 let temp = information;
-                temp[1].info = hexToArrayBuffer(result);
+                temp[1].info = hexToArrayBuffer(result).toLocaleString();
                 this.setState({
                     information: temp
                 });
@@ -213,9 +210,18 @@ export default class VotePage extends Component {
         });
 
         consensus.QueryCurrentDividends((error, result) => {
+            // 分红池更新时没有值, 取上一次接口的信息 如果都没有 取 0
             if (result && !result.error) {
                 let temp = information;
-                temp[2].info = hexToArrayBuffer(result);
+                temp[2].info = hexToArrayBuffer(result).toLocaleString();
+                localStorage.setItem('CurrentDividends', temp[2].info);
+                this.setState({
+                    information: temp
+                });
+            }
+            else {
+                let temp = information;
+                temp[2].info = localStorage.getItem('CurrentDividends') || 0;
                 this.setState({
                     information: temp
                 });
