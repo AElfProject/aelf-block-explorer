@@ -94,4 +94,4 @@ export {
     formatKey,
     transactionFormat,
     transactionInfo
-}
+};

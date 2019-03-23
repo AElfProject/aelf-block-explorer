@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom';
 
 import './header.styles.less';
 import Search from './../Search/Search';
+import ChainSelect from '../ChainSelect/ChainSelect';
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -215,6 +216,7 @@ export default class BrowserHeader extends PureComponent {
                     <nav className='header-navbar'>
                         {menuHtml}
                         {this.state.showSearch && <Search />}
+                        <ChainSelect />
                     </nav>
                 </div>
             </div>

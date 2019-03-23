@@ -1,14 +1,21 @@
+/**
+ * @file index.js
+ * @author huangzongzhe,longyue,zhouminghui
+ */
+/* eslint-disable fecs-camelcase */
 import React from 'react';
-import { render } from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'mobx-react';
+import {render} from 'react-dom';
+import {BrowserRouter as Router} from 'react-router-dom';
+import {Provider} from 'mobx-react';
+import Cookies from 'js-cookie';
 
 // 为组件内建文案提供统一的国际化支持。
-import { LocaleProvider } from 'antd';
+import {LocaleProvider} from 'antd';
 
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from 'antd/lib/locale-provider/en_US';
-import { AppIncrStore } from './Store';
+import {AppIncrStore} from './Store';
+import {get} from './utils';
 
 import './index.less';
 
@@ -16,16 +23,58 @@ import App from './App';
 
 const appIncrStore = AppIncrStore.create({});
 
-// @TODO: compose mst store to make app running.
-render(
-    < LocaleProvider locale = {
-        en_US
-    } >
-        <Provider appIncrStore={appIncrStore}>
-            <Router>
-                <App />
-            </Router>
-        </Provider>
-    </LocaleProvider>,
-    document.querySelector('#app')
-);
+function initPage() {
+    // @TODO: compose mst store to make app running.
+    render(
+        <LocaleProvider locale={
+            en_US
+        }>
+            <Provider appIncrStore={appIncrStore}>
+                <Router>
+                    <App />
+                </Router>
+            </Provider>
+        </LocaleProvider>,
+        document.querySelector('#app')
+    );
+}
+
+async function getNodesInfo() {
+
+    let currentChain = JSON.parse(localStorage.getItem('currentChain'));
+
+    if (currentChain) {
+        const {
+            contract_address,
+            chain_id
+        } = currentChain;
+        Cookies.set('aelf_ca_ci', contract_address + chain_id);
+        initPage();
+    }
+
+    const nodesInfoProvider = '/api/nodes/info';
+    const nodesInfo = await get(nodesInfoProvider);
+
+    if (nodesInfo.error === 0 && nodesInfo.result && nodesInfo.result.list) {
+        const nodesInfoList = nodesInfo.result.list;
+        localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
+        if (currentChain) {
+            return;
+        }
+
+        const nodeInfo = nodesInfoList.find(item => {
+            if (item.chain_id === 'AELF') {
+                return item;
+            }
+        });
+        const {
+            contract_address,
+            chain_id
+        } = nodeInfo;
+        localStorage.setItem('currentChain', JSON.stringify(nodeInfo));
+        Cookies.set('aelf_ca_ci', contract_address + chain_id);
+        initPage();
+    }
+    // TODO: turn to 404 page.
+}
+getNodesInfo();
