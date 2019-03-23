@@ -2,7 +2,7 @@
  * @file
  * @author huangzongzhe
 */
-
+/* eslint-disable fecs-camelcase */
 import React, {PureComponent} from 'react';
 import {Menu} from 'antd';
 import {Link} from 'react-router-dom';
@@ -10,6 +10,7 @@ import {Link} from 'react-router-dom';
 import './header.styles.less';
 import Search from './../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
+import config from '../../../config/config';
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -98,6 +99,25 @@ export default class BrowserHeader extends PureComponent {
     };
 
     renderMenu(menuMode, showMenu = true) {
+        const nodeInfo = JSON.parse(localStorage.getItem('currentChain'));
+        const {
+            chain_id
+        } = nodeInfo;
+
+        let voteHTML = '';
+        let resourceHTML = '';
+        if (chain_id === config.MAINCHAINID) {
+            voteHTML = <Menu.Item key='/vote'>
+                {/*<Icon type='appstore' />*/}
+                <Link to='/vote'>VOTE</Link>
+                {/* <span>APP CENTER [Building]</span> */}
+            </Menu.Item>;
+            resourceHTML = <Menu.Item key='/resource'>
+                {/*<Icon type='appstore' />*/}
+                <Link to='/resource'>RESOURCE</Link>
+                {/* <span>APP CENTER [Building]</span> */}
+            </Menu.Item>;
+        }
 
         const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
 
@@ -150,16 +170,8 @@ export default class BrowserHeader extends PureComponent {
                     <Link to='/apps'>APP CENTER[Building]</Link>
                     {/* <span>APP CENTER [Building]</span> */}
                 </Menu.Item>
-                <Menu.Item key='/vote'>
-                    {/*<Icon type='appstore' />*/}
-                    <Link to='/vote'>VOTE</Link>
-                    {/* <span>APP CENTER [Building]</span> */}
-                </Menu.Item>
-                <Menu.Item key='/resource'>
-                    {/*<Icon type='appstore' />*/}
-                    <Link to='/resource'>RESOURCE</Link>
-                    {/* <span>APP CENTER [Building]</span> */}
-                </Menu.Item>
+                {voteHTML}
+                {resourceHTML}
                 <Menu.Item key='/about'>
                     {/*<Icon type='profile' />*/}
                     <a
