@@ -36,6 +36,8 @@ export default class MyVote extends PureComponent {
         };
     }
 
+
+    // 获取当前账户投票记录 （未赎回）
     votingRecordInformation = async (params = {}) => {
         const {currentWallet, consensus} = this.state;
         let {pagination, page, pageSize} = params;
@@ -59,11 +61,23 @@ export default class MyVote extends PureComponent {
         }
 
         const key = getPublicKey(currentWallet.publicKey);
-        consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString(key, page, pageSize, (error, result) => {
-            if (result && !result.error) {
-                const ticketsInfoList = JSON.parse(hexCharCodeToStr(result)).VotingRecords || [];
+        console.log(consensus);
+        const payload = {
+            start: page,
+            length: pageSize,
+            publicKey: key
+        };
+        consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString.call(payload, (error, result) => {
+            console.log(result);
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
+                const content = value || Value || '';
+                const ticketsInfoList = JSON.parse(content).VotingRecords || [];
                 const VotingRecordsCount = parseInt(
-                    JSON.parse(hexCharCodeToStr(result)).VotingRecordsCount, 10
+                    JSON.parse(content).VotingRecordsCount, 10
                 ) || 0;
                 if (ticketsInfoList.length === 0) {
                     this.setState({
@@ -102,12 +116,17 @@ export default class MyVote extends PureComponent {
     }
 
 
-
+    // 获取节点名称
     getNodeName = async (dataList, index, item, pagination) => {
         const {consensus} = this.state;
-        consensus.QueryAlias(item.To, (error, result) => {
-            if (result && !result.error) {
-                dataList[index].nodeName = hexCharCodeToStr(result);
+        consensus.QueryAlias.call({hex: item.To}, (error, result) => {
+            if (result) {
+                const {
+                    Value,
+                    value
+                } = result;
+                const content = Value || value || '';
+                dataList[index].nodeName = content;
                 let temp = Array.from(dataList);
                 this.setState({
                     data: temp,
@@ -317,10 +336,14 @@ export default class MyVote extends PureComponent {
 
     getTickets() {
         const {consensus} = this.state;
-        consensus.GetTicketsCount((error, result) => {
-            if (result && !result.error) {
+        consensus.GetTicketsCount.call((error, result) => {
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
                 this.setState({
-                    allVotes: hexToArrayBuffer(result),
+                    allVotes: value || Value || 0,
                     loading: false
                 });
             }

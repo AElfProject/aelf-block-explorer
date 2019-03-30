@@ -239,7 +239,7 @@ export default class ResourceSell extends Component {
         let {region, account, menuIndex, purchaseQuantity} = this.state;
         let menuName = getMenuName(menuIndex);
         let disabled = false;
-        let balance = account[menuName];
+        let balance = parseInt(account[menuName], 10);
         if (region < 4) {
             region = 25;
             balance = 100;

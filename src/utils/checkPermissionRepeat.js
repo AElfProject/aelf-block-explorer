@@ -4,6 +4,8 @@
  * @author zhouminghui
 */
 
+import config from '../../config/config';
+
 import setNewPermission from './setNewPermission';
 export default function checkPermissionRepeat(payload, callback) {
     const {
@@ -14,7 +16,7 @@ export default function checkPermissionRepeat(payload, callback) {
     const {permissions} = result;
     const {address} = permissions[0];
     callback(address);
-    const connectChainStr = JSON.stringify(connectChain);
+    const connectChainStr = JSON.stringify(config);
     const permission = result.permissions.map(item => {
         if (item.appName === appName) {
             return item;

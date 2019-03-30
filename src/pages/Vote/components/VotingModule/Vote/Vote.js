@@ -4,13 +4,12 @@
 */
 
 import React, {PureComponent} from 'react';
-import getHexNumber from '../../../../../utils/getHexNumber';
 import {Row, Col, Select, Input, message, Spin} from 'antd';
 import getStateJudgment from '../../../../../utils/getStateJudgment';
 import {aelf} from '../../../../../utils';
 import Button from '../../../../../components/Button/Button';
-import './Vote.less';
 import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
+import './Vote.less';
 
 const Option = Select.Option;
 
@@ -41,7 +40,6 @@ export default class Vote extends PureComponent {
             contracts.TOKENADDRESS,
             wallet,
             (err, result) => {
-                console.log(result);
                 if (result) {
                     this.getKeypairBalanceOf(result);
                 }
@@ -74,17 +72,12 @@ export default class Vote extends PureComponent {
 
     getKeypairBalanceOf(result) {
         const {currentWallet} = this.state;
-        result.GetBalance2('ELF', currentWallet.address, (error, result) => {
-            if (result.error && result.error !== 0) {
-                message.error(result.errorMessage.message, 3);
-                this.props.handleClose();
-                return;
+        result.GetBalance.call({symbol: 'ELF', owner: currentWallet.address}, (error, result) => {
+            if (result) {
+                this.setState({
+                    balance: result.balance || 0
+                });
             }
-            const str = result.result ? result.result : result;
-            const balance = JSON.parse(hexCharCodeToStr(str)).balance;
-            this.setState({
-                balance: parseInt(balance, 10)
-            });
         });
     }
 
@@ -146,29 +139,43 @@ export default class Vote extends PureComponent {
     }
 
     getExtensionVote(result) {
-        result.Vote(this.state.publicKey, this.state.votes, this.state.period, (error, result) => {
-            if (result.error && result.error !== 0) {
-                message.error(result.errorMessage.message, 3);
-                this.props.handleClose();
-                return;
-            }
-            this.setState({
-                loading: true
-            });
-            const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
-            setTimeout(() => {
-                message.info('No withdrawal and transfer operations during the voting lock period!');
-                aelf.chain.getTxResult(transactionId, (error, result) => {
-                    if (result.Status === 'Mined') {
-                        this.props.onRefresh();
-                    }
-                    getStateJudgment(result.Status, transactionId);
-                    this.setState({
-                        loading: false
-                    });
+        const paload = {
+            candidatePublicKey: this.state.publicKey,
+            amount: this.state.votes,
+            lockTime: this.state.period
+        };
+        result.Vote(paload, (error, result) => {
+            if (result) {
+                if (typeof result === 'string') {
+                    result = hexCharCodeToStr(result);
+                }
+
+                if (result.error && result.error !== 0) {
+                    message.error(result.errorMessage.message, 3);
                     this.props.handleClose();
+                    return;
+                }
+
+                this.setState({
+                    loading: true
                 });
-            }, 4000);
+                console.log(result);
+                const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
+                setTimeout(() => {
+                    message.info('No withdrawal and transfer operations during the voting lock period!');
+                    aelf.chain.getTxResult(transactionId, (error, result) => {
+                        console.log(result);
+                        if (result.Status === 'Mined') {
+                            this.props.onRefresh();
+                        }
+                        getStateJudgment(result.Status, transactionId);
+                        this.setState({
+                            loading: false
+                        });
+                        this.props.handleClose();
+                    });
+                }, 4000);
+            }
         });
     }
 

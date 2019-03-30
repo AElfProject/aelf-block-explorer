@@ -8,7 +8,7 @@
 import React, {Component} from 'react';
 import {message} from 'antd';
 import {aelf} from '../../utils';
-import {DEFAUTRPCSERVER} from '../../../config/config';
+import {DEFAUTRPCSERVER, APPNAME} from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ResourceAElfWallet from './components/ResourceAElfWallet/ResourceAElfWallet';
 import NightElfCheck from '../../utils/NightElfCheck';
@@ -19,7 +19,7 @@ import getLogin from '../../utils/getLogin';
 // import ResourceTransacitionDetails from '../../components/ResourceTransacitionDetails/ResourceTransacitionDetails';
 import './Resource.less';
 
-const appName = 'aelf.io';
+const appName = APPNAME;
 let nightElf;
 export default class Resource extends Component {
     constructor(props) {
@@ -72,24 +72,14 @@ export default class Resource extends Component {
                     this.setState({
                         nightElf
                     });
-                    nightElf.chain.connectChain((error, result) => {
-                        if (result.error) {
-                            message.error(result.errorMessage.message, 3);
-                            return;
-                        }
+                    nightElf.chain.getChainInformation((error, result) => {
                         if (result) {
-                            this.connectChain = result;
                             window.NightElf.api({
                                 appName,
                                 method: 'CHECK_PERMISSION',
                                 type: 'domain'
                             }).then(result => {
-                                if (result && result.error === 0) {
-                                    this.insertKeypairs(result);
-                                }
-                                else {
-                                    message.error(result.errorMessage.message, 3);
-                                }
+                                this.insertKeypairs(result);
                             });
                         }
                     });
@@ -144,56 +134,6 @@ export default class Resource extends Component {
 
     componentWillUnmount() {
         this.setState = function () {};
-    }
-
-    getLogin() {
-        window.NightElf.api({
-            appName,
-            domain: 'aelf.io',
-            method: 'LOGIN',
-            chainId: 'AELF',
-            payload: {
-                payload: {
-                    // appName: message.appName,
-                    // domain: message.hostname
-                    method: 'LOGIN',
-                    contracts: [{
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Token'],
-                        contractName: 'Token',
-                        description: 'contract Token'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Dividends'],
-                        contractName: 'Dividends',
-                        description: 'contract Dividends'
-                    }, {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Consensus.DPoS'],
-                        contractName: 'Consensus.Dpos',
-                        description: 'contract Consensus'
-                    },
-                    {
-                        chainId: 'AELF',
-                        contractAddress: this.connectChain['AElf.Contracts.Resource'],
-                        contractName: 'Resource',
-                        description: 'contract Resource'
-                    }]
-                }
-            }
-        }).then(result => {
-            if (result && result.error === 0) {
-                const address = JSON.parse(result.detail).address;
-                this.getNightElfKeypair(address);
-                message.success('Login success!!', 3);
-            }
-            else {
-                this.setState({
-                    showWallet: false
-                });
-                message.error(result.errorMessage.message, 3);
-            }
-        });
     }
 
     getNightElfKeypair(address) {
@@ -341,7 +281,7 @@ export default class Resource extends Component {
         const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
         // const {currentWallet, voteContracts} = this.state;
         return (
-            <div>
+            <div className="resource-body">
                 {downloadPlugins}
                 {resourceAElfWalletHtml}
                 <div className='resource-money-market'>

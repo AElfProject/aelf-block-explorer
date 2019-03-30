@@ -8,16 +8,14 @@ import React, {PureComponent} from 'react';
 import Button from '../../../../../components/Button/Button';
 import {Table, message} from 'antd';
 import getPublicKey from '../../../../../utils/getPublicKey';
-import {commonPrivateKey} from '../../../../../../config/config';
-import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
+import {commonPrivateKey, APPNAME} from '../../../../../../config/config';
 import contractChange from '../../../../../utils/contractChange';
 import * as Aelf from 'aelf-sdk';
 import './VoteTable.less';
-import hexToArrayBuffer from '../../../../../utils/hexToArrayBuffer';
 
 let pageSize = 20;
 let page = 0;
-const appName = 'aelf.io';
+const appName = APPNAME;
 export default class VoteTable extends PureComponent {
     constructor(props) {
         super(props);
@@ -141,23 +139,39 @@ export default class VoteTable extends PureComponent {
         }
     }
 
+    // 获取节点列表与信息
     nodeListInformation = async (params = {}) => {
         const {consensus, currentWallet} = this.state;
         this.setState({
             loading: true
         });
         let {pagination, page, pageSize} = params;
-        consensus.GetTicketsCount((error, result) => {
+        consensus.GetTicketsCount.call((error, result) => {
             if (result && !result.error) {
+                const {
+                    Value,
+                    value
+                } = result;
                 this.setState({
-                    allVotes: hexToArrayBuffer(result)
+                    allVotes: Value || value || 0
                 });
             }
         });
-        consensus.GetPageableCandidatesHistoryInfoToFriendlyString(page, pageSize, (error, result) => {
-            if (result && !result.error) {
+        const getPageablePayload = {
+            start: page,
+            length: pageSize
+        };
+        consensus.GetPageableCandidatesHistoryInfoToFriendlyString.call(getPageablePayload, (error, result) => {
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
+                const content = Value || value;
+
                 let isVote = true;
                 let isRedee = true;
+
                 if (currentWallet) {
                     if (currentWallet.publicKey === '') {
                         isVote = false;
@@ -168,8 +182,9 @@ export default class VoteTable extends PureComponent {
                     isVote = false;
                     isRedee = false;
                 }
-                pagination.total = result.CandidatesNumber;
-                let nodeList = JSON.parse(hexCharCodeToStr(result)).Maps || [];
+
+                pagination.total = JSON.parse(content).CandidatesNumber;
+                let nodeList = JSON.parse(content).Maps || [];
                 if (nodeList.length === 0) {
                     this.setState({
                         data: [],
@@ -201,10 +216,16 @@ export default class VoteTable extends PureComponent {
                 }
                 this.getCurrentWalletVote(dataList);
             }
+            else {
+                this.setState({
+                    loading: false
+                });
+            }
         });
     }
 
 
+    // 获取当前账户的投票数量（未赎回）
     getCurrentWalletVote = async dataList => {
         const {currentWallet, consensus} = this.state;
         let key = null;
@@ -220,10 +241,15 @@ export default class VoteTable extends PureComponent {
             key = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey).keyPair.getPublic().encode('hex');
         }
 
-        consensus.GetTicketsInformationToFriendlyString(key, (error, result) => {
+        consensus.GetTicketsInformationToFriendlyString.call({hex: key}, (error, result) => {
             let votingRecords = [];
-            if (result && !result.error) {
-                votingRecords = JSON.parse(hexCharCodeToStr(result)).VotingRecords || [];
+            if (result && !error) {
+                const {
+                    Value,
+                    value
+                } = result;
+                const content = Value || value;
+                votingRecords = JSON.parse(content).VotingRecords || [];
             }
             dataList.map((item, index) => {
                 let myVote = 0;
@@ -324,20 +350,20 @@ export default class VoteTable extends PureComponent {
                 key: 'operation',
                 align: 'center',
                 render: text => {
-                    let isRedeem = text.vote
+                    let isVote = text.vote
                     ? {background: '#097d25', margin: '5px'} : {background: '#aaa', margin: '5px'};
-                    let isVote = text.redeem
+                    let isRedeem = text.redeem
                     ? {background: '#feb000', margin: '5px'} : {background: '#aaa', margin: '5px'};
                     return (
                         <div style={{textAlign: 'center'}}>
-                            <Button title='Vote' style={isRedeem} click={() => {
+                            <Button title='Vote' style={isVote} click={() => {
                                     if (text.vote) {
                                         this.getVoting(text.publicKey);
                                     }
                                 }
                             }
                             />
-                            <Button title='Redeem' style={isVote} click={() => {
+                            <Button title='Redeem' style={isRedeem} click={() => {
                                     if (text.redeem) {
                                         this.props.showMyVote();
                                     }

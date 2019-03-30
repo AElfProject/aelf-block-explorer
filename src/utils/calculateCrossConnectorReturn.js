@@ -14,13 +14,11 @@ export default function scalculateCrossConnectorReturn(ResBalance, ResWeight, El
     const a = parseInt(pidRes, 10);
     if (wf === wt) {
         // if both weights are the same, the formula can be reduced
-        console.log((bt * Math.abs(a) / (bf + a)));
         return (bt * Math.abs(a) / (bf + a));
     }
 
     const x = bf / (bf + a);
     const y = wf / wt;
     return (bt * (1 - Math.exp(y * getLn(x))));
-
 }
 

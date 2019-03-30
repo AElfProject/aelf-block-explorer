@@ -97,23 +97,18 @@ export default class ResourceAElfWallet extends PureComponent {
     }
 
     // REVIEW: this.props.xxxx This method transfers state and shares values with other components
-
+    // 获取token数量
     getCurrentWalletBalance = async () => {
         const {tokenContract, currentWallet} = this.state;
-        // tokenContract.BalanceOf(currentWallet.address, (error, result) => {
-        //     const balance = new proto.Reader(hexToArrayBuffer(result)).uint64();
-        //     this.setState({
-        //         balance: balance.toLocaleString(),
-        //         resourceReady: this.state.resourceReady + 1
-        //     });
-        //     this.props.getCurrentBalance(balance);
-        // });
-        console.log(tokenContract);
-        tokenContract.GetBalance2('ELF', currentWallet.address, (error, result) => {
-            if (result && !result.error) {
-                const balance = JSON.parse(hexCharCodeToStr(result)).balance;
+        const paload = {
+            symbol: 'ELF',
+            owner: currentWallet.address
+        };
+        tokenContract.GetBalance.call(paload, (error, result) => {
+            if (result) {
+                const balance = result.balance || 0;
                 this.setState({
-                    balance: parseInt(balance, 10),
+                    balance: parseInt(balance, 10).toLocaleString(),
                     resourceReady: this.state.resourceReady + 1
                 });
                 this.props.getCurrentBalance(parseInt(balance, 10));
@@ -122,42 +117,88 @@ export default class ResourceAElfWallet extends PureComponent {
         });
     }
 
+    // 获取资源币数量
     getCurrentWalletResource = async () => {
         const {resourceContract, currentWallet} = this.state;
-        resourceContract.GetUserBalance(currentWallet.address, 'RAM', (error, result) => {
-            const resource = hexToArrayBuffer(result);
-            this.setState({
-                RAM: resource === 0 ? '--.--' : resource.toLocaleString(),
-                resourceReady: this.state.resourceReady + 1
-            });
-            this.props.getCurrentRam(resource);
+        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Ram'}, (error, result) => {
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
+                const content = value || Value;
+                this.setState({
+                    RAM: parseInt(content, 10).toLocaleString(),
+                    resourceReady: this.state.resourceReady + 1
+                });
+                this.props.getCurrentRam(content);
+            }
+            else {
+                this.setState({
+                    RAM: 0,
+                    resourceReady: this.state.resourceReady + 1
+                });
+            }
         });
-
-        resourceContract.GetUserBalance(currentWallet.address, 'CPU', (error, result) => {
-            const resource = hexToArrayBuffer(result);
-            this.setState({
-                CPU: resource === 0 ? '--.--' : resource.toLocaleString(),
-                resourceReady: this.state.resourceReady + 1
-            });
-            this.props.getCurrentCpu(resource);
+        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Cpu'}, (error, result) => {
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
+                const content = value || Value;
+                this.setState({
+                    CPU: parseInt(content, 10).toLocaleString(),
+                    resourceReady: this.state.resourceReady + 1
+                });
+                this.props.getCurrentRam(content);
+            }
+            else {
+                this.setState({
+                    CPU: 0,
+                    resourceReady: this.state.resourceReady + 1
+                });
+            }
         });
-
-        resourceContract.GetUserBalance(currentWallet.address, 'NET', (error, result) => {
-            const resource = hexToArrayBuffer(result);
-            this.setState({
-                NET: resource === 0 ? '--.--' : resource.toLocaleString(),
-                resourceReady: this.state.resourceReady + 1
-            });
-            this.props.getCurrentNet(resource);
+        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Net'}, (error, result) => {
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
+                const content = value || Value;
+                this.setState({
+                    NET: parseInt(content, 10).toLocaleString(),
+                    resourceReady: this.state.resourceReady + 1
+                });
+                this.props.getCurrentRam(content);
+            }
+            else {
+                this.setState({
+                    NET: 0,
+                    resourceReady: this.state.resourceReady + 1
+                });
+            }
         });
-
-        resourceContract.GetUserBalance(currentWallet.address, 'STO', (error, result) => {
-            const resource = hexToArrayBuffer(result);
-            this.setState({
-                STO: resource === 0 ? '--.--' : resource.toLocaleString(),
-                resourceReady: this.state.resourceReady + 1
-            });
-            this.props.getCurrentSto(resource);
+        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Sto'}, (error, result) => {
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
+                const content = value || Value;
+                this.setState({
+                    STO: parseInt(content, 10).toLocaleString(),
+                    resourceReady: this.state.resourceReady + 1
+                });
+                this.props.getCurrentRam(content);
+            }
+            else {
+                this.setState({
+                    STO: 0,
+                    resourceReady: this.state.resourceReady + 1
+                });
+            }
         });
     }
 

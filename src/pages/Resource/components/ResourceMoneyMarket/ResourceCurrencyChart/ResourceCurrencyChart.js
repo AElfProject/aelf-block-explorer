@@ -90,6 +90,7 @@ export default class ResourceCurrencyChart extends PureComponent {
             interval: intervalTime,
             type: menuName[menuIndex]
         }) || [];
+
         const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'des');
         const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'des');
 

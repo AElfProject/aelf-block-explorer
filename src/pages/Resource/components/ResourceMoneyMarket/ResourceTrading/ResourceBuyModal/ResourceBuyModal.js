@@ -77,7 +77,14 @@ export default class ResourceBuyModal extends PureComponent {
 
     requestBuy(result) {
         const {menuName, ELFValue} = this.state;
-        result.BuyResource(menuName, ELFValue - 1, (error, result) => {
+        const initials = menuName.substring(0, 1);
+        const word = menuName.substring(1, menuName.length);
+        console.log(initials + word);
+        const payload = {
+            type: initials + word.toLowerCase(),
+            amount: ELFValue - 1
+        };
+        result.BuyResource(payload, (error, result) => {
             if (result.error && result.error !== 0) {
                 message.error(result.errorMessage.message, 3);
                 this.props.handleCancel();

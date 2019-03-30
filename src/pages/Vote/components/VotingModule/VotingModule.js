@@ -13,7 +13,6 @@ import Redeem from './Redeem/Redeem';
 import './VotingModule.less';
 import VotingRecord from './VotingRecord/VotingRecord';
 import {NONE} from 'apisauce';
-import hexToArrayBuffer from '../../../../utils/hexToArrayBuffer';
 
 export default class VotingModule extends PureComponent {
     constructor(props) {
@@ -73,10 +72,14 @@ export default class VotingModule extends PureComponent {
         if (prevProps.consensus !== this.props.consensus) {
             const {consensus} = this.state;
             if (consensus) {
-                consensus.GetCurrentTermNumber((error, result) => {
+                consensus.GetCurrentTermNumber.call((error, result) => {
                     if (result && !result.error) {
+                        const {
+                            Value,
+                            value
+                        } = result;
                         this.setState({
-                            session: hexToArrayBuffer(result)
+                            session: Value || value || 0
                         });
                     }
                 });
@@ -141,10 +144,14 @@ export default class VotingModule extends PureComponent {
             this.setState({
                 isRefresh: true
             });
-            consensus.GetCurrentTermNumber((error, result) => {
+            consensus.GetCurrentTermNumber.call((error, result) => {
                 if (result && !result.error) {
+                    const {
+                        Value,
+                        value
+                    } = result;
                     this.setState({
-                        session: hexToArrayBuffer(result),
+                        session: Value || value || 0,
                         refresh: refresh + 1
                     });
                 }

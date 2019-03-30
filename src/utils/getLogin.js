@@ -3,10 +3,11 @@
  * @author zhouminghui
 */
 
+import config from '../../config/config';
+
 export default function getLogin(payload, callback) {
     const {
-        appName,
-        connectChain
+        appName
     } = payload;
     window.NightElf.api({
         appName,
@@ -19,23 +20,23 @@ export default function getLogin(payload, callback) {
                 method: 'LOGIN',
                 contracts: [{
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.MultiToken'],
+                    contractAddress: config.multiToken,
                     contractName: 'Token',
                     description: 'contract Token'
                 }, {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Dividend'],
+                    contractAddress: config.dividends,
                     contractName: 'Dividend',
                     description: 'contract Dividend'
                 }, {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Consensus.DPoS'],
+                    contractAddress: config.consensusDPoS,
                     contractName: 'Consensus.Dpos',
                     description: 'contract Consensus'
                 },
                 {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Resource'],
+                    contractAddress: config.resource,
                     contractName: 'Resource',
                     description: 'contract Resource'
                 }]

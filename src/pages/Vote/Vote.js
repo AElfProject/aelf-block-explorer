@@ -8,7 +8,7 @@
 import React, {Component} from 'react';
 import {Row, Col, message} from 'antd';
 import {aelf} from '../../utils';
-import {DEFAUTRPCSERVER} from '../../../config/config';
+import {DEFAUTRPCSERVER, APPNAME} from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
 import VotingYieldChart from './components/VotingYieldChart/VotingYieldChart';
@@ -17,20 +17,19 @@ import VotingModule from './components/VotingModule/VotingModule';
 import Svg from '../../components/Svg/Svg';
 import getLogin from '../../utils/getLogin';
 import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
-import hexToArrayBuffer from '../../utils/hexToArrayBuffer';
 import getContractAddress from '../../utils/getContractAddress';
 import NightElfCheck from '../../utils/NightElfCheck';
 import './Vote.styles.less';
 
 let nightElf;
-const appName = 'aelf.io';
+const appName = APPNAME;
 export default class VotePage extends Component {
 
     // currenrWallet 默认应该取第一个钱包 因为 Wallet 和 VoteList 都需要钱包的信息
     constructor(props) {
         super(props);
         this.informationTimer;
-        this.connectChain = null;
+        this.chainInfo = null;
         this.information = [{
             title: 'Voter Turnout',
             info: '-',
@@ -72,6 +71,7 @@ export default class VotePage extends Component {
                 this.setState({
                     consensus: result
                 });
+                this.chainInfo = result;
                 this.getInformation(result);
             });
 
@@ -99,13 +99,8 @@ export default class VotePage extends Component {
                     this.setState({
                         nightElf
                     });
-                    nightElf.chain.connectChain((error, result) => {
-                        if (result.error) {
-                            message.error(result.errorMessage.message, 3);
-                            return;
-                        }
+                    nightElf.chain.getChainInformation((error, result) => {
                         if (result) {
-                            this.connectChain = result;
                             window.NightElf.api({
                                 appName,
                                 method: 'CHECK_PERMISSION',
@@ -128,7 +123,7 @@ export default class VotePage extends Component {
     insertKeypairs(result) {
         const getLoginPayload = {
             appName,
-            connectChain: this.connectChain
+            connectChain: this.chainInfo
         };
         if (result && result.error === 0) {
             const {
@@ -136,7 +131,7 @@ export default class VotePage extends Component {
             } = result;
             const payload = {
                 appName,
-                connectChain: this.connectChain,
+                connectChain: this.chainInfo,
                 result
             };
             if (permissions.length) {
@@ -189,31 +184,35 @@ export default class VotePage extends Component {
 
     getInformation(consensus) {
         const {information} = this.state;
-        consensus.GetVotesCount((error, result) => {
+        consensus.GetVotesCount.call((error, result) => {
             if (result && !result.error) {
                 let temp = information;
-                temp[0].info = hexToArrayBuffer(result).toLocaleString();
+                // temp[0].info = hexToArrayBuffer(result).toLocaleString();
+                const {value, Value} = result;
+                temp[0].info = parseInt(Value || value, 10).toLocaleString() || null;
                 this.setState({
                     information: temp
                 });
             }
         });
 
-        consensus.GetTicketsCount((error, result) => {
+        consensus.GetTicketsCount.call((error, result) => {
             if (result && !result.error) {
                 let temp = information;
-                temp[1].info = hexToArrayBuffer(result).toLocaleString();
+                // temp[1].info = hexToArrayBuffer(result).toLocaleString();
+                const {value, Value} = result;
+                temp[1].info = parseInt(Value || value, 10).toLocaleString() || null;
                 this.setState({
                     information: temp
                 });
             }
         });
-
-        consensus.QueryCurrentDividends((error, result) => {
+        consensus.QueryCurrentDividends.call((error, result) => {
             // 分红池更新时没有值, 取上一次接口的信息 如果都没有 取 0
             if (result && !result.error) {
                 let temp = information;
-                temp[2].info = hexToArrayBuffer(result).toLocaleString();
+                const {value, Value} = result;
+                temp[2].info = parseInt(Value || value, 10).toLocaleString() || null;
                 localStorage.setItem('CurrentDividends', temp[2].info);
                 this.setState({
                     information: temp
@@ -267,7 +266,7 @@ export default class VotePage extends Component {
                                 />
                                 {item.title}
                             </div>
-                            <div className='vote-info-num'>{item.info.toLocaleString() || '-'}</div>
+                            <div className='vote-info-num'>{item.info || '-'}</div>
                         </div>
                     </ContainerRichard>
                 </Col>

@@ -31,6 +31,8 @@ export default class VotingRecord extends PureComponent {
         };
     }
 
+
+    // 获取当前投票的历史记录（包含赎回）
     votingRecordsData = async (params = {}) => {
         this.setState({
             loading: true
@@ -54,10 +56,20 @@ export default class VotingRecord extends PureComponent {
         }
 
         const key = getPublicKey(currentWallet.publicKey);
-        consensus.GetPageableTicketsHistoriesToFriendlyString(key, page, pageSize, (error, result) => {
-            if (result && !result.error) {
-                const ticketsHistoriesData = JSON.parse(hexCharCodeToStr(result)).Values || [];
-                const historiesNumber = JSON.parse(hexCharCodeToStr(result)).HistoriesNumber || 0;
+        const payload = {
+            publicKey: key,
+            start: page,
+            length: pageSize
+        };
+        consensus.GetPageableTicketsHistoriesToFriendlyString.call(payload, (error, result) => {
+            if (result) {
+                const {
+                    value,
+                    Value
+                } = result;
+                const content = value || Value || null;
+                const ticketsHistoriesData = JSON.parse(content).Values || [];
+                const historiesNumber = JSON.parse(content).HistoriesNumber || 0;
                 pagination.total = parseInt(historiesNumber, 10);
                 ticketsHistoriesData.map((item, index) => {
                     let data = {

@@ -10,7 +10,6 @@ import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/toolbox';
-import hexCharCodeToStr from '../../../../utils/hexCharCodeToStr';
 import Svg from '../../../../components/Svg/Svg';
 import './VotingYieldChart.less';
 
@@ -40,10 +39,10 @@ export default class VotingYieldChart extends PureComponent {
                 this.setState({
                     loading: true
                 });
-                this.props.dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
+                this.props.dividends.CheckDividendsOfPreviousTermToFriendlyString.call((error, result) => {
                     if (result && !result.error) {
                         this.setState({
-                            data: JSON.parse(hexCharCodeToStr(result)).Values
+                            data: JSON.parse(result.value).Values
                         });
                     }
                     this.setState({
@@ -59,10 +58,10 @@ export default class VotingYieldChart extends PureComponent {
         this.setState({
             loading: true
         });
-        dividends.CheckDividendsOfPreviousTermToFriendlyString((error, result) => {
+        dividends.CheckDividendsOfPreviousTermToFriendlyString.call((error, result) => {
             if (result && !result.error) {
                 this.setState({
-                    data: JSON.parse(hexCharCodeToStr(result)).Values
+                    data: JSON.parse(result.value).Values
                 });
             }
             this.setState({

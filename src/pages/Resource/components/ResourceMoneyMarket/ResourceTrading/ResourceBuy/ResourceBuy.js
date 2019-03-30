@@ -6,6 +6,7 @@
 
 import React, {Component} from 'react';
 import {Row, Col, Input, Slider, message} from 'antd';
+import {resource} from '../../../../../../../config/config';
 import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
@@ -203,7 +204,7 @@ export default class ResourceBuy extends Component {
     getSlideMarksHTML() {
         let {region, purchaseQuantity, account} = this.state;
         let disabled = false;
-        let balance = account.balabce;
+        let balance = parseInt(account.balabce, 10);
         if (region < 4) {
             region = 25;
             balance = 100;
@@ -268,7 +269,7 @@ export default class ResourceBuy extends Component {
                     return;
                 }
                 contractChange(result, contracts, currentWallet, appName).then(result => {
-                    if (value && value !== 0) {
+                    if (value && value !== 0 && !result) {
                         nightElf.chain.contractAtAsync(
                             contracts.TOKENADDRESS,
                             wallet,
@@ -286,8 +287,14 @@ export default class ResourceBuy extends Component {
     }
 
     getApprove(result) {
-        const {value, ELFValue, currentWallet} = this.state;
-        result.Approve2('ELF', ELFValue - 1, currentWallet.address, (error, result) => {
+        const {value, ELFValue} = this.state;
+        const payload = {
+            symbol: 'ELF',
+            spender: resource,
+            amount: ELFValue - 1
+        };
+        result.Approve(payload, (error, result) => {
+            console.log(result);
             if (result) {
                 this.props.handleBuyModalShow(value, ELFValue);
             }

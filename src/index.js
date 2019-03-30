@@ -52,7 +52,7 @@ async function getNodesInfo() {
         initPage();
     }
 
-    const nodesInfoProvider = '/api/nodes/info';
+    const nodesInfoProvider = '/nodes/info';
     const nodesInfo = await get(nodesInfoProvider);
 
     if (nodesInfo.error === 0 && nodesInfo.result && nodesInfo.result.list) {
@@ -77,4 +77,5 @@ async function getNodesInfo() {
     }
     // TODO: turn to 404 page.
 }
+
 getNodesInfo();

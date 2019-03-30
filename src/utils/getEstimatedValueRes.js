@@ -6,21 +6,35 @@
 */
 
 import calculateCrossConnectorReturn from './calculateCrossConnectorReturn';
-import hexCharCodeToStr from './hexCharCodeToStr';
 
+/**
+ * Bancor  Numeric Acquisition of Formula Requirements
+ *
+ * @property getEstimatedValueRes
+ *
+ * @param {string} type
+ * @param {number} paidElf
+ * @param {object} resourceContract
+ *
+*/
 
 export default function getEstimatedValueRes(type, paidElf, resourceContract) {
+    const initials = type.substring(0, 1);
+    const word = type.substring(1, type.length);
+    const paload = {
+        type: initials + word.toLowerCase()
+    };
     return new Promise((resolve, reject) => {
-        resourceContract.GetConverter(type, (error, result) => {
-            console.log(result);
-            const converter = JSON.parse(hexCharCodeToStr(result));
-            let elfCont = paidElf || 0;
-            const elfPayout = calculateCrossConnectorReturn(
-                converter.ElfBalance, converter.ElfWeight,
-                converter.ResBalance, converter.ResWeight,
-                elfCont
-            );
-            resolve(elfPayout);
+        resourceContract.GetConverter.call(paload, (error, result) => {
+            if (result) {
+                let elfCont = paidElf || 0;
+                const elfPayout = calculateCrossConnectorReturn(
+                    result.elfBalance, result.elfWeight,
+                    result.resBalance, result.resBalance,
+                    elfCont
+                );
+                resolve(elfPayout);
+            }
         });
     });
 }

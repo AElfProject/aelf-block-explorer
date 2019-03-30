@@ -1,18 +1,22 @@
-/** 
+/**
+ *
  * @file checkVote.js
  * @author zhouminghui
+ * 没有在用该方法
 */
+
+import {APPNAME} from '../../config/config';
 
 export default function checkVote(contracts, currentWallet) {
     return window.NightElf.api({
-        appName: 'hzzTest',
+        appName: APPNAME,
         method: 'CHECK_PERMISSION',
         type: 'address', // if you did not set type, it aways get by domain.
         address: currentWallet.address
     }).then(result => {
         if (result.permissions.length === 0) {
             window.NightElf.api({
-                appName: 'hzzTest',
+                appName: APPNAME,
                 method: 'OPEN_PROMPT',
                 chainId: 'AELF',
                 hostname: 'aelf.io',
@@ -41,7 +45,7 @@ export default function checkVote(contracts, currentWallet) {
             }).then(result => {
                 if (result.error === 0) {
                     window.NightElf.api({
-                        appName: 'hzzTest',
+                        appName: APPNAME,
                         method: 'CHECK_PERMISSION',
                         type: 'contract', // if you did not set type, it aways get by domain.
                         contractAddress: contracts.CONSENSUSADDRESS

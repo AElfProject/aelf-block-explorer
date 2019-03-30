@@ -3,12 +3,12 @@
  * @author zhouminghui
 */
 
-import {commonPrivateKey} from '../../config/config';
+import {commonPrivateKey, APPNAME} from '../../config/config';
 import {message} from 'antd';
 
 export default function getNightElfAddressList() {
     window.NightElf.api({
-        appName: 'hzzTest',
+        appName: APPNAME,
         method: 'GET_ADDRESS'
     }).then(result => {
         let showWallet = null;

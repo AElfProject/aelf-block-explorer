@@ -4,7 +4,6 @@
 */
 
 import {message} from 'antd';
-import {resourceAddress} from '../../config/config';
 export default function contractChange(values, contracts, currentWallet, appName) {
     return new Promise((resolve, reject) => {
         let contract = JSON.stringify(values.permissions[0].contracts);
@@ -39,23 +38,23 @@ export default function contractChange(values, contracts, currentWallet, appName
                         address: currentWallet.address,
                         contracts: [{
                             chainId: 'AELF',
-                            contractAddress: contracts['AElf.Contracts.MultiToken'],
+                            contractAddress: contracts.TOKENADDRESS,
                             contractName: 'Token',
                             description: 'contract Token'
                         }, {
                             chainId: 'AELF',
-                            contractAddress: contracts['AElf.Contracts.Dividends'],
+                            contractAddress: contracts.DIVIDENDSADDRESS,
                             contractName: 'Dividends',
                             description: 'contract Dividends'
                         }, {
                             chainId: 'AELF',
-                            contractAddress: contracts['AElf.Contracts.Consensus.DPoS'],
+                            contractAddress: contracts.CONSENSUSADDRESS,
                             contractName: 'Consensus.Dpos',
                             description: 'contract Consensus'
                         },
                         {
                             chainId: 'AELF',
-                            contractAddress: contracts['AElf.Contracts.Resource'],
+                            contractAddress: contracts.RESOURCEADDRESS,
                             contractName: 'Resource',
                             description: 'contract Resource'
                         }]

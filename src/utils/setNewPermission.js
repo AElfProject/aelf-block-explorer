@@ -4,10 +4,10 @@
 */
 
 import {message} from 'antd';
+import config from '../../config/config';
 export default function setNewPermission(payload) {
     const {
         appName,
-        connectChain,
         address
     } = payload;
     window.NightElf.api({
@@ -26,25 +26,25 @@ export default function setNewPermission(payload) {
                 address,
                 contracts: [{
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.MultiToken'],
-                    contractName: 'token',
-                    description: 'token contract'
+                    contractAddress: config.multiToken,
+                    contractName: 'Token',
+                    description: 'contract Token'
                 }, {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Dividend'],
-                    contractName: 'dividend',
-                    description: 'contract dividend'
+                    contractAddress: config.dividends,
+                    contractName: 'Dividend',
+                    description: 'contract Dividend'
                 }, {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Consensus.Dpos'],
-                    contractName: 'consensus',
-                    description: 'contract consensus'
+                    contractAddress: config.consensusDPoS,
+                    contractName: 'Consensus.Dpos',
+                    description: 'contract Consensus'
                 },
                 {
                     chainId: 'AELF',
-                    contractAddress: connectChain['AElf.Contracts.Resource'],
-                    contractName: 'resource',
-                    description: 'contract resource'
+                    contractAddress: config.resource,
+                    contractName: 'Resource',
+                    description: 'contract Resource'
                 }]
             }
         }
