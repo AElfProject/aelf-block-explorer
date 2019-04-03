@@ -59,7 +59,6 @@ export default class ResourceSellModal extends PureComponent {
             wallet,
             (err, result) => {
                 if (result) {
-                    console.log(result);
                     this.requestSell(result);
                 }
             }
@@ -73,7 +72,6 @@ export default class ResourceSellModal extends PureComponent {
             amount: sellNum
         };
         result.Sell(payload, (error, result) => {
-            console.log(result);
             if (!result) {
                 message.error(result.errorMessage.message, 3);
                 this.props.handleCancel();

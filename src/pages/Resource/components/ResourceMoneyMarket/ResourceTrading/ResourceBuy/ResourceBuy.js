@@ -178,7 +178,6 @@ export default class ResourceBuy extends Component {
         const {menuName, tokenConverterContract, tokenContract} = this.state;
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => {
-            console.log(value);
             if (value === '') {
                 this.setState({
                     ELFValue: 0,

@@ -237,7 +237,6 @@ export default class VoteTable extends PureComponent {
         }
 
         consensus.GetTicketsInformation.call({hex: key}, (error, result) => {
-            console.log(result);
             let votingRecords = [];
             if (result && !error) {
                 votingRecords = result.VotingRecords || [];

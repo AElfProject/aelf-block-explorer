@@ -215,7 +215,6 @@ export default class ResourceSell extends Component {
         const {value, account, currentWallet, contracts, menuIndex, toSell, appName} = this.state;
         let menuName = getMenuName(menuIndex);
         let reg = /^[0-9]*$/;
-        console.log(value);
         if (!reg.test(value) || parseInt(value, 10) === 0 || value === '') {
             message.error('The value must be numeric and greater than 0');
             return;
