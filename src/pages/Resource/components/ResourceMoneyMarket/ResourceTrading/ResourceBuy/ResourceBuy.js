@@ -178,6 +178,14 @@ export default class ResourceBuy extends Component {
         const {menuName, tokenConverterContract, tokenContract} = this.state;
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => {
+            console.log(value);
+            if (value === '') {
+                this.setState({
+                    ELFValue: 0,
+                    value: ''
+                });
+                return;
+            }
             getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract).then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
@@ -201,24 +209,16 @@ export default class ResourceBuy extends Component {
     }
 
     onChangeResourceValue(e) {
-        if (e.target.value) {
-            this.debounce(e.target.value);
-            this.setState({
-                value: e.target.value
-            });
-        }
-        else {
-            this.setState({
-                value: '',
-                ELFValue: 0
-            });
-        }
+        this.debounce(e.target.value);
+        this.setState({
+            value: e.target.value
+        });
     }
 
     getBuyModalShow() {
         const {value, account, ELFValue, currentWallet, contracts, toBuy, appName} = this.state;
         let reg = /^[0-9]*$/;
-        if (!reg.test(value) || parseInt(value, 10) === 0) {
+        if (!reg.test(value) || parseInt(value, 10) === 0  || value === '') {
             message.error('The value must be numeric and greater than 0');
             return;
         }

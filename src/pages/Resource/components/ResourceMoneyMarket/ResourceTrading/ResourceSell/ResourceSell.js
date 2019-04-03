@@ -39,17 +39,10 @@ export default class ResourceSell extends Component {
     }
 
     onChangeResourceValue(e) {
-        if (e.target.value) {
-            this.debounce(e.target.value);
-            this.setState({
-                value: e.target.value
-            });
-        }
-        else {
-            this.setState({
-                value: ''
-            });
-        }
+        this.debounce(e.target.value);
+        this.setState({
+            value: e.target.value
+        });
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -131,6 +124,13 @@ export default class ResourceSell extends Component {
         const {menuName, tokenConverterContract, tokenContract} = this.state;
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => {
+            if (value === '') {
+                this.setState({
+                    ELFValue: 0,
+                    value: ''
+                });
+                return;
+            }
             getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract, 'Sell').then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
@@ -212,13 +212,11 @@ export default class ResourceSell extends Component {
 
 
     getSellModalShow() {
-        const {value, account, nightElf, currentWallet, contracts, menuIndex, toSell, appName} = this.state;
+        const {value, account, currentWallet, contracts, menuIndex, toSell, appName} = this.state;
         let menuName = getMenuName(menuIndex);
-        const wallet = {
-            address: currentWallet.address
-        };
         let reg = /^[0-9]*$/;
-        if (!reg.test(value) || parseInt(value, 10) === 0) {
+        console.log(value);
+        if (!reg.test(value) || parseInt(value, 10) === 0 || value === '') {
             message.error('The value must be numeric and greater than 0');
             return;
         }
