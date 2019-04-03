@@ -5,33 +5,29 @@
  * TODO:未计算手续费
 */
 
-import calculateCrossConnectorReturn from './calculateCrossConnectorReturn';
+import calculateCrossConnectorElfReturn from './calculateCrossConnectorElfReturn';
+import getResoruceConverter from './getResoruceConverter';
+
+
 
 /**
  * Bancor  Numeric Acquisition of Formula Requirements
  *
- * @property getEstimatedValueRes
- *
- * @param {string} type
+ * @param {string} type  ELF, RAM, NET, CPU, STO
  * @param {number} paidElf
- * @param {object} resourceContract
+ * @param {Object} tokenConverterContract
+ * @param {Object} tokenContract
  *
 */
-
-export default function getEstimatedValueRes(type, paidElf, resourceContract) {
-    const initials = type.substring(0, 1);
-    const word = type.substring(1, type.length);
-    const paload = {
-        type: initials + word.toLowerCase()
-    };
+export default function getEstimatedValueRes(type, paidElf, tokenConverterContract, tokenContract) {
     return new Promise((resolve, reject) => {
-        resourceContract.GetConverter.call(paload, (error, result) => {
+        getResoruceConverter(type, tokenConverterContract, tokenContract).then(result => {
             if (result) {
-                let elfCont = paidElf || 0;
-                const elfPayout = calculateCrossConnectorReturn(
-                    result.elfBalance, result.elfWeight,
-                    result.resBalance, result.resBalance,
-                    elfCont
+                let resCont = paidElf || 0;
+                const elfPayout = calculateCrossConnectorElfReturn(
+                    result.resourceBalance, result.resoruceWeight,
+                    result.elfBalance + result.virtualBalance, result.tokenWeight,
+                    resCont
                 );
                 resolve(elfPayout);
             }

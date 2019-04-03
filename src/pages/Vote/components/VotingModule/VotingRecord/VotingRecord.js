@@ -61,15 +61,10 @@ export default class VotingRecord extends PureComponent {
             start: page,
             length: pageSize
         };
-        consensus.GetPageableTicketsHistoriesToFriendlyString.call(payload, (error, result) => {
+        consensus.GetPageableTicketsHistories.call(payload, (error, result) => {
             if (result) {
-                const {
-                    value,
-                    Value
-                } = result;
-                const content = value || Value || null;
-                const ticketsHistoriesData = JSON.parse(content).Values || [];
-                const historiesNumber = JSON.parse(content).HistoriesNumber || 0;
+                const ticketsHistoriesData = result.Values || [];
+                const historiesNumber = result.HistoriesNumber || 0;
                 pagination.total = parseInt(historiesNumber, 10);
                 ticketsHistoriesData.map((item, index) => {
                     let data = {

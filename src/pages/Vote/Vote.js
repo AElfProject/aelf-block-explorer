@@ -66,7 +66,7 @@ export default class VotePage extends Component {
             this.setState({
                 contracts: result
             });
-            aelf.chain.contractAtAsync(result.CONSENSUSADDRESS, result.wallet, (error, result) => {
+            aelf.chain.contractAtAsync(result.consensusDPoS, result.wallet, (error, result) => {
                 // console.log(result);
                 this.setState({
                     consensus: result
@@ -75,13 +75,13 @@ export default class VotePage extends Component {
                 this.getInformation(result);
             });
 
-            aelf.chain.contractAtAsync(result.DIVIDENDSADDRESS, result.wallet, (error, result) => {
+            aelf.chain.contractAtAsync(result.dividends, result.wallet, (error, result) => {
                 this.setState({
                     dividends: result
                 });
             });
 
-            aelf.chain.contractAtAsync(result.TOKENADDRESS, result.wallet, (error, result) => {
+            aelf.chain.contractAtAsync(result.multiToken, result.wallet, (error, result) => {
                 this.setState({
                     tokenContract: result
                 });

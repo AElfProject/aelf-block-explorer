@@ -21,7 +21,7 @@ export default class ResourceMoneyMarket extends PureComponent {
             currentWallet: null,
             contracts: null,
             tokenContract: null,
-            resourceContract: null,
+            tokenConverterContract: null,
             loading: false,
             echartsLoading: false,
             realTimeTransactionLoaidng: false,
@@ -86,9 +86,9 @@ export default class ResourceMoneyMarket extends PureComponent {
             };
         }
 
-        if (props.resourceContract !== state.resourceContract) {
+        if (props.tokenConverterContract !== state.tokenConverterContract) {
             return {
-                resourceContract: props.resourceContract
+                tokenConverterContract: props.tokenConverterContract
             };
         }
 
@@ -131,7 +131,7 @@ export default class ResourceMoneyMarket extends PureComponent {
 
     render() {
         const menu = this.getMenuHTML();
-        const {menuIndex, currentWallet, contracts, resourceContract, tokenContract, account} = this.state;
+        const {menuIndex, currentWallet, contracts, tokenConverterContract, tokenContract, account} = this.state;
         const {realTimeTransactionLoaidng, echartsLoading, nightElf} = this.state;
         let loading = true;
         if (!realTimeTransactionLoaidng && !echartsLoading) {
@@ -170,7 +170,7 @@ export default class ResourceMoneyMarket extends PureComponent {
                                     menuIndex={menuIndex}
                                     currentWallet={currentWallet}
                                     contracts={contracts}
-                                    resourceContract={resourceContract}
+                                    tokenConverterContract={tokenConverterContract}
                                     tokenContract={tokenContract}
                                     account={account}
                                     onRefresh={this.props.onRefresh}

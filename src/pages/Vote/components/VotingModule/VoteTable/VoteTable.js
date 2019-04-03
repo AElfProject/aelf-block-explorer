@@ -10,7 +10,7 @@ import {Table, message} from 'antd';
 import getPublicKey from '../../../../../utils/getPublicKey';
 import {commonPrivateKey, APPNAME} from '../../../../../../config/config';
 import contractChange from '../../../../../utils/contractChange';
-import * as Aelf from 'aelf-sdk';
+import * as AElf from 'aelf-sdk';
 import './VoteTable.less';
 
 let pageSize = 20;
@@ -161,14 +161,9 @@ export default class VoteTable extends PureComponent {
             start: page,
             length: pageSize
         };
-        consensus.GetPageableCandidatesHistoryInfoToFriendlyString.call(getPageablePayload, (error, result) => {
+        consensus.GetPageableCandidatesHistoryInfo.call(getPageablePayload, (error, result) => {
             if (result) {
-                const {
-                    value,
-                    Value
-                } = result;
-                const content = Value || value;
-
+                console.log(result);
                 let isVote = true;
                 let isRedee = true;
 
@@ -183,8 +178,8 @@ export default class VoteTable extends PureComponent {
                     isRedee = false;
                 }
 
-                pagination.total = JSON.parse(content).CandidatesNumber;
-                let nodeList = JSON.parse(content).Maps || [];
+                pagination.total = result.CandidatesNumber;
+                let nodeList = result.Maps || [];
                 if (nodeList.length === 0) {
                     this.setState({
                         data: [],
@@ -198,15 +193,15 @@ export default class VoteTable extends PureComponent {
                 for (let i in nodeList) {
                     let nodeInformation = nodeList[i];
                     let data = {
-                        key: page + serial + 1,
+                        key: nodeInformation.key,
                         serialNumber: page + serial + 1,
-                        nodeName: nodeInformation.CurrentAlias,
-                        term: nodeInformation.ReappointmentCount || '-',
-                        block: nodeInformation.ProducedBlocks || '-',
-                        vote: nodeInformation.CurrentVotesNumber || '-',
+                        nodeName: nodeInformation.value.CurrentAlias,
+                        term: nodeInformation.value.ReappointmentCount || '-',
+                        block: nodeInformation.value.ProducedBlocks || '-',
+                        vote: nodeInformation.value.CurrentVotesNumber || '-',
                         myVote: 0 || '-',
                         operation: {
-                            publicKey: i || '',
+                            publicKey: nodeInformation.key || '',
                             vote: isVote,
                             redeem: isRedee
                         }
@@ -231,25 +226,21 @@ export default class VoteTable extends PureComponent {
         let key = null;
         if (currentWallet) {
             if (currentWallet.address === '') {
-                key = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey).keyPair.getPublic().encode('hex');
+                key = AElf.wallet.getWalletByPrivateKey(commonPrivateKey).keyPair.getPublic().encode('hex');
             }
             else {
                 key = getPublicKey(currentWallet.publicKey);
             }
         }
         else {
-            key = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey).keyPair.getPublic().encode('hex');
+            key = AElf.wallet.getWalletByPrivateKey(commonPrivateKey).keyPair.getPublic().encode('hex');
         }
 
-        consensus.GetTicketsInformationToFriendlyString.call({hex: key}, (error, result) => {
+        consensus.GetTicketsInformation.call({hex: key}, (error, result) => {
+            console.log(result);
             let votingRecords = [];
             if (result && !error) {
-                const {
-                    Value,
-                    value
-                } = result;
-                const content = Value || value;
-                votingRecords = JSON.parse(content).VotingRecords || [];
+                votingRecords = result.VotingRecords || [];
             }
             dataList.map((item, index) => {
                 let myVote = 0;

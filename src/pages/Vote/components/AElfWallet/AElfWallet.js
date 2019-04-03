@@ -143,14 +143,9 @@ export default class AElfWallet extends PureComponent {
         let {currentWallet} = this.state;
         if (currentWallet) {
             const key = getPublicKey(currentWallet.publicKey);
-            consensus.GetTicketsInformationToFriendlyString.call({hex: key}, (error, result) => {
+            consensus.GetTicketsInformation.call({hex: key}, (error, result) => {
                 if (result) {
-                    const {
-                        Value,
-                        value
-                    } = result;
-                    const content = value || Value || {};
-                    let tickets = JSON.parse(content).VotingRecords || [];
+                    let tickets = result.VotingRecords || [];
                     let ticket = 0;
                     tickets.map((item, index) => {
                         if (item.From === key) {
@@ -213,7 +208,7 @@ export default class AElfWallet extends PureComponent {
             address: currentWallet.address
         };
         nightElf.chain.contractAtAsync(
-            contracts.CONSENSUSADDRESS,
+            contracts.consensusDPoS,
             wallet,
             (err, result) => {
                 if (result) {

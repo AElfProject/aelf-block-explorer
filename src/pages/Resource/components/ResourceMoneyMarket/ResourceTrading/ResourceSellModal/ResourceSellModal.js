@@ -6,7 +6,7 @@
 import React, {PureComponent} from 'react';
 import {Row, Col, Spin, message} from 'antd';
 import {aelf} from '../../../../../../utils';
-import {resourceAddress} from '../../../../../../../config/config';
+import {tokenConverter} from '../../../../../../../config/config';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import addressOmit from '../../../../../../utils/addressOmit';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
@@ -21,7 +21,8 @@ export default class ResourceSellModal extends PureComponent {
             menuIndex: this.props.menuIndex,
             currentWallet: this.props.currentWallet,
             sellNum: this.props.sellNum,
-            resourceContract: this.props.resourceContract,
+            tokenConverterContract: this.props.tokenConverterContract,
+            tokenContract: this.props.tokenContract,
             serviceCharge: 0,
             menuName: this.props.menuName,
             loading: false,
@@ -32,14 +33,14 @@ export default class ResourceSellModal extends PureComponent {
     }
 
     componentDidMount() {
-        const {sellNum, menuIndex, resourceContract} = this.state;
+        const {sellNum, menuIndex, tokenConverterContract, tokenContract} = this.state;
         let menuName = getMenuName(menuIndex);
-        getEstimatedValueELF(menuName, sellNum, resourceContract, 'Sell').then(result => {
+        getEstimatedValueELF(menuName, sellNum, tokenConverterContract, tokenContract, 'Sell').then(result => {
             let ELFValue = Math.abs(Math.ceil(result));
             this.setState({
                 ELFValue,
                 menuName,
-                serviceCharge: getFees(ELFValue) + 1
+                serviceCharge: getFees(ELFValue)
             });
         });
     }
@@ -54,10 +55,11 @@ export default class ResourceSellModal extends PureComponent {
             loading: true
         });
         nightElf.chain.contractAtAsync(
-            contracts.RESOURCEADDRESS,
+            contracts.tokenConverter,
             wallet,
             (err, result) => {
                 if (result) {
+                    console.log(result);
                     this.requestSell(result);
                 }
             }
@@ -66,8 +68,13 @@ export default class ResourceSellModal extends PureComponent {
 
     requestSell(result) {
         const {menuName, sellNum} = this.state;
-        result.SellResource(menuName, sellNum, (error, result) => {
-            if (result && result.error !== 0) {
+        const payload = {
+            symbol: menuName,
+            amount: sellNum
+        };
+        result.Sell(payload, (error, result) => {
+            console.log(result);
+            if (!result) {
                 message.error(result.errorMessage.message, 3);
                 this.props.handleCancel();
                 return;

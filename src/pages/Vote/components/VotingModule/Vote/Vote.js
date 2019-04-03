@@ -37,7 +37,7 @@ export default class Vote extends PureComponent {
             address: currentWallet.address
         };
         nightElf.chain.contractAtAsync(
-            contracts.TOKENADDRESS,
+            contracts.multiToken,
             wallet,
             (err, result) => {
                 if (result) {
@@ -55,7 +55,7 @@ export default class Vote extends PureComponent {
         //         nightElf
         //     });
         //     nightElf.chain.getContractAbi(
-        //         contracts.TOKENADDRESS,
+        //         contracts.multiToken,
         //         (err, result) => {
         //             if (result) {
         //                 this.getKeypairBalanceOf(result);
@@ -127,7 +127,7 @@ export default class Vote extends PureComponent {
                 address: currentWallet.address
             };
             nightElf.chain.contractAtAsync(
-                contracts.CONSENSUSADDRESS,
+                contracts.consensusDPoS,
                 wallet,
                 (err, result) => {
                     if (result) {
