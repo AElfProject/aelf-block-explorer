@@ -178,7 +178,7 @@ export default class ResourceBuy extends Component {
         const {menuName, tokenConverterContract, tokenContract} = this.state;
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => {
-            getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract, 'Buy').then(result => {
+            getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract).then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
@@ -279,7 +279,7 @@ export default class ResourceBuy extends Component {
         });
     }
 
-    getDelayApprove(result) {
+    getApprove(result, time = 0) {
         const {value, ELFValue} = this.state;
         const contract = result || null;
         if (contract) {
@@ -296,29 +296,7 @@ export default class ResourceBuy extends Component {
                             contract.Approve(payload, (error, result) => {
                                 this.props.handleBuyModalShow(value, ELFValue);
                             });
-                        }, 3020);
-                    }
-                });
-            }
-        }
-    }
-
-    getApprove(result) {
-        const {value, ELFValue} = this.state;
-        const contract = result || null;
-        if (contract) {
-            const payload = {
-                symbol: 'ELF',
-                spender: feeReceiverContract,
-                amount: ELFValue + ELFValue * 0.02
-            };
-            if (result) {
-                contract.Approve(payload, (error, result) => {
-                    if (result) {
-                        payload.spender = tokenConverter;
-                        contract.Approve(payload, (error, result) => {
-                            this.props.handleBuyModalShow(value, ELFValue);
-                        });
+                        }, time);
                     }
                 });
             }
@@ -336,7 +314,7 @@ export default class ResourceBuy extends Component {
                 </div>
             ),
             onOk() {
-                that.getDelayApprove(result);
+                that.getApprove(result, 3020);
             }
         });
     }

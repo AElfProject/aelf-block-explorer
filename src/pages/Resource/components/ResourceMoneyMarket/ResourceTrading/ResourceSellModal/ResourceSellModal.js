@@ -35,7 +35,7 @@ export default class ResourceSellModal extends PureComponent {
     componentDidMount() {
         const {sellNum, menuIndex, tokenConverterContract, tokenContract} = this.state;
         let menuName = getMenuName(menuIndex);
-        getEstimatedValueELF(menuName, sellNum, tokenConverterContract, tokenContract, 'Sell').then(result => {
+        getEstimatedValueELF(menuName, sellNum, tokenConverterContract, tokenContract).then(result => {
             let ELFValue = Math.abs(Math.ceil(result));
             this.setState({
                 ELFValue,

@@ -18,9 +18,6 @@ export default function calculateCrossConnectorElfReturn(ResBalance, ResWeight, 
 
     const x = bf / (bf + a);
     const y = wf / wt;
-    console.log('x', x);
-    console.log('y', y);
-    console.log((1 - (Math.pow(x, y)) * bt));
     return ((1 - Math.pow(x, y)) * bt);
 }
 

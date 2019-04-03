@@ -45,8 +45,6 @@ export default class Resource extends Component {
     componentDidMount() {
         let httpProvider = DEFAUTRPCSERVER;
         getContractAddress().then(result => {
-            // let contracts = result;
-            // contracts['tokenConverter'] = tokenConverter;
             this.setState({
                 contracts: result
             });
@@ -61,7 +59,6 @@ export default class Resource extends Component {
                 });
             });
         });
-        // getExtensionKeypairList
         NightElfCheck.getInstance().check.then(item => {
             if (item) {
                 nightElf = new window.NightElf.AElf({

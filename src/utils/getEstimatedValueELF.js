@@ -19,25 +19,11 @@ import calculateCrossConnectorReturn from './calculateCrossConnectorReturn';
 
 import getResoruceConverter from './getResoruceConverter';
 
-export default function getEstimatedValueELF(type, pidRes, tokenConverterContract, tokenContract, tType) {
+export default function getEstimatedValueELF(type, pidRes, tokenConverterContract, tokenContract) {
     return new Promise((resolve, reject) => {
         getResoruceConverter(type, tokenConverterContract, tokenContract).then(result => {
             if (result) {
-                if (tType === 'Buy') {
-                    if (result.resourceBalance >= Math.abs(pidRes)) {
-                        let resCont = Math.abs(pidRes) || 0;
-                        const elfPayout = calculateCrossConnectorReturn(
-                            result.resourceBalance, result.resoruceWeight,
-                            result.elfBalance + result.virtualBalance, result.tokenWeight,
-                            resCont
-                        );
-                        resolve(elfPayout);
-                    }
-                    else {
-                        resolve('There are not so many resources.');
-                    }
-                }
-                else {
+                if (result.resourceBalance >= Math.abs(pidRes)) {
                     let resCont = Math.abs(pidRes) || 0;
                     const elfPayout = calculateCrossConnectorReturn(
                         result.resourceBalance, result.resoruceWeight,
@@ -45,6 +31,9 @@ export default function getEstimatedValueELF(type, pidRes, tokenConverterContrac
                         resCont
                     );
                     resolve(elfPayout);
+                }
+                else {
+                    resolve('There are not so many resources.');
                 }
             }
         });

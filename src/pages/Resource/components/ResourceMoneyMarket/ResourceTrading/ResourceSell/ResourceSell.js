@@ -186,7 +186,7 @@ export default class ResourceSell extends Component {
 
     onChangeSlide(e) {
         const {menuName, tokenConverterContract, tokenContract} = this.state;
-        getEstimatedValueELF(menuName, e, tokenConverterContract, tokenContract, 'Sell').then(result => {
+        getEstimatedValueELF(menuName, e, tokenConverterContract, tokenContract).then(result => {
             let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
             let ELFValue = Math.abs(Math.floor(result));
@@ -277,7 +277,7 @@ export default class ResourceSell extends Component {
         });
     }
 
-    getDelayApprove(result) {
+    getApprove(result, time = 0) {
         const {value, ELFValue, menuName} = this.state;
         const contract = result || null;
         if (contract) {
@@ -294,29 +294,7 @@ export default class ResourceSell extends Component {
                             contract.Approve(payload, (error, result) => {
                                 this.props.handleSellModalShow(value, ELFValue);
                             });
-                        }, 3020);
-                    }
-                });
-            }
-        }
-    }
-
-    getApprove(result) {
-        const {value, ELFValue, menuName} = this.state;
-        const contract = result || null;
-        if (contract) {
-            const payload = {
-                symbol: menuName,
-                spender: feeReceiverContract,
-                amount: value
-            };
-            if (result) {
-                contract.Approve(payload, (error, result) => {
-                    if (result) {
-                        payload.spender = tokenConverter;
-                        contract.Approve(payload, (error, result) => {
-                            this.props.handleSellModalShow(value, ELFValue);
-                        });
+                        }, time);
                     }
                 });
             }
@@ -334,7 +312,7 @@ export default class ResourceSell extends Component {
                 </div>
             ),
             onOk() {
-                that.getDelayApprove(result);
+                that.getDelayApprove(result, 3020);
             }
         });
     }

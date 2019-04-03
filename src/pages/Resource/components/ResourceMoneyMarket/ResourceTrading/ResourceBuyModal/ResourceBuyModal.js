@@ -5,7 +5,6 @@
 
 import React, {PureComponent} from 'react';
 import {Row, Col, Spin, message} from 'antd';
-// import {tokenConverter} from '../../../../../../../config/config';
 import {aelf} from '../../../../../../utils';
 import getFees from '../../../../../../utils/getFees';
 import getMenuName from '../../../../../../utils/getMenuName';
@@ -34,7 +33,7 @@ export default class ResourceBuyModal extends PureComponent {
 
     componentDidMount() {
         const {buyNum, menuName, tokenConverterContract, tokenContract} = this.state;
-        getEstimatedValueELF(menuName, buyNum, tokenConverterContract, tokenContract, 'Buy').then(result => {
+        getEstimatedValueELF(menuName, buyNum, tokenConverterContract, tokenContract).then(result => {
             let ELFValue = Math.abs(Math.floor(result));
             let buyRes = ELFValue;
             ELFValue += getFees(buyRes);
