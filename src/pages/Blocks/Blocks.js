@@ -76,7 +76,7 @@ export default class BlocksPage extends Component {
     };
 
     handleTableChange = pagination => {
-        const pager = { ...this.state.pagination
+        const pager = {...this.state.pagination
         };
         pager.current = pagination.current;
         this.setState({
@@ -95,7 +95,7 @@ export default class BlocksPage extends Component {
             pagination,
             loading
         } = this.state;
-
+        console.log(data);
         const {
             handleTableChange
         } = this;

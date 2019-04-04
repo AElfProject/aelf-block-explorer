@@ -1,7 +1,11 @@
+/**
+ * @file Application
+ * @author huangzongzhe
+*/
+
 import React, { PureComponent } from "react";
 
 import "./apps.styles.less";
-
 export default class ApplicationPage extends PureComponent {
     render() {
         return (

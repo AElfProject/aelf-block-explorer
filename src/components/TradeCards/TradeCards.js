@@ -34,7 +34,7 @@ export default class TradeCards extends Component {
             //   const tick = isEmpty(detail) ? { vol: 0 } : detail.tick;
 
             this.setState({
-                price,
+                price
                 // tick
             });
         } catch (e) {

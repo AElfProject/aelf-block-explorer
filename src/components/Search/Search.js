@@ -1,31 +1,32 @@
+/**
+ * @file Search.js
+ * @author huangzongzhe
+ */
 import React, {
     PureComponent
-} from "react";
+} from 'react';
 import {
     Input,
     Icon,
     message
-} from "antd";
+} from 'antd';
 
 import {
     aelf
-} from "../../utils";
+} from '../../utils';
 
-import "./search.styles.less";
+import './search.styles.less';
 
 export default class Search extends PureComponent {
-    constructor(props) {
-        super(props);
-    }
 
     state = {
-        content: ""
+        content: ''
     };
 
     emitEmpty = () => {
         this.userNameInput.focus();
         this.setState({
-            content: ""
+            content: ''
         });
     };
 
@@ -36,26 +37,33 @@ export default class Search extends PureComponent {
     };
 
     SEARCHRULES = {
-        36: function (value) {
+        address: function (value) {
             const url = `/address/${value}`;
             window.open(url);
             message.info('open new window: Address Detail');
         },
-        64: async function (value) {
+        transaction: async function (value) {
             // 先请求一下...如果有结果，就跳转到对应的结果页，都没有就提示查不到东西。
-            const {
-                result
-            } = aelf.chain.getTxResult(value);
+            aelf.chain.getTxResult(value, (err, result) => {
+                if (err) {
+                    window.open(`/block/${value}`);
+                    message.info('open new window: Block Detail');
+                }
+                else {
+                    window.open(`/tx/${value}`);
+                    message.info('open new window: Transaction Detail');
+                }
+            });
             // if (result.block_hash) {
-            if (typeof result.tx_info === 'object') {
-                window.open(`/tx/${value}`);
-                message.info('open new window: Transaction Detail');
-                return;
-            }
+            // if (typeof result.Transaction === 'object') {
+            //     window.open(`/tx/${value}`);
+            //     message.info('open new window: Transaction Detail');
+            //     return;
+            // }
 
-            window.open(`/block/${value}`);
-            message.info('open new window: Block Detail');
-            return;
+            // window.open(`/block/${value}`);
+            // message.info('open new window: Block Detail');
+            // return;
         },
         blockHeight: function (value) {
             let number = parseInt(value, 10);
@@ -68,13 +76,13 @@ export default class Search extends PureComponent {
     }
 
     handleSearch = e => {
-        console.log()
         const value = e.target && e.target.value || e.searchValue || '';
         if (!value.trim()) {
             return;
         }
         const length = value.length;
-        const lengthList = [36, 64];
+        const isAddress = [49, 50, 51, 52, 53, 47];
+        const isTxid = [64];
 
         // address.length === 38/66 && address.match(/^0x/)
         // search
@@ -82,15 +90,17 @@ export default class Search extends PureComponent {
         // 1. transaction 66
         // 2. block   66
         // 3. address length=38
-        if (lengthList.indexOf(length) > -1) {
-            this.SEARCHRULES[length](value);
+        if (isAddress.includes(length)) {
+            this.SEARCHRULES.address(value);
+        } else if (isTxid.includes(length)) {
+            this.SEARCHRULES.transaction(value);
         } else {
-            this.SEARCHRULES['blockHeight'](value) && message.error('Wrong Search Input', 6);
+            this.SEARCHRULES.blockHeight(value) && message.error('Wrong Search Input', 6);
         }
     };
 
     render() {
-        const { content } = this.state;
+        const {content} = this.state;
         const suffix = content ? (
                 <Icon type="close-circle" onClick={this.emitEmpty} />
             ) : null;
@@ -115,7 +125,6 @@ export default class Search extends PureComponent {
                     <Icon type="search" className="search-icon" />
                 </span>
             </div>
-
         );
     }
 }

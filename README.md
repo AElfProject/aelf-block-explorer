@@ -4,7 +4,7 @@
 
 Please ensure your dependencies are ready.
 
-If you meet some permission problem, please use 'sudo'.
+If you meet some permission problem, try to use 'sudo'.
 
 ```bash
 bash build.sh < type|optional > < node_moduels|optinal > < nginx action | optinal>
@@ -23,10 +23,18 @@ Default Port: 3000
 
 ## Dependencise
 
+- Start up
+[AElf Chain](https://github.com/AElfProject/AElf),
+[aelf-block-scan](https://github.com/AElfProject/aelf-block-scan),
+[aelf-block-api](https://github.com/AElfProject/aelf-block-api)
+at first
+
+- Set the config of the nginx.
+
 ### api rules:
 
-1. `/api/!${rpc}/*` => `scan server`; [aelf-block-api](https://github.com/AElfProject/aelf-block-api)
-2. `/chain/*` => `aelf chain` [AElf Chain](https://github.com/AElfProject/AElf)
+- 1. `/api/!${rpc}/*` => `scan server`; [aelf-block-api](https://github.com/AElfProject/aelf-block-api)
+- 2. `/chain/*` => `aelf chain` [AElf Chain](https://github.com/AElfProject/AElf)
 
 It means you need run aelf-block-api & AElf at first.
 

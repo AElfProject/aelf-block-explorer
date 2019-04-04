@@ -23,12 +23,13 @@ module.exports = {
     disableHostCheck: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:7101',
+        // target: 'http://localhost:7101',
+        target: 'http://192.168.199.109:7101',
         changeOrigin: true,
         secure: false
       },
       '/chain': {
-        target: 'http://localhost:8100',
+        target: 'http://192.168.199.109:7250',
         changeOrigin: true,
         secure: false
       },

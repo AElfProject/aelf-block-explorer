@@ -1,0 +1,48 @@
+@import "../../assets/less/_variables.less";
+
+.DownloadPlugins {
+    margin: 0 56px;
+    padding: 36px 0 69px 0;
+    .Tips {
+        padding: 16px 35px 16px 82px;
+        background: url(../../assets/images/exclamation_mark.png) no-repeat 35px center #976271;
+        background-size: 28px 25px;
+        border: 1px solid #a77c4d;
+        font-size: 16px;
+        color: #fff;
+    }
+}
+
+.Step-con {
+    height: 152px;
+    display: flex;
+    color: #dc9534;
+    font-size: 20px;
+    border-right: 1px solid #73399b;
+    background: #5b1189;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 1200px) {
+    .Step-con {
+        font-size: 16px;
+        height: 52px;
+    }
+    .DownloadPlugins {
+        .Tips {
+            font-size: 12px;
+        }
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .Step-con {
+        border-right: none;
+        border-bottom:  1px solid #73399b;
+    }
+
+    .DownloadPlugins { 
+        margin: 0 20px;
+    }
+}

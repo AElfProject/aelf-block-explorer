@@ -1,10 +1,15 @@
-import React from "react";
+/**
+ * @file Address.js
+ * @author huangzongzhe, longyue
+ */
+/* eslint-disable fecs-camelcase */
+import React from 'react';
 import {
     Table
-} from "antd";
+} from 'antd';
 import {
     get
-} from "../../utils";
+} from '../../utils';
 
 import {
     ALL_TXS_LIST_COLUMNS,
@@ -14,15 +19,16 @@ import {
     // ADDRESS_BALANCE_API_URL,
     ADDRESS_INFO_COLUMN,
     PAGE_SIZE
-} from "../../constants";
+} from '../../constants';
 
-import "./address.styles.less";
+import './address.styles.less';
 
 export default class AddressPage extends React.Component {
     constructor(props) {
         super(props);
+        this.getBlanceAndValueLock = false;
         this.state = {
-            address: "",
+            address: this.props.match.params.id,
             blance: '-',
             value: '-',
             txs: [],
@@ -44,12 +50,12 @@ export default class AddressPage extends React.Component {
         });
 
         const data = await get(ADDRESS_TXS_API_URL, {
-            order: "desc",
+            order: 'desc',
             ...params
         });
 
-        const pagination = { ...this.state.pagination
-        };
+        console.log(data);
+        const pagination = {...this.state.pagination};
         if (data && data.transactions.length) {
             pagination.total = data.total;
             this.setState({
@@ -58,8 +64,11 @@ export default class AddressPage extends React.Component {
                 txs: data.transactions,
                 pagination
             });
-        } else {
+        }
+        else {
+            pagination.total = 0;
             this.setState({
+                txsNumber: 0,
                 txs_loading: false,
                 txs: [],
                 pagination
@@ -68,8 +77,7 @@ export default class AddressPage extends React.Component {
     };
 
     handleTableChange = pagination => {
-        const pager = { ...this.state.pagination
-        };
+        const pager = {...this.state.pagination};
         pager.current = pagination.current;
         this.setState({
             pagination: pager
@@ -82,35 +90,54 @@ export default class AddressPage extends React.Component {
         });
     };
 
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    static getDerivedStateFromProps(nextProps) {
+        try {
+            return {
+                newAddress: nextProps.match.params.id
+            };
+        }
+        catch (e) {
+            return {
+                newAddress: false
+            };
+        }
+    }
+
+    componentDidUpdate() {
+        const newAddress = this.state.newAddress;
+        const preAddress = this.state.address;
+        if (newAddress && newAddress !== preAddress) {
+            this.state.address = newAddress;
+            this.getBalanceAndValue(newAddress);
+        }
+    }
+
+    async getBalanceAndValue(address) {
+        if (!this.getBlanceAndValueLock) {
+            this.getBlanceAndValueLock = true;
+
+            await this.fetch({
+                page: 0,
+                limit: 25,
+                address
+            });
+
+            // {USD: 0.322, BTC: 0.00004967, CNY: 2.25}
+            const {USD = 0} = await get(ELF_REALTIME_PRICE_URL);
+            const tokens = await this.getAddressTokens(address);
+
+            const {balance = 0} = tokens && tokens[0] || {};
+            this.setState({
+                balance: balance.toLocaleString(),
+                value: (parseFloat(balance) * parseFloat(USD)).toLocaleString()
+            });
+            this.getBlanceAndValueLock = false;
+        }
+    }
+
     async componentDidMount() {
-        const {
-            fetch,
-            props
-        } = this;
-        const {
-            match
-        } = props;
-        const address = match.params.id;
-        await fetch({
-            page: 0,
-            limit: 25,
-            address
-        });
-
-        // {USD: 0.322, BTC: 0.00004967, CNY: 2.25}
-        const { USD = 0 } = await get(ELF_REALTIME_PRICE_URL);
-        const tokens = await this.getAddressTokens(address);
-
-        const { balance = 0 } = tokens && tokens[0] || {};
-        this.setState({
-            balance: balance.toLocaleString(),
-            value: (parseFloat(balance) * parseFloat(USD)).toLocaleString()
-        });
-        // console.log(price, tokens, balance);
-        // const balance = await get(ADDRESS_TOKENS_API_URL);
-        // this.setState({
-        //     price,
-        // });
+        this.getBalanceAndValue(this.state.address);
     }
 
     componentWillUnmount() {
@@ -137,34 +164,30 @@ export default class AddressPage extends React.Component {
 
     render() {
         const {
-            match
-        } = this.props;
-        const {
+            address,
             txs,
             pagination,
-            txs_loading
+            txs_loading,
+            balance
         } = this.state;
-        const {
-            handleTableChange
-        } = this;
-        const address = match.params.id;
+
         const addressInfo = [{
             address,
-            balance: this.state.balance,
-            value: this.state.value + ' USD',
+            balance,
+            value: this.state.value + ' USD'
             // balance: 243.245423465331,
-            // value: "$ 23.23532342"
+            // value: '$ 23.23532342'
         }];
 
         return (
-            <div className="address-container basic-container" key="body">
-                <div className="address-header-container">
+            <div className='address-container basic-container' key='body'>
+                <div className='address-header-container'>
                     <h3>Overview</h3>
                     <Table
-                        className="header-list"
+                        className='header-list'
                         columns={ADDRESS_INFO_COLUMN}
                         dataSource={addressInfo}
-                        rowKey = "address"
+                        rowKey = 'address'
                         pagination={false}
                     />
                 </div>
@@ -175,11 +198,11 @@ export default class AddressPage extends React.Component {
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}
                     pagination={pagination}
-                    rowKey = "tx_id"
+                    rowKey = 'tx_id'
                     loading={txs_loading}
-                    onChange={handleTableChange}
+                    onChange={pagination => this.handleTableChange(pagination)}
                 />
-                <div className="basic-bottom-blank"></div>
+                <div className='basic-bottom-blank'></div>
             </div>
         );
     }
