@@ -61,23 +61,16 @@ export default class MyVote extends PureComponent {
         }
 
         const key = getPublicKey(currentWallet.publicKey);
-        console.log(consensus);
         const payload = {
             start: page,
             length: pageSize,
             publicKey: key
         };
-        consensus.GetPageableNotWithdrawnTicketsInfoToFriendlyString.call(payload, (error, result) => {
-            console.log(result);
+        consensus.GetPageableNotWithdrawnTicketsInfo.call(payload, (error, result) => {
             if (result) {
-                const {
-                    value,
-                    Value
-                } = result;
-                const content = value || Value || '';
-                const ticketsInfoList = JSON.parse(content).VotingRecords || [];
+                const ticketsInfoList = result.VotingRecords || [];
                 const VotingRecordsCount = parseInt(
-                    JSON.parse(content).VotingRecordsCount, 10
+                    result.VotingRecordsCount, 10
                 ) || 0;
                 if (ticketsInfoList.length === 0) {
                     this.setState({
@@ -98,8 +91,8 @@ export default class MyVote extends PureComponent {
                         From: item.From,
                         vote: item.Count,
                         myVote: item.Count,
-                        lockDate: dayjs(item.VoteTimestamp).format('YYYY-MM-DD'),
-                        dueDate: dayjs(item.UnlockTimestamp).format('YYYY-MM-DD'),
+                        lockDate: dayjs(parseInt(item.VoteTimestamp.seconds + '000', 10)).format('YYYY-MM-DD HH:mm:ss'),
+                        dueDate: dayjs(parseInt(item.UnlockTimestamp.seconds + '000', 10)).format('YYYY-MM-DD HH:mm:ss'),
                         operation: {
                             txId: item.TransactionId,
                             publicKey: item.To,
@@ -110,6 +103,11 @@ export default class MyVote extends PureComponent {
                     dataList.push(data);
                     pagination.total = VotingRecordsCount;
                     this.getNodeName(dataList, index, item, pagination);
+                });
+            }
+            else {
+                this.setState({
+                    loading: false
                 });
             }
         });
@@ -199,7 +197,7 @@ export default class MyVote extends PureComponent {
             payload: {
                 address: currentWallet.address,
                 contractName: 'token',
-                contractAddress: contracts.TOKENADDRESS
+                contractAddress: contracts.multiToken
             }
         }).then(
             window.NightElf.api({
@@ -210,7 +208,7 @@ export default class MyVote extends PureComponent {
                 payload: {
                     address: currentWallet.address,
                     contractName: 'consensus',
-                    contractAddress: contracts.CONSENSUSADDRESS
+                    contractAddress: contracts.consensusDPoS
                 }
             })
         ).then(result => {

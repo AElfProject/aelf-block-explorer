@@ -1,4 +1,0 @@
-/**
- * @file getNightElfKeypairs
- * @author zhouminghui
-*/

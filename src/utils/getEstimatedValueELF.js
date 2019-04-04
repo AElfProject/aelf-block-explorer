@@ -13,41 +13,27 @@ import calculateCrossConnectorReturn from './calculateCrossConnectorReturn';
  *
  * @param {string} type
  * @param {number} pidRes
- * @param {object} resourceContract
+ * @param {object} tokenConverterContract
  * @param {string} tType
 */
 
-export default function getEstimatedValueELF(type, pidRes, resourceContract, tType) {
+import getResoruceConverter from './getResoruceConverter';
+
+export default function getEstimatedValueELF(type, pidRes, tokenConverterContract, tokenContract) {
     return new Promise((resolve, reject) => {
-        const initials = type.substring(0, 1);
-        const word = type.substring(1, type.length);
-        const paload = {
-            type: initials + word.toLowerCase()
-        };
-        resourceContract.GetConverter.call(paload, (error, result) => {
+        getResoruceConverter(type, tokenConverterContract, tokenContract).then(result => {
             if (result) {
-                if (tType === 'Buy') {
-                    if (result.resBalance >= Math.abs(pidRes)) {
-                        let resCont = Math.abs(pidRes) || 0;
-                        const elfPayout = calculateCrossConnectorReturn(
-                            result.resBalance, result.resWeight,
-                            result.elfBalance, result.elfWeight,
-                            -resCont
-                        );
-                        resolve(elfPayout);
-                    }
-                    else {
-                        resolve('There are not so many resources.');
-                    }
-                }
-                else {
+                if (result.resourceBalance >= Math.abs(pidRes)) {
                     let resCont = Math.abs(pidRes) || 0;
                     const elfPayout = calculateCrossConnectorReturn(
-                        result.resBalance, result.resWeight,
-                        result.elfBalance, result.elfWeight,
+                        result.resourceBalance, result.resoruceWeight,
+                        result.elfBalance + result.virtualBalance, result.tokenWeight,
                         resCont
                     );
                     resolve(elfPayout);
+                }
+                else {
+                    resolve('There are not so many resources.');
                 }
             }
         });

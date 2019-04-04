@@ -39,10 +39,10 @@ export default class VotingYieldChart extends PureComponent {
                 this.setState({
                     loading: true
                 });
-                this.props.dividends.CheckDividendsOfPreviousTermToFriendlyString.call((error, result) => {
-                    if (result && !result.error) {
+                this.props.dividends.CheckDividendsOfPreviousTerm.call((error, result) => {
+                    if (result) {
                         this.setState({
-                            data: JSON.parse(result.value).Values
+                            data: result.Values
                         });
                     }
                     this.setState({
@@ -58,7 +58,7 @@ export default class VotingYieldChart extends PureComponent {
         this.setState({
             loading: true
         });
-        dividends.CheckDividendsOfPreviousTermToFriendlyString.call((error, result) => {
+        dividends.CheckDividendsOfPreviousTerm.call((error, result) => {
             if (result && !result.error) {
                 this.setState({
                     data: JSON.parse(result.value).Values

@@ -44,7 +44,7 @@ export default class Redeem extends PureComponent {
             address: currentWallet.address
         };
         nightElf.chain.contractAtAsync(
-            contracts.CONSENSUSADDRESS,
+            contracts.consensusDPoS,
             wallet,
             (err, result) => {
                 if (result) {

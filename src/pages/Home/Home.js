@@ -129,9 +129,9 @@ export default class HomePage extends Component {
 
     // get increament block data
     // 1. Get the lastest 100 Blocks Info from databases at first.
-    // 2. Get the new Blocks Info from Aelf Chain.
+    // 2. Get the new Blocks Info from AElf Chain.
     // 3. If the (block_height in Chain) - (block_height in Databases) > 10,
-    //    Notice the users we have problem, and get New Block from Aelf Chain.
+    //    Notice the users we have problem, and get New Block from AElf Chain.
     // 4. In the page, if block.length > 100, .length =100 ,then, unshift.
     fetchInfoByChain() {
         // const store = this.props.appIncrStore;
@@ -144,7 +144,7 @@ export default class HomePage extends Component {
             }
             aelf.chain.getBlockInfo(blockHeight, true, (err, result) => {
                 if (err) {
-                    message.error('Can not get Block Info from Aelf Node!!!.', 6);
+                    message.error('Can not get Block Info from AElf Node!!!.', 6);
                     return;
                 }
                 const {

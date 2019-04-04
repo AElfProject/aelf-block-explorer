@@ -5,7 +5,6 @@
 
 import React, {PureComponent} from 'react';
 import {Row, Col, Spin, message} from 'antd';
-// import {resourceAddress} from '../../../../../../../config/config';
 import {aelf} from '../../../../../../utils';
 import getFees from '../../../../../../utils/getFees';
 import getMenuName from '../../../../../../utils/getMenuName';
@@ -21,7 +20,8 @@ export default class ResourceBuyModal extends PureComponent {
             menuIndex: this.props.menuIndex,
             currentWallet: this.props.currentWallet || null,
             serviceCharge: 0,
-            resourceContract: this.props.resourceContract,
+            tokenConverterContract: this.props.tokenConverterContract,
+            tokenContract: this.props.tokenContract,
             menuName: getMenuName(this.props.menuIndex),
             ELFValue: null,
             buyNum: this.props.buyNum,
@@ -32,23 +32,23 @@ export default class ResourceBuyModal extends PureComponent {
     }
 
     componentDidMount() {
-        const {buyNum, menuName, resourceContract} = this.state;
-        getEstimatedValueELF(menuName, buyNum, resourceContract, 'Buy').then(result => {
+        const {buyNum, menuName, tokenConverterContract, tokenContract} = this.state;
+        getEstimatedValueELF(menuName, buyNum, tokenConverterContract, tokenContract).then(result => {
             let ELFValue = Math.abs(Math.floor(result));
             let buyRes = ELFValue;
-            ELFValue += getFees(buyRes) + 1;
+            ELFValue += getFees(buyRes);
             if (ELFValue !== 0) {
                 this.setState({
                     ELFValue,
                     menuName,
-                    serviceCharge: getFees(buyRes) + 1
+                    serviceCharge: getFees(buyRes)
                 });
             }
             else {
                 this.setState({
                     ELFValue,
                     menuName,
-                    serviceCharge: getFees(buyRes) + 1
+                    serviceCharge: getFees(buyRes)
                 });
             }
         });
@@ -65,7 +65,7 @@ export default class ResourceBuyModal extends PureComponent {
             loading: true
         });
         nightElf.chain.contractAtAsync(
-            contracts.RESOURCEADDRESS,
+            contracts.tokenConverter,
             wallet,
             (err, result) => {
                 if (result) {
@@ -76,15 +76,12 @@ export default class ResourceBuyModal extends PureComponent {
     }
 
     requestBuy(result) {
-        const {menuName, ELFValue} = this.state;
-        const initials = menuName.substring(0, 1);
-        const word = menuName.substring(1, menuName.length);
-        console.log(initials + word);
+        const {menuName, buyNum} = this.state;
         const payload = {
-            type: initials + word.toLowerCase(),
-            amount: ELFValue - 1
+            symbol: menuName,
+            amount: buyNum
         };
-        result.BuyResource(payload, (error, result) => {
+        result.Buy(payload, (error, result) => {
             if (result.error && result.error !== 0) {
                 message.error(result.errorMessage.message, 3);
                 this.props.handleCancel();

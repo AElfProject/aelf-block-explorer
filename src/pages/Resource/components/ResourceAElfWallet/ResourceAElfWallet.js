@@ -20,7 +20,6 @@ export default class ResourceAElfWallet extends PureComponent {
         this.state = {
             walletInfoList: this.props.walletInfoList || [],
             currentWallet: JSON.parse(localStorage.currentWallet),
-            resourceContract: this.props.resourceContract,
             tokenContract: this.props.tokenContract,
             balance: null,
             RAM: 0,
@@ -33,12 +32,6 @@ export default class ResourceAElfWallet extends PureComponent {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.resourceContract !== state.resourceContract) {
-            return {
-                resourceContract: props.resourceContract
-            };
-        }
-
         if (props.tokenContract !== state.tokenContract) {
             return {
                 tokenContract: props.tokenContract
@@ -55,17 +48,13 @@ export default class ResourceAElfWallet extends PureComponent {
     }
 
     componentDidMount() {
-        this.getCurrentWalletBalance();
-        this.getCurrentWalletResource();
-
+        if (this.state.tokenContract) {
+            this.getCurrentWalletBalance();
+            this.getCurrentWalletResource();
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
-
-        if (prevProps.resourceContract !== this.props.resourceContract) {
-            this.props.onRefresh();
-            this.getCurrentWalletResource();
-        }
 
         if (prevProps.tokenContract !== this.props.tokenContract) {
             this.props.onRefresh();
@@ -79,8 +68,8 @@ export default class ResourceAElfWallet extends PureComponent {
         }
 
         if (prevState.loading !== this.state.loading) {
-            const {resourceContract, tokenContract, currentWallet} = this.state;
-            if (resourceContract && tokenContract && currentWallet) {
+            const {tokenContract, currentWallet} = this.state;
+            if (tokenContract && currentWallet) {
                 if (this.state.loading) {
                     this.getCurrentWalletResource();
                     this.getCurrentWalletBalance();
@@ -100,11 +89,11 @@ export default class ResourceAElfWallet extends PureComponent {
     // 获取token数量
     getCurrentWalletBalance = async () => {
         const {tokenContract, currentWallet} = this.state;
-        const paload = {
+        const payload = {
             symbol: 'ELF',
             owner: currentWallet.address
         };
-        tokenContract.GetBalance.call(paload, (error, result) => {
+        tokenContract.GetBalance.call(payload, (error, result) => {
             if (result) {
                 const balance = result.balance || 0;
                 this.setState({
@@ -119,19 +108,18 @@ export default class ResourceAElfWallet extends PureComponent {
 
     // 获取资源币数量
     getCurrentWalletResource = async () => {
-        const {resourceContract, currentWallet} = this.state;
-        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Ram'}, (error, result) => {
+        const {tokenContract, currentWallet} = this.state;
+        const payloadRAM = {
+            symbol: 'RAM',
+            owner: currentWallet.address
+        };
+        tokenContract.GetBalance.call(payloadRAM, (error, result) => {
             if (result) {
-                const {
-                    value,
-                    Value
-                } = result;
-                const content = value || Value;
                 this.setState({
-                    RAM: parseInt(content, 10).toLocaleString(),
+                    RAM: parseInt(result.balance, 10).toLocaleString(),
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentRam(content);
+                this.props.getCurrentRam(result.balance);
             }
             else {
                 this.setState({
@@ -140,18 +128,18 @@ export default class ResourceAElfWallet extends PureComponent {
                 });
             }
         });
-        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Cpu'}, (error, result) => {
+
+        const payloadCPU = {
+            symbol: 'CPU',
+            owner: currentWallet.address
+        };
+        tokenContract.GetBalance.call(payloadCPU, (error, result) => {
             if (result) {
-                const {
-                    value,
-                    Value
-                } = result;
-                const content = value || Value;
                 this.setState({
-                    CPU: parseInt(content, 10).toLocaleString(),
+                    CPU: parseInt(result.balance, 10).toLocaleString(),
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentRam(content);
+                this.props.getCurrentCpu(result.balance);
             }
             else {
                 this.setState({
@@ -160,18 +148,18 @@ export default class ResourceAElfWallet extends PureComponent {
                 });
             }
         });
-        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Net'}, (error, result) => {
+
+        const payloadNET = {
+            symbol: 'NET',
+            owner: currentWallet.address
+        };
+        tokenContract.GetBalance.call(payloadNET, (error, result) => {
             if (result) {
-                const {
-                    value,
-                    Value
-                } = result;
-                const content = value || Value;
                 this.setState({
-                    NET: parseInt(content, 10).toLocaleString(),
+                    NET: parseInt(result.balance, 10).toLocaleString(),
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentRam(content);
+                this.props.getCurrentNet(result.balance);
             }
             else {
                 this.setState({
@@ -180,18 +168,18 @@ export default class ResourceAElfWallet extends PureComponent {
                 });
             }
         });
-        resourceContract.GetUserBalance.call({address: currentWallet.address, type: 'Sto'}, (error, result) => {
+
+        const payloadSTO = {
+            symbol: 'STO',
+            owner: currentWallet.address
+        };
+        tokenContract.GetBalance.call(payloadSTO, (error, result) => {
             if (result) {
-                const {
-                    value,
-                    Value
-                } = result;
-                const content = value || Value;
                 this.setState({
-                    STO: parseInt(content, 10).toLocaleString(),
+                    STO: parseInt(result.balance, 10).toLocaleString(),
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentRam(content);
+                this.props.getCurrentSto(result.balance);
             }
             else {
                 this.setState({

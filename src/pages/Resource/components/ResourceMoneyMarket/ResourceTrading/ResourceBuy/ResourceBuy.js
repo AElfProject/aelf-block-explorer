@@ -5,8 +5,8 @@
 */
 
 import React, {Component} from 'react';
-import {Row, Col, Input, Slider, message} from 'antd';
-import {resource} from '../../../../../../../config/config';
+import {Row, Col, Input, Slider, message, Modal} from 'antd';
+import {feeReceiverContract, tokenConverter, multiToken} from '../../../../../../../config/config';
 import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
@@ -72,9 +72,15 @@ export default class ResourceBuy extends Component {
             };
         }
 
-        if (props.resourceContract !== state.resourceContract) {
+        if (props.tokenConverterContract !== state.tokenConverterContract) {
             return {
-                resourceContract: props.resourceContract
+                tokenConverterContract: props.tokenConverterContract
+            };
+        }
+
+        if (props.tokenContract !== state.tokenContract) {
+            return {
+                tokenContract: props.tokenContract
             };
         }
 
@@ -102,7 +108,7 @@ export default class ResourceBuy extends Component {
             this.getRegion();
         }
 
-        if (prevProps.resourceContract !== this.props.resourceContract) {
+        if (prevProps.tokenConverterContract !== this.props.tokenConverterContract) {
             this.setState({
                 noCanInput: false
             });
@@ -141,7 +147,7 @@ export default class ResourceBuy extends Component {
     }
 
     onChangeSlide(e) {
-        const {menuName, resourceContract} = this.state;
+        const {menuName, tokenConverterContract, tokenContract} = this.state;
         let elfCont = e;
         if (e === 0) {
             this.setState({
@@ -153,7 +159,7 @@ export default class ResourceBuy extends Component {
         }
         elfCont = elfCont - 1;
         elfCont -= getFees(elfCont);
-        getEstimatedValueRes(menuName, elfCont, resourceContract).then(result => {
+        getEstimatedValueRes(menuName, elfCont, tokenConverterContract, tokenContract).then(result => {
             let value = 0;
             if (Math.ceil(result) > 0) {
                 value = Math.abs(Math.ceil(result));
@@ -169,23 +175,23 @@ export default class ResourceBuy extends Component {
     }
 
     debounce(value) {
-        const {menuName, resourceContract} = this.state;
+        const {menuName, tokenConverterContract, tokenContract} = this.state;
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => {
-            getEstimatedValueELF(menuName, value, resourceContract, 'Buy').then(result => {
+            if (value === '') {
+                this.setState({
+                    ELFValue: 0,
+                    value: ''
+                });
+                return;
+            }
+            getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract).then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
                     let ELFValue = Math.abs(Math.floor(result));
-                    ELFValue += getFees(result);
-                    ELFValue += 1;
+                    ELFValue += getFees(ELFValue);
                     if (ELFValue !== 0) {
-                        this.setState({
-                            ELFValue,
-                            toBuy: true
-                        });
-                    }
-                    else {
                         this.setState({
                             ELFValue,
                             toBuy: true
@@ -199,6 +205,117 @@ export default class ResourceBuy extends Component {
                 }
             });
         }, 500);
+    }
+
+    onChangeResourceValue(e) {
+        this.debounce(e.target.value);
+        this.setState({
+            value: e.target.value
+        });
+    }
+
+    getBuyModalShow() {
+        const {value, account, ELFValue, currentWallet, contracts, toBuy, appName} = this.state;
+        let reg = /^[0-9]*$/;
+        if (!reg.test(value) || parseInt(value, 10) === 0  || value === '') {
+            message.error('The value must be numeric and greater than 0');
+            return;
+        }
+        else if (parseInt(ELFValue, 10) > parseFloat(account.balabce, 10)) {
+            message.warning('Buy and sell more than available assets');
+            return;
+        }
+        else if (!toBuy) {
+            message.warning('Please purchase or sell a smaller amount of resources than the inventory in the resource contract.');
+            return;
+        }
+        else {
+            window.NightElf.api({
+                appName,
+                method: 'CHECK_PERMISSION',
+                type: 'address', // if you did not set type, it aways get by domain.
+                address: currentWallet.address
+            }).then(result => {
+                if (result.error !== 0) {
+                    message.warning(result.errorMessage.message, 3);
+                    return;
+                }
+                if (result) {
+                    result.permissions.map(item => {
+                        const multiTokenObj = item.contracts.filter(data => {
+                            return data.contractAddress === multiToken;
+                        });
+                        const hasApprove = multiTokenObj[0].whitelist.hasOwnProperty('Approve');
+                        this.checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove);
+                    });
+                }
+            });
+        }
+    }
+
+    checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove) {
+        const {nightElf, value} = this.state;
+        const wallet = {
+            address: currentWallet.address
+        };
+        contractChange(result, contracts, currentWallet, appName).then(result => {
+            if (value && value !== 0 && !result) {
+                nightElf.chain.contractAtAsync(
+                    contracts.multiToken,
+                    wallet,
+                    (err, result) => {
+                        if (result) {
+                            if (hasApprove) {
+                                this.getApprove(result);
+                            }
+                            else {
+                                this.approveInfo(result);
+                            }
+                        }
+                    }
+                );
+            }
+        });
+    }
+
+    getApprove(result, time = 0) {
+        const {value, ELFValue} = this.state;
+        const contract = result || null;
+        if (contract) {
+            const payload = {
+                symbol: 'ELF',
+                spender: feeReceiverContract,
+                amount: ELFValue + ELFValue * 0.02
+            };
+            if (result) {
+                contract.Approve(payload, (error, result) => {
+                    if (result) {
+                        setTimeout(() => {
+                            payload.spender = tokenConverter;
+                            contract.Approve(payload, (error, result) => {
+                                this.props.handleBuyModalShow(value, ELFValue);
+                            });
+                        }, time);
+                    }
+                });
+            }
+        }
+    }
+
+    approveInfo(result) {
+        const that = this;
+        Modal.info({
+            title: "Please add Approve to the extension's whitelist.",
+            content: (
+                <div className="approve-info">
+                    <div>1. This method is none business of your assets.</div>
+                    <div>2. If you don't want frequent confirmation, add this method to the extension's whitelist</div>
+                </div>
+            ),
+            onOk() {
+                that.getApprove(result, 3020);
+            }
+        });
     }
 
     getSlideMarksHTML() {
@@ -222,83 +339,6 @@ export default class ResourceBuy extends Component {
                 tooltipVisible={false}
             />
         );
-    }
-
-    onChangeResourceValue(e) {
-        if (e.target.value) {
-            this.debounce(e.target.value);
-            this.setState({
-                value: e.target.value
-            });
-        }
-        else {
-            this.setState({
-                value: '',
-                ELFValue: 0
-            });
-        }
-    }
-
-    getBuyModalShow() {
-        const {value, account, ELFValue, currentWallet, contracts, toBuy, nightElf, appName} = this.state;
-        const wallet = {
-            address: currentWallet.address
-        };
-        let reg = /^[0-9]*$/;
-        if (!reg.test(value) || parseInt(value, 10) === 0) {
-            message.error('The value must be numeric and greater than 0');
-            return;
-        }
-        else if (parseInt(ELFValue, 10) > parseFloat(account.balabce, 10)) {
-            message.warning('Buy and sell more than available assets');
-            return;
-        }
-        else if (!toBuy) {
-            message.warning('Please purchase or sell a smaller amount of resources than the inventory in the resource contract.');
-            return;
-        }
-        else {
-            window.NightElf.api({
-                appName,
-                method: 'CHECK_PERMISSION',
-                type: 'address', // if you did not set type, it aways get by domain.
-                address: currentWallet.address
-            }).then(result => {
-                if (result.error !== 0) {
-                    message.warning(result.errorMessage.message, 3);
-                    return;
-                }
-                contractChange(result, contracts, currentWallet, appName).then(result => {
-                    if (value && value !== 0 && !result) {
-                        nightElf.chain.contractAtAsync(
-                            contracts.TOKENADDRESS,
-                            wallet,
-                            (err, result) => {
-                                if (result) {
-                                    this.getApprove(result);
-                                }
-                            }
-                        );
-                        
-                    }
-                });
-            });
-        }
-    }
-
-    getApprove(result) {
-        const {value, ELFValue} = this.state;
-        const payload = {
-            symbol: 'ELF',
-            spender: resource,
-            amount: ELFValue - 1
-        };
-        result.Approve(payload, (error, result) => {
-            console.log(result);
-            if (result) {
-                this.props.handleBuyModalShow(value, ELFValue);
-            }
-        });
     }
 
     render() {

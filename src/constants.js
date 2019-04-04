@@ -225,7 +225,7 @@ const RESOURCE_DETAILS_COLUMN  = [
             title = {
                 row.method
             } > {
-                row.method === 'BuyResource' ? <span style={{color: '#007230'}}>Buy</span> : <span style={{color: '#a30100'}}>Sell</span>
+                row.method === 'Buy' ? <span style={{color: '#007230'}}>Buy</span> : <span style={{color: '#a30100'}}>Sell</span>
             }
             </Link>
         )

@@ -23,7 +23,7 @@ export default class ResourceTrading extends PureComponent {
             sellVisible: false,
             buyNum: null,
             sellNum: null,
-            resourceContract: null,
+            tokenConverterContract: null,
             tokenContract: null,
             ELFValue: 0,
             maskClosable: true,
@@ -63,9 +63,9 @@ export default class ResourceTrading extends PureComponent {
             };
         }
 
-        if (props.resourceContract !== state.resourceContract) {
+        if (props.tokenConverterContract !== state.tokenConverterContract) {
             return {
-                resourceContract: props.resourceContract
+                tokenConverterContract: props.tokenConverterContract
             };
         }
 
@@ -128,7 +128,8 @@ export default class ResourceTrading extends PureComponent {
             sellNum,
             currentWallet,
             contracts,
-            resourceContract,
+            tokenContract,
+            tokenConverterContract,
             menuName,
             ELFValue,
             account,
@@ -148,7 +149,8 @@ export default class ResourceTrading extends PureComponent {
                                 currentWallet={currentWallet}
                                 handleBuyModalShow={this.handleBuyModalShow.bind(this)}
                                 contracts={contracts}
-                                resourceContract={resourceContract}
+                                tokenConverterContract={tokenConverterContract}
+                                tokenContract={tokenContract}
                                 account={account}
                                 nightElf={nightElf}
                             />
@@ -159,8 +161,10 @@ export default class ResourceTrading extends PureComponent {
                                 currentWallet={currentWallet}
                                 handleSellModalShow={this.handleSellModalShow.bind(this)}
                                 contracts={contracts}
-                                resourceContract={resourceContract}
+                                tokenConverterContract={tokenConverterContract}
+                                tokenContract={tokenContract}
                                 account={account}
+                                nightElf={nightElf}
                             />
                         </Col>
                     </Row>
@@ -182,7 +186,8 @@ export default class ResourceTrading extends PureComponent {
                         menuName={menuName}
                         buyNum={buyNum}
                         ELFValue={ELFValue}
-                        resourceContract={resourceContract}
+                        tokenConverterContract={tokenConverterContract}
+                        tokenContract={tokenContract}
                         handleCancel={this.handleCancel}
                         onRefresh={this.props.onRefresh}
                         maskClosable={this.modalMaskClosable.bind(this)}
@@ -205,7 +210,8 @@ export default class ResourceTrading extends PureComponent {
                     <ResourceSellModal
                         currentWallet={currentWallet}
                         menuIndex={menuIndex}
-                        resourceContract={resourceContract}
+                        tokenConverterContract={tokenConverterContract}
+                        tokenContract={tokenContract}
                         sellNum={sellNum}
                         menuName={menuName}
                         handleCancel={this.handleCancel}

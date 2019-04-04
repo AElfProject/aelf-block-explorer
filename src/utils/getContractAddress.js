@@ -5,8 +5,8 @@
 */
 
 import {aelf} from '../utils';
-import * as Aelf from 'aelf-sdk';
-import {commonPrivateKey, multiToken, resource, consensusDPoS, dividends} from '../../config/config';
+import * as AElf from 'aelf-sdk';
+import {commonPrivateKey, multiToken, consensusDPoS, dividends, tokenConverter} from '../../config/config';
 // export default function getContractAddress() {
 //     return new Promise((resolve, reject) => {
 //         aelf.chain.connectChain((error, result) => {
@@ -15,7 +15,7 @@ import {commonPrivateKey, multiToken, resource, consensusDPoS, dividends} from '
 //             const DIVIDENDSADDRESS = result['AElf.Contracts.Dividend'];
 //             const TOKENADDRESS = result['AElf.Contracts.MultiToken'];
 //             const RESOURCEADDRESS = result['AElf.Contracts.Resource'];
-//             const wallet = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey);
+//             const wallet = AElf.wallet.getWalletByPrivateKey(commonPrivateKey);
 //             const output = {
 //                 CONSENSUSADDRESS,
 //                 DIVIDENDSADDRESS,
@@ -30,16 +30,12 @@ import {commonPrivateKey, multiToken, resource, consensusDPoS, dividends} from '
 
 export default function getContractAddress() {
     return new Promise((resolve, reject) => {
-        const CONSENSUSADDRESS = consensusDPoS;
-        const DIVIDENDSADDRESS = dividends;
-        const TOKENADDRESS = multiToken;
-        const RESOURCEADDRESS = resource;
-        const wallet = Aelf.wallet.getWalletByPrivateKey(commonPrivateKey);
+        const wallet = AElf.wallet.getWalletByPrivateKey(commonPrivateKey);
         const output = {
-            CONSENSUSADDRESS,
-            DIVIDENDSADDRESS,
-            TOKENADDRESS,
-            RESOURCEADDRESS,
+            consensusDPoS,
+            dividends,
+            multiToken,
+            tokenConverter,
             wallet
         };
         resolve(output);

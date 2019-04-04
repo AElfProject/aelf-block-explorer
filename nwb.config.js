@@ -24,12 +24,12 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://localhost:7101',
-        target: 'http://127.0.0.1:7250',
+        target: 'http://192.168.199.109:7101',
         changeOrigin: true,
         secure: false
       },
       '/chain': {
-        target: 'http://127.0.0.1:7250',
+        target: 'http://192.168.199.109:7250',
         changeOrigin: true,
         secure: false
       },

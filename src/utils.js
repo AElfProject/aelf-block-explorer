@@ -8,7 +8,7 @@ import {
 import {
     create
 } from 'apisauce';
-import * as Aelf from 'aelf-sdk';
+import * as AElf from 'aelf-sdk';
 import dayjs from 'dayjs';
 import {
     RPCSERVER
@@ -26,7 +26,7 @@ const httpErrorHandler = (message, des) => notification.open({
     description: des
 });
 
-const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
+const aelf = new AElf(new AElf.providers.HttpProvider(RPCSERVER));
 
 const get = async (url, params, config) => {
     const res = await api.get(url, params, config);

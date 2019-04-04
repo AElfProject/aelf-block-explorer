@@ -29,7 +29,7 @@ export default class Resource extends Component {
             currentWallet: null,
             contracts: null,
             tokenContract: null,
-            resourceContract: null,
+            tokenConverterContract: null,
             showDownloadPlugins: false,
             showWallet: false,
             currentBalance: 0,
@@ -45,23 +45,22 @@ export default class Resource extends Component {
     componentDidMount() {
         let httpProvider = DEFAUTRPCSERVER;
         getContractAddress().then(result => {
-            // let contracts = result;
-            // contracts['RESOURCEADDRESS'] = resourceAddress;
             this.setState({
                 contracts: result
             });
-            aelf.chain.contractAtAsync(result.TOKENADDRESS, result.wallet, (error, result) => {
+            aelf.chain.contractAtAsync(result.multiToken, result.wallet, (error, result) => {
+                console.log('multiToken', result);
                 this.setState({
                     tokenContract: result
                 });
             });
-            aelf.chain.contractAtAsync(result.RESOURCEADDRESS, result.wallet, (error, result) => {
+            aelf.chain.contractAtAsync(result.tokenConverter, result.wallet, (error, result) => {
+                console.log('tokenConverter', result);
                 this.setState({
-                    resourceContract: result
+                    tokenConverterContract: result
                 });
             });
         });
-        // getExtensionKeypairList
         NightElfCheck.getInstance().check.then(item => {
             if (item) {
                 nightElf = new window.NightElf.AElf({
@@ -243,7 +242,7 @@ export default class Resource extends Component {
     }
 
     resourceAElfWalletHtml() {
-        const {showWallet, walletInfoList, tokenContract, resourceContract, loading} = this.state;
+        const {showWallet, walletInfoList, tokenContract, tokenConverterContract, loading} = this.state;
         if (showWallet) {
             return (
                 <ResourceAElfWallet
@@ -251,7 +250,7 @@ export default class Resource extends Component {
                     getChangeWallet={this.getChangeWallet.bind(this)}
                     walletInfoList={walletInfoList}
                     tokenContract={tokenContract}
-                    resourceContract={resourceContract}
+                    tokenConverterContract={tokenConverterContract}
                     getCurrentBalance={this.getCurrentBalance.bind(this)}
                     getCurrentCpu={this.getCurrentCpu.bind(this)}
                     getCurrentRam={this.getCurrentRam.bind(this)}
@@ -265,7 +264,7 @@ export default class Resource extends Component {
         }
     }
     render() {
-        const {showDownloadPlugins, currentWallet, contracts, tokenContract, resourceContract} = this.state;
+        const {showDownloadPlugins, currentWallet, contracts, tokenContract, tokenConverterContract} = this.state;
         const {currentBalance, currentCpu, currentRam, currentNet, currentSto, appName} = this.state;
         let account = {
             balabce: currentBalance,
@@ -279,7 +278,6 @@ export default class Resource extends Component {
             downloadPlugins = this.getDownloadPluginsHTML();
         }
         const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
-        // const {currentWallet, voteContracts} = this.state;
         return (
             <div className="resource-body">
                 {downloadPlugins}
@@ -289,7 +287,7 @@ export default class Resource extends Component {
                         currentWallet={currentWallet}
                         contracts={contracts}
                         tokenContract={tokenContract}
-                        resourceContract={resourceContract}
+                        tokenConverterContract={tokenConverterContract}
                         account={account}
                         onRefresh={this.onRefresh.bind(this)}
                         endRefresh={this.endRefresh.bind(this)}
@@ -297,7 +295,6 @@ export default class Resource extends Component {
                         appName={appName}
                     />
                 </div>
-                {/* <ResourceTransacitionDetails /> */}
             </div>
         );
     }
