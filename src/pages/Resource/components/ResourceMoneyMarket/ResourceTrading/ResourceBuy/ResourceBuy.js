@@ -245,7 +245,14 @@ export default class ResourceBuy extends Component {
                         const multiTokenObj = item.contracts.filter(data => {
                             return data.contractAddress === multiToken;
                         });
-                        const hasApprove = multiTokenObj[0].whitelist.hasOwnProperty('Approve');
+                        let hasApprove = null;
+                        if (multiTokenObj[0].whitelist) {
+                            hasApprove = multiTokenObj[0].whitelist.hasOwnProperty('Approve');
+                            
+                        }
+                        else {
+                            hasApprove = false;
+                        }
                         this.checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove);
                     });
                 }
@@ -259,17 +266,17 @@ export default class ResourceBuy extends Component {
             address: currentWallet.address
         };
         contractChange(result, contracts, currentWallet, appName).then(result => {
-            if (value && value !== 0 && !result) {
+            if (value) {
                 nightElf.chain.contractAtAsync(
                     contracts.multiToken,
                     wallet,
-                    (err, result) => {
-                        if (result) {
+                    (err, contract) => {
+                        if (contract) {
                             if (hasApprove) {
-                                this.getApprove(result);
+                                this.getApprove(contract);
                             }
                             else {
-                                this.approveInfo(result);
+                                this.approveInfo(contract);
                             }
                         }
                     }

@@ -45,24 +45,6 @@ export default class Vote extends PureComponent {
                 }
             }
         );
-
-        // nightElf = new window.NightElf.AElf({
-        //     httpProvider: DEFAUTRPCSERVER,
-        //     appName: 'nightElf'
-        // });
-        // if (nightElf) {
-        //     this.setState({
-        //         nightElf
-        //     });
-        //     nightElf.chain.getContractAbi(
-        //         contracts.multiToken,
-        //         (err, result) => {
-        //             if (result) {
-        //                 this.getKeypairBalanceOf(result);
-        //             }
-        //         }
-        //     );
-        // }
     }
 
     componentWillUnmount() {
