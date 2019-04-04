@@ -49,11 +49,13 @@ export default class Resource extends Component {
                 contracts: result
             });
             aelf.chain.contractAtAsync(result.multiToken, result.wallet, (error, result) => {
+                console.log('multiToken', result);
                 this.setState({
                     tokenContract: result
                 });
             });
             aelf.chain.contractAtAsync(result.tokenConverter, result.wallet, (error, result) => {
+                console.log('tokenConverter', result);
                 this.setState({
                     tokenConverterContract: result
                 });
