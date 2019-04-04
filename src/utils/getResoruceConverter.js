@@ -13,7 +13,7 @@ export default function getResoruceConverter(type, tokenConverterContract, token
         const getResoruceWeight = new Promise((resolve, reject) => {
             tokenConverterContract.GetConnector.call({symbol: type}, (error, result) => {
                 const resoruceWeight = {
-                    resoruceWeight: parseInt(result.weight, 10) / 10000000 || 0
+                    resoruceWeight: parseFloat(result.weight) || 0
                 };
                 resolve(resoruceWeight);
             });
@@ -22,7 +22,7 @@ export default function getResoruceConverter(type, tokenConverterContract, token
         const getTokenWeight = new Promise((resolve, reject) => {
             tokenConverterContract.GetConnector.call({symbol: 'ELF'}, (error, result) => {
                 const tokenWeight = {
-                    tokenWeight: parseInt(result.weight, 10) / 10000000 || 0,
+                    tokenWeight: parseFloat(result.weight) || 0,
                     virtualBalance: parseInt(result.virtualBalance, 10) || 0
                 };
                 resolve(tokenWeight);

@@ -13,7 +13,7 @@ export default function scalculateCrossConnectorReturn(ResBalance, ResWeight, El
     const a = pidRes;
     if (wf === wt) {
         // if both weights are the same, the formula can be reduced
-        return (bt * a / (bf - a));
+        return (bf * a / (bt - a));
     }
 
     const x = bt / (bt - a);
