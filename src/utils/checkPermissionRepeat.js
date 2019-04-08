@@ -5,8 +5,8 @@
 */
 
 import config from '../../config/config';
-
 import setNewPermission from './setNewPermission';
+
 export default function checkPermissionRepeat(payload, callback) {
     const {
         appName,

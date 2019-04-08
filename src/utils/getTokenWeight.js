@@ -4,14 +4,14 @@
  * @description get Token Weight
 */
 
-import BigNumber from 'bignumber.js';
+import {Decimal} from 'decimal.js';
 
 export default function getTokenWeight(tokenConverterContract) {
     return new Promise((resolve, reject) => {
         tokenConverterContract.GetConnector.call({symbol: 'ELF'}, (error, result) => {
             const tokenWeight = {
-                tokenWeight: new BigNumber(result.weight) || 0,
-                virtualBalance: new BigNumber(result.virtualBalance) || 0
+                tokenWeight: new Decimal(result.weight) || 0,
+                virtualBalance: new Decimal(result.virtualBalance) || 0
             };
             resolve(tokenWeight);
         });
