@@ -27,7 +27,7 @@ export default function getEstimatedValueELF(type, pidRes, tokenConverterContrac
                     let resCont = Math.abs(pidRes) || 0;
                     const elfPayout = calculateCrossConnectorReturn(
                         result.resourceBalance, result.resoruceWeight,
-                        result.elfBalance + result.virtualBalance, result.tokenWeight,
+                        result.elfBalance.plus(result.virtualBalance), result.tokenWeight,
                         resCont
                     );
                     resolve(elfPayout);

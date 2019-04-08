@@ -4,6 +4,8 @@
  * Computing Equivalent Value
 */
 
+import BigNumber from 'bignumber.js';
+
 // bt: balanceTo bf: balanceFrom wt: weightTo wt: weightFrom a: buy/sell balance
 // Calculate the valuation according to the calculating formula
 
@@ -14,13 +16,15 @@ export default function calculateCrossConnectorElfReturn(ResBalance, ResWeight, 
     const bt = ElfBalance;
     const wt = ElfWeight;
     const a = pidRes;
-    if (wf === wt) {
+
+    if (wf.toNumber() === wt.toNumber()) {
         // if both weights are the same, the formula can be reduced
-        return (bt * a / (bf + a));
+        // return (bt * a / (bf + a));
+        return (bt.times(a).div(bf.plus(a))).toNumber();
     }
 
-    const x = bf / (bf + a);
-    const y = wt / wf;
-    return ((1 - Math.pow(x, y)) * bt);
+    const x = bf.div(bf.plus(a)).toNumber();
+    const y = wt.div(wf).toNumber();
+    return (1 - Math.pow(x, y)) * bt;
 }
 
