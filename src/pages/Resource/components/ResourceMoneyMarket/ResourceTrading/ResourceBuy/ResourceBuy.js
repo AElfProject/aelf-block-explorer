@@ -266,7 +266,7 @@ export default class ResourceBuy extends Component {
             address: currentWallet.address
         };
         contractChange(result, contracts, currentWallet, appName).then(result => {
-            if (value) {
+            if (value && !result) {
                 nightElf.chain.contractAtAsync(
                     contracts.multiToken,
                     wallet,
