@@ -4,6 +4,10 @@
  * Computing Equivalent Value
 */
 
+
+// bt: balanceTo bf: balanceFrom wt: weightTo wt: weightFrom a: buy/sell balance
+// Calculate the valuation according to the calculating formula
+
 export default function scalculateCrossConnectorReturn(ResBalance, ResWeight, ElfBalance, ElfWeight, pidRes) {
     console.log('bf:', ResBalance, 'wf:', ResWeight, 'bt', ElfBalance, 'wt:', ElfWeight, 'a:', pidRes);
     const bt = ResBalance;
@@ -13,7 +17,7 @@ export default function scalculateCrossConnectorReturn(ResBalance, ResWeight, El
     const a = pidRes;
     if (wf === wt) {
         // if both weights are the same, the formula can be reduced
-        return (bt * a / (bf - a));
+        return (bf * a / (bt - a));
     }
 
     const x = bt / (bt - a);

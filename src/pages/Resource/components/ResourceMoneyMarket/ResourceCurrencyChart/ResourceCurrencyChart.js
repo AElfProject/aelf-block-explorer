@@ -36,10 +36,10 @@ export default class ResourceCurrencyChart extends PureComponent {
                 604800000
             ],
             menuName: [
-                'Ram',
-                'Cpu',
-                'Net',
-                'Sto'
+                'RAM',
+                'CPU',
+                'NET',
+                'STO'
             ],
             intervalTime: 300000,
             buyResource: null,
