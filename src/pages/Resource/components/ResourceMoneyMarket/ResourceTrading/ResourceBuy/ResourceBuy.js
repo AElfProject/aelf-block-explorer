@@ -216,8 +216,8 @@ export default class ResourceBuy extends Component {
 
     getBuyModalShow() {
         const {value, account, ELFValue, currentWallet, contracts, toBuy, appName} = this.state;
-        let reg = /^[0-9]*$/;
-        if (!reg.test(value) || parseInt(value, 10) === 0  || value === '') {
+        let reg = /^[1-9]\d*$/;
+        if (!reg.test(value)) {
             message.error('The value must be numeric and greater than 0');
             return;
         }
@@ -267,7 +267,6 @@ export default class ResourceBuy extends Component {
         };
         contractChange(result, contracts, currentWallet, appName).then(result => {
             if (value) {
-                console.log('nightElf.chain', nightElf.chain);
                 nightElf.chain.contractAtAsync(
                     contracts.multiToken,
                     wallet,

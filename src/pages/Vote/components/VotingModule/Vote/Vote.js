@@ -84,7 +84,7 @@ export default class Vote extends PureComponent {
 
     getNextStep() {
         const {contracts, currentWallet, nightElf} = this.state;
-        let reg = /^[0-9]*$/;
+        let reg = /^[1-9]\d*$/;
         if (this.state.step) {
             if (!reg.test(this.state.votes)) {
                 message.error('Number of votes must be numeric');

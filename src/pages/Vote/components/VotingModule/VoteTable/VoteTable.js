@@ -163,7 +163,6 @@ export default class VoteTable extends PureComponent {
         };
         consensus.GetPageableCandidatesHistoryInfo.call(getPageablePayload, (error, result) => {
             if (result) {
-                console.log(result);
                 let isVote = true;
                 let isRedee = true;
 

@@ -214,8 +214,8 @@ export default class ResourceSell extends Component {
     getSellModalShow() {
         const {value, account, currentWallet, contracts, menuIndex, toSell, appName} = this.state;
         let menuName = getMenuName(menuIndex);
-        let reg = /^[0-9]*$/;
-        if (!reg.test(value) || parseInt(value, 10) === 0 || value === '') {
+        let reg = /^[1-9]\d*$/;
+        if (!reg.test(value)) {
             message.error('The value must be numeric and greater than 0');
             return;
         }
