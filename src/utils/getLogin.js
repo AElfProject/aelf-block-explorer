@@ -11,7 +11,6 @@ export default function getLogin(payload, callback) {
     } = payload;
     window.NightElf.api({
         appName,
-        domain: 'aelf.io',
         method: 'LOGIN',
         payload: {
             payload: {

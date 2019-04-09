@@ -67,6 +67,7 @@ export default class VotingRecord extends PureComponent {
                 const historiesNumber = result.HistoriesNumber || 0;
                 pagination.total = parseInt(historiesNumber, 10);
                 ticketsHistoriesData.map((item, index) => {
+                    console.log(item);
                     let data = {
                         key: page + index + 1,
                         serialNumber: page + index + 1,
@@ -74,7 +75,7 @@ export default class VotingRecord extends PureComponent {
                         type: item.Type || '-',
                         number: item.VotesNumber || '-',
                         state: item.State ? 'success' : 'failed',
-                        time: dayjs(item.Timestamp).format('YYYY-MM-DD') || '-'
+                        time: dayjs(parseInt(item.Timestamp.seconds + '000', 10)).format('YYYY-MM-DD HH:mm:ss') || '-'
                     };
                     dataList.push(data);
                 });
