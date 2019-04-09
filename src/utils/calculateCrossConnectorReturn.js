@@ -20,6 +20,9 @@ export default function scalculateCrossConnectorReturn(ResBalance, ResWeight, El
         // if both weights are the same, the formula can be reduced
         return (bf.times(a).div(bt.minus(a))).toNumber();
     }
+
+    // For non-integer or very large exponents pow(x, y) is calculated using
+    // x^y = exp(y*ln(x))
     const x = bt.div(bt.minus(a));
     const y = wt.div(wf);
     return Decimal.exp(y * Decimal.ln(x)).minus(1).times(bf).toNumber();
