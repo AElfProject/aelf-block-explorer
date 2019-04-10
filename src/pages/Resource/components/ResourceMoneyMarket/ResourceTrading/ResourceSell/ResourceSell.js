@@ -212,7 +212,7 @@ export default class ResourceSell extends Component {
 
 
     getSellModalShow() {
-        const {value, account, currentWallet, contracts, menuIndex, toSell, appName, neightElf} = this.state;
+        const {value, account, currentWallet, contracts, menuIndex, toSell, appName, nightElf} = this.state;
         let menuName = getMenuName(menuIndex);
         let reg = /^[1-9]\d*$/;
         if (!reg.test(value)) {
@@ -228,7 +228,8 @@ export default class ResourceSell extends Component {
             return;
         }
         else {
-            neightElf.checkPermission({
+            console.log(nightElf)
+            nightElf.checkPermission({
                 appName,
                 type: 'address',
                 address: currentWallet.address

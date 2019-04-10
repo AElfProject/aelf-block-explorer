@@ -290,7 +290,7 @@ export default class ResourceBuy extends Component {
             const payload = {
                 symbol: 'ELF',
                 spender: feeReceiverContract,
-                amount: ELFValue + ELFValue * 0.02
+                amount: ELFValue + parseInt(ELFValue * 0.05, 10)
             };
             if (result) {
                 contract.Approve(payload, (error, result) => {

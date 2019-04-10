@@ -301,6 +301,22 @@ const RESOURCE_DETAILS_COLUMN  = [
                 </Link>
             );
         }
+    },
+    {
+        title: 'Tx status',
+        dataIndex: 'txStatus',
+        key: 'txStatus',
+        align: 'center',
+        render: (text, row) => (<Link to = {
+            `/tx/${row.tx_id}`
+        }
+        title = {
+            row.tx_status
+        } > {
+            row.tx_status
+        }
+        </Link>
+    )
     }
 ];
 
