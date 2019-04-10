@@ -103,12 +103,13 @@ export default class VotePage extends Component {
                     });
                     nightElf.chain.getChainInformation((error, result) => {
                         if (result) {
-                            window.NightElf.api({
+                            nightElf.checkPermission({
                                 appName,
-                                method: 'CHECK_PERMISSION',
                                 type: 'domain'
-                            }).then(result => {
-                                this.insertKeypairs(result);
+                            }, (error, result) => {
+                                if (result) {
+                                    this.insertKeypairs(result);
+                                }
                             });
                         }
                     });
@@ -123,6 +124,7 @@ export default class VotePage extends Component {
 
     // EXPLAIN: Update browser keypair status
     insertKeypairs(result) {
+        const {nightElf} = this.state;
         const getLoginPayload = {
             appName,
             connectChain: this.chainInfo
@@ -138,11 +140,11 @@ export default class VotePage extends Component {
             };
             if (permissions.length) {
                 // EXPLAIN: Need to redefine this scope
-                checkPermissionRepeat(payload, this.getNightElfKeypair.bind(this));
+                checkPermissionRepeat(nightElf, payload, this.getNightElfKeypair.bind(this));
             }
             else {
                 localStorage.setItem('currentWallet', null);
-                getLogin(getLoginPayload, result => {
+                getLogin(nightElf, getLoginPayload, result => {
                     if (result && result.error === 0) {
                         const address = JSON.parse(result.detail).address;
                         this.getNightElfKeypair(address);
@@ -163,11 +165,11 @@ export default class VotePage extends Component {
     }
 
     getNightElfKeypair(address) {
+        const {nightElf} = this.state;
         if (address) {
-            window.NightElf.api({
-                appName,
-                method: 'GET_ADDRESS'
-            }).then(result => {
+            nightElf.getAddress({
+                appName
+            }, (error, result) => {
                 const addressList = result.addressList || [];
                 let currentWallet = null;
                 addressList.map((item, index) => {

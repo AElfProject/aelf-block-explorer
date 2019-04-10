@@ -7,7 +7,7 @@
 import config from '../../config/config';
 import setNewPermission from './setNewPermission';
 
-export default function checkPermissionRepeat(payload, callback) {
+export default function checkPermissionRepeat(nightElf, payload, callback) {
     const {
         appName,
         result,
@@ -24,7 +24,7 @@ export default function checkPermissionRepeat(payload, callback) {
     });
     permission[0].contracts.map(item => {
         if (connectChainStr.indexOf(item.contractAddress) === -1) {
-            setNewPermission(appName, connectChain, address);
+            setNewPermission(nightElf, appName, connectChain, address);
         }
     });
 }

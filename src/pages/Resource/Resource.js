@@ -73,12 +73,13 @@ export default class Resource extends Component {
                     });
                     nightElf.chain.getChainInformation((error, result) => {
                         if (result) {
-                            window.NightElf.api({
+                            nightElf.checkPermission({
                                 appName,
-                                method: 'CHECK_PERMISSION',
                                 type: 'domain'
-                            }).then(result => {
-                                this.insertKeypairs(result);
+                            }, (error, result) => {
+                                if (result && result.error === 0) {
+                                    this.insertKeypairs(result);
+                                }
                             });
                         }
                     });
@@ -92,6 +93,7 @@ export default class Resource extends Component {
     }
 
     insertKeypairs(result) {
+        const {nightElf} = this.state;
         const getLoginPayload = {
             appName,
             connectChain: this.connectChain
@@ -107,7 +109,7 @@ export default class Resource extends Component {
             };
             if (permissions.length) {
                 // EXPLAIN: Need to redefine this scope
-                checkPermissionRepeat(payload, this.getNightElfKeypair.bind(this));
+                checkPermissionRepeat(nightElf, payload, this.getNightElfKeypair.bind(this));
             }
             else {
                 localStorage.setItem('currentWallet', null);
@@ -136,23 +138,25 @@ export default class Resource extends Component {
     }
 
     getNightElfKeypair(address) {
+        const {nightElf} = this.state;
         if (address) {
-            window.NightElf.api({
-                appName,
-                method: 'GET_ADDRESS'
-            }).then(result => {
-                const addressList = result.addressList || [];
-                let currentWallet = null;
-                addressList.map((item, index) => {
-                    if (address === item.address) {
-                        currentWallet = item;
-                    }
-                });
-                localStorage.setItem('currentWallet', JSON.stringify(currentWallet));
-                this.setState({
-                    currentWallet,
-                    showWallet: true
-                });
+            nightElf.getAddress({
+                appName
+            }, (error, result) => {
+                if (result && result.error === 0) {
+                    const addressList = result.addressList || [];
+                    let currentWallet = null;
+                    addressList.map((item, index) => {
+                        if (address === item.address) {
+                            currentWallet = item;
+                        }
+                    });
+                    localStorage.setItem('currentWallet', JSON.stringify(currentWallet));
+                    this.setState({
+                        currentWallet,
+                        showWallet: true
+                    });
+                }
             });
         }
     }
@@ -198,40 +202,40 @@ export default class Resource extends Component {
     }
 
     onRefresh() {
-        let {showWallet} = this.state;
-        window.NightElf.api({
-            appName: 'hzzTest',
-            method: 'GET_ADDRESS'
-        }).then(result => {
-            if (result.error !== 0) {
-                message.error(result.errorMessage.message, 5);
-                showWallet = false;
-            }
-            else if (result.addressList.length !== 0) {
-                let hasWallet = false;
-                result.addressList.map(item => {
-                    if (item.address === JSON.parse(localStorage.currentWallet).address) {
-                        hasWallet = true;
-                    }
-                });
-                if (!hasWallet) {
-                    this.setState({
-                        loading: false
+        let {showWallet, nightElf} = this.state;
+        nightElf.getAddress({
+            appName
+        }, (error, result) => {
+            if (result && result.error === 0) {
+                if (result.addressList.length !== 0) {
+                    let hasWallet = false;
+                    result.addressList.map(item => {
+                        if (item.address === JSON.parse(localStorage.currentWallet).address) {
+                            hasWallet = true;
+                        }
                     });
-                    showWallet = false;
-                    return;
+                    if (!hasWallet) {
+                        this.setState({
+                            loading: false
+                        });
+                        showWallet = false;
+                        return;
+                    }
+                    showWallet = true;
                 }
-                showWallet = true;
+                else {
+                    localStorage.setItem('currentWallet', null);
+                    showWallet = false;
+                }
+                this.setState({
+                    showWallet,
+                    currentWallet: JSON.parse(localStorage.currentWallet),
+                    loading: true
+                });
             }
             else {
-                localStorage.setItem('currentWallet', null);
-                showWallet = false;
+                message.error(result.errorMessage.message, 3);
             }
-            this.setState({
-                showWallet,
-                currentWallet: JSON.parse(localStorage.currentWallet),
-                loading: true
-            });
         });
     }
 

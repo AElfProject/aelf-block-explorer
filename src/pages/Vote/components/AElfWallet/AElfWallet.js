@@ -166,16 +166,17 @@ export default class AElfWallet extends PureComponent {
 
     getAllDividends() {
         // GetAllDividends]
-        const {contracts, appName} = this.state;
+        const {contracts, appName, nightElf} = this.state;
         if (contracts) {
             const currentWallet = JSON.parse(localStorage.currentWallet);
-            window.NightElf.api({
+            nightElf.checkPermission({
                 appName,
-                method: 'CHECK_PERMISSION',
-                type: 'address', // if you did not set type, it aways get by domain.
+                type: 'address',
                 address: currentWallet.address
-            }).then(result => {
-                this.toAllDividends(result);
+            }, (error, result) => {
+                if (result && result.error === 0) {
+                    this.toAllDividends(result);
+                }
             });
         }
         else {
@@ -184,7 +185,7 @@ export default class AElfWallet extends PureComponent {
     }
 
     toAllDividends(result) {
-        const {contracts, appName} = this.state;
+        const {appName, nightElf} = this.state;
         const currentWallet = JSON.parse(localStorage.currentWallet);
         if (result.error && result.error !== 0) {
             message.warning(result.errorMessage.message, 5);
@@ -194,7 +195,7 @@ export default class AElfWallet extends PureComponent {
             this.props.hideWallet();
             return;
         }
-        contractChange(result, contracts, currentWallet, appName).then(result => {
+        contractChange(nightElf, result, currentWallet, appName).then(result => {
             if (!result) {
                 this.getDefaultContract();
             }
@@ -248,7 +249,7 @@ export default class AElfWallet extends PureComponent {
     }
 
     onRefresh() {
-        const {appName} = this.state;
+        const {appName, nightElf} = this.state;
         this.setState({
             loadingTip: 'Loading......'
         });
@@ -256,50 +257,52 @@ export default class AElfWallet extends PureComponent {
             this.setState({
                 loading: true
             });
-            window.NightElf.api({
-                appName,
-                method: 'GET_ADDRESS'
-            }).then(result => {
-                if (result.addressList.length > 0) {
-                    let hasWallet = false;
-                    result.addressList.map(item => {
-                        if (item.address === JSON.parse(localStorage.currentWallet).address) {
-                            hasWallet = true;
+            nightElf.getAddress({
+                appName
+            }, (error, result) => {
+                console.log(result);
+                if (result && result.error === 0) {
+                    if (result.addressList.length > 0) {
+                        let hasWallet = false;
+                        result.addressList.map(item => {
+                            if (item.address === JSON.parse(localStorage.currentWallet).address) {
+                                hasWallet = true;
+                            }
+                        });
+                        if (!hasWallet) {
+                            this.setState({
+                                loading: false
+                            });
+                            this.props.hideWallet();
                         }
-                    });
-                    if (!hasWallet) {
+                    }
+                    else {
+                        this.setState({
+                            loading: false
+                        });
+                        this.props.hideWallet();
+                        return;
+                    }
+                    if (result.error !== 0) {
+                        message.warning(result.errorMessage.message, 5);
                         this.setState({
                             loading: false
                         });
                         this.props.hideWallet();
                     }
-                }
-                else {
-                    this.setState({
-                        loading: false
-                    });
-                    this.props.hideWallet();
-                    return;
-                }
-                if (result.error !== 0) {
-                    message.warning(result.errorMessage.message, 5);
-                    this.setState({
-                        loading: false
-                    });
-                    this.props.hideWallet();
-                }
-                else {
-                    this.setState({
-                        currentWallet: JSON.parse(localStorage.currentWallet)
-                    });
-                    this.pushWalletBalance()
-                    .then(this.pushWalletTicket())
-                    .then(this.pushWalletDividends())
-                    .then(() => {
+                    else {
                         this.setState({
-                            loading: false
+                            currentWallet: JSON.parse(localStorage.currentWallet)
                         });
-                    });
+                        this.pushWalletBalance()
+                        .then(this.pushWalletTicket())
+                        .then(this.pushWalletDividends())
+                        .then(() => {
+                            this.setState({
+                                loading: false
+                            });
+                        });
+                    }
                 }
             });
         }

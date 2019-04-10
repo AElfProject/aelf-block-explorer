@@ -368,29 +368,26 @@ export default class VoteTable extends PureComponent {
     }
 
     getVoting(publicKey) {
-        const {data, currentWallet, contracts} = this.state;
+        const {data, currentWallet, contracts, nightElf} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.publicKey === publicKey) {
                 this.props.obtainInfo(data[i].nodeName, data[i].operation.publicKey);
             }
         }
-
-        window.NightElf.api({
-            appName,
-            method: 'CHECK_PERMISSION',
-            type: 'address', // if you did not set type, it aways get by domain.
-            address: currentWallet.address
-        }).then(result => {
-            if (result.error !== 0) {
-                message.warning(result.errorMessage.message, 3);
-                return;
+        nightElf.getAddress({
+            appName
+        }, (error, result) => {
+            if (result && result.error === 0) {
+                contractChange(nightElf, result, currentWallet, appName).then(result => {
+                    if (!result) {
+                        this.props.showVoteFn();
+                    }
+                });
             }
-            contractChange(result, contracts, currentWallet, appName).then(result => {
-                if (!result) {
-                    this.props.showVoteFn();
-                }
-            });
+            else {
+                message.warning(result.errorMessage.message, 3);
+            }
         });
     }
 

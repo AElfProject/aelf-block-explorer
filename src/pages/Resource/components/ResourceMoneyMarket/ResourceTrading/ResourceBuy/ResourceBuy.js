@@ -215,7 +215,7 @@ export default class ResourceBuy extends Component {
     }
 
     getBuyModalShow() {
-        const {value, account, ELFValue, currentWallet, contracts, toBuy, appName} = this.state;
+        const {value, account, ELFValue, currentWallet, contracts, toBuy, appName, nightElf} = this.state;
         let reg = /^[1-9]\d*$/;
         if (!reg.test(value)) {
             message.error('The value must be numeric and greater than 0');
@@ -230,17 +230,12 @@ export default class ResourceBuy extends Component {
             return;
         }
         else {
-            window.NightElf.api({
+            nightElf.checkPermission({
                 appName,
-                method: 'CHECK_PERMISSION',
-                type: 'address', // if you did not set type, it aways get by domain.
+                type: 'addresss',
                 address: currentWallet.address
-            }).then(result => {
-                if (result.error !== 0) {
-                    message.warning(result.errorMessage.message, 3);
-                    return;
-                }
-                if (result) {
+            }, (error, result) => {
+                if (result && result.error === 0) {
                     result.permissions.map(item => {
                         const multiTokenObj = item.contracts.filter(data => {
                             return data.contractAddress === multiToken;
@@ -256,6 +251,9 @@ export default class ResourceBuy extends Component {
                         this.checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove);
                     });
                 }
+                else {
+                    message.warning(result.errorMessage.message, 3);
+                }
             });
         }
     }
@@ -265,7 +263,7 @@ export default class ResourceBuy extends Component {
         const wallet = {
             address: currentWallet.address
         };
-        contractChange(result, contracts, currentWallet, appName).then(result => {
+        contractChange(nightElf, result, currentWallet, appName).then(result => {
             if (value && !result) {
                 nightElf.chain.contractAtAsync(
                     contracts.multiToken,

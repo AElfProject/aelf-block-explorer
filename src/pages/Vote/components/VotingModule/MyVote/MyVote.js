@@ -8,11 +8,8 @@ import Button from '../../../../../components/Button/Button';
 import {Table, message} from 'antd';
 import dayjs from 'dayjs';
 import getPublicKey from '../../../../../utils/getPublicKey';
-import getHexNumber from '../../../../../utils/getHexNumber';
 import contractChange from '../../../../../utils/contractChange';
-import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
 import './MyVote.less';
-import hexToArrayBuffer from '../../../../../utils/hexToArrayBuffer';
 
 let page = 0;
 let pageSize = 10;
@@ -21,6 +18,7 @@ export default class MyVote extends PureComponent {
         super(props);
         this.state = {
             currentWallet: this.props.currentWallet,
+            nightElf: this.props.nightElf,
             pageSize,
             appName: this.props.appName,
             pagination: {
@@ -162,30 +160,33 @@ export default class MyVote extends PureComponent {
     }
 
     getVoting(publicKey) {
-        const {data, currentWallet, contracts, appName} = this.state;
+        const {data, currentWallet, appName, nightElf} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.publicKey === publicKey) {
                 this.props.obtainInfo(data[i].nodeName, data[i].operation.publicKey);
             }
         }
-        window.NightElf.api({
+
+        nightElf.checkPermission({
             appName,
-            method: 'CHECK_PERMISSION',
-            type: 'address', // if you did not set type, it aways get by domain.
+            type: 'address',
             address: currentWallet.address
-        }).then(result => {
-            if (result.error === 200005) {
-                message.warning(result.errorMessage.message, 3);
-                return;
+        }, (error, result) => {
+            if (result && result.error === 0) {
+                contractChange(nightElf, result, currentWallet).then(result => {
+                    if (!result) {
+                        this.hasPermission();
+                    }
+                });
             }
-            contractChange(result, contracts, currentWallet, appName).then(result => {
-                if (!result) {
-                    this.hasPermission();
-                }
-            });
+            else {
+                message.warning(result.errorMessage.message, 3);
+            }
         });
     }
+
+    // TODO: 😳等到链可以使用时测试下看是否修改
 
     hasPermission() {
         const {currentWallet, contracts, appName} = this.state;
@@ -219,28 +220,44 @@ export default class MyVote extends PureComponent {
     }
 
     getRedeem(publicKey, txId, appName) {
-        const {data, currentWallet, contracts} = this.state;
+        const {data, currentWallet, nightElf} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.txId === txId) {
                 this.props.obtainInfo(data[i].nodeName, publicKey, data[i].myVote, txId);
             }
         }
-        window.NightElf.api({
-            appName,
-            method: 'CHECK_PERMISSION',
-            type: 'address', // if you did not set type, it aways get by domain.
-            address: currentWallet.address
-        }).then(result => {
-            if (result.error !== 0) {
-                message.warning(result.errorMessage, 3);
-                return;
+
+        nightElf.getAddress({
+            appName
+        }, (error, result) => {
+            if (result && result.error === 0) {
+                contractChange(nightElf, result, currentWallet).then(result => {
+                    if (!result) {
+                        this.props.showRedeem();
+                    }
+                });
             }
-            contractChange(result, contracts, currentWallet).then(result => {
-                if (!result) {
-                    this.props.showRedeem();
-                }
-            });
+            else {
+                message.warning(result.errorMessage.message, 3);
+            }
+        });
+
+        nightElf.checkPermission({
+            appName,
+            type: 'address',
+            address: currentWallet.address
+        }, (error, result) => {
+            if (result && result.error === 0) {
+                contractChange(nightElf, result, currentWallet).then(result => {
+                    if (!result) {
+                        this.props.showRedeem();
+                    }
+                });
+            }
+            else {
+                message.warning(result.errorMessage, 3);
+            }
         });
     }
 
@@ -265,6 +282,12 @@ export default class MyVote extends PureComponent {
         if (props.showMyVote !== state.showMyVote) {
             return {
                 showMyVote: props.showMyVote
+            };
+        }
+
+        if (props.nightElf !== state.nightElf) {
+            return {
+                nightElf: props.nightElf
             };
         }
 
