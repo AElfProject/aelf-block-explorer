@@ -113,7 +113,7 @@ export default class Resource extends Component {
             }
             else {
                 localStorage.setItem('currentWallet', null);
-                getLogin(getLoginPayload, result => {
+                getLogin(nightElf, getLoginPayload, result => {
                     if (result && result.error === 0) {
                         const address = JSON.parse(result.detail).address;
                         this.getNightElfKeypair(address);

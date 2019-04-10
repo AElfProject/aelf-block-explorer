@@ -226,8 +226,10 @@ export default class MyVote extends PureComponent {
             }
         }
 
-        nightElf.getAddress({
-            appName
+        nightElf.checkPermission({
+            appName,
+            type: 'address',
+            address: currentWallet.address
         }, (error, result) => {
             if (result && result.error === 0) {
                 contractChange(nightElf, result, currentWallet).then(result => {

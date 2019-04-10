@@ -23,6 +23,7 @@ export default class VoteTable extends PureComponent {
             data: null,
             nodeName: null,
             currentWallet: this.props.currentWallet,
+            nightElf: this.props.nightElf,
             refresh: 0,
             loading: false,
             pagination: {
@@ -48,6 +49,13 @@ export default class VoteTable extends PureComponent {
                 refresh: props.refresh
             };
         }
+
+        if (props.nightElf !== state.nightElf) {
+            return {
+                nightElf: props.nightElf
+            };
+        }
+
 
         if (props.consensus !== state.consensus) {
             return {
@@ -368,15 +376,18 @@ export default class VoteTable extends PureComponent {
     }
 
     getVoting(publicKey) {
-        const {data, currentWallet, contracts, nightElf} = this.state;
+        const {data, currentWallet, nightElf} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.publicKey === publicKey) {
                 this.props.obtainInfo(data[i].nodeName, data[i].operation.publicKey);
             }
         }
-        nightElf.getAddress({
-            appName
+
+        nightElf.checkPermission({
+            appName,
+            type: 'address',
+            address: currentWallet.address
         }, (error, result) => {
             if (result && result.error === 0) {
                 contractChange(nightElf, result, currentWallet, appName).then(result => {
