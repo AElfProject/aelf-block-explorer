@@ -186,8 +186,6 @@ export default class MyVote extends PureComponent {
         });
     }
 
-    // TODO: 😳等到链可以使用时测试下看是否修改
-
     hasPermission() {
         const {currentWallet, contracts, appName} = this.state;
         window.NightElf.api({
