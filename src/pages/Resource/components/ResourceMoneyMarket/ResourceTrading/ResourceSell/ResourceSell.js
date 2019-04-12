@@ -212,7 +212,7 @@ export default class ResourceSell extends Component {
 
 
     getSellModalShow() {
-        const {value, account, currentWallet, contracts, menuIndex, toSell, appName} = this.state;
+        const {value, account, currentWallet, contracts, menuIndex, toSell, appName, nightElf} = this.state;
         let menuName = getMenuName(menuIndex);
         let reg = /^[1-9]\d*$/;
         if (!reg.test(value)) {
@@ -228,30 +228,31 @@ export default class ResourceSell extends Component {
             return;
         }
         else {
-            window.NightElf.api({
+            console.log(nightElf)
+            nightElf.checkPermission({
                 appName,
-                method: 'CHECK_PERMISSION',
-                type: 'address', // if you did not set type, it aways get by domain.
+                type: 'address',
                 address: currentWallet.address
-            }).then(result => {
-                if (result.error !== 0) {
-                    message.warning(result.errorMessage.message, 3);
-                    return;
-                }
-                result.permissions.map(item => {
-                    const multiTokenObj = item.contracts.filter(data => {
-                        return data.contractAddress === multiToken;
+            }, (error, result) => {
+                if (result && result.error === 0) {
+                    result.permissions.map(item => {
+                        const multiTokenObj = item.contracts.filter(data => {
+                            return data.contractAddress === multiToken;
+                        });
+                        let hasApprove = null;
+                        if (multiTokenObj[0].whitelist) {
+                            hasApprove = multiTokenObj[0].whitelist.hasOwnProperty('Approve');
+                            
+                        }
+                        else {
+                            hasApprove = false;
+                        }
+                        this.checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove);
                     });
-                    let hasApprove = null;
-                    if (multiTokenObj[0].whitelist) {
-                        hasApprove = multiTokenObj[0].whitelist.hasOwnProperty('Approve');
-                        
-                    }
-                    else {
-                        hasApprove = false;
-                    }
-                    this.checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove);
-                });
+                }
+                else {
+                    message.warning(result.errorMessage.message, 3);
+                }
             });
         }
     }
@@ -261,8 +262,8 @@ export default class ResourceSell extends Component {
         const wallet = {
             address: currentWallet.address
         };
-        contractChange(result, contracts, currentWallet, appName).then(result => {
-            if (value) {
+        contractChange(nightElf, result, currentWallet, appName).then(result => {
+            if (value && !result) {
                 nightElf.chain.contractAtAsync(
                     contracts.multiToken,
                     wallet,
@@ -277,6 +278,9 @@ export default class ResourceSell extends Component {
                         }
                     }
                 );
+            }
+            else {
+                message.info('Contract renewal completed...', 3);
             }
         });
     }

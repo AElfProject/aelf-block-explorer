@@ -7,9 +7,6 @@ import React, {PureComponent} from 'react';
 import {Row, Col, Spin} from 'antd';
 import Svg from '../../../../components/Svg/Svg';
 import {Link} from 'react-router-dom';
-import hexCharCodeToStr from '../../../../utils/hexCharCodeToStr';
-import hexToArrayBuffer from '../../../../utils/hexToArrayBuffer';
-// import proto from 'protobufjs';
 import './ResourceAElfWallet.less';
 
 export default class ResourceAElfWallet extends PureComponent {

@@ -102,40 +102,42 @@ export default class AElfWallet extends PureComponent {
         let {currentWallet} = this.state;
         if (currentWallet) {
             const key = getPublicKey(currentWallet.publicKey);
-            dividends.GetAllAvailableDividends.call({hex: key}, (error, result) => {
-                if (result) {
-                    const {
-                        Value,
-                        value
-                    } = result;
-                    const content = Value || value || 0;
-                    this.setState({
-                        dividendsNum: parseInt(content, 10).toLocaleString()
-                    });
-                }
+            return new Promise((resolve, reject) => {
+                dividends.GetAllAvailableDividends.call({hex: key}, (error, result) => {
+                    if (result) {
+                        const {
+                            Value,
+                            value
+                        } = result;
+                        const content = Value || value || 0;
+                        this.setState({
+                            dividendsNum: parseInt(content, 10).toLocaleString()
+                        });
+                    }
+                    resolve(true);
+                });
             });
         }
-        else {
-            this.props.hideWallet();
-        }
+        this.props.hideWallet();
     }
 
-    pushWalletBalance = async () => {
+    pushWalletBalance() {
         const {tokenContract} = this.state;
         let {currentWallet} = this.state;
         if (currentWallet) {
-            tokenContract.GetBalance.call({symbol: 'ELF', owner: currentWallet.address}, (error, result) => {
-                if (result) {
-                    this.setState({
-                        balanceNum: result.balance || 0,
-                        resourceReady: this.state.resourceReady + 1
-                    });
-                }
+            return new Promise((resolve, reject) => {
+                tokenContract.GetBalance.call({symbol: 'ELF', owner: currentWallet.address}, (error, result) => {
+                    if (result) {
+                        this.setState({
+                            balanceNum: result.balance || 0,
+                            resourceReady: this.state.resourceReady + 1
+                        });
+                    }
+                    resolve(true);
+                });
             });
         }
-        else {
-            this.props.hideWallet();
-        }
+        this.props.hideWallet();
     }
 
     pushWalletTicket = async () => {
@@ -143,60 +145,65 @@ export default class AElfWallet extends PureComponent {
         let {currentWallet} = this.state;
         if (currentWallet) {
             const key = getPublicKey(currentWallet.publicKey);
-            consensus.GetTicketsInformation.call({hex: key}, (error, result) => {
-                if (result) {
-                    let tickets = result.VotingRecords || [];
-                    let ticket = 0;
-                    tickets.map((item, index) => {
-                        if (item.From === key) {
-                            let IsWithdrawn = item.IsWithdrawn || false;
-                            IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
-                        }
-                    });
-                    this.setState({
-                        ticketsNum: ticket
-                    });
+            return new Promise((resolve, reject) => {
+                consensus.GetTicketsInformation.call({hex: key}, (error, result) => {
+                    if (result) {
+                        let tickets = result.VotingRecords || [];
+                        let ticket = 0;
+                        tickets.map((item, index) => {
+                            if (item.From === key) {
+                                let IsWithdrawn = item.IsWithdrawn || false;
+                                IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
+                            }
+                        });
+                        this.setState({
+                            ticketsNum: ticket
+                        });
+                    }
+                    resolve(true);
+                });
+            });
+        }
+        this.props.hideWallet();
+    }
+
+    getAllDividends() {
+        // GetAllDividends
+        const {contracts, appName, nightElf} = this.state;
+        if (contracts) {
+            const currentWallet = JSON.parse(localStorage.currentWallet);
+            nightElf.checkPermission({
+                appName,
+                type: 'address',
+                address: currentWallet.address
+            }, (error, result) => {
+                if (result && result.error === 0) {
+                    this.toAllDividends(result);
                 }
             });
         }
         else {
-            this.props.hideWallet();
-        }
-    }
-
-    getAllDividends() {
-        // GetAllDividends]
-        const {contracts, appName} = this.state;
-        if (contracts) {
-            const currentWallet = JSON.parse(localStorage.currentWallet);
-            window.NightElf.api({
-                appName,
-                method: 'CHECK_PERMISSION',
-                type: 'address', // if you did not set type, it aways get by domain.
-                address: currentWallet.address
-            }).then(result => {
-                this.toAllDividends(result);
-            });
-        }
-        else {
-            message.info('Please wait......', 5);
+            message.info('Please wait......', 3);
         }
     }
 
     toAllDividends(result) {
-        const {contracts, appName} = this.state;
+        const {appName, nightElf} = this.state;
         const currentWallet = JSON.parse(localStorage.currentWallet);
         if (result.error && result.error !== 0) {
-            message.warning(result.errorMessage.message, 5);
+            message.warning(result.errorMessage.message, 3);
             this.setState({
                 loading: false
             });
             this.props.hideWallet();
             return;
         }
-        contractChange(result, contracts, currentWallet, appName).then(result => {
+        contractChange(nightElf, result, currentWallet, appName).then(result => {
             if (!result) {
                 this.getDefaultContract();
+            }
+            else {
+                message.info('Contract renewal completed...', 3);
             }
         });
     }
@@ -232,10 +239,11 @@ export default class AElfWallet extends PureComponent {
         setTimeout(() => {
             const state = aelf.chain.getTxResult(transactionId);
             getStateJudgment(state.Status, transactionId);
-            this.pushWalletBalance()
-            .then(this.pushWalletTicket())
-            .then(this.pushWalletDividends())
-            .then(() => {
+            Promise.all([
+                this.pushWalletBalance(),
+                this.pushWalletTicket(),
+                this.pushWalletDividends()
+            ]).finally(() => {
                 this.setState({
                     loading: false
                 });
@@ -247,8 +255,8 @@ export default class AElfWallet extends PureComponent {
         this.setState = function () {};
     }
 
-    onRefresh() {
-        const {appName} = this.state;
+    onRefresh = async () => {
+        const {appName, nightElf} = this.state;
         this.setState({
             loadingTip: 'Loading......'
         });
@@ -256,50 +264,53 @@ export default class AElfWallet extends PureComponent {
             this.setState({
                 loading: true
             });
-            window.NightElf.api({
-                appName,
-                method: 'GET_ADDRESS'
-            }).then(result => {
-                if (result.addressList.length > 0) {
-                    let hasWallet = false;
-                    result.addressList.map(item => {
-                        if (item.address === JSON.parse(localStorage.currentWallet).address) {
-                            hasWallet = true;
+            nightElf.getAddress({
+                appName
+            }, (error, result) => {
+                if (result && result.error === 0) {
+                    if (result.addressList.length) {
+                        let hasWallet = false;
+                        result.addressList.map(item => {
+                            if (item.address === JSON.parse(localStorage.currentWallet).address) {
+                                hasWallet = true;
+                            }
+                        });
+                        if (!hasWallet) {
+                            this.setState({
+                                loading: false
+                            });
+                            this.props.hideWallet();
                         }
-                    });
-                    if (!hasWallet) {
+                    }
+                    else {
+                        this.setState({
+                            loading: false
+                        });
+                        this.props.hideWallet();
+                        return;
+                    }
+                    if (result.error !== 0) {
+                        message.warning(result.errorMessage.message, 3);
                         this.setState({
                             loading: false
                         });
                         this.props.hideWallet();
                     }
-                }
-                else {
-                    this.setState({
-                        loading: false
-                    });
-                    this.props.hideWallet();
-                    return;
-                }
-                if (result.error !== 0) {
-                    message.warning(result.errorMessage.message, 5);
-                    this.setState({
-                        loading: false
-                    });
-                    this.props.hideWallet();
-                }
-                else {
-                    this.setState({
-                        currentWallet: JSON.parse(localStorage.currentWallet)
-                    });
-                    this.pushWalletBalance()
-                    .then(this.pushWalletTicket())
-                    .then(this.pushWalletDividends())
-                    .then(() => {
+                    else {
                         this.setState({
-                            loading: false
+                            currentWallet: JSON.parse(localStorage.currentWallet)
                         });
-                    });
+
+                        Promise.all([
+                            this.pushWalletBalance(),
+                            this.pushWalletTicket(),
+                            this.pushWalletDividends()
+                        ]).finally(() => {
+                            this.setState({
+                                loading: false
+                            });
+                        });
+                    }
                 }
             });
         }

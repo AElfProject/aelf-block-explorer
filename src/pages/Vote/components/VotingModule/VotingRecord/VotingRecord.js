@@ -6,7 +6,6 @@
 import React, {PureComponent} from 'react';
 import {Table} from 'antd';
 import './VotingRecord.less';
-import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
 import getPublicKey from '../../../../../utils/getPublicKey';
 import dayjs from 'dayjs';
 
@@ -74,7 +73,7 @@ export default class VotingRecord extends PureComponent {
                         type: item.Type || '-',
                         number: item.VotesNumber || '-',
                         state: item.State ? 'success' : 'failed',
-                        time: dayjs(item.Timestamp).format('YYYY-MM-DD') || '-'
+                        time: dayjs(parseInt(item.Timestamp.seconds + '000', 10)).format('YYYY-MM-DD HH:mm:ss') || '-'
                     };
                     dataList.push(data);
                 });

@@ -19,6 +19,7 @@ export default class VotingModule extends PureComponent {
         super(props);
         this.state = {
             currentWallet: this.props.currentWallet,
+            nightElf: this.props.nightElf,
             session: null,
             isVote: false,
             isRedeem: false,
@@ -166,7 +167,7 @@ export default class VotingModule extends PureComponent {
     }
 
     getVoteTable() {
-        const {consensus, currentWallet, refresh, showVote, contracts, appName} = this.state;
+        const {consensus, currentWallet, refresh, showVote, contracts, appName, nightElf} = this.state;
         return (
             <VoteTable
                 style={this.state.showVote ? {display: 'block'} : {display: 'none'}}
@@ -182,6 +183,7 @@ export default class VotingModule extends PureComponent {
                 consensus={consensus}
                 contracts={contracts}
                 appName={appName}
+                nightElf={nightElf}
             />
         );
     }

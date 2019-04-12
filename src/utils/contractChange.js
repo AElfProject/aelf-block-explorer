@@ -6,7 +6,7 @@
 import {message} from 'antd';
 import config from '../../config/config';
 
-export default function contractChange(values, contracts, currentWallet, appName) {
+export default function contractChange(nightElf, values, currentWallet, appName) {
     return new Promise((resolve, reject) => {
         let contract = JSON.stringify(values.permissions[0].contracts);
         let token = false;
@@ -30,45 +30,41 @@ export default function contractChange(values, contracts, currentWallet, appName
         }
 
         if (token || consensus || dividend || resource) {
-            window.NightElf.api({
+            nightElf.setContractPermission({
                 appName,
-                method: 'OPEN_PROMPT',
                 chainId: 'AELF',
                 payload: {
-                    method: 'SET_CONTRACT_PERMISSION',
-                    payload: {
-                        // appName: message.appName,
-                        // domain: message.hostname
-                        address: currentWallet.address,
-                        contracts: [{
-                            chainId: 'AELF',
-                            contractAddress: config.multiToken,
-                            contractName: 'Token',
-                            description: 'contract Token',
-                            github: ''
-                        }, {
-                            chainId: 'AELF',
-                            contractAddress: config.dividends,
-                            contractName: 'Dividend',
-                            description: 'contract Dividend',
-                            github: ''
-                        }, {
-                            chainId: 'AELF',
-                            contractAddress: config.consensusDPoS,
-                            contractName: 'Consensus.Dpos',
-                            description: 'contract Consensus',
-                            github: ''
-                        }, {
-                            chainId: 'AELF',
-                            contractAddress: config.tokenConverter,
-                            contractName: 'Token Converter',
-                            description: 'contract Token Converter',
-                            github: ''
-                        }]
-                    }
+                    // appName: message.appName,
+                    // domain: message.hostname
+                    address: currentWallet.address,
+                    contracts: [{
+                        chainId: 'AELF',
+                        contractAddress: config.multiToken,
+                        contractName: 'Token',
+                        description: 'contract Token',
+                        github: ''
+                    }, {
+                        chainId: 'AELF',
+                        contractAddress: config.dividends,
+                        contractName: 'Dividend',
+                        description: 'contract Dividend',
+                        github: ''
+                    }, {
+                        chainId: 'AELF',
+                        contractAddress: config.consensusDPoS,
+                        contractName: 'Consensus.Dpos',
+                        description: 'contract Consensus',
+                        github: ''
+                    }, {
+                        chainId: 'AELF',
+                        contractAddress: config.tokenConverter,
+                        contractName: 'Token Converter',
+                        description: 'contract Token Converter',
+                        github: ''
+                    }]
                 }
-            }).then(result => {
-                if (result.error === 0) {
+            }, (error, result) => {
+                if (result && result.error === 0) {
                     resolve(true);
                 }
                 else {

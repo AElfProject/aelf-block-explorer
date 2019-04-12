@@ -23,6 +23,7 @@ export default class VoteTable extends PureComponent {
             data: null,
             nodeName: null,
             currentWallet: this.props.currentWallet,
+            nightElf: this.props.nightElf,
             refresh: 0,
             loading: false,
             pagination: {
@@ -48,6 +49,13 @@ export default class VoteTable extends PureComponent {
                 refresh: props.refresh
             };
         }
+
+        if (props.nightElf !== state.nightElf) {
+            return {
+                nightElf: props.nightElf
+            };
+        }
+
 
         if (props.consensus !== state.consensus) {
             return {
@@ -179,7 +187,7 @@ export default class VoteTable extends PureComponent {
 
                 pagination.total = result.CandidatesNumber;
                 let nodeList = result.Maps || [];
-                if (nodeList.length === 0) {
+                if (!nodeList.length) {
                     this.setState({
                         data: [],
                         loading: false
@@ -368,7 +376,7 @@ export default class VoteTable extends PureComponent {
     }
 
     getVoting(publicKey) {
-        const {data, currentWallet, contracts} = this.state;
+        const {data, currentWallet, nightElf} = this.state;
         const len = data.length;
         for (let i = 0; i < len; i++) {
             if (data[i].operation.publicKey === publicKey) {
@@ -376,21 +384,24 @@ export default class VoteTable extends PureComponent {
             }
         }
 
-        window.NightElf.api({
+        nightElf.checkPermission({
             appName,
-            method: 'CHECK_PERMISSION',
-            type: 'address', // if you did not set type, it aways get by domain.
+            type: 'address',
             address: currentWallet.address
-        }).then(result => {
-            if (result.error !== 0) {
-                message.warning(result.errorMessage.message, 3);
-                return;
+        }, (error, result) => {
+            if (result && result.error === 0) {
+                contractChange(nightElf, result, currentWallet, appName).then(result => {
+                    if (!result) {
+                        this.props.showVoteFn();
+                    }
+                    else {
+                        message.info('Contract renewal completed...', 3);
+                    }
+                });
             }
-            contractChange(result, contracts, currentWallet, appName).then(result => {
-                if (!result) {
-                    this.props.showVoteFn();
-                }
-            });
+            else {
+                message.warning(result.errorMessage.message, 3);
+            }
         });
     }
 
