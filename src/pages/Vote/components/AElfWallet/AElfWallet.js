@@ -204,6 +204,9 @@ export default class AElfWallet extends PureComponent {
             if (!result) {
                 this.getDefaultContract();
             }
+            else {
+                message.info('Contract renewal completed...', 3);
+            }
         });
     }
 
