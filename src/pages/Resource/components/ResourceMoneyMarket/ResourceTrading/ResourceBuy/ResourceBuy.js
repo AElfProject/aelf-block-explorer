@@ -280,6 +280,9 @@ export default class ResourceBuy extends Component {
                     }
                 );
             }
+            else {
+                message.info('Contract renewal completed...', 3);
+            }
         });
     }
 

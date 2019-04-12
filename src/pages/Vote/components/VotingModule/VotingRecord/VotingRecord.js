@@ -6,7 +6,6 @@
 import React, {PureComponent} from 'react';
 import {Table} from 'antd';
 import './VotingRecord.less';
-import hexCharCodeToStr from '../../../../../utils/hexCharCodeToStr';
 import getPublicKey from '../../../../../utils/getPublicKey';
 import dayjs from 'dayjs';
 
@@ -67,7 +66,6 @@ export default class VotingRecord extends PureComponent {
                 const historiesNumber = result.HistoriesNumber || 0;
                 pagination.total = parseInt(historiesNumber, 10);
                 ticketsHistoriesData.map((item, index) => {
-                    console.log(item);
                     let data = {
                         key: page + index + 1,
                         serialNumber: page + index + 1,

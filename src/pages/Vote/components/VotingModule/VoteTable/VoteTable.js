@@ -394,6 +394,9 @@ export default class VoteTable extends PureComponent {
                     if (!result) {
                         this.props.showVoteFn();
                     }
+                    else {
+                        message.info('Contract renewal completed...', 3);
+                    }
                 });
             }
             else {

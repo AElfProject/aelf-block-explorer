@@ -279,6 +279,9 @@ export default class ResourceSell extends Component {
                     }
                 );
             }
+            else {
+                message.info('Contract renewal completed...', 3);
+            }
         });
     }
 

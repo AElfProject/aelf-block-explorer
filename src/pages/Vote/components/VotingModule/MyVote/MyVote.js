@@ -178,6 +178,9 @@ export default class MyVote extends PureComponent {
                     if (!result) {
                         this.hasPermission();
                     }
+                    else {
+                        message.info('Contract renewal completed...', 3);
+                    }
                 });
             }
             else {
@@ -236,6 +239,9 @@ export default class MyVote extends PureComponent {
                     if (!result) {
                         this.props.showRedeem();
                     }
+                    else {
+                        message.info('Contract renewal completed...', 3);
+                    }
                 });
             }
             else {
@@ -252,6 +258,9 @@ export default class MyVote extends PureComponent {
                 contractChange(nightElf, result, currentWallet).then(result => {
                     if (!result) {
                         this.props.showRedeem();
+                    }
+                    else {
+                        message.info('Contract renewal completed...', 3);
                     }
                 });
             }
