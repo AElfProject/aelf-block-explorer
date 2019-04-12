@@ -244,7 +244,6 @@ export default class AElfWallet extends PureComponent {
                 this.pushWalletTicket(),
                 this.pushWalletDividends()
             ]).finally(() => {
-                console.log('4');
                 this.setState({
                     loading: false
                 });
