@@ -70,7 +70,7 @@ export default class MyVote extends PureComponent {
                 const VotingRecordsCount = parseInt(
                     result.VotingRecordsCount, 10
                 ) || 0;
-                if (ticketsInfoList.length === 0) {
+                if (!ticketsInfoList.length) {
                     this.setState({
                         data: [],
                         loading: false,

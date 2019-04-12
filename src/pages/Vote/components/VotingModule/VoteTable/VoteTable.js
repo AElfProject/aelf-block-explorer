@@ -187,7 +187,7 @@ export default class VoteTable extends PureComponent {
 
                 pagination.total = result.CandidatesNumber;
                 let nodeList = result.Maps || [];
-                if (nodeList.length === 0) {
+                if (!nodeList.length) {
                     this.setState({
                         data: [],
                         loading: false

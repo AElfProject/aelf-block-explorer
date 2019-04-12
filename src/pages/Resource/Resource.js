@@ -145,6 +145,12 @@ export default class Resource extends Component {
             }, (error, result) => {
                 if (result && result.error === 0) {
                     const addressList = result.addressList || [];
+                    if (!addressList.length) {
+                        this.setState({
+                            showWallet: false
+                        });
+                        return;
+                    }
                     let currentWallet = null;
                     addressList.map((item, index) => {
                         if (address === item.address) {
@@ -207,7 +213,7 @@ export default class Resource extends Component {
             appName
         }, (error, result) => {
             if (result && result.error === 0) {
-                if (result.addressList.length !== 0) {
+                if (result.addressList) {
                     let hasWallet = false;
                     result.addressList.map(item => {
                         if (item.address === JSON.parse(localStorage.currentWallet).address) {

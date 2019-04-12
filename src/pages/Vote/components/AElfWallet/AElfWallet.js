@@ -102,40 +102,43 @@ export default class AElfWallet extends PureComponent {
         let {currentWallet} = this.state;
         if (currentWallet) {
             const key = getPublicKey(currentWallet.publicKey);
-            dividends.GetAllAvailableDividends.call({hex: key}, (error, result) => {
-                if (result) {
-                    const {
-                        Value,
-                        value
-                    } = result;
-                    const content = Value || value || 0;
-                    this.setState({
-                        dividendsNum: parseInt(content, 10).toLocaleString()
-                    });
-                }
+            return new Promise((resolve, reject) => {
+                dividends.GetAllAvailableDividends.call({hex: key}, (error, result) => {
+                    if (result) {
+                        const {
+                            Value,
+                            value
+                        } = result;
+                        const content = Value || value || 0;
+                        this.setState({
+                            dividendsNum: parseInt(content, 10).toLocaleString()
+                        });
+                        resolve(true);
+                    }
+                    resolve(true);
+                });
             });
         }
-        else {
-            this.props.hideWallet();
-        }
+        this.props.hideWallet();
     }
 
-    pushWalletBalance = async () => {
+    pushWalletBalance() {
         const {tokenContract} = this.state;
         let {currentWallet} = this.state;
         if (currentWallet) {
-            tokenContract.GetBalance.call({symbol: 'ELF', owner: currentWallet.address}, (error, result) => {
-                if (result) {
-                    this.setState({
-                        balanceNum: result.balance || 0,
-                        resourceReady: this.state.resourceReady + 1
-                    });
-                }
+            return new Promise((resolve, reject) => {
+                tokenContract.GetBalance.call({symbol: 'ELF', owner: currentWallet.address}, (error, result) => {
+                    if (result) {
+                        this.setState({
+                            balanceNum: result.balance || 0,
+                            resourceReady: this.state.resourceReady + 1
+                        });
+                        resolve(true);
+                    }
+                });
             });
         }
-        else {
-            this.props.hideWallet();
-        }
+        this.props.hideWallet();
     }
 
     pushWalletTicket = async () => {
@@ -143,29 +146,31 @@ export default class AElfWallet extends PureComponent {
         let {currentWallet} = this.state;
         if (currentWallet) {
             const key = getPublicKey(currentWallet.publicKey);
-            consensus.GetTicketsInformation.call({hex: key}, (error, result) => {
-                if (result) {
-                    let tickets = result.VotingRecords || [];
-                    let ticket = 0;
-                    tickets.map((item, index) => {
-                        if (item.From === key) {
-                            let IsWithdrawn = item.IsWithdrawn || false;
-                            IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
-                        }
-                    });
-                    this.setState({
-                        ticketsNum: ticket
-                    });
-                }
+            return new Promise((resolve, reject) => {
+                consensus.GetTicketsInformation.call({hex: key}, (error, result) => {
+                    if (result) {
+                        let tickets = result.VotingRecords || [];
+                        let ticket = 0;
+                        tickets.map((item, index) => {
+                            if (item.From === key) {
+                                let IsWithdrawn = item.IsWithdrawn || false;
+                                IsWithdrawn ? ticket : ticket += parseInt(item.Count, 10);
+                            }
+                        });
+                        this.setState({
+                            ticketsNum: ticket
+                        });
+                        resolve(true);
+                    }
+                    resolve(true);
+                });
             });
         }
-        else {
-            this.props.hideWallet();
-        }
+        this.props.hideWallet();
     }
 
     getAllDividends() {
-        // GetAllDividends]
+        // GetAllDividends
         const {contracts, appName, nightElf} = this.state;
         if (contracts) {
             const currentWallet = JSON.parse(localStorage.currentWallet);
@@ -233,10 +238,11 @@ export default class AElfWallet extends PureComponent {
         setTimeout(() => {
             const state = aelf.chain.getTxResult(transactionId);
             getStateJudgment(state.Status, transactionId);
-            this.pushWalletBalance()
-            .then(this.pushWalletTicket())
-            .then(this.pushWalletDividends())
-            .then(() => {
+            Promise.all([
+                this.pushWalletBalance(),
+                this.pushWalletTicket(),
+                this.pushWalletDividends()
+            ]).then(result => {
                 this.setState({
                     loading: false
                 });
@@ -248,7 +254,7 @@ export default class AElfWallet extends PureComponent {
         this.setState = function () {};
     }
 
-    onRefresh() {
+    onRefresh = async () => {
         const {appName, nightElf} = this.state;
         this.setState({
             loadingTip: 'Loading......'
@@ -260,9 +266,8 @@ export default class AElfWallet extends PureComponent {
             nightElf.getAddress({
                 appName
             }, (error, result) => {
-                console.log(result);
                 if (result && result.error === 0) {
-                    if (result.addressList.length > 0) {
+                    if (result.addressList.length) {
                         let hasWallet = false;
                         result.addressList.map(item => {
                             if (item.address === JSON.parse(localStorage.currentWallet).address) {
@@ -294,10 +299,12 @@ export default class AElfWallet extends PureComponent {
                         this.setState({
                             currentWallet: JSON.parse(localStorage.currentWallet)
                         });
-                        this.pushWalletBalance()
-                        .then(this.pushWalletTicket())
-                        .then(this.pushWalletDividends())
-                        .then(() => {
+
+                        Promise.all([
+                            this.pushWalletBalance(),
+                            this.pushWalletTicket(),
+                            this.pushWalletDividends()
+                        ]).then(result => {
                             this.setState({
                                 loading: false
                             });
