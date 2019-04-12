@@ -113,7 +113,6 @@ export default class AElfWallet extends PureComponent {
                         this.setState({
                             dividendsNum: parseInt(content, 10).toLocaleString()
                         });
-                        resolve(true);
                     }
                     resolve(true);
                 });
@@ -133,8 +132,8 @@ export default class AElfWallet extends PureComponent {
                             balanceNum: result.balance || 0,
                             resourceReady: this.state.resourceReady + 1
                         });
-                        resolve(true);
                     }
+                    resolve(true);
                 });
             });
         }
@@ -160,7 +159,6 @@ export default class AElfWallet extends PureComponent {
                         this.setState({
                             ticketsNum: ticket
                         });
-                        resolve(true);
                     }
                     resolve(true);
                 });
@@ -185,7 +183,7 @@ export default class AElfWallet extends PureComponent {
             });
         }
         else {
-            message.info('Please wait......', 5);
+            message.info('Please wait......', 3);
         }
     }
 
@@ -193,7 +191,7 @@ export default class AElfWallet extends PureComponent {
         const {appName, nightElf} = this.state;
         const currentWallet = JSON.parse(localStorage.currentWallet);
         if (result.error && result.error !== 0) {
-            message.warning(result.errorMessage.message, 5);
+            message.warning(result.errorMessage.message, 3);
             this.setState({
                 loading: false
             });
@@ -245,7 +243,8 @@ export default class AElfWallet extends PureComponent {
                 this.pushWalletBalance(),
                 this.pushWalletTicket(),
                 this.pushWalletDividends()
-            ]).then(result => {
+            ]).finally(() => {
+                console.log('4');
                 this.setState({
                     loading: false
                 });
@@ -292,7 +291,7 @@ export default class AElfWallet extends PureComponent {
                         return;
                     }
                     if (result.error !== 0) {
-                        message.warning(result.errorMessage.message, 5);
+                        message.warning(result.errorMessage.message, 3);
                         this.setState({
                             loading: false
                         });
@@ -307,7 +306,8 @@ export default class AElfWallet extends PureComponent {
                             this.pushWalletBalance(),
                             this.pushWalletTicket(),
                             this.pushWalletDividends()
-                        ]).then(result => {
+                        ]).finally(() => {
+                            console.log('4');
                             this.setState({
                                 loading: false
                             });
