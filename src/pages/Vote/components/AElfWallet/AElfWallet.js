@@ -247,8 +247,6 @@ export default class AElfWallet extends PureComponent {
                 this.setState({
                     loading: false
                 });
-            }).catch(err => {
-                console.log('err', err);
             });
         }, 4000);
     }
@@ -311,8 +309,6 @@ export default class AElfWallet extends PureComponent {
                             this.setState({
                                 loading: false
                             });
-                        }).catch(err => {
-                            console.log('err', err);
                         });
                     }
                 }
