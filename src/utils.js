@@ -25,8 +25,20 @@ const httpErrorHandler = (message, des) => notification.open({
     message,
     description: des
 });
-
-const aelf = new AElf(new AElf.providers.HttpProvider(RPCSERVER));
+const timeout = null;
+const user = null;
+const password = null;
+const header = [{
+    name: 'Accept',
+    value: 'text/plain;v=1.0'
+}]
+const aelf = new AElf(new AElf.providers.HttpProvider(
+    RPCSERVER,
+    timeout,
+    user,
+    password,
+    header
+));
 
 const get = async (url, params, config) => {
     const res = await api.get(url, params, config);
