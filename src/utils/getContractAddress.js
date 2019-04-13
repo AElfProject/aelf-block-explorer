@@ -31,13 +31,16 @@ import {commonPrivateKey, multiToken, consensusDPoS, dividends, tokenConverter} 
 export default function getContractAddress() {
     return new Promise((resolve, reject) => {
         const wallet = AElf.wallet.getWalletByPrivateKey(commonPrivateKey);
-        const output = {
-            consensusDPoS,
-            dividends,
-            multiToken,
-            tokenConverter,
-            wallet
-        };
-        resolve(output);
+        aelf.chain.getChainInformation((error, result) => {
+            const output = {
+                consensusDPoS,
+                dividends,
+                multiToken,
+                tokenConverter,
+                wallet,
+                chainInfo: result
+            };
+            resolve(output);
+        });
     });
 }

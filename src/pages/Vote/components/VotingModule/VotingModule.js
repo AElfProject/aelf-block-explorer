@@ -36,7 +36,6 @@ export default class VotingModule extends PureComponent {
             isRefresh: false,
             consensus: null,
             contracts: null,
-            nightElf: this.props.nightElf,
             appName: this.props.appName
         };
     }
@@ -72,7 +71,7 @@ export default class VotingModule extends PureComponent {
     componentDidUpdate(prevProps) {
         if (prevProps.consensus !== this.props.consensus) {
             const {consensus} = this.state;
-            if (consensus) {
+            if (consensus.constructor === Object) {
                 consensus.GetCurrentTermNumber.call((error, result) => {
                     if (result && !result.error) {
                         const {

@@ -48,6 +48,10 @@ export default class Resource extends Component {
             this.setState({
                 contracts: result
             });
+            if (!result.chainInfo) {
+                message.error('The chain has stopped or cannot be connected to the chain. Please check your network or contact us.', 10);
+                return;
+            }
             aelf.chain.contractAtAsync(result.multiToken, result.wallet, (error, result) => {
                 console.log('multiToken', result);
                 this.setState({
