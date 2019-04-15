@@ -20,7 +20,7 @@ export default class VoteTable extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            data: null,
+            data: [],
             nodeName: null,
             currentWallet: this.props.currentWallet,
             nightElf: this.props.nightElf,

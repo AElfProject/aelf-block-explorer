@@ -127,6 +127,7 @@ export default class AElfWallet extends PureComponent {
         if (currentWallet) {
             return new Promise((resolve, reject) => {
                 tokenContract.GetBalance.call({symbol: 'ELF', owner: currentWallet.address}, (error, result) => {
+                    console.log(result);
                     if (result) {
                         this.setState({
                             balanceNum: result.balance || 0,
