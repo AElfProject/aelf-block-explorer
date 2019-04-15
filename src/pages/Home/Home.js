@@ -332,9 +332,9 @@ export default class HomePage extends Component {
                 className="blocks-list-container"
                 key={item.block_hash}
             >
-                <Col span='4'>{title}</Col>
-                <Col span='4'>{desc}</Col>
-                <Col span='16'>{format(item.time)}</Col>
+                <Col span={4}>{title}</Col>
+                <Col span={4}>{desc}</Col>
+                <Col span={16}>{format(item.time)}</Col>
                 {/*<Col span='2'>hzz780</Col>*/}
             </Row>
         );
@@ -378,9 +378,9 @@ export default class HomePage extends Component {
                 className="blocks-list-container"
                 key={tx_id}
             >
-                <Col span='8'>{title}</Col>
-                <Col span='8'>{from}</Col>
-                <Col span='8'>{to}</Col>
+                <Col span={8}>{title}</Col>
+                <Col span={8}>{from}</Col>
+                <Col span={8}>{to}</Col>
             </Row>
         );
 
@@ -405,7 +405,7 @@ export default class HomePage extends Component {
 
         const screenHeight = document.documentElement.offsetHeight;
         const heightStyle = {
-            height: screenHeight - 64 * 3 - 100,
+            height: screenHeight - 64 * 3 - 100
         };
 
         return [
@@ -413,8 +413,7 @@ export default class HomePage extends Component {
                 key='basicinfo'
             >
                 <Col
-
-                    span='24'
+                    span={24}
                 >
                     <div></div>
                 </Col>
@@ -448,9 +447,9 @@ export default class HomePage extends Component {
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
                         >
-                            <Col span='4'>Height</Col>
-                            <Col span='4'>TXS</Col>
-                            <Col span='16'>Time</Col>
+                            <Col span={4}>Height</Col>
+                            <Col span={4}>TXS</Col>
+                            <Col span={16}>Time</Col>
                             {/*<Col span='2'>Miner</Col>*/}
                         </Row>
                     </div>
@@ -483,9 +482,9 @@ export default class HomePage extends Component {
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
                         >
-                            <Col span='8'>Tx ID</Col>
-                            <Col span='8'>From</Col>
-                            <Col span='8'>To</Col>
+                            <Col span={8}>Tx ID</Col>
+                            <Col span={8}>From</Col>
+                            <Col span={8}>To</Col>
                             {/*<Col span='6'>Time</Col>*/}
                         </Row>
                     </div>

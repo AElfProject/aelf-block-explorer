@@ -67,7 +67,7 @@ export default class BlocksPage extends Component {
 
         let pagination = this.state.pagination;
         pagination.total = data.total;
-        
+
         this.setState({
             loading: false,
             data: data && data.blocks.length ? data.blocks : null,

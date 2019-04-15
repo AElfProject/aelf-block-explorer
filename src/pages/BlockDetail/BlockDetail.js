@@ -5,7 +5,6 @@ import {
 import {
     Row,
     Col,
-    Button,
     Icon,
     Table
 } from 'antd';
@@ -17,13 +16,10 @@ import {
 } from '../../utils';
 
 import {
-    ALL_TXS_LIST_COLUMNS,
-    PAGE_SIZE
+    ALL_TXS_LIST_COLUMNS
 } from '../../constants';
 
 import './blockdetail.styles.less';
-
-const ButtonGroup = Button.Group;
 
 export default class BlockDetailPage extends React.Component {
     constructor(props) {
@@ -65,29 +61,30 @@ export default class BlockDetailPage extends React.Component {
         let txsList;
         let error;
         // BlockHeight
-        if (parseInt(input) == input) {
+        if (parseInt(input, 10) == input) {
             blockHeight = input;
-            result = aelf.chain.getBlockInfo(input, 100);
+            result = aelf.chain.getBlockInfo(input, true);
             error = result.error;
 
             const blockhash = result && result.BlockHash;
             if (blockhash) {
                 txsList = await this.getTxsList(blockhash);
             }
-        } else {
+        }
+        else {
             txsList = await this.getTxsList(input);
             let {
                 transactions
             } = txsList;
             error = transactions.length ? '' : 'Not Found';
             blockHeight = transactions[0] && transactions[0].block_height;
-            result = blockHeight ? aelf.chain.getBlockInfo(blockHeight, 100) : undefined;
+            result = blockHeight ? aelf.chain.getBlockInfo(blockHeight, true) : undefined;
         }
 
         const pagination = {
-            ...this.state.pagination
+            ...this.state.pagination,
+            total: txsList && txsList.total || 0
         };
-        pagination.total = txsList && txsList.total || 0;
         this.setState({
             blockInfo: {
                 blockHeight: +blockHeight || 'Not Found',
@@ -129,9 +126,11 @@ export default class BlockDetailPage extends React.Component {
     }
 
     handleTableChange = pagination => {
-        const pager = {...this.state.pagination
+        const pager = {
+            ...this.state.pagination,
+            current: pagination.current
         };
-        pager.current = pagination.current;
+
         this.setState({
             pagination: pager
         });
@@ -181,9 +180,11 @@ export default class BlockDetailPage extends React.Component {
         let blackList = ['Index'];
         for (const each in blockInfo) {
             if (blackList.indexOf(each) >= 0) {
-            } else if (each === 'Time') {
+            }
+            else if (each === 'Time') {
                 html.push(this.renderCol(each, format(blockInfo[each])));
-            } else {
+            }
+            else {
                 html.push(this.renderCol(each, blockInfo[each]));
             }
 
@@ -231,7 +232,8 @@ export default class BlockDetailPage extends React.Component {
         let colsHtml;
         if (error) {
             colsHtml = this.renderCol('error', error);
-        } else {
+        }
+        else {
             colsHtml = this.renderCols();
             moreInfoHtml = this.renderMoreInfo();
         }
