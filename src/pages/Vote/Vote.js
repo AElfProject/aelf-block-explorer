@@ -97,8 +97,13 @@ export default class VotePage extends Component {
         // getExtensionKeypairList
         NightElfCheck.getInstance().check.then(item => {
             if (item) {
+                const header = [{
+                    name: 'Accept',
+                    value: 'text/plain;v=1.0'
+                }];
                 nightElf = new window.NightElf.AElf({
                     httpProvider,
+                    header,
                     appName // TODO: 这个需要content.js 主动获取
                 });
                 if (nightElf) {
