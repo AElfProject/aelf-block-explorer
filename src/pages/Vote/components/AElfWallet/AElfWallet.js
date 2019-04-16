@@ -104,6 +104,7 @@ export default class AElfWallet extends PureComponent {
             const key = getPublicKey(currentWallet.publicKey);
             return new Promise((resolve, reject) => {
                 dividends.GetAllAvailableDividends.call({hex: key}, (error, result) => {
+                    console.log('GetAllAvailableDividends', result);
                     if (result) {
                         const {
                             Value,

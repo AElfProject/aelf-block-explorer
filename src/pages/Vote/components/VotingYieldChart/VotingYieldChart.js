@@ -58,10 +58,12 @@ export default class VotingYieldChart extends PureComponent {
         this.setState({
             loading: true
         });
+        
         dividends.CheckDividendsOfPreviousTerm.call((error, result) => {
+            console.log('result', result);
             if (result && !result.error) {
                 this.setState({
-                    data: JSON.parse(result.value).Values
+                    data: result.Values
                 });
             }
             this.setState({
