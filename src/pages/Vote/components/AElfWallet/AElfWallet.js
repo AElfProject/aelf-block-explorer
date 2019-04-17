@@ -115,6 +115,11 @@ export default class AElfWallet extends PureComponent {
                             dividendsNum: parseInt(content, 10).toLocaleString()
                         });
                     }
+                    else {
+                        this.setState({
+                            dividendsNum: 0
+                        });
+                    }
                     resolve(true);
                 });
             });
