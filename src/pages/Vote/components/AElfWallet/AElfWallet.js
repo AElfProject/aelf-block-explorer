@@ -273,6 +273,12 @@ export default class AElfWallet extends PureComponent {
             nightElf.getAddress({
                 appName
             }, (error, result) => {
+                if (result.error === 200005) {
+                    message.warning(result.errorMessage.message, 3);
+                    this.setState({
+                        loading: false
+                    });
+                }
                 if (result && result.error === 0) {
                     if (result.addressList.length) {
                         let hasWallet = false;
