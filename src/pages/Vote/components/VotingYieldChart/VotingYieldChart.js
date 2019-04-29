@@ -35,7 +35,7 @@ export default class VotingYieldChart extends PureComponent {
 
     componentDidUpdate(prevProps) {
         if (prevProps.dividends !== this.props.dividends) {
-            if (!prevProps.dividends) {
+            if (!prevProps.dividends && !prevProps.dividends instanceof String) {
                 this.setState({
                     loading: true
                 });

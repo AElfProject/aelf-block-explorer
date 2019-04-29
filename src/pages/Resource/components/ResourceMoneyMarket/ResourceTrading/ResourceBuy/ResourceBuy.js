@@ -296,6 +296,7 @@ export default class ResourceBuy extends Component {
                 amount: ELFValue + parseInt(ELFValue * 0.05, 10)
             };
             if (result) {
+                console.log('Approve', contract);
                 contract.Approve(payload, (error, result) => {
                     if (result) {
                         setTimeout(() => {

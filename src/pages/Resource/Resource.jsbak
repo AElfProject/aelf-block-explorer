@@ -78,7 +78,7 @@ export default class Resource extends Component {
                             value: 'text/plain;v=1.0'
                         }]
                     ],
-                    appName // TODO: 这个需要content.js 主动获取
+                    appName // TODO: 这个需要content.js 主动获取 // TODO: 这个需要content.js 主动获取
                 });
                 if (nightElf) {
                     this.setState({
@@ -120,28 +120,26 @@ export default class Resource extends Component {
                 connectChain: this.connectChain,
                 result
             };
-            // localStorage.setItem('currentWallet', null);
-            getLogin(nightElf, getLoginPayload, result => {
-                if (result && result.error === 0) {
-                    const wallet = JSON.parse(result.detail);
-                    if (permissions.length) {
-                        // EXPLAIN: Need to redefine this scope
-                        checkPermissionRepeat(nightElf, payload, () => {
-                            this.getNightElfKeypair(wallet);
-                        });
-                    }
-                    else {
-                        this.getNightElfKeypair(wallet);
+            if (permissions.length) {
+                // EXPLAIN: Need to redefine this scope
+                checkPermissionRepeat(nightElf, payload, this.getNightElfKeypair.bind(this));
+            }
+            else {
+                localStorage.setItem('currentWallet', null);
+                getLogin(nightElf, getLoginPayload, result => {
+                    if (result && result.error === 0) {
+                        const address = JSON.parse(result.detail).address;
+                        this.getNightElfKeypair(address);
                         message.success('Login success!!', 3);
                     }
-                }
-                else {
-                    this.setState({
-                        showWallet: false
-                    });
-                    message.error(result.errorMessage.message, 3);
-                }
-            });
+                    else {
+                        this.setState({
+                            showWallet: false
+                        });
+                        message.error(result.errorMessage.message, 3);
+                    }
+                });
+            }
         }
         else {
             message.error(result.errorMessage.message, 3);
@@ -152,12 +150,18 @@ export default class Resource extends Component {
         this.setState = function () {};
     }
 
-    getNightElfKeypair(wallet) {
-        if (wallet) {
-            localStorage.setItem('currentWallet', JSON.stringify(wallet));
+    getNightElfKeypair(address) {
+        if (address) {
+            localStorage.setItem('currentWallet', JSON.stringify(address));
             this.setState({
-                currentWallet: wallet,
+                currentWallet: address,
                 showWallet: true
+            });
+        }
+        else {
+            this.setState({
+                currentWallet: null,
+                showWallet: false
             });
         }
     }
@@ -196,9 +200,47 @@ export default class Resource extends Component {
         return <DownloadPlugins />;
     }
 
-    onRefresh() {
+    getChangeWallet() {
         this.setState({
-            loading: true
+            currentWallet: JSON.parse(localStorage.currentWallet)
+        });
+    }
+
+    onRefresh() {
+        let {showWallet, nightElf} = this.state;
+        nightElf.getAddress({
+            appName
+        }, (error, result) => {
+            if (result && result.error === 0) {
+                if (result.addressList) {
+                    let hasWallet = false;
+                    result.addressList.map(item => {
+                        if (item.address === JSON.parse(localStorage.currentWallet).address) {
+                            hasWallet = true;
+                        }
+                    });
+                    if (!hasWallet) {
+                        this.setState({
+                            loading: false
+                        });
+                        showWallet = false;
+                        return;
+                    }
+                    showWallet = true;
+                }
+                else {
+                    localStorage.setItem('currentWallet', null);
+                    showWallet = false;
+                }
+                this.setState({
+                    showWallet,
+                    currentWallet: JSON.parse(localStorage.currentWallet),
+                    loading: true
+                });
+            }
+            else {
+                message.error(result.errorMessage.message, 3);
+            }
         });
     }
 
@@ -209,14 +251,15 @@ export default class Resource extends Component {
     }
 
     resourceAElfWalletHtml() {
-        const {showWallet, tokenContract, tokenConverterContract, currentWallet, loading} = this.state;
+        const {showWallet, walletInfoList, tokenContract, tokenConverterContract, loading} = this.state;
         if (showWallet) {
             return (
                 <ResourceAElfWallet
                     title='AElf Wallet'
+                    getChangeWallet={this.getChangeWallet.bind(this)}
+                    walletInfoList={walletInfoList}
                     tokenContract={tokenContract}
                     tokenConverterContract={tokenConverterContract}
-                    currentWallet={currentWallet}
                     getCurrentBalance={this.getCurrentBalance.bind(this)}
                     getCurrentCpu={this.getCurrentCpu.bind(this)}
                     getCurrentRam={this.getCurrentRam.bind(this)}
@@ -248,7 +291,7 @@ export default class Resource extends Component {
             <div className="resource-body">
                 {downloadPlugins}
                 {resourceAElfWalletHtml}
-                <div className='resource-money-market'>
+                {/* <div className='resource-money-market'>
                     <ResourceMoneyMarket
                         currentWallet={currentWallet}
                         contracts={contracts}
@@ -260,7 +303,7 @@ export default class Resource extends Component {
                         nightElf={nightElf}
                         appName={appName}
                     />
-                </div>
+                </div> */}
             </div>
         );
     }

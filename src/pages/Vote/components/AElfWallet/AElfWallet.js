@@ -56,6 +56,13 @@ export default class AElfWallet extends PureComponent {
                 nightElf: props.nightElf
             };
         }
+
+        if (props.currentWallet !== state.currentWallet) {
+            return {
+                currentWallet: props.currentWallet
+            };
+        }
+
         if (props.tokenContract !== state.tokenContract) {
             return {
                 tokenContract: props.tokenContract
@@ -104,7 +111,6 @@ export default class AElfWallet extends PureComponent {
             const key = getPublicKey(currentWallet.publicKey);
             return new Promise((resolve, reject) => {
                 dividends.GetAllAvailableDividends.call({hex: key}, (error, result) => {
-                    console.log('GetAllAvailableDividends', result);
                     if (result) {
                         const {
                             Value,
@@ -335,7 +341,7 @@ export default class AElfWallet extends PureComponent {
             let tickets = !!ticketsNum ? ticketsNum.toLocaleString() : '-';
             let dividends = !!dividendsNum ? dividendsNum.toLocaleString() : '-';
             return (
-                <Row key={currentWallet.address} type='flex' align='middle' style={{padding: '10px 0'}} className='wallet-info'>
+                <Row key={currentWallet} type='flex' align='middle' style={{padding: '10px 0'}} className='wallet-info'>
                     <Col xl={6} xs={8} >
                         <span className='item-name'> {currentWallet.name}</span>
                     </Col>
