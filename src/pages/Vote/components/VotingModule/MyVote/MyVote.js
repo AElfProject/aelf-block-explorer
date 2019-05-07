@@ -66,6 +66,7 @@ export default class MyVote extends PureComponent {
         };
         consensus.GetPageableNotWithdrawnTicketsInfo.call(payload, (error, result) => {
             if (result) {
+                console.log(result);
                 const ticketsInfoList = result.VotingRecords || [];
                 const VotingRecordsCount = parseInt(
                     result.VotingRecordsCount, 10
@@ -95,7 +96,7 @@ export default class MyVote extends PureComponent {
                             txId: item.TransactionId,
                             publicKey: item.To,
                             vote: true,
-                            redeem: dayjs(new Date()).unix() > dayjs(item.UnlockTimestamp).unix()
+                            redeem: dayjs(new Date()).unix() > dayjs(parseInt(item.UnlockTimestamp.seconds + '000', 10)).unix()
                         }
                     };
                     dataList.push(data);
@@ -228,7 +229,6 @@ export default class MyVote extends PureComponent {
                 this.props.obtainInfo(data[i].nodeName, publicKey, data[i].myVote, txId);
             }
         }
-
         nightElf.checkPermission({
             appName,
             type: 'address',
@@ -430,7 +430,7 @@ export default class MyVote extends PureComponent {
                 align: 'center'
             },
             {
-                title: 'Due date',
+                title: 'Unlock date',
                 dataIndex: 'dueDate',
                 key: 'dueDate',
                 align: 'center'

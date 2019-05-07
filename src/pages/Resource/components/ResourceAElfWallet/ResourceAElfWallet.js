@@ -15,8 +15,7 @@ export default class ResourceAElfWallet extends PureComponent {
         this.resource = null;
         this.wallet = null;
         this.state = {
-            walletInfoList: this.props.walletInfoList || [],
-            currentWallet: JSON.parse(localStorage.currentWallet),
+            currentWallet: this.props.currentWallet,
             tokenContract: this.props.tokenContract,
             balance: null,
             RAM: 0,
@@ -35,6 +34,13 @@ export default class ResourceAElfWallet extends PureComponent {
             };
         }
 
+        if (props.currentWallet !== state.currentWallet) {
+            return {
+                currentWallet: props.currentWallet
+            };
+        }
+
+
         if (props.loading !== state.loading) {
             return {
                 loading: props.loading
@@ -45,7 +51,7 @@ export default class ResourceAElfWallet extends PureComponent {
     }
 
     componentDidMount() {
-        if (this.state.tokenContract) {
+        if (this.state.tokenContract && this.state.currentWallet) {
             this.getCurrentWalletBalance();
             this.getCurrentWalletResource();
         }
@@ -88,7 +94,7 @@ export default class ResourceAElfWallet extends PureComponent {
         const {tokenContract, currentWallet} = this.state;
         const payload = {
             symbol: 'ELF',
-            owner: currentWallet.address
+            owner: currentWallet.address || currentWallet
         };
         tokenContract.GetBalance.call(payload, (error, result) => {
             if (result) {
@@ -99,7 +105,6 @@ export default class ResourceAElfWallet extends PureComponent {
                 });
                 this.props.getCurrentBalance(parseInt(balance, 10));
             }
-            
         });
     }
 
@@ -108,7 +113,7 @@ export default class ResourceAElfWallet extends PureComponent {
         const {tokenContract, currentWallet} = this.state;
         const payloadRAM = {
             symbol: 'RAM',
-            owner: currentWallet.address
+            owner: currentWallet.address || currentWallet
         };
         tokenContract.GetBalance.call(payloadRAM, (error, result) => {
             if (result) {
@@ -128,7 +133,7 @@ export default class ResourceAElfWallet extends PureComponent {
 
         const payloadCPU = {
             symbol: 'CPU',
-            owner: currentWallet.address
+            owner: currentWallet.address || currentWallet
         };
         tokenContract.GetBalance.call(payloadCPU, (error, result) => {
             if (result) {
@@ -148,7 +153,7 @@ export default class ResourceAElfWallet extends PureComponent {
 
         const payloadNET = {
             symbol: 'NET',
-            owner: currentWallet.address
+            owner: currentWallet.address || currentWallet
         };
         tokenContract.GetBalance.call(payloadNET, (error, result) => {
             if (result) {
@@ -168,7 +173,7 @@ export default class ResourceAElfWallet extends PureComponent {
 
         const payloadSTO = {
             symbol: 'STO',
-            owner: currentWallet.address
+            owner: currentWallet.address || currentWallet
         };
         tokenContract.GetBalance.call(payloadSTO, (error, result) => {
             if (result) {

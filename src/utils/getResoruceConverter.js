@@ -4,7 +4,6 @@
  * @description 获取资源权重与数量信息
 */
 
-import config from '../../config/config';
 import getResoruceWeight from './getResoruceWeight';
 import getTokenWeight from './getTokenWeight';
 import getResourceBalance from './getResourceBalance';

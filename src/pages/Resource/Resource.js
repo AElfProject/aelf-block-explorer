@@ -68,14 +68,23 @@ export default class Resource extends Component {
         NightElfCheck.getInstance().check.then(item => {
             if (item) {
                 nightElf = new window.NightElf.AElf({
-                    httpProvider,
+                    httpProvider: [
+                        httpProvider,
+                        null,
+                        null,
+                        null,
+                        [{
+                            name: 'Accept',
+                            value: 'text/plain;v=1.0'
+                        }]
+                    ],
                     appName // TODO: 这个需要content.js 主动获取
                 });
                 if (nightElf) {
                     this.setState({
                         nightElf
                     });
-                    nightElf.chain.getChainInformation((error, result) => {
+                    nightElf.chain.getChainStatus((error, result) => {
                         if (result) {
                             nightElf.checkPermission({
                                 appName,
@@ -83,6 +92,9 @@ export default class Resource extends Component {
                             }, (error, result) => {
                                 if (result && result.error === 0) {
                                     this.insertKeypairs(result);
+                                }
+                                else {
+                                    message.error(result.errorMessage.message, 3);
                                 }
                             });
                         }
@@ -111,26 +123,28 @@ export default class Resource extends Component {
                 connectChain: this.connectChain,
                 result
             };
-            if (permissions.length) {
-                // EXPLAIN: Need to redefine this scope
-                checkPermissionRepeat(nightElf, payload, this.getNightElfKeypair.bind(this));
-            }
-            else {
-                localStorage.setItem('currentWallet', null);
-                getLogin(nightElf, getLoginPayload, result => {
-                    if (result && result.error === 0) {
-                        const address = JSON.parse(result.detail).address;
-                        this.getNightElfKeypair(address);
-                        message.success('Login success!!', 3);
+            // localStorage.setItem('currentWallet', null);
+            getLogin(nightElf, getLoginPayload, result => {
+                if (result && result.error === 0) {
+                    const wallet = JSON.parse(result.detail);
+                    if (permissions.length) {
+                        // EXPLAIN: Need to redefine this scope
+                        checkPermissionRepeat(nightElf, payload, () => {
+                            this.getNightElfKeypair(wallet);
+                        });
                     }
                     else {
-                        this.setState({
-                            showWallet: false
-                        });
-                        message.error(result.errorMessage.message, 3);
+                        this.getNightElfKeypair(wallet);
+                        message.success('Login success!!', 3);
                     }
-                });
-            }
+                }
+                else {
+                    this.setState({
+                        showWallet: false
+                    });
+                    message.error(result.errorMessage.message, 3);
+                }
+            });
         }
         else {
             message.error(result.errorMessage.message, 3);
@@ -141,32 +155,12 @@ export default class Resource extends Component {
         this.setState = function () {};
     }
 
-    getNightElfKeypair(address) {
-        const {nightElf} = this.state;
-        if (address) {
-            nightElf.getAddress({
-                appName
-            }, (error, result) => {
-                if (result && result.error === 0) {
-                    const addressList = result.addressList || [];
-                    if (!addressList.length) {
-                        this.setState({
-                            showWallet: false
-                        });
-                        return;
-                    }
-                    let currentWallet = null;
-                    addressList.map((item, index) => {
-                        if (address === item.address) {
-                            currentWallet = item;
-                        }
-                    });
-                    localStorage.setItem('currentWallet', JSON.stringify(currentWallet));
-                    this.setState({
-                        currentWallet,
-                        showWallet: true
-                    });
-                }
+    getNightElfKeypair(wallet) {
+        if (wallet) {
+            localStorage.setItem('currentWallet', JSON.stringify(wallet));
+            this.setState({
+                currentWallet: wallet,
+                showWallet: true
             });
         }
     }
@@ -205,47 +199,9 @@ export default class Resource extends Component {
         return <DownloadPlugins />;
     }
 
-    getChangeWallet() {
-        this.setState({
-            currentWallet: JSON.parse(localStorage.currentWallet)
-        });
-    }
-
     onRefresh() {
-        let {showWallet, nightElf} = this.state;
-        nightElf.getAddress({
-            appName
-        }, (error, result) => {
-            if (result && result.error === 0) {
-                if (result.addressList) {
-                    let hasWallet = false;
-                    result.addressList.map(item => {
-                        if (item.address === JSON.parse(localStorage.currentWallet).address) {
-                            hasWallet = true;
-                        }
-                    });
-                    if (!hasWallet) {
-                        this.setState({
-                            loading: false
-                        });
-                        showWallet = false;
-                        return;
-                    }
-                    showWallet = true;
-                }
-                else {
-                    localStorage.setItem('currentWallet', null);
-                    showWallet = false;
-                }
-                this.setState({
-                    showWallet,
-                    currentWallet: JSON.parse(localStorage.currentWallet),
-                    loading: true
-                });
-            }
-            else {
-                message.error(result.errorMessage.message, 3);
-            }
+        this.setState({
+            loading: true
         });
     }
 
@@ -256,15 +212,14 @@ export default class Resource extends Component {
     }
 
     resourceAElfWalletHtml() {
-        const {showWallet, walletInfoList, tokenContract, tokenConverterContract, loading} = this.state;
+        const {showWallet, tokenContract, tokenConverterContract, currentWallet, loading} = this.state;
         if (showWallet) {
             return (
                 <ResourceAElfWallet
                     title='AElf Wallet'
-                    getChangeWallet={this.getChangeWallet.bind(this)}
-                    walletInfoList={walletInfoList}
                     tokenContract={tokenContract}
                     tokenConverterContract={tokenConverterContract}
+                    currentWallet={currentWallet}
                     getCurrentBalance={this.getCurrentBalance.bind(this)}
                     getCurrentCpu={this.getCurrentCpu.bind(this)}
                     getCurrentRam={this.getCurrentRam.bind(this)}

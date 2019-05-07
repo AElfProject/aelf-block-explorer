@@ -56,6 +56,13 @@ export default class AElfWallet extends PureComponent {
                 nightElf: props.nightElf
             };
         }
+
+        if (props.currentWallet !== state.currentWallet) {
+            return {
+                currentWallet: props.currentWallet
+            };
+        }
+
         if (props.tokenContract !== state.tokenContract) {
             return {
                 tokenContract: props.tokenContract
@@ -112,6 +119,11 @@ export default class AElfWallet extends PureComponent {
                         const content = Value || value || 0;
                         this.setState({
                             dividendsNum: parseInt(content, 10).toLocaleString()
+                        });
+                    }
+                    else {
+                        this.setState({
+                            dividendsNum: 0
                         });
                     }
                     resolve(true);
@@ -267,6 +279,12 @@ export default class AElfWallet extends PureComponent {
             nightElf.getAddress({
                 appName
             }, (error, result) => {
+                if (result.error === 200005) {
+                    message.warning(result.errorMessage.message, 3);
+                    this.setState({
+                        loading: false
+                    });
+                }
                 if (result && result.error === 0) {
                     if (result.addressList.length) {
                         let hasWallet = false;
@@ -323,7 +341,7 @@ export default class AElfWallet extends PureComponent {
             let tickets = !!ticketsNum ? ticketsNum.toLocaleString() : '-';
             let dividends = !!dividendsNum ? dividendsNum.toLocaleString() : '-';
             return (
-                <Row key={currentWallet.address} type='flex' align='middle' style={{padding: '10px 0'}} className='wallet-info'>
+                <Row key={currentWallet} type='flex' align='middle' style={{padding: '10px 0'}} className='wallet-info'>
                     <Col xl={6} xs={8} >
                         <span className='item-name'> {currentWallet.name}</span>
                     </Col>

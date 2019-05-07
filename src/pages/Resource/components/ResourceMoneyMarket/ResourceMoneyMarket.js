@@ -68,15 +68,15 @@ export default class ResourceMoneyMarket extends PureComponent {
             };
         }
 
-        if (props.currentWallet !== state.currentWallet) {
-            return {
-                currentWallet: props.currentWallet
-            };
-        }
-
         if (props.nightElf !== state.nightElf) {
             return {
                 nightElf: props.nightElf
+            };
+        }
+
+        if (props.currentWallet !== state.currentWallet) {
+            return {
+                currentWallet: props.currentWallet
             };
         }
 

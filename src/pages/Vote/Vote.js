@@ -98,14 +98,23 @@ export default class VotePage extends Component {
         NightElfCheck.getInstance().check.then(item => {
             if (item) {
                 nightElf = new window.NightElf.AElf({
-                    httpProvider,
+                    httpProvider: [
+                        httpProvider,
+                        null,
+                        null,
+                        null,
+                        [{
+                            name: 'Accept',
+                            value: 'text/plain;v=1.0'
+                        }]
+                    ],
                     appName // TODO: 这个需要content.js 主动获取
                 });
                 if (nightElf) {
                     this.setState({
                         nightElf
                     });
-                    nightElf.chain.getChainInformation((error, result) => {
+                    nightElf.chain.getChainStatus((error, result) => {
                         if (result) {
                             nightElf.checkPermission({
                                 appName,
@@ -146,46 +155,47 @@ export default class VotePage extends Component {
                 // EXPLAIN: Need to redefine this scope
                 checkPermissionRepeat(nightElf, payload, this.getNightElfKeypair.bind(this));
             }
-            else {
-                localStorage.setItem('currentWallet', null);
-                getLogin(nightElf, getLoginPayload, result => {
-                    if (result && result.error === 0) {
-                        const address = JSON.parse(result.detail).address;
-                        this.getNightElfKeypair(address);
-                        message.success('Login success!!', 3);
+            localStorage.setItem('currentWallet', null);
+            getLogin(nightElf, getLoginPayload, result => {
+                if (result && result.error === 0) {
+                    const wallet = JSON.parse(result.detail);
+                    if (permissions.length) {
+                        // EXPLAIN: Need to redefine this scope
+                        checkPermissionRepeat(nightElf, payload, () => {
+                            this.getNightElfKeypair(wallet);
+                        });
                     }
                     else {
-                        this.setState({
-                            showWallet: false
-                        });
-                        message.error(result.errorMessage.message, 3);
+                        this.getNightElfKeypair(wallet);
+                        message.success('Login success!!', 3);
                     }
-                });
-            }
+                }
+                else {
+                    this.setState({
+                        showWallet: false
+                    });
+                    message.error(result.errorMessage.message, 3);
+                }
+            });
+
         }
         else {
             message.error(result.errorMessage.message, 3);
         }
     }
 
-    getNightElfKeypair(address) {
-        const {nightElf} = this.state;
-        if (address) {
-            nightElf.getAddress({
-                appName
-            }, (error, result) => {
-                const addressList = result.addressList || [];
-                let currentWallet = null;
-                addressList.map((item, index) => {
-                    if (address === item.address) {
-                        currentWallet = item;
-                    }
-                });
-                localStorage.setItem('currentWallet', JSON.stringify(currentWallet));
-                this.setState({
-                    currentWallet,
-                    showWallet: true
-                });
+    getNightElfKeypair(wallet) {
+        if (wallet) {
+            localStorage.setItem('currentWallet', JSON.stringify(wallet));
+            this.setState({
+                currentWallet: wallet,
+                showWallet: true
+            });
+        }
+        else {
+            this.setState({
+                currentWallet: null,
+                showWallet: false
             });
         }
     }

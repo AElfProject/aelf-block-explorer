@@ -23,7 +23,8 @@ export default function getEstimatedValueELF(type, pidRes, tokenConverterContrac
     return new Promise((resolve, reject) => {
         getResoruceConverter(type, tokenConverterContract, tokenContract).then(result => {
             if (result) {
-                if (result.resourceBalance >= Math.abs(pidRes)) {
+                console.log(result.resourceBalance.toNumber());
+                if (result.resourceBalance.toNumber() >= Math.abs(pidRes)) {
                     let resCont = Math.abs(pidRes) || 0;
                     const elfPayout = calculateCrossConnectorReturn(
                         result.resourceBalance, result.resoruceWeight,

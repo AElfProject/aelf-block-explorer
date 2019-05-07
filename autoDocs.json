@@ -1,0 +1,11 @@
+{
+	"filePath": [
+		"docs"
+	],
+	"fileDocs": [
+		{
+			"from": "src/test.js",
+			"to": "docs/test.md"
+		}
+	]
+}

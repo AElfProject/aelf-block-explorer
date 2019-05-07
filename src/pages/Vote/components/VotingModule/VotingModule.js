@@ -71,7 +71,7 @@ export default class VotingModule extends PureComponent {
     componentDidUpdate(prevProps) {
         if (prevProps.consensus !== this.props.consensus) {
             const {consensus} = this.state;
-            if (consensus.constructor === Object) {
+            if (consensus && consensus.constructor !== String) {
                 consensus.GetCurrentTermNumber.call((error, result) => {
                     if (result && !result.error) {
                         const {
@@ -188,7 +188,7 @@ export default class VotingModule extends PureComponent {
     }
 
     getMyVote() {
-        const {consensus, contracts, refresh, currentWallet, showMyVote, appName} = this.state;
+        const {consensus, contracts, refresh, currentWallet, showMyVote, appName, nightElf} = this.state;
         return (
             <MyVote
                 style={this.state.showMyVote ? {display: 'block'} : {display: 'none'}}
@@ -198,6 +198,7 @@ export default class VotingModule extends PureComponent {
                 obtainInfo={this.obtainInfo.bind(this)}
                 endRefresh={this.endRefresh.bind(this)}
                 currentWallet={currentWallet}
+                nightElf={nightElf}
                 refresh={refresh}
                 consensus={consensus}
                 contracts={contracts}
