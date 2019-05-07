@@ -57,8 +57,8 @@ document.addEventListener('NightElf', result => {
         window.address = JSON.parse(result.detail).address;
     });
 
-    aelf.chain.getChainInformation((error, result) => {
-        console.log('>>>>>>>>>>>>> getChainInformation >>>>>>>>>>>>>');
+    aelf.chain.getChainStatus((error, result) => {
+        console.log('>>>>>>>>>>>>> getChainStatus >>>>>>>>>>>>>');
         console.log(error, result);
         if (result) {
             setTimeout(() => {
@@ -69,10 +69,10 @@ document.addEventListener('NightElf', result => {
 
 
 
-    const getChainInformation = document.getElementById('getChainInformation');
+    const getChainInformation = document.getElementById('getChainStatus');
     getChainInformation.onclick = function () {
-        aelf.chain.getChainInformation((error, result) => {
-            console.log('>>>>>>>>>>>>> getChainInformation >>>>>>>>>>>>>');
+        aelf.chain.getChainStatus((error, result) => {
+            console.log('>>>>>>>>>>>>> getChainStatus >>>>>>>>>>>>>');
             console.log(error, result);
             if (result) {
                 setTimeout(() => {
