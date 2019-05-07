@@ -93,6 +93,9 @@ export default class Resource extends Component {
                                 if (result && result.error === 0) {
                                     this.insertKeypairs(result);
                                 }
+                                else {
+                                    message.error(result.errorMessage.message, 3);
+                                }
                             });
                         }
                     });

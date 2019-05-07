@@ -22,6 +22,7 @@ import getResoruceConverter from './getResoruceConverter';
 export default function getEstimatedValueRes(type, paidElf, tokenConverterContract, tokenContract) {
     return new Promise((resolve, reject) => {
         getResoruceConverter(type, tokenConverterContract, tokenContract).then(result => {
+            console.log(result);
             if (result) {
                 let resCont = paidElf || 0;
                 const elfPayout = calculateCrossConnectorElfReturn(
