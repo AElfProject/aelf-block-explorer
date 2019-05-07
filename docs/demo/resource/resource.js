@@ -13,20 +13,25 @@ const header = [{
     value: 'text/plain;v=1.0'
 }];
 
-const multiToken = '4rkKQpsRFt1nU6weAHuJ6CfQDqo6dxruU3K3wNUFr6ZwZYc';
-const tokenConverter = '4QjhKLWacRXrQYpT7rzf74k5XZFCx8yF3X7FXbzKD4wwEo6';
-const feeReceiver = '4CBbRKd6rkCzTX5aJ2mnGrwJiHLmGdJZinoaVfMvScTEoBR';
+const multiToken = '2J9wWhuyz7Drkmtu9DTegM9rLmamjekmRkCAWz5YYPjm7akfbH';
+const tokenConverter = 'Acv7j84Ghi19JesSBQ8d56XenwCrJ5VBPvrS4mthtbuBjYtXR';
+const feeReceiver = '25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB';
 const ELF = document.getElementById('Elf');
 const RAM = document.getElementById('RAM');
 
 
 
 document.addEventListener('NightElf', result => {
-    console.log(result);
     // As a rule, we need to confirm the link of the chain first.
     const aelf = new window.NightElf.AElf({
         // Enter your test address in this location
-        httpProvider,
+        httpProvider: [
+            httpProvider,
+            null,
+            null,
+            null,
+            header
+        ],
         // If you want to use WebApi, add header
         // header,
         appName
@@ -69,8 +74,8 @@ document.addEventListener('NightElf', result => {
 
 
 
-    const getChainInformation = document.getElementById('getChainStatus');
-    getChainInformation.onclick = function () {
+    const getChainStatus = document.getElementById('getChainStatus');
+    getChainStatus.onclick = function () {
         aelf.chain.getChainStatus((error, result) => {
             console.log('>>>>>>>>>>>>> getChainStatus >>>>>>>>>>>>>');
             console.log(error, result);
