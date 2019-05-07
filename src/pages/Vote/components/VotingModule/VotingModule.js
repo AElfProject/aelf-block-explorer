@@ -71,7 +71,7 @@ export default class VotingModule extends PureComponent {
     componentDidUpdate(prevProps) {
         if (prevProps.consensus !== this.props.consensus) {
             const {consensus} = this.state;
-            if (consensus && !consensus instanceof String) {
+            if (consensus && consensus.constructor !== String) {
                 consensus.GetCurrentTermNumber.call((error, result) => {
                     if (result && !result.error) {
                         const {

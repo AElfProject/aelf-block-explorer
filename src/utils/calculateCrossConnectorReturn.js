@@ -10,7 +10,6 @@ import {Decimal} from 'decimal.js';
 // Calculate the valuation according to the calculating formula
 
 export default function scalculateCrossConnectorReturn(ResBalance, ResWeight, ElfBalance, ElfWeight, pidRes) {
-    console.log('aaaa');
     console.log('bf:', ResBalance, 'wf:', ResWeight, 'bt', ElfBalance, 'wt:', ElfWeight, 'a:', pidRes);
     const bt = ResBalance;
     const wt = ResWeight;

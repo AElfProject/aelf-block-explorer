@@ -2,6 +2,7 @@
 /**
  * @file checkPermissionRepeat.js
  * @author zhouminghui
+ * @description callback() is equivalent to executing this.getNightElfKeypair(wallet) in Resourc/Resource.js;
 */
 
 import config from '../../config/config';
@@ -15,7 +16,6 @@ export default function checkPermissionRepeat(nightElf, payload, callback) {
     } = payload;
     const {permissions} = result;
     const {address} = permissions[0];
-    callback();
     const connectChainStr = JSON.stringify(config);
     const permission = result.permissions.map(item => {
         if (item.appName === appName) {
@@ -28,4 +28,5 @@ export default function checkPermissionRepeat(nightElf, payload, callback) {
             setNewPermission(nightElf, appName, connectChain, address);
         }
     });
+    callback();
 }
