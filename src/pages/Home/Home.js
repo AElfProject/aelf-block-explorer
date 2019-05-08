@@ -142,7 +142,7 @@ export default class HomePage extends Component {
             if (!blockHeight) {
                 return;
             }
-            aelf.chain.getBlockInfo(blockHeight, true, (err, result) => {
+            aelf.chain.getBlockByHeight(blockHeight, true, (err, result) => {
                 if (err) {
                     message.error('Can not get Block Info from AElf Node!!!.', 6);
                     return;
@@ -180,7 +180,7 @@ export default class HomePage extends Component {
                 newBlocksList.length = PAGE_SIZE;
                 if (!isEmpty(Body.Transactions)) {
                     // console.log('Body', BlockHash, Body.TransactionsCount);
-                    aelf.chain.getTxsResult(BlockHash, 0, PAGE_SIZE, (error, result) => {
+                    aelf.chain.getTxResults(BlockHash, 0, PAGE_SIZE, (error, result) => {
                         if (error || !result) {
                             message.error(error.message, 2);
                             return;

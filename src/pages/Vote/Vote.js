@@ -70,6 +70,7 @@ export default class VotePage extends Component {
                 message.error('The chain has stopped or cannot be connected to the chain. Please check your network or contact us.', 10);
                 return;
             }
+            // TODO: 补充error 逻辑
             aelf.chain.contractAtAsync(result.consensusDPoS, result.wallet, (error, result) => {
                 console.log('consensusDPoS', result);
                 this.setState({

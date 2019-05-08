@@ -113,6 +113,9 @@ export default class AddressPage extends React.Component {
         }
     }
 
+    // TODO:把所有的token都转化成elf计算，然后通过elf来计算总现金市值
+    // https://etherscan.io/address/0x284cbb123f5c47c864095f3b69875d9d222752ae#tokentxns
+    // http://localhost:3000/address/2hxkDg6Pd2d4yU1A16PTZVMMrEDYEPR8oQojMDwWdax5LsBaxX
     async getBalanceAndValue(address) {
         if (!this.getBlanceAndValueLock) {
             this.getBlanceAndValueLock = true;
@@ -178,6 +181,7 @@ export default class AddressPage extends React.Component {
             // balance: 243.245423465331,
             // value: '$ 23.23532342'
         }];
+  
 
         return (
             <div className='address-container basic-container' key='body'>

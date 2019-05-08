@@ -165,19 +165,19 @@ const ALL_TXS_LIST_COLUMNS = [{
 ];
 
 const ADDRESS_INFO_COLUMN = [{
-        title: 'address ',
-        dataIndex: 'address ',
-        key: 'address '
+        title: 'address',
+        dataIndex: 'address',
+        key: 'address'
     },
     {
-        title: 'balance ',
-        dataIndex: 'balance ',
-        key: 'balance '
+        title: 'balance',
+        dataIndex: 'balance',
+        key: 'balance'
     },
     {
-        title: 'value ',
-        dataIndex: 'value ',
-        key: 'value '
+        title: 'value',
+        dataIndex: 'value',
+        key: 'value'
     }
 ];
 
