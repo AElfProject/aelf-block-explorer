@@ -31,20 +31,12 @@ at first
 
 - Set the config of the nginx.
 
-### api rules:
+### api rules
 
-- 1. `/api/!${rpc}/*` => `scan server`; [aelf-block-api](https://github.com/AElfProject/aelf-block-api)
-- 2. `/chain/*` => `aelf chain` [AElf Chain](https://github.com/AElfProject/AElf)
+- `/api/*` => `scan server`; [aelf-block-api](https://github.com/AElfProject/aelf-block-api)
+- `/chain/*` => `aelf chain` [AElf Chain](https://github.com/AElfProject/AElf)
 
 It means you need run aelf-block-api & AElf at first.
-
-### nginx.conf
-
-```bash
-cp explore.https.conf explore.conf
-```
-
-Change 'location /chain' in Nignx to your own RPC URL.
 
 ### RPC conf
 
@@ -53,6 +45,15 @@ cp config/config.example.js config/config.js
 ```
 
 set your own rpc url.
+
+### nginx.conf (advanced)
+
+```bash
+cp explore.https.conf explore.conf
+```
+
+Change 'location /chain' in Nignx to your own RPC URL.
+
 
 ## Develop
 
