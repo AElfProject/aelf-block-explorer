@@ -54,7 +54,7 @@ export default class ResourceSellModal extends PureComponent {
         this.setState({
             loading: true
         });
-        nightElf.chain.contractAtAsync(
+        nightElf.chain.contractAt(
             contracts.tokenConverter,
             wallet,
             (err, result) => {

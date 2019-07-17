@@ -71,7 +71,7 @@ export default class VotePage extends Component {
                 return;
             }
             // TODO: 补充error 逻辑
-            aelf.chain.contractAtAsync(result.consensusDPoS, result.wallet, (error, result) => {
+            aelf.chain.contractAt(result.consensusDPoS, result.wallet, (error, result) => {
                 console.log('consensusDPoS', result);
                 this.setState({
                     consensus: result
@@ -80,14 +80,14 @@ export default class VotePage extends Component {
                 this.getInformation(result);
             });
 
-            aelf.chain.contractAtAsync(result.dividends, result.wallet, (error, result) => {
+            aelf.chain.contractAt(result.dividends, result.wallet, (error, result) => {
                 console.log('dividends', result);
                 this.setState({
                     dividends: result
                 });
             });
 
-            aelf.chain.contractAtAsync(result.multiToken, result.wallet, (error, result) => {
+            aelf.chain.contractAt(result.multiToken, result.wallet, (error, result) => {
                 console.log('multiToken', result);
                 this.setState({
                     tokenContract: result

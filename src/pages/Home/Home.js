@@ -144,6 +144,7 @@ export default class HomePage extends Component {
             }
             aelf.chain.getBlockByHeight(blockHeight, true, (err, result) => {
                 if (err) {
+                    console.log('getBlockByHeight: ', err);
                     message.error('Can not get Block Info from AElf Node!!!.', 6);
                     return;
                 }

@@ -13,7 +13,7 @@ const header = [{
     value: 'text/plain;v=1.0'
 }];
 
-const multiToken = '2J9wWhuyz7Drkmtu9DTegM9rLmamjekmRkCAWz5YYPjm7akfbH';
+const multiToken = 'WnV9Gv3gioSh3Vgaw8SSB96nV8fWUNxuVozCf6Y14e7RXyGaM';
 const tokenConverter = 'Acv7j84Ghi19JesSBQ8d56XenwCrJ5VBPvrS4mthtbuBjYtXR';
 const feeReceiver = '25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB';
 const ELF = document.getElementById('Elf');
@@ -88,11 +88,11 @@ document.addEventListener('NightElf', result => {
     };
 
     function contractAtAsync() {
-        aelf.chain.contractAtAsync(
+        aelf.chain.contractAt(
             multiToken,
             {address: window.address},
             (error, result) => {
-                console.log('>>>>>>>>>>>>> contractAtAsync >>>>>>>>>>>>>');
+                console.log('>>>>>>>>>>>>> contractAt Async >>>>>>>>>>>>>');
                 console.log(error, result);
                 window.tokenContract = result;
                 if (result) {
@@ -101,11 +101,11 @@ document.addEventListener('NightElf', result => {
             }
         );
 
-        aelf.chain.contractAtAsync(
+        aelf.chain.contractAt(
             tokenConverter,
             {address: window.address},
             (error, result) => {
-                console.log('>>>>>>>>>>>>> contractAtAsync >>>>>>>>>>>>>');
+                console.log('>>>>>>>>>>>>> contractAt Async >>>>>>>>>>>>>');
                 console.log(error, result);
                 window.tokenConverter = result;
             }

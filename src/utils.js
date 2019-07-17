@@ -33,11 +33,11 @@ const header = [{
     value: 'text/plain;v=1.0'
 }]
 const aelf = new AElf(new AElf.providers.HttpProvider(
-    RPCSERVER,
-    timeout,
-    user,
-    password,
-    header
+    RPCSERVER //,
+    // timeout,
+    // user,
+    // password,
+    // header
 ));
 
 const get = async (url, params, config) => {
@@ -95,7 +95,7 @@ function transactionFormat(result) {
 }
 
 const transactionInfo = (hash) => {
-    return aelf.chain.getTxResult(hash);
+    return aelf.chain.getTxResult(hash, {sync: true});
 }
 
 export {

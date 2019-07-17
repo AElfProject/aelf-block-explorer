@@ -54,7 +54,6 @@ cp explore.https.conf explore.conf
 
 Change 'location /chain' in Nignx to your own RPC URL.
 
-
 ## Develop
 
 just run `npm start`
