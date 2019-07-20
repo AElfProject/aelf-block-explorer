@@ -36,7 +36,7 @@ export default class Vote extends PureComponent {
         const wallet = {
             address: currentWallet.address
         };
-        nightElf.chain.contractAtAsync(
+        nightElf.chain.contractAt(
             contracts.multiToken,
             wallet,
             (err, result) => {
@@ -108,7 +108,7 @@ export default class Vote extends PureComponent {
             const wallet = {
                 address: currentWallet.address
             };
-            nightElf.chain.contractAtAsync(
+            nightElf.chain.contractAt(
                 contracts.consensusDPoS,
                 wallet,
                 (err, result) => {

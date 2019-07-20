@@ -7,7 +7,7 @@ Please ensure your dependencies are ready.
 If you meet some permission problem, try to use 'sudo'.
 
 ```bash
-bash build.sh < type|optional > < node_moduels|optinal > < nginx action | optinal>
+bash build.sh <type|optional> <node_moduels|optinal> <nginx action | optinal>
 # if you only want to use the second param, you must set the type=""
 # Demos
 bash build.sh dev
@@ -21,7 +21,7 @@ bash build.sh pro reinstall reload
 
 Default Port: 3000
 
-## Dependencise
+## Dependencies
 
 - Start up
 [AElf Chain](https://github.com/AElfProject/AElf),
@@ -38,6 +38,8 @@ at first
 
 It means you need run aelf-block-api & AElf at first.
 
+In nwb.config.js and explore.*.conf, http://127.0.0.1:7250 is a [aelf-web-proxy](https://github.com/AElfProject/aelf-web-proxy).
+
 ### RPC conf
 
 ```bash
@@ -48,16 +50,15 @@ set your own rpc url.
 
 ### nginx.conf (advanced)
 
-```bash
-cp explore.https.conf explore.conf
-```
+nginx/explore.*.conf FYI.
 
 Change 'location /chain' in Nignx to your own RPC URL.
 
+Change 'location /api' in Nignx to your own RPC URL.
 
 ## Develop
 
-just run `npm start`
+run `npm start`
 
 ## Docker[TODO]
 

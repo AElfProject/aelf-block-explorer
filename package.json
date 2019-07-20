@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@aelfqueen/protobufjs": "^6.8.8",
-    "aelf-sdk": "^3.0.3",
+    "aelf-sdk": "^3.2.9",
     "antd": "^3.9.2",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",

@@ -38,7 +38,8 @@ import './home.styles.less';
 
 SmoothScrollbar.use(OverscrollPlugin);
 
-const fetchInfoByChainIntervalTime = 4000;
+// const fetchInfoByChainIntervalTime = 4000;
+const fetchInfoByChainIntervalTime = 500;
 
 // @inject("appIncrStore")
 // @observer

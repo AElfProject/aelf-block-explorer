@@ -63,7 +63,7 @@ export default class BlockDetailPage extends React.Component {
         // BlockHeight
         if (parseInt(input, 10) == input) {
             blockHeight = input;
-            result = aelf.chain.getBlockByHeight(input, true);
+            result = await aelf.chain.getBlockByHeight(input, true);
             error = result.error;
 
             const blockhash = result && result.BlockHash;
@@ -78,7 +78,7 @@ export default class BlockDetailPage extends React.Component {
             } = txsList;
             error = transactions.length ? '' : 'Not Found';
             blockHeight = transactions[0] && transactions[0].block_height;
-            result = blockHeight ? aelf.chain.getBlockByHeight(blockHeight, true) : undefined;
+            result = blockHeight ? await aelf.chain.getBlockByHeight(blockHeight, true) : undefined;
         }
 
         const pagination = {

@@ -265,7 +265,7 @@ export default class ResourceBuy extends Component {
         };
         contractChange(nightElf, result, currentWallet, appName).then(result => {
             if (value && !result) {
-                nightElf.chain.contractAtAsync(
+                nightElf.chain.contractAt(
                     contracts.multiToken,
                     wallet,
                     (err, contract) => {
