@@ -17,6 +17,11 @@ module.exports = {
       less: {
         javascriptEnabled: true
       }
+    },
+    aliases: {
+      '@src': path.resolve('src'),
+      '@utils': path.resolve('src/utils'),
+      '@config': path.resolve('config')
     }
   },
   devServer: {
