@@ -22,6 +22,9 @@ module.exports = {
       '@src': path.resolve('src'),
       '@utils': path.resolve('src/utils'),
       '@config': path.resolve('config')
+    },
+    extra: {
+      devtool: 'eval'
     }
   },
   devServer: {
