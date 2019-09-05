@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-04 21:58:55
+ * @LastEditTime: 2019-09-05 21:26:20
  * @Description: the page of election and nodes's notification
  */
 import React, { Component } from 'react';
@@ -37,6 +37,7 @@ export default class ElectionNotification extends Component {
 
     this.testElectionContract = this.testElectionContract.bind(this);
     this.testVoteContract = this.testVoteContract.bind(this);
+    this.testConsensusContract = this.testConsensusContract.bind(this);
   }
 
   /**
@@ -133,14 +134,105 @@ export default class ElectionNotification extends Component {
     const { electionContract } = this.state;
     const contract = electionContract;
 
+    // View:
+    console.log('==============View Start===============');
+
+    contract.GetCandidates.call()
+      .then(res => {
+        console.log('GetCandidates', res);
+      })
+      .catch(err => {
+        console.log('GetCandidates', err);
+      });
+
+    contract.GetCandidateInformation.call({
+      value:
+        '044958d5c48f003c771769f4a31413cd18053516615cbde502441af8452fb53441a80cc48a7f3b0f2552fd030cacbe9012ba055a3d553b70003f2e637d55fa0f23'
+    })
+      .then(res => {
+        console.log('GetCandidateInformation', res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    contract.GetTermSnapshot.call({
+      termNumber: 5
+    })
+      .then(res => {
+        console.log('GetTermSnapshot', res);
+      })
+      .catch(err => {
+        console.log('GetTermSnapshot', err);
+      });
+
+    contract.GetMinersCount.call()
+      .then(res => {
+        console.log('GetMinersCount', res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    contract.GetElectionResult.call({
+      termNumber: 5
+    })
+      .then(res => {
+        console.log('GetElectionResult', res);
+      })
+      .catch(err => {
+        console.log('GetElectionResult', err);
+      });
+
+    contract.GetElectorVote.call({
+      value: 'd238ba4287159b1a55f01a362cbd965f433582cd49166ea0917a9820e81845df'
+    })
+      .then(res => {
+        console.log('GetElectorVote', res);
+      })
+      .catch(err => {
+        console.log('GetElectorVote', err);
+      });
+
+    contract.GetElectorVoteWithRecords.call({
+      value: 'd238ba4287159b1a55f01a362cbd965f433582cd49166ea0917a9820e81845df'
+    })
+      .then(res => {
+        console.log('GetElectorVoteWithRecords', res);
+      })
+      .catch(err => {
+        console.log('GetElectorVoteWithRecords', err);
+      });
+
+    contract.GetElectorVoteWithAllRecords.call({
+      value: 'd238ba4287159b1a55f01a362cbd965f433582cd49166ea0917a9820e81845df'
+    })
+      .then(res => {
+        console.log('GetElectorVoteWithAllRecords', res);
+      })
+      .catch(err => {
+        console.log('GetElectorVoteWithAllRecords', err);
+      });
+
+    contract.GetCandidateVote.call({
+      value:
+        '044958d5c48f003c771769f4a31413cd18053516615cbde502441af8452fb53441a80cc48a7f3b0f2552fd030cacbe9012ba055a3d553b70003f2e637d55fa0f23'
+    })
+      .then(res => {
+        console.log('GetCandidateVote===============', res);
+      })
+      .catch(err => {
+        console.log('GetCandidateVote===============', err);
+      });
+
     contract.GetWelfareRewardAmountSample.call({
       value: [25920000, 51840000, 77760000]
     })
       .then(res => {
-        console.log(res);
+        console.log('GetWelfareRewardAmountSample', res);
       })
       .catch(err => {
-        console.log(err);
+        console.log('GetWelfareRewardAmountSample', err);
       });
 
     contract.GetPageableCandidateInformation.call({
@@ -154,12 +246,28 @@ export default class ElectionNotification extends Component {
         console.log(err);
       });
 
+    contract.GetVotersCount.call()
+      .then(res => {
+        console.log('GetVotersCount', res);
+      })
+      .catch(err => {
+        console.log('GetVotersCount', err);
+      });
+
     contract.GetVotesAmount.call()
       .then(res => {
         console.log('GetVotesAmount', res);
       })
       .catch(err => {
         console.log(err);
+      });
+
+    contract.GetCurrentMiningReward.call()
+      .then(res => {
+        console.log('GetCurrentMiningReward', res);
+      })
+      .catch(err => {
+        console.log('GetCurrentMiningReward', err);
       });
 
     contract.GetMinerElectionVotingItemId.call()
@@ -169,7 +277,7 @@ export default class ElectionNotification extends Component {
       .catch(err => {
         console.log(err);
       });
-
+    // debugger;
     contract.GetDataCenterRankingList.call()
       .then(res => {
         console.log('GetDataCenterRankingList', res);
@@ -177,6 +285,10 @@ export default class ElectionNotification extends Component {
       .catch(err => {
         console.log(err);
       });
+    console.log('==============View End===============');
+
+    // Action:
+    console.log('==============Action Start===============');
 
     const timeMS = new Date('2019-9-14').getTime();
     contract
@@ -206,44 +318,54 @@ export default class ElectionNotification extends Component {
       .catch(err => {
         console.log(err);
       });
+
+    console.log('==============Action End===============');
   }
 
   testVoteContract() {
     const { voteContract } = this.state;
     const contract = voteContract;
-    contract.GetVotingItem.call(
-      '06df95537a39f6230f50d41494354b5e5b2cc96ca55ca2850b60dc5a7476b0d4'
-    )
+    contract.GetVotingItem.call({
+      votingItemId:
+        '06df95537a39f6230f50d41494354b5e5b2cc96ca55ca2850b60dc5a7476b0d4'
+    })
       .then(res => {
         console.log('GetVotingItem', res);
       })
       .catch(err => {
-        console.log(err);
+        console.log('GetVotingItem', err);
       });
 
-    contract
-      .GetVotingResult(1, 0)
+    contract.GetVotingResult.call({
+      votingItemId:
+        '06df95537a39f6230f50d41494354b5e5b2cc96ca55ca2850b60dc5a7476b0d4',
+      snapshotNumber: 2
+    })
       .then(res => {
         console.log('GetVotingResult', res);
       })
       .catch(err => {
-        console.log(err);
+        console.log('GetVotingResult', err);
       });
 
-    contract.GetLatestVotingResult.call()
+    contract.GetLatestVotingResult.call(
+      '06df95537a39f6230f50d41494354b5e5b2cc96ca55ca2850b60dc5a7476b0d4'
+    )
       .then(res => {
         console.log('GetLatestVotingResult', res);
       })
       .catch(err => {
-        console.log(err);
+        console.log('GetLatestVotingResult', err);
       });
 
-    contract.GetVotingRecord.call()
+    contract.GetVotingRecord.call(
+      '75374311fa182a8120d1084da0edb76c843c33d8e7a4bd8b645544183731d117'
+    )
       .then(res => {
         console.log('GetVotingRecord', res);
       })
       .catch(err => {
-        console.log(err);
+        console.log('GetVotingRecord', err);
       });
 
     contract.GetVotingRecords.call()
@@ -254,20 +376,37 @@ export default class ElectionNotification extends Component {
         console.log(err);
       });
 
-    contract.GetVotedItems.call()
+    contract.GetVotedItems.call(
+      '2BAJEH5qsLYDFU4qv4mjfPWMzvfxHznAXxtcUKP8YtAPPM1CCv'
+    )
       .then(res => {
         console.log('GetVotedItems', res);
       })
       .catch(err => {
-        console.log(err);
+        console.log('GetVotedItems', err);
       });
 
-    contract.GetVotingIds.call()
+    contract.GetVotingIds.call({
+      voter: '2BAJEH5qsLYDFU4qv4mjfPWMzvfxHznAXxtcUKP8YtAPPM1CCv',
+      votingItemId:
+        '06df95537a39f6230f50d41494354b5e5b2cc96ca55ca2850b60dc5a7476b0d4'
+    })
       .then(res => {
         console.log('GetVotingIds', res);
       })
       .catch(err => {
-        console.log(err);
+        console.log('GetVotingIds', err);
+      });
+  }
+
+  testConsensusContract() {
+    const { consensusContract: contract } = this.state;
+    contract.GetCurrentMinerList.call()
+      .then(res => {
+        console.log('GetCurrentMinerList', res);
+      })
+      .catch(err => {
+        console.log('GetCurrentMinerList', err);
       });
   }
 
@@ -311,6 +450,11 @@ export default class ElectionNotification extends Component {
         </div>
         <div>
           <button onClick={this.testVoteContract}>test vote contract</button>
+        </div>
+        <div>
+          <button onClick={this.testConsensusContract}>
+            test consensus contract
+          </button>
         </div>
       </section>
     );
