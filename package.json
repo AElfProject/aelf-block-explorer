@@ -36,11 +36,20 @@
     "smooth-scrollbar": "^8.3.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "babel-plugin-import": "^1.8.0",
     "babel-plugin-lodash": "^3.3.4",
     "decimal.js": "^10.1.1",
+    "eslint": "^6.3.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
     "nwb": "0.23.x",
-    "nwb-less": "^0.7.1"
+    "nwb-less": "^0.7.1",
+    "prettier": "^1.18.2"
   },
   "author": "phinome",
   "license": "MIT",

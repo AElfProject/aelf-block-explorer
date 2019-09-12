@@ -15,6 +15,7 @@ import TxsPage from './pages/Txs/Txs';
 import TxsDetailPage from './pages/TxsDetail/TxsDetail';
 import ApplicationPage from './pages/Application/Applications';
 import VotePage from './pages/Vote/Vote';
+import OldVotePage from './pages/VoteOld/Vote';
 import Resource from './pages/Resource/Resource';
 import ResourceDetail from './pages/ResourceDetail/ResourceDetail';
 
@@ -31,6 +32,7 @@ export default () => [
     <Route path='/tx/:id' component={TxsDetailPage} key='txsdetail' />,
     <Route path='/apps' component={ApplicationPage} key='apps' />,
     <Route path='/vote' component={VotePage} key='vote' />,
+    <Route path='/voteold' component={OldVotePage} key='voteOld' />,
     <Route path='/resource' component={Resource} key='resource' />,
     <Route path='/resourceDetail/:id' component={ResourceDetail} key='resourceDetail' />,
     <Route path='/apps/details/:id' component={VotePage} key='transcationdetails' />

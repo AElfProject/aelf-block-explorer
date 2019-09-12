@@ -21,7 +21,8 @@ module.exports = {
     aliases: {
       '@src': path.resolve('src'),
       '@utils': path.resolve('src/utils'),
-      '@config': path.resolve('config')
+      '@config': path.resolve('config'),
+      '@components': path.resolve('src/components')
     },
     extra: {
       devtool: 'eval'

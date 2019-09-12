@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-08-31 20:42:08
+ * @LastEditTime: 2019-09-09 19:39:14
  * @Description: The constants used in Vote pages
  */
 
@@ -31,6 +31,38 @@ const contractsNeedToLoad = [
   }
 ];
 
-export {
-  contractsNeedToLoad
-};
+const electionNotifiStatisData = [
+  {
+    title: '距本届（第X届）投票结束还有',
+    num: '7天 00:00:00'
+  },
+  {
+    title: '当前节点数',
+    num: 117
+  },
+  {
+    title: '当前总票数',
+    num: 123456789
+  },
+  {
+    title: '分红池(ELF)',
+    num: 12345
+  }
+]
+
+const myVoteStatisData = [
+  {
+    title: '投票总数(ELF)',
+    num: 123000
+  },
+  {
+    title: '投票收益(ELF)',
+    num: 123456
+  },
+  {
+    title: '可赎回票数(ELF)',
+    num: 12345
+  }
+]
+
+export { contractsNeedToLoad, electionNotifiStatisData, myVoteStatisData };

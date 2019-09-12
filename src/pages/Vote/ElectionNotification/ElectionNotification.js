@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-05 21:26:20
+ * @LastEditTime: 2019-09-09 19:34:00
  * @Description: the page of election and nodes's notification
  */
 import React, { Component } from 'react';
@@ -14,7 +14,16 @@ import NightElfCheck from '@utils/NightElfCheck';
 import getContractAddress from '@utils/getContractAddress';
 
 import { DEFAUTRPCSERVER as DEFAUT_RPC_SERVER, APPNAME } from '@config/config';
-import { contractsNeedToLoad } from '../constants/constants';
+import {
+  contractsNeedToLoad,
+  electionNotifiStatisData
+} from '../constants/constants';
+import NodeList from './NodeList/NodeList';
+import StatisticalData from '@components/StatisticalData/StatisticalData';
+import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
+import MyWalletCard from './MyWalletCard/MyWalletCard';
+import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
+import './ElectionNotification.style.less';
 
 export default class ElectionNotification extends Component {
   constructor(props) {
@@ -23,16 +32,18 @@ export default class ElectionNotification extends Component {
     this.state = {
       // currentWallet: null,
       contracts: null,
+      showWallet: false,
+      nightElf: null,
+
       consensusContract: null,
       dividendContract: null,
       tokenContract: null,
       voteContract: null,
       electionContract: null,
-      showDownloadPlugins: false,
-      showWallet: false,
-      nightElf: null,
-
-      candidates: null
+      candidates: null,
+      nodesCount: null,
+      totalVotesAmount: null,
+      showDownloadPlugin: true
     };
 
     this.testElectionContract = this.testElectionContract.bind(this);
@@ -61,6 +72,7 @@ export default class ElectionNotification extends Component {
           () => {
             if (contractNickname === 'electionContract') {
               this.getNodesInfo();
+              this.fetchTotalVotesAmount();
             }
           }
         );
@@ -73,8 +85,23 @@ export default class ElectionNotification extends Component {
     );
   }
 
+  fetchTotalVotesAmount() {
+    const { electionContract } = this.state;
+    electionContract.GetVotesAmount.call()
+      .then(res => {
+        console.log('res', res);
+
+        this.setState({
+          totalVotesAmount: res.value
+        });
+      })
+      .catch(err => {
+        console.error('GetVotesAmount', err);
+      });
+  }
+
   getExtensionKeypairList() {
-    let httpProvider = DEFAUT_RPC_SERVER;
+    const httpProvider = DEFAUT_RPC_SERVER;
 
     NightElfCheck.getInstance()
       .check.then(item => {
@@ -432,15 +459,29 @@ export default class ElectionNotification extends Component {
         );
       });
     } catch (e) {
-      message.error(e);
+      // message.error(e);
+      console.error(e);
     }
 
     this.getExtensionKeypairList();
   }
 
   render() {
+    const {
+      electionContract,
+      totalVotesAmount,
+      showDownloadPlugin
+    } = this.state;
+    console.log('electionNotifiStatisData', electionNotifiStatisData);
+
     return (
-      <section>
+      <section className='page-container'>
+        {showDownloadPlugin ? <DownloadPlugins /> : null}
+        <StatisticalData data={electionNotifiStatisData} />
+        <ElectionRuleCard />
+        <MyWalletCard></MyWalletCard>
+        <NodeList electionContract={electionContract} />
+
         <div>BP节点：</div>
         <div>候选节点：</div>
         <div>
