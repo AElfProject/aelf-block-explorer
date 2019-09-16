@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 
 import './ElectionRuleCard.style.less';
@@ -15,7 +16,7 @@ export default memo(function ElectionRuleCard() {
           <a href=''>查看节点竞选计划书 ></a>
         </button>
         <Button type='primary' className='apply-to-be-a-node-btn'>
-          成为候选节点
+          <Link to='/vote/apply'>成为候选节点</Link>
         </Button>
       </div>
     </section>

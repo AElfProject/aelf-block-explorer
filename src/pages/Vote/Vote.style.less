@@ -91,6 +91,34 @@ button {
 .ant-modal {
   text-align: center;
   overflow: hidden;
+  color: #fff;
+  &.plugin-lock-modal {
+    .ant-modal-body {
+      padding: 50px;
+      color: #fff;
+    }
+    .ant-modal-footer {
+      .ant-btn:first-child {
+        display: none;
+      }
+    }
+  }
+  &.vote-confirm-modal {
+    .ant-modal-body {
+      padding: 30px 30px 10px;
+      .form-item-label {
+        text-align: right;
+      }
+      .form-item-value {
+        text-align: left;
+        text-indent: 10px;
+      }
+    }
+    .ant-modal-footer button + button{
+      margin-left: 50px;
+    }
+  }
+
   .ant-form-item {
     text-align: left;
     .ant-form-item-label label {
@@ -110,10 +138,18 @@ button {
   span.ant-radio + * {
     color: #fff;
   }
-  .ant-modal-footer {
+  .ant-modal-content {
     text-align: center;
-    padding-bottom: 20px;
+    .ant-modal-header {
+      padding: 10px;
+      height: auto;
+    }
+    .ant-modal-footer {
+      text-align: center;
+      padding-bottom: 20px;
+    }
   }
+
   .ant-tabs {
     label {
       color: #ccc;
