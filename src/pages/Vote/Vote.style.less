@@ -30,18 +30,30 @@ button {
   background: rgba(57, 0, 57, 0.3);
 }
 
+.remove-antd-tabs-default-style {
+  .ant-tabs-bar {
+    border-bottom: 0 !important;
+    margin: 0 56px 30px;
+    .ant-tabs-nav-wrap {
+      .ant-tabs-tab-active {
+        color: #fff;
+      }
+      .ant-tabs-ink-bar {
+        display: none !important;
+      }
+    }
+  }
+}
+
+.tip-color {
+  color: #ccc;
+}
+
 // specific for current page
-.ant-tabs-bar {
-  .card-container;
-  border-bottom: 0 !important;
-  margin: 0 56px 30px;
-  .ant-tabs-nav-wrap {
-    .ant-tabs-tab-active {
-      color: #fff;
-    }
-    .ant-tabs-ink-bar {
-      display: none !important;
-    }
+.secondary-level-nav {
+  .remove-antd-tabs-default-style;
+  .ant-tabs-bar {
+    .card-container;
   }
 }
 
@@ -78,10 +90,43 @@ button {
 
 .ant-modal {
   text-align: center;
-  .ant-form-item-label label {
+  overflow: hidden;
+  .ant-form-item {
+    text-align: left;
+    .ant-form-item-label label {
+      color: #fff;
+    }
+    .ant-input-affix-wrapper {
+      width: auto;
+    }
+    .ant-input {
+      width: auto;
+    }
+  }
+
+  .ant-slider-mark-text {
     color: #fff;
   }
-  .ant-slider-mark-text{
+  span.ant-radio + * {
     color: #fff;
   }
+  .ant-modal-footer {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+  .ant-tabs {
+    label {
+      color: #ccc;
+      &:hover {
+        color: #1890ff;
+        cursor: pointer;
+      }
+    }
+    .ant-tabs-tab-active {
+      label {
+        color: #fff;
+      }
+    }
+  }
+  .remove-antd-tabs-default-style;
 }

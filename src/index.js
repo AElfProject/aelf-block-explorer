@@ -41,7 +41,7 @@ function initPage() {
 
 async function getNodesInfo() {
 
-    let currentChain = JSON.parse(localStorage.getItem('currentChain'));
+    const currentChain = JSON.parse(localStorage.getItem('currentChain'));
 
     if (currentChain) {
         const {
@@ -54,6 +54,7 @@ async function getNodesInfo() {
 
     const nodesInfoProvider = '/nodes/info';
     const nodesInfo = await get(nodesInfoProvider);
+    console.log('nodesInfo', nodesInfo);
 
     if (nodesInfo.error === 0 && nodesInfo.result && nodesInfo.result.list) {
         const nodesInfoList = nodesInfo.result.list;

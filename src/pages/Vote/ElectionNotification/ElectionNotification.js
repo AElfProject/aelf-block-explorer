@@ -3,26 +3,18 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-09 19:34:00
+ * @LastEditTime: 2019-09-16 03:06:58
  * @Description: the page of election and nodes's notification
  */
 import React, { Component } from 'react';
 import { Row, Col, message } from 'antd';
 
-import { aelf } from '@src/utils';
-import NightElfCheck from '@utils/NightElfCheck';
-import getContractAddress from '@utils/getContractAddress';
-
-import { DEFAUTRPCSERVER as DEFAUT_RPC_SERVER, APPNAME } from '@config/config';
-import {
-  contractsNeedToLoad,
-  electionNotifiStatisData
-} from '../constants/constants';
-import NodeList from './NodeList/NodeList';
 import StatisticalData from '@components/StatisticalData/StatisticalData';
+import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
+import { electionNotifiStatisData } from '../constants/constants';
+import NodeList from './NodeList/NodeList';
 import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
 import MyWalletCard from './MyWalletCard/MyWalletCard';
-import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 import './ElectionNotification.style.less';
 
 export default class ElectionNotification extends Component {
@@ -35,11 +27,6 @@ export default class ElectionNotification extends Component {
       showWallet: false,
       nightElf: null,
 
-      consensusContract: null,
-      dividendContract: null,
-      tokenContract: null,
-      voteContract: null,
-      electionContract: null,
       candidates: null,
       nodesCount: null,
       totalVotesAmount: null,
@@ -51,42 +38,8 @@ export default class ElectionNotification extends Component {
     this.testConsensusContract = this.testConsensusContract.bind(this);
   }
 
-  /**
-   * @description
-   * @param {*} result
-   * @param {*} contractNickname e.g. nickname: election, formal name: AElf.ContractNames.Election
-   * @memberof ElectionNotification
-   */
-  getContractByContractAddress(result, contractAddrValName, contractNickname) {
-    // TODO: 补充error 逻辑
-    // FIXME: why can't I get the contract by contract name ? In aelf-command it works.
-    aelf.chain.contractAt(
-      result[contractAddrValName],
-      result.wallet,
-      (error, contract) => {
-        console.log(contractNickname, contract);
-        this.setState(
-          {
-            [contractNickname]: contract
-          },
-          () => {
-            if (contractNickname === 'electionContract') {
-              this.getNodesInfo();
-              this.fetchTotalVotesAmount();
-            }
-          }
-        );
-        if (contractNickname === 'consensusContract') {
-          this.chainInfo = contract;
-          // todo: We shouldn't get vote info by consensus contract
-          // this.getInformation(result);
-        }
-      }
-    );
-  }
-
   fetchTotalVotesAmount() {
-    const { electionContract } = this.state;
+    const { electionContract } = this.props;
     electionContract.GetVotesAmount.call()
       .then(res => {
         console.log('res', res);
@@ -100,65 +53,8 @@ export default class ElectionNotification extends Component {
       });
   }
 
-  getExtensionKeypairList() {
-    const httpProvider = DEFAUT_RPC_SERVER;
-
-    NightElfCheck.getInstance()
-      .check.then(item => {
-        if (item) {
-          nightElf = new window.NightElf.AElf({
-            httpProvider: [
-              httpProvider,
-              null,
-              null,
-              null,
-              [
-                {
-                  name: 'Accept',
-                  value: 'text/plain;v=1.0'
-                }
-              ]
-            ],
-            appName // TODO: 这个需要content.js 主动获取
-          });
-          if (nightElf) {
-            this.setState({
-              nightElf
-            });
-            nightElf.chain.getChainStatus((error, result) => {
-              if (result) {
-                nightElf.checkPermission(
-                  {
-                    appName,
-                    type: 'domain'
-                  },
-                  (error, result) => {
-                    if (result) {
-                      this.insertKeypairs(result);
-                    }
-                  }
-                );
-              }
-            });
-          }
-        }
-      })
-      .catch(error => {
-        this.setState({
-          showDownloadPlugins: true
-        });
-      });
-  }
-
-  getNodesInfo() {
-    const { electionContract } = this.state;
-    electionContract.GetCandidates.call((error, result) => {
-      console.log('result', result);
-    });
-  }
-
   testElectionContract() {
-    const { electionContract } = this.state;
+    const { electionContract } = this.props;
     const contract = electionContract;
 
     // View:
@@ -427,7 +323,7 @@ export default class ElectionNotification extends Component {
   }
 
   testConsensusContract() {
-    const { consensusContract: contract } = this.state;
+    const { consensusContract: contract } = this.props;
     contract.GetCurrentMinerList.call()
       .then(res => {
         console.log('GetCurrentMinerList', res);
@@ -437,41 +333,10 @@ export default class ElectionNotification extends Component {
       });
   }
 
-  async componentDidMount() {
-    // Get contracts
-    try {
-      const result = await getContractAddress();
-      this.setState({
-        contracts: result
-      });
-      if (!result.chainInfo) {
-        message.error(
-          'The chain has stopped or cannot be connected to the chain. Please check your network or contact us.',
-          10
-        );
-        return;
-      }
-      contractsNeedToLoad.forEach(contractItem => {
-        this.getContractByContractAddress(
-          result,
-          contractItem.contractAddrValName,
-          contractItem.contractNickname
-        );
-      });
-    } catch (e) {
-      // message.error(e);
-      console.error(e);
-    }
-
-    this.getExtensionKeypairList();
-  }
-
   render() {
-    const {
-      electionContract,
-      totalVotesAmount,
-      showDownloadPlugin
-    } = this.state;
+    const { totalVotesAmount, showDownloadPlugin } = this.state;
+
+    const { electionContract } = this.props;
     console.log('electionNotifiStatisData', electionNotifiStatisData);
 
     return (
@@ -479,7 +344,7 @@ export default class ElectionNotification extends Component {
         {showDownloadPlugin ? <DownloadPlugins /> : null}
         <StatisticalData data={electionNotifiStatisData} />
         <ElectionRuleCard />
-        <MyWalletCard></MyWalletCard>
+        <MyWalletCard />
         <NodeList electionContract={electionContract} />
 
         <div>BP节点：</div>

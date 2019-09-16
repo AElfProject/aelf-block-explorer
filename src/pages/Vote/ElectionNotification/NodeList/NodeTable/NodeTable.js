@@ -8,7 +8,7 @@ const nodeListCols = [
     title: 'Rank',
     dataIndex: 'rank',
     key: 'rank',
-    defaultSortOrder: 'descend',
+    defaultSortOrder: 'ascend',
     sorter: (a, b) => a.rank - b.rank
   },
   {
@@ -51,12 +51,21 @@ const nodeListCols = [
   {
     title: 'Operations',
     key: 'operations',
-    render: () => (
+    render: (text, record) => (
       <div className='node-list-btn-group'>
-        <Button type='primary' style={{ marginRight: '20px' }}>
+        {/* todo: replace pubkey by address? */}
+        <Button
+          className='vote-btn'
+          key={record.pubkey}
+          type='primary'
+          style={{ marginRight: '20px' }}
+          data-nodeaddress={record.pubkey}
+        >
           Vote
         </Button>
-        <Button type='primary'>Withdraw</Button>
+        <Button key={record.pubkey + 1} type='primary'>
+          Withdraw
+        </Button>
       </div>
     )
   }
@@ -158,6 +167,7 @@ class NodeTable extends Component {
           // onChange={handleTableChange}
           // loading={loading}
           pagination={pagination}
+          rowKey={record => record.pubkey}
         />
       </section>
     );
