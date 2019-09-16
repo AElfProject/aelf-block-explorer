@@ -4,6 +4,7 @@
  */
 /* eslint-disable fecs-camelcase */
 import React, {Component} from 'react';
+import io from 'socket.io-client';
 import {Link} from 'react-router-dom';
 // import { observer, inject } from "mobx-react";
 import {
@@ -27,11 +28,12 @@ import SmoothScrollbar from 'smooth-scrollbar';
 import OverscrollPlugin from 'smooth-scrollbar/plugins/overscroll';
 import Scrollbar from 'react-smooth-scrollbar';
 
-import {get, format, aelf, transactionFormat} from '../../utils';
+import {get, format, transactionFormat} from '../../utils';
 import {
     PAGE_SIZE,
     ALL_BLOCKS_API_URL,
-    ALL_TXS_API_URL
+    ALL_TXS_API_URL,
+    SOCKET_URL
 } from '../../constants';
 
 import './home.styles.less';
@@ -47,7 +49,8 @@ export default class HomePage extends Component {
 
     state = {
         blocks: [],
-        transactions: []
+        transactions: [],
+        totalTransactions: 0
     };
 
     blockHeight = 0;
@@ -63,14 +66,11 @@ export default class HomePage extends Component {
     }
 
     componentDidCatch(error) {
-        // console.error(error);
-        // TODO 弹窗提示
-        clearInterval(this.interval);
+        console.error(error);
     }
 
     componentWillUnmount() {
-        clearInterval(this.interval);
-        this.setState = () => {};
+        this.socket.close();
     }
 
     // it's making two xhr to get realtime block_height and transaction data.
@@ -80,12 +80,9 @@ export default class HomePage extends Component {
         const blocksResult = await this.fetch(ALL_BLOCKS_API_URL);
 
         const blocks = blocksResult.blocks;
-        console.log(blocksResult);
         const block_height = blocks[0].block_height;
-        this.blockHeightInDataBase = block_height;
         this.blockHeight = block_height;
 
-        // TODO: 链上会提供批量请求的接口，如果一个区块的交易数多于25个，我们只请求其中的25个交易来展示。
         const TXSResult = await this.fetch(ALL_TXS_API_URL);
         const transactions = TXSResult.transactions;
         const totalTransactions = TXSResult.total;
@@ -96,116 +93,67 @@ export default class HomePage extends Component {
             totalTransactions
         });
 
-        this.interval = setInterval(() => {
-            this.fetchInfoByChain();
-        }, fetchInfoByChainIntervalTime);
+        this.initSocket();
     }
 
-    getBlockHeightPromise() {
-        return new Promise((resolve, reject) => {
-            if (this.blockHeight) {
-                resolve(+this.blockHeight + 1);
-            }
-            else {
-                aelf.chain.getBlockHeight((err, result) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        const {
-                            result: {
-                                block_height
-                            }
-                        } = result;
-                        if (parseInt(block_height, 10) <= parseInt(this.blockHeightInDataBase, 10)) {
-                            resolve(false);
-                            return;
-                        }
-                        resolve(block_height);
-                    }
-                });
+    initSocket() {
+        this.socket = io(location.origin, {
+            path: SOCKET_URL,
+            transports: ['websocket', 'polling']
+        });
+
+        this.socket.on('reconnect_attempt', () => {
+            this.socket.io.opts.transports = ['polling', 'websocket'];
+        });
+        this.socket.on('connection', function (data) {
+            if (data !== 'success') {
+                throw new Error('can\'t connect to socket');
             }
         });
-    }
 
-    // get increament block data
-    // 1. Get the lastest 100 Blocks Info from databases at first.
-    // 2. Get the new Blocks Info from AElf Chain.
-    // 3. If the (block_height in Chain) - (block_height in Databases) > 10,
-    //    Notice the users we have problem, and get New Block from AElf Chain.
-    // 4. In the page, if block.length > 100, .length =100 ,then, unshift.
-    fetchInfoByChain() {
-        // const store = this.props.appIncrStore;
-        let newBlocksList = [].concat(...this.state.blocks);
-        let newTxsList = [].concat(...this.state.transactions);
-
-        this.getBlockHeightPromise().then(blockHeight => {
-            if (!blockHeight) {
-                return;
-            }
-            aelf.chain.getBlockByHeight(blockHeight, true, (err, result) => {
-                if (err) {
-                    message.error('Can not get Block Info from AElf Node!!!.', 6);
-                    return;
-                }
-                const {
-                    // result: {BlockHash = '', Body = '', Header = ''} = {}
-                    BlockHash,
-                    Body,
-                    Header
-                } = result;
-                if (isEmpty(BlockHash)) {
-                    return;
-                }
-
-                const chainBlocks = {
-                    block_hash: BlockHash,
-                    block_height: +blockHeight,
-                    chain_id: Header.ChainId,
-                    merkle_root_state: Header.MerkleTreeRootOfWorldState,
-                    merkle_root_tx: Header.MerkleTreeRootOfTransactions,
-                    pre_block_hash: Header.PreviousBlockHash,
-                    time: Header.Time,
-                    tx_count: Body.TransactionsCount
-                };
-
-                let pre_block_height = newBlocksList[0].block_height;
-                if (blockHeight - pre_block_height > 10) {
-                    message.warning(
-                        'Notice: Blocks in Databases is behind more than 10 blocks in the Chain.',
-                        6
-                    );
-                }
-
-                newBlocksList.unshift(chainBlocks);
-                newBlocksList.length = PAGE_SIZE;
-                if (!isEmpty(Body.Transactions)) {
-                    // console.log('Body', BlockHash, Body.TransactionsCount);
-                    aelf.chain.getTxResults(BlockHash, 0, PAGE_SIZE, (error, result) => {
-                        if (error || !result) {
-                            message.error(error.message, 2);
-                            return;
-                        }
-                        const txsList = result || [];
-
-                        const txsFormatted = txsList.map(tx => {
-                            return transactionFormat(tx);
-                        });
-
-                        newTxsList.unshift(...txsFormatted);
-                        newTxsList.length = PAGE_SIZE;
-
-                        this.blockHeight = blockHeight;
-                        this.setState({
-                            blocks: newBlocksList,
-                            transactions: newTxsList
-                        });
-                    });
-                }
+        this.socket.on('getOnFirst', data => {
+            this.handleSocketData(data, true);
+            this.socket.on('getBlocksList', data => {
+                this.handleSocketData(data);
             });
-        }).catch(err => {
-            message.error(err.message, 2);
         });
+        this.socket.emit('getBlocksList');
+    }
+
+    handleSocketData({
+        list = [],
+        height = 0,
+        totalTxs
+    }, isFirst) {
+        let arr = list;
+        if (!isFirst) {
+            arr = list.filter(item => {
+                return item.block.Header.Height > this.blockHeight;
+            });
+        }
+        arr.sort((pre, next) => next.block.Header.Height - pre.block.Header.Height);
+        const transactions = arr.reduce((acc, i) => acc.concat(i.txs), []).map(transactionFormat);
+        const blocks = arr.map(item => this.formatBlock(item.block));
+        this.blockHeight = height;
+        this.setState({
+            blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
+            transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
+            totalTransactions: totalTxs
+        });
+    }
+
+    formatBlock(block) {
+        const {BlockHash, Header, Body} = block;
+        return {
+            block_hash: BlockHash,
+            block_height: +Header.Height,
+            chain_id: Header.ChainId,
+            merkle_root_state: Header.MerkleTreeRootOfWorldState,
+            merkle_root_tx: Header.MerkleTreeRootOfTransactions,
+            pre_block_hash: Header.PreviousBlockHash,
+            time: Header.Time,
+            tx_count: Body.TransactionsCount
+        };
     }
 
     renderBasicInfoBlocks() {
@@ -250,7 +198,7 @@ export default class HomePage extends Component {
         return html;
     }
 
-    renderSearcBanner() {
+    renderSearchBanner() {
         if (document.body.offsetWidth <= 768) {
             return '';
         }
@@ -272,7 +220,7 @@ export default class HomePage extends Component {
             >
                 <div className='basic-container home-basic-information'>
                     <div className="home-header-blank"></div>
-                    {this.renderSearcBanner()}
+                    {this.renderSearchBanner()}
                     <Row
                         type="flex"
                         justify="space-between"

@@ -39,6 +39,7 @@ const ELF_REST_TRADE_API = 'https://www.bcex.top/Api_Market/getCoinTrade';
 const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
 const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
+const SOCKET_URL = '/socket';
 
 const PAGE_SIZE = 25;
 const TXSSTATUS = {
@@ -341,5 +342,6 @@ export {
     RESOURCE_REALTIME_RECORDS,
     RESOURCE_TURNOVER,
     RESOURCE_RECORDS,
-    RESOURCE_DETAILS_COLUMN
+    RESOURCE_DETAILS_COLUMN,
+    SOCKET_URL
 }
