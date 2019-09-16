@@ -39,6 +39,12 @@ module.exports = {
         target: 'https://api.huobi.pro',
         changeOrigin: true,
         secure: false
+      },
+      '/socket': {
+        target: 'ws://127.0.0.1:7101',
+        changeOrigin: true,
+        ws: true,
+        secure: false
       }
     }
   }
