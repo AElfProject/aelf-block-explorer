@@ -1,0 +1,72 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-09-17 15:54:31
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-09-17 16:54:36
+ * @Description: file content
+ */
+@clsPrefix: team-detail;
+
+.@{clsPrefix} {
+  color: #fff;
+  .@{clsPrefix}-header {
+    .@{clsPrefix}-team-avatar-info {
+      display: inline-block;
+      .@{clsPrefix}-team-info {
+        display: inline-block;
+        margin-left: 20px;
+        vertical-align: top;
+        .@{clsPrefix}-node-name {
+          color: #fff;
+        }
+        &-address {
+          .ant-typography {
+            display: inline;
+            color: #fff;
+          }
+        }
+      }
+    }
+    .card-container-left {
+      padding: 30px 30px 30px 100px;
+    }
+    .card-container-right {
+      display: flex;
+      // align-items: center;
+      justify-content: space-around;
+      align-items: center;
+      flex-direction: column;
+      padding: 30px;
+      .ant-btn {
+        display: block;
+        margin-bottom: 10px;
+        min-width: 100px;
+      }
+    }
+  }
+  .@{clsPrefix}-statistic {
+    display: flex;
+    justify-content: space-around;
+    .ant-statistic-title {
+      color: #ccc;
+    }
+    .ant-statistic-content {
+      color: #fff;
+    }
+  }
+  .@{clsPrefix}-intro {
+    padding-top: 0;
+    &-text {
+      text-indent: 2em;
+    }
+  }
+}
+
+.card-header {
+  padding: 10px 10px 10px 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  font-size: 18px;
+}

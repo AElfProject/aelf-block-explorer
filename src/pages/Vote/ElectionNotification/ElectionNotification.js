@@ -3,13 +3,13 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-16 03:06:58
+ * @LastEditTime: 2019-09-17 22:29:58
  * @Description: the page of election and nodes's notification
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Row, Col, message } from 'antd';
 
-import StatisticalData from '@components/StatisticalData/StatisticalData';
+import StatisticalData from '@components/StatisticalData/';
 import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 import { electionNotifiStatisData } from '../constants/constants';
 import NodeList from './NodeList/NodeList';
@@ -17,7 +17,7 @@ import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
 import MyWalletCard from './MyWalletCard/MyWalletCard';
 import './ElectionNotification.style.less';
 
-export default class ElectionNotification extends Component {
+export default class ElectionNotification extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -30,12 +30,27 @@ export default class ElectionNotification extends Component {
       candidates: null,
       nodesCount: null,
       totalVotesAmount: null,
-      showDownloadPlugin: true
+      showDownloadPlugin: true,
+      statisData: electionNotifiStatisData
     };
 
     this.testElectionContract = this.testElectionContract.bind(this);
     this.testVoteContract = this.testVoteContract.bind(this);
     this.testConsensusContract = this.testConsensusContract.bind(this);
+  }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   const { electionContract } = this.props;
+  //   if (electionContract !== null) {
+  //     this.fetchTotalVotesAmount();
+  //   }
+  // }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { electionContract } = this.props;
+    if (nextProps.electionContract !== electionContract ) {
+      this.fetchTotalVotesAmount();
+    }
   }
 
   fetchTotalVotesAmount() {
@@ -108,7 +123,8 @@ export default class ElectionNotification extends Component {
       });
 
     contract.GetElectorVote.call({
-      value: 'd238ba4287159b1a55f01a362cbd965f433582cd49166ea0917a9820e81845df'
+      value:
+        '04515bc4aa4bd277b520dcad092ce0177dc5ce6d7e1ae3dc9b6aa86b89eaceaf9cedf321a9105525e164948a650164d568dd21bc9640553fac89059a915fe1fabc'
     })
       .then(res => {
         console.log('GetElectorVote', res);
@@ -333,8 +349,19 @@ export default class ElectionNotification extends Component {
       });
   }
 
+  processStatisData() {
+    const { totalVotesAmount, statisData } = this.state;
+    statisData.currentVotesAmount.num = totalVotesAmount;
+    this.setState({
+      statisData
+    });
+  }
+
   render() {
-    const { totalVotesAmount, showDownloadPlugin } = this.state;
+    const { totalVotesAmount, showDownloadPlugin, statisData } = this.state;
+    const { consensusContract } = this.props;
+
+    this.processStatisData();
 
     const { electionContract } = this.props;
     console.log('electionNotifiStatisData', electionNotifiStatisData);
@@ -342,7 +369,7 @@ export default class ElectionNotification extends Component {
     return (
       <section className='page-container'>
         {showDownloadPlugin ? <DownloadPlugins /> : null}
-        <StatisticalData data={electionNotifiStatisData} />
+        <StatisticalData data={statisData} />
         <ElectionRuleCard />
         <MyWalletCard />
         <NodeList electionContract={electionContract} />

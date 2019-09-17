@@ -46,7 +46,7 @@ export default class NodeList extends Component {
               onSearch={value => console.log(value)}
             />
           </h2>
-          <NodeTable electionContract={electionContract}></NodeTable>
+          <NodeTable electionContract={electionContract} />
         </Spin>
       </section>
     );

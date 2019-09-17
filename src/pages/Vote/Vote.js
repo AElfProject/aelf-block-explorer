@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-16 17:40:11
+ * @LastEditTime: 2019-09-17 20:52:41
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -33,6 +33,7 @@ import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
 import CandidateApply from './CandidateApply';
 import KeyInTeamInfo from './KeyInTeamInfo';
+import TeamDetail from './TeamDetail';
 import { contractsNeedToLoad } from './constants/constants';
 
 const { TabPane } = Tabs;
@@ -717,6 +718,7 @@ class VoteContainer extends Component {
               />
               <Route exact path='/vote/apply' component={CandidateApply} />
               <Route path='/vote/apply/keyin' component={KeyInTeamInfo} />
+              <Route path='/vote/team' component={TeamDetail} />
             </Switch>
             <button
               onClick={() =>

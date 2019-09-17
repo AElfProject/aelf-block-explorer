@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Table, message, Button } from 'antd';
 
 import './NodeTable.style.less';
@@ -81,7 +81,7 @@ const pagination = {
   showTotal: total => `Total ${total} items`
 };
 
-class NodeTable extends Component {
+class NodeTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -96,7 +96,9 @@ class NodeTable extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    if (this.props.electionContract !== prevProps.electionContract) {
+    const { electionContract, consensusContract } = this.props;
+
+    if (consensusContract !== null && electionContract !== null) {
       // Need await to ensure the totalVotesCount take its seat.
       await this.fetchTotalVotesAmount();
       this.fetchNodes();
@@ -129,7 +131,7 @@ class NodeTable extends Component {
 
     electionContract.GetPageableCandidateInformation.call({
       start: 1,
-      length: 10
+      length: 100000 // give a number large enough to make sure that we get all the nodes
     })
       .then(res => {
         console.log('res', res);

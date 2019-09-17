@@ -9,6 +9,7 @@
       }
     ],
     "react/prop-types": 0,
+    "react/no-redundant-should-component-update": 0,
     "no-underscore-dangle": 0,
     "import/imports-first": ["error", "absolute-first"],
     "import/newline-after-import": "error"
