@@ -15,6 +15,7 @@ import {LocaleProvider} from 'antd';
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from 'antd/lib/locale-provider/en_US';
 import {AppIncrStore} from './Store';
+import config from '../config/config';
 import {get} from './utils';
 
 import './index.less';
@@ -63,7 +64,7 @@ async function getNodesInfo() {
         }
 
         const nodeInfo = nodesInfoList.find(item => {
-            if (item.chain_id === 'AELF') {
+            if (item.chain_id === config.MAINCHAINID) {
                 return item;
             }
         });
