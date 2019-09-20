@@ -17,7 +17,8 @@ import {
   electionContractAddr,
   voteContractAddr,
   consensusContractAddr,
-  multiTokenContractAddr
+  multiTokenContractAddr,
+  profitContractAddr
 } from '@config/config';
 export default function getContractAddress() {
   return new Promise((resolve, reject) => {
@@ -34,7 +35,8 @@ export default function getContractAddress() {
         voteContractAddr,
         electionContractAddr,
         consensusContractAddr,
-        multiTokenContractAddr
+        multiTokenContractAddr,
+        profitContractAddr
       };
       resolve(output);
     });

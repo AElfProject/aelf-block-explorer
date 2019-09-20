@@ -60,10 +60,11 @@ const nodeListCols = [
           type='primary'
           style={{ marginRight: '20px' }}
           data-nodeaddress={record.pubkey}
+          data-role='vote'
         >
           Vote
         </Button>
-        <Button key={record.pubkey + 1} type='primary'>
+        <Button key={record.pubkey + 1} type='primary' data-role='redeem'>
           Withdraw
         </Button>
       </div>
@@ -95,10 +96,21 @@ class NodeTable extends PureComponent {
     };
   }
 
-  async componentDidUpdate(prevProps) {
-    const { electionContract, consensusContract } = this.props;
+  // todo: how to combine cdm & cdu
+  async componentDidMount() {
+    const { electionContract } = this.props;
 
-    if (consensusContract !== null && electionContract !== null) {
+    if (electionContract !== null) {
+      // Need await to ensure the totalVotesCount take its seat.
+      await this.fetchTotalVotesAmount();
+      this.fetchNodes();
+    }
+  }
+
+  async componentDidUpdate(prevProps) {
+    const { electionContract } = this.props;
+
+    if (electionContract !== prevProps.electionContract) {
       // Need await to ensure the totalVotesCount take its seat.
       await this.fetchTotalVotesAmount();
       this.fetchNodes();
@@ -128,10 +140,12 @@ class NodeTable extends PureComponent {
 
   fetchNodes() {
     const { electionContract } = this.props;
+    console.log('InTable', electionContract);
 
     electionContract.GetPageableCandidateInformation.call({
-      start: 1,
+      start: 0,
       length: 100000 // give a number large enough to make sure that we get all the nodes
+      // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
     })
       .then(res => {
         console.log('res', res);

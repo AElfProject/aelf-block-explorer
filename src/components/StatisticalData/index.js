@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-17 22:14:00
+ * @LastEditTime: 2019-09-18 14:36:11
  * @Description: file content
  */
 import React from 'react';
@@ -17,7 +17,7 @@ function StatisticalData(props) {
   let { data } = props;
   // todo: Is isArray accurate enough?
   // todo: Optimize the following line
-  if(typeof data === 'object' && !Array.isArray(data)){
+  if (typeof data === 'object' && !Array.isArray(data)) {
     data = Object.values(data);
   }
 
@@ -41,7 +41,7 @@ function StatisticalData(props) {
           //   <p className={`${clsPrefix}-words`}>{item.title}</p>
           //   <p className={`${clsPrefix}-number`}>{item.num}</p>
           // </Col>
-          <Statistic title={item.title} value={item.num} />
+          <Statistic key={item.title} title={item.title} value={item.num || '...'} />
         );
       })}
       {/* </Row> */}
@@ -51,4 +51,4 @@ function StatisticalData(props) {
     </section>
   );
 }
-export default React.memo(StatisticalData);
+export default StatisticalData;

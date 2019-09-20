@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-17 20:52:41
+ * @LastEditTime: 2019-09-20 16:49:30
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -20,21 +20,27 @@ import {
   Col
 } from 'antd';
 import moment from 'moment';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
+import { toJS, reaction } from 'mobx';
+import { Provider } from 'mobx-react';
 
 import './Vote.style.less';
 import NightElfCheck from '@utils/NightElfCheck';
 import checkPermissionRepeat from '@utils/checkPermissionRepeat';
 import getLogin from '@utils/getLogin';
+import { thousandsCommaWithDecimal } from '@utils/formater';
 import getContractAddress from '@utils/getContractAddress';
+import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 import { DEFAUTRPCSERVER as DEFAUT_RPC_SERVER, APP_NAME } from '@config/config';
 import { aelf } from '@src/utils';
+import voteStore from '@store/vote';
+import contractsStore from '@store/contracts';
 import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
 import CandidateApply from './CandidateApply';
 import KeyInTeamInfo from './KeyInTeamInfo';
 import TeamDetail from './TeamDetail';
-import { contractsNeedToLoad } from './constants/constants';
+import { contractsNeedToLoad, TOKEN_CONTRACT_DECIMAL } from './constants';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -271,9 +277,11 @@ function generateFormGroup({
 function generateVoteConfirmForm({
   nodeAddress,
   currentWalletName,
-  currentWalletBalance
+  currentWalletBalance,
+  need
 }) {
-  return {
+  const res = { formItems: [] };
+  const materials = {
     title: '从未过期投票转投',
     formItems: [
       {
@@ -304,10 +312,20 @@ function generateVoteConfirmForm({
         )
       },
       {
+        type: 'voteAmount',
+        label: '投票数量',
+        render: (
+          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
+            {'...'} ELF
+          </span>
+        )
+      },
+      {
+        type: 'lockTime',
         label: '锁定期',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {123} ELF
+            {'...'} <span className='tip-color'>锁定期内不支持提币和转账</span>
           </span>
         )
       },
@@ -337,6 +355,14 @@ function generateVoteConfirmForm({
       }
     ]
   };
+
+  need.forEach(item => {
+    res.formItems.push(
+      materials.formItems.find(oneType => oneType.type === item)
+    );
+  });
+
+  return res;
 }
 
 function generateVoteRedeemForm({
@@ -413,18 +439,20 @@ class VoteContainer extends Component {
       nightElf: null,
 
       voteModalVisible: false,
-      pluginLockModalVisible: true,
+      pluginLockModalVisible: voteStore.pluginLockModalVisible,
       voteConfirmModalVisible: false,
       voteRedeemModalVisible: false,
       voteConfirmForm: {},
       voteRedeemForm: {},
       voteFrom: 1,
       currentWallet: null,
-      consensusContract: null,
-      dividendContract: null,
-      multiTokenContract: null,
-      voteContract: null,
-      electionContract: null
+      consensusContract: contractsStore.consensusContract,
+      dividendContract: contractsStore.dividendContract,
+      multiTokenContract: contractsStore.multiTokenContract,
+      voteContract: contractsStore.voteContract,
+      electionContract: contractsStore.electionContract,
+      profitContract: contractsStore.profitContract,
+      showDownloadPlugin: false
     };
 
     this.showModal = this.showModal.bind(this);
@@ -432,6 +460,7 @@ class VoteContainer extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleTabsChange = this.handleTabsChange.bind(this);
+    this.handleVoteNext = this.handleVoteNext.bind(this);
   }
 
   async componentDidMount() {
@@ -463,17 +492,6 @@ class VoteContainer extends Component {
     this.getExtensionKeypairList();
   }
 
-  async getContractAddrByName() {
-    const { GenesisContractAddress } = await aelf.chain.getChainStatus();
-    const genesisContract = await aelf.chain.contractAt(
-      GenesisContractAddress,
-      wallet
-    );
-    const address = await genesisContract.GetContractAddressByName.call(
-      AElf.utils.sha256(contractAddress)
-    );
-  }
-
   getWalletBalance() {
     const { currentWallet, multiTokenContract } = this.state;
     console.log('this.state', this.state);
@@ -492,24 +510,17 @@ class VoteContainer extends Component {
   getContractByContractAddress(result, contractAddrValName, contractNickname) {
     // TODO: 补充error 逻辑
     // FIXME: why can't I get the contract by contract name ? In aelf-command it works.
+    console.log('result[contractAddrValName]', result[contractAddrValName])
     aelf.chain.contractAt(
       result[contractAddrValName],
       result.wallet,
       (error, contract) => {
-        console.log(contractNickname, contract);
-        console.log('test', {
-          [contractNickname]: contract
-        });
-        this.setState(
-          {
-            [contractNickname]: contract
-          },
-          () => {
-            if (contractNickname === 'electionContract') {
-              // this.fetchTotalVotesAmount();
-            }
-          }
-        );
+        if (error) {
+          console.error(error);
+        }
+
+        contractsStore.setContract(contractNickname, contract);
+        this.setState({ [contractNickname]: contractsStore[contractNickname] });
         if (contractNickname === 'consensusContract') {
           this.chainInfo = contract;
           // todo: We shouldn't get vote info by consensus contract
@@ -563,9 +574,9 @@ class VoteContainer extends Component {
         }
       })
       .catch(error => {
-        // this.setState({
-        //   showDownloadPlugins: true
-        // });
+        this.setState({
+          showDownloadPlugin: true
+        });
       });
   }
 
@@ -619,22 +630,25 @@ class VoteContainer extends Component {
     }
   }
 
-  showModal() {
+  showModal(visible) {
     this.setState({
-      voteModalVisible: true
+      [visible]: true
     });
   }
 
-  handleOk(visible) {
+  handleOk(visible, cb) {
     // this.setState({
     //   // ModalText: 'The modal will be closed after two seconds',
     //   // confirmLoading: true,
     // });
     // setTimeout(() => {
-    this.setState({
-      [visible]: false
-      // confirmLoading: false,
-    });
+    this.setState(
+      {
+        [visible]: false
+        // confirmLoading: false,
+      },
+      cb
+    );
     // }, 2000);
   }
 
@@ -660,21 +674,38 @@ class VoteContainer extends Component {
 
   handleClick(e) {
     const ele = e.target;
-    if (/vote-btn/.test(ele.className)) {
-      this.getWalletBalance()
-        .then(res => {
-          formGroup = generateFormGroup({
-            nodeAddress: ele.dataset.nodeaddress,
-            currentWalletName: JSON.parse(localStorage.getItem('currentWallet'))
-              .name,
-            currentWalletBalance: res.balance
+    switch (ele.dataset.role) {
+      case 'vote':
+        this.getWalletBalance()
+          .then(res => {
+            const balance = thousandsCommaWithDecimal(
+              +res.balance / TOKEN_CONTRACT_DECIMAL
+            );
+            formGroup = generateFormGroup({
+              nodeAddress: ele.dataset.nodeaddress,
+              currentWalletName: JSON.parse(
+                localStorage.getItem('currentWallet')
+              ).name,
+              currentWalletBalance: balance
+            });
+            this.showModal('voteModalVisible');
+            // this.setState({
+            //   balance: res.balance
+            // });
+          })
+          .then(() => {
+            this.showModal('voteModalVisible');
+          })
+          .catch(err => {
+            console.log(err);
           });
-          this.showModal();
-          // this.setState({
-          //   balance: res.balance
-          // });
-        })
-        .catch(err => {});
+
+        break;
+      case 'redeem':
+        this.showModal('voteRedeemModalVisible');
+        break;
+      default:
+        break;
     }
   }
 
@@ -682,6 +713,29 @@ class VoteContainer extends Component {
     this.setState({
       voteFrom: key
     });
+  }
+
+  handleVoteNext() {
+    this.setState(
+      {
+        voteModalVisible: false
+      },
+      () => {
+        console.log('Closed vote modal!');
+        this.setState({
+          voteConfirmModalVisible: true
+        });
+      }
+    );
+  }
+
+  togglePluginLockModal(flag) {
+    console.log('<<<<', flag);
+    voteStore.setPluginLockModalVisible(flag);
+    reaction(
+      () => voteStore.pluginLockModalVisible,
+      pluginLockModalVisible => this.setState({ pluginLockModalVisible })
+    );
   }
 
   render() {
@@ -695,239 +749,287 @@ class VoteContainer extends Component {
       voteFrom,
       tokenContract,
       voteContract,
-      electionContract
+      electionContract,
+      showDownloadPlugin,
+      multiTokenContract,
+      profitContract,
+      dividendContract,
+      consensusContract
     } = this.state;
 
-    // const { getFieldDecorator } = this.props.form;
 
     return (
-      <section onClick={this.handleClick}>
-        <Tabs defaultActiveKey='1' className='secondary-level-nav'>
-          <TabPane tab='节点公示' key='1'>
-            <Switch>
-              <Route
-                exact
-                path='/vote'
-                render={() => (
-                  <ElectionNotification
-                    tokenContract={tokenContract}
-                    voteContract={voteContract}
-                    electionContract={electionContract}
-                  />
-                )}
-              />
-              <Route exact path='/vote/apply' component={CandidateApply} />
-              <Route path='/vote/apply/keyin' component={KeyInTeamInfo} />
-              <Route path='/vote/team' component={TeamDetail} />
-            </Switch>
-            <button
-              onClick={() =>
-                this.setState({
-                  pluginLockModalVisible: true
-                })
-              }
+      <Provider contractsStore={contractsStore}>
+        <section onClick={this.handleClick}>
+          {showDownloadPlugin ? (
+            <DownloadPlugins style={{ margin: '0 56px' }} />
+          ) : null}
+          <Tabs defaultActiveKey='1' className='secondary-level-nav'>
+            <TabPane
+              tab={<Link to='/vote'>Election Notification</Link>}
+              key='1'
             >
-              show plugin lock modal
-            </button>
-
-            <button
-              onClick={() => {
-                const voteConfirmForm = generateVoteConfirmForm({});
-                this.setState({
-                  voteConfirmForm,
-                  voteConfirmModalVisible: true
-                });
-              }}
-            >
-              show vote confirm modal
-            </button>
-
-            <button
-              onClick={() => {
-                const voteRedeemForm = generateVoteRedeemForm({});
-                this.setState({
-                  voteRedeemForm,
-                  voteRedeemModalVisible: true
-                });
-              }}
-            >
-              show vote redeem modal
-            </button>
-          </TabPane>
-          <TabPane tab='我的投票' key='2'>
-            <MyVote />
-          </TabPane>
-        </Tabs>
-
-        <Modal
-          title='节点投票'
-          visible={voteModalVisible}
-          onOk={this.handleOk.bind(this, 'voteModalVisible')}
-          // confirmLoading={confirmLoading}
-          onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
-          width={860}
-          okText='Next'
-          centered
-          maskClosable
-          keyboard
-        >
-          <Tabs defaultActiveKey='1' onChange={this.handleTabsChange}>
-            {formGroup.map((form, index) => {
-              return (
-                <TabPane
-                  tab={
-                    <span>
-                      <input
-                        type='radio'
-                        checked={index + 1 === +voteFrom}
-                        value={form.type}
-                        style={{ marginRight: 10 }}
-                      />
-                      <label htmlFor={form.type}>{form.type}</label>
-                    </span>
-                  }
-                  key={index + 1}
-                >
-                  {/* <ElectionNotification /> */}
-                  <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-                    {form.formItems.map(item => {
-                      return (
-                        <Form.Item label={item.label} key={item.label}>
-                          {/* {getFieldDecorator('email', {
-                  rules: [
-                    {
-                      type: 'email',
-                      message: 'The input is not valid E-mail!'
-                    },
-                    {
-                      required: true,
-                      message: 'Please input your E-mail!'
-                    }
-                  ]
-                })(<Input />)} */}
-                          {item.render ? item.render : <Input />}
-                        </Form.Item>
-                      );
-                    })}
-                  </Form>
-                </TabPane>
-              );
-            })}
-          </Tabs>
-          <p className='tip-color'>本次投票将扣除2ELF的手续费</p>
-        </Modal>
-
-        <Modal
-          className='plugin-lock-modal'
-          visible={pluginLockModalVisible}
-          onOk={this.handleOk.bind(this, 'pluginLockModalVisible')}
-          // confirmLoading={confirmLoading}
-          onCancel={this.handleCancel.bind(this, 'pluginLockModalVisible')}
-          centered
-          maskClosable
-          keyboard
-        >
-          您的NightELF已锁定，请重新解锁
-        </Modal>
-
-        <Modal
-          className='vote-confirm-modal'
-          title='Vote Confirm'
-          visible={voteConfirmModalVisible}
-          onOk={this.handleOk.bind(this, 'voteConfirmModalVisible')}
-          // confirmLoading={confirmLoading}
-          onCancel={this.handleCancel.bind(this, 'voteConfirmModalVisible')}
-          width={860}
-          centered
-          maskClosable
-          keyboard
-        >
-          {/* <Row>
-            <Col span={8} className='form-item-label'>
-              投票数量
-            </Col>
-            <Col span={16} className='form-item-value'>
-              100 ELF
-            </Col>
-          </Row>
-          <Row>
-            <Col span={8} className='form-item-label'>
-              锁定期
-            </Col>
-            <Col span={16} className='form-item-value'>
-              3个月
-              <span
-                className='tip-color'
-                style={{ fontSize: 12, marginLeft: 20 }}
-              >
-                锁定期内不支持提币和转账
-              </span>
-            </Col>
-          </Row> */}
-
-          <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
-            {voteConfirmForm.formItems &&
-              voteConfirmForm.formItems.map(item => {
-                return (
-                  <Form.Item label={item.label} key={item.label}>
-                    {/* {getFieldDecorator('email', {
-                  rules: [
-                    {
-                      type: 'email',
-                      message: 'The input is not valid E-mail!'
-                    },
-                    {
-                      required: true,
-                      message: 'Please input your E-mail!'
-                    }
-                  ]
-                })(<Input />)} */}
-                    {item.render ? item.render : <Input />}
-                  </Form.Item>
-                );
-              })}
-          </Form>
-          <p style={{ marginTop: 30 }}>该投票请求NightELF授权签名</p>
-        </Modal>
-
-        <Modal
-          className='vote-redeem-modal'
-          title='Vote Redeem'
-          visible={voteRedeemModalVisible}
-          onOk={this.handleOk.bind(this, 'voteRedeemModalVisible')}
-          onCancel={this.handleCancel.bind(this, 'voteRedeemModalVisible')}
-          centered
-          maskClosable
-          keyboard
-        >
-          <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
-            {voteRedeemForm.formItems &&
-              voteRedeemForm.formItems.map(item => {
-                return (
-                  <Form.Item label={item.label} key={item.label}>
-                    {/* {getFieldDecorator('email', {
-              rules: [
-                {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!'
-                },
-                {
-                  required: true,
-                  message: 'Please input your E-mail!'
+              <Switch>
+                <Route
+                  exact
+                  path='/vote'
+                  render={() => (
+                    <ElectionNotification
+                      multiTokenContract={multiTokenContract}
+                      voteContract={voteContract}
+                      electionContract={electionContract}
+                      profitContract={profitContract}
+                      dividendContract={dividendContract}
+                      consensusContract={consensusContract}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path='/vote/apply'
+                  electionContract={electionContract}
+                  render={() => (
+                    <CandidateApply electionContract={electionContract} />
+                  )}
+                />
+                <Route
+                  path='/vote/apply/keyin'
+                  render={() => (
+                    <KeyInTeamInfo electionContract={electionContract} />
+                  )}
+                />
+                <Route path='/vote/team' component={TeamDetail} />
+              </Switch>
+              <button
+                onClick={() =>
+                  this.setState({
+                    pluginLockModalVisible: true
+                  })
                 }
-              ]
-            })(<Input />)} */}
-                    {item.render ? item.render : <Input />}
-                  </Form.Item>
+              >
+                show plugin lock modal
+              </button>
+
+              <button
+                onClick={() => {
+                  const voteConfirmForm = generateVoteConfirmForm({
+                    need: ['voteAmount', 'lockTime']
+                  });
+                  this.setState({
+                    voteConfirmForm,
+                    voteConfirmModalVisible: true
+                  });
+                }}
+              >
+                show vote confirm modal
+              </button>
+
+              <button
+                onClick={() => {
+                  const voteRedeemForm = generateVoteRedeemForm({});
+                  this.setState({
+                    voteRedeemForm,
+                    voteRedeemModalVisible: true
+                  });
+                }}
+              >
+                show vote redeem modal
+              </button>
+            </TabPane>
+            <TabPane tab='我的投票' key='2'>
+              <MyVote />
+            </TabPane>
+          </Tabs>
+
+          <Modal
+            title='节点投票'
+            visible={voteModalVisible}
+            onOk={this.handleVoteNext}
+            // confirmLoading={confirmLoading}
+            onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
+            width={860}
+            okText='Next'
+            centered
+            maskClosable
+            keyboard
+          >
+            <Tabs defaultActiveKey='1' onChange={this.handleTabsChange}>
+              {formGroup.map((form, index) => {
+                return (
+                  <TabPane
+                    tab={
+                      <span>
+                        <input
+                          type='radio'
+                          checked={index + 1 === +voteFrom}
+                          value={form.type}
+                          style={{ marginRight: 10 }}
+                        />
+                        <label htmlFor={form.type}>{form.type}</label>
+                      </span>
+                    }
+                    key={index + 1}
+                  >
+                    {/* <ElectionNotification /> */}
+                    <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                      {form.formItems.map(item => {
+                        return (
+                          <Form.Item label={item.label} key={item.label}>
+                            {/* {getFieldDecorator('email', {
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!'
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail!'
+                  }
+                ]
+              })(<Input />)} */}
+                            {item.render ? item.render : <Input />}
+                          </Form.Item>
+                        );
+                      })}
+                    </Form>
+                  </TabPane>
                 );
               })}
-          </Form>
-          <p className='tip-color' style={{ fontSize: 12 }}>
-            本次赎回将扣除2ELF的手续费
-          </p>
-          <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
-        </Modal>
-      </section>
+            </Tabs>
+            <p className='tip-color'>本次投票将扣除2ELF的手续费</p>
+          </Modal>
+
+          <Modal
+            className='plugin-lock-modal'
+            visible={pluginLockModalVisible}
+            onOk={() => this.togglePluginLockModal(false)}
+            // confirmLoading={confirmLoading}
+            onCancel={() => this.togglePluginLockModal(false)}
+            centered
+            maskClosable
+            keyboard
+          >
+            您的NightELF已锁定，请重新解锁
+          </Modal>
+
+          <Modal
+            className='vote-confirm-modal'
+            title='Vote Confirm'
+            visible={voteConfirmModalVisible}
+            // onOk={this.handleOk.bind(this, 'voteConfirmModalVisible')}
+            // confirmLoading={confirmLoading}
+            onCancel={this.handleCancel.bind(this, 'voteConfirmModalVisible')}
+            width={860}
+            centered
+            maskClosable
+            keyboard
+          >
+            {/* <Row>
+          <Col span={8} className='form-item-label'>
+            投票数量
+          </Col>
+          <Col span={16} className='form-item-value'>
+            100 ELF
+          </Col>
+        </Row>
+        <Row>
+          <Col span={8} className='form-item-label'>
+            锁定期
+          </Col>
+          <Col span={16} className='form-item-value'>
+            3个月
+            <span
+              className='tip-color'
+              style={{ fontSize: 12, marginLeft: 20 }}
+            >
+              锁定期内不支持提币和转账
+            </span>
+          </Col>
+        </Row> */}
+
+            <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
+              {voteConfirmForm.formItems &&
+                voteConfirmForm.formItems.map(item => {
+                  return (
+                    <Form.Item label={item.label} key={item.label}>
+                      {/* {getFieldDecorator('email', {
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!'
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail!'
+                  }
+                ]
+              })(<Input />)} */}
+                      {item.render ? item.render : <Input />}
+                    </Form.Item>
+                  );
+                })}
+            </Form>
+            <p style={{ marginTop: 30 }}>该投票请求NightELF授权签名</p>
+          </Modal>
+
+          <Modal
+            className='vote-redeem-modal'
+            title='Vote Redeem'
+            visible={voteRedeemModalVisible}
+            onOk={this.handleOk.bind(this, 'voteRedeemModalVisible')}
+            onCancel={this.handleCancel.bind(this, 'voteRedeemModalVisible')}
+            centered
+            maskClosablef
+            keyboard
+          >
+            <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
+              {voteRedeemForm.formItems &&
+                voteRedeemForm.formItems.map(item => {
+                  return (
+                    <Form.Item label={item.label} key={item.label}>
+                      {/* {getFieldDecorator('email', {
+            rules: [
+              {
+                type: 'email',
+                message: 'The input is not valid E-mail!'
+              },
+              {
+                required: true,
+                message: 'Please input your E-mail!'
+              }
+            ]
+          })(<Input />)} */}
+                      {item.render ? item.render : <Input />}
+                    </Form.Item>
+                  );
+                })}
+            </Form>
+            <p className='tip-color' style={{ fontSize: 12 }}>
+              本次赎回将扣除2ELF的手续费
+            </p>
+            <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
+          </Modal>
+
+          <button
+            onClick={async () => {
+              voteStore.setPluginLockModalVisible(
+                !voteStore.pluginLockModalVisible
+              );
+              console.log(
+                'pluginLockModalVisible',
+                voteStore.pluginLockModalVisible
+              );
+              reaction(
+                () => voteStore.pluginLockModalVisible,
+                pluginLockModalVisible =>
+                  this.setState({ pluginLockModalVisible })
+              );
+            }}
+          >
+            pluginLockModalVisible
+          </button>
+        </section>
+      </Provider>
     );
   }
 }

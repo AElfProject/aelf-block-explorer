@@ -1,0 +1,89 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-08-31 19:43:55
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-09-20 16:24:48
+ * @Description: The constants used in Vote pages
+ */
+import { thousandsComma } from '@utils/formater';
+
+//  The contracts need to load in page ElectionNotification
+const contractsNeedToLoad = [
+  {
+    contractAddrValName: 'consensusContractAddr',
+    contractNickname: 'consensusContract'
+  },
+  {
+    contractAddrValName: 'dividendContractAddr',
+    contractNickname: 'dividendContract'
+  },
+  {
+    contractAddrValName: 'multiTokenContractAddr',
+    contractNickname: 'multiTokenContract'
+  },
+  {
+    contractAddrValName: 'voteContractAddr',
+    contractNickname: 'voteContract'
+  },
+  {
+    contractAddrValName: 'electionContractAddr',
+    contractNickname: 'electionContract'
+  },
+  {
+    contractAddrValName: 'profitContractAddr',
+    contractNickname: 'profitContract'
+  }
+];
+
+const myVoteStatisData = [
+  {
+    title: '投票总数(ELF)'
+  },
+  {
+    title: '投票收益(ELF)'
+  },
+  {
+    title: '可赎回票数(ELF)'
+  }
+];
+
+const HARDWARE_ADVICE = '8核 16GB 5TB 宽带100Mbps';
+
+const ELECTION_MORTGAGE_NUM = 100000;
+const ELECTION_MORTGAGE_NUM_STR = thousandsComma(ELECTION_MORTGAGE_NUM);
+
+const urlRegExp = new RegExp(
+  '^(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$',
+  'i'
+);
+
+const okRegExp = /^2\d{2}$/;
+
+const TOKEN_CONTRACT_DECIMAL = 100000000;
+
+const schemeIds = {
+  CitizenWelfare:
+    '2623eb0b2decec194c25388195e92592402fe66bdc3657ceadaf58d92860186a',
+  BackupSubsidy:
+    '208d098067699730d220f1997d48c8b8d8881bb8507abfad1b07d9af8ba94bb0',
+  VotesWeightReward:
+    '9a7f406cf485dd91439c848dea23b5c03029aee63cd8077710ca05865f73ed99',
+  MinerBasicReward:
+    '58c0ee2b5eab330cafa5df680399a6374c7e86bbbcabeda0b70eb0a98a4f788a',
+  ReElectionReward:
+    '291c0cc8fd51e02c02cb95c235f8d41a14793f8e8bf4810e3e44aaf89e7c3389'
+};
+
+export {
+  contractsNeedToLoad,
+  electionNotifiStatisData,
+  myVoteStatisData,
+  HARDWARE_ADVICE,
+  ELECTION_MORTGAGE_NUM,
+  ELECTION_MORTGAGE_NUM_STR,
+  urlRegExp,
+  okRegExp,
+  TOKEN_CONTRACT_DECIMAL,
+  schemeIds
+};

@@ -25,6 +25,14 @@ const httpErrorHandler = (message, des) => notification.open({
     message,
     description: des
 });
+
+api.addResponseTransform(res => {
+    if (res.ok) {
+        if(res.data.code === /^2\d{2}$/) return res.data;
+        // httpErrorHandler(res.problem, res.problem);
+    }
+  })
+
 const timeout = null;
 const user = null;
 const password = null;
@@ -49,7 +57,13 @@ const get = async (url, params, config) => {
     httpErrorHandler(res.problem, res.problem);
 };
 
+const csrf = document.cookie.match(/csrfToken=[^;]*/)[0].replace('csrfToken=', '');
+
 const post = async (url, data, config) => {
+    // todo: handle the other case
+    if(!config){config = {headers: {}}}
+    
+    config.headers['x-csrf-token'] = csrf;
     const res = await api.post(url, data, config);
     if (res.ok) {
         return res.data;

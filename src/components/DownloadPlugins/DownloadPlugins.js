@@ -1,6 +1,6 @@
 /**
  * @file
- * @author zhouminghui
+ * @author zhouminghui yangpeiyang
  */
 
 import React, { PureComponent } from 'react';
@@ -15,8 +15,9 @@ export default class DownloadPlugins extends PureComponent {
   }
 
   render() {
+    const { style } = this.props;
     return (
-      <div className='DownloadPlugins'>
+      <div className='DownloadPlugins' style={style}>
         {/* <div className='Tips'>为避免每次操作时填写私钥信息，你可以通过插件来使用这些工具（安装插件后仍然显示这些信息，请尝试刷新操作）</div> */}
         <div className='Tips'>
           To avoid filling in the private key information for each operation,

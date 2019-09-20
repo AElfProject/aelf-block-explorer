@@ -3,19 +3,33 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-17 22:29:58
+ * @LastEditTime: 2019-09-20 16:58:02
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
 import { Row, Col, message } from 'antd';
 
 import StatisticalData from '@components/StatisticalData/';
-import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
-import { electionNotifiStatisData } from '../constants/constants';
+import { pubKey } from '@utils/getCurrentWallet';
 import NodeList from './NodeList/NodeList';
 import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
-import MyWalletCard from './MyWalletCard/MyWalletCard';
+import MyWalletCard from './MyWalletCard/';
 import './ElectionNotification.style.less';
+
+const electionNotifiStatisData = {
+  termEndTime: {
+    title: '距本届（第-届）投票结束还有'
+  },
+  currentNodesAmount: {
+    title: '当前节点数'
+  },
+  currentVotesAmount: {
+    title: '当前总票数'
+  },
+  currentMiningReward: {
+    title: '分红池(ELF)'
+  }
+};
 
 export default class ElectionNotification extends PureComponent {
   constructor(props) {
@@ -29,7 +43,6 @@ export default class ElectionNotification extends PureComponent {
 
       candidates: null,
       nodesCount: null,
-      totalVotesAmount: null,
       showDownloadPlugin: true,
       statisData: electionNotifiStatisData
     };
@@ -39,33 +52,98 @@ export default class ElectionNotification extends PureComponent {
     this.testConsensusContract = this.testConsensusContract.bind(this);
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { electionContract } = this.props;
-  //   if (electionContract !== null) {
-  //     this.fetchTotalVotesAmount();
-  //   }
-  // }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const { electionContract } = this.props;
-    if (nextProps.electionContract !== electionContract ) {
-      this.fetchTotalVotesAmount();
+  componentDidUpdate(prevProps, prevState) {
+    const { electionContract, consensusContract } = this.props;
+    const { statisData } = this.state;
+    console.log('statisData', statisData);
+    // todo: decouple, it's too couple here
+    if (
+      electionContract !== null &&
+      consensusContract !== null &&
+      statisData.currentVotesAmount.num === undefined
+    ) {
+      // this.fetchTotalVotesAmount();
+      this.fetchStatisData();
     }
   }
 
-  fetchTotalVotesAmount() {
-    const { electionContract } = this.props;
-    electionContract.GetVotesAmount.call()
-      .then(res => {
-        console.log('res', res);
+  // fetchTotalVotesAmount() {
+  //   const { electionContract } = this.props;
+  // }
 
-        this.setState({
-          totalVotesAmount: res.value
+  updateStatisData(key, param, value) {
+    let { statisData } = this.state;
+    statisData[key][param] = value;
+    // todo: Is it required?
+    statisData = { ...statisData };
+    this.setState({
+      statisData
+    });
+  }
+
+  fetchStatisData() {
+    const { electionContract, consensusContract } = this.props;
+    // todo: decouple, it's too couple here
+
+    const dataSource = {
+      title: [
+        {
+          contract: consensusContract,
+          methods: [
+            {
+              method: 'GetCurrentTermNumber',
+              statisDataKey: 'termEndTime',
+              processor: value => `距本届（第${value}届）投票结束还有`
+            }
+          ]
+        }
+      ],
+      num: [
+        {
+          contract: electionContract,
+          methods: [
+            {
+              method: 'GetCandidates',
+              processor: value => value.length,
+              statisDataKey: 'currentNodesAmount'
+            },
+            {
+              method: 'GetVotesAmount',
+              processor: value => value,
+              statisDataKey: 'currentVotesAmount'
+            },
+            {
+              method: 'GetCurrentMiningReward',
+              processor: value => value,
+              statisDataKey: 'currentMiningReward'
+            }
+            // { method: 'GetCandidates', processor: value => value.length }
+          ]
+        }
+      ]
+    };
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(dataSource)) {
+      console.log('key', key);
+      value.forEach(item => {
+        item.methods.forEach(subItem => {
+          console.log('item', item);
+          item.contract[subItem.method]
+            .call()
+            .then(res => {
+              console.log(subItem.method, res);
+              this.updateStatisData(
+                subItem.statisDataKey,
+                key,
+                subItem.processor(res.value)
+              );
+            })
+            .catch(err => {
+              console.error(subItem.method, err);
+            });
         });
-      })
-      .catch(err => {
-        console.error('GetVotesAmount', err);
       });
+    }
   }
 
   testElectionContract() {
@@ -84,8 +162,7 @@ export default class ElectionNotification extends PureComponent {
       });
 
     contract.GetCandidateInformation.call({
-      value:
-        '044958d5c48f003c771769f4a31413cd18053516615cbde502441af8452fb53441a80cc48a7f3b0f2552fd030cacbe9012ba055a3d553b70003f2e637d55fa0f23'
+      value: pubKey
     })
       .then(res => {
         console.log('GetCandidateInformation', res);
@@ -349,29 +426,28 @@ export default class ElectionNotification extends PureComponent {
       });
   }
 
-  processStatisData() {
-    const { totalVotesAmount, statisData } = this.state;
-    statisData.currentVotesAmount.num = totalVotesAmount;
-    this.setState({
-      statisData
-    });
-  }
-
   render() {
     const { totalVotesAmount, showDownloadPlugin, statisData } = this.state;
-    const { consensusContract } = this.props;
-
-    this.processStatisData();
+    const {
+      consensusContract,
+      multiTokenContract,
+      profitContract,
+      dividendContract
+    } = this.props;
 
     const { electionContract } = this.props;
     console.log('electionNotifiStatisData', electionNotifiStatisData);
 
     return (
       <section className='page-container'>
-        {showDownloadPlugin ? <DownloadPlugins /> : null}
         <StatisticalData data={statisData} />
         <ElectionRuleCard />
-        <MyWalletCard />
+        <MyWalletCard
+          multiTokenContract={multiTokenContract}
+          electionContract={electionContract}
+          profitContract={profitContract}
+          dividendContract={dividendContract}
+        />
         <NodeList electionContract={electionContract} />
 
         <div>BP节点：</div>

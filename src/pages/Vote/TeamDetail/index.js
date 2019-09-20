@@ -3,10 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-17 17:02:43
+ * @LastEditTime: 2019-09-18 14:08:17
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
+import {Link} from 'react-router-dom';
 import { Statistic, Row, Col, Button, Avatar, Tag, Typography } from 'antd';
 
 import './index.less';
@@ -38,15 +39,17 @@ export default class TeamDetial extends PureComponent {
                       HUAISB76458602495hdjfbisdbnjkf
                     </Paragraph>
                   </p>
-                  <Button>Edit</Button>
+                  <Button>
+                    <Link to='/vote/apply/keyin'>Edit</Link>
+                  </Button>
                 </div>
               </div>
             </Col>
             <Col span={6} className='card-container-right'>
-              <Button size='large' type='primary'>
+              <Button size='large' type='primary' data-role='vote'>
                 Vote
               </Button>
-              <Button size='large' type='primary'>
+              <Button size='large' type='primary' data-role='redeem'>
                 Redeem
               </Button>
             </Col>

@@ -3,15 +3,21 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-16 17:30:56
+ * @LastEditTime: 2019-09-19 11:06:50
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
-import { Form, Input, Button } from 'antd';
+import {withRouter} from "react-router-dom";
+import { Form, Input, Button, Modal, message } from 'antd';
 
 import './index.less';
+import currentWallet from '@utils/getCurrentWallet';
+import {
+  ELECTION_MORTGAGE_NUM_STR,
+  HARDWARE_ADVICE
+} from '@pages/Vote/constants';
 
-const candidateApplyFormItemLayout = {
+const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
     sm: { span: 6 }
@@ -33,7 +39,7 @@ function generateCandidateApplyForm({
         label: '抵押地址',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            2jwEEFkYgi1dvabjmGvVJa67Xfh6vZh82rtzFsbMsiqCjK3sm2
+            {currentWallet.address}
           </span>
         )
       },
@@ -41,7 +47,7 @@ function generateCandidateApplyForm({
         label: '抵押数量',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            100,000 ELF
+            {ELECTION_MORTGAGE_NUM_STR} ELF
           </span>
         )
       },
@@ -49,7 +55,7 @@ function generateCandidateApplyForm({
         label: '钱包',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            钱包A
+            {currentWallet.name}
           </span>
         )
       },
@@ -57,7 +63,35 @@ function generateCandidateApplyForm({
         label: '硬件建议',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            8核 16GB 5TB 宽带100Mbps
+            {HARDWARE_ADVICE}
+          </span>
+        )
+      }
+    ]
+  };
+}
+
+function generateApplyConfirmForm({
+  nodeAddress,
+  currentWalletName,
+  currentWalletBalance
+}) {
+  return {
+    formItems: [
+      {
+        label: '抵押数量',
+        render: (
+          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
+            {ELECTION_MORTGAGE_NUM_STR}{' '}
+            <span className='tip-color'>成为BP节点后该ELF不能提取</span>
+          </span>
+        )
+      },
+      {
+        label: '钱包',
+        render: (
+          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
+            {currentWallet.name}
           </span>
         )
       }
@@ -66,11 +100,57 @@ function generateCandidateApplyForm({
 }
 
 const candidateApplyForm = generateCandidateApplyForm({});
+const applyConfirmForm = generateApplyConfirmForm({});
 
 const clsPrefix = 'candidate-apply';
 
 class CandidateApply extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      applyConfirmVisible: false
+    };
+
+    this.handleOk = this.handleOk.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.handleBack = this.handleBack.bind(this);
+  }
+
+  handleOk() {
+    const { electionContract } = this.props;
+    electionContract
+      .AnnounceElection()
+      .then(() => {
+        this.props.history.push('/vote/apply/keyin');
+      })
+      .catch(err => {
+        console.error(err);
+      });
+    // this.setState({
+    //   applyConfirmVisible: false
+    // })
+  }
+
+  handleCancel() {
+    this.setState({
+      applyConfirmVisible: false
+    });
+  }
+
+  showModal() {
+    this.setState({
+      applyConfirmVisible: true
+    });
+  }
+
+  handleBack(){
+    this.props.history.goBack();
+  }
+
   render() {
+    const { applyConfirmVisible } = this.state;
+
     return (
       <section
         className={`${clsPrefix}-container card-container page-container`}
@@ -78,7 +158,7 @@ class CandidateApply extends PureComponent {
         <h3 className={`${clsPrefix}-title`}>申请节点</h3>
         <Form
           className={`${clsPrefix}-form`}
-          {...candidateApplyFormItemLayout}
+          {...formItemLayout}
           onSubmit={this.handleSubmit}
         >
           {candidateApplyForm.formItems &&
@@ -103,12 +183,48 @@ class CandidateApply extends PureComponent {
             })}
         </Form>
         <div className={`${clsPrefix}-footer`}>
-          <Button>Cancel</Button>
-          <Button type='primary'>Apply Now</Button>
+          <Button onClick={this.handleBack}>Cancel</Button>
+          <Button type='primary' onClick={this.showModal}>
+            Apply Now
+          </Button>
         </div>
+        <Modal
+          className='apply-confirm-modal'
+          title='Apply Confirm'
+          visible={applyConfirmVisible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          centered
+          maskClosable
+          keyboard
+        >
+          <Form {...formItemLayout} >
+            {applyConfirmForm.formItems &&
+              applyConfirmForm.formItems.map(item => {
+                return (
+                  <Form.Item label={item.label} key={item.label}>
+                    {/* {getFieldDecorator('email', {
+              rules: [
+                {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!'
+                },
+                {
+                  required: true,
+                  message: 'Please input your E-mail!'
+                }
+              ]
+            })(<Input />)} */}
+                    {item.render ? item.render : <Input />}
+                  </Form.Item>
+                );
+              })}
+          </Form>
+          <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
+        </Modal>
       </section>
     );
   }
 }
 
-export default CandidateApply;
+export default withRouter(CandidateApply);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import StatisticalData from '@components/StatisticalData/';
-import { myVoteStatisData } from '../constants/constants';
+import { myVoteStatisData } from '../constants';
 import MyVoteRecord from './MyVoteRecords';
 
 export default class MyVote extends Component {
