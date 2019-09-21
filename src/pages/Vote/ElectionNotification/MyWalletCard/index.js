@@ -4,8 +4,10 @@ import { Button, Icon, Modal, message } from 'antd';
 import './index.less';
 // import { inject, observer } from 'mobx-react';
 import { thousandsCommaWithDecimal } from '@utils/formater';
-import { pubKey, walletName } from '@utils/getCurrentWallet';
+import getCurrentWallet from '@utils/getCurrentWallet';
 import { TOKEN_CONTRACT_DECIMAL, schemeIds } from '@pages/Vote/constants';
+import { APPNAME } from '@config/config';
+import { SYMBOL } from '@src/constants';
 
 const clsPrefix = 'my-wallet-card';
 
@@ -25,6 +27,7 @@ export default class MyWalletCard extends PureComponent {
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleGetDividens = this.handleGetDividens.bind(this);
+    this.updateWallet = this.updateWallet.bind(this);
   }
 
   // todo: combine
@@ -40,6 +43,7 @@ export default class MyWalletCard extends PureComponent {
     // todo: optimize the judge
     const { multiTokenContract, electionContract, profitContract } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
+
     if (multiTokenContract !== prevProps.multiTokenContract) {
       this.fetchWalletBalance();
     }
@@ -65,10 +69,11 @@ export default class MyWalletCard extends PureComponent {
 
   fetchWalletBalance() {
     const { multiTokenContract } = this.props;
-
-    const currentWallet = JSON.parse(localStorage.getItem('currentWallet'));
+    console.log('SYMBOL', SYMBOL);
+    const currentWallet = getCurrentWallet();
+    console.log('currentWallet', currentWallet);
     multiTokenContract.GetBalance.call({
-      symbol: 'ELF',
+      symbol: SYMBOL,
       owner: currentWallet.address
     })
       .then(res => {
@@ -81,8 +86,10 @@ export default class MyWalletCard extends PureComponent {
 
   fetchElectorVoteInfo() {
     const { electionContract } = this.props;
+    const currentWallet = getCurrentWallet();
+
     electionContract.GetElectorVote.call({
-      value: pubKey
+      value: currentWallet.pubKey
     })
       .then(res => {
         const { activeVotedVotesAmount, allVotedVotesAmount } = res;
@@ -102,7 +109,7 @@ export default class MyWalletCard extends PureComponent {
     const { profitContract, dividendContract } = this.props;
     profitContract.GetProfitAmount.call({
       schemeId: schemeIds.CitizenWelfare,
-      symbol: 'ELF'
+      symbol: SYMBOL
     })
       .then(res => {
         console.log('GetScheme', res);
@@ -119,10 +126,23 @@ export default class MyWalletCard extends PureComponent {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   handleOk() {
-    this.setState({
-      unbindAccountModalVisible: false
+    const currentWallet = getCurrentWallet();
+
+    window.NightElf.api({
+      appName: APPNAME,
+      method: 'REMOVE_KEYPAIR',
+      chainId: 'AELF',
+      payload: {
+        address: currentWallet.address
+      }
+    }).then(result => {
+      console.log('>>>>>>>>>>>>>>>>>>>', result);
     });
+    // this.setState({
+    //   unbindAccountModalVisible: false
+    // });
   }
 
   handleCancel() {
@@ -144,6 +164,13 @@ export default class MyWalletCard extends PureComponent {
     });
   }
 
+  updateWallet() {
+    this.fetchWalletBalance();
+    this.fetchElectorVoteInfo();
+    this.computedTotalAssets();
+    this.fetchProfitAmount();
+  }
+
   render() {
     const {
       unbindAccountModalVisible,
@@ -153,18 +180,23 @@ export default class MyWalletCard extends PureComponent {
       totalAssets
     } = this.state;
 
+    const currentWallet = getCurrentWallet();
+
     return (
       <section className={`${clsPrefix}`}>
         <div className={`${clsPrefix}-header`}>
           <h2 className={`${clsPrefix}-header-title`}>我的钱包</h2>
-          <button className={`${clsPrefix}-header-sync-btn`}>
+          <button
+            className={`${clsPrefix}-header-sync-btn`}
+            onClick={this.updateWallet}
+          >
             <Icon type='sync' />
           </button>
         </div>
         <div className={`${clsPrefix}-body`}>
           <div className={`${clsPrefix}-body-wallet-title`}>
             <h3 className={`${clsPrefix}-body-wallet-title-name`}>
-              {walletName}
+              {currentWallet.name}
             </h3>
             <Button shape='round' onClick={this.showModal}>
               解除绑定
@@ -203,6 +235,7 @@ export default class MyWalletCard extends PureComponent {
           centered
           maskClosable
           keyboard
+          okButtonProps={{ 'data-shouldDetectLock': true }}
         >
           <p style={{ marginTop: 10 }}>请求NightELF插件授权解除绑定</p>
         </Modal>

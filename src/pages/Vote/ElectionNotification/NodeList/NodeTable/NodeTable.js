@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
+import { Link } from 'react-router-dom';
 import { Table, message, Button } from 'antd';
+import { getAllTeamDesc } from '@api/vote';
 
 import './NodeTable.style.less';
 
@@ -13,7 +15,11 @@ const nodeListCols = [
   },
   {
     title: 'Node Name',
-    key: 'nodeName'
+    dataIndex: 'name',
+    key: 'nodeName',
+    render: (text, record) => (
+      <Link to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}>{text}</Link>
+    )
   },
   {
     title: 'Terms',
@@ -79,7 +85,8 @@ nodeListCols.forEach(item => {
 const pagination = {
   showQuickJumper: true,
   total: 0,
-  showTotal: total => `Total ${total} items`
+  showTotal: total => `Total ${total} items`,
+  pageSize: 3
 };
 
 class NodeTable extends PureComponent {
@@ -142,14 +149,36 @@ class NodeTable extends PureComponent {
     const { electionContract } = this.props;
     console.log('InTable', electionContract);
 
-    electionContract.GetPageableCandidateInformation.call({
-      start: 0,
-      length: 100000 // give a number large enough to make sure that we get all the nodes
-      // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
-    })
-      .then(res => {
-        console.log('res', res);
-        const processedNodesData = this.processNodesData(res.value);
+    Promise.all([
+      electionContract.GetPageableCandidateInformation.call({
+        start: 0,
+        length: 5 // give a number large enough to make sure that we get all the nodes
+        // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
+      }),
+      getAllTeamDesc()
+    ])
+      .then(resArr => {
+        console.log('resArr', resArr);
+        // todo: error handle
+        const nodeInfos = resArr[0].value;
+        let teamInfos = null;
+        if (resArr[1].code === 0) {
+          teamInfos = resArr[1].data;
+        }
+        nodeInfos.forEach(item => {
+          // debugger;
+          const teamInfo = teamInfos.find(
+            team => team.public_key === item.candidateInformation.pubkey
+          );
+          console.log('teamInfo', teamInfo);
+          if (teamInfo === undefined) {
+            item.candidateInformation.name = 'Default';
+          } else {
+            item.candidateInformation.name = teamInfo.name;
+          }
+        });
+
+        const processedNodesData = this.processNodesData(nodeInfos);
         console.log('GetPageableCandidateInformation', processedNodesData);
 
         this.setState({
@@ -163,7 +192,10 @@ class NodeTable extends PureComponent {
 
   fetchTotalVotesAmount() {
     this.props.electionContract.GetVotesAmount.call().then(res => {
-      console.log('totalVoteAmount', res);
+      if (res === null) {
+        message.error('Get total vote amount failed.');
+        return;
+      }
 
       this.setState({
         totalVotesAmount: res.value

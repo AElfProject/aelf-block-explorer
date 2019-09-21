@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-20 16:49:30
+ * @LastEditTime: 2019-09-21 22:18:41
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -31,7 +31,7 @@ import getLogin from '@utils/getLogin';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getContractAddress from '@utils/getContractAddress';
 import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
-import { DEFAUTRPCSERVER as DEFAUT_RPC_SERVER, APP_NAME } from '@config/config';
+import { DEFAUTRPCSERVER as DEFAUT_RPC_SERVER, APPNAME } from '@config/config';
 import { aelf } from '@src/utils';
 import voteStore from '@store/vote';
 import contractsStore from '@store/contracts';
@@ -41,6 +41,7 @@ import CandidateApply from './CandidateApply';
 import KeyInTeamInfo from './KeyInTeamInfo';
 import TeamDetail from './TeamDetail';
 import { contractsNeedToLoad, TOKEN_CONTRACT_DECIMAL } from './constants';
+import { SYMBOL } from '@src/constants';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -143,7 +144,7 @@ function generateFormGroup({
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}
             >
-              {currentWalletBalance} ELF
+              {currentWalletBalance} {SYMBOL}
             </span>
           )
         },
@@ -152,7 +153,7 @@ function generateFormGroup({
           render: (
             <div>
               <Input
-                suffix='ELF'
+                suffix={SYMBOL}
                 placeholder='Enter vote amount'
                 style={{ marginRight: 20 }}
               />
@@ -208,7 +209,7 @@ function generateFormGroup({
           render: (
             <div>
               <Input
-                suffix='ELF'
+                suffix={SYMBOL}
                 placeholder='Enter vote amount'
                 style={{ marginRight: 20 }}
               />
@@ -299,7 +300,7 @@ function generateVoteConfirmForm({
         label: '可用票数',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {123} ELF
+            {123} {SYMBOL}
           </span>
         )
       },
@@ -307,7 +308,7 @@ function generateVoteConfirmForm({
         label: '投票时间',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {123} ELF
+            {123} {SYMBOL}
           </span>
         )
       },
@@ -316,7 +317,7 @@ function generateVoteConfirmForm({
         label: '投票数量',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {'...'} ELF
+            {'...'} {SYMBOL}
           </span>
         )
       },
@@ -334,7 +335,7 @@ function generateVoteConfirmForm({
         render: (
           <div>
             <Input
-              suffix='ELF'
+              suffix={SYMBOL}
               placeholder='Enter vote amount'
               style={{ marginRight: 20 }}
             />
@@ -392,7 +393,7 @@ function generateVoteRedeemForm({
         label: '当前投票总数',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {100} ELF
+            {100} {SYMBOL}
           </span>
         )
       },
@@ -400,7 +401,7 @@ function generateVoteRedeemForm({
         label: '过期票数',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {30} ELF
+            {30} {SYMBOL}
           </span>
         )
       },
@@ -409,7 +410,7 @@ function generateVoteRedeemForm({
         render: (
           <div>
             <Input
-              suffix='ELF'
+              suffix={SYMBOL}
               placeholder='Enter vote amount'
               style={{ marginRight: 20 }}
             />
@@ -439,7 +440,7 @@ class VoteContainer extends Component {
       nightElf: null,
 
       voteModalVisible: false,
-      pluginLockModalVisible: voteStore.pluginLockModalVisible,
+      pluginLockModalVisible: false,
       voteConfirmModalVisible: false,
       voteRedeemModalVisible: false,
       voteConfirmForm: {},
@@ -494,9 +495,8 @@ class VoteContainer extends Component {
 
   getWalletBalance() {
     const { currentWallet, multiTokenContract } = this.state;
-    console.log('this.state', this.state);
     return multiTokenContract.GetBalance.call({
-      symbol: 'ELF',
+      symbol: SYMBOL,
       owner: currentWallet.address
     });
   }
@@ -510,7 +510,7 @@ class VoteContainer extends Component {
   getContractByContractAddress(result, contractAddrValName, contractNickname) {
     // TODO: 补充error 逻辑
     // FIXME: why can't I get the contract by contract name ? In aelf-command it works.
-    console.log('result[contractAddrValName]', result[contractAddrValName])
+    console.log('result[contractAddrValName]', result[contractAddrValName]);
     aelf.chain.contractAt(
       result[contractAddrValName],
       result.wallet,
@@ -549,8 +549,9 @@ class VoteContainer extends Component {
                 }
               ]
             ],
-            APP_NAME // TODO: 这个需要content.js 主动获取
+            APPNAME // TODO: 这个需要content.js 主动获取
           });
+          console.log('nightElf', nightElf);
           if (nightElf) {
             this.setState({
               nightElf
@@ -559,7 +560,7 @@ class VoteContainer extends Component {
               if (result) {
                 nightElf.checkPermission(
                   {
-                    APP_NAME,
+                    APPNAME,
                     type: 'domain'
                   },
                   (error, result) => {
@@ -594,13 +595,14 @@ class VoteContainer extends Component {
   insertKeypairs(result) {
     const { nightElf } = this.state;
     const getLoginPayload = {
-      APP_NAME,
+      appName: APPNAME,
       connectChain: this.connectChain
     };
+    console.log('APPNAME', APPNAME);
     if (result && result.error === 0) {
       const { permissions } = result;
       const payload = {
-        APP_NAME,
+        appName: APPNAME,
         connectChain: this.connectChain,
         result
       };
@@ -622,11 +624,15 @@ class VoteContainer extends Component {
           this.setState({
             showWallet: false
           });
+          console.log('result.errorMessage', result.errorMessage);
           message.error(result.errorMessage.message, 3);
         }
       });
     } else {
-      message.error(result.errorMessage.message, 3);
+      if (result.error === 200005) {
+        this.showModal('pluginLockModalVisible');
+      }
+      // message.error(result.errorMessage.message, 3);
     }
   }
 
@@ -674,6 +680,12 @@ class VoteContainer extends Component {
 
   handleClick(e) {
     const ele = e.target;
+    // To make sure that all the operation use wallet take effects on the correct wallet
+    // It can only be lower case
+    if (ele.dataset.shoulddetectlock) {
+      this.getExtensionKeypairList();
+    }
+
     switch (ele.dataset.role) {
       case 'vote':
         this.getWalletBalance()
@@ -729,14 +741,14 @@ class VoteContainer extends Component {
     );
   }
 
-  togglePluginLockModal(flag) {
-    console.log('<<<<', flag);
-    voteStore.setPluginLockModalVisible(flag);
-    reaction(
-      () => voteStore.pluginLockModalVisible,
-      pluginLockModalVisible => this.setState({ pluginLockModalVisible })
-    );
-  }
+  // togglePluginLockModal(flag) {
+  //   console.log('<<<<', flag);
+  //   voteStore.setPluginLockModalVisible(flag);
+  //   reaction(
+  //     () => voteStore.pluginLockModalVisible,
+  //     pluginLockModalVisible => this.setState({ pluginLockModalVisible })
+  //   );
+  // }
 
   render() {
     const {
@@ -756,7 +768,6 @@ class VoteContainer extends Component {
       dividendContract,
       consensusContract
     } = this.state;
-
 
     return (
       <Provider contractsStore={contractsStore}>
@@ -798,7 +809,12 @@ class VoteContainer extends Component {
                     <KeyInTeamInfo electionContract={electionContract} />
                   )}
                 />
-                <Route path='/vote/team' component={TeamDetail} />
+                <Route
+                  path='/vote/team'
+                  render={() => (
+                    <TeamDetail consensusContract={consensusContract} />
+                  )}
+                />
               </Switch>
               <button
                 onClick={() =>
@@ -902,9 +918,9 @@ class VoteContainer extends Component {
           <Modal
             className='plugin-lock-modal'
             visible={pluginLockModalVisible}
-            onOk={() => this.togglePluginLockModal(false)}
+            onOk={() => this.handleOk('pluginLockModalVisible')}
             // confirmLoading={confirmLoading}
-            onCancel={() => this.togglePluginLockModal(false)}
+            onCancel={() => this.handleCancel('pluginLockModalVisible')}
             centered
             maskClosable
             keyboard
@@ -929,7 +945,7 @@ class VoteContainer extends Component {
             投票数量
           </Col>
           <Col span={16} className='form-item-value'>
-            100 ELF
+            100 {SYMBOL}
           </Col>
         </Row>
         <Row>
@@ -1011,20 +1027,21 @@ class VoteContainer extends Component {
           </Modal>
 
           <button
-            onClick={async () => {
-              voteStore.setPluginLockModalVisible(
-                !voteStore.pluginLockModalVisible
-              );
-              console.log(
-                'pluginLockModalVisible',
-                voteStore.pluginLockModalVisible
-              );
-              reaction(
-                () => voteStore.pluginLockModalVisible,
-                pluginLockModalVisible =>
-                  this.setState({ pluginLockModalVisible })
-              );
-            }}
+            // onClick={async () => {
+            //   voteStore.setPluginLockModalVisible(
+            //     !voteStore.pluginLockModalVisible
+            //   );
+            //   console.log(
+            //     'pluginLockModalVisible',
+            //     voteStore.pluginLockModalVisible
+            //   );
+            //   reaction(
+            //     () => voteStore.pluginLockModalVisible,
+            //     pluginLockModalVisible =>
+            //       this.setState({ pluginLockModalVisible })
+            //   );
+            // }}
+            onClick={() => this.showModal('pluginLockModalVisible')}
           >
             pluginLockModalVisible
           </button>

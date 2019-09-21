@@ -67,6 +67,9 @@ export default class ResourceSellModal extends PureComponent {
 
     requestSell(result) {
         const {menuName, sellNum} = this.state;
+        console.log('result', result);
+        console.log('sellNum', sellNum);
+        console.log('menuName', menuName);
         const payload = {
             symbol: menuName,
             amount: sellNum
@@ -83,6 +86,11 @@ export default class ResourceSellModal extends PureComponent {
             const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
             setTimeout(() => {
                 aelf.chain.getTxResult(transactionId, (error, result) => {
+                    if(!result){
+                        console.log('error', error);
+                        return;
+                    }
+                    console.log('result', result);
                     getStateJudgment(result.Status, transactionId);
                     this.props.onRefresh();
                     this.setState({

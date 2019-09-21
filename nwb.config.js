@@ -24,7 +24,8 @@ module.exports = {
       '@pages': path.resolve('src/pages'),
       '@components': path.resolve('src/components'),
       '@utils': path.resolve('src/utils'),
-      '@store': path.resolve('src/store')
+      '@store': path.resolve('src/store'),
+      '@api': path.resolve('src/api')
     },
     extra: {
       devtool: 'eval'

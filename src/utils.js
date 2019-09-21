@@ -57,12 +57,12 @@ const get = async (url, params, config) => {
     httpErrorHandler(res.problem, res.problem);
 };
 
-const csrf = document.cookie.match(/csrfToken=[^;]*/)[0].replace('csrfToken=', '');
 
 const post = async (url, data, config) => {
     // todo: handle the other case
     if(!config){config = {headers: {}}}
     
+    const csrf = document.cookie.match(/csrfToken=[^;]*/)[0].replace('csrfToken=', '');
     config.headers['x-csrf-token'] = csrf;
     const res = await api.post(url, data, config);
     if (res.ok) {

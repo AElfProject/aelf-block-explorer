@@ -81,6 +81,7 @@ export default class ResourceBuyModal extends PureComponent {
             symbol: menuName,
             amount: buyNum
         };
+        console.log('result', result);
         result.Buy(payload, (error, result) => {
             if (result.error && result.error !== 0) {
                 message.error(result.errorMessage.message, 3);

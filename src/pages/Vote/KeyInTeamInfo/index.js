@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-19 14:56:44
+ * @LastEditTime: 2019-09-21 19:07:13
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -21,7 +21,7 @@ import {
 
 // import PicUpload from './PicUpload';
 import { post, get } from '@src/utils';
-import { pubKey, address } from '@utils/getCurrentWallet';
+import getCurrentWallet from '@utils/getCurrentWallet';
 import { urlRegExp } from '@pages/Vote/constants';
 import { addUrlPrefix } from '@utils/formater';
 import './index.less';
@@ -157,9 +157,11 @@ class CandidateApply extends PureComponent {
   componentDidUpdate(prevProps) {
     const { electionContract } = this.props;
 
-    if (prevProps.electionContract !== electionContract)
+    if (prevProps.electionContract !== electionContract) {
+      const currentWallet = getCurrentWallet();
+
       electionContract.GetCandidateInformation.call({
-        value: pubKey
+        value: currentWallet.pubKey
       })
         .then(res => {
           this.setState(
@@ -170,7 +172,7 @@ class CandidateApply extends PureComponent {
             },
             () => {
               get('/vote/getTeamDesc', {
-                publicKey: pubKey
+                publicKey: currentWallet.pubKey
               })
                 .then(teamDesc => {
                   console.log('teamDesc', teamDesc);
@@ -190,6 +192,7 @@ class CandidateApply extends PureComponent {
         .catch(err => {
           console.log(err);
         });
+    }
   }
 
   remove = k => {

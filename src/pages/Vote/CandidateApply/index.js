@@ -3,19 +3,22 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-19 11:06:50
+ * @LastEditTime: 2019-09-21 20:14:28
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
-import {withRouter} from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 import { Form, Input, Button, Modal, message } from 'antd';
 
 import './index.less';
-import currentWallet from '@utils/getCurrentWallet';
+import getCurrentWallet from '@utils/getCurrentWallet';
 import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE
 } from '@pages/Vote/constants';
+import { SYMBOL } from '@src/constants';
+
+const currentWallet = getCurrentWallet();
 
 const formItemLayout = {
   labelCol: {
@@ -47,7 +50,7 @@ function generateCandidateApplyForm({
         label: '抵押数量',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {ELECTION_MORTGAGE_NUM_STR} ELF
+            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL}
           </span>
         )
       },
@@ -144,7 +147,7 @@ class CandidateApply extends PureComponent {
     });
   }
 
-  handleBack(){
+  handleBack() {
     this.props.history.goBack();
   }
 
@@ -198,7 +201,7 @@ class CandidateApply extends PureComponent {
           maskClosable
           keyboard
         >
-          <Form {...formItemLayout} >
+          <Form {...formItemLayout}>
             {applyConfirmForm.formItems &&
               applyConfirmForm.formItems.map(item => {
                 return (

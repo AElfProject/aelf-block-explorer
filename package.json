@@ -27,6 +27,7 @@
     "mobx-react": "^5.2.8",
     "mobx-state-tree": "^3.3.0",
     "moment": "^2.24.0",
+    "query-string": "^6.8.3",
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
     "react-router": "^4.3.1",

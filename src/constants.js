@@ -40,6 +40,8 @@ const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
 const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
 
+const SYMBOL = 'TELF'; // Sometimes it will change, such as for test enviroment it maybe TELF
+const CHAIN_ID = 'TELF';
 const PAGE_SIZE = 25;
 const TXSSTATUS = {
     // NotExisted: '不存在',
@@ -341,5 +343,7 @@ export {
     RESOURCE_REALTIME_RECORDS,
     RESOURCE_TURNOVER,
     RESOURCE_RECORDS,
-    RESOURCE_DETAILS_COLUMN
+    RESOURCE_DETAILS_COLUMN,
+    SYMBOL,
+    CHAIN_ID
 }

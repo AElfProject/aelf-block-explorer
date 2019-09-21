@@ -66,6 +66,7 @@ export default class Resource extends Component {
             });
         });
         NightElfCheck.getInstance().check.then(item => {
+            console.log('item', item);
             if (item) {
                 nightElf = new window.NightElf.AElf({
                     httpProvider: [
@@ -102,6 +103,7 @@ export default class Resource extends Component {
                 }
             }
         }).catch(error => {
+            console.log('error', error)
             this.setState({
                 showDownloadPlugins: true
             });
