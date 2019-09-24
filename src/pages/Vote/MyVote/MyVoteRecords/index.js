@@ -12,6 +12,7 @@ const myVoteRecordsCols = [
   },
   {
     title: 'Node Name',
+    dataIndex: 'name',
     key: 'nodeName'
   },
   {
@@ -21,7 +22,7 @@ const myVoteRecordsCols = [
   },
   {
     title: 'Vote Amount',
-    dataIndex: 'voteAmount',
+    dataIndex: 'amount',
     key: 'voteAmount'
   },
   {
@@ -36,6 +37,7 @@ const myVoteRecordsCols = [
   },
   {
     title: 'Operation Time',
+    dataIndex: 'operationTime',
     key: 'operationTime'
   },
   {
@@ -62,6 +64,8 @@ const pagination = {
 
 class MyVoteRecords extends Component {
   render() {
+    const { data } = this.props;
+
     return (
       <section>
         <h2 className={`${clsPrefix}-header`}>
@@ -77,7 +81,7 @@ class MyVoteRecords extends Component {
         </h2>
         <Table
           columns={myVoteRecordsCols}
-          // dataSource={nodeList}
+          dataSource={data}
           // onChange={handleTableChange}
           // loading={loading}
           pagination={pagination}

@@ -11,6 +11,7 @@ import {feeReceiverContract, tokenConverter, multiToken} from '../../../../../..
 import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import './ResourceSell.less';
+import {SYMBOL} from '@src/constants';
 
 export default class ResourceSell extends Component {
     constructor(props) {
@@ -369,7 +370,7 @@ export default class ResourceSell extends Component {
                                 />
                             </Col>
                         </Row>
-                        <div className='ELF-value'>≈ {this.state.ELFValue} ELF</div>
+                        <div className='ELF-value'>≈ {this.state.ELFValue} {SYMBOL}</div>
                         <Row type='flex' align='middle'>
                             <Col span={6} style={{color: '#fff'}}>Available</Col>
                             <Col span={18}>

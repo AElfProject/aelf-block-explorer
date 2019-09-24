@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-21 19:07:13
+ * @LastEditTime: 2019-09-23 23:49:04
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -23,7 +23,7 @@ import {
 import { post, get } from '@src/utils';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { urlRegExp } from '@pages/Vote/constants';
-import { addUrlPrefix } from '@utils/formater';
+import { addUrlPrefix, removeUrlPrefix } from '@utils/formater';
 import './index.less';
 
 // const reg = /^[.-\w]+$/;
@@ -92,7 +92,8 @@ function generateTeamInfoKeyInForm(data) {
       {
         label: 'Location',
         validator: {
-          fieldDecoratorid: 'location'
+          fieldDecoratorid: 'location',
+          initialValue: data.location
         },
         placeholder: 'Input your location:'
       },
@@ -105,7 +106,8 @@ function generateTeamInfoKeyInForm(data) {
               pattern: urlRegExp,
               message: 'The input is not valid url!'
             }
-          ]
+          ],
+          initialValue: data.officialWebsite
         },
         render: (
           <Input addonBefore='https://' placeholder='Input your website:' />
@@ -120,14 +122,16 @@ function generateTeamInfoKeyInForm(data) {
               message: 'The input is not valid E-mail!'
             }
           ],
-          fieldDecoratorid: 'mail'
+          fieldDecoratorid: 'mail',
+          initialValue: data.mail
         },
         placeholder: 'Input your email:'
       },
       {
         label: 'Intro',
         validator: {
-          fieldDecoratorid: 'intro'
+          fieldDecoratorid: 'intro',
+          initialValue: data.intro
         },
         render: (
           <TextArea
@@ -154,44 +158,22 @@ class CandidateApply extends PureComponent {
     this.handleBack = this.handleBack.bind(this);
   }
 
+  // todo: do the same thing when cdm and cdu, how to optimize?
+  // cdm: jump from Vote; cdu: enter from url
+
+  componentDidMount() {
+    const { electionContract } = this.props;
+
+    if (electionContract !== null) {
+      this.fetchCandidateInfo();
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const { electionContract } = this.props;
 
     if (prevProps.electionContract !== electionContract) {
-      const currentWallet = getCurrentWallet();
-
-      electionContract.GetCandidateInformation.call({
-        value: currentWallet.pubKey
-      })
-        .then(res => {
-          this.setState(
-            {
-              // todo: for dev
-              // hasAuth: res.isCurrentCandidate
-              hasAuth: true
-            },
-            () => {
-              get('/vote/getTeamDesc', {
-                publicKey: currentWallet.pubKey
-              })
-                .then(teamDesc => {
-                  console.log('teamDesc', teamDesc);
-                  if (teamDesc.code !== 0) return;
-                  this.setState({
-                    teamInfoKeyInForm: generateTeamInfoKeyInForm({
-                      ...teamDesc.data
-                    })
-                  });
-                })
-                .catch(err => {
-                  console.error('err', err);
-                });
-            }
-          );
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.fetchCandidateInfo();
     }
   }
 
@@ -223,32 +205,87 @@ class CandidateApply extends PureComponent {
     });
   };
 
+  formatResData(data) {
+    data.avatar;
+  }
+
+  fetchCandidateInfo() {
+    const { electionContract } = this.props;
+    const currentWallet = getCurrentWallet();
+    electionContract.GetCandidateInformation.call({
+      value: currentWallet.pubKey
+    })
+      .then(res => {
+        this.setState(
+          {
+            // todo: for dev
+            hasAuth: res.isCurrentCandidate
+          },
+          () => {
+            get('/vote/getTeamDesc', {
+              publicKey: currentWallet.pubKey
+            })
+              .then(res => {
+                console.log('res', res);
+                if (res.code !== 0) return;
+                const values = res.data;
+                this.processUrl(values, removeUrlPrefix);
+                this.setState({
+                  teamInfoKeyInForm: generateTeamInfoKeyInForm(values)
+                });
+              })
+              .catch(err => {
+                console.error('err', err);
+              });
+          }
+        );
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
+  // todo: optimize
+  processUrl(values, processor) {
+    ['avatar', 'officialWebsite', 'socials'].forEach(item => {
+      const value = values[item];
+      if (value === undefined || value === null) return;
+      if (Array.isArray(value)) {
+        values[item] = value.map(subItem => {
+          if (subItem === undefined || value === null) return;
+          return processor(subItem);
+        });
+      } else {
+        if (value === undefined || value === null) return;
+        values[item] = processor(value);
+      }
+    });
+  }
+
   handleSubmit(e) {
     e.preventDefault();
+    const currentWallet = getCurrentWallet();
+    // todo: unify the name of public key. e.g. publicKey & pubkey & pubKey
+    const publicKey = `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`;
+
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        ['avatar', 'officialWebsite', 'socials'].forEach(item => {
-          const value = values[item];
-          if (value === undefined || value === null) return;
-          if (Array.isArray(value)) {
-            values[item] = value.map(subItem => {
-              if (subItem === undefined || value === null) return;
-              return addUrlPrefix(subItem);
-            });
-          } else {
-            if (value === undefined || value === null) return;
-            values[item] = addUrlPrefix(value);
-          }
-        });
-        values.socials = null;
+        this.processUrl(values, addUrlPrefix);
+        // values.socials = null;
+        delete values.keys; // remove unneed element
         post('/vote/addTeamDesc', {
           isActive: true,
-          publicKey: pubKey,
-          address,
+          publicKey,
+          address: currentWallet.address,
           ...values
         }).then(res => {
-          if (res.code === 0) this.props.history.push('/vote/team/');
+          if (res.code === 0)
+            this.props.history.push({
+              pathname: '/vote/team',
+              search: `pubkey=${publicKey}`
+            });
           else {
+            console.error(res);
             message.error(res.msg);
           }
         });
@@ -267,7 +304,7 @@ class CandidateApply extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { hasAuth, teamInfoKeyInForm } = this.state;
 
-    getFieldDecorator('keys', { initialValue: [0] });
+    getFieldDecorator('keys', { initialValue: [githu] });
     const keys = getFieldValue('keys');
     const formItems = keys.map((k, index) => (
       <Form.Item
@@ -312,6 +349,8 @@ class CandidateApply extends PureComponent {
         ) : null}
       </Form.Item>
     ));
+
+    console.log('hasAuth', hasAuth);
 
     return (
       <section

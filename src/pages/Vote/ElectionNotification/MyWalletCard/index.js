@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Button, Icon, Modal, message } from 'antd';
+import moment from 'moment';
 
 import './index.less';
 // import { inject, observer } from 'mobx-react';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
-import { TOKEN_CONTRACT_DECIMAL, schemeIds } from '@pages/Vote/constants';
+import { TOKEN_CONTRACT_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
-import { SYMBOL } from '@src/constants';
+import { schemeIds } from '@src/pages/Vote/constants';
 
 const clsPrefix = 'my-wallet-card';
 
@@ -88,11 +89,15 @@ export default class MyWalletCard extends PureComponent {
     const { electionContract } = this.props;
     const currentWallet = getCurrentWallet();
 
-    electionContract.GetElectorVote.call({
+    electionContract.GetElectorVoteWithRecords.call({
       value: currentWallet.pubKey
     })
       .then(res => {
-        const { activeVotedVotesAmount, allVotedVotesAmount } = res;
+        console.log('res', res);
+        let { activeVotedVotesAmount } = res;
+        const { allVotedVotesAmount, activeVotingRecords } = res;
+        this.computedLastestUnlockTime(activeVotingRecords);
+        activeVotedVotesAmount = +activeVotedVotesAmount;
         const withdrawnVotedVotesAmount =
           allVotedVotesAmount - activeVotedVotesAmount;
         this.setState({
@@ -103,6 +108,14 @@ export default class MyWalletCard extends PureComponent {
       .catch(err => {
         console.error('fetchElectorVoteInfo', err);
       });
+  }
+
+  computedLastestUnlockTime(activeVotingRecords) {
+    const lastestUnlockTimestamp = activeVotingRecords.sort(
+      (a, b) => a.unlockTimestamp.seconds - b.unlockTimestamp.seconds
+    )[0];
+    // todo: time is wrong
+    console.log('lastestUnlockTimestamp', moment().set('second', lastestUnlockTimestamp.unlockTimestamp.seconds).format("YYYY-MM-DD"));
   }
 
   fetchProfitAmount() {
@@ -121,6 +134,8 @@ export default class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
+    console.log('balance', balance);
+    console.log('activeVotedVotesAmount', activeVotedVotesAmount);
     this.setState({
       totalAssets: activeVotedVotesAmount + balance
     });
@@ -179,6 +194,7 @@ export default class MyWalletCard extends PureComponent {
       activeVotedVotesAmount,
       totalAssets
     } = this.state;
+    console.log('totalAssets', totalAssets);
 
     const currentWallet = getCurrentWallet();
 

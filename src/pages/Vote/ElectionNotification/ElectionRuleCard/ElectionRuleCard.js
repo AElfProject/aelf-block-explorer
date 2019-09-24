@@ -4,7 +4,8 @@ import { Button } from 'antd';
 
 import './ElectionRuleCard.style.less';
 
-export default memo(function ElectionRuleCard() {
+export default memo(function ElectionRuleCard(props) {
+  const { isCandidate } = props;
   return (
     <section className='election-rule-card'>
       <p className='election-intro'>
@@ -16,7 +17,11 @@ export default memo(function ElectionRuleCard() {
           <a href=''>查看节点竞选计划书 ></a>
         </button>
         <Button type='primary' className='apply-to-be-a-node-btn'>
-          <Link to='/vote/apply'>成为候选节点</Link>
+          {isCandidate ? (
+            <Link to='/vote/apply/keyin'>修改团队信息</Link>
+          ) : (
+            <Link to='/vote/apply'>成为候选节点</Link>
+          )}
         </Button>
       </div>
     </section>

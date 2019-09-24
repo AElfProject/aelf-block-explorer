@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-21 20:14:28
+ * @LastEditTime: 2019-09-23 19:44:26
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -17,6 +17,9 @@ import {
   HARDWARE_ADVICE
 } from '@pages/Vote/constants';
 import { SYMBOL } from '@src/constants';
+import { aelf } from '@src/utils';
+import getStateJudgment from '@utils/getStateJudgment';
+import { electionContractAddr } from '@config/config';
 
 const currentWallet = getCurrentWallet();
 
@@ -121,15 +124,41 @@ class CandidateApply extends PureComponent {
   }
 
   handleOk() {
-    const { electionContract } = this.props;
-    electionContract
-      .AnnounceElection()
-      .then(() => {
-        this.props.history.push('/vote/apply/keyin');
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    const { nightElf } = this.props;
+    const currentWallet = getCurrentWallet();
+    const wallet = {
+      address: currentWallet.address
+    };
+    // todo: there are the same code in Vote.js
+    // todo: error handle
+    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
+      if (result) {
+        const electionContract = result;
+        electionContract
+        .AnnounceElection()
+        .then(res => {
+          const transactionId = res.result
+            ? res.result.TransactionId
+            : res.TransactionId;
+          setTimeout(() => {
+            console.log('transactionId', transactionId);
+            aelf.chain.getTxResult(transactionId, (error, result) => {
+              console.log('result', result);
+              const { Status: status } = result;
+              getStateJudgment(status, transactionId);
+              // todo: handle the other status case
+              if (status === 'Mined') {
+                this.props.history.push('/vote/apply/keyin');
+              }
+            });
+          }, 4000);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+      }
+    })
+
     // this.setState({
     //   applyConfirmVisible: false
     // })

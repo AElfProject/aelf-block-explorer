@@ -13,6 +13,7 @@ import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
 import contractChange from '../../../../../../utils/contractChange';
 import './ResourceBuy.less';
+import {SYMBOL} from '@src/constants';
 
 export default class ResourceBuy extends Component {
     constructor(props) {
@@ -291,7 +292,7 @@ export default class ResourceBuy extends Component {
         const contract = result || null;
         if (contract) {
             const payload = {
-                symbol: 'ELF',
+                symbol: SYMBOL,
                 spender: feeReceiverContract,
                 amount: ELFValue + parseInt(ELFValue * 0.05, 10)
             };
@@ -371,13 +372,13 @@ export default class ResourceBuy extends Component {
                                 />
                             </Col>
                         </Row>
-                        <div className='ELF-value'>≈ {this.state.ELFValue} ELF</div>
+                        <div className='ELF-value'>≈ {this.state.ELFValue} {SYMBOL}</div>
                         <Row type='flex' align='middle'>
                             <Col span={6} style={{color: '#fff'}}>Available</Col>
                             <Col span={18}>
                                 <Input
                                     value={account.balabce}
-                                    addonAfter={'ELF'}
+                                    addonAfter={SYMBOL}
                                     disabled={true}
                                 />
                             </Col>
@@ -385,7 +386,7 @@ export default class ResourceBuy extends Component {
                     </div>
                     <div className='trading-slide'>
                         {sliderHTML}
-                        <div className='ElF-value'>{purchaseQuantity} ELF</div>
+                        <div className='ElF-value'>{purchaseQuantity} {SYMBOL}</div>
                     </div>
                     <div
                         className='trading-button'

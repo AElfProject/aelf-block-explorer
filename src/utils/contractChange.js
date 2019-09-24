@@ -14,6 +14,7 @@ export default function contractChange(nightElf, values, currentWallet, appName)
         let consensus = false;
         let dividend = false;
         let resource = false;
+        console.log('contractChange<<<<<')
         if (contract.indexOf(config.multiToken) === -1) {
             token = true;
         }
@@ -61,6 +62,12 @@ export default function contractChange(nightElf, values, currentWallet, appName)
                         contractAddress: config.tokenConverter,
                         contractName: 'Token Converter',
                         description: 'contract Token Converter',
+                        github: ''
+                    }, {
+                        chainId: CHAIN_ID,
+                        contractAddress: config.electionContractAddr,
+                        contractName: 'Election',
+                        description: 'contract Election',
                         github: ''
                     }]
                 }

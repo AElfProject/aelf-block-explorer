@@ -35,6 +35,12 @@ export default class ResourceDetail extends PureComponent {
         this.setState({
             loading: true
         });
+        console.log('<<<GetRecords', {
+            limit: PAGE_SIZE,
+            page: page,
+            order: 'desc',
+            address
+        })
         const data = await get(RESOURCE_RECORDS, {
             limit: PAGE_SIZE,
             page: page,

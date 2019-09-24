@@ -8,6 +8,8 @@ import {Row, Col, Spin} from 'antd';
 import Svg from '../../../../components/Svg/Svg';
 import {Link} from 'react-router-dom';
 import './ResourceAElfWallet.less';
+import {SYMBOL, TOKEN_CONTRACT_DECIMAL} from '@src/constants';
+import {thousandsCommaWithDecimal} from '@utils/formater'
 
 export default class ResourceAElfWallet extends PureComponent {
     constructor(props) {
@@ -93,7 +95,7 @@ export default class ResourceAElfWallet extends PureComponent {
     getCurrentWalletBalance = async () => {
         const {tokenContract, currentWallet} = this.state;
         const payload = {
-            symbol: 'ELF',
+            symbol: SYMBOL,
             owner: currentWallet.address || currentWallet
         };
         tokenContract.GetBalance.call(payload, (error, result) => {
@@ -240,7 +242,9 @@ export default class ResourceAElfWallet extends PureComponent {
                             <Col xs={24} sm={24} md={24} lg={24} xl={18} xxl={18} style={{paddingLeft: '1%'}}>
                                 <Row gutter={16} type='flex' align='middle'>
                                     <Col span={19} style={{marginTop: '10px'}}>
-                                        Account balance: <span className='number' >{balance} ELF</span>
+                                        {/* todo:  */}
+                                        {/* Account balance: <span className='number' >{thousandsCommaWithDecimal(balance/TOKEN_CONTRACT_DECIMAL)} {SYMBOL}</span> */}
+                                        Account balance: <span className='number' >{balance} {SYMBOL}</span>
                                     </Col>
                                 </Row>
                                 <Row style={{marginTop: '20px'}} gutter={16}>

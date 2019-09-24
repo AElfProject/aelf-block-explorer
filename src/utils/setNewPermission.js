@@ -11,6 +11,7 @@ export default function setNewPermission(nightElf, payload) {
         address
     } = payload;
     console.log('<<<<<payload', payload)
+    console.log('config.electionContractAddr', config.electionContractAddr)
     nightElf.setContractPermission({
         appName,
         chainId: CHAIN_ID,
@@ -39,6 +40,12 @@ export default function setNewPermission(nightElf, payload) {
                 contractAddress: config.tokenConverter,
                 contractName: 'Token Converter',
                 description: 'contract Token Converter',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                contractAddress: config.electionContractAddr,
+                contractName: 'Election',
+                description: 'contract Election',
                 github: ''
             }]
         }

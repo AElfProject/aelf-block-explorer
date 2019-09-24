@@ -40,9 +40,16 @@ const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
 const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
 
-const SYMBOL = 'TELF'; // Sometimes it will change, such as for test enviroment it maybe TELF
-const CHAIN_ID = 'TELF';
+// 不删档节点
+// const SYMBOL = 'TELF';
+// const CHAIN_ID = 'TELF';
+
+// others 
+const SYMBOL = 'ELF';
+const CHAIN_ID = 'AELF';
+
 const PAGE_SIZE = 25;
+const TOKEN_CONTRACT_DECIMAL = 100000000;
 const TXSSTATUS = {
     // NotExisted: '不存在',
     // Pending: '交易中',
@@ -345,5 +352,6 @@ export {
     RESOURCE_RECORDS,
     RESOURCE_DETAILS_COLUMN,
     SYMBOL,
-    CHAIN_ID
+    CHAIN_ID,
+    TOKEN_CONTRACT_DECIMAL
 }

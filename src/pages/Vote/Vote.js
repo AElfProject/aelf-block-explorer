@@ -3,26 +3,15 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-21 22:18:41
+ * @LastEditTime: 2019-09-24 16:40:46
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
-import {
-  Tabs,
-  Modal,
-  Form,
-  Input,
-  DatePicker,
-  Button,
-  Table,
-  message,
-  Row,
-  Col
-} from 'antd';
-import moment from 'moment';
+import { Tabs, Modal, Form, Input, Button, message } from 'antd';
 import { Switch, Route, Link } from 'react-router-dom';
 import { toJS, reaction } from 'mobx';
 import { Provider } from 'mobx-react';
+import moment from 'moment';
 
 import './Vote.style.less';
 import NightElfCheck from '@utils/NightElfCheck';
@@ -31,31 +20,25 @@ import getLogin from '@utils/getLogin';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getContractAddress from '@utils/getContractAddress';
 import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
+// import NumericInput from '@components/NumericInput';
 import { DEFAUTRPCSERVER as DEFAUT_RPC_SERVER, APPNAME } from '@config/config';
 import { aelf } from '@src/utils';
-import voteStore from '@store/vote';
+// import voteStore from '@store/vote';
 import contractsStore from '@store/contracts';
 import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
 import CandidateApply from './CandidateApply';
 import KeyInTeamInfo from './KeyInTeamInfo';
 import TeamDetail from './TeamDetail';
-import { contractsNeedToLoad, TOKEN_CONTRACT_DECIMAL } from './constants';
-import { SYMBOL } from '@src/constants';
+import VoteModal from './VoteModal';
+import { contractsNeedToLoad } from './constants';
+import { SYMBOL, TOKEN_CONTRACT_DECIMAL } from '@src/constants';
+import getStateJudgment from '@utils/getStateJudgment';
+import { electionContractAddr } from '@config/config';
+import getCurrentWallet from '@utils/getCurrentWallet';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 }
-  }
-};
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -101,180 +84,6 @@ const columns = [
   }
 ];
 
-function disabledDate(current) {
-  // Can not select days before today and today
-  return current && current < moment().endOf('day');
-}
-
-function generateFormGroup({
-  nodeAddress,
-  currentWalletName,
-  currentWalletBalance
-}) {
-  return [
-    {
-      type: '从钱包投',
-      formItems: [
-        {
-          label: '节点名称'
-        },
-        {
-          label: '地址',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {nodeAddress}
-            </span>
-          )
-        },
-        {
-          label: '钱包',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {currentWalletName}
-            </span>
-          )
-        },
-        {
-          label: '可用票数',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {currentWalletBalance} {SYMBOL}
-            </span>
-          )
-        },
-        {
-          label: '投票数量',
-          render: (
-            <div>
-              <Input
-                suffix={SYMBOL}
-                placeholder='Enter vote amount'
-                style={{ marginRight: 20 }}
-              />
-              <Button type='primary'>All In</Button>
-            </div>
-          )
-        },
-        {
-          label: '锁定期',
-          render: (
-            <div>
-              <DatePicker disabledDate={disabledDate} />
-              <span className='tip-color' style={{ marginLeft: 10 }}>
-                锁定期内不支持提币和转账
-              </span>
-            </div>
-          )
-        },
-        {
-          label: '预估投票收益',
-          render: (
-            <div>
-              <Input />
-              <span className='tip-color' style={{ marginLeft: 10 }}>
-                投票收益=(锁定期*票数/总票数)*分红池奖励*20%
-              </span>
-            </div>
-          )
-        }
-      ]
-    },
-    {
-      type: '从过期投票转投',
-      formItems: [
-        {
-          label: '节点名称'
-        },
-        {
-          label: '地址',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {nodeAddress}
-            </span>
-          )
-        },
-        {
-          label: '过期票数'
-        },
-        {
-          label: '投票数量',
-          render: (
-            <div>
-              <Input
-                suffix={SYMBOL}
-                placeholder='Enter vote amount'
-                style={{ marginRight: 20 }}
-              />
-              <Button type='primary'>All In</Button>
-            </div>
-          )
-        },
-        {
-          label: '锁定期',
-          render: (
-            <div>
-              <DatePicker disabledDate={disabledDate} />
-              <span className='tip-color' style={{ marginLeft: 10 }}>
-                锁定期内不支持提币和转账
-              </span>
-            </div>
-          )
-        },
-        {
-          label: '预估投票收益',
-          render: (
-            <div>
-              <Input />
-              <span className='tip-color' style={{ marginLeft: 10 }}>
-                投票收益=(锁定期*票数/总票数)*分红池奖励*20%
-              </span>
-            </div>
-          )
-        }
-      ]
-    },
-    {
-      type: '从未过期投票转投',
-      formItems: [
-        {
-          label: '节点名称'
-        },
-        {
-          label: '地址',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {nodeAddress}
-            </span>
-          )
-        },
-        {
-          label: '投票记录选择',
-          render: (
-            <div>
-              <Search
-                placeholder='Input Node Name'
-                onSearch={value => console.log(value)}
-                style={{ width: 200 }}
-              />
-              <Table dataSource={dataSource} columns={columns} />
-            </div>
-          )
-        }
-      ]
-    }
-  ];
-}
-
 function generateVoteConfirmForm({
   nodeAddress,
   currentWalletName,
@@ -317,7 +126,7 @@ function generateVoteConfirmForm({
         label: '投票数量',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {'...'} {SYMBOL}
+            {this.state.voteAmountInput} {SYMBOL}
           </span>
         )
       },
@@ -326,7 +135,8 @@ function generateVoteConfirmForm({
         label: '锁定期',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {'...'} <span className='tip-color'>锁定期内不支持提币和转账</span>
+            {this.state.lockTime.format('MMMM Do YYYY')}{' '}
+            <span className='tip-color'>锁定期内不支持提币和转账</span>
           </span>
         )
       },
@@ -430,8 +240,6 @@ function generateVoteRedeemForm({
   };
 }
 
-let formGroup = generateFormGroup({ nodeAddress: null });
-
 class VoteContainer extends Component {
   constructor(props) {
     super(props);
@@ -453,19 +261,32 @@ class VoteContainer extends Component {
       voteContract: contractsStore.voteContract,
       electionContract: contractsStore.electionContract,
       profitContract: contractsStore.profitContract,
-      showDownloadPlugin: false
+      showDownloadPlugin: false,
+
+      balance: null,
+      formatedBalance: null,
+      nodeAddress: null,
+      nodeName: null,
+      currentWalletName: null,
+      voteAmountInput: null,
+      lockTime: null,
+      isCandidate: false
     };
 
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleTabsChange = this.handleTabsChange.bind(this);
-    this.handleVoteNext = this.handleVoteNext.bind(this);
+    this.voteNextCallback = this.voteNextCallback.bind(this);
+    // this.handleAllIn = this.handleAllIn.bind(this);
+    this.handleVoteAmountChange = this.handleVoteAmountChange.bind(this);
+    this.handleLockTimeChange = this.handleLockTimeChange.bind(this);
+    this.handleVoteConfirmOk = this.handleVoteConfirmOk.bind(this);
+
+    this.formGroup = null;
   }
 
   async componentDidMount() {
-    console.log(this.state);
     // Get contracts
     try {
       const result = await getContractAddress();
@@ -491,6 +312,20 @@ class VoteContainer extends Component {
       console.error(e);
     }
     this.getExtensionKeypairList();
+  }
+
+  // handleAllIn() {
+  //   const { balance } = this.state;
+
+  //   this.setState({
+  //     voteAmountInput: balance
+  //   });
+  // }
+
+  handleVoteAmountChange(value) {
+    this.setState({
+      voteAmountInput: value
+    });
   }
 
   getWalletBalance() {
@@ -525,6 +360,10 @@ class VoteContainer extends Component {
           this.chainInfo = contract;
           // todo: We shouldn't get vote info by consensus contract
           // this.getInformation(result);
+        }
+
+        if (contractNickname === 'electionContract') {
+          this.judgeIsCandidate();
         }
       }
     );
@@ -678,6 +517,25 @@ class VoteContainer extends Component {
       });
   }
 
+  judgeIsCandidate() {
+    const { electionContract } = this.state;
+    const currentWallet = getCurrentWallet();
+
+    // todo: unify the pubkey's getter
+    electionContract.GetCandidateInformation.call({
+      value: `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`
+    })
+      .then(res => {
+        console.log('GetCandidateInformation', res);
+        this.setState({
+          isCandidate: res.isCurrentCandidate
+        });
+      })
+      .catch(err => {
+        console.error('GetCandidateInformation', err);
+      });
+  }
+
   handleClick(e) {
     const ele = e.target;
     // To make sure that all the operation use wallet take effects on the correct wallet
@@ -690,15 +548,28 @@ class VoteContainer extends Component {
       case 'vote':
         this.getWalletBalance()
           .then(res => {
-            const balance = thousandsCommaWithDecimal(
-              +res.balance / TOKEN_CONTRACT_DECIMAL
-            );
-            formGroup = generateFormGroup({
+            // todo: unify balance formater: InputNumber's and thousandsCommaWithDecimal's
+            const balance = +res.balance / TOKEN_CONTRACT_DECIMAL;
+            const formatedBalance = thousandsCommaWithDecimal(balance);
+            // debugger;
+            this.setState({
+              balance
+            });
+            // this.formGroup = generateFormGroup.call(this, {
+            //   nodeAddress: ele.dataset.nodeaddress,
+            //   currentWalletName: JSON.parse(
+            //     localStorage.getItem('currentWallet')
+            //   ).name,
+            //   currentWalletBalance: formatedBalance,
+            //   nodeName: ele.dataset.nodename
+            // });
+            this.setState({
               nodeAddress: ele.dataset.nodeaddress,
               currentWalletName: JSON.parse(
                 localStorage.getItem('currentWallet')
               ).name,
-              currentWalletBalance: balance
+              formatedBalance: formatedBalance,
+              nodeName: ele.dataset.nodename
             });
             this.showModal('voteModalVisible');
             // this.setState({
@@ -721,15 +592,14 @@ class VoteContainer extends Component {
     }
   }
 
-  handleTabsChange(key) {
-    this.setState({
-      voteFrom: key
+  voteNextCallback() {
+    const voteConfirmForm = generateVoteConfirmForm.call(this, {
+      need: ['voteAmount', 'lockTime']
     });
-  }
 
-  handleVoteNext() {
     this.setState(
       {
+        voteConfirmForm,
         voteModalVisible: false
       },
       () => {
@@ -741,6 +611,13 @@ class VoteContainer extends Component {
     );
   }
 
+  handleLockTimeChange(value) {
+    console.log('value', value);
+    this.setState({
+      lockTime: value
+    });
+  }
+
   // togglePluginLockModal(flag) {
   //   console.log('<<<<', flag);
   //   voteStore.setPluginLockModalVisible(flag);
@@ -749,6 +626,51 @@ class VoteContainer extends Component {
   //     pluginLockModalVisible => this.setState({ pluginLockModalVisible })
   //   );
   // }
+
+  handleVoteConfirmOk() {
+    const { nightElf, lockTime, voteAmountInput, nodeAddress } = this.state;
+    // const timeMS = moment(lockTime).getMilliseconds();
+    // console.log('ms', timeMS);
+    const payload = {
+      candidatePubkey: nodeAddress,
+      amount: voteAmountInput,
+      // todo: add decimal or not
+      // amount: voteAmountInput * TOKEN_CONTRACT_DECIMAL,
+      endTimestamp: {
+        // Seconds: Math.floor(timeMS / 1000),
+        // Nanos: (timeMS % 1000) * 1e6
+        seconds: moment(lockTime).unix(),
+        nanos: moment(lockTime).milliseconds() * 1000
+      }
+    };
+    console.log('payload', payload);
+    const currentWallet = getCurrentWallet();
+    const wallet = {
+      address: currentWallet.address
+    };
+    // todo: get the contract from extension in cdm or other suitable time
+    // todo: error handle
+    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
+      if (result) {
+        const electionContract = result;
+        electionContract
+          .Vote(payload)
+          .then(res => {
+            const transactionId = res.result
+              ? res.result.TransactionId
+              : res.TransactionId;
+            setTimeout(() => {
+              console.log('transactionId', transactionId);
+              aelf.chain.getTxResult(transactionId, (error, result) => {
+                console.log('result', result);
+                getStateJudgment(result.Status, transactionId);
+              });
+            }, 4000);
+          })
+          .catch(err => console.error(err));
+      }
+    });
+  }
 
   render() {
     const {
@@ -766,8 +688,20 @@ class VoteContainer extends Component {
       multiTokenContract,
       profitContract,
       dividendContract,
-      consensusContract
+      consensusContract,
+      balance,
+      formatedBalance,
+      nodeAddress,
+      nodeName,
+      currentWalletName,
+      voteAmountInput,
+      lockTime,
+      nightElf,
+      isCandidate
     } = this.state;
+
+    // todo: decouple
+    // this.formGroup = generateFormGroup.call(this, { nodeAddress: null });
 
     return (
       <Provider contractsStore={contractsStore}>
@@ -777,8 +711,12 @@ class VoteContainer extends Component {
           ) : null}
           <Tabs defaultActiveKey='1' className='secondary-level-nav'>
             <TabPane
-              tab={<Link to='/vote'>Election Notification</Link>}
-              key='1'
+              tab={
+                <Link to='/vote' style={{ color: '#fff' }}>
+                  Election Notification
+                </Link>
+              }
+              key='electionNotification'
             >
               <Switch>
                 <Route
@@ -792,15 +730,21 @@ class VoteContainer extends Component {
                       profitContract={profitContract}
                       dividendContract={dividendContract}
                       consensusContract={consensusContract}
+                      nightElf={nightElf}
+                      isCandidate={isCandidate}
                     />
                   )}
+                  s
                 />
                 <Route
                   exact
                   path='/vote/apply'
                   electionContract={electionContract}
                   render={() => (
-                    <CandidateApply electionContract={electionContract} />
+                    <CandidateApply
+                      electionContract={electionContract}
+                      nightElf={nightElf}
+                    />
                   )}
                 />
                 <Route
@@ -812,7 +756,10 @@ class VoteContainer extends Component {
                 <Route
                   path='/vote/team'
                   render={() => (
-                    <TeamDetail consensusContract={consensusContract} />
+                    <TeamDetail
+                      consensusContract={consensusContract}
+                      electionContract={electionContract}
+                    />
                   )}
                 />
               </Switch>
@@ -852,68 +799,25 @@ class VoteContainer extends Component {
                 show vote redeem modal
               </button>
             </TabPane>
-            <TabPane tab='我的投票' key='2'>
-              <MyVote />
+            <TabPane tab='My Vote' key='myVote' style={{ color: '#fff' }}>
+              <MyVote electionContract={electionContract} />
             </TabPane>
           </Tabs>
 
-          <Modal
-            title='节点投票'
-            visible={voteModalVisible}
-            onOk={this.handleVoteNext}
-            // confirmLoading={confirmLoading}
+          <VoteModal
+            voteModalVisible={voteModalVisible}
+            formatedBalance={formatedBalance}
+            nodeAddress={nodeAddress}
+            nodeName={nodeName}
+            currentWalletName={currentWalletName}
+            balance={balance}
+            callback={this.voteNextCallback}
             onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
-            width={860}
-            okText='Next'
-            centered
-            maskClosable
-            keyboard
-          >
-            <Tabs defaultActiveKey='1' onChange={this.handleTabsChange}>
-              {formGroup.map((form, index) => {
-                return (
-                  <TabPane
-                    tab={
-                      <span>
-                        <input
-                          type='radio'
-                          checked={index + 1 === +voteFrom}
-                          value={form.type}
-                          style={{ marginRight: 10 }}
-                        />
-                        <label htmlFor={form.type}>{form.type}</label>
-                      </span>
-                    }
-                    key={index + 1}
-                  >
-                    {/* <ElectionNotification /> */}
-                    <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-                      {form.formItems.map(item => {
-                        return (
-                          <Form.Item label={item.label} key={item.label}>
-                            {/* {getFieldDecorator('email', {
-                rules: [
-                  {
-                    type: 'email',
-                    message: 'The input is not valid E-mail!'
-                  },
-                  {
-                    required: true,
-                    message: 'Please input your E-mail!'
-                  }
-                ]
-              })(<Input />)} */}
-                            {item.render ? item.render : <Input />}
-                          </Form.Item>
-                        );
-                      })}
-                    </Form>
-                  </TabPane>
-                );
-              })}
-            </Tabs>
-            <p className='tip-color'>本次投票将扣除2ELF的手续费</p>
-          </Modal>
+            handleVoteAmountChange={this.handleVoteAmountChange}
+            handleLockTimeChange={this.handleLockTimeChange}
+            voteAmountInput={voteAmountInput}
+            lockTime={lockTime}
+          />
 
           <Modal
             className='plugin-lock-modal'
@@ -932,7 +836,7 @@ class VoteContainer extends Component {
             className='vote-confirm-modal'
             title='Vote Confirm'
             visible={voteConfirmModalVisible}
-            // onOk={this.handleOk.bind(this, 'voteConfirmModalVisible')}
+            onOk={this.handleVoteConfirmOk}
             // confirmLoading={confirmLoading}
             onCancel={this.handleCancel.bind(this, 'voteConfirmModalVisible')}
             width={860}
@@ -940,29 +844,6 @@ class VoteContainer extends Component {
             maskClosable
             keyboard
           >
-            {/* <Row>
-          <Col span={8} className='form-item-label'>
-            投票数量
-          </Col>
-          <Col span={16} className='form-item-value'>
-            100 {SYMBOL}
-          </Col>
-        </Row>
-        <Row>
-          <Col span={8} className='form-item-label'>
-            锁定期
-          </Col>
-          <Col span={16} className='form-item-value'>
-            3个月
-            <span
-              className='tip-color'
-              style={{ fontSize: 12, marginLeft: 20 }}
-            >
-              锁定期内不支持提币和转账
-            </span>
-          </Col>
-        </Row> */}
-
             <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
               {voteConfirmForm.formItems &&
                 voteConfirmForm.formItems.map(item => {

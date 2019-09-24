@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-21 20:07:17
+ * @LastEditTime: 2019-09-23 20:47:01
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -53,6 +53,7 @@ export default class ElectionNotification extends PureComponent {
       candidates: null,
       nodesCount: null,
       showDownloadPlugin: true,
+      // todo: should I place statisData in state?
       statisData: electionNotifiStatisData
     };
 
@@ -80,7 +81,7 @@ export default class ElectionNotification extends PureComponent {
   //   const { electionContract } = this.props;
   // }
 
-  updateStatisData(key, param, value) {
+  processStatisData(key, param, value) {
     let { statisData } = this.state;
     statisData[key][param] = value;
     // todo: Is it required?
@@ -150,7 +151,7 @@ export default class ElectionNotification extends PureComponent {
                 return;
               }
               // console.log(subItem.method, res);
-              this.updateStatisData(
+              this.processStatisData(
                 subItem.statisDataKey,
                 key,
                 subItem.processor(res.value)
@@ -451,7 +452,9 @@ export default class ElectionNotification extends PureComponent {
       consensusContract,
       multiTokenContract,
       profitContract,
-      dividendContract
+      dividendContract,
+      nightElf,
+      isCandidate
     } = this.props;
 
     const { electionContract } = this.props;
@@ -460,14 +463,14 @@ export default class ElectionNotification extends PureComponent {
     return (
       <section className='page-container'>
         <StatisticalData data={statisData} />
-        <ElectionRuleCard />
+        <ElectionRuleCard isCandidate={isCandidate}/>
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
           profitContract={profitContract}
           dividendContract={dividendContract}
         />
-        <NodeList electionContract={electionContract} />
+        <NodeList electionContract={electionContract} nightElf={nightElf} />
 
         <div>BP节点：</div>
         <div>候选节点：</div>

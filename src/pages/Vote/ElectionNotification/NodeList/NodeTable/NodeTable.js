@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, message, Button } from 'antd';
 import { getAllTeamDesc } from '@api/vote';
+import getCurrentWallet from '@utils/getCurrentWallet';
 
 import './NodeTable.style.less';
 
@@ -18,7 +19,9 @@ const nodeListCols = [
     dataIndex: 'name',
     key: 'nodeName',
     render: (text, record) => (
-      <Link to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}>{text}</Link>
+      <Link to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}>
+        {text}
+      </Link>
     )
   },
   {
@@ -52,7 +55,8 @@ const nodeListCols = [
   },
   {
     title: 'My Votes',
-    key: 'myVotes'
+    key: 'myVotes',
+    dataIndex: 'myTotalVoteAmount'
   },
   {
     title: 'Operations',
@@ -67,10 +71,17 @@ const nodeListCols = [
           style={{ marginRight: '20px' }}
           data-nodeaddress={record.pubkey}
           data-role='vote'
+          data-nodename={record.name}
+          data-shouldDetectLock={true}
         >
           Vote
         </Button>
-        <Button key={record.pubkey + 1} type='primary' data-role='redeem'>
+        <Button
+          key={record.pubkey + 1}
+          type='primary'
+          data-role='redeem'
+          data-shouldDetectLock={true}
+        >
           Withdraw
         </Button>
       </div>
@@ -148,6 +159,7 @@ class NodeTable extends PureComponent {
   fetchNodes() {
     const { electionContract } = this.props;
     console.log('InTable', electionContract);
+    const currentWallet = getCurrentWallet();
 
     Promise.all([
       electionContract.GetPageableCandidateInformation.call({
@@ -155,18 +167,23 @@ class NodeTable extends PureComponent {
         length: 5 // give a number large enough to make sure that we get all the nodes
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
-      getAllTeamDesc()
+      getAllTeamDesc(),
+      electionContract.GetElectorVoteWithRecords.call({
+        value: currentWallet.pubKey
+      })
     ])
       .then(resArr => {
         console.log('resArr', resArr);
         // todo: error handle
         const nodeInfos = resArr[0].value;
+        const activeVotingRecords = resArr[2].activeVotingRecords;
         let teamInfos = null;
         if (resArr[1].code === 0) {
           teamInfos = resArr[1].data;
         }
+        // add node name, add my vote amount
         nodeInfos.forEach(item => {
-          // debugger;
+          // add node name
           const teamInfo = teamInfos.find(
             team => team.public_key === item.candidateInformation.pubkey
           );
@@ -176,8 +193,20 @@ class NodeTable extends PureComponent {
           } else {
             item.candidateInformation.name = teamInfo.name;
           }
+
+          // add my vote amount
+          const myVoteRecords = activeVotingRecords.filter(
+            votingRecord =>
+              votingRecord.candidate === item.candidateInformation.pubkey
+          );
+          const myTotalVoteAmount = myVoteRecords.reduce((total, current) => {
+            return total + +current.amount;
+          }, 0);
+          console.log('myTotalVoteAmount', myTotalVoteAmount || '-');
+          item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
         });
 
+        // process data
         const processedNodesData = this.processNodesData(nodeInfos);
         console.log('GetPageableCandidateInformation', processedNodesData);
 

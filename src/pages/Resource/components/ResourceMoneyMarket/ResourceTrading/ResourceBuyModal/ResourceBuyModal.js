@@ -68,6 +68,7 @@ export default class ResourceBuyModal extends PureComponent {
             contracts.tokenConverter,
             wallet,
             (err, result) => {
+                console.log('err, result', err, result);
                 if (result) {
                     this.requestBuy(result);
                 }
@@ -94,7 +95,10 @@ export default class ResourceBuyModal extends PureComponent {
                 });
                 const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
                 setTimeout(() => {
+                    console.log('transactionId', transactionId);
                     aelf.chain.getTxResult(transactionId, (error, result) => {
+                        // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
+                        console.log('result', result);
                         getStateJudgment(result.Status, transactionId);
                         this.props.onRefresh();
                         this.setState({

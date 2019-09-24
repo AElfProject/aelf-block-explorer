@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-19 00:49:09
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-19 20:43:00
+ * @LastEditTime: 2019-09-23 23:40:08
  * @Description: file content
  */
 const thousandsComma = value => {
@@ -12,6 +12,8 @@ const thousandsComma = value => {
 };
 
 const addUrlPrefix = url => `https://${url}`;
+
+const removeUrlPrefix = url => url.replace(/^https:\/\//, '');
 
 const thousandsCommaWithDecimal = value => {
   if (typeof value !== 'number') return value;
@@ -22,4 +24,9 @@ const thousandsCommaWithDecimal = value => {
   return processedValue;
 };
 
-export { thousandsComma, addUrlPrefix, thousandsCommaWithDecimal };
+export {
+  thousandsComma,
+  addUrlPrefix,
+  removeUrlPrefix,
+  thousandsCommaWithDecimal
+};

@@ -30,7 +30,7 @@ export default class NodeList extends Component {
   }
 
   render() {
-    const { electionContract } = this.props;
+    const { electionContract, nightElf } = this.props;
 
     return (
       <section className={`${clsPrefix}`}>
@@ -46,7 +46,7 @@ export default class NodeList extends Component {
               onSearch={value => console.log(value)}
             />
           </h2>
-          <NodeTable electionContract={electionContract} />
+          <NodeTable electionContract={electionContract} nightElf={nightElf} />
         </Spin>
       </section>
     );
