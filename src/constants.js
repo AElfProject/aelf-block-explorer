@@ -39,6 +39,7 @@ const ELF_REST_TRADE_API = 'https://www.bcex.top/Api_Market/getCoinTrade';
 const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
 const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
+const SOCKET_URL = '/socket';
 
 // 不删档节点
 // const SYMBOL = 'TELF';
@@ -351,7 +352,8 @@ export {
     RESOURCE_TURNOVER,
     RESOURCE_RECORDS,
     RESOURCE_DETAILS_COLUMN,
-    SYMBOL,
-    CHAIN_ID,
-    TOKEN_CONTRACT_DECIMAL
+    SYMBOL, // todo: get native token info
+    CHAIN_ID, // todo: get chain status
+    TOKEN_CONTRACT_DECIMAL, // todo: similar to  get native token info
+    SOCKET_URL
 }
