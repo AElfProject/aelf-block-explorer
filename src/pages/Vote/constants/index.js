@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-24 12:04:00
+ * @LastEditTime: 2019-09-25 13:48:34
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -90,6 +90,12 @@ const schemeIds = {
 //     '5b7ab6879d4599911e0f2bd1dc151ea3a148ecb38e28ea3c2dc25f0d36646c01'
 // };
 
+const FROM_WALLET = 'fromWallet';
+const FROM_EXPIRED_VOTES = 'fromExpiredVotes';
+const FROM_ACTIVE_VOTES = 'fromActiveVotes';
+const NODE_DEFAULT_NAME = 'Default';
+
+
 export {
   contractsNeedToLoad,
   electionNotifiStatisData,
@@ -100,5 +106,9 @@ export {
   urlRegExp,
   okRegExp,
   TOKEN_CONTRACT_DECIMAL,
-  schemeIds
+  schemeIds,
+  FROM_WALLET,
+  FROM_EXPIRED_VOTES,
+  FROM_ACTIVE_VOTES,
+  NODE_DEFAULT_NAME
 };

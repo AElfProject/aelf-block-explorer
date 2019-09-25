@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Input, Button, Table } from 'antd';
+
+import {
+  NODE_DEFAULT_NAME,
+  FROM_ACTIVE_VOTES
+} from '@src/pages/Vote/constants';
 
 const { Search } = Input;
 const clsPrefix = 'my-vote-records';
@@ -13,7 +19,12 @@ const myVoteRecordsCols = [
   {
     title: 'Node Name',
     dataIndex: 'name',
-    key: 'nodeName'
+    key: 'nodeName',
+    render: (text, record) => (
+      <Link to={{ pathname: '/vote/team', search: `pubkey=${record.candidate}` }}>
+        {text}
+      </Link>
+    )
   },
   {
     title: 'Type',
@@ -23,7 +34,8 @@ const myVoteRecordsCols = [
   {
     title: 'Vote Amount',
     dataIndex: 'amount',
-    key: 'voteAmount'
+    key: 'voteAmount',
+    sorter: (a, b) => a.amount - b.amount
   },
   {
     title: 'Lock Time',
@@ -43,9 +55,17 @@ const myVoteRecordsCols = [
   {
     title: 'Operations',
     key: 'operations',
-    render: () => (
+    render: (text, record) => (
       <div className='node-list-btn-group'>
-        <Button type='primary'>转投</Button>
+        <Button
+          type='primary'
+          data-role='vote'
+          data-votetype={FROM_ACTIVE_VOTES}
+          data-nodeaddress={record.candidate}
+          data-nodename={record.nane || NODE_DEFAULT_NAME}
+        >
+          转投
+        </Button>
       </div>
     )
   }

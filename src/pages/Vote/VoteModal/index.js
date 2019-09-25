@@ -1,3 +1,11 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-09-23 14:07:46
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-09-25 15:22:56
+ * @Description: file content
+ */
 import React, { Component } from 'react';
 import {
   Tabs,
@@ -7,11 +15,17 @@ import {
   DatePicker,
   Button,
   Table,
-  InputNumber
+  InputNumber,
+  Checkbox
 } from 'antd';
 import moment from 'moment';
 
 import { SYMBOL } from '@src/constants';
+import {
+  FROM_WALLET,
+  FROM_EXPIRED_VOTES,
+  FROM_ACTIVE_VOTES
+} from '@src/pages/Vote/constants';
 import './index.less';
 
 const { TabPane } = Tabs;
@@ -33,55 +47,16 @@ function disabledDate(current) {
   return current && current < moment().endOf('day');
 }
 
-function generateFormGroup({
-  nodeAddress,
-  currentWalletName,
-  currentWalletBalance,
-  nodeName
-}) {
-  console.log('this.state.balance', this.state.balance);
-
-  // return
-}
-
 // todo: handle balance's decimal
-export default class VoteModal extends Component {
+class VoteModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      activeKey: '1'
-    };
 
     this.handleAllIn = this.handleAllIn.bind(this);
     // this.handleVoteAmountChange = this.handleVoteAmountChange.bind(this);
     this.handleOk = this.handleOk.bind(this);
-    this.handleTabsChange = this.handleTabsChange.bind(this);
-  }
-
-  handleAllIn() {
-    const { balance, handleVoteAmountChange } = this.props;
-
-    handleVoteAmountChange(balance);
-  }
-
-  // handleVoteAmountChange(value) {
-  //   const { handleVoteAmountChange } = this.props;
-
-  //   this.setState({
-  //     voteAmountInput: value
-  //   });
-  // }
-
-  handleOk() {
-    const { callback } = this.props;
-    callback();
-  }
-
-  handleTabsChange(key) {
-    console.log('key', key);
-    this.setState({
-      activeKey: key
-    });
+    // this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    // this.onSelectChange = this.onSelectChange.bind(this);
   }
 
   getFormItems() {
@@ -95,11 +70,26 @@ export default class VoteModal extends Component {
       voteAmountInput,
       lockTime,
       handleVoteAmountChange,
-      handleLockTimeChange
+      handleLockTimeChange,
+      expiredVotesAmount,
+      switchableVoteRecords
     } = this.props;
+    const {
+      switchVoteSelectedRowKeys,
+      handleSwithVoteSelectedRowChange
+    } = this.props;
+
+    const columns = this.getColumns();
+    const rowSelection = {
+      selectedRowKeys: switchVoteSelectedRowKeys,
+      onChange: handleSwithVoteSelectedRowChange,
+      hideDefaultSelections: true
+    };
+
     return [
       {
-        type: '从钱包投',
+        type: FROM_WALLET,
+        label: '从钱包投',
         index: 0,
         formItems: [
           {
@@ -176,7 +166,8 @@ export default class VoteModal extends Component {
         ]
       },
       {
-        type: '从过期投票转投',
+        type: FROM_EXPIRED_VOTES,
+        label: '从过期投票转投',
         index: 1,
         formItems: [
           {
@@ -194,7 +185,10 @@ export default class VoteModal extends Component {
             )
           },
           {
-            label: '过期票数'
+            label: '过期票数',
+            render: (
+              <span className='form-item-value'>{expiredVotesAmount}</span>
+            )
           },
           {
             label: '投票数量',
@@ -210,7 +204,7 @@ export default class VoteModal extends Component {
                     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                   }
                   min={0}
-                  max={balance}
+                  max={expiredVotesAmount}
                   value={voteAmountInput}
                   onChange={handleVoteAmountChange}
                 />
@@ -245,7 +239,8 @@ export default class VoteModal extends Component {
         ]
       },
       {
-        type: '从未过期投票转投',
+        type: FROM_ACTIVE_VOTES,
+        label: '从未过期投票转投',
         index: 2,
         formItems: [
           {
@@ -271,19 +266,147 @@ export default class VoteModal extends Component {
                   onSearch={value => console.log(value)}
                   style={{ width: 200 }}
                 />
-                {/* <Table dataSource={dataSource} columns={columns} /> */}
+                <Table
+                  dataSource={switchableVoteRecords}
+                  columns={columns}
+                  rowSelection={rowSelection}
+                />
               </div>
             )
+          },
+          {
+            label: '锁定期',
+            render: (
+              <div>
+                <DatePicker
+                  disabledDate={disabledDate}
+                  value={lockTime}
+                  onChange={handleLockTimeChange}
+                />
+                <span className='tip-color' style={{ marginLeft: 10 }}>
+                  锁定期内不支持提币和转账
+                </span>
+              </div>
+            ),
+            // todo: unify the validator form, use rules or Form.Item's 
+            validator: {
+              rules: [
+                // todo: add the validator rule
+                {
+                  required: true,
+                  message: 'Please select your lock time!'
+                }
+              ],
+              validateTrigger: ['onChange', 'onBlur'],
+              fieldDecoratorid: 'lockTime'
+            }
           }
         ]
       }
     ];
   }
 
+  getColumns() {
+    // const { checkedGroup } = this.state;
+
+    return [
+      {
+        title: 'Rank',
+        dataIndex: 'rank',
+        key: 'rank'
+      },
+      {
+        title: 'Node Name',
+        dataIndex: 'name',
+        key: 'nodeName'
+      },
+      {
+        title: 'Vote Amount',
+        dataIndex: 'amount',
+        key: 'voteAmount'
+      },
+      {
+        title: 'Lock Time',
+        dataIndex: 'formatedLockTime',
+        key: 'lockTime'
+      },
+      {
+        title: 'Vote Time',
+        dataIndex: 'formatedVoteTime',
+        key: 'voteTime'
+      }
+      // {
+      //   key: 'operations',
+      //   render: (text, record, index) => (
+      //     <div className='operation-group'>
+      //       <Checkbox
+      //         type='primary'
+      //         checked={checkedGroup[index]}
+      //         onChange={checked => {
+      //           console.log('click checkbox');
+      //           this.handleCheckboxChange(checked, index);
+      //         }}
+      //       />
+      //     </div>
+      //   )
+      // }
+    ];
+  }
+
+  // handleCheckboxChange(checked, index) {
+  //   const { switchVoteAmount } = this.props;
+  //   const { checkedGroup } = this.state;
+  //   checkedGroup[index] = checked;
+
+  //   this.setState(
+  //     {
+  //       checkedGroup: [...checkedGroup]
+  //     },
+  //     () => {
+  //       switchVoteAmount();
+  //     }
+  //   );
+  // }
+
+  handleAllIn() {
+    const { balance, handleVoteAmountChange } = this.props;
+
+    handleVoteAmountChange(balance);
+  }
+
+  // handleVoteAmountChange(value) {
+  //   const { handleVoteAmountChange } = this.props;
+
+  //   this.setState({
+  //     voteAmountInput: value
+  //   });
+  // }
+
+  handleOk() {
+    const { callback, handleSwitchVote } = this.props;
+    const { voteType } = this.props;
+    console.log('voteType', voteType);
+
+    switch (voteType) {
+      case FROM_WALLET:
+        // todo: change name
+        callback();
+        break;
+      case FROM_EXPIRED_VOTES:
+        break;
+      case FROM_ACTIVE_VOTES:
+        callback();
+        break;
+      default:
+        break;
+    }
+  }
+
   render() {
-    const { activeKey } = this.state;
-    const { voteModalVisible } = this.props;
+    const { voteModalVisible, handleVoteTypeChange, voteType } = this.props;
+    const { getFieldDecorator } = this.props.form;
     const formItems = this.getFormItems();
+    console.log('voteType', voteType);
 
     return (
       <Modal
@@ -300,35 +423,41 @@ export default class VoteModal extends Component {
         {...this.props}
       >
         <Tabs
-          // defaultActiveKey={0}
+          defaultActiveKey={voteType}
           // Warning: Antd's tabs' activeKey can only be string type, number type will cause problem
-          onChange={this.handleTabsChange}
-          activeKey={activeKey}
+          onChange={handleVoteTypeChange}
+          activeKey={voteType}
         >
           {formItems.map((form, index) => {
-            const voteFrom = form.type;
-            console.log('index', form.index, index);
-            console.log('form', form);
+            // console.log('index', form.index, index);
+            // console.log('form', form);
             return (
               <TabPane
                 tab={
                   <span>
                     <input
                       type='radio'
-                      checked={+activeKey === form.index}
+                      checked={voteType === form.type}
                       value={form.type}
                       style={{ marginRight: 10 }}
                     />
-                    <label htmlFor={form.type}>{form.type}</label>
+                    <label htmlFor={form.label}>{form.label}</label>
                   </span>
                 }
-                key={`${form.index}`}
+                key={form.type}
               >
                 <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-                  {form.formItems.map(formItem => {
+                  {form.formItems.map(item => {
+                    // todo: there are repeat code in form
                     return (
-                      <Form.Item label={formItem.label}>
-                        {formItem.render}
+                      <Form.Item label={item.label} key={item.label}>
+                        {/* todo: Optimize the judge */}
+                        {item.validator
+                          ? getFieldDecorator(
+                              item.validator.fieldDecoratorid,
+                              item.validator
+                            )(item.render || <Input />)
+                          : item.render}
                       </Form.Item>
                     );
                   })}
@@ -342,3 +471,5 @@ export default class VoteModal extends Component {
     );
   }
 }
+
+export default Form.create({})(VoteModal);

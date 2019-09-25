@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Table, message, Button } from 'antd';
 import { getAllTeamDesc } from '@api/vote';
 import getCurrentWallet from '@utils/getCurrentWallet';
+import { NODE_DEFAULT_NAME, FROM_WALLET } from '@src/pages/Vote/constants';
 
 import './NodeTable.style.less';
 
@@ -73,6 +74,7 @@ const nodeListCols = [
           data-role='vote'
           data-nodename={record.name}
           data-shouldDetectLock={true}
+          data-votetype={FROM_WALLET}
         >
           Vote
         </Button>
@@ -189,7 +191,7 @@ class NodeTable extends PureComponent {
           );
           console.log('teamInfo', teamInfo);
           if (teamInfo === undefined) {
-            item.candidateInformation.name = 'Default';
+            item.candidateInformation.name = NODE_DEFAULT_NAME;
           } else {
             item.candidateInformation.name = teamInfo.name;
           }
@@ -203,7 +205,8 @@ class NodeTable extends PureComponent {
             return total + +current.amount;
           }, 0);
           console.log('myTotalVoteAmount', myTotalVoteAmount || '-');
-          item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
+          item.candidateInformation.myTotalVoteAmount =
+            myTotalVoteAmount || '-';
         });
 
         // process data

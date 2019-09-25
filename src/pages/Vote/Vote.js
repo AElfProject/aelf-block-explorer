@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-24 16:40:46
+ * @LastEditTime: 2019-09-25 16:01:39
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -31,11 +31,19 @@ import CandidateApply from './CandidateApply';
 import KeyInTeamInfo from './KeyInTeamInfo';
 import TeamDetail from './TeamDetail';
 import VoteModal from './VoteModal';
+import DividendModal from './DividendModal';
 import { contractsNeedToLoad } from './constants';
 import { SYMBOL, TOKEN_CONTRACT_DECIMAL } from '@src/constants';
 import getStateJudgment from '@utils/getStateJudgment';
 import { electionContractAddr } from '@config/config';
 import getCurrentWallet from '@utils/getCurrentWallet';
+import { getAllTeamDesc } from '@api/vote';
+import {
+  FROM_WALLET,
+  FROM_EXPIRED_VOTES,
+  FROM_ACTIVE_VOTES,
+  NODE_DEFAULT_NAME
+} from '@src/pages/Vote/constants';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -51,59 +59,27 @@ const voteConfirmFormItemLayout = {
   }
 };
 
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号'
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号'
-  }
-];
-
-const columns = [
-  {
-    title: '姓名',
-    dataIndex: 'name',
-    key: 'name'
-  },
-  {
-    title: '年龄',
-    dataIndex: 'age',
-    key: 'age'
-  },
-  {
-    title: '住址',
-    dataIndex: 'address',
-    key: 'address'
-  }
-];
-
+// todo: optimize all the generate function
 function generateVoteConfirmForm({
-  nodeAddress,
   currentWalletName,
   currentWalletBalance,
   need
 }) {
   const res = { formItems: [] };
+  const { nodeAddress, nodeName, switchVoteAmount } = this.state;
+
   const materials = {
-    title: '从未过期投票转投',
+    // title: '从未过期投票转投',
     formItems: [
       {
-        label: '所选节点名称'
+        type: 'nodeName',
+        label: '所选节点名称',
+        render: <span className='form-item-value'>{nodeName}</span>
       },
       {
+        type: 'nodeAddress',
         label: '地址',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {123}
-          </span>
-        )
+        render: <span className='form-item-value'>{nodeAddress}</span>
       },
       {
         label: '可用票数',
@@ -142,15 +118,21 @@ function generateVoteConfirmForm({
       },
       {
         label: '转投数量',
+        type: 'switchVoteAmount',
+        // render: (
+        //   <div>
+        //     <Input
+        //       suffix={SYMBOL}
+        //       placeholder='Enter vote amount'
+        //       style={{ marginRight: 20 }}
+        //     />
+        //     <Button type='primary'>All In</Button>
+        //   </div>
+        // )
         render: (
-          <div>
-            <Input
-              suffix={SYMBOL}
-              placeholder='Enter vote amount'
-              style={{ marginRight: 20 }}
-            />
-            <Button type='primary'>All In</Button>
-          </div>
+          <span className='form-item-value'>
+            {switchVoteAmount} {SYMBOL}
+          </span>
         )
       },
       {
@@ -270,7 +252,13 @@ class VoteContainer extends Component {
       currentWalletName: null,
       voteAmountInput: null,
       lockTime: null,
-      isCandidate: false
+      isCandidate: false,
+      expiredVotesAmount: 0,
+      activeVotingRecords: [],
+      switchableVoteRecords: [],
+      switchVoteAmount: 0,
+      voteType: FROM_WALLET,
+      switchVoteSelectedRowKeys: []
     };
 
     this.showModal = this.showModal.bind(this);
@@ -282,6 +270,11 @@ class VoteContainer extends Component {
     this.handleVoteAmountChange = this.handleVoteAmountChange.bind(this);
     this.handleLockTimeChange = this.handleLockTimeChange.bind(this);
     this.handleVoteConfirmOk = this.handleVoteConfirmOk.bind(this);
+    this.handleVoteTypeChange = this.handleVoteTypeChange.bind(this);
+    this.handleSwithVoteSelectedRowChange = this.handleSwithVoteSelectedRowChange.bind(
+      this
+    );
+    this.handleRedeemConfirm = this.handleRedeemConfirm.bind(this);
 
     this.formGroup = null;
   }
@@ -321,12 +314,6 @@ class VoteContainer extends Component {
   //     voteAmountInput: balance
   //   });
   // }
-
-  handleVoteAmountChange(value) {
-    this.setState({
-      voteAmountInput: value
-    });
-  }
 
   getWalletBalance() {
     const { currentWallet, multiTokenContract } = this.state;
@@ -431,6 +418,26 @@ class VoteContainer extends Component {
     }
   }
 
+  handleSwithVoteSelectedRowChange(selectedRowKeys, selectedRows) {
+    console.log('selectedRows', selectedRows);
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    let { switchVoteAmount } = this.state;
+    switchVoteAmount = selectedRows.reduce(
+      (total, current) => total + +current.amount,
+      0
+    );
+    this.setState({
+      switchVoteSelectedRowKeys: selectedRowKeys,
+      switchVoteAmount
+    });
+  }
+
+  handleVoteAmountChange(value) {
+    this.setState({
+      voteAmountInput: value
+    });
+  }
+
   insertKeypairs(result) {
     const { nightElf } = this.state;
     const getLoginPayload = {
@@ -504,17 +511,69 @@ class VoteContainer extends Component {
     });
   }
 
-  fetchElectorVote() {
+  fetchDataVoteNeed() {
     const { electionContract } = this.state;
-    electionContract.GetElectorVote.call({
-      value: 'd238ba4287159b1a55f01a362cbd965f433582cd49166ea0917a9820e81845df'
-    })
-      .then(res => {
-        console.log('GetElectorVote', res);
+    const currentWallet = getCurrentWallet();
+
+    Promise.all([
+      electionContract.GetElectorVoteWithRecords.call({
+        value: `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`
+      }),
+      getAllTeamDesc()
+    ])
+      .then(resArr => {
+        console.log('fetchDataVoteNeed', resArr);
+        this.processDataVoteNeed(resArr);
       })
       .catch(err => {
-        console.log('GetElectorVote', err);
+        console.error('GetElectorVote', err);
       });
+  }
+
+  processDataVoteNeed(resArr) {
+    // todo: the process code are  similar, can i unify it? Don't forget to consider the changablity.
+    const { nodeAddress: interestingNodePublicKey } = this.state;
+    const electorVote = resArr[0];
+    let allTeamInfo = null;
+    if (resArr[1].code === 0) {
+      allTeamInfo = resArr[1].data;
+    }
+    const {
+      activeVotingRecords,
+      allVotedVotesAmount,
+      activeVotedVotesAmount
+    } = electorVote;
+    const expiredVotesAmount = allVotedVotesAmount - activeVotedVotesAmount;
+    const switchableVoteRecords = activeVotingRecords.filter(
+      record => record.candidate !== interestingNodePublicKey
+    );
+
+    switchableVoteRecords.forEach(record => {
+      const { voteTimestamp, lockTime } = record;
+      const teamInfo = allTeamInfo.find(
+        team => team.public_key === record.candidate
+      );
+      console.log('teamInfo', teamInfo);
+      if (teamInfo === undefined) {
+        record.name = NODE_DEFAULT_NAME;
+      } else {
+        record.name = teamInfo.name;
+      }
+      // Antd's Table's datasource needs key
+      record.key = record.voteId.value;
+
+      // todo: unify lock time & vote time's handler
+      // todo: fix the lock time
+      record.formatedLockTime = `${(lockTime / 24 / 60 / 60).toFixed(1)} Days`;
+      record.formatedVoteTime = moment()
+        .set('second', voteTimestamp.seconds)
+        .format('YYYY-MM-DD');
+    });
+    this.setState({
+      expiredVotesAmount,
+      activeVotingRecords,
+      switchableVoteRecords
+    });
   }
 
   judgeIsCandidate() {
@@ -537,113 +596,69 @@ class VoteContainer extends Component {
   }
 
   handleClick(e) {
+    // todo: handle the useless click
     const ele = e.target;
+    if(!ele.dataset.role) return;
     // To make sure that all the operation use wallet take effects on the correct wallet
     // It can only be lower case
-    if (ele.dataset.shoulddetectlock) {
+    const { shoulddetectlock, votetype } = ele.dataset;
+    if (shoulddetectlock) {
       this.getExtensionKeypairList();
     }
 
     switch (ele.dataset.role) {
       case 'vote':
-        this.getWalletBalance()
-          .then(res => {
-            // todo: unify balance formater: InputNumber's and thousandsCommaWithDecimal's
-            const balance = +res.balance / TOKEN_CONTRACT_DECIMAL;
-            const formatedBalance = thousandsCommaWithDecimal(balance);
-            // debugger;
-            this.setState({
-              balance
-            });
-            // this.formGroup = generateFormGroup.call(this, {
-            //   nodeAddress: ele.dataset.nodeaddress,
-            //   currentWalletName: JSON.parse(
-            //     localStorage.getItem('currentWallet')
-            //   ).name,
-            //   currentWalletBalance: formatedBalance,
-            //   nodeName: ele.dataset.nodename
-            // });
-            this.setState({
-              nodeAddress: ele.dataset.nodeaddress,
-              currentWalletName: JSON.parse(
-                localStorage.getItem('currentWallet')
-              ).name,
-              formatedBalance: formatedBalance,
-              nodeName: ele.dataset.nodename
-            });
-            this.showModal('voteModalVisible');
-            // this.setState({
-            //   balance: res.balance
-            // });
-          })
-          .then(() => {
-            this.showModal('voteModalVisible');
-          })
-          .catch(err => {
-            console.log(err);
-          });
-
+        this.setState(
+          {
+            voteType: votetype
+          },
+          () => {
+            this.handleVoteClick(ele);
+          }
+        );
         break;
       case 'redeem':
-        this.showModal('voteRedeemModalVisible');
+        this.handleRedeemClick();
         break;
       default:
         break;
     }
   }
 
-  voteNextCallback() {
-    const voteConfirmForm = generateVoteConfirmForm.call(this, {
-      need: ['voteAmount', 'lockTime']
-    });
+  handleVoteClick(ele) {
+    this.getWalletBalance()
+      .then(res => {
+        // todo: unify balance formater: InputNumber's and thousandsCommaWithDecimal's
+        const balance = +res.balance / TOKEN_CONTRACT_DECIMAL;
+        const formatedBalance = thousandsCommaWithDecimal(balance);
+        this.fetchDataVoteNeed();
 
-    this.setState(
-      {
-        voteConfirmForm,
-        voteModalVisible: false
-      },
-      () => {
-        console.log('Closed vote modal!');
         this.setState({
-          voteConfirmModalVisible: true
+          balance,
+          nodeAddress: ele.dataset.nodeaddress,
+          currentWalletName: JSON.parse(localStorage.getItem('currentWallet'))
+            .name,
+          formatedBalance,
+          nodeName: ele.dataset.nodename || ''
         });
-      }
-    );
+        this.showModal('voteModalVisible');
+      })
+      .then(() => {
+        this.showModal('voteModalVisible');
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
-  handleLockTimeChange(value) {
-    console.log('value', value);
-    this.setState({
-      lockTime: value
-    });
+  handleRedeemClick() {
+    this.showModal('voteRedeemModalVisible');
   }
 
-  // togglePluginLockModal(flag) {
-  //   console.log('<<<<', flag);
-  //   voteStore.setPluginLockModalVisible(flag);
-  //   reaction(
-  //     () => voteStore.pluginLockModalVisible,
-  //     pluginLockModalVisible => this.setState({ pluginLockModalVisible })
-  //   );
-  // }
+  handleRedeemConfirm() {
+    // todo: should nightElf place in state?
+    const { nightElf } = this.state;
 
-  handleVoteConfirmOk() {
-    const { nightElf, lockTime, voteAmountInput, nodeAddress } = this.state;
-    // const timeMS = moment(lockTime).getMilliseconds();
-    // console.log('ms', timeMS);
-    const payload = {
-      candidatePubkey: nodeAddress,
-      amount: voteAmountInput,
-      // todo: add decimal or not
-      // amount: voteAmountInput * TOKEN_CONTRACT_DECIMAL,
-      endTimestamp: {
-        // Seconds: Math.floor(timeMS / 1000),
-        // Nanos: (timeMS % 1000) * 1e6
-        seconds: moment(lockTime).unix(),
-        nanos: moment(lockTime).milliseconds() * 1000
-      }
-    };
-    console.log('payload', payload);
     const currentWallet = getCurrentWallet();
     const wallet = {
       address: currentWallet.address
@@ -652,9 +667,14 @@ class VoteContainer extends Component {
     // todo: error handle
     nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
       if (result) {
-        const electionContract = result;
-        electionContract
-          .Vote(payload)
+        const electionContractFromExt = result;
+        const payload = {
+          voteId: 'fBCLjftjlaXXS5IdC8dM1HSVMbA7GnnJ7c6mnWwxcTY='
+        };
+
+        // todo: there are the same code here
+        electionContractFromExt
+          .Withdraw("mWVhEhDb5cryNYhqa8DX1S9hIWoR4jb8Jw8gOwzEdnA=")
           .then(res => {
             const transactionId = res.result
               ? res.result.TransactionId
@@ -672,6 +692,160 @@ class VoteContainer extends Component {
     });
   }
 
+  voteNextCallback() {
+    const { voteType } = this.state;
+    let voteConfirmForm = null;
+    console.log('voteType', voteType);
+    if (voteType === FROM_ACTIVE_VOTES) {
+      voteConfirmForm = generateVoteConfirmForm.call(this, {
+        need: ['lockTime', 'nodeName', 'nodeAddress', 'switchVoteAmount']
+      });
+    } else {
+      voteConfirmForm = generateVoteConfirmForm.call(this, {
+        need: ['voteAmount', 'lockTime']
+      });
+    }
+
+    console.log('voteConfirmForm', voteConfirmForm);
+
+    this.setState(
+      {
+        voteConfirmForm,
+        voteModalVisible: false
+      },
+      () => {
+        console.log('Closed vote modal!');
+        this.setState({
+          voteConfirmModalVisible: true
+        });
+      }
+    );
+  }
+
+  handleLockTimeChange(value) {
+    console.log('value', value);
+    // this.setState({
+    //   lockTime: value
+    // });
+    console.log('moment', moment().add(5, 'minutes'))
+    // this.setState({
+    //   lockTime: moment().add(5, 'minutes')
+    // });
+  }
+
+  // togglePluginLockModal(flag) {
+  //   console.log('<<<<', flag);
+  //   voteStore.setPluginLockModalVisible(flag);
+  //   reaction(
+  //     () => voteStore.pluginLockModalVisible,
+  //     pluginLockModalVisible => this.setState({ pluginLockModalVisible })
+  //   );
+  // }
+
+  handleVoteConfirmOk() {
+    const { nightElf, voteType } = this.state;
+
+    const currentWallet = getCurrentWallet();
+    const wallet = {
+      address: currentWallet.address
+    };
+    // todo: get the contract from extension in cdm or other suitable time
+    // todo: error handle
+    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
+      if (result) {
+        const electionContractFromExt = result;
+        switch (voteType) {
+          case FROM_WALLET:
+            this.handleVoteFromWallet(electionContractFromExt);
+            break;
+          case FROM_EXPIRED_VOTES:
+            break;
+          case FROM_ACTIVE_VOTES:
+            this.handleSwitchVote(electionContractFromExt);
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  }
+
+  handleVoteFromWallet(electionContractFromExt) {
+    const { voteAmountInput, nodeAddress } = this.state;
+    // const timeMS = moment(lockTime).getMilliseconds();
+    // console.log('ms', timeMS);
+    const lockTime =  moment().add(5, 'minutes')
+    const payload = {
+      candidatePubkey: nodeAddress,
+      amount: voteAmountInput,
+      // todo: add decimal or not
+      // amount: voteAmountInput * TOKEN_CONTRACT_DECIMAL,
+      endTimestamp: {
+        // Seconds: Math.floor(timeMS / 1000),
+        // Nanos: (timeMS % 1000) * 1e6
+        seconds: lockTime.unix(),
+        nanos: lockTime.milliseconds() * 1000
+      }
+    };
+
+    electionContractFromExt
+      .Vote(payload)
+      .then(res => {
+        const transactionId = res.result
+          ? res.result.TransactionId
+          : res.TransactionId;
+        setTimeout(() => {
+          console.log('transactionId', transactionId);
+          aelf.chain.getTxResult(transactionId, (error, result) => {
+            console.log('result', result);
+            getStateJudgment(result.Status, transactionId);
+          });
+        }, 4000);
+      })
+      .catch(err => console.error(err));
+  }
+
+  // todo: global node address are public key actually
+  handleSwitchVote(electionContractFromExt) {
+    const { nodeAddress: candidatePubkey } = this.state;
+    // todo: limit max change num or handle the concurreny problem
+    const { switchVoteSelectedRowKeys } = this.state;
+    // switchVoteSelectedRowKeys.forEach(voteId => {
+    //   const payload = {
+    //     voteId,
+    //     candidatePubkey
+    //   };
+    //   electionContractFromExt
+    //     .ChangeVotingOption(payload)
+    //     .then(res => {
+    //       console.log('ChangeVotingOption', res);
+    //     })
+    //     .catch(err => {
+    //       console.error('ChangeVotingOption', err);
+    //     });
+    // });
+    // switchVoteSelectedRowKeys.forEach(voteId => {
+    const payload = {
+      voteId: switchVoteSelectedRowKeys[0],
+      candidatePubkey
+    };
+    electionContractFromExt
+      .ChangeVotingOption(payload)
+      .then(res => {
+        console.log('ChangeVotingOption', res);
+      })
+      .catch(err => {
+        console.error('ChangeVotingOption', err);
+      });
+    // });
+  }
+
+  handleVoteTypeChange(voteType) {
+    this.setState({
+      voteType
+    });
+  }
+
   render() {
     const {
       voteModalVisible,
@@ -680,8 +854,6 @@ class VoteContainer extends Component {
       voteRedeemModalVisible,
       voteConfirmForm,
       voteRedeemForm,
-      voteFrom,
-      tokenContract,
       voteContract,
       electionContract,
       showDownloadPlugin,
@@ -697,7 +869,11 @@ class VoteContainer extends Component {
       voteAmountInput,
       lockTime,
       nightElf,
-      isCandidate
+      isCandidate,
+      expiredVotesAmount,
+      switchableVoteRecords,
+      voteType,
+      switchVoteSelectedRowKeys
     } = this.state;
 
     // todo: decouple
@@ -800,7 +976,10 @@ class VoteContainer extends Component {
               </button>
             </TabPane>
             <TabPane tab='My Vote' key='myVote' style={{ color: '#fff' }}>
-              <MyVote electionContract={electionContract} />
+              <MyVote
+                electionContract={electionContract}
+                handleVoteTypeChange={this.handleVoteTypeChange}
+              />
             </TabPane>
           </Tabs>
 
@@ -814,9 +993,19 @@ class VoteContainer extends Component {
             callback={this.voteNextCallback}
             onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
             handleVoteAmountChange={this.handleVoteAmountChange}
+            handleSwitchVoteAmountChange={this.handleSwitchVoteAmountChange}
             handleLockTimeChange={this.handleLockTimeChange}
             voteAmountInput={voteAmountInput}
             lockTime={lockTime}
+            expiredVotesAmount={expiredVotesAmount}
+            switchableVoteRecords={switchableVoteRecords}
+            handleSwitchVote={this.handleSwitchVote}
+            handleVoteTypeChange={this.handleVoteTypeChange}
+            voteType={voteType}
+            handleSwithVoteSelectedRowChange={
+              this.handleSwithVoteSelectedRowChange
+            }
+            switchVoteSelectedRowKeys={switchVoteSelectedRowKeys}
           />
 
           <Modal
@@ -873,7 +1062,7 @@ class VoteContainer extends Component {
             className='vote-redeem-modal'
             title='Vote Redeem'
             visible={voteRedeemModalVisible}
-            onOk={this.handleOk.bind(this, 'voteRedeemModalVisible')}
+            onOk={this.handleRedeemConfirm}
             onCancel={this.handleCancel.bind(this, 'voteRedeemModalVisible')}
             centered
             maskClosablef
@@ -906,6 +1095,9 @@ class VoteContainer extends Component {
             </p>
             <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
           </Modal>
+
+
+          <DividendModal />
 
           <button
             // onClick={async () => {

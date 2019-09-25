@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-24 14:55:37
+ * @LastEditTime: 2019-09-25 14:20:38
  * @Description: file content
  */
 
@@ -22,6 +22,7 @@ import {
 import queryString from 'query-string';
 
 import { getTeamDesc } from '@api/vote';
+import { NODE_DEFAULT_NAME, FROM_WALLET } from '@src/pages/Vote/constants';
 import './index.less';
 
 const { Paragraph } = Typography;
@@ -188,7 +189,7 @@ export default class TeamDetail extends PureComponent {
                 )}
                 <div className={`${clsPrefix}-team-info`}>
                   <h5 className={`${clsPrefix}-node-name`}>
-                    {data.name || 'Default'}
+                    {data.name || NODE_DEFAULT_NAME}
                     <Tag color='#f50'>{isBP ? 'BP' : 'Candidate'}</Tag>
                   </h5>
                   <p className={`${clsPrefix}-team-info-location`}>
@@ -204,7 +205,14 @@ export default class TeamDetail extends PureComponent {
               </div>
             </Col>
             <Col span={6} className='card-container-right'>
-              <Button size='large' type='primary' data-role='vote'>
+              <Button
+                size='large'
+                type='primary'
+                data-role='vote'
+                data-votetype={FROM_WALLET}
+                data-nodeaddress={this.pubkey}
+                data-nodename={data.name || NODE_DEFAULT_NAME}
+              >
                 Vote
               </Button>
               <Button size='large' type='primary' data-role='redeem'>

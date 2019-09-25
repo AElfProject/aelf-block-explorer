@@ -6,6 +6,7 @@ import { myVoteStatisData } from '../constants';
 import MyVoteRecord from './MyVoteRecords';
 import { getAllTeamDesc } from '@api/vote';
 import getCurrentWallet from '@utils/getCurrentWallet';
+import { NODE_DEFAULT_NAME } from '@src/pages/Vote/constants';
 
 export default class MyVote extends Component {
   constructor(props) {
@@ -44,9 +45,9 @@ export default class MyVote extends Component {
 
   processData(resArr) {
     const electorVotes = resArr[0];
-    let teamInfos = null;
+    let allTeamInfo = null;
     if (resArr[1].code === 0) {
-      teamInfos = resArr[1].data;
+      allTeamInfo = resArr[1].data;
     }
     const myVoteRecords = [
       ...electorVotes.activeVotingRecords,
@@ -54,20 +55,20 @@ export default class MyVote extends Component {
     ];
     const myTotalVotesAmount = electorVotes.allVotedVotesAmount;
     this.processStatisData('myTotalVotesAmount', 'num', myTotalVotesAmount);
-    this.processTableData(myVoteRecords, teamInfos);
+    this.processTableData(myVoteRecords, allTeamInfo);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  processTableData(myVoteRecords, teamInfos) {
+  processTableData(myVoteRecords, allTeamInfo) {
     // add node name
     const tableData = myVoteRecords;
     tableData.forEach(record => {
-      const teamInfo = teamInfos.find(
+      const teamInfo = allTeamInfo.find(
         team => team.public_key === record.candidate
       );
       console.log('teamInfo', teamInfo);
       if (teamInfo === undefined) {
-        record.name = 'Default';
+        record.name = NODE_DEFAULT_NAME;
       } else {
         record.name = teamInfo.name;
       }
