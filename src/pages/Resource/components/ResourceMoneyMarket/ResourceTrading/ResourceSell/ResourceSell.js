@@ -43,7 +43,7 @@ export default class ResourceSell extends Component {
     onChangeResourceValue(e) {
         this.debounce(e.target.value);
         this.setState({
-            value: e.target.value
+            value: +e.target.value
         });
     }
 
@@ -133,11 +133,11 @@ export default class ResourceSell extends Component {
                 });
                 return;
             }
-            getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract, 'Sell').then(result => {
+            getEstimatedValueELF(menuName, value * ELF_DECIMAL, tokenConverterContract, tokenContract, 'Sell').then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
-                    let ELFValue = (Math.abs(Math.ceil(result)))/ELF_DECIMAL;
+                    let ELFValue = (Math.abs(Math.ceil(result)));
                     this.setState({
                         ELFValue,
                         toSell: true

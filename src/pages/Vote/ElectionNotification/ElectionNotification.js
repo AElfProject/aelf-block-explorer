@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-26 20:48:20
+ * @LastEditTime: 2019-09-27 17:18:12
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -476,7 +476,11 @@ export default class ElectionNotification extends PureComponent {
           dividends={dividends}
           electionContractFromExt={electionContractFromExt}
         />
-        <NodeList electionContract={electionContract} nightElf={nightElf} />
+        <NodeList
+          electionContract={electionContract}
+          consensusContract={consensusContract}
+          nightElf={nightElf}
+        />
 
         {/* ===== Test Btn ===== */}
         {/* <div>

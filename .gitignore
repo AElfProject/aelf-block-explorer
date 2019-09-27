@@ -4,6 +4,6 @@
 /node_modules
 npm-debug.log*
 .idea/
-config/config.js
+
 explore.conf
 package-lock.json

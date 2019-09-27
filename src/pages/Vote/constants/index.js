@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-26 17:09:06
+ * @LastEditTime: 2019-09-27 18:59:38
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -105,6 +105,9 @@ const FROM_EXPIRED_VOTES = 'fromExpiredVotes';
 const FROM_ACTIVE_VOTES = 'fromActiveVotes';
 const NODE_DEFAULT_NAME = 'Default';
 
+// When the team I voted is not candidate in current term, use the symbol to display.
+const RANK_NOT_EXISTED_SYMBOL = '-';
+
 export {
   contractsNeedToLoad,
   electionNotifiStatisData,
@@ -119,5 +122,6 @@ export {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
-  NODE_DEFAULT_NAME
+  NODE_DEFAULT_NAME,
+  RANK_NOT_EXISTED_SYMBOL
 };

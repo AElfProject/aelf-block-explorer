@@ -50,6 +50,7 @@ async function getNodesInfo() {
         const nodesInfoList = nodesInfo.result.list;
         localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
 
+        // todo: MAIN_CHAIN_ID CHAIN_ID
         const nodeInfo = nodesInfoList.find(item => {
             if (item.chain_id === config.MAINCHAINID) {
                 return item;

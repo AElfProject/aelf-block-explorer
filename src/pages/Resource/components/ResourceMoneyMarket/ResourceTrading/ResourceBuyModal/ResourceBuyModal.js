@@ -11,6 +11,7 @@ import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import addressOmit from '../../../../../../utils/addressOmit';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
+import {SYMBOL, ELF_DECIMAL} from '@src/constants';
 import './ResourceBuyModal.less';
 
 export default class ResourceBuyModal extends PureComponent {
@@ -33,7 +34,7 @@ export default class ResourceBuyModal extends PureComponent {
 
     componentDidMount() {
         const {buyNum, menuName, tokenConverterContract, tokenContract} = this.state;
-        getEstimatedValueELF(menuName, buyNum, tokenConverterContract, tokenContract).then(result => {
+        getEstimatedValueELF(menuName, buyNum * ELF_DECIMAL, tokenConverterContract, tokenContract).then(result => {
             let ELFValue = Math.abs(Math.floor(result));
             let buyRes = ELFValue;
             ELFValue += getFees(buyRes);
@@ -80,9 +81,10 @@ export default class ResourceBuyModal extends PureComponent {
         const {menuName, buyNum} = this.state;
         const payload = {
             symbol: menuName,
-            amount: buyNum
+            amount: buyNum * ELF_DECIMAL
         };
         console.log('result', result);
+        console.log('payload', payload);
         result.Buy(payload, (error, result) => {
             if (result.error && result.error !== 0) {
                 message.error(result.errorMessage.message, 3);

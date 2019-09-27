@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-26 20:58:21
+ * @LastEditTime: 2019-09-27 19:49:44
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -13,7 +13,7 @@ import { toJS, reaction } from 'mobx';
 import { Provider } from 'mobx-react';
 import moment from 'moment';
 
-import './Vote.style.less';
+import './index.less';
 import NightElfCheck from '@utils/NightElfCheck';
 import checkPermissionRepeat from '@utils/checkPermissionRepeat';
 import getLogin from '@utils/getLogin';
@@ -310,21 +310,26 @@ class VoteContainer extends Component {
         }
 
         contractsStore.setContract(contractNickname, contract);
-        this.setState({ [contractNickname]: contractsStore[contractNickname] });
-        // todo: use switch/case
-        if (contractNickname === 'consensusContract') {
-          this.chainInfo = contract;
-          // todo: We shouldn't get vote info by consensus contract
-          // this.getInformation(result);
-        }
+        this.setState(
+          { [contractNickname]: contractsStore[contractNickname] },
+          () => {
+            // todo: use switch/case
+            if (contractNickname === 'consensusContract') {
+              // todo: what's this used for?
+              this.chainInfo = contract;
+              // todo: We shouldn't get vote info by consensus contract
+              // this.getInformation(result);
+            }
 
-        if (contractNickname === 'electionContract') {
-          this.judgeIsCandidate();
-        }
+            if (contractNickname === 'electionContract') {
+              this.judgeIsCandidate();
+            }
 
-        if (contractNickname === 'profitContract') {
-          this.fetchProfitAmount();
-        }
+            if (contractNickname === 'profitContract') {
+              this.fetchProfitAmount();
+            }
+          }
+        );
       }
     );
   }
@@ -352,9 +357,12 @@ class VoteContainer extends Component {
           });
           console.log('nightElf', nightElf);
           if (nightElf) {
-            this.setState({
-              nightElf
-            });
+            this.setState(
+              {
+                nightElf
+              },
+              () => {}
+            );
             nightElf.chain.getChainStatus((error, result) => {
               if (result) {
                 nightElf.checkPermission(
@@ -922,10 +930,13 @@ class VoteContainer extends Component {
     });
   }
 
+    // FIXME: the time calling this method maybe unsuitable
+    // FIXME: when the user didn't set the wallet, will it cause problem?
   fetchProfitAmount() {
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
-    const { nightElf, currentWallet } = this.state;
+    const { nightElf } = this.state;
+    const currentWallet = getCurrentWallet();
     nightElf.chain
       .contractAt(
         // todo: use object instead

@@ -21,13 +21,20 @@ const DEFAUTRPCSERVER =  'http://192.168.197.14:8000'; // 本地测试节点
 const MAINCHAINID = 'AELF';
 const APPNAME = 'explorer.aelf.io';
 const commonPrivateKey = 'd351aa6e20d353c6a1bee1f4cba8dc6d79ba63e2799381ec9dc75398ed58828b';
-// Contract Address
+// 本地测试节点的合约地址
+// Token
 const multiTokenContractAddr = '25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB';
-// const dividendContractAddr = 'WnV9Gv3gFioSh3Vgaw8SSB96nV8fWUNxuVozCf6Y14e7RXyGaM'; // Yiqi said that dividend's address is treasury's address.
+// Dividend
+const dividendContractAddr = 'WnV9Gv3gioSh3Vgaw8SSB96nV8fWUNxuVozCf6Y14e7RXyGaM'; // Yiqi said that dividend's address is treasury's address.
+// Consensus
 const consensusContractAddr = 'RnQLF2SnJL9HLzBPtpzuPkDeLK34b9su7gtZ5TzVFvKP26DHw';
+// Vote
 const voteContractAddr = 'xw6U3FRE5H8rU3z8vAgF9ivnWSkxULK5cibdZzMC9UWf7rPJf';
+// Election
 const electionContractAddr = '2J9wWhuyz7Drkmtu9DTegM9rLmamjekmRkCAWz5YYPjm7akfbH';
+// TokenConverter
 const tokenConverterContractAddr = 'SkMGjviAAs9bnYvv6cKcafbhf6tbRGQGK93WgKvZoCoS5amMK';
+// Profit
 const profitContractAddr = 'jDpXvpfC2qpriNFgZh68nRpJ5juN51ehcJNJwAcr5Z1UhfFTJ';
 
 // 不删档节点的合约地址
@@ -39,8 +46,6 @@ const profitContractAddr = 'jDpXvpfC2qpriNFgZh68nRpJ5juN51ehcJNJwAcr5Z1UhfFTJ';
 // const dividendContractAddr = 'SPz98hADSEraugrYoqcciJyUX1iNGxgsamMyvkdReSyC2Y9o3'; // Yiqi said that dividend's address is treasury's address.
 // const voteContractAddr = 'sCbDeD2FxdPvtX5ykepazKf8NDACuhgpDCq6TMt5uEnoPaRzN';
 
-// 本地测试节点的合约地址
-const dividendContractAddr = 'WnV9Gv3gioSh3Vgaw8SSB96nV8fWUNxuVozCf6Y14e7RXyGaM'; // Yiqi said that dividend's address is treasury's address.
 
 
 // For compatibility the code use unsuitable name

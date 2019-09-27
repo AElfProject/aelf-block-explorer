@@ -1,11 +1,18 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, message, Button } from 'antd';
-import { getAllTeamDesc } from '@api/vote';
+import {
+  getAllTeamDesc,
+  fetchPageableCandidateInformation,
+  fetchElectorVoteWithRecords
+} from '@api/vote';
+import { fetchCurrentMinerList } from '@api/consensus';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { NODE_DEFAULT_NAME, FROM_WALLET } from '@src/pages/Vote/constants';
 
-import './NodeTable.style.less';
+import './index.less';
+
+const clsPrefix = 'node-list';
 
 const nodeListCols = [
   {
@@ -19,11 +26,26 @@ const nodeListCols = [
     title: 'Node Name',
     dataIndex: 'name',
     key: 'nodeName',
+    // width: 270,
+    // todo: ellipsis useless
+    // ellipsis: true,
     render: (text, record) => (
-      <Link to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}>
+      <Link
+        to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}
+        className='node-name-in-table'
+        // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+        style={{width: 270}}
+      >
         {text}
       </Link>
     )
+  },
+  {
+    title: 'Node Type',
+    dataIndex: 'nodeType',
+    key: 'nodeType'
+    // todo: write the sorter after the api is ready
+    // sorter: (a, b) => a.nodeType - b.nodeType
   },
   {
     title: 'Terms',
@@ -118,6 +140,8 @@ class NodeTable extends PureComponent {
       nodeList: [],
       totalVotesAmount: null
     };
+
+    this.hasRun = false;
   }
 
   // todo: how to combine cdm & cdu
@@ -132,19 +156,60 @@ class NodeTable extends PureComponent {
   }
 
   async componentDidUpdate(prevProps) {
-    const { electionContract } = this.props;
+    const { electionContract, consensusContract } = this.props;
 
-    if (electionContract !== prevProps.electionContract) {
+    if (electionContract && consensusContract && !this.hasRun) {
+      this.hasRun = true;
       // Need await to ensure the totalVotesCount take its seat.
       await this.fetchTotalVotesAmount();
       this.fetchNodes();
     }
   }
 
-  processNodesData(nodesData) {
+  processNodesData(resArr) {
     const { totalVotesAmount } = this.state;
 
-    return nodesData
+    // todo: error handle
+    const nodeInfos = resArr[0].value;
+    const activeVotingRecords = resArr[2].activeVotingRecords;
+    let teamInfos = null;
+    if (resArr[1].code === 0) {
+      teamInfos = resArr[1].data;
+    }
+    const BPNodes = resArr[3].pubkeys;
+    // add node name, add my vote amount
+    nodeInfos.forEach(item => {
+      // add node name
+      const teamInfo = teamInfos.find(
+        team => team.public_key === item.candidateInformation.pubkey
+      );
+      console.log('teamInfo', teamInfo);
+      if (teamInfo === undefined) {
+        // todo: use address instead after api modified
+        item.candidateInformation.name = item.candidateInformation.pubkey;
+      } else {
+        item.candidateInformation.name = teamInfo.name;
+      }
+
+      // add my vote amount
+      const myVoteRecords = activeVotingRecords.filter(
+        votingRecord =>
+          votingRecord.candidate === item.candidateInformation.pubkey
+      );
+      const myTotalVoteAmount = myVoteRecords.reduce((total, current) => {
+        return total + +current.amount;
+      }, 0);
+      console.log('myTotalVoteAmount', myTotalVoteAmount || '-');
+      item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
+
+      if (BPNodes.indexOf(item.candidateInformation.pubkey) !== -1) {
+        item.candidateInformation.nodeType = 'BP';
+      } else {
+        item.candidateInformation.nodeType = 'Candidate';
+      }
+    });
+
+    return nodeInfos
       .map(item => ({
         ...item.candidateInformation,
         obtainedVotesAmount: item.obtainedVotesAmount,
@@ -165,58 +230,26 @@ class NodeTable extends PureComponent {
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
   fetchNodes() {
-    const { electionContract } = this.props;
+    const { electionContract, consensusContract } = this.props;
     console.log('InTable', electionContract);
     const currentWallet = getCurrentWallet();
 
     Promise.all([
-      electionContract.GetPageableCandidateInformation.call({
+      fetchPageableCandidateInformation(electionContract, {
         start: 0,
         length: 5 // give a number large enough to make sure that we get all the nodes
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
-      electionContract.GetElectorVoteWithRecords.call({
+      fetchElectorVoteWithRecords(electionContract, {
         value: currentWallet.pubKey
-      })
+      }),
+      fetchCurrentMinerList(consensusContract)
     ])
       .then(resArr => {
         console.log('resArr', resArr);
-        // todo: error handle
-        const nodeInfos = resArr[0].value;
-        const activeVotingRecords = resArr[2].activeVotingRecords;
-        let teamInfos = null;
-        if (resArr[1].code === 0) {
-          teamInfos = resArr[1].data;
-        }
-        // add node name, add my vote amount
-        nodeInfos.forEach(item => {
-          // add node name
-          const teamInfo = teamInfos.find(
-            team => team.public_key === item.candidateInformation.pubkey
-          );
-          console.log('teamInfo', teamInfo);
-          if (teamInfo === undefined) {
-            item.candidateInformation.name = NODE_DEFAULT_NAME;
-          } else {
-            item.candidateInformation.name = teamInfo.name;
-          }
-
-          // add my vote amount
-          const myVoteRecords = activeVotingRecords.filter(
-            votingRecord =>
-              votingRecord.candidate === item.candidateInformation.pubkey
-          );
-          const myTotalVoteAmount = myVoteRecords.reduce((total, current) => {
-            return total + +current.amount;
-          }, 0);
-          console.log('myTotalVoteAmount', myTotalVoteAmount || '-');
-          item.candidateInformation.myTotalVoteAmount =
-            myTotalVoteAmount || '-';
-        });
-
         // process data
-        const processedNodesData = this.processNodesData(nodeInfos);
+        const processedNodesData = this.processNodesData(resArr);
         console.log('GetPageableCandidateInformation', processedNodesData);
 
         this.setState({

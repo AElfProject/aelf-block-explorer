@@ -4,7 +4,8 @@ import { Input, Button, Table } from 'antd';
 
 import {
   NODE_DEFAULT_NAME,
-  FROM_ACTIVE_VOTES
+  FROM_ACTIVE_VOTES,
+  RANK_NOT_EXISTED_SYMBOL
 } from '@src/pages/Vote/constants';
 
 const { Search } = Input;
@@ -13,16 +14,22 @@ const clsPrefix = 'my-vote-records';
 const myVoteRecordsCols = [
   {
     title: 'Rank',
-    dataIndex: 'rank',
-    key: 'rank'
+    dataIndex: 'displayedRank',
+    key: 'rank',
+    sorter: (a, b) => {
+      return a.rank - b.rank;
+    }
   },
   {
     title: 'Node Name',
     dataIndex: 'name',
     key: 'nodeName',
+    width: 300,
     render: (text, record) => (
       <Link
         to={{ pathname: '/vote/team', search: `pubkey=${record.candidate}` }}
+        className='node-name-in-table'
+        style={{ width: 300 }}
       >
         {text}
       </Link>
@@ -78,6 +85,7 @@ const myVoteRecordsCols = [
           data-votetype={FROM_ACTIVE_VOTES}
           data-nodeaddress={record.candidate}
           data-nodename={record.nane || NODE_DEFAULT_NAME}
+          disabled={record.type !== 'Vote'}
         >
           转投
         </Button>
@@ -104,11 +112,11 @@ class MyVoteRecords extends Component {
     return (
       <section>
         <h2 className={`${clsPrefix}-header`}>
-          <span>节点列表</span>
-          <span className='node-color-intro-group'>
+          <span>My Votes</span>
+          {/* <span className='node-color-intro-group'>
             <span className='node-color-intro-item'>BP节点</span>
             <span className='node-color-intro-item'>候选节点</span>
-          </span>
+          </span> */}
           <Search
             placeholder='输入节点名称'
             onSearch={value => console.log(value)}

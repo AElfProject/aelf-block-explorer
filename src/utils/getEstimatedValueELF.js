@@ -31,6 +31,7 @@ export default function getEstimatedValueELF(type, pidRes, tokenConverterContrac
                         result.elfBalance.plus(result.virtualBalance), result.tokenWeight,
                         resCont
                     );
+                console.log('elfPayout', elfPayout)
                 resolve(elfPayout);
                 }
                 else {

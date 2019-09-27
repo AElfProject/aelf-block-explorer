@@ -204,7 +204,7 @@ export default class ResourceTrading extends PureComponent {
                     footer={null}
                     visible={sellVisible}
                     centered={true}
-                    maskClosable={maskClosable}
+                    maskClosable
                     onCancel={this.handleCancel}
                 >
                     <ResourceSellModal

@@ -4,9 +4,12 @@ import moment from 'moment';
 import StatisticalData from '@components/StatisticalData/';
 import { myVoteStatisData } from '../constants';
 import MyVoteRecord from './MyVoteRecords';
-import { getAllTeamDesc } from '@api/vote';
+import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
 import getCurrentWallet from '@utils/getCurrentWallet';
-import { NODE_DEFAULT_NAME } from '@src/pages/Vote/constants';
+import {
+  NODE_DEFAULT_NAME,
+  RANK_NOT_EXISTED_SYMBOL
+} from '@src/pages/Vote/constants';
 
 export default class MyVote extends Component {
   constructor(props) {
@@ -36,7 +39,11 @@ export default class MyVote extends Component {
       electionContract.GetElectorVoteWithAllRecords.call({
         value: currentWallet.pubKey
       }),
-      getAllTeamDesc()
+      getAllTeamDesc(),
+      fetchPageableCandidateInformation(electionContract, {
+        start: 0,
+        length: 5 // FIXME:
+      })
     ]).then(resArr => {
       console.log('resArr', resArr);
       this.processData(resArr);
@@ -45,14 +52,36 @@ export default class MyVote extends Component {
 
   processData(resArr) {
     const electorVotes = resArr[0];
+    const allNodeInfo = resArr[2].value
+      .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
+      .map((item, index) => {
+        item.rank = index + 1;
+        return item;
+      });
     let allTeamInfo = null;
     if (resArr[1].code === 0) {
       allTeamInfo = resArr[1].data;
     }
+
     const myVoteRecords = [
       ...electorVotes.activeVotingRecords,
       ...electorVotes.withdrawnVotesRecords
     ];
+    // assign rank
+    myVoteRecords.forEach(record => {
+      const foundedNode = allNodeInfo.find(
+        item => item.candidateInformation.pubkey === record.candidate
+      );
+      if (foundedNode === undefined) {
+        // rank: used to sort
+        record.rank = 9999999;
+        // displayedRank: used to display
+        record.displayedRank = RANK_NOT_EXISTED_SYMBOL;
+      } else {
+        record.rank = foundedNode.rank;
+        record.displayedRank = foundedNode.rank;
+      }
+    });
     const myTotalVotesAmount = electorVotes.allVotedVotesAmount;
     this.processStatisData('myTotalVotesAmount', 'num', myTotalVotesAmount);
     this.processTableData(myVoteRecords, allTeamInfo);
@@ -68,7 +97,7 @@ export default class MyVote extends Component {
       );
       console.log('teamInfo', teamInfo);
       if (teamInfo === undefined) {
-        record.name = NODE_DEFAULT_NAME;
+        record.name = record.candidate;
       } else {
         record.name = teamInfo.name;
       }
@@ -105,10 +134,6 @@ export default class MyVote extends Component {
       statisData
     });
   }
-
-  // fetchStatisData(){
-
-  // }
 
   render() {
     const { statisData, tableData } = this.state;

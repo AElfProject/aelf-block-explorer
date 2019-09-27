@@ -75,11 +75,14 @@ export default class ResourceSellModal extends PureComponent {
             amount: sellNum
         };
         result.Sell(payload, (error, result) => {
-            if (!result) {
+            if(result.error){
+                this.setState({
+                    loading: false
+                });
                 message.error(result.errorMessage.message, 3);
-                this.props.handleCancel();
                 return;
             }
+
             this.setState({
                 loading: true
             });

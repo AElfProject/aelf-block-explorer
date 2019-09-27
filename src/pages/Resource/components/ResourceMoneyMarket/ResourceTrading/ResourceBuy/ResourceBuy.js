@@ -5,7 +5,7 @@
 */
 
 import React, {Component} from 'react';
-import {Row, Col, Input, Slider, message, Modal} from 'antd';
+import {Row, Col, Input, InputNumber,Slider, message, Modal} from 'antd';
 import {feeReceiverContract, tokenConverter, multiToken} from '../../../../../../../config/config';
 import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
@@ -187,7 +187,7 @@ export default class ResourceBuy extends Component {
                 });
                 return;
             }
-            getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract).then(result => {
+            getEstimatedValueELF(menuName, value * ELF_DECIMAL, tokenConverterContract, tokenContract).then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
@@ -210,9 +210,10 @@ export default class ResourceBuy extends Component {
     }
 
     onChangeResourceValue(e) {
+        console.log('e.target.value', e.target.value);
         this.debounce(e.target.value);
         this.setState({
-            value: e.target.value
+            value: +(e.target.value)
         });
     }
 
