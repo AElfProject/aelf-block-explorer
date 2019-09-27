@@ -59,6 +59,7 @@ export default class HomePage extends Component {
     };
 
     blockHeight = 0;
+    unconfirmedBlockHeight = 0;
 
     async fetch(url) {
         const res = await get(url, {
@@ -129,7 +130,8 @@ export default class HomePage extends Component {
     handleSocketData({
         list = [],
         height = 0,
-        totalTxs
+        totalTxs,
+        unconfirmedBlockHeight = 0
     }, isFirst) {
         let arr = list;
         if (!isFirst) {
@@ -141,6 +143,7 @@ export default class HomePage extends Component {
         const transactions = arr.reduce((acc, i) => acc.concat(i.txs), []).map(transactionFormat);
         const blocks = arr.map(item => this.formatBlock(item.block));
         this.blockHeight = height;
+        this.unconfirmedBlockHeight = unconfirmedBlockHeight;
         this.setState({
             blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
             transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
@@ -169,7 +172,7 @@ export default class HomePage extends Component {
             info: this.blockHeight
         }, {
             title: 'Unconfirmed Block',
-            info: '-'
+            info: this.unconfirmedBlockHeight
         }, {
             title: 'Total Transactions',
             info: this.state.totalTransactions
