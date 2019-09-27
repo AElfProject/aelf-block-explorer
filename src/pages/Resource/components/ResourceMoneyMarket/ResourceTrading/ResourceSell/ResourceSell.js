@@ -11,7 +11,8 @@ import {feeReceiverContract, tokenConverter, multiToken} from '../../../../../..
 import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import './ResourceSell.less';
-import {SYMBOL} from '@src/constants';
+import {SYMBOL, ELF_DECIMAL} from '@src/constants';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceSell extends Component {
     constructor(props) {
@@ -136,7 +137,7 @@ export default class ResourceSell extends Component {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
-                    let ELFValue = Math.abs(Math.ceil(result));
+                    let ELFValue = (Math.abs(Math.ceil(result)))/ELF_DECIMAL;
                     this.setState({
                         ELFValue,
                         toSell: true
@@ -321,7 +322,7 @@ export default class ResourceSell extends Component {
                 </div>
             ),
             onOk() {
-                that.getDelayApprove(result, 3020);
+                that.getApprove(result, 3020);
             }
         });
     }
@@ -370,7 +371,7 @@ export default class ResourceSell extends Component {
                                 />
                             </Col>
                         </Row>
-                        <div className='ELF-value'>≈ {this.state.ELFValue} {SYMBOL}</div>
+                        <div className='ELF-value'>≈ {thousandsCommaWithDecimal(this.state.ELFValue)} {SYMBOL}</div>
                         <Row type='flex' align='middle'>
                             <Col span={6} style={{color: '#fff'}}>Available</Col>
                             <Col span={18}>

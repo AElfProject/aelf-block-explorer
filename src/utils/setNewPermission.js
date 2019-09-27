@@ -47,6 +47,12 @@ export default function setNewPermission(nightElf, payload) {
                 contractName: 'Election',
                 description: 'contract Election',
                 github: ''
+            }, {
+                chainId: CHAIN_ID,
+                contractAddress: config.profitContractAddr,
+                contractName: 'Profit',
+                description: 'contract Profit',
+                github: ''
             }]
         }
     }, (error, result) => {

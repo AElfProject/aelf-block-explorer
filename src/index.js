@@ -42,20 +42,6 @@ function initPage() {
 
 async function getNodesInfo() {
 
-<<<<<<< HEAD
-    const currentChain = JSON.parse(localStorage.getItem('currentChain'));
-
-    if (currentChain) {
-        const {
-            contract_address,
-            chain_id
-        } = currentChain;
-        Cookies.set('aelf_ca_ci', contract_address + chain_id);
-        initPage();
-    }
-
-=======
->>>>>>> master
     const nodesInfoProvider = '/nodes/info';
     const nodesInfo = await get(nodesInfoProvider);
     console.log('nodesInfo', nodesInfo);

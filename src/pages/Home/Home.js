@@ -85,13 +85,8 @@ export default class HomePage extends Component {
         const blocksResult = await this.fetch(ALL_BLOCKS_API_URL);
 
         const blocks = blocksResult.blocks;
-<<<<<<< HEAD
         // console.log(blocksResult);
         const block_height = blocks.length && blocks[0].block_height;
-        this.blockHeightInDataBase = block_height;
-=======
-        const block_height = blocks[0].block_height;
->>>>>>> master
         this.blockHeight = block_height;
 
         const TXSResult = await this.fetch(ALL_TXS_API_URL);
@@ -107,108 +102,12 @@ export default class HomePage extends Component {
         this.initSocket();
     }
 
-<<<<<<< HEAD
-    getBlockHeightPromise() {
-        return new Promise((resolve, reject) => {
-            if (this && this.blockHeight) {
-                resolve(+this.blockHeight + 1);
-            }
-            else {
-                console.log(111);
-                aelf.chain.getBlockHeight((err, result) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        // const {
-                        //     result: {
-                        //         block_height
-                        //     }
-                        // } = result;
-                        const block_height = result;
-                        if (parseInt(block_height, 10) <= parseInt(this.blockHeightInDataBase, 10)) {
-                            resolve(false);
-                            return;
-                        }
-                        resolve(block_height);
-                    }
-                });
-            }
-=======
     initSocket() {
         this.socket = io(location.origin, {
             path: SOCKET_URL,
             transports: ['websocket', 'polling']
->>>>>>> master
         });
 
-<<<<<<< HEAD
-    // get increament block data
-    // 1. Get the lastest 100 Blocks Info from databases at first.
-    // 2. Get the new Blocks Info from AElf Chain.
-    // 3. If the (block_height in Chain) - (block_height in Databases) > 10,
-    //    Notice the users we have problem, and get New Block from AElf Chain.
-    // 4. In the page, if block.length > 100, .length =100 ,then, unshift.
-    fetchInfoByChain() {
-        // const store = this.props.appIncrStore;
-        let newBlocksList = [].concat(...this.state.blocks);
-        let newTxsList = [].concat(...this.state.transactions);
-        // debugger;
-        this.getBlockHeightPromise().then(blockHeight => {
-            // console.log('blockHeight', blockHeight);
-            if (!blockHeight) {
-                return;
-            }
-            aelf.chain.getBlockByHeight(blockHeight, true, (err, result) => {
-                if (err) {
-                    message.error('Can not get Block Info from AElf Node!!!.', 6);
-                    return;
-                }
-                const {
-                    // result: {BlockHash = '', Body = '', Header = ''} = {}
-                    BlockHash,
-                    Body,
-                    Header
-                } = result;
-                if (isEmpty(BlockHash)) {
-                    return;
-                }
-
-                const chainBlocks = {
-                    block_hash: BlockHash,
-                    block_height: +blockHeight,
-                    chain_id: Header.ChainId,
-                    merkle_root_state: Header.MerkleTreeRootOfWorldState,
-                    merkle_root_tx: Header.MerkleTreeRootOfTransactions,
-                    pre_block_hash: Header.PreviousBlockHash,
-                    time: Header.Time,
-                    tx_count: Body.TransactionsCount
-                };
-
-                let pre_block_height = newBlocksList[0].block_height;
-                if (blockHeight - pre_block_height > 10) {
-                    message.warning(
-                        'Notice: Blocks in Databases is behind more than 10 blocks in the Chain.',
-                        6
-                    );
-                }
-
-                newBlocksList.unshift(chainBlocks);
-                newBlocksList.length = PAGE_SIZE;
-                if (!isEmpty(Body.Transactions)) {
-                    // console.log('Body', BlockHash, Body.TransactionsCount);
-                    aelf.chain.getTxResults(BlockHash, 0, PAGE_SIZE, (error, result) => {
-                        if (error || !result) {
-                            debugger;
-                            message.error(error.message, 2);
-                            return;
-                        }
-                        const txsList = result || [];
-
-                        const txsFormatted = txsList.map(tx => {
-                            return transactionFormat(tx);
-                        });
-=======
         this.socket.on('reconnect_attempt', () => {
             this.socket.io.opts.transports = ['polling', 'websocket'];
         });
@@ -217,7 +116,6 @@ export default class HomePage extends Component {
                 throw new Error('can\'t connect to socket');
             }
         });
->>>>>>> master
 
         this.socket.on('getOnFirst', data => {
             this.handleSocketData(data, true);
@@ -238,12 +136,6 @@ export default class HomePage extends Component {
             arr = list.filter(item => {
                 return item.block.Header.Height > this.blockHeight;
             });
-<<<<<<< HEAD
-        }).catch(err => {
-            // console.log(2);
-            // debugger;
-            message.error(err.message, 2);
-=======
         }
         arr.sort((pre, next) => next.block.Header.Height - pre.block.Header.Height);
         const transactions = arr.reduce((acc, i) => acc.concat(i.txs), []).map(transactionFormat);
@@ -253,7 +145,6 @@ export default class HomePage extends Component {
             blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
             transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
             totalTransactions: totalTxs
->>>>>>> master
         });
     }
 

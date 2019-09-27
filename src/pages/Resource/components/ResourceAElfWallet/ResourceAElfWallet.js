@@ -8,8 +8,8 @@ import {Row, Col, Spin} from 'antd';
 import Svg from '../../../../components/Svg/Svg';
 import {Link} from 'react-router-dom';
 import './ResourceAElfWallet.less';
-import {SYMBOL, TOKEN_CONTRACT_DECIMAL} from '@src/constants';
-import {thousandsCommaWithDecimal} from '@utils/formater'
+import {SYMBOL, ELF_DECIMAL} from '@src/constants';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceAElfWallet extends PureComponent {
     constructor(props) {
@@ -102,7 +102,7 @@ export default class ResourceAElfWallet extends PureComponent {
             if (result) {
                 const balance = result.balance || 0;
                 this.setState({
-                    balance: parseInt(balance, 10).toLocaleString(),
+                    balance: (+balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
                 this.props.getCurrentBalance(parseInt(balance, 10));
@@ -120,7 +120,7 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadRAM, (error, result) => {
             if (result) {
                 this.setState({
-                    RAM: parseInt(result.balance, 10).toLocaleString(),
+                    RAM: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
                 this.props.getCurrentRam(result.balance);
@@ -140,7 +140,7 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadCPU, (error, result) => {
             if (result) {
                 this.setState({
-                    CPU: parseInt(result.balance, 10).toLocaleString(),
+                    CPU: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
                 this.props.getCurrentCpu(result.balance);
@@ -160,7 +160,7 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadNET, (error, result) => {
             if (result) {
                 this.setState({
-                    NET: parseInt(result.balance, 10).toLocaleString(),
+                    NET: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
                 this.props.getCurrentNet(result.balance);
@@ -180,7 +180,7 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadSTO, (error, result) => {
             if (result) {
                 this.setState({
-                    STO: parseInt(result.balance, 10).toLocaleString(),
+                    STO: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
                 this.props.getCurrentSto(result.balance);
@@ -243,8 +243,8 @@ export default class ResourceAElfWallet extends PureComponent {
                                 <Row gutter={16} type='flex' align='middle'>
                                     <Col span={19} style={{marginTop: '10px'}}>
                                         {/* todo:  */}
-                                        {/* Account balance: <span className='number' >{thousandsCommaWithDecimal(balance/TOKEN_CONTRACT_DECIMAL)} {SYMBOL}</span> */}
-                                        Account balance: <span className='number' >{balance} {SYMBOL}</span>
+                                        {/* Account balance: <span className='number' >{thousandsCommaWithDecimal(balance/ELF_DECIMAL)} {SYMBOL}</span> */}
+                                        Account balance: <span className='number' >{thousandsCommaWithDecimal(balance)} {SYMBOL}</span>
                                     </Col>
                                 </Row>
                                 <Row style={{marginTop: '20px'}} gutter={16}>
@@ -253,28 +253,28 @@ export default class ResourceAElfWallet extends PureComponent {
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        RAM quantity: <span className='number'>{RAM}</span>
+                                        RAM quantity: <span className='number'>{thousandsCommaWithDecimal(RAM)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={5}
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        CPU quantity: <span className='number'>{CPU}</span>
+                                        CPU quantity: <span className='number'>{thousandsCommaWithDecimal(CPU)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={5}
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        NET quantity: <span className='number'>{NET}</span>
+                                        NET quantity: <span className='number'>{thousandsCommaWithDecimal(NET)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={5}
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        STO quantity: <span className='number'>{STO}</span>
+                                        STO quantity: <span className='number'>{thousandsCommaWithDecimal(STO)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={4}

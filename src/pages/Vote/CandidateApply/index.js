@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-23 19:44:26
+ * @LastEditTime: 2019-09-25 21:38:55
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -133,6 +133,7 @@ class CandidateApply extends PureComponent {
     // todo: error handle
     nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
       if (result) {
+        console.log('result', result);
         const electionContract = result;
         electionContract
         .AnnounceElection()

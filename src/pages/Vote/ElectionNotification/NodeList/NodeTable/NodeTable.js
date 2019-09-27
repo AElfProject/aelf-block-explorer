@@ -57,7 +57,8 @@ const nodeListCols = [
   {
     title: 'My Votes',
     key: 'myVotes',
-    dataIndex: 'myTotalVoteAmount'
+    dataIndex: 'myTotalVoteAmount',
+    sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount
   },
   {
     title: 'Operations',
@@ -73,7 +74,7 @@ const nodeListCols = [
           data-nodeaddress={record.pubkey}
           data-role='vote'
           data-nodename={record.name}
-          data-shouldDetectLock={true}
+          data-shoulddetectlock={true}
           data-votetype={FROM_WALLET}
         >
           Vote
@@ -82,9 +83,12 @@ const nodeListCols = [
           key={record.pubkey + 1}
           type='primary'
           data-role='redeem'
-          data-shouldDetectLock={true}
+          data-shoulddetectlock={true}
+          data-nodeaddress={record.pubkey}
+          data-nodename={record.name}
+          disabled={record.myTotalVoteAmount > 0 ? false : true}
         >
-          Withdraw
+          Redeem
         </Button>
       </div>
     )
@@ -158,6 +162,8 @@ class NodeTable extends PureComponent {
       }));
   }
 
+  // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
+  // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
   fetchNodes() {
     const { electionContract } = this.props;
     console.log('InTable', electionContract);

@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-23 23:49:04
+ * @LastEditTime: 2019-09-25 21:43:59
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -304,7 +304,7 @@ class CandidateApply extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { hasAuth, teamInfoKeyInForm } = this.state;
 
-    getFieldDecorator('keys', { initialValue: [githu] });
+    getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
     const formItems = keys.map((k, index) => (
       <Form.Item

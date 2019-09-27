@@ -72,14 +72,22 @@ export default class MyVote extends Component {
       } else {
         record.name = teamInfo.name;
       }
-      record.operationTime = moment()
-        .set('second', record.voteTimestamp.seconds)
-        .format('YYYY-MM-DD');
+      if (record.isWithdrawn) {
+        record.type = 'Redeem';
+        record.operationTime = moment
+          .unix(record.withdrawTimestamp.seconds)
+          .format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        record.type = 'Vote';
+        record.operationTime = moment
+          .unix(record.voteTimestamp.seconds)
+          .format('YYYY-MM-DD HH:mm:ss');
+      }
       record.status = 'Success';
-      record.type = 'Vote';
-      record.lockTime = moment()
-        .set('second', record.lockTime)
-        .format('YYYY-MM-DD');
+      console.log('record.lockTime', record.lockTime);
+      const start = moment.unix(record.voteTimestamp.seconds);
+      const end = moment.unix(record.unlockTimestamp.seconds);
+      record.formatedLockTime = end.from(start, true);
     });
     // todo: withdrawn's timestamp
 

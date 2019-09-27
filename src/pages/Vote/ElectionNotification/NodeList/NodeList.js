@@ -37,10 +37,10 @@ export default class NodeList extends Component {
         <Spin spinning={this.state.isRefresh} tip='Loading...' size='large'>
           <h2 className={`${clsPrefix}-header`}>
             <span>节点列表</span>
-            <span className='node-color-intro-group'>
+            {/* <span className='node-color-intro-group'>
               <span className='node-color-intro-item'>BP节点</span>
               <span className='node-color-intro-item'>候选节点</span>
-            </span>
+            </span> */}
             <Search
               placeholder='输入节点名称'
               onSearch={value => console.log(value)}

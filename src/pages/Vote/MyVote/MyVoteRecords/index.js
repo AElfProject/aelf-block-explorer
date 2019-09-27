@@ -21,7 +21,9 @@ const myVoteRecordsCols = [
     dataIndex: 'name',
     key: 'nodeName',
     render: (text, record) => (
-      <Link to={{ pathname: '/vote/team', search: `pubkey=${record.candidate}` }}>
+      <Link
+        to={{ pathname: '/vote/team', search: `pubkey=${record.candidate}` }}
+      >
         {text}
       </Link>
     )
@@ -39,8 +41,8 @@ const myVoteRecordsCols = [
   },
   {
     title: 'Lock Time',
-    dataIndex: 'lockTime',
-    key: 'lockTime'
+    dataIndex: 'formatedLockTime',
+    key: 'formatedLockTime'
   },
   {
     title: 'Status',
@@ -50,7 +52,20 @@ const myVoteRecordsCols = [
   {
     title: 'Operation Time',
     dataIndex: 'operationTime',
-    key: 'operationTime'
+    key: 'operationTime',
+    defaultSortOrder: 'descend',
+    sorter: (a, b) => {
+      let prev = null;
+      let next = null;
+      prev = a.withdrawTimestamp
+        ? a.withdrawTimestamp.seconds
+        : a.voteTimestamp.seconds;
+      next = b.withdrawTimestamp
+        ? b.withdrawTimestamp.seconds
+        : b.voteTimestamp.seconds;
+
+      return prev - next;
+    }
   },
   {
     title: 'Operations',
@@ -105,6 +120,7 @@ class MyVoteRecords extends Component {
           // onChange={handleTableChange}
           // loading={loading}
           pagination={pagination}
+          rowKey={record => record.voteId.value}
         />
       </section>
     );

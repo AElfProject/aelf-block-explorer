@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-25 15:22:56
+ * @LastEditTime: 2019-09-26 15:38:59
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -47,6 +47,56 @@ function disabledDate(current) {
   return current && current < moment().endOf('day');
 }
 
+function getColumns() {
+  // const { checkedGroup } = this.state;
+
+  return [
+    // {
+    //   title: 'Rank',
+    //   dataIndex: 'rank',
+    //   key: 'rank'
+    // },
+    {
+      title: 'Node Name',
+      dataIndex: 'name',
+      key: 'nodeName'
+    },
+    {
+      title: 'Vote Amount',
+      dataIndex: 'amount',
+      key: 'voteAmount',
+      sorter: (a, b) => a.amount - b.amount
+    },
+    {
+      title: 'Lock Time',
+      dataIndex: 'formatedLockTime',
+      key: 'lockTime',
+      sorter: (a, b) => a.lockTime - b.lockTime
+    },
+    {
+      title: 'Vote Time',
+      dataIndex: 'formatedVoteTime',
+      key: 'voteTime',
+      sorter: (a, b) => a.voteTimestamp.seconds - b.voteTimestamp.seconds
+    }
+    // {
+    //   key: 'operations',
+    //   render: (text, record, index) => (
+    //     <div className='operation-group'>
+    //       <Checkbox
+    //         type='primary'
+    //         checked={checkedGroup[index]}
+    //         onChange={checked => {
+    //           console.log('click checkbox');
+    //           this.handleCheckboxChange(checked, index);
+    //         }}
+    //       />
+    //     </div>
+    //   )
+    // }
+  ];
+}
+
 // todo: handle balance's decimal
 class VoteModal extends Component {
   constructor(props) {
@@ -72,18 +122,20 @@ class VoteModal extends Component {
       handleVoteAmountChange,
       handleLockTimeChange,
       expiredVotesAmount,
-      switchableVoteRecords
+      switchableVoteRecords,
+      estimatedProfit
     } = this.props;
     const {
       switchVoteSelectedRowKeys,
       handleSwithVoteSelectedRowChange
     } = this.props;
 
-    const columns = this.getColumns();
+    const columns = getColumns();
     const rowSelection = {
       selectedRowKeys: switchVoteSelectedRowKeys,
       onChange: handleSwithVoteSelectedRowChange,
-      hideDefaultSelections: true
+      hideDefaultSelections: true,
+      type: 'radio'
     };
 
     return [
@@ -151,18 +203,18 @@ class VoteModal extends Component {
                 </span>
               </div>
             )
-          },
-          {
-            label: '预估投票收益',
-            render: (
-              <div>
-                {/* <span>{estimatedProfit}</span> */}
-                <span className='tip-color' style={{ marginLeft: 10 }}>
-                  投票收益=(锁定期*票数/总票数)*分红池奖励*20%
-                </span>
-              </div>
-            )
           }
+          // {
+          //   label: '预估投票收益',
+          //   render: (
+          //     <div>
+          //       <span>{estimatedProfit}</span>
+          //       <span className='tip-color' style={{ marginLeft: 10 }}>
+          //         投票收益=(锁定期*票数/总票数)*分红池奖励*20%
+          //       </span>
+          //     </div>
+          //   )
+          // }
         ]
       },
       {
@@ -224,18 +276,18 @@ class VoteModal extends Component {
                 </span>
               </div>
             )
-          },
-          {
-            label: '预估投票收益',
-            render: (
-              <div>
-                {/* <span>{estimatedProfit}</span> */}
-                <span className='tip-color' style={{ marginLeft: 10 }}>
-                  投票收益=(锁定期*票数/总票数)*分红池奖励*20%
-                </span>
-              </div>
-            )
           }
+          // {
+          //   label: '预估投票收益',
+          //   render: (
+          //     <div>
+          //       <span>{estimatedProfit}</span>
+          //       <span className='tip-color' style={{ marginLeft: 10 }}>
+          //         投票收益=(锁定期*票数/总票数)*分红池奖励*20%
+          //       </span>
+          //     </div>
+          //   )
+          // }
         ]
       },
       {
@@ -273,83 +325,36 @@ class VoteModal extends Component {
                 />
               </div>
             )
-          },
-          {
-            label: '锁定期',
-            render: (
-              <div>
-                <DatePicker
-                  disabledDate={disabledDate}
-                  value={lockTime}
-                  onChange={handleLockTimeChange}
-                />
-                <span className='tip-color' style={{ marginLeft: 10 }}>
-                  锁定期内不支持提币和转账
-                </span>
-              </div>
-            ),
-            // todo: unify the validator form, use rules or Form.Item's 
-            validator: {
-              rules: [
-                // todo: add the validator rule
-                {
-                  required: true,
-                  message: 'Please select your lock time!'
-                }
-              ],
-              validateTrigger: ['onChange', 'onBlur'],
-              fieldDecoratorid: 'lockTime'
-            }
           }
+          // {
+          //   label: '锁定期',
+          //   render: (
+          //     <div>
+          //       <DatePicker
+          //         disabledDate={disabledDate}
+          //         value={lockTime}
+          //         onChange={handleLockTimeChange}
+          //       />
+          //       <span className='tip-color' style={{ marginLeft: 10 }}>
+          //         锁定期内不支持提币和转账
+          //       </span>
+          //     </div>
+          //   ),
+          //   // todo: unify the validator form, use rules or Form.Item's
+          //   validator: {
+          //     rules: [
+          //       // todo: add the validator rule
+          //       {
+          //         required: true,
+          //         message: 'Please select your lock time!'
+          //       }
+          //     ],
+          //     validateTrigger: ['onChange', 'onBlur'],
+          //     fieldDecoratorid: 'lockTime'
+          //   }
+          // }
         ]
       }
-    ];
-  }
-
-  getColumns() {
-    // const { checkedGroup } = this.state;
-
-    return [
-      {
-        title: 'Rank',
-        dataIndex: 'rank',
-        key: 'rank'
-      },
-      {
-        title: 'Node Name',
-        dataIndex: 'name',
-        key: 'nodeName'
-      },
-      {
-        title: 'Vote Amount',
-        dataIndex: 'amount',
-        key: 'voteAmount'
-      },
-      {
-        title: 'Lock Time',
-        dataIndex: 'formatedLockTime',
-        key: 'lockTime'
-      },
-      {
-        title: 'Vote Time',
-        dataIndex: 'formatedVoteTime',
-        key: 'voteTime'
-      }
-      // {
-      //   key: 'operations',
-      //   render: (text, record, index) => (
-      //     <div className='operation-group'>
-      //       <Checkbox
-      //         type='primary'
-      //         checked={checkedGroup[index]}
-      //         onChange={checked => {
-      //           console.log('click checkbox');
-      //           this.handleCheckboxChange(checked, index);
-      //         }}
-      //       />
-      //     </div>
-      //   )
-      // }
     ];
   }
 
@@ -440,6 +445,7 @@ class VoteModal extends Component {
                       checked={voteType === form.type}
                       value={form.type}
                       style={{ marginRight: 10 }}
+                      onChange={() => {}}
                     />
                     <label htmlFor={form.label}>{form.label}</label>
                   </span>

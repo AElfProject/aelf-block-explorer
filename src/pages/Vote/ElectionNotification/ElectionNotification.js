@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-23 20:47:01
+ * @LastEditTime: 2019-09-26 20:48:20
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -454,7 +454,10 @@ export default class ElectionNotification extends PureComponent {
       profitContract,
       dividendContract,
       nightElf,
-      isCandidate
+      isCandidate,
+      handleDividendClick,
+      dividends,
+      electionContractFromExt
     } = this.props;
 
     const { electionContract } = this.props;
@@ -463,18 +466,20 @@ export default class ElectionNotification extends PureComponent {
     return (
       <section className='page-container'>
         <StatisticalData data={statisData} />
-        <ElectionRuleCard isCandidate={isCandidate}/>
+        <ElectionRuleCard isCandidate={isCandidate} />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
           profitContract={profitContract}
           dividendContract={dividendContract}
+          handleDividendClick={handleDividendClick}
+          dividends={dividends}
+          electionContractFromExt={electionContractFromExt}
         />
         <NodeList electionContract={electionContract} nightElf={nightElf} />
 
-        <div>BP节点：</div>
-        <div>候选节点：</div>
-        <div>
+        {/* ===== Test Btn ===== */}
+        {/* <div>
           <button onClick={this.testElectionContract}>
             test election contract
           </button>
@@ -485,8 +490,9 @@ export default class ElectionNotification extends PureComponent {
         <div>
           <button onClick={this.testConsensusContract}>
             test consensus contract
-          </button>
-        </div>
+          </button>s
+        </div> */}
+        {/* ===== Test Btn ===== */}
       </section>
     );
   }

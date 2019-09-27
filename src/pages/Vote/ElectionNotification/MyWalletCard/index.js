@@ -6,9 +6,9 @@ import './index.less';
 // import { inject, observer } from 'mobx-react';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
-import { TOKEN_CONTRACT_DECIMAL, SYMBOL } from '@src/constants';
+import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
-import { schemeIds } from '@src/pages/Vote/constants';
+import { schemeIds } from '@pages/Vote/constants';
 
 const clsPrefix = 'my-wallet-card';
 
@@ -27,7 +27,7 @@ export default class MyWalletCard extends PureComponent {
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.handleGetDividens = this.handleGetDividens.bind(this);
+    // this.handleClaimDividendClick = this.handleClaimDividendClick.bind(this);
     this.updateWallet = this.updateWallet.bind(this);
   }
 
@@ -63,9 +63,9 @@ export default class MyWalletCard extends PureComponent {
       this.computedTotalAssets();
     }
 
-    if (profitContract !== prevProps.profitContract) {
-      this.fetchProfitAmount();
-    }
+    // if (profitContract !== prevProps.profitContract) {
+    //   this.fetchProfitAmount();
+    // }
   }
 
   fetchWalletBalance() {
@@ -79,7 +79,7 @@ export default class MyWalletCard extends PureComponent {
     })
       .then(res => {
         this.setState({
-          balance: +res.balance / TOKEN_CONTRACT_DECIMAL
+          balance: +res.balance / ELF_DECIMAL
         });
       })
       .catch(err => console.error('fetchWalletBalance', err));
@@ -115,21 +115,12 @@ export default class MyWalletCard extends PureComponent {
       (a, b) => a.unlockTimestamp.seconds - b.unlockTimestamp.seconds
     )[0];
     // todo: time is wrong
-    console.log('lastestUnlockTimestamp', moment().set('second', lastestUnlockTimestamp.unlockTimestamp.seconds).format("YYYY-MM-DD"));
-  }
-
-  fetchProfitAmount() {
-    const { profitContract, dividendContract } = this.props;
-    profitContract.GetProfitAmount.call({
-      schemeId: schemeIds.CitizenWelfare,
-      symbol: SYMBOL
-    })
-      .then(res => {
-        console.log('GetScheme', res);
-      })
-      .catch(err => {
-        console.error('GetScheme', err);
-      });
+    console.log(
+      'lastestUnlockTimestamp',
+      moment()
+        .set('second', lastestUnlockTimestamp.unlockTimestamp.seconds)
+        .format('YYYY-MM-DD')
+    );
   }
 
   computedTotalAssets() {
@@ -172,12 +163,12 @@ export default class MyWalletCard extends PureComponent {
     });
   }
 
-  handleGetDividens() {
-    Modal.success({
-      title: 'You has succeed in getting dividens.',
-      centered: true
-    });
-  }
+  // handleClaimDividendClick() {
+  //   Modal.success({
+  //     title: 'You has succeed in getting dividens.',
+  //     centered: true
+  //   });
+  // }
 
   updateWallet() {
     this.fetchWalletBalance();
@@ -187,6 +178,7 @@ export default class MyWalletCard extends PureComponent {
   }
 
   render() {
+    const { handleDividendClick, dividends } = this.props;
     const {
       unbindAccountModalVisible,
       balance,
@@ -214,19 +206,20 @@ export default class MyWalletCard extends PureComponent {
             <h3 className={`${clsPrefix}-body-wallet-title-name`}>
               {currentWallet.name}
             </h3>
-            <Button shape='round' onClick={this.showModal}>
+            {/* <Button shape='round' onClick={this.showModal}>
               解除绑定
-            </Button>
+            </Button> */}
           </div>
+          {/* todo: extract the lis code in ul */}
           <ul className={`${clsPrefix}-body-wallet-content`}>
             <li>资产总数： {thousandsCommaWithDecimal(totalAssets)}</li>
             <li>可用余额： {thousandsCommaWithDecimal(balance)}</li>
             <li>
-              待领取分红金额： 91.0000
+              待领取分红金额： {dividends.total.toFixed(2)}
               <Button
                 shape='round'
                 className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
-                onClick={this.handleGetDividens}
+                onClick={handleDividendClick}
               >
                 领取
               </Button>
@@ -251,7 +244,7 @@ export default class MyWalletCard extends PureComponent {
           centered
           maskClosable
           keyboard
-          okButtonProps={{ 'data-shouldDetectLock': true }}
+          okButtonProps={{ 'data-shoulddetectlock': true }}
         >
           <p style={{ marginTop: 10 }}>请求NightELF插件授权解除绑定</p>
         </Modal>

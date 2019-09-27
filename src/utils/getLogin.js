@@ -45,6 +45,12 @@ export default function getLogin(nightElf, payload, callback) {
                 contractName: 'Election',
                 description: 'contract Election',
                 github: ''
+            }, {
+                chainId: CHAIN_ID,
+                contractAddress: config.profitContractAddr,
+                contractName: 'Profit',
+                description: 'contract Profit',
+                github: ''
             }]
         }
     }, (error, result) => {
