@@ -238,7 +238,7 @@ export default class Resource extends Component {
         const {showDownloadPlugins, currentWallet, contracts, tokenContract, tokenConverterContract} = this.state;
         const {currentBalance, currentCpu, currentRam, currentNet, currentSto, appName} = this.state;
         let account = {
-            balabce: currentBalance,
+            balance: currentBalance,
             CPU: currentCpu,
             RAM: currentRam,
             NET: currentNet,

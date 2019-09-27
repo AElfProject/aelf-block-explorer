@@ -9,6 +9,8 @@ import {RESOURCE_REALTIME_RECORDS} from '../../../../../constants';
 import dayjs from 'dayjs';
 import {get} from '../../../../../utils';
 import {Link} from 'react-router-dom';
+import {SYMBOL, ELF_DECIMAL} from '@src/constants';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 // import Websocket from 'react-websocket';
 import './RealTimeTransactions.less';
 
@@ -62,10 +64,19 @@ export default class RealTimeTransactions extends PureComponent {
     async getResourceRealtimeRecords() {
         const {menuIndex, menuName} = this.state;
         const type = menuName[menuIndex];
-        const data = await get(RESOURCE_REALTIME_RECORDS, {
+        let data = await get(RESOURCE_REALTIME_RECORDS, {
             limit,
             type
         });
+        data.buyRecords = data.buyRecords.map(item => {
+            item.resource = (+item.resource) / ELF_DECIMAL;
+            return item;
+        });
+        data.soldRecords = data.soldRecords.map(item => {
+            item.resource = (+item.resource) / ELF_DECIMAL
+            return item;
+        });
+        console.log('data', data);
         this.setState({
             recordsData: data || []
         });
@@ -92,7 +103,7 @@ export default class RealTimeTransactions extends PureComponent {
                             <Col span={4}><Link to={`/tx/${item.tx_id}`} >{date}</Link></Col>
                             <Col span={3} className='sell'>sell</Col>
                             <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
-                            <Col span={6}>{item.resource}</Col>
+                            <Col span={6}>{thousandsCommaWithDecimal(item.resource)}</Col>
                             <Col span={6}>{item.elf}</Col>
                         
                     </Row>
@@ -115,7 +126,7 @@ export default class RealTimeTransactions extends PureComponent {
                             <Col span={4}><Link to={`/tx/${item.tx_id}`} >{date}</Link></Col>
                             <Col span={3} className='sell'>buy</Col>
                             <Col span={5}>{((item.elf - fee) / item.resource).toFixed(9)}</Col>
-                            <Col span={6}>{item.resource}</Col>
+                            <Col span={6}>{thousandsCommaWithDecimal(item.resource)}</Col>
                             <Col span={6}>{item.elf}</Col>
                     </Row>
                 );

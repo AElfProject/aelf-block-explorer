@@ -105,7 +105,7 @@ export default class ResourceAElfWallet extends PureComponent {
                     balance: (+balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentBalance(parseInt(balance, 10));
+                this.props.getCurrentBalance((+balance)/ELF_DECIMAL);
             }
         });
     }
@@ -123,7 +123,7 @@ export default class ResourceAElfWallet extends PureComponent {
                     RAM: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentRam(result.balance);
+                this.props.getCurrentRam((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
@@ -143,7 +143,7 @@ export default class ResourceAElfWallet extends PureComponent {
                     CPU: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentCpu(result.balance);
+                this.props.getCurrentCpu((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
@@ -163,7 +163,7 @@ export default class ResourceAElfWallet extends PureComponent {
                     NET: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentNet(result.balance);
+                this.props.getCurrentNet((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
@@ -183,7 +183,7 @@ export default class ResourceAElfWallet extends PureComponent {
                     STO: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentSto(result.balance);
+                this.props.getCurrentSto((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
