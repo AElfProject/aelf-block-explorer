@@ -233,7 +233,7 @@ export default class BrowserHeader extends PureComponent {
           <nav className='header-navbar'>
             {menuHtml}
             {this.state.showSearch && <Search />}
-            <ChainSelect />
+            {/* <ChainSelect /> */}
           </nav>
         </div>
       </div>
