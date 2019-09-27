@@ -166,12 +166,12 @@ const ALL_TXS_LIST_COLUMNS = [{
             } </Link>
         )
     },
-    {
-        title: 'Quantity',
-        dataIndex: 'quantity',
-        key: 'quantity',
-        render: text => <span>{text}</span>
-    }
+    // {
+    //     title: 'Quantity',
+    //     dataIndex: 'quantity',
+    //     key: 'quantity',
+    //     render: text => <span>{text}</span>
+    // }
 ];
 
 const ADDRESS_INFO_COLUMN = [{

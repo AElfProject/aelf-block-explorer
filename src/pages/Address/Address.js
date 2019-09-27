@@ -185,7 +185,7 @@ export default class AddressPage extends React.Component {
 
         return (
             <div className='address-container basic-container' key='body'>
-                <div className='address-header-container'>
+                {/* <div className='address-header-container'>
                     <h3>Overview</h3>
                     <Table
                         className='header-list'
@@ -194,7 +194,7 @@ export default class AddressPage extends React.Component {
                         rowKey = 'address'
                         pagination={false}
                     />
-                </div>
+                </div> */}
                 <h3 style={{
                     color: '#93FF26'
                 }}> {this.state.txsNumber && this.state.txsNumber.toLocaleString() || '-'} Transactions</h3>
