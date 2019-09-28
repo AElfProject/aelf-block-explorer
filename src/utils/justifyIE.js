@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-28 11:26:35
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-28 11:35:46
+ * @LastEditTime: 2019-09-28 11:58:57
  * @Description: file content
  */
 // todo: use let and const instead
@@ -14,7 +14,6 @@ export const isIESeries = () => {
   var isEdge = userAgent.indexOf('Edge') > -1 && !isIE; //判断是否IE的Edge浏览器
   var isIE11 =
     userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1;
-    debugger;
   if (isIE || isEdge || isIE11) return true;
   return false;
 };
