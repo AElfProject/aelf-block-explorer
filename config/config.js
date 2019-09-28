@@ -22,6 +22,10 @@ const MAINCHAINID = 'AELF';
 const APPNAME = 'explorer.aelf.io';
 const commonPrivateKey = 'd351aa6e20d353c6a1bee1f4cba8dc6d79ba63e2799381ec9dc75398ed58828b';
 
+// others 
+const SYMBOL = 'ELF';
+const CHAIN_ID = 'AELF';
+
 const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
 // const WALLET_DOMAIN = 'https://wallet-test-side01.aelf.io/';
 // const WALLET_DOMAIN = 'https://wallet-test-side02.aelf.io/';
@@ -50,7 +54,9 @@ const profitContractAddr = 'jDpXvpfC2qpriNFgZh68nRpJ5juN51ehcJNJwAcr5Z1UhfFTJ';
 // const profitContractAddr = 'GUR3tTR7ngqzFfQ2m2i54fXSSEu1D9a179FRxba3UDaykQ2YX';
 // const dividendContractAddr = 'SPz98hADSEraugrYoqcciJyUX1iNGxgsamMyvkdReSyC2Y9o3'; // Yiqi said that dividend's address is treasury's address.
 // const voteContractAddr = 'sCbDeD2FxdPvtX5ykepazKf8NDACuhgpDCq6TMt5uEnoPaRzN';
-
+// 不删档节点
+// const SYMBOL = 'TELF';
+// const CHAIN_ID = 'TELF';
 
 
 // For compatibility the code use unsuitable name
@@ -78,5 +84,7 @@ module.exports = {
     voteContractAddr,
     electionContractAddr,
     profitContractAddr,
-    WALLET_DOMAIN
+    WALLET_DOMAIN,
+    CHAIN_ID,
+    SYMBOL
 };
