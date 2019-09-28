@@ -7,3 +7,4 @@ npm-debug.log*
 
 explore.conf
 package-lock.json
+.yarn-error.log
