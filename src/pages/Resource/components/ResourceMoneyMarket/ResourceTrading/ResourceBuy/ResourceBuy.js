@@ -13,7 +13,7 @@ import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
 import contractChange from '../../../../../../utils/contractChange';
 import './ResourceBuy.less';
-import {SYMBOL, ELF_DECIMAL} from '@src/constants';
+import {SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL} from '@src/constants';
 import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceBuy extends Component {
@@ -151,6 +151,7 @@ export default class ResourceBuy extends Component {
     onChangeSlide(e) {
         const {menuName, tokenConverterContract, tokenContract} = this.state;
         let elfCont = e;
+        console.log('e', e);
         if (e === 0) {
             this.setState({
                 purchaseQuantity: 0,
@@ -161,7 +162,7 @@ export default class ResourceBuy extends Component {
         }
         elfCont = elfCont - 1;
         elfCont -= getFees(elfCont);
-        getEstimatedValueRes(menuName, elfCont, tokenConverterContract, tokenContract).then(result => {
+        getEstimatedValueRes(menuName, elfCont * ELF_DECIMAL, tokenConverterContract, tokenContract).then(result => {
             let value = 0;
             if (Math.ceil(result) > 0) {
                 value = Math.abs(Math.ceil(result));
@@ -187,7 +188,8 @@ export default class ResourceBuy extends Component {
                 });
                 return;
             }
-            getEstimatedValueELF(menuName, value * ELF_DECIMAL, tokenConverterContract, tokenContract).then(result => {
+            console.log('value', value);
+            getEstimatedValueELF(menuName, value * TEMP_RESOURCE_DECIMAL , tokenConverterContract, tokenContract).then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
@@ -265,7 +267,7 @@ export default class ResourceBuy extends Component {
                     wallet,
                     (err, contract) => {
                         if (contract) {
-                                this.getApprove(contract);
+                            this.getApprove(contract);
                         }
                     }
                 );
@@ -282,7 +284,7 @@ export default class ResourceBuy extends Component {
         if (contract) {
             if (result) {
                 console.log('Approve', contract);
-                this.props.handleBuyModalShow(value, ELFValue);
+                this.props.handleBuyModalShow(value * TEMP_RESOURCE_DECIMAL, ELFValue / ELF_DECIMAL);
             }
         }
     }
@@ -324,7 +326,7 @@ export default class ResourceBuy extends Component {
                             <Col span={6} style={{color: '#fff'}}>Buying quantity </Col>
                             <Col span={18}>
                                 <Input
-                                    addonAfter={menuName}
+                                    addonAfter={`x100,000 ${menuName}`}
                                     value={value}
                                     onChange={this.onChangeResourceValue.bind(this)}
                                     disabled={noCanInput}

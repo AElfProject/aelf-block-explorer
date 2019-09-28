@@ -11,7 +11,7 @@ import {feeReceiverContract, tokenConverter, multiToken} from '../../../../../..
 import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import './ResourceSell.less';
-import {SYMBOL, ELF_DECIMAL} from '@src/constants';
+import {SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL} from '@src/constants';
 import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceSell extends Component {
@@ -133,7 +133,7 @@ export default class ResourceSell extends Component {
                 });
                 return;
             }
-            getEstimatedValueELF(menuName, value * ELF_DECIMAL, tokenConverterContract, tokenContract, 'Sell').then(result => {
+            getEstimatedValueELF(menuName, value * TEMP_RESOURCE_DECIMAL, tokenConverterContract, tokenContract, 'Sell').then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
@@ -280,7 +280,7 @@ export default class ResourceSell extends Component {
         const contract = result || null;
         if (contract) {
             if (result) {
-                this.props.handleSellModalShow(value, ELFValue);
+                this.props.handleSellModalShow(value * TEMP_RESOURCE_DECIMAL, ELFValue);
             }
         }
     }
@@ -323,7 +323,7 @@ export default class ResourceSell extends Component {
                             <Col span={6} style={{color: '#fff'}}>Selling quantity </Col>
                             <Col span={18}>
                                 <Input
-                                    addonAfter={menuName}
+                                    addonAfter={`x100,000 ${menuName}`}
                                     value={value}
                                     onChange={this.onChangeResourceValue.bind(this)}
                                 />

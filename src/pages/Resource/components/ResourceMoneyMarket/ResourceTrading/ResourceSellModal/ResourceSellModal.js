@@ -13,6 +13,7 @@ import getStateJudgment from '../../../../../../utils/getStateJudgment';
 import getFees from '../../../../../../utils/getFees';
 import './ResourceSellModal.less';
 import getMenuName from '../../../../../../utils/getMenuName';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceSellModal extends PureComponent {
     constructor(props) {
@@ -120,11 +121,11 @@ export default class ResourceSellModal extends PureComponent {
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>Sell {menuName} Quantity</Col>
-                        <Col span={16}>{sellNum}</Col>
+                        <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>ELF</Col>
-                        <Col span={16}>{ELFValue}</Col>
+                        <Col span={16}>{thousandsCommaWithDecimal(ELFValue)}</Col>
                     </Row>
                     <div className='service-charge'>
                         *Service Charge: {serviceCharge} ELF

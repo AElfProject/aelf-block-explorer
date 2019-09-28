@@ -51,6 +51,8 @@ const CHAIN_ID = 'AELF';
 
 const PAGE_SIZE = 25;
 const ELF_DECIMAL = 100000000;
+const TEMP_RESOURCE_DECIMAL = 100000;
+// todo: use the code as follows
 const TXSSTATUS = {
     // NotExisted: '不存在',
     // Pending: '交易中',
@@ -355,5 +357,6 @@ export {
     SYMBOL, // todo: get native token info
     CHAIN_ID, // todo: get chain status
     ELF_DECIMAL, // todo: similar to  get native token info
+    TEMP_RESOURCE_DECIMAL,
     SOCKET_URL
 }
