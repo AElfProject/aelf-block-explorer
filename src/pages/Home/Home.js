@@ -388,7 +388,7 @@ export default class HomePage extends Component {
                     <div className="panel-heading">
                         <h2 className="panel-title">
                             {/*<Icon type="gold" className="anticon" />*/}
-                            Blocks
+                            Blocks <span className='tip-color' style={{ fontSize: 16 }}>( Includes unconfirmed blocks )</span>
                         </h2>
                         <Link to="/blocks" className="pannel-btn">
                             View all
