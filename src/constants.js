@@ -13,16 +13,19 @@ import {
 }
 from 'antd';
 import dayjs from 'dayjs';
-import Button from './components/Button/Button';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import Button from './components/Button/Button';
 import {
-    DEFAUTRPCSERVER
+    DEFAUTRPCSERVER,
+    SYMBOL,
+    CHAIN_ID
 }
 from '../config/config';
 import {
     isArray
 }
 from 'zrender/lib/core/util';
+
 dayjs.extend(relativeTime);
 
 const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
@@ -40,14 +43,6 @@ const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
 const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
 const SOCKET_URL = '/socket';
-
-// 不删档节点
-// const SYMBOL = 'TELF';
-// const CHAIN_ID = 'TELF';
-
-// others 
-const SYMBOL = 'ELF';
-const CHAIN_ID = 'AELF';
 
 const PAGE_SIZE = 25;
 const ELF_DECIMAL = 100000000;
