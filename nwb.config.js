@@ -1,3 +1,4 @@
+const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -28,7 +29,22 @@ module.exports = {
       '@api': path.resolve('src/api')
     },
     extra: {
-      devtool: 'eval'
+      optimization: {
+        minimizer: [
+          new TerserPlugin({
+            cache: true,
+            parallel: true,
+            sourceMap: false, // Must be set to true if using source-maps in production
+            terserOptions: {
+              compress: {
+                drop_debugger: true,
+                drop_console: true
+              }
+            }
+          })
+        ]
+      },
+      devtool: process.env.NODE_ENV === 'development' ? 'eval' : false
     }
   },
   devServer: {
