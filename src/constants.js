@@ -64,6 +64,8 @@ const TXSSTATUS = {
     Mined: 'Mined'
 };
 
+const IE_ADVICE = 'We recommend using Chrome/Safari/Firefox to view our page. In recent time we don\'t support IE!'
+
 // TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
 
@@ -358,5 +360,6 @@ export {
     CHAIN_ID, // todo: get chain status
     ELF_DECIMAL, // todo: similar to  get native token info
     TEMP_RESOURCE_DECIMAL,
-    SOCKET_URL
+    SOCKET_URL,
+    IE_ADVICE
 }

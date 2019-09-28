@@ -10,13 +10,15 @@ import {Provider} from 'mobx-react';
 import Cookies from 'js-cookie';
 
 // 为组件内建文案提供统一的国际化支持。
-import {LocaleProvider} from 'antd';
+import {LocaleProvider, message} from 'antd';
 
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from 'antd/lib/locale-provider/en_US';
 import {AppIncrStore} from './Store';
 import config from '../config/config';
 import {get} from './utils';
+import { isIESeries } from '@utils/justifyIE';
+import { IE_ADVICE } from './constants';
 
 import './index.less';
 
@@ -26,6 +28,10 @@ const appIncrStore = AppIncrStore.create({});
 
 function initPage() {
     // @TODO: compose mst store to make app running.
+    if(isIESeries()){
+        message.error(IE_ADVICE, 60);
+    }
+
     render(
         <LocaleProvider locale={
             en_US
