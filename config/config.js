@@ -9,7 +9,7 @@
 // Huang said that the way get address by contract name spend two ajax, it's not proper to excute it in FE.
 // But I remembered that it don't have to cost two ajax in aelf-command.
 
-const DEFAUTRPCSERVER = location.protocol + '//' + location.host + ':8000';
+const DEFAUTRPCSERVER = location.protocol + '//' + location.host + '/chain';
 // const DEFAUTRPCSERVER =  'http://13.231.179.27:8000';
 // const DEFAUTRPCSERVER =  'http://192.168.197.18:8000';
 // const DEFAUTRPCSERVER =  'http://127.0.0.1:8000';
