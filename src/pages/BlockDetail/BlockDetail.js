@@ -63,12 +63,14 @@ export default class BlockDetailPage extends React.Component {
         // BlockHeight
         if (parseInt(input, 10) == input) {
             blockHeight = input;
-            result = await aelf.chain.getBlockByHeight(input, true);
-            error = result.error;
-
-            const blockhash = result && result.BlockHash;
-            if (blockhash) {
-                txsList = await this.getTxsList(blockhash);
+            try {
+                result = await aelf.chain.getBlockByHeight(input, true);
+                const blockhash = result && result.BlockHash;
+                if (blockhash) {
+                    txsList = await this.getTxsList(blockhash);
+                }
+            } catch (err) {
+                console.error('err', err);            
             }
         }
         else {
