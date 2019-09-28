@@ -21,6 +21,11 @@ const DEFAUTRPCSERVER =  'http://192.168.197.14:8000'; // 本地测试节点
 const MAINCHAINID = 'AELF';
 const APPNAME = 'explorer.aelf.io';
 const commonPrivateKey = 'd351aa6e20d353c6a1bee1f4cba8dc6d79ba63e2799381ec9dc75398ed58828b';
+
+const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
+// const WALLET_DOMAIN = 'https://wallet-test-side01.aelf.io/';
+// const WALLET_DOMAIN = 'https://wallet-test-side02.aelf.io/';
+
 // 本地测试节点的合约地址
 // Token
 const multiTokenContractAddr = '25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB';
@@ -72,5 +77,6 @@ module.exports = {
     consensusContractAddr,
     voteContractAddr,
     electionContractAddr,
-    profitContractAddr
+    profitContractAddr,
+    WALLET_DOMAIN
 };
