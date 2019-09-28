@@ -86,9 +86,6 @@ export default class HomePage extends Component {
         const blocksResult = await this.fetch(ALL_BLOCKS_API_URL);
 
         const blocks = blocksResult.blocks;
-        // console.log(blocksResult);
-        const block_height = blocks.length && blocks[0].block_height;
-        this.blockHeight = block_height;
 
         const TXSResult = await this.fetch(ALL_TXS_API_URL);
         const transactions = TXSResult.transactions;
@@ -191,7 +188,7 @@ export default class HomePage extends Component {
             return (
                 <Col xs={12} sm={12} md={12} lg={8}
                      className='home-basic-info-con'
-                     key={item.title + Math.random()}
+                     key={item.title}
                 >
                     <ContainerRichard type='small'>
                         <div

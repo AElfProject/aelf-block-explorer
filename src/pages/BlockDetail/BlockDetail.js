@@ -61,6 +61,8 @@ export default class BlockDetailPage extends React.Component {
         let txsList;
         let error;
         // BlockHeight
+        console.log('input', input, parseInt(input, 10));
+
         if (parseInt(input, 10) == input) {
             blockHeight = input;
             try {
@@ -85,7 +87,7 @@ export default class BlockDetailPage extends React.Component {
 
         const pagination = {
             ...this.state.pagination,
-            total: txsList && txsList.total || 0
+            total: result && result.Body && result.Body.TransactionsCount || 0
         };
         this.setState({
             blockInfo: {

@@ -65,6 +65,8 @@ const TXSSTATUS = {
 };
 
 const IE_ADVICE = 'We recommend using Chrome/Safari/Firefox to view our page. In recent time we don\'t support IE!'
+const INPUT_STARTS_WITH_MINUS_TIP = 'Input can\'t starts with minus symbol!';
+const INPUT_ZERO_TIP = 'Input can\'t be 0!'
 
 // TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
@@ -361,5 +363,7 @@ export {
     ELF_DECIMAL, // todo: similar to  get native token info
     TEMP_RESOURCE_DECIMAL,
     SOCKET_URL,
-    IE_ADVICE
+    IE_ADVICE,
+    INPUT_STARTS_WITH_MINUS_TIP,
+    INPUT_ZERO_TIP
 }

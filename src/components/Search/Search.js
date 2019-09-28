@@ -16,6 +16,7 @@ import {
 } from '../../utils';
 
 import './search.styles.less';
+import { INPUT_STARTS_WITH_MINUS_TIP, INPUT_ZERO_TIP } from '@src/constants';
 
 export default class Search extends PureComponent {
 
@@ -85,6 +86,15 @@ export default class Search extends PureComponent {
         // 1. transaction 66
         // 2. block   66
         // 3. address length=38
+        if(`${value}`.startsWith('-')){
+            message.error(INPUT_STARTS_WITH_MINUS_TIP);
+            return;
+        }
+        if(+value === 0){
+            message.error(INPUT_ZERO_TIP);
+            return;
+        }
+
         if (isAddress.includes(length)) {
             this.SEARCHRULES.address(value);
         }
