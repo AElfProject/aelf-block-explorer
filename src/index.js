@@ -14,10 +14,10 @@ import {LocaleProvider, message} from 'antd';
 
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from 'antd/lib/locale-provider/en_US';
+import { isIESeries } from '@utils/justifyIE';
 import {AppIncrStore} from './Store';
 import config from '../config/config';
 import {get} from './utils';
-import { isIESeries } from '@utils/justifyIE';
 import { IE_ADVICE } from './constants';
 
 import './index.less';
@@ -58,7 +58,7 @@ async function getNodesInfo() {
 
         // todo: MAIN_CHAIN_ID CHAIN_ID
         const nodeInfo = nodesInfoList.find(item => {
-            if (item.chain_id === config.MAINCHAINID) {
+            if (item.chain_id === config.CHAIN_ID) {
                 return item;
             }
         });
