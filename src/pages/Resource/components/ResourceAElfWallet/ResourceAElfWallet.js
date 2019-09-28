@@ -8,6 +8,8 @@ import {Row, Col, Spin} from 'antd';
 import Svg from '../../../../components/Svg/Svg';
 import {Link} from 'react-router-dom';
 import './ResourceAElfWallet.less';
+import {SYMBOL, ELF_DECIMAL} from '@src/constants';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceAElfWallet extends PureComponent {
     constructor(props) {
@@ -93,17 +95,17 @@ export default class ResourceAElfWallet extends PureComponent {
     getCurrentWalletBalance = async () => {
         const {tokenContract, currentWallet} = this.state;
         const payload = {
-            symbol: 'ELF',
+            symbol: SYMBOL,
             owner: currentWallet.address || currentWallet
         };
         tokenContract.GetBalance.call(payload, (error, result) => {
             if (result) {
                 const balance = result.balance || 0;
                 this.setState({
-                    balance: parseInt(balance, 10).toLocaleString(),
+                    balance: (+balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentBalance(parseInt(balance, 10));
+                this.props.getCurrentBalance((+balance)/ELF_DECIMAL);
             }
         });
     }
@@ -118,10 +120,10 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadRAM, (error, result) => {
             if (result) {
                 this.setState({
-                    RAM: parseInt(result.balance, 10).toLocaleString(),
+                    RAM: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentRam(result.balance);
+                this.props.getCurrentRam((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
@@ -138,10 +140,10 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadCPU, (error, result) => {
             if (result) {
                 this.setState({
-                    CPU: parseInt(result.balance, 10).toLocaleString(),
+                    CPU: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentCpu(result.balance);
+                this.props.getCurrentCpu((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
@@ -158,10 +160,10 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadNET, (error, result) => {
             if (result) {
                 this.setState({
-                    NET: parseInt(result.balance, 10).toLocaleString(),
+                    NET: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentNet(result.balance);
+                this.props.getCurrentNet((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
@@ -178,10 +180,10 @@ export default class ResourceAElfWallet extends PureComponent {
         tokenContract.GetBalance.call(payloadSTO, (error, result) => {
             if (result) {
                 this.setState({
-                    STO: parseInt(result.balance, 10).toLocaleString(),
+                    STO: (+result.balance)/ELF_DECIMAL,
                     resourceReady: this.state.resourceReady + 1
                 });
-                this.props.getCurrentSto(result.balance);
+                this.props.getCurrentSto((+result.balance)/ELF_DECIMAL);
             }
             else {
                 this.setState({
@@ -240,7 +242,9 @@ export default class ResourceAElfWallet extends PureComponent {
                             <Col xs={24} sm={24} md={24} lg={24} xl={18} xxl={18} style={{paddingLeft: '1%'}}>
                                 <Row gutter={16} type='flex' align='middle'>
                                     <Col span={19} style={{marginTop: '10px'}}>
-                                        Account balance: <span className='number' >{balance} ELF</span>
+                                        {/* todo:  */}
+                                        {/* Account balance: <span className='number' >{thousandsCommaWithDecimal(balance/ELF_DECIMAL)} {SYMBOL}</span> */}
+                                        Account balance: <span className='number' >{thousandsCommaWithDecimal(balance)} {SYMBOL}</span>
                                     </Col>
                                 </Row>
                                 <Row style={{marginTop: '20px'}} gutter={16}>
@@ -249,28 +253,28 @@ export default class ResourceAElfWallet extends PureComponent {
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        RAM quantity: <span className='number'>{RAM}</span>
+                                        RAM quantity: <span className='number'>{thousandsCommaWithDecimal(RAM)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={5}
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        CPU quantity: <span className='number'>{CPU}</span>
+                                        CPU quantity: <span className='number'>{thousandsCommaWithDecimal(CPU)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={5}
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        NET quantity: <span className='number'>{NET}</span>
+                                        NET quantity: <span className='number'>{thousandsCommaWithDecimal(NET)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={5}
                                         lg={5} xl={5} xxl={5}
                                         style={{margin: '10px 0'}}
                                     >
-                                        STO quantity: <span className='number'>{STO}</span>
+                                        STO quantity: <span className='number'>{thousandsCommaWithDecimal(STO)}</span>
                                     </Col>
                                     <Col
                                         xs={12} sm={12} md={4}

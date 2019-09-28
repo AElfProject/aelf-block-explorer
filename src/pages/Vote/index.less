@@ -1,0 +1,191 @@
+// remove default style
+p {
+  margin-bottom: 0;
+}
+
+h2,
+h3 {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style: none;
+  margin-bottom: 0;
+}
+
+button {
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+// common style selector
+.page-container {
+  margin: 0 56px;
+}
+.card-container {
+  margin-bottom: 20px;
+  padding: 20px 30px;
+  background: rgba(57, 0, 57, 0.3);
+}
+
+.remove-antd-tabs-default-style {
+  .ant-tabs-bar {
+    border-bottom: 0 !important;
+    margin: 0 56px 30px;
+    .ant-tabs-nav-wrap {
+      .ant-tabs-tab-active {
+        color: #fff;
+      }
+      .ant-tabs-ink-bar {
+        display: none !important;
+      }
+    }
+  }
+}
+
+.form-item-value {
+  color: #fff;
+  width: 600px;
+  display: inline-block;
+}
+
+.node-name-in-table {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+// specific for current page
+.vote-container {
+  padding: 20px 0;
+  .ant-tabs-tab {
+    &:hover > a {
+      color: #40a9ff !important;
+    }
+    color: #fff;
+    &.ant-tabs-tab-active,
+    &.ant-tabs-tab-active > a {
+      color: #40a9ff !important;
+    }
+  }
+}
+
+.secondary-level-nav {
+  .remove-antd-tabs-default-style;
+  .ant-tabs-bar {
+    .card-container;
+  }
+}
+
+.node-list,
+.my-vote-records {
+  &-header {
+    padding: 10px;
+    font-size: 20px;
+    color: #fff;
+    overflow: hidden;
+    .ant-input-search {
+      width: 200px;
+      float: right;
+    }
+    .node-color-intro-item {
+      margin-left: 20px;
+      font-size: 15px;
+      color: lightgray;
+      &:before {
+        display: inline-block;
+        margin-right: 5px;
+        border-radius: 50%;
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: lightgreen;
+      }
+      &:first-child:before {
+        background: lightcoral;
+      }
+    }
+  }
+}
+
+.ant-modal {
+  text-align: center;
+  overflow: hidden;
+  color: #fff;
+  &.plugin-lock-modal {
+    .ant-modal-body {
+      padding: 50px;
+      color: #fff;
+    }
+    .ant-modal-footer {
+      .ant-btn:first-child {
+        display: none;
+      }
+    }
+  }
+  &.vote-confirm-modal {
+    .ant-modal-body {
+      padding: 30px 30px 10px;
+      .form-item-label {
+        text-align: right;
+      }
+      .form-item-value {
+        text-align: left;
+        text-indent: 10px;
+      }
+    }
+    .ant-modal-footer button + button {
+      margin-left: 50px;
+    }
+  }
+
+  .ant-form-item {
+    text-align: left;
+    .ant-form-item-label label {
+      color: #fff;
+    }
+    .ant-input-affix-wrapper {
+      width: auto;
+    }
+    .ant-input {
+      width: auto;
+    }
+  }
+
+  .ant-slider-mark-text {
+    color: #fff;
+  }
+  span.ant-radio + * {
+    color: #fff;
+  }
+  .ant-modal-content {
+    text-align: center;
+    .ant-modal-header {
+      padding: 10px;
+      height: auto;
+    }
+    .ant-modal-footer {
+      text-align: center;
+      padding-bottom: 20px;
+    }
+  }
+
+  .ant-tabs {
+    label {
+      color: #ccc;
+      &:hover {
+        color: #1890ff;
+        cursor: pointer;
+      }
+    }
+    .ant-tabs-tab-active {
+      label {
+        color: #fff;
+      }
+    }
+  }
+  .remove-antd-tabs-default-style;
+}

@@ -29,7 +29,7 @@ export default class ResourceTrading extends PureComponent {
             maskClosable: true,
             nightElf: this.props.nightElf,
             account: {
-                balabce: 0,
+                balance: 0,
                 CPU: 0,
                 RAM: 0,
                 NET: 0,
@@ -204,7 +204,7 @@ export default class ResourceTrading extends PureComponent {
                     footer={null}
                     visible={sellVisible}
                     centered={true}
-                    maskClosable={maskClosable}
+                    maskClosable
                     onCancel={this.handleCancel}
                 >
                     <ResourceSellModal

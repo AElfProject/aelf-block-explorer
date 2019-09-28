@@ -27,7 +27,7 @@ export default class ResourceMoneyMarket extends PureComponent {
             realTimeTransactionLoaidng: false,
             nightElf: this.props.nightElf,
             account: {
-                balabce: 0,
+                balance: 0,
                 CPU: 0,
                 RAM: 0,
                 NET: 0,

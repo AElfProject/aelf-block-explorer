@@ -166,7 +166,8 @@ export default class VotingModule extends PureComponent {
     }
 
     getVoteTable() {
-        const {consensus, currentWallet, refresh, showVote, contracts, appName, nightElf} = this.state;
+        const {consensus, currentWallet, refresh, showVote, contracts, appName, nightElf } = this.state;
+        const { electionContract } = this.props;
         return (
             <VoteTable
                 style={this.state.showVote ? {display: 'block'} : {display: 'none'}}
@@ -180,6 +181,7 @@ export default class VotingModule extends PureComponent {
                 refresh={refresh}
                 showVote={showVote}
                 consensus={consensus}
+                electionContract={electionContract}
                 contracts={contracts}
                 appName={appName}
                 nightElf={nightElf}
@@ -189,6 +191,7 @@ export default class VotingModule extends PureComponent {
 
     getMyVote() {
         const {consensus, contracts, refresh, currentWallet, showMyVote, appName, nightElf} = this.state;
+        const { electionContract,voteContract } = this.props;
         return (
             <MyVote
                 style={this.state.showMyVote ? {display: 'block'} : {display: 'none'}}
@@ -201,6 +204,8 @@ export default class VotingModule extends PureComponent {
                 nightElf={nightElf}
                 refresh={refresh}
                 consensus={consensus}
+                electionContract={electionContract}
+                voteContract={voteContract}
                 contracts={contracts}
                 showMyVote={showMyVote}
                 appName={appName}

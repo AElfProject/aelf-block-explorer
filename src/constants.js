@@ -41,7 +41,18 @@ const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
 const SOCKET_URL = '/socket';
 
+// 不删档节点
+// const SYMBOL = 'TELF';
+// const CHAIN_ID = 'TELF';
+
+// others 
+const SYMBOL = 'ELF';
+const CHAIN_ID = 'AELF';
+
 const PAGE_SIZE = 25;
+const ELF_DECIMAL = 100000000;
+const TEMP_RESOURCE_DECIMAL = 100000;
+// todo: use the code as follows
 const TXSSTATUS = {
     // NotExisted: '不存在',
     // Pending: '交易中',
@@ -52,6 +63,10 @@ const TXSSTATUS = {
     Failed: 'Failed',
     Mined: 'Mined'
 };
+
+const IE_ADVICE = 'We recommend using Chrome/Safari/Firefox to view our page. In recent time we don\'t support IE!'
+const INPUT_STARTS_WITH_MINUS_TIP = 'Input can\'t starts with minus symbol!';
+const INPUT_ZERO_TIP = 'Input can\'t be 0!'
 
 // TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
@@ -157,12 +172,12 @@ const ALL_TXS_LIST_COLUMNS = [{
             } </Link>
         )
     },
-    {
-        title: 'Quantity',
-        dataIndex: 'quantity',
-        key: 'quantity',
-        render: text => <span>{text}</span>
-    }
+    // {
+    //     title: 'Quantity',
+    //     dataIndex: 'quantity',
+    //     key: 'quantity',
+    //     render: text => <span>{text}</span>
+    // }
 ];
 
 const ADDRESS_INFO_COLUMN = [{
@@ -343,5 +358,12 @@ export {
     RESOURCE_TURNOVER,
     RESOURCE_RECORDS,
     RESOURCE_DETAILS_COLUMN,
-    SOCKET_URL
+    SYMBOL, // todo: get native token info
+    CHAIN_ID, // todo: get chain status
+    ELF_DECIMAL, // todo: similar to  get native token info
+    TEMP_RESOURCE_DECIMAL,
+    SOCKET_URL,
+    IE_ADVICE,
+    INPUT_STARTS_WITH_MINUS_TIP,
+    INPUT_ZERO_TIP
 }

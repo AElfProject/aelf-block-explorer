@@ -11,6 +11,8 @@ import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import addressOmit from '../../../../../../utils/addressOmit';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
+import {SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL} from '@src/constants';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 import './ResourceBuyModal.less';
 
 export default class ResourceBuyModal extends PureComponent {
@@ -33,15 +35,15 @@ export default class ResourceBuyModal extends PureComponent {
 
     componentDidMount() {
         const {buyNum, menuName, tokenConverterContract, tokenContract} = this.state;
-        getEstimatedValueELF(menuName, buyNum, tokenConverterContract, tokenContract).then(result => {
+        console.log('buyNum', buyNum);
+        getEstimatedValueELF(menuName, buyNum / TEMP_RESOURCE_DECIMAL , tokenConverterContract, tokenContract).then(result => {
             let ELFValue = Math.abs(Math.floor(result));
-            let buyRes = ELFValue;
-            ELFValue += getFees(buyRes);
+            ELFValue += getFees(ELFValue);
             if (ELFValue !== 0) {
                 this.setState({
                     ELFValue,
                     menuName,
-                    serviceCharge: getFees(buyRes)
+                    serviceCharge: getFees(ELFValue)
                 });
             }
             else {
@@ -68,6 +70,7 @@ export default class ResourceBuyModal extends PureComponent {
             contracts.tokenConverter,
             wallet,
             (err, result) => {
+                console.log('err, result', err, result);
                 if (result) {
                     this.requestBuy(result);
                 }
@@ -79,8 +82,10 @@ export default class ResourceBuyModal extends PureComponent {
         const {menuName, buyNum} = this.state;
         const payload = {
             symbol: menuName,
-            amount: buyNum
+            amount: buyNum * ELF_DECIMAL
         };
+        console.log('result', result);
+        console.log('payload', payload);
         result.Buy(payload, (error, result) => {
             if (result.error && result.error !== 0) {
                 message.error(result.errorMessage.message, 3);
@@ -93,7 +98,10 @@ export default class ResourceBuyModal extends PureComponent {
                 });
                 const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
                 setTimeout(() => {
+                    console.log('transactionId', transactionId);
                     aelf.chain.getTxResult(transactionId, (error, result) => {
+                        // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
+                        console.log('result', result);
                         getStateJudgment(result.Status, transactionId);
                         this.props.onRefresh();
                         this.setState({
@@ -121,14 +129,14 @@ export default class ResourceBuyModal extends PureComponent {
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>Buy{menuName}Quantity</Col>
-                        <Col span={16}>{buyNum}</Col>
+                        <Col span={16}>{thousandsCommaWithDecimal(buyNum)}</Col>
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>ELF</Col>
-                        <Col span={16}>{ELFValue}</Col>
+                        <Col span={16}>{thousandsCommaWithDecimal(ELFValue)}</Col>
                     </Row>
                     <div className='service-charge'>
-                        *Service Charge: {serviceCharge} ELF
+                        *Service Charge: {thousandsCommaWithDecimal(serviceCharge)} ELF
                     </div>
                     <div
                         className='modal-button'

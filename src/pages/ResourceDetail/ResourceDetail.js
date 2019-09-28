@@ -6,7 +6,7 @@
 import React, {PureComponent} from 'react';
 import {Table} from 'antd';
 import {get} from '../../utils';
-import {RESOURCE_RECORDS, RESOURCE_DETAILS_COLUMN, PAGE_SIZE} from '../../constants';
+import {RESOURCE_RECORDS, RESOURCE_DETAILS_COLUMN, PAGE_SIZE, ELF_DECIMAL} from '../../constants';
 import './ResourceDetail.less';
 
 const page = 0;
@@ -35,6 +35,12 @@ export default class ResourceDetail extends PureComponent {
         this.setState({
             loading: true
         });
+        console.log('<<<GetRecords', {
+            limit: PAGE_SIZE,
+            page: page,
+            order: 'desc',
+            address
+        })
         const data = await get(RESOURCE_RECORDS, {
             limit: PAGE_SIZE,
             page: page,
@@ -44,6 +50,7 @@ export default class ResourceDetail extends PureComponent {
         let records = data.records || [];
         records.map((item, index) => {
             item.key = index + page;
+            item.resource = (+item.resource)/ELF_DECIMAL
         });
         pagination.total = data.total;
         this.setState({

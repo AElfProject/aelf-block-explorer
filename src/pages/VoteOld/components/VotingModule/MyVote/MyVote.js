@@ -37,7 +37,8 @@ export default class MyVote extends PureComponent {
 
     // 获取当前账户投票记录 （未赎回）
     votingRecordInformation = async (params = {}) => {
-        const {currentWallet, consensus} = this.state;
+        const {currentWallet} = this.state;
+        const { voteContract } = this.props;
         let {pagination, page, pageSize} = params;
         this.setState({
             loading: true
@@ -64,7 +65,7 @@ export default class MyVote extends PureComponent {
             length: pageSize,
             publicKey: key
         };
-        consensus.GetPageableNotWithdrawnTicketsInfo.call(payload, (error, result) => {
+        voteContract.GetVotingRecords.call(payload, (error, result) => {
             if (result) {
                 console.log(result);
                 const ticketsInfoList = result.VotingRecords || [];
@@ -365,8 +366,8 @@ export default class MyVote extends PureComponent {
     }
 
     getTickets() {
-        const {consensus} = this.state;
-        consensus.GetTicketsCount.call((error, result) => {
+        const {electionContract} = this.props;
+        electionContract.GetTicketsCount.call((error, result) => {
             if (result) {
                 const {
                     value,

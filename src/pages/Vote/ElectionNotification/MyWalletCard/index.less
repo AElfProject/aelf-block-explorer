@@ -1,0 +1,55 @@
+.my-wallet-card {
+  margin-bottom: 20px;
+  // padding: 20px 30px;
+  background: rgba(57, 0, 57, 0.3);
+
+  &-header {
+    background: rgba(57, 0, 57, 0.5);
+    padding: 5px 20px;
+    overflow: hidden;
+    &-title {
+      display: inline-block;
+      vertical-align: middle;
+      color: #fff;
+    }
+
+    &-sync-btn {
+      float: right;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+    }
+  }
+  &-body {
+    display: flex;
+    &-wallet-title {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid rgba(57, 0, 57, 0.3);
+      &-name {
+        color: #fff;
+        margin-right: 20px;
+      }
+    }
+    &-wallet-content {
+      flex: 4;
+      padding: 10px 10px 10px 60px;
+      color: #fff;
+      > li {
+        display: inline-block;
+        width: 33%;
+        margin: 5px 0;
+      }
+      &-withdraw-btn {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.ant-modal-confirm-body .ant-modal-confirm-title {
+  color: #fff;
+}

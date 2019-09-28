@@ -13,6 +13,7 @@ import getStateJudgment from '../../../../../../utils/getStateJudgment';
 import getFees from '../../../../../../utils/getFees';
 import './ResourceSellModal.less';
 import getMenuName from '../../../../../../utils/getMenuName';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceSellModal extends PureComponent {
     constructor(props) {
@@ -67,22 +68,33 @@ export default class ResourceSellModal extends PureComponent {
 
     requestSell(result) {
         const {menuName, sellNum} = this.state;
+        console.log('result', result);
+        console.log('sellNum', sellNum);
+        console.log('menuName', menuName);
         const payload = {
             symbol: menuName,
             amount: sellNum
         };
         result.Sell(payload, (error, result) => {
-            if (!result) {
+            if(result.error){
+                this.setState({
+                    loading: false
+                });
                 message.error(result.errorMessage.message, 3);
-                this.props.handleCancel();
                 return;
             }
+
             this.setState({
                 loading: true
             });
             const transactionId = result.result ? result.result.TransactionId : result.TransactionId;
             setTimeout(() => {
                 aelf.chain.getTxResult(transactionId, (error, result) => {
+                    if(!result){
+                        console.log('error', error);
+                        return;
+                    }
+                    console.log('result', result);
                     getStateJudgment(result.Status, transactionId);
                     this.props.onRefresh();
                     this.setState({
@@ -109,11 +121,11 @@ export default class ResourceSellModal extends PureComponent {
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>Sell {menuName} Quantity</Col>
-                        <Col span={16}>{sellNum}</Col>
+                        <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
                     </Row>
                     <Row className='display-box'>
                         <Col span={8} style={{color: '#c8c7c7'}}>ELF</Col>
-                        <Col span={16}>{ELFValue}</Col>
+                        <Col span={16}>{thousandsCommaWithDecimal(ELFValue)}</Col>
                     </Row>
                     <div className='service-charge'>
                         *Service Charge: {serviceCharge} ELF

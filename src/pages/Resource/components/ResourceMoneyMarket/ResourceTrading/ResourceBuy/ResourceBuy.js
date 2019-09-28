@@ -5,7 +5,7 @@
 */
 
 import React, {Component} from 'react';
-import {Row, Col, Input, Slider, message, Modal} from 'antd';
+import {Row, Col, Input, InputNumber,Slider, message, Modal} from 'antd';
 import {feeReceiverContract, tokenConverter, multiToken} from '../../../../../../../config/config';
 import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
@@ -13,6 +13,8 @@ import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
 import contractChange from '../../../../../../utils/contractChange';
 import './ResourceBuy.less';
+import {SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL} from '@src/constants';
+import {thousandsCommaWithDecimal} from '@utils/formater';
 
 export default class ResourceBuy extends Component {
     constructor(props) {
@@ -31,7 +33,7 @@ export default class ResourceBuy extends Component {
             noCanInput: true,
             nightElf: null,
             account: {
-                balabce: 0,
+                balance: 0,
                 CPU: 0,
                 RAM: 0,
                 NET: 0,
@@ -118,7 +120,7 @@ export default class ResourceBuy extends Component {
     getRegion() {
         const {account} = this.state;
         this.setState({
-            region: Math.floor(account.balabce / 4)
+            region: Math.floor(account.balance / 4)
         });
     }
 
@@ -137,7 +139,7 @@ export default class ResourceBuy extends Component {
             region,
             region * 2,
             region * 3,
-            account.balabce
+            account.balance
         ];
         let marks = {};
         regionLine.map(item => {
@@ -149,6 +151,7 @@ export default class ResourceBuy extends Component {
     onChangeSlide(e) {
         const {menuName, tokenConverterContract, tokenContract} = this.state;
         let elfCont = e;
+        console.log('e', e);
         if (e === 0) {
             this.setState({
                 purchaseQuantity: 0,
@@ -159,7 +162,7 @@ export default class ResourceBuy extends Component {
         }
         elfCont = elfCont - 1;
         elfCont -= getFees(elfCont);
-        getEstimatedValueRes(menuName, elfCont, tokenConverterContract, tokenContract).then(result => {
+        getEstimatedValueRes(menuName, elfCont * ELF_DECIMAL, tokenConverterContract, tokenContract).then(result => {
             let value = 0;
             if (Math.ceil(result) > 0) {
                 value = Math.abs(Math.ceil(result));
@@ -185,7 +188,8 @@ export default class ResourceBuy extends Component {
                 });
                 return;
             }
-            getEstimatedValueELF(menuName, value, tokenConverterContract, tokenContract).then(result => {
+            console.log('value', value);
+            getEstimatedValueELF(menuName, value * TEMP_RESOURCE_DECIMAL , tokenConverterContract, tokenContract).then(result => {
                 let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
                 let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
                 if (regPos.test(result) || regNeg.test(result)) {
@@ -208,9 +212,10 @@ export default class ResourceBuy extends Component {
     }
 
     onChangeResourceValue(e) {
+        console.log('e.target.value', e.target.value);
         this.debounce(e.target.value);
         this.setState({
-            value: e.target.value
+            value: +(e.target.value)
         });
     }
 
@@ -221,7 +226,7 @@ export default class ResourceBuy extends Component {
             message.error('The value must be numeric and greater than 0');
             return;
         }
-        else if (parseInt(ELFValue, 10) > parseFloat(account.balabce, 10)) {
+        else if (parseInt(ELFValue, 10) > parseFloat(account.balance, 10)) {
             message.warning('Buy and sell more than available assets');
             return;
         }
@@ -240,15 +245,7 @@ export default class ResourceBuy extends Component {
                         const multiTokenObj = item.contracts.filter(data => {
                             return data.contractAddress === multiToken;
                         });
-                        let hasApprove = null;
-                        if (multiTokenObj[0].whitelist) {
-                            hasApprove = multiTokenObj[0].whitelist.hasOwnProperty('Approve');
-                            
-                        }
-                        else {
-                            hasApprove = false;
-                        }
-                        this.checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove);
+                        this.checkPermissionsModify(result, contracts, currentWallet, appName);
                     });
                 }
                 else {
@@ -258,7 +255,7 @@ export default class ResourceBuy extends Component {
         }
     }
 
-    checkPermissionsModify(result, contracts, currentWallet, appName, hasApprove) {
+    checkPermissionsModify(result, contracts, currentWallet, appName) {
         const {nightElf, value} = this.state;
         const wallet = {
             address: currentWallet.address
@@ -270,12 +267,7 @@ export default class ResourceBuy extends Component {
                     wallet,
                     (err, contract) => {
                         if (contract) {
-                            if (hasApprove) {
-                                this.getApprove(contract);
-                            }
-                            else {
-                                this.approveInfo(contract);
-                            }
+                            this.getApprove(contract);
                         }
                     }
                 );
@@ -290,47 +282,17 @@ export default class ResourceBuy extends Component {
         const {value, ELFValue} = this.state;
         const contract = result || null;
         if (contract) {
-            const payload = {
-                symbol: 'ELF',
-                spender: feeReceiverContract,
-                amount: ELFValue + parseInt(ELFValue * 0.05, 10)
-            };
             if (result) {
                 console.log('Approve', contract);
-                contract.Approve(payload, (error, result) => {
-                    if (result) {
-                        setTimeout(() => {
-                            payload.spender = tokenConverter;
-                            contract.Approve(payload, (error, result) => {
-                                this.props.handleBuyModalShow(value, ELFValue);
-                            });
-                        }, time);
-                    }
-                });
+                this.props.handleBuyModalShow(value * TEMP_RESOURCE_DECIMAL, ELFValue / ELF_DECIMAL);
             }
         }
-    }
-
-    approveInfo(result) {
-        const that = this;
-        Modal.info({
-            title: "Please add Approve to the extension's whitelist.",
-            content: (
-                <div className="approve-info">
-                    <div>1. This method is none business of your assets.</div>
-                    <div>2. If you don't want frequent confirmation, add this method to the extension's whitelist</div>
-                </div>
-            ),
-            onOk() {
-                that.getApprove(result, 3020);
-            }
-        });
     }
 
     getSlideMarksHTML() {
         let {region, purchaseQuantity, account} = this.state;
         let disabled = false;
-        let balance = parseInt(account.balabce, 10);
+        let balance = account.balance;
         if (region < 4) {
             region = 25;
             balance = 100;
@@ -364,20 +326,20 @@ export default class ResourceBuy extends Component {
                             <Col span={6} style={{color: '#fff'}}>Buying quantity </Col>
                             <Col span={18}>
                                 <Input
-                                    addonAfter={menuName}
+                                    addonAfter={`x100,000 ${menuName}`}
                                     value={value}
                                     onChange={this.onChangeResourceValue.bind(this)}
                                     disabled={noCanInput}
                                 />
                             </Col>
                         </Row>
-                        <div className='ELF-value'>≈ {this.state.ELFValue} ELF</div>
+                        <div className='ELF-value'>≈ {thousandsCommaWithDecimal(this.state.ELFValue)} {SYMBOL}</div>
                         <Row type='flex' align='middle'>
                             <Col span={6} style={{color: '#fff'}}>Available</Col>
                             <Col span={18}>
                                 <Input
-                                    value={account.balabce}
-                                    addonAfter={'ELF'}
+                                    value={thousandsCommaWithDecimal(account.balance)}
+                                    addonAfter={SYMBOL}
                                     disabled={true}
                                 />
                             </Col>
@@ -385,7 +347,7 @@ export default class ResourceBuy extends Component {
                     </div>
                     <div className='trading-slide'>
                         {sliderHTML}
-                        <div className='ElF-value'>{purchaseQuantity} ELF</div>
+                        <div className='ElF-value'>{thousandsCommaWithDecimal(purchaseQuantity)} {SYMBOL}</div>
                     </div>
                     <div
                         className='trading-button'

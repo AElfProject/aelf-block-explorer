@@ -9,6 +9,7 @@ export default class NightElfCheck {
         let resovleTemp = null;
         this.check = new Promise((resolve, reject) => {
             if (window.NightElf) {
+                console.log('There is nightelf')
                 resolve(true);
             }
             setTimeout(() => {
@@ -16,7 +17,7 @@ export default class NightElfCheck {
                     error: 200001,
                     message: 'timeout'
                 });
-            }, 3000);
+            }, 10000);
             resovleTemp = resolve;
         });
         document.addEventListener('NightElf', result => {

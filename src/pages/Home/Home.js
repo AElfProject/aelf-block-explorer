@@ -46,6 +46,11 @@ const fetchInfoByChainIntervalTime = 500;
 // @inject("appIncrStore")
 // @observer
 export default class HomePage extends Component {
+    // constructor (props) {
+    //     super(props)
+    //     this.getBlockHeightPromise = this.getBlockHeightPromise.bind(this); // to fix a bug
+    // }
+    
 
     state = {
         blocks: [],
@@ -54,6 +59,7 @@ export default class HomePage extends Component {
     };
 
     blockHeight = 0;
+    unconfirmedBlockHeight = 0;
 
     async fetch(url) {
         const res = await get(url, {
@@ -80,8 +86,6 @@ export default class HomePage extends Component {
         const blocksResult = await this.fetch(ALL_BLOCKS_API_URL);
 
         const blocks = blocksResult.blocks;
-        const block_height = blocks[0].block_height;
-        this.blockHeight = block_height;
 
         const TXSResult = await this.fetch(ALL_TXS_API_URL);
         const transactions = TXSResult.transactions;
@@ -123,7 +127,8 @@ export default class HomePage extends Component {
     handleSocketData({
         list = [],
         height = 0,
-        totalTxs
+        totalTxs,
+        unconfirmedBlockHeight = 0
     }, isFirst) {
         let arr = list;
         if (!isFirst) {
@@ -135,6 +140,7 @@ export default class HomePage extends Component {
         const transactions = arr.reduce((acc, i) => acc.concat(i.txs), []).map(transactionFormat);
         const blocks = arr.map(item => this.formatBlock(item.block));
         this.blockHeight = height;
+        this.unconfirmedBlockHeight = unconfirmedBlockHeight;
         this.setState({
             blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
             transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
@@ -163,7 +169,7 @@ export default class HomePage extends Component {
             info: this.blockHeight
         }, {
             title: 'Unconfirmed Block',
-            info: '-'
+            info: this.unconfirmedBlockHeight
         }, {
             title: 'Total Transactions',
             info: this.state.totalTransactions
@@ -182,7 +188,7 @@ export default class HomePage extends Component {
             return (
                 <Col xs={12} sm={12} md={12} lg={8}
                      className='home-basic-info-con'
-                     key={item.title + Math.random()}
+                     key={item.title}
                 >
                     <ContainerRichard type='small'>
                         <div
@@ -382,7 +388,7 @@ export default class HomePage extends Component {
                     <div className="panel-heading">
                         <h2 className="panel-title">
                             {/*<Icon type="gold" className="anticon" />*/}
-                            Blocks
+                            Blocks <span className='tip-color' style={{ fontSize: 16 }}>( Includes unconfirmed blocks )</span>
                         </h2>
                         <Link to="/blocks" className="pannel-btn">
                             View all

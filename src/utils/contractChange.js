@@ -4,6 +4,7 @@
 */
 
 import {message} from 'antd';
+import { CHAIN_ID } from '@src/constants';
 import config from '../../config/config';
 
 export default function contractChange(nightElf, values, currentWallet, appName) {
@@ -13,6 +14,7 @@ export default function contractChange(nightElf, values, currentWallet, appName)
         let consensus = false;
         let dividend = false;
         let resource = false;
+        console.log('contractChange<<<<<')
         if (contract.indexOf(config.multiToken) === -1) {
             token = true;
         }
@@ -32,34 +34,40 @@ export default function contractChange(nightElf, values, currentWallet, appName)
         if (token || consensus || dividend || resource) {
             nightElf.setContractPermission({
                 appName,
-                chainId: 'AELF',
+                chainId: CHAIN_ID,
                 payload: {
                     // appName: message.appName,
                     // domain: message.hostname
                     address: currentWallet.address,
                     contracts: [{
-                        chainId: 'AELF',
+                        chainId: CHAIN_ID,
                         contractAddress: config.multiToken,
                         contractName: 'Token',
                         description: 'contract Token',
                         github: ''
                     }, {
-                        chainId: 'AELF',
+                        chainId: CHAIN_ID,
                         contractAddress: config.dividends,
                         contractName: 'Dividend',
                         description: 'contract Dividend',
                         github: ''
                     }, {
-                        chainId: 'AELF',
+                        chainId: CHAIN_ID,
                         contractAddress: config.consensusDPoS,
                         contractName: 'Consensus.Dpos',
                         description: 'contract Consensus',
                         github: ''
                     }, {
-                        chainId: 'AELF',
+                        chainId: CHAIN_ID,
                         contractAddress: config.tokenConverter,
                         contractName: 'Token Converter',
                         description: 'contract Token Converter',
+                        github: ''
+                    }, {
+                        chainId: CHAIN_ID,
+                        contractAddress: config.electionContractAddr,
+                        contractName: 'Election',
+                        description: 'contract Election',
                         github: ''
                     }]
                 }

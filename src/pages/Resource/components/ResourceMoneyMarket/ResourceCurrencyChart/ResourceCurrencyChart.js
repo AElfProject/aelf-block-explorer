@@ -94,6 +94,8 @@ export default class ResourceCurrencyChart extends PureComponent {
         const buyRecords = formateTurnoverList(data.buyRecords, intervalTime, 20, 'des');
         const sellRecords = formateTurnoverList(data.sellRecords, intervalTime, 20, 'des');
 
+        console.log('buyRecords', buyRecords);
+
         buyRecords.map((item, index) => {
             if (buttonIndex > 3) {
                 xAxisData.push(dayjs(item.date).format('MM-DD'));

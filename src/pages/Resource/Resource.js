@@ -66,6 +66,7 @@ export default class Resource extends Component {
             });
         });
         NightElfCheck.getInstance().check.then(item => {
+            console.log('item', item);
             if (item) {
                 nightElf = new window.NightElf.AElf({
                     httpProvider: [
@@ -102,6 +103,7 @@ export default class Resource extends Component {
                 }
             }
         }).catch(error => {
+            console.log('error', error)
             this.setState({
                 showDownloadPlugins: true
             });
@@ -236,7 +238,7 @@ export default class Resource extends Component {
         const {showDownloadPlugins, currentWallet, contracts, tokenContract, tokenConverterContract} = this.state;
         const {currentBalance, currentCpu, currentRam, currentNet, currentSto, appName} = this.state;
         let account = {
-            balabce: currentBalance,
+            balance: currentBalance,
             CPU: currentCpu,
             RAM: currentRam,
             NET: currentNet,

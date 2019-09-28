@@ -1,3 +1,11 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-08-22 11:03:09
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-09-18 18:05:33
+ * @Description: file content
+ */
 import {
     types
 } from 'mobx-state-tree';

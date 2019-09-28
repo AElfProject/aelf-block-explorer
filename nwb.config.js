@@ -17,6 +17,18 @@ module.exports = {
       less: {
         javascriptEnabled: true
       }
+    },
+    aliases: {
+      '@config': path.resolve('config'),
+      '@src': path.resolve('src'),
+      '@pages': path.resolve('src/pages'),
+      '@components': path.resolve('src/components'),
+      '@utils': path.resolve('src/utils'),
+      '@store': path.resolve('src/store'),
+      '@api': path.resolve('src/api')
+    },
+    extra: {
+      devtool: 'eval'
     }
   },
   devServer: {

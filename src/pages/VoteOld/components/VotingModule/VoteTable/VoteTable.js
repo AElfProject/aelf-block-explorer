@@ -145,16 +145,33 @@ export default class VoteTable extends PureComponent {
                 });
             }
         }
+
+        if (prevProps.electionContract !== this.props.electionContract) {
+            const {showVote, pagination} = this.state;
+            if (showVote) {
+                this.nodeListInformation(
+                    {
+                        page,
+                        pageSize,
+                        pagination
+                    }
+                ).then(() => {
+                    this.props.endRefresh();
+                });
+            }
+        }
     }
 
     // 获取节点列表与信息
     nodeListInformation = async (params = {}) => {
-        const {consensus, currentWallet} = this.state;
+        const { currentWallet} = this.state;
+        const { electionContract } = this.props;
         this.setState({
             loading: true
         });
         let {pagination, page, pageSize} = params;
-        consensus.GetTicketsCount.call((error, result) => {
+        if(!electionContract) return;
+        electionContract.GetVotesAmount.call((error, result) => {
             if (result && !result.error) {
                 const {
                     Value,
@@ -169,7 +186,7 @@ export default class VoteTable extends PureComponent {
             start: page,
             length: pageSize
         };
-        consensus.GetPageableCandidatesHistoryInfo.call(getPageablePayload, (error, result) => {
+        electionContract.GetPageableCandidateInformation.call(getPageablePayload, (error, result) => {
             if (result) {
                 let isVote = true;
                 let isRedee = true;
