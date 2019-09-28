@@ -156,8 +156,7 @@ export default class BrowserHeader extends PureComponent {
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
-        <Menu.Item key='/wallet'>
-          {/*<Icon type='wallet' />*/}
+        {/* <Menu.Item key='/wallet'>
           <a
             href={config.WALLET_DOMAIN}
             target='_blank'
@@ -167,10 +166,8 @@ export default class BrowserHeader extends PureComponent {
           </a>
         </Menu.Item>
         <Menu.Item key='/apps'>
-          {/*<Icon type='appstore' />*/}
           <Link to='/apps'>APP CENTER[Building]</Link>
-          {/* <span>APP CENTER [Building]</span> */}
-        </Menu.Item>
+        </Menu.Item> */}
         {voteHTML}
         {/* <Menu.Item key='/voteold'> */}
           {/* <Link to='/voteold'>VoteOld</Link> */}
