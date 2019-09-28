@@ -9,7 +9,7 @@
 // Huang said that the way get address by contract name spend two ajax, it's not proper to excute it in FE.
 // But I remembered that it don't have to cost two ajax in aelf-command.
 
-// const DEFAUTRPCSERVER = location.protocol + '//' + location.host + ':8000';
+const DEFAUTRPCSERVER = location.protocol + '//' + location.host + ':8000';
 // const DEFAUTRPCSERVER =  'http://13.231.179.27:8000';
 // const DEFAUTRPCSERVER =  'http://192.168.197.18:8000';
 // const DEFAUTRPCSERVER =  'http://127.0.0.1:8000';
@@ -17,7 +17,7 @@
 // const DEFAUTRPCSERVER =  'http://52.195.10.165:8000';
 // const DEFAUTRPCSERVER =  'http://54.202.235.179:8000';
 // const DEFAUTRPCSERVER =  'http://18.212.240.254:8000'; // 不删档节点
-const DEFAUTRPCSERVER =  'http://192.168.197.14:8000'; // 本地测试节点
+// const DEFAUTRPCSERVER =  'http://192.168.197.14:8000'; // 本地测试节点
 const MAINCHAINID = 'AELF';
 const APPNAME = 'explorer.aelf.io';
 const commonPrivateKey = 'd351aa6e20d353c6a1bee1f4cba8dc6d79ba63e2799381ec9dc75398ed58828b';
