@@ -164,15 +164,16 @@ export default class HomePage extends Component {
 
     renderBasicInfoBlocks() {
         // TODO:getBasicInfo data
+        // TODO: ensure the data to be type of number at the time getting the data
         const basicInfo = [{
             title: 'Block Height',
-            info: this.blockHeight
+            info: +this.blockHeight
         }, {
             title: 'Unconfirmed Block',
-            info: this.unconfirmedBlockHeight
+            info: +this.unconfirmedBlockHeight
         }, {
             title: 'Total Transactions',
-            info: this.state.totalTransactions
+            info: +this.state.totalTransactions
         }, {
             title: 'Total Applications',
             info: '-'
