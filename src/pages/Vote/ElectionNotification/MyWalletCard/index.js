@@ -42,17 +42,20 @@ export default class MyWalletCard extends PureComponent {
 
   componentDidUpdate(prevProps) {
     // todo: optimize the judge
-    const { multiTokenContract, electionContract, profitContract } = this.props;
+    const { multiTokenContract, electionContract, profitContract, electionContractFromExt } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
 
     if (multiTokenContract !== prevProps.multiTokenContract) {
       this.fetchWalletBalance();
     }
 
-    if (electionContract !== prevProps.electionContract) {
+    console.log('electionContractFromExt', electionContractFromExt)
+
+    if (electionContractFromExt !== prevProps.electionContractFromExt) {
       this.fetchElectorVoteInfo();
     }
 
+    // todo: maybe we need to use electionContractFromExt instead
     // After get balance and lockAmount, calculate the total assets
     if (
       electionContract &&
@@ -86,14 +89,14 @@ export default class MyWalletCard extends PureComponent {
   }
 
   fetchElectorVoteInfo() {
-    const { electionContract } = this.props;
+    const { electionContractFromExt } = this.props;
     const currentWallet = getCurrentWallet();
 
-    electionContract.GetElectorVoteWithRecords.call({
+    electionContractFromExt.GetElectorVoteWithRecords.call({
       value: currentWallet.pubKey
     })
       .then(res => {
-        console.log('res', res);
+        console.log('fetchElectorVoteInfo', res);
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;
         this.computedLastestUnlockTime(activeVotingRecords);
@@ -119,7 +122,7 @@ export default class MyWalletCard extends PureComponent {
       'lastestUnlockTimestamp',
       moment()
         .set('second', lastestUnlockTimestamp.unlockTimestamp.seconds)
-        .format('YYYY-MM-DD')
+        .format('YYYY-MM-DD  HH:mm:ss')
     );
   }
 

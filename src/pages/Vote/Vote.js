@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-27 19:49:44
+ * @LastEditTime: 2019-10-09 13:57:48
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -21,7 +21,7 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import getContractAddress from '@utils/getContractAddress';
 import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 // import NumericInput from '@components/NumericInput';
-import {
+import config, {
   DEFAUTRPCSERVER as DEFAUT_RPC_SERVER,
   APPNAME,
   profitContractAddr
@@ -37,6 +37,8 @@ import TeamDetail from './TeamDetail';
 import VoteModal from './VoteModal';
 import DividendModal from './DividendModal';
 import RedeemModal from './RedeemModal';
+// todo: use a import instead
+import * as constants from './constants';
 import { contractsNeedToLoad, schemeIds } from './constants';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 import getStateJudgment from '@utils/getStateJudgment';
@@ -186,14 +188,19 @@ class VoteContainer extends Component {
       voteRedeemForm: {},
       voteFrom: 1,
       currentWallet: null,
+
       consensusContract: contractsStore.consensusContract,
       dividendContract: contractsStore.dividendContract,
       multiTokenContract: contractsStore.multiTokenContract,
       voteContract: contractsStore.voteContract,
       electionContract: contractsStore.electionContract,
       profitContract: contractsStore.profitContract,
-      showDownloadPlugin: false,
 
+      voteContractFromExt: null,
+      electionContractFromExt: null,
+      profitContractFromExt: null,
+
+      showDownloadPlugin: false,
       balance: null,
       formatedBalance: null,
       nodeAddress: null,
@@ -301,22 +308,18 @@ class VoteContainer extends Component {
     // TODO: 补充error 逻辑
     // FIXME: why can't I get the contract by contract name ? In aelf-command it works.
     console.log('result[contractAddrValName]', result[contractAddrValName]);
-    aelf.chain.contractAt(
-      result[contractAddrValName],
-      result.wallet,
-      (error, contract) => {
-        if (error) {
-          console.error(error);
-        }
-
-        contractsStore.setContract(contractNickname, contract);
+    aelf.chain
+      .contractAt(result[contractAddrValName], result.wallet)
+      .then(res => {
+        console.log('res', res);
+        contractsStore.setContract(contractNickname, res);
         this.setState(
           { [contractNickname]: contractsStore[contractNickname] },
           () => {
             // todo: use switch/case
             if (contractNickname === 'consensusContract') {
               // todo: what's this used for?
-              this.chainInfo = contract;
+              this.chainInfo = res;
               // todo: We shouldn't get vote info by consensus contract
               // this.getInformation(result);
             }
@@ -325,13 +328,13 @@ class VoteContainer extends Component {
               this.judgeIsCandidate();
             }
 
-            if (contractNickname === 'profitContract') {
-              this.fetchProfitAmount();
-            }
+            // if (contractNickname === 'profitContract') {
+            //   this.fetchProfitAmount();
+            // }
           }
         );
-      }
-    );
+      })
+      .catch(err => console.error('err', err));
   }
 
   getExtensionKeypairList() {
@@ -357,12 +360,10 @@ class VoteContainer extends Component {
           });
           console.log('nightElf', nightElf);
           if (nightElf) {
-            this.setState(
-              {
-                nightElf
-              },
-              () => {}
-            );
+            this.setState({
+              nightElf
+            });
+            // We can not do the work using extension here as the wallet maybe not stored in local yet.
             nightElf.chain.getChainStatus((error, result) => {
               if (result) {
                 nightElf.checkPermission(
@@ -453,12 +454,12 @@ class VoteContainer extends Component {
             checkPermissionRepeat(nightElf, payload, () => {
               this.getNightElfKeypair(wallet);
               // todo: Extract
-              this.fetchProfitAmount(nightElf);
+              this.onExtensionAndWalletReady();
             });
           } else {
             this.getNightElfKeypair(wallet);
             // todo: Extract
-            this.fetchProfitAmount(nightElf);
+            this.onExtensionAndWalletReady();
             message.success('Login success!!', 3);
           }
         } else {
@@ -478,6 +479,34 @@ class VoteContainer extends Component {
       }
       // message.error(result.errorMessage.message, 3);
     }
+  }
+
+  onExtensionAndWalletReady() {
+    this.fetchProfitAmount();
+    this.fethContractFromExt();
+  }
+
+  fethContractFromExt() {
+    const { nightElf } = this.state;
+
+    const currentWallet = getCurrentWallet();
+    const wallet = {
+      address: currentWallet.address
+    };
+    // todo: get the contract from extension in cdm or other suitable time
+    // todo: using the code as follows instead the repeat code in project
+    // todo: error handle
+    constants.contractsNeedToLoadFromExt.forEach(item => {
+      nightElf.chain
+        .contractAt(config[item.contractAddrValName], wallet)
+        .then(res => {
+          console.log('Load contracts need to load from extension: ', res);
+          this.setState({
+            [item.contractNickname]: res
+          });
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   changeModalVisible(modal, visible) {
@@ -622,7 +651,7 @@ class VoteContainer extends Component {
           default:
             break;
         }
-      }, 1000);
+      }, 300);
     }
   }
 
@@ -840,7 +869,7 @@ class VoteContainer extends Component {
     const { voteAmountInput, nodeAddress } = this.state;
     // const timeMS = moment(lockTime).getMilliseconds();
     // console.log('ms', timeMS);
-    const lockTime = moment().add(5, 'minutes');
+    const lockTime = moment().add(4, 'months');
     const payload = {
       candidatePubkey: nodeAddress,
       amount: voteAmountInput,
@@ -930,20 +959,27 @@ class VoteContainer extends Component {
     });
   }
 
-    // FIXME: the time calling this method maybe unsuitable
-    // FIXME: when the user didn't set the wallet, will it cause problem?
+  // FIXME: the time calling this method maybe unsuitable
+  // FIXME: when the user didn't set the wallet, will it cause problem?
   fetchProfitAmount() {
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
     const { nightElf } = this.state;
     const currentWallet = getCurrentWallet();
+    console.log('currentWallet', currentWallet);
+    const wallet = {
+      address: currentWallet.address
+    };
+    // debugger;
+
     nightElf.chain
       .contractAt(
         // todo: use object instead
         profitContractAddr,
-        currentWallet
+        wallet
       )
       .then(res => {
+        // debugger;
         this.profitContractFromExt = res;
         return Promise.all(
           schemeIds.map(item => {
@@ -1024,13 +1060,17 @@ class VoteContainer extends Component {
       voteRedeemModalVisible,
       voteConfirmForm,
       voteRedeemForm,
+      showDownloadPlugin,
+
       voteContract,
       electionContract,
-      showDownloadPlugin,
       multiTokenContract,
       profitContract,
       dividendContract,
       consensusContract,
+
+      electionContractFromExt,
+
       balance,
       formatedBalance,
       nodeAddress,
@@ -1087,7 +1127,7 @@ class VoteContainer extends Component {
                       isCandidate={isCandidate}
                       handleDividendClick={this.handleDividendClick}
                       dividends={dividends}
-                      electionContractFromExt={this.electionContractFromExt}
+                      electionContractFromExt={electionContractFromExt}
                     />
                   )}
                 />

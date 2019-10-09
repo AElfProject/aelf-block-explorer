@@ -3,11 +3,13 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-27 18:59:38
+ * @LastEditTime: 2019-10-08 16:44:51
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
+// todo: handle the code as follow
 import { SYMBOL } from '@src/constants';
+import { ELF_DECIMAL } from '@config/config';
 
 //  The contracts need to load in page ElectionNotification
 const contractsNeedToLoad = [
@@ -37,6 +39,13 @@ const contractsNeedToLoad = [
   }
 ];
 
+const contractsNeedToLoadFromExt = [
+  {
+    contractAddrValName: 'electionContractAddr',
+    contractNickname: 'electionContractFromExt'
+  }
+];
+
 const myVoteStatisData = {
   myTotalVotesAmount: {
     title: `投票总数(${SYMBOL})`
@@ -61,44 +70,54 @@ const urlRegExp = new RegExp(
 
 const okRegExp = /^2\d{2}$/;
 
-const ELF_DECIMAL = 100000000;
+// 14节点
+// const schemeIds = [
+//   {
+//     type: 'CitizenWelfare',
+//     schemeId: '2623eb0b2decec194c25388195e92592402fe66bdc3657ceadaf58d92860186a'
+//   },
+//   {
+//     type: 'BackupSubsidy',
+//     schemeId: '208d098067699730d220f1997d48c8b8d8881bb8507abfad1b07d9af8ba94bb0'
+//   },
+//   {
+//     type: 'VotesWeightReward',
+//     schemeId: '9a7f406cf485dd91439c848dea23b5c03029aee63cd8077710ca05865f73ed99'
+//   },
+//   {
+//     type: 'MinerBasicReward',
+//     schemeId: '58c0ee2b5eab330cafa5df680399a6374c7e86bbbcabeda0b70eb0a98a4f788a'
+//   },
+//   {
+//     type: 'ReElectionReward',
+//     schemeId: '291c0cc8fd51e02c02cb95c235f8d41a14793f8e8bf4810e3e44aaf89e7c3389'
+//   }
+// ];
 
+// todo: move the scheme ids to config.js
+// 不删档节点
 const schemeIds = [
   {
     type: 'CitizenWelfare',
-    schemeId: '2623eb0b2decec194c25388195e92592402fe66bdc3657ceadaf58d92860186a'
+    schemeId: '457591785dfc352215fa1c443dc7af361ddcfa8873e010fbde696336c38d2a39'
   },
   {
     type: 'BackupSubsidy',
-    schemeId: '208d098067699730d220f1997d48c8b8d8881bb8507abfad1b07d9af8ba94bb0'
+    schemeId: '4c7c79c9ba20f4e04d52676bcd301a21bb817457150991065bb6e850dd18dd43'
   },
   {
     type: 'VotesWeightReward',
-    schemeId: '9a7f406cf485dd91439c848dea23b5c03029aee63cd8077710ca05865f73ed99'
+    schemeId: 'aa3c3e97cedf5bdee9725fed244ab55046eca81e7d2831a587f4b6c543282cbb'
   },
   {
     type: 'MinerBasicReward',
-    schemeId: '58c0ee2b5eab330cafa5df680399a6374c7e86bbbcabeda0b70eb0a98a4f788a'
+    schemeId: 'a38eb0fc685ef62f7b83001fb6e3cc0e07d7d77facadb2911754d7f6c0f308b5'
   },
   {
     type: 'ReElectionReward',
-    schemeId: '291c0cc8fd51e02c02cb95c235f8d41a14793f8e8bf4810e3e44aaf89e7c3389'
+    schemeId: '5b7ab6879d4599911e0f2bd1dc151ea3a148ecb38e28ea3c2dc25f0d36646c01'
   }
 ];
-
-// 不删档节点
-// const schemeIds = {
-//   CitizenWelfare:
-//     '457591785dfc352215fa1c443dc7af361ddcfa8873e010fbde696336c38d2a39',
-//   BackupSubsidy:
-//     '4c7c79c9ba20f4e04d52676bcd301a21bb817457150991065bb6e850dd18dd43',
-//   VotesWeightReward:
-//     'aa3c3e97cedf5bdee9725fed244ab55046eca81e7d2831a587f4b6c543282cbb',
-//   MinerBasicReward:
-//     'a38eb0fc685ef62f7b83001fb6e3cc0e07d7d77facadb2911754d7f6c0f308b5',
-//   ReElectionReward:
-//     '5b7ab6879d4599911e0f2bd1dc151ea3a148ecb38e28ea3c2dc25f0d36646c01'
-// };
 
 const FROM_WALLET = 'fromWallet';
 const FROM_EXPIRED_VOTES = 'fromExpiredVotes';
@@ -110,6 +129,7 @@ const RANK_NOT_EXISTED_SYMBOL = '-';
 
 export {
   contractsNeedToLoad,
+  contractsNeedToLoadFromExt,
   electionNotifiStatisData,
   myVoteStatisData,
   HARDWARE_ADVICE,
