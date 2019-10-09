@@ -14,6 +14,7 @@ import getFees from '../../../../../../utils/getFees';
 import './ResourceSellModal.less';
 import getMenuName from '../../../../../../utils/getMenuName';
 import {thousandsCommaWithDecimal} from '@utils/formater';
+import {SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL} from '@src/constants';
 
 export default class ResourceSellModal extends PureComponent {
     constructor(props) {
@@ -73,7 +74,7 @@ export default class ResourceSellModal extends PureComponent {
         console.log('menuName', menuName);
         const payload = {
             symbol: menuName,
-            amount: sellNum
+            amount: sellNum * ELF_DECIMAL
         };
         result.Sell(payload, (error, result) => {
             if(result.error){

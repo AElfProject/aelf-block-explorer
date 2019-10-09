@@ -11,6 +11,7 @@ import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import addressOmit from '../../../../../../utils/addressOmit';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
+import config from '@config/config';
 import {SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL} from '@src/constants';
 import {thousandsCommaWithDecimal} from '@utils/formater';
 import './ResourceBuyModal.less';
@@ -36,7 +37,8 @@ export default class ResourceBuyModal extends PureComponent {
     componentDidMount() {
         const {buyNum, menuName, tokenConverterContract, tokenContract} = this.state;
         console.log('buyNum', buyNum);
-        getEstimatedValueELF(menuName, buyNum / TEMP_RESOURCE_DECIMAL , tokenConverterContract, tokenContract).then(result => {
+        // todo: the code here are repeat
+        getEstimatedValueELF(menuName, buyNum, tokenConverterContract, tokenContract).then(result => {
             let ELFValue = Math.abs(Math.floor(result));
             ELFValue += getFees(ELFValue);
             if (ELFValue !== 0) {
@@ -80,9 +82,10 @@ export default class ResourceBuyModal extends PureComponent {
 
     requestBuy(result) {
         const {menuName, buyNum} = this.state;
+        console.log('buyNum * config.ELF_DECIMAL', buyNum, config.ELF_DECIMAL);
         const payload = {
             symbol: menuName,
-            amount: buyNum * ELF_DECIMAL
+            amount: buyNum * config.ELF_DECIMAL
         };
         console.log('result', result);
         console.log('payload', payload);
