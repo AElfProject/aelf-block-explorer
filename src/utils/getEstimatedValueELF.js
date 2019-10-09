@@ -21,6 +21,7 @@ import getResoruceConverter from './getResoruceConverter';
 
 export default function getEstimatedValueELF(type, pidRes, tokenConverterContract, tokenContract) {
     return new Promise((resolve, reject) => {
+        // todo: consider the frequency or time to get the data as it will spend many time
         getResoruceConverter(type, tokenConverterContract, tokenContract).then(result => {
             if (result) {
                 console.log(result.resourceBalance.toNumber());
