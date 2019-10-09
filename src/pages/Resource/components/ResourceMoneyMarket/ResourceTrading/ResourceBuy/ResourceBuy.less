@@ -1,74 +1,86 @@
 .trading-box {
-    padding-top: 22px;
-    background: #2e1875;
-    display: flex;
-    justify-content: center;
+  padding-top: 22px;
+  background: #2e1875;
+  display: flex;
+  justify-content: center;
 
-    .ant-input-group-addon {
-        border-left: none;
-        background: transparent;
-        color: #fff;
-    }
+  .ant-input-group-addon {
+    border-left: none;
+    background: transparent;
+    color: #fff;
+  }
 
-    .ant-input {
-        border: 1px solid #d9d9d9;
-        border-right: none;
-        background: transparent;
-        color: #fff;
-    }
+  .ant-input {
+    border: 1px solid #d9d9d9;
+    border-right: none;
+    background: transparent;
+    color: #fff;
+  }
 
-    .ant-input-number{
-        border: 1px solid #d9d9d9;
-        background: transparent;
-        color: #fff;
-    }
+  .ant-input-number {
+    border: 1px solid #d9d9d9;
+    background: transparent;
+    color: #fff;
+    width: stretch;
+  }
 }
 
 .trading-buy {
-    border-right: 1px #422c7e solid;
+  border-right: 1px #422c7e solid;
 
-    .trading-title {
-        color: #007130;
-        font-size: 16px;
-        font-weight: 900;
-    }
+  .trading-title {
+    color: #007130;
+    font-size: 16px;
+    font-weight: 900;
+  }
 
-    .ant-slider-track {
-        background: #007130;
-    }
+  .ant-slider-track {
+    background: #007130;
+  }
 
-    .ant-slider-dot-active {
-        border-color: #007130;
-        background: #007130;
-    }
+  .ant-slider-dot-active {
+    border-color: #007130;
+    background: #007130;
+  }
 
-    .ant-slider-handle {
-        border-color: #007130;
-        background: #007130;
-        border: solid 2px #007130;
-    }
+  .ant-slider-handle {
+    border-color: #007130;
+    background: #007130;
+    border: solid 2px #007130;
+  }
 
-    .ant-slider-handle:focus {
-        box-shadow: none
-    }
+  .ant-slider-handle:focus {
+    box-shadow: none;
+  }
 
-    .ant-slider-track:focus {
-        background: #007130;
-    }
+  .ant-slider-track:focus {
+    background: #007130;
+  }
 
-    .ant-slider:hover .ant-slider-track {
-        background: #007130;
-    }
+  .ant-slider:hover .ant-slider-track {
+    background: #007130;
+  }
 
-    .ant-slider:hover .ant-slider-handle {
-        border: none;
-    }
+  .ant-slider:hover .ant-slider-handle {
+    border: none;
+  }
+
+  // todo: make it align center naturally, now using ugly css code
+  .ant-spin-nested-loading {
+    position: relative;
+    display: inline-block;
+    min-height: 30px;
+  }
+
+  .ant-spin-container {
+    padding: 3px;
+  }
 }
 
 .ant-confirm-title {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 .approve-info {
-    color: #fff;
+  color: #fff;
 }
