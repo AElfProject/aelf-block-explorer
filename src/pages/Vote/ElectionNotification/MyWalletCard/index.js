@@ -42,14 +42,19 @@ export default class MyWalletCard extends PureComponent {
 
   componentDidUpdate(prevProps) {
     // todo: optimize the judge
-    const { multiTokenContract, electionContract, profitContract, electionContractFromExt } = this.props;
+    const {
+      multiTokenContract,
+      electionContract,
+      profitContract,
+      electionContractFromExt
+    } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
 
     if (multiTokenContract !== prevProps.multiTokenContract) {
       this.fetchWalletBalance();
     }
 
-    console.log('electionContractFromExt', electionContractFromExt)
+    console.log('electionContractFromExt', electionContractFromExt);
 
     if (electionContractFromExt !== prevProps.electionContractFromExt) {
       this.fetchElectorVoteInfo();
@@ -99,7 +104,9 @@ export default class MyWalletCard extends PureComponent {
         console.log('fetchElectorVoteInfo', res);
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;
-        this.computedLastestUnlockTime(activeVotingRecords);
+        if (activeVotedVotesAmount) {
+          this.computedLastestUnlockTime(activeVotingRecords);
+        }
         activeVotedVotesAmount = +activeVotedVotesAmount;
         const withdrawnVotedVotesAmount =
           allVotedVotesAmount - activeVotedVotesAmount;
@@ -189,7 +196,12 @@ export default class MyWalletCard extends PureComponent {
       activeVotedVotesAmount,
       totalAssets
     } = this.state;
-    console.log('totalAssets', totalAssets);
+    console.log({
+      balance,
+      withdrawnVotedVotesAmount,
+      activeVotedVotesAmount,
+      totalAssets
+    });
 
     const currentWallet = getCurrentWallet();
 
