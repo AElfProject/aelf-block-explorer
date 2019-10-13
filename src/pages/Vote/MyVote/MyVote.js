@@ -8,7 +8,8 @@ import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import {
   NODE_DEFAULT_NAME,
-  RANK_NOT_EXISTED_SYMBOL
+  RANK_NOT_EXISTED_SYMBOL,
+  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
 
 export default class MyVote extends Component {
@@ -42,12 +43,16 @@ export default class MyVote extends Component {
       getAllTeamDesc(),
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
-        length: 5 // FIXME:
+        length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
       })
-    ]).then(resArr => {
-      console.log('resArr', resArr);
-      this.processData(resArr);
-    });
+    ])
+      .then(resArr => {
+        console.log('resArr', resArr);
+        this.processData(resArr);
+      })
+      .catch(err => {
+        console.error('err', 'fetchTableDataAndStatisData', err);
+      });
   }
 
   processData(resArr) {
@@ -83,6 +88,9 @@ export default class MyVote extends Component {
       }
     });
     const myTotalVotesAmount = electorVotes.allVotedVotesAmount;
+    console.log({
+      myTotalVotesAmount
+    });
     this.processStatisData('myTotalVotesAmount', 'num', myTotalVotesAmount);
     this.processTableData(myVoteRecords, allTeamInfo);
   }
@@ -105,6 +113,11 @@ export default class MyVote extends Component {
         record.type = 'Redeem';
         record.operationTime = moment
           .unix(record.withdrawTimestamp.seconds)
+          .format('YYYY-MM-DD HH:mm:ss');
+      } else if (record.isChangeTarget) {
+        record.type = 'Switch Vote';
+        record.operationTime = moment
+          .unix(record.voteTimestamp.seconds)
           .format('YYYY-MM-DD HH:mm:ss');
       } else {
         record.type = 'Vote';
