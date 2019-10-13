@@ -9,7 +9,7 @@ import './ContainerRichard.less';
 export default class ContainerRichard extends Component {
     render() {
         // large | small
-        const contentClass = `conri-center-content-${this.props.type}`;
+        const contentClass = `conri-center-content-${this.props.type || 'large'}`;
 
         return (
             <div className='conri-container'>
