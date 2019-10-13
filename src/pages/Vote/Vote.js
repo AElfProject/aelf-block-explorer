@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-09 13:57:48
+ * @LastEditTime: 2019-10-12 21:35:26
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -225,7 +225,9 @@ class VoteContainer extends Component {
       totalWithdrawnableVoteAmountForOneCandidate: 0,
       redeemableVoteRecordsForOneCandidate: [],
       activeVoteRecordsForOneCandidate: [],
-      redeemVoteSelectedRowKeys: []
+      redeemVoteSelectedRowKeys: [],
+
+      targetPublicKey: null
     };
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
@@ -446,6 +448,7 @@ class VoteContainer extends Component {
       this.isPluginLock = false;
       // localStorage.setItem('currentWallet', null);
       getLogin(nightElf, getLoginPayload, result => {
+        // todo: try to extract the code handle the result from extension as there are some repeating code
         if (result && result.error === 0) {
           console.log('result', result);
           const wallet = JSON.parse(result.detail);
@@ -463,10 +466,6 @@ class VoteContainer extends Component {
             message.success('Login success!!', 3);
           }
         } else {
-          this.setState({
-            showWallet: false
-          });
-          console.log('result.errorMessage', result.errorMessage);
           message.error(result.errorMessage.message, 3);
         }
       });
@@ -606,7 +605,10 @@ class VoteContainer extends Component {
   judgeIsCandidate() {
     const { electionContract } = this.state;
     const currentWallet = getCurrentWallet();
-
+    if (!currentWallet.publicKey) {
+      console.log("The user didn't storage the publicKey to localStorage yet");
+      return;
+    }
     // todo: unify the pubkey's getter
     electionContract.GetCandidateInformation.call({
       value: `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`
@@ -663,14 +665,23 @@ class VoteContainer extends Component {
         const formatedBalance = thousandsCommaWithDecimal(balance);
         this.fetchDataVoteNeed();
 
-        this.setState({
-          balance,
-          nodeAddress: ele.dataset.nodeaddress,
-          currentWalletName: JSON.parse(localStorage.getItem('currentWallet'))
-            .name,
-          formatedBalance,
-          nodeName: ele.dataset.nodename || ''
-        });
+        this.setState(
+          {
+            balance,
+            nodeAddress: ele.dataset.nodeaddress,
+            targetPublicKey: ele.dataset.targetpublickey,
+            currentWalletName: JSON.parse(localStorage.getItem('currentWallet'))
+              .name,
+            formatedBalance,
+            nodeName: ele.dataset.nodename || ''
+          },
+          () => {
+            const { targetPublicKey } = this.state;
+            console.log({
+              targetPublicKey
+            });
+          }
+        );
         this.changeModalVisible('voteModalVisible', true);
       })
       .then(() => {
@@ -866,15 +877,20 @@ class VoteContainer extends Component {
   }
 
   handleVoteFromWallet(electionContractFromExt) {
-    const { voteAmountInput, nodeAddress } = this.state;
+    const { voteAmountInput, targetPublicKey } = this.state;
     // const timeMS = moment(lockTime).getMilliseconds();
     // console.log('ms', timeMS);
-    const lockTime = moment().add(4, 'months');
+    const lockTime = moment().add(4, 'minutes');
+    console.log({
+      targetPublicKey
+    });
     const payload = {
-      candidatePubkey: nodeAddress,
-      amount: voteAmountInput,
+      // candidatePubkey:
+      // '041f1af590bc633b30efef64f971f5e12ccd7d20a4b88fceb3f489fd3b787bc274695e8ba55574c502d8572916773c5bb74e93ad375c02014360e496098c74b4fa',
+      candidatePubkey: targetPublicKey,
+      // amount: 100,
       // todo: add decimal or not
-      // amount: voteAmountInput * ELF_DECIMAL,
+      amount: voteAmountInput,
       endTimestamp: {
         // Seconds: Math.floor(timeMS / 1000),
         // Nanos: (timeMS % 1000) * 1e6
@@ -886,21 +902,24 @@ class VoteContainer extends Component {
     electionContractFromExt
       .Vote(payload)
       .then(res => {
-        this.checkTransactionResult(res);
         this.changeModalVisible('voteConfirmModalVisible', false);
+        if (res && res.error === 0) {
+          this.checkTransactionResult(res);
+        } else {
+          message.error(res.errorMessage.message, 3);
+        }
       })
       .catch(err => console.error(err));
   }
 
   // todo: global node address are public key actually
   handleSwitchVote(electionContractFromExt) {
-    const { nodeAddress: candidatePubkey } = this.state;
+    const { targetPublicKey } = this.state;
     // todo: limit max change num or handle the concurreny problem
     const { switchVoteSelectedRowKeys } = this.state;
-
     const payload = {
       voteId: { value: switchVoteSelectedRowKeys[0] },
-      candidatePubkey
+      candidatePubkey: targetPublicKey
     };
     electionContractFromExt
       .ChangeVotingOption(payload)
@@ -941,6 +960,13 @@ class VoteContainer extends Component {
       console.log('transactionId', transactionId);
       aelf.chain.getTxResult(transactionId, (error, result) => {
         console.log('result', result);
+        if (!result) {
+          message.info(
+            "Temporaryly didn' get the transaction info. Please query the transaction later"
+          );
+          message.info(`Your transaction id is: ${transactionId}`);
+          return;
+        }
         getStateJudgment(result.Status, transactionId);
         // todo: use the modalToClose instead the VoteConfirmModal's code
         if (modalToClose) {
@@ -1298,19 +1324,7 @@ class VoteContainer extends Component {
             show plugin lock modal
           </button>
 
-          <button
-            onClick={() => {
-              const voteConfirmForm = generateVoteConfirmForm({
-                need: ['voteAmount', 'lockTime']
-              });
-              this.setState({
-                voteConfirmForm,
-                voteConfirmModalVisible: true
-              });
-            }}
-          >
-            show vote confirm modal
-          </button>
+
 
           <button
             onClick={() => {
@@ -1323,6 +1337,19 @@ class VoteContainer extends Component {
           >
             show vote redeem modal
           </button> */}
+          <button
+            onClick={() => {
+              const voteConfirmForm = generateVoteConfirmForm.call(this, {
+                need: ['voteAmount', 'lockTime']
+              });
+              this.setState({
+                voteConfirmForm,
+                voteConfirmModalVisible: true
+              });
+            }}
+          >
+            show vote confirm modal
+          </button>
           {/* ===== Test Btn ===== */}
         </section>
       </Provider>

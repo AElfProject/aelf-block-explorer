@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-25 14:20:38
+ * @LastEditTime: 2019-10-12 14:28:30
  * @Description: file content
  */
 
@@ -22,7 +22,11 @@ import {
 import queryString from 'query-string';
 
 import { getTeamDesc } from '@api/vote';
-import { NODE_DEFAULT_NAME, FROM_WALLET } from '@src/pages/Vote/constants';
+import {
+  NODE_DEFAULT_NAME,
+  FROM_WALLET,
+  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
+} from '@src/pages/Vote/constants';
 import './index.less';
 
 const { Paragraph } = Typography;
@@ -35,6 +39,7 @@ export default class TeamDetail extends PureComponent {
     super(props);
     this.state = {
       data: {},
+      candidateAddress: '',
       isBP: false,
       rank: '-',
       terms: '-',
@@ -90,7 +95,7 @@ export default class TeamDetail extends PureComponent {
 
     electionContract.GetPageableCandidateInformation.call({
       start: 0,
-      length: 5 // give a number large enough to make sure that we get all the nodes
+      length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
       // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
     })
       .then(res => this.processAllCandidateInfo(res.value))
@@ -121,14 +126,18 @@ export default class TeamDetail extends PureComponent {
     const terms = currentCandidateInfo.terms.length;
     const totalVotes = currentCandidate.obtainedVotesAmount;
     const votedRate = ((100 * totalVotes) / totalVoteAmount).toFixed(2);
-    const producedBlocks = currentCandidateInfo.producedBlocks;
+    const {
+      producedBlocks,
+      candidateAddresss: candidateAddress
+    } = currentCandidateInfo;
 
     this.setState({
       rank,
       terms,
       totalVotes,
       votedRate,
-      producedBlocks
+      producedBlocks,
+      candidateAddress
     });
 
     console.log('candidateVotesArr', candidateVotesArr);
@@ -167,6 +176,7 @@ export default class TeamDetail extends PureComponent {
   render() {
     const {
       data,
+      candidateAddress,
       isBP,
       rank,
       terms,
@@ -176,6 +186,7 @@ export default class TeamDetail extends PureComponent {
     } = this.state;
 
     // todo: Is it safe if the user keyin a url that is not safe?
+    // todo: handle the error case of node-name
     return (
       <section className={`${clsPrefix} page-container`}>
         <section className={`${clsPrefix}-header card-container`}>
@@ -188,15 +199,18 @@ export default class TeamDetail extends PureComponent {
                   <Avatar shape='square' size={100} icon='user' />
                 )}
                 <div className={`${clsPrefix}-team-info`}>
-                  <h5 className={`${clsPrefix}-node-name`}>
-                    {data.name || NODE_DEFAULT_NAME}
+                  <h5 className={`${clsPrefix}-node-name ellipsis`}>
+                    {data.name ? data.name : candidateAddress}
                     <Tag color='#f50'>{isBP ? 'BP' : 'Candidate'}</Tag>
                   </h5>
                   <p className={`${clsPrefix}-team-info-location`}>
                     Location: {data.location}
                   </p>
                   <p className={`${clsPrefix}-team-info-address`}>
-                    Node Address: <Paragraph copyable>{data.address}</Paragraph>
+                    Node Address:{' '}
+                    <Paragraph copyable className='ellipsis'>
+                      {candidateAddress}
+                    </Paragraph>
                   </p>
                   <Button>
                     <Link to='/vote/apply/keyin'>Edit</Link>
