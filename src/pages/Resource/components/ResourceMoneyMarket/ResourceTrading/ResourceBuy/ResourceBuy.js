@@ -13,8 +13,11 @@ import {
   Slider,
   message,
   Modal,
-  Spin
+  Spin,
+  Button,
+  Tooltip
 } from 'antd';
+// import _ from 'lodash';
 import {
   feeReceiverContract,
   tokenConverter,
@@ -26,22 +29,41 @@ import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
 import contractChange from '../../../../../../utils/contractChange';
 import './ResourceBuy.less';
-import { SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL } from '@src/constants';
+import {
+  SYMBOL,
+  ELF_DECIMAL,
+  GENERAL_PRECISION,
+  RESOURCE_OPERATE_LIMIT,
+  BALANCE_LESS_THAN_OPERATE_LIMIT_TIP,
+  OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP,
+  BUY_OR_SELL_MORE_THAN_ASSETS_TIP,
+  BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP,
+  TRANSACT_LARGE_THAN_ZERO_TIP,
+  ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP,
+  CHECK_BALANCE_TIP,
+  FEE_RATE
+} from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
+import { regPos } from '@utils/regExps';
+
+const ELF_TO_RESOURCE_PARAM = 0.00000001;
+const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
+// const processSliderMax = balance => {
+//   return +(balance / 1.00001 - 0.01).toFixed(GENERAL_PRECISION);
+// };
 
 export default class ResourceBuy extends Component {
   constructor(props) {
     super(props);
-    this.debounceTimer;
+    // todo: extract the throttle code
+    this.inputThrottleTimer = null;
+    this.sliderThrottleTimer = null;
     this.state = {
       menuName: null,
       appName: this.props.appName,
       menuIndex: this.props.menuIndex,
       contracts: null,
-      ELFValue: 0,
       region: 0,
-      value: null,
-      purchaseQuantity: 0,
       getSlideMarks: null,
       noCanInput: true,
       nightElf: null,
@@ -54,8 +76,13 @@ export default class ResourceBuy extends Component {
       },
       toBuy: true,
 
-      getEstimateValueLoading: false
+      // todo: use an individual variable for slider as it's stuck using the father component's state elfValue
+      // todo: after fix the stuck problem, instead with father component's state
+      inputMax: 0,
+      operateNumToSmall: false
     };
+
+    this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -111,17 +138,23 @@ export default class ResourceBuy extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { handleModifyTradingState, account } = this.props;
+    const { menuName } = this.state;
+
     if (prevProps.menuIndex !== this.props.menuIndex) {
       this.setState({
-        menuName: getMenuName(this.props.menuIndex),
-        value: null,
-        purchaseQuantity: 0,
-        ELFValue: 0
+        menuName: getMenuName(this.props.menuIndex)
       });
+      // todo: seems useless
+      handleModifyTradingState({ buyNum: 0, buyElfValue: 0 });
     }
 
     if (prevProps.account !== this.props.account) {
       this.getRegion();
+    }
+
+    if (prevProps.account.balance !== account.balance) {
+      this.getInputMaxValue();
     }
 
     if (
@@ -136,21 +169,24 @@ export default class ResourceBuy extends Component {
   getRegion() {
     const { account } = this.state;
     this.setState({
-      region: Math.floor(account.balance / 4)
+      region: account.balance / 4
     });
   }
 
   getSlideMarks() {
     const { region, account } = this.state;
-    if (region < 4) {
-      const regionLine = [0, 25, 50, 75, 100];
-      let marks = {};
-      regionLine.map(item => {
-        marks[item] = '';
-      });
-      return marks;
-    }
-    const regionLine = [0, region, region * 2, region * 3, account.balance];
+    console.log({
+      region
+    });
+    if (region < RESOURCE_OPERATE_LIMIT) return { 0: '' };
+
+    const regionLine = [
+      0,
+      region,
+      region * 2,
+      region * 3,
+      account.balance.toFixed(GENERAL_PRECISION)
+    ];
     let marks = {};
     regionLine.map(item => {
       marks[item] = '';
@@ -158,56 +194,69 @@ export default class ResourceBuy extends Component {
     return marks;
   }
 
-  onChangeSlide(e) {
-    const { menuName, tokenConverterContract, tokenContract } = this.state;
-
-    if (e === 0) {
-      this.setState({
-        purchaseQuantity: e,
-        ELFValue: e,
-        value: e
+  // todo: to be more friendly, verify the input after click buy/sell?
+  onChangeResourceValue(input) {
+    const { handleModifyTradingState, buyNum } = this.props;
+    console.log({
+      buyNum,
+      input
+    });
+    input = +input;
+    // todo: give a friendly notify when verify the max and min
+    // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
+    // todo: why is the input like -- still setState successfully?
+    // the symbol '+' used to handle the case of 0.===0 && 1.===1
+    if (+buyNum === input) return;
+    if (!regPos.test(input) || input === 0) {
+      clearTimeout(this.inputThrottleTimer);
+      handleModifyTradingState({
+        buyElfValue: 0,
+        buyNum: null,
+        buyEstimateValueLoading: false
       });
+      if (input !== '' && input !== 0) {
+        message.error('Only support positive float or interger.');
+      }
       return;
     }
-
-    this.setState({
-      purchaseQuantity: e,
-      ELFValue: e
-    });
-
-    let elfCont = e;
-    elfCont = elfCont - 1;
-    // elfCont -= getFees(elfCont);
-    getEstimatedValueRes(
-      menuName,
-      elfCont,
-      tokenConverterContract,
-      tokenContract
-    ).then(result => {
-      let value = 0;
-      if (Math.ceil(result) > 0) {
-        value = Math.abs(result);
+    // todo: use async instead
+    // todo: Is it neccessary to make the loading code write in the same place? And if the answer is yes, how to make it?
+    handleModifyTradingState(
+      {
+        buyEstimateValueLoading: true,
+        buyNum: input
+      },
+      () => {
+        this.getEstimatedElf(input);
       }
-      this.setState({
-        value
-      });
-    });
+    );
   }
 
   // todo: throttle
-  // todo: why is the debounce useless?
-  debounce(value) {
-    this.debounceTimer = setTimeout(() => {
-      const { menuName, tokenConverterContract, tokenContract } = this.state;
+  // todo: why is the throttle useless?
+  getEstimatedElf(value) {
+    let interval = 0;
+    if (this.inputThrottleTimer) {
+      interval = 500;
+      clearTimeout(this.inputThrottleTimer);
+    }
+    this.inputThrottleTimer = setTimeout(() => {
+      const { handleModifyTradingState } = this.props;
+      const {
+        menuName,
+        tokenConverterContract,
+        tokenContract,
+        account
+      } = this.state;
       // todo: maybe the judge code is useless
-      if (value === '') {
-        this.setState({
-          ELFValue: 0,
-          value: ''
-        });
-        return;
-      }
+      // if (value === '') {
+      //   this.setState({
+      //     value: ''
+      //   });
+      //   return;
+      // }
       console.log('value', value);
+      value = +value;
       getEstimatedValueELF(
         menuName,
         value,
@@ -218,118 +267,211 @@ export default class ResourceBuy extends Component {
         let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
         if (regPos.test(result) || regNeg.test(result)) {
           // todo: the code of rounding off maybe wrong so I comment it.
-          // let ELFValue = Math.abs(Math.floor(result));
-          let ELFValue = result;
+          const amountToPay = result;
+          const buyFee = getFees(amountToPay);
+
           // todo: figure out the case need to add the fees.
-          // ELFValue += getFees(ELFValue);
-          if (ELFValue !== 0) {
+          const amountToPayPlusFee = amountToPay + buyFee;
+          // ---- Start: Handle the case input's cost larger than the elf's balance ----
+          // buySliderValue = buyElfValue >= balance ? balance : buyElfValue;
+          // ---- End: Handle the case input's cost larger than the elf's balance ----
+
+          console.log({
+            amountToPay,
+            buyFee,
+            amountToPayPlusFee
+          });
+          if (amountToPayPlusFee > 0) {
             this.setState({
-              ELFValue,
               toBuy: true,
-              getEstimateValueLoading: false
+              operateNumToSmall: false
+            });
+            handleModifyTradingState({
+              buyElfValue: amountToPayPlusFee,
+              buyFee,
+              buyEstimateValueLoading: false
+            });
+          } else {
+            message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
+            this.setState({
+              operateNumToSmall: true
+            });
+            handleModifyTradingState({
+              // buyNum: null,
+              buyElfValue: 0,
+              buyFee: 0,
+              buyEstimateValueLoading: false
             });
           }
         } else {
           this.setState({
-            toBuy: false,
-            getEstimateValueLoading: false
+            toBuy: false
+          });
+
+          handleModifyTradingState({
+            buyEstimateValueLoading: false
           });
         }
       });
-    }, 500);
+    }, interval);
   }
 
-  // todo: to be more friendly, verify the input after click buy/sell?
-  onChangeResourceValue(input) {
-    console.log("hey I'm here");
-    const { value } = this.state;
-    // todo: make the reg allow the format like 0.
-    const regPos = /^\d+(\.\d*)?$/; // 非负浮点数, allow 0.
-    console.log({
-      value,
-      input
-    });
-    // todo: give a friendly notify when verify the max and min
-    // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
-    // the symbol '+' used to handle the case of 0.===0 && 1.===1
-    if (+value === +input) return;
-    if (!regPos.test(input) || +input === 0) {
-      this.setState({
-        value: null,
-        ELFValue: 0
+  onChangeSlide(e) {
+    const { handleModifyTradingState } = this.props;
+    console.log('change slide', e);
+    if (e === 0) {
+      // todo: seems useless
+      handleModifyTradingState({
+        buyNum: null,
+        buyElfValue: 0,
+        buySliderValue: 0
       });
-      if (input !== '' && +input !== 0) {
-        message.error('Only support positive float or interger.');
-      }
       return;
     }
-    // todo: use async instead
-    // todo: Is it neccessary to make the loading code write in the same place? And if the answer is yes, how to make it?
-    this.setState({
-      getEstimateValueLoading: true,
-      value: input
+    console.log({
+      e
     });
-    this.debounce(input);
+    // todo: the judge code as follows are temp method to handle the max slide
+    // if (e === account.balance) {
+    //   e /= 1.000138857990899;
+    // }
+    console.log({
+      e
+    });
+    handleModifyTradingState({
+      buySliderValue: e
+    });
+    this.getEstimatedInput(e);
+  }
+
+  getEstimatedInput(e) {
+    let interval = 0;
+    if (this.sliderThrottleTimer) {
+      interval = 500;
+      clearTimeout(this.sliderThrottleTimer);
+    }
+    this.sliderThrottleTimer = setTimeout(() => {
+      const { handleModifyTradingState } = this.props;
+
+      const buyFee = getFees(e);
+      console.log('buyFee', buyFee);
+      handleModifyTradingState({
+        buyInputLoading: true,
+        buyElfValue: e,
+        buyFee
+      });
+
+      // elfCont -= getFees(elfCont);
+      this.prepareParamsForEstimatedResource(e / (1 + FEE_RATE)).then(
+        result => {
+          let value = 0;
+          if (Math.ceil(result) > 0) {
+            value = Math.abs(result).toFixed(GENERAL_PRECISION);
+            handleModifyTradingState({ buyInputLoading: false, buyNum: value });
+          }
+        }
+      );
+    }, interval);
+  }
+
+  prepareParamsForEstimatedResource(elfAmount) {
+    const { menuName, tokenConverterContract, tokenContract } = this.state;
+
+    if (!tokenConverterContract || !tokenContract) return Promise.resolve(0);
+    console.log({
+      elfAmount,
+      menuName
+    });
+    return getEstimatedValueRes(
+      menuName,
+      elfAmount,
+      tokenConverterContract,
+      tokenContract,
+      true
+    );
   }
 
   getBuyModalShow() {
+    const { buyElfValue, buyNum } = this.props;
     const {
-      value,
       account,
-      ELFValue,
       currentWallet,
       contracts,
       toBuy,
       appName,
-      nightElf
+      nightElf,
+      operateNumToSmall
     } = this.state;
-    let reg = /^[1-9]\d*$/;
-    if (!reg.test(value)) {
-      message.error('The value must be numeric and greater than 0');
-      return;
-    } else if (parseInt(ELFValue, 10) > parseFloat(account.balance, 10)) {
-      message.warning('Buy and sell more than available assets');
-      return;
-    } else if (!toBuy) {
-      message.warning(
-        'Please purchase or sell a smaller amount of resources than the inventory in the resource contract.'
+    console.log({
+      buyNum,
+      buyElfValue,
+      account
+    });
+    // todo: also verify the input here? fix the error message here appeared in the case didn't verify by the way(such as input -1)
+
+    if (!regPos.test(buyNum) || buyNum === 0) {
+      // if (buyNum !== '' && buyNum !== 0) {
+      // todo: the case of balance insufficient will enter here, so I put the balance message here, after rewrite the verify code please seperate the message notification code.
+      message.error(
+        `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`
       );
+      // }
       return;
-    } else {
-      nightElf.checkPermission(
-        {
-          appName,
-          type: 'addresss',
-          address: currentWallet.address
-        },
-        (error, result) => {
-          if (result && result.error === 0) {
-            result.permissions.map(item => {
-              const multiTokenObj = item.contracts.filter(data => {
-                return data.contractAddress === multiToken;
-              });
-              this.checkPermissionsModify(
-                result,
-                contracts,
-                currentWallet,
-                appName
-              );
-            });
-          } else {
-            message.warning(result.errorMessage.message, 3);
-          }
-        }
-      );
     }
+    if (+buyNum === 0) {
+      message.warning(TRANSACT_LARGE_THAN_ZERO_TIP);
+      return;
+    }
+    if (operateNumToSmall) {
+      message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
+      return;
+    }
+    if (buyElfValue > account.balance) {
+      message.warning(BUY_OR_SELL_MORE_THAN_ASSETS_TIP);
+      return;
+    }
+    if (!toBuy) {
+      message.warning(BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP);
+      return;
+    }
+
+    nightElf.checkPermission(
+      {
+        appName,
+        type: 'addresss',
+        address: currentWallet.address
+      },
+      (error, result) => {
+        if (result && result.error === 0) {
+          result.permissions.map(item => {
+            const multiTokenObj = item.contracts.filter(data => {
+              return data.contractAddress === multiToken;
+            });
+            this.checkPermissionsModify(
+              result,
+              contracts,
+              currentWallet,
+              appName
+            );
+          });
+        } else {
+          message.warning(result.errorMessage.message, 3);
+        }
+      }
+    );
   }
 
   checkPermissionsModify(result, contracts, currentWallet, appName) {
-    const { nightElf, value } = this.state;
+    const { buyNum } = this.props;
+    const { nightElf } = this.state;
     const wallet = {
       address: currentWallet.address
     };
+    console.log({
+      buyNum
+    });
     contractChange(nightElf, result, currentWallet, appName).then(result => {
-      if (value && !result) {
+      if (buyNum && !result) {
         nightElf.chain.contractAt(
           contracts.multiToken,
           wallet,
@@ -347,50 +489,102 @@ export default class ResourceBuy extends Component {
 
   // todo: remove the useless code
   getApprove(result, time = 0) {
-    const { value, ELFValue } = this.state;
+    const { buyElfValue, buyNum, handleModifyTradingState } = this.props;
     const contract = result || null;
     if (contract) {
       if (result) {
         console.log('Approve', contract);
-        this.props.handleBuyModalShow(value, ELFValue / ELF_DECIMAL);
+        handleModifyTradingState({
+          buyVisible: true
+        });
       }
     }
   }
 
   getSlideMarksHTML() {
-    let { region, purchaseQuantity, account } = this.state;
+    const { buyNum, buyElfValue, buySliderValue } = this.props;
+    let { region, account } = this.state;
     let disabled = false;
-    let balance = account.balance;
-    if (region < 4) {
-      region = 25;
-      balance = 100;
+    const balance = account.balance.toFixed(GENERAL_PRECISION);
+    // balance less than RESOURCE_OPERATE_LIMIT is temp not allowed to use slider
+    if (balance < RESOURCE_OPERATE_LIMIT) {
       disabled = true;
     }
+    if (region < RESOURCE_OPERATE_LIMIT) {
+      region = 0;
+      disabled = true;
+    }
+    console.log('In slider', {
+      buyNum,
+      balance
+    });
     return (
-      <Slider
-        marks={this.getSlideMarks()}
-        step={region}
-        disabled={disabled}
-        min={0}
-        value={purchaseQuantity}
-        onChange={e => this.onChangeSlide(e)}
-        max={balance}
-        tooltipVisible={false}
-      />
+      // todo: why is the tooltip didn't work?
+      <Tooltip
+        title={BALANCE_LESS_THAN_OPERATE_LIMIT_TIP}
+        // placement='topLeft'
+      >
+        <Slider
+          marks={this.getSlideMarks()}
+          step={region}
+          // dots
+          disabled={disabled}
+          min={0}
+          value={buySliderValue}
+          onChange={e => this.onChangeSlide(e)}
+          // todo: the max is set in this way for avoid the elf paid larger than elf's balance
+          max={
+            +(
+              +balance -
+              A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+            ).toFixed(GENERAL_PRECISION)
+          }
+          // tooltipVisible={false}
+          // todo: optimize the tooltip
+          tipFormatter={
+            disabled ? () => BALANCE_LESS_THAN_OPERATE_LIMIT_TIP : null
+          }
+        />
+      </Tooltip>
     );
+  }
+
+  getInputMaxValue() {
+    const { account } = this.state;
+
+    // Add the ELF_TO_RESOURCE_PARAM to avoid the case elf is insufficient to pay
+    // todo: the input max may be has problem in some case
+    this.prepareParamsForEstimatedResource(account.balance / (1 + FEE_RATE))
+      .then(res => {
+        const inputMax = +res;
+        console.log({
+          inputMax
+        });
+        this.setState({
+          inputMax
+        });
+      })
+      .catch(err => {
+        console.error('err', err);
+      });
   }
 
   render() {
     const {
-      purchaseQuantity,
-      menuName,
-      value,
-      account,
-      noCanInput,
-      ELFValue,
-      getEstimateValueLoading
-    } = this.state;
+      buyNum,
+      buyElfValue,
+      buySliderValue,
+      buyInputLoading,
+      buyEstimateValueLoading
+    } = this.props;
+    const { menuName, account, inputMax } = this.state;
     const sliderHTML = this.getSlideMarksHTML();
+    console.log("In buy's render", {
+      buyElfValue,
+      inputMax,
+      buyNum
+    });
+
     return (
       <div className='trading-box trading-buy'>
         <div className='trading'>
@@ -401,27 +595,32 @@ export default class ResourceBuy extends Component {
                 Buying quantity{' '}
               </Col>
               <Col span={18}>
-                <InputNumber
-                  // addonAfter={`x100,000 ${menuName}`}
-                  // todo: get the step according to the user's balance
-                  value={value}
-                  onChange={this.onChangeResourceValue.bind(this)}
-                  placeholder={`Enter ${menuName} amount`}
-                  // todo: use parser to set the max decimal to 8, e.g. using parseFloat
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  formatter={value =>
-                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                  }
-                  min={0}
-                  // todo: the max is wrong, I write it for temp, instead it with the estimated value later
-                  max={account.balance}
-                  // precision={8}
-                />
+                <Spin spinning={buyInputLoading}>
+                  <InputNumber
+                    // addonAfter={`x100,000 ${menuName}`}
+                    // todo: get the step according to the user's balance
+                    value={buyNum}
+                    onChange={this.onChangeResourceValue}
+                    placeholder={`Enter ${menuName} amount`}
+                    // todo: use parser to set the max decimal to 8, e.g. using parseFloat
+                    // parser={value => value.replace(/[^.\d]+/g, '')}
+                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                    formatter={value =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    }
+                    min={0}
+                    max={(
+                      inputMax -
+                      A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+                    ).toFixed(GENERAL_PRECISION)}
+                    // precision={8}
+                  />
+                </Spin>
               </Col>
             </Row>
             <div className='ELF-value'>
-              <Spin spinning={getEstimateValueLoading}>
-                ≈ {thousandsCommaWithDecimal(ELFValue)} {SYMBOL}
+              <Spin spinning={buyEstimateValueLoading}>
+                ≈ {thousandsCommaWithDecimal(buyElfValue)} {SYMBOL}
               </Spin>
             </div>
             <Row type='flex' align='middle'>
@@ -440,16 +639,17 @@ export default class ResourceBuy extends Component {
           <div className='trading-slide'>
             {sliderHTML}
             <div className='ElF-value'>
-              {thousandsCommaWithDecimal(purchaseQuantity)} {SYMBOL}
+              {thousandsCommaWithDecimal(buySliderValue)} {SYMBOL}
             </div>
           </div>
-          <div
+          <Button
             className='trading-button'
-            style={{ background: '#007130' }}
+            style={{ background: '#007130', border: 'none', color: '#fff' }}
             onClick={this.getBuyModalShow.bind(this)}
+            loading={buyEstimateValueLoading}
           >
             Buy
-          </div>
+          </Button>
         </div>
       </div>
     );
