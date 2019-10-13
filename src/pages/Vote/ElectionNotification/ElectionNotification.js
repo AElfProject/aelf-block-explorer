@@ -3,11 +3,12 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-27 17:18:12
+ * @LastEditTime: 2019-10-12 14:00:24
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
 import { Row, Col, message } from 'antd';
+import moment from 'moment';
 
 import StatisticalData from '@components/StatisticalData/';
 import getCurrentWallet from '@utils/getCurrentWallet';
@@ -57,6 +58,8 @@ export default class ElectionNotification extends PureComponent {
       statisData: electionNotifiStatisData
     };
 
+    this.hasRun = false;
+
     this.testElectionContract = this.testElectionContract.bind(this);
     this.testVoteContract = this.testVoteContract.bind(this);
     this.testConsensusContract = this.testConsensusContract.bind(this);
@@ -70,9 +73,10 @@ export default class ElectionNotification extends PureComponent {
     if (
       electionContract !== null &&
       consensusContract !== null &&
-      statisData.currentVotesAmount.num === undefined
+      !this.hasRun
     ) {
       // this.fetchTotalVotesAmount();
+      this.hasRun = true;
       this.fetchStatisData();
     }
   }
@@ -128,8 +132,8 @@ export default class ElectionNotification extends PureComponent {
               statisDataKey: 'currentMiningReward'
             },
             {
-              method: 'GetVotesAmount',
-              processor: value => deadline,
+              method: 'GetNextElectCountDown',
+              processor: value => moment().add(value, 'seconds'),
               statisDataKey: 'termEndTime'
             }
             // { method: 'GetCandidates', processor: value => value.length }
