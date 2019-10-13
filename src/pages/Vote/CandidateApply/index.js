@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-25 21:38:55
+ * @LastEditTime: 2019-10-11 20:57:05
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -136,29 +136,39 @@ class CandidateApply extends PureComponent {
         console.log('result', result);
         const electionContract = result;
         electionContract
-        .AnnounceElection()
-        .then(res => {
-          const transactionId = res.result
-            ? res.result.TransactionId
-            : res.TransactionId;
-          setTimeout(() => {
-            console.log('transactionId', transactionId);
-            aelf.chain.getTxResult(transactionId, (error, result) => {
-              console.log('result', result);
-              const { Status: status } = result;
-              getStateJudgment(status, transactionId);
-              // todo: handle the other status case
-              if (status === 'Mined') {
-                this.props.history.push('/vote/apply/keyin');
-              }
-            });
-          }, 4000);
-        })
-        .catch(err => {
-          console.error(err);
-        });
+          .AnnounceElection()
+          .then(res => {
+            // todo: handle gloabally, like the way api using
+            if (res.error) {
+              message.error(res.errorMessage.message);
+              return;
+            }
+
+            const transactionId = res.result
+              ? res.result.TransactionId
+              : res.TransactionId;
+            // todo: optimize the settimeout
+            setTimeout(() => {
+              console.log('transactionId', transactionId);
+              aelf.chain.getTxResult(transactionId, (error, result) => {
+                console.log('result', result);
+                const { Status: status } = result;
+                getStateJudgment(status, transactionId);
+                this.setState({
+                  applyConfirmVisible: false
+                });
+                // todo: handle the other status case
+                if (status === 'Mined') {
+                  this.props.history.push('/vote/apply/keyin');
+                }
+              });
+            }, 4000);
+          })
+          .catch(err => {
+            console.error(err);
+          });
       }
-    })
+    });
 
     // this.setState({
     //   applyConfirmVisible: false
