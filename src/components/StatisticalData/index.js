@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-20 19:27:17
+ * @LastEditTime: 2019-10-12 14:37:30
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -69,7 +69,7 @@ class StatisticalData extends PureComponent {
               <Statistic
                 key={Math.random()}
                 title={item.title}
-                value={item.num || '...'}
+                value={item.num}
               />
             )
           );
