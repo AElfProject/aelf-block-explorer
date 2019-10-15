@@ -609,10 +609,12 @@ export default class ResourceBuy extends Component {
                       `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
                     min={0}
-                    max={(
-                      inputMax -
-                      A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
-                    ).toFixed(GENERAL_PRECISION)}
+                    max={
+                      +(
+                        inputMax -
+                        A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+                      ).toFixed(GENERAL_PRECISION)
+                    }
                     // precision={8}
                   />
                 </Spin>
