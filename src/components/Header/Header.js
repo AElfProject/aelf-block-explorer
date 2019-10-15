@@ -102,23 +102,23 @@ export default class BrowserHeader extends PureComponent {
 
     let voteHTML = '';
     let resourceHTML = '';
-    // if (chain_id === config.MAINCHAINID) {
-    //   voteHTML = (
-    //     <Menu.Item key='/vote'>
-    //       {/*<Icon type='appstore' />*/}
-    //       <Link to='/vote'>VOTE</Link>
-    //       {/* <Link to='/voteold'>VoteOld</Link> */}
-    //       {/* <span>APP CENTER [Building]</span> */}
-    //     </Menu.Item>
-    //   );
-    //   resourceHTML = (
-    //     <Menu.Item key='/resource'>
-    //       {/*<Icon type='appstore' />*/}
-    //       <Link to='/resource'>RESOURCE</Link>
-    //       {/* <span>APP CENTER [Building]</span> */}
-    //     </Menu.Item>
-    //   );
-    // }
+    if (chain_id === config.MAINCHAINID) {
+      voteHTML = (
+        <Menu.Item key='/vote'>
+          {/*<Icon type='appstore' />*/}
+          <Link to='/vote'>VOTE</Link>
+          {/* <Link to='/voteold'>VoteOld</Link> */}
+          {/* <span>APP CENTER [Building]</span> */}
+        </Menu.Item>
+      );
+      resourceHTML = (
+        <Menu.Item key='/resource'>
+          {/*<Icon type='appstore' />*/}
+          <Link to='/resource'>RESOURCE</Link>
+          {/* <span>APP CENTER [Building]</span> */}
+        </Menu.Item>
+      );
+    }
 
     const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
 
