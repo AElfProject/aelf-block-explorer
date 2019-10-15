@@ -12,8 +12,14 @@ import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import addressOmit from '../../../../../../utils/addressOmit';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
 import config from '@config/config';
-import { SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL } from '@src/constants';
+import {
+  SYMBOL,
+  ELF_DECIMAL,
+  TEMP_RESOURCE_DECIMAL,
+  BUY_MORE_THAN_HALT_OF_INVENTORY_TIP
+} from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
+import { regBuyTooManyResource } from '@utils/regExps';
 import './ResourceBuyModal.less';
 
 export default class ResourceBuyModal extends PureComponent {
@@ -67,54 +73,58 @@ export default class ResourceBuyModal extends PureComponent {
         message.error(result.errorMessage.message, 3);
         this.props.handleCancel();
         return;
-      } else {
-        this.setState({
-          loading: true
-        });
-        const transactionId = result.result
-          ? result.result.TransactionId
-          : result.TransactionId;
-        setTimeout(() => {
-          console.log('transactionId', transactionId);
-          aelf.chain
-            .getTxResult(transactionId)
-            .then(result => {
-              // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
-              console.log({
-                error,
-                result
-              });
-              getStateJudgment(result.Status, transactionId);
-              this.props.onRefresh();
-              this.setState({
-                loading: false
-              });
-              handleModifyTradingState({
-                buyNum: null,
-                buyFee: 0,
-                buyElfValue: 0,
-                buySliderValue: 0
-              });
-              this.props.handleCancel();
-              this.props.unMaskClosable();
-            })
-            .catch(err => {
-              this.setState(
-                {
-                  loading: false
-                },
-                () => {
-                  console.error('err', err);
-                  message.error(
-                    'Your transaction seems to has some problem, please query the transaction later:',
-                    20
-                  );
-                  message.error(`Transaction id: ${transactionId}`, 20);
-                }
-              );
-            });
-        }, 4000);
       }
+      this.setState({
+        loading: true
+      });
+      const transactionId = result.result
+        ? result.result.TransactionId
+        : result.TransactionId;
+      setTimeout(() => {
+        console.log('transactionId', transactionId);
+        aelf.chain
+          .getTxResult(transactionId)
+          .then(result => {
+            // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
+            console.log({
+              error,
+              result
+            });
+            getStateJudgment(result.Status, transactionId);
+            this.props.onRefresh();
+            this.setState({
+              loading: false
+            });
+            handleModifyTradingState({
+              buyNum: null,
+              buyFee: 0,
+              buyElfValue: 0,
+              buySliderValue: 0
+            });
+            this.props.handleCancel();
+            this.props.unMaskClosable();
+          })
+          .catch(err => {
+            this.setState(
+              {
+                loading: false
+              },
+              () => {
+                console.error('err', err, BUY_MORE_THAN_HALT_OF_INVENTORY_TIP);
+                if (regBuyTooManyResource.test(err.Error)) {
+                  message.error(BUY_MORE_THAN_HALT_OF_INVENTORY_TIP, 20);
+                  message.error(`Transaction id: ${transactionId}`, 20);
+                  return;
+                }
+                message.error(
+                  'Your transaction seems to has some problem, please query the transaction later:',
+                  20
+                );
+                message.error(`Transaction id: ${transactionId}`, 20);
+              }
+            );
+          });
+      }, 4000);
     });
   }
 

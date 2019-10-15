@@ -66,6 +66,8 @@ const TRANSACT_LARGE_THAN_ZERO_TIP =
 const ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP =
   'Only support positive float and interger.';
 const CHECK_BALANCE_TIP = 'Please Check your balance Then.';
+const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
+  'Sorry, you can not buy so many resources in one time.';
 const FEE_RATE = 0.005;
 
 // TODO 用户可选RPCSERVER
@@ -339,6 +341,7 @@ export {
   TRANSACT_LARGE_THAN_ZERO_TIP,
   ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP,
   CHECK_BALANCE_TIP,
+  BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
   SYMBOL, // todo: get native token info
   CHAIN_ID, // todo: get chain status
   ELF_DECIMAL, // todo: similar to  get native token info
