@@ -53,7 +53,7 @@ const TXSSTATUS = {
   Mined: 'Mined'
 };
 
-const FAILED_MESSAGE_DISPLAY_TIME = 20;
+const FAILED_MESSAGE_DISPLAY_TIME = 20; // seconds
 // todo: use a object to gather all tip?
 const IE_ADVICE =
   "We recommend using Chrome/Safari/Firefox to view our page. In recent time we don't support IE!";

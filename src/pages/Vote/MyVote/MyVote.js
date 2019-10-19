@@ -25,6 +25,7 @@ export default class MyVote extends Component {
     this.fetchTableDataAndStatisData();
   }
 
+  // todo: update the vote info after switch to this tab
   // componentDidUpdate(prevProps, prevState) {
 
   //   this.fetchTableDataAndStatisData();

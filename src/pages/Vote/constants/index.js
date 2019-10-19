@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-12 19:58:32
+ * @LastEditTime: 2019-10-15 17:15:49
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -71,7 +71,7 @@ const urlRegExp = new RegExp(
 
 const okRegExp = /^2\d{2}$/;
 
-// 14节点
+// 14, 56节点
 const schemeIds = [
   {
     type: 'CitizenWelfare',
