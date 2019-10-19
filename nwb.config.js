@@ -1,5 +1,8 @@
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
+const { getLessVariables } = require('./build/utils');
+
+const ROOT = path.resolve(__dirname);
 
 module.exports = {
   type: 'react-app',
@@ -16,7 +19,10 @@ module.exports = {
   webpack: {
     rules: {
       less: {
-        javascriptEnabled: true
+        javascriptEnabled: true,
+        globalVars: getLessVariables(
+          path.resolve(ROOT, 'src/assets/less/_variables.less')
+        )
       }
     },
     aliases: {
