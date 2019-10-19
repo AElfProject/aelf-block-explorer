@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-19 00:49:09
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-13 02:01:30
+ * @LastEditTime: 2019-10-19 20:41:12
  * @Description: file content
  */
 import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from '@src/constants';
@@ -22,19 +22,11 @@ const removeUrlPrefix = url => url.replace(/^https:\/\//, '');
 const thousandsCommaWithDecimal = value => {
   if (typeof value !== 'number') return value;
   let decimalProcessedValue = value;
-  console.log({
-    value,
-    ELF_PRECISION
-  });
   if (value < RESOURCE_OPERATE_LIMIT && value > 0) {
     decimalProcessedValue = value.toFixed(ELF_PRECISION);
   } else {
     decimalProcessedValue = value.toFixed(2);
   }
-  console.log({
-    decimalProcessedValue,
-    value
-  });
 
   const arr = `${decimalProcessedValue}`.split('.');
   const wholeNum = thousandsComma(arr[0]);
