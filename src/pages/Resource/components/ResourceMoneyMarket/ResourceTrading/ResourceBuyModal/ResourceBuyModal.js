@@ -4,7 +4,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { Row, Col, Spin, message } from 'antd';
+import { Row, Col, Spin, message, Button } from 'antd';
 import { aelf } from '../../../../../../utils';
 import getFees from '../../../../../../utils/getFees';
 import getMenuName from '../../../../../../utils/getMenuName';
@@ -16,7 +16,8 @@ import {
   SYMBOL,
   ELF_DECIMAL,
   TEMP_RESOURCE_DECIMAL,
-  BUY_MORE_THAN_HALT_OF_INVENTORY_TIP
+  BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
+  FAILED_MESSAGE_DISPLAY_TIME
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import { regBuyTooManyResource } from '@utils/regExps';
@@ -112,15 +113,24 @@ export default class ResourceBuyModal extends PureComponent {
               () => {
                 console.error('err', err, BUY_MORE_THAN_HALT_OF_INVENTORY_TIP);
                 if (regBuyTooManyResource.test(err.Error)) {
-                  message.error(BUY_MORE_THAN_HALT_OF_INVENTORY_TIP, 20);
-                  message.error(`Transaction id: ${transactionId}`, 20);
+                  message.error(
+                    BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
+                    FAILED_MESSAGE_DISPLAY_TIME
+                  );
+                  message.error(
+                    `Transaction id: ${transactionId}`,
+                    FAILED_MESSAGE_DISPLAY_TIME
+                  );
                   return;
                 }
                 message.error(
                   'Your transaction seems to has some problem, please query the transaction later:',
-                  20
+                  FAILED_MESSAGE_DISPLAY_TIME
                 );
-                message.error(`Transaction id: ${transactionId}`, 20);
+                message.error(
+                  `Transaction id: ${transactionId}`,
+                  FAILED_MESSAGE_DISPLAY_TIME
+                );
               }
             );
           });
@@ -136,53 +146,53 @@ export default class ResourceBuyModal extends PureComponent {
       buyInputLoading,
       buyEstimateValueLoading
     } = this.props;
-    const { menuName, currentWallet } = this.state;
+    const { menuName, currentWallet, loading } = this.state;
     console.log('buyEstimateValueLoading', buyEstimateValueLoading);
 
     return (
       <div className='modal'>
-        <Spin size='large' spinning={this.state.loading}>
-          <Row className='display-box'>
-            <Col span={8} style={{ color: '#c8c7c7' }}>
-              Address
-            </Col>
-            <Col span={16}>{addressOmit(currentWallet.address)}</Col>
-          </Row>
-          <Row className='display-box'>
-            <Col span={8} style={{ color: '#c8c7c7' }}>
-              Buy{menuName}Quantity
-            </Col>
-            <Col span={16}>
-              <Spin spinning={buyInputLoading}>
-                {thousandsCommaWithDecimal(buyNum)}
-              </Spin>
-            </Col>
-          </Row>
-          <Row className='display-box'>
-            <Col span={8} style={{ color: '#c8c7c7' }}>
-              {SYMBOL}
-            </Col>
-            <Col span={16}>
-              <Spin spinning={buyEstimateValueLoading}>
-                {thousandsCommaWithDecimal(buyElfValue)}
-              </Spin>
-            </Col>
-          </Row>
-          <div className='service-charge'>
-            *Service Charge: {thousandsCommaWithDecimal(buyFee)} {SYMBOL}
-          </div>
-          <div
-            className='modal-button'
-            style={{ background: '#007130' }}
-            onClick={this.getBuyRes.bind(this)}
-          >
-            Buy
-          </div>
-          <div className='modal-tip'>
-            * To avoid price fluctuations leading to transaction failure, please
-            complete the transaction within 30 seconds.
-          </div>
-        </Spin>
+        <Row className='display-box'>
+          <Col span={8} style={{ color: '#c8c7c7' }}>
+            Address
+          </Col>
+          <Col span={16}>{addressOmit(currentWallet.address)}</Col>
+        </Row>
+        <Row className='display-box'>
+          <Col span={8} style={{ color: '#c8c7c7' }}>
+            Buy{menuName}Quantity
+          </Col>
+          <Col span={16}>
+            <Spin spinning={buyInputLoading}>
+              {thousandsCommaWithDecimal(buyNum)}
+            </Spin>
+          </Col>
+        </Row>
+        <Row className='display-box'>
+          <Col span={8} style={{ color: '#c8c7c7' }}>
+            {SYMBOL}
+          </Col>
+          <Col span={16}>
+            <Spin spinning={buyEstimateValueLoading}>
+              {thousandsCommaWithDecimal(buyElfValue)}
+            </Spin>
+          </Col>
+        </Row>
+        <div className='service-charge'>
+          *Service Charge: {thousandsCommaWithDecimal(buyFee)} {SYMBOL}
+        </div>
+        <Button
+          type='primary'
+          className='modal-button'
+          style={{ background: '#007130' }}
+          onClick={this.getBuyRes.bind(this)}
+          loading={loading}
+        >
+          Buy
+        </Button>
+        <div className='modal-tip'>
+          * To avoid price fluctuations leading to transaction failure, please
+          complete the transaction within 30 seconds.
+        </div>
       </div>
     );
   }
