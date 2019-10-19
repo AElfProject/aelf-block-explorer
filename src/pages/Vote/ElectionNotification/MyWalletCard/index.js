@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Icon, Modal, message } from 'antd';
+import { Button, Icon, Modal, message, Spin } from 'antd';
 import moment from 'moment';
 
 import './index.less';
@@ -21,7 +21,8 @@ export default class MyWalletCard extends PureComponent {
       balance: '-',
       withdrawnVotedVotesAmount: '-',
       activeVotedVotesAmount: '-',
-      totalAssets: '-'
+      totalAssets: '-',
+      loading: false
     };
 
     this.showModal = this.showModal.bind(this);
@@ -46,7 +47,9 @@ export default class MyWalletCard extends PureComponent {
       multiTokenContract,
       electionContract,
       profitContract,
-      electionContractFromExt
+      electionContractFromExt,
+      shouldRefreshMyWallet,
+      changeVoteState
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
 
@@ -74,6 +77,24 @@ export default class MyWalletCard extends PureComponent {
     // if (profitContract !== prevProps.profitContract) {
     //   this.fetchProfitAmount();
     // }
+
+    if (shouldRefreshMyWallet) {
+      changeVoteState(
+        {
+          shouldRefreshMyWallet: false
+        },
+        () => {
+          this.setState({
+            loading: true
+          });
+          this.updateWallet().then(() => {
+            this.setState({
+              loading: false
+            });
+          });
+        }
+      );
+    }
   }
 
   fetchWalletBalance() {
@@ -81,7 +102,7 @@ export default class MyWalletCard extends PureComponent {
     console.log('SYMBOL', SYMBOL);
     const currentWallet = getCurrentWallet();
     console.log('currentWallet', currentWallet);
-    multiTokenContract.GetBalance.call({
+    return multiTokenContract.GetBalance.call({
       symbol: SYMBOL,
       owner: currentWallet.address
     })
@@ -97,7 +118,7 @@ export default class MyWalletCard extends PureComponent {
     const { electionContractFromExt } = this.props;
     const currentWallet = getCurrentWallet();
 
-    electionContractFromExt.GetElectorVoteWithRecords.call({
+    return electionContractFromExt.GetElectorVoteWithRecords.call({
       value: currentWallet.pubKey
     })
       .then(res => {
@@ -181,10 +202,14 @@ export default class MyWalletCard extends PureComponent {
   // }
 
   updateWallet() {
-    this.fetchWalletBalance();
-    this.fetchElectorVoteInfo();
-    this.computedTotalAssets();
-    this.fetchProfitAmount();
+    return Promise.all([this.fetchWalletBalance(), this.fetchElectorVoteInfo()])
+      .then(() => {
+        this.computedTotalAssets();
+      })
+      .catch(err => {
+        console.error('updateWallet', err);
+      });
+    // this.fetchProfitAmount();
   }
 
   render() {
@@ -194,7 +219,8 @@ export default class MyWalletCard extends PureComponent {
       balance,
       withdrawnVotedVotesAmount,
       activeVotedVotesAmount,
-      totalAssets
+      totalAssets,
+      loading
     } = this.state;
     console.log({
       balance,
@@ -216,38 +242,41 @@ export default class MyWalletCard extends PureComponent {
             <Icon type='sync' />
           </button>
         </div>
-        <div className={`${clsPrefix}-body`}>
-          <div className={`${clsPrefix}-body-wallet-title`}>
-            <h3 className={`${clsPrefix}-body-wallet-title-name`}>
-              {currentWallet.name}
-            </h3>
-            {/* <Button shape='round' onClick={this.showModal}>
+        <Spin spining={loading}>
+          <div className={`${clsPrefix}-body`}>
+            <div className={`${clsPrefix}-body-wallet-title`}>
+              <h3 className={`${clsPrefix}-body-wallet-title-name`}>
+                {currentWallet.name}
+              </h3>
+              {/* <Button shape='round' onClick={this.showModal}>
               解除绑定
             </Button> */}
+            </div>
+            {/* todo: extract the lis code in ul */}
+            <ul className={`${clsPrefix}-body-wallet-content`}>
+              <li>资产总数： {thousandsCommaWithDecimal(totalAssets)}</li>
+              <li>可用余额： {thousandsCommaWithDecimal(balance)}</li>
+              <li>
+                待领取分红金额： {dividends.total.toFixed(2)}
+                <Button
+                  shape='round'
+                  className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
+                  onClick={handleDividendClick}
+                >
+                  领取
+                </Button>
+              </li>
+              <li>
+                投票总数： {thousandsCommaWithDecimal(activeVotedVotesAmount)}
+              </li>
+              <li>
+                赎回总数：{' '}
+                {thousandsCommaWithDecimal(withdrawnVotedVotesAmount)}
+              </li>
+              <li>最近投票到期时间： 2019/11/2</li>
+            </ul>
           </div>
-          {/* todo: extract the lis code in ul */}
-          <ul className={`${clsPrefix}-body-wallet-content`}>
-            <li>资产总数： {thousandsCommaWithDecimal(totalAssets)}</li>
-            <li>可用余额： {thousandsCommaWithDecimal(balance)}</li>
-            <li>
-              待领取分红金额： {dividends.total.toFixed(2)}
-              <Button
-                shape='round'
-                className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
-                onClick={handleDividendClick}
-              >
-                领取
-              </Button>
-            </li>
-            <li>
-              投票总数： {thousandsCommaWithDecimal(activeVotedVotesAmount)}
-            </li>
-            <li>
-              赎回总数： {thousandsCommaWithDecimal(withdrawnVotedVotesAmount)}
-            </li>
-            <li>最近投票到期时间： 2019/11/2</li>
-          </ul>
-        </div>
+        </Spin>
 
         <Modal
           className='unbind-account-modal'
