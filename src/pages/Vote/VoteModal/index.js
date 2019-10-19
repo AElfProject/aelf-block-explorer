@@ -3,10 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-26 15:38:59
+ * @LastEditTime: 2019-10-19 18:50:07
  * @Description: file content
  */
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Tabs,
   Modal,
@@ -16,7 +17,9 @@ import {
   Button,
   Table,
   InputNumber,
-  Checkbox
+  Icon,
+  Checkbox,
+  Tooltip
 } from 'antd';
 import moment from 'moment';
 
@@ -42,6 +45,13 @@ const formItemLayout = {
   }
 };
 
+const switchVotePagination = {
+  showQuickJumper: true,
+  total: 0,
+  showTotal: total => `Total ${total} items`,
+  pageSize: 3
+};
+
 function disabledDate(current) {
   // Can not select days before today and today
   return current && current < moment().endOf('day');
@@ -49,6 +59,7 @@ function disabledDate(current) {
 
 function getColumns() {
   // const { checkedGroup } = this.state;
+  const { changeVoteState } = this.props;
 
   return [
     // {
@@ -59,7 +70,29 @@ function getColumns() {
     {
       title: 'Node Name',
       dataIndex: 'name',
-      key: 'nodeName'
+      key: 'nodeName',
+      ...this.getColumnSearchProps('name'),
+      render: (text, record) => (
+        // todo: consider to extract the component as a independent component
+        <Tooltip title={text}>
+          <Link
+            to={{
+              pathname: '/vote/team',
+              search: `pubkey=${record.candidate}`
+            }}
+            className='node-name-in-table'
+            // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+            style={{ width: 150 }}
+            onClick={() => {
+              changeVoteState({
+                voteModalVisible: false
+              });
+            }}
+          >
+            {text}
+          </Link>
+        </Tooltip>
+      )
     },
     {
       title: 'Vote Amount',
@@ -123,15 +156,28 @@ class VoteModal extends Component {
       handleLockTimeChange,
       expiredVotesAmount,
       switchableVoteRecords,
+      withdrawnableVoteRecords,
       estimatedProfit
     } = this.props;
     const {
       switchVoteSelectedRowKeys,
-      handleSwithVoteSelectedRowChange
+      handleSwithVoteSelectedRowChange,
+      voteFromExpiredVoteAmount,
+      voteFromExpiredSelectedRowKeys,
+      handleVoteFromExpiredSelectedRowChange,
+      changeVoteState
     } = this.props;
 
-    const columns = getColumns();
-    const rowSelection = {
+    const columns = getColumns.call(this);
+
+    const voteFromExpiredRowSelection = {
+      selectedRowKeys: voteFromExpiredSelectedRowKeys,
+      onChange: handleVoteFromExpiredSelectedRowChange,
+      hideDefaultSelections: true,
+      type: 'checkbox'
+    };
+
+    const switchVoteRowSelection = {
       selectedRowKeys: switchVoteSelectedRowKeys,
       onChange: handleSwithVoteSelectedRowChange,
       hideDefaultSelections: true,
@@ -146,16 +192,20 @@ class VoteModal extends Component {
         formItems: [
           {
             label: '节点名称',
-            render: <span className='form-item-value'>{nodeName}</span>
+            render: <span className='form-item-value ellipsis'>{nodeName}</span>
           },
           {
             label: '地址',
-            render: <span className='form-item-value'>{nodeAddress}</span>
+            render: (
+              <span className='form-item-value ellipsis'>{nodeAddress}</span>
+            )
           },
           {
             label: '钱包',
             render: (
-              <span className='form-item-value'> {currentWalletName}</span>
+              <span className='form-item-value ellipsis'>
+                {currentWalletName}
+              </span>
             )
           },
           {
@@ -224,12 +274,13 @@ class VoteModal extends Component {
         formItems: [
           {
             label: '节点名称',
-            render: <span className='form-item-value'>{nodeName}</span>
+            render: <span className='form-item-value ellipsis'>{nodeName}</span>
           },
           {
             label: '地址',
             render: (
               <span
+                className='ellipsis'
                 style={{ color: '#fff', width: 600, display: 'inline-block' }}
               >
                 {nodeAddress}
@@ -257,8 +308,12 @@ class VoteModal extends Component {
                   }
                   min={0}
                   max={expiredVotesAmount}
-                  value={voteAmountInput}
-                  onChange={handleVoteAmountChange}
+                  value={voteFromExpiredVoteAmount}
+                  onChange={value => {
+                    changeVoteState({
+                      voteFromExpiredVoteAmount: value
+                    });
+                  }}
                 />
                 <Button type='primary' onClick={this.handleAllIn}>
                   All In
@@ -277,6 +332,24 @@ class VoteModal extends Component {
               </div>
             )
           }
+          // {
+          //   label: '投票记录选择',
+          //   render: (
+          //     <div>
+          //       {/* <Search
+          //         placeholder='Input Node Name'
+          //         onSearch={value => console.log(value)}
+          //         style={{ width: 200 }}
+          //       /> */}
+          //       <Table
+          //         dataSource={withdrawnableVoteRecords}
+          //         columns={columns}
+          //         rowSelection={voteFromExpiredRowSelection}
+          //         pagination={switchVotePagination}
+          //       />
+          //     </div>
+          //   )
+          // }
           // {
           //   label: '预估投票收益',
           //   render: (
@@ -297,12 +370,13 @@ class VoteModal extends Component {
         formItems: [
           {
             label: '节点名称',
-            render: <span className='form-item-value'>{nodeName}</span>
+            render: <span className='form-item-value ellipsis'>{nodeName}</span>
           },
           {
             label: '地址',
             render: (
               <span
+                className='ellipsis'
                 style={{ color: '#fff', width: 600, display: 'inline-block' }}
               >
                 {nodeAddress}
@@ -313,15 +387,16 @@ class VoteModal extends Component {
             label: '投票记录选择',
             render: (
               <div>
-                <Search
+                {/* <Search
                   placeholder='Input Node Name'
                   onSearch={value => console.log(value)}
                   style={{ width: 200 }}
-                />
+                /> */}
                 <Table
                   dataSource={switchableVoteRecords}
                   columns={columns}
-                  rowSelection={rowSelection}
+                  rowSelection={switchVoteRowSelection}
+                  pagination={switchVotePagination}
                 />
               </div>
             )
@@ -387,6 +462,7 @@ class VoteModal extends Component {
   //   });
   // }
 
+  // todo: the method seems useless
   handleOk() {
     const { callback, handleSwitchVote } = this.props;
     const { voteType } = this.props;
@@ -398,6 +474,7 @@ class VoteModal extends Component {
         callback();
         break;
       case FROM_EXPIRED_VOTES:
+        callback();
         break;
       case FROM_ACTIVE_VOTES:
         callback();
@@ -406,6 +483,77 @@ class VoteModal extends Component {
         break;
     }
   }
+
+  getColumnSearchProps = dataIndex => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={node => {
+            this.searchInput = node;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Button
+          type='primary'
+          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          icon='search'
+          size='small'
+          style={{ width: 90, marginRight: 8 }}
+        >
+          Search
+        </Button>
+        <Button
+          onClick={() => this.handleReset(clearFilters)}
+          size='small'
+          style={{ width: 90 }}
+        >
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: filtered => (
+      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: visible => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select());
+      }
+    }
+    // render: text => (
+    //   <Highlighter
+    //     highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+    //     searchWords={[this.state.searchText]}
+    //     autoEscape
+    //     textToHighlight={text.toString()}
+    //   />
+    // )
+  });
+
+  handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    // this.setState({ searchText: selectedKeys[0] });
+  };
+
+  handleReset = clearFilters => {
+    clearFilters();
+    // this.setState({ searchText: '' });
+  };
 
   render() {
     const { voteModalVisible, handleVoteTypeChange, voteType } = this.props;
@@ -419,7 +567,7 @@ class VoteModal extends Component {
         visible={voteModalVisible}
         onOk={this.handleOk}
         // confirmLoading={confirmLoading}
-        width={860}
+        width={980}
         okText='Next'
         centered
         maskClosable
