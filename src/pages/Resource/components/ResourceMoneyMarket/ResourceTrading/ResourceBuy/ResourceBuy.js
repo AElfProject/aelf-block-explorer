@@ -15,7 +15,8 @@ import {
   Modal,
   Spin,
   Button,
-  Tooltip
+  Tooltip,
+  Form
 } from 'antd';
 // import _ from 'lodash';
 import {
@@ -41,6 +42,7 @@ import {
   TRANSACT_LARGE_THAN_ZERO_TIP,
   ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP,
   CHECK_BALANCE_TIP,
+  BETWEEN_ZEOR_AND_BALANCE_TIP,
   FEE_RATE
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
@@ -51,6 +53,7 @@ const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
 // const processSliderMax = balance => {
 //   return +(balance / 1.00001 - 0.01).toFixed(GENERAL_PRECISION);
 // };
+const status = { ERROR: 'error' };
 
 export default class ResourceBuy extends Component {
   constructor(props) {
@@ -80,6 +83,11 @@ export default class ResourceBuy extends Component {
       // todo: after fix the stuck problem, instead with father component's state
       inputMax: 0,
       operateNumToSmall: false,
+      // todo: put the validateStatus with the validated value
+      validate: {
+        validateStatus: null,
+        help: ''
+      },
       buyBtnLoading: false
     };
 
@@ -202,6 +210,12 @@ export default class ResourceBuy extends Component {
       buyNum,
       input
     });
+    this.setState({
+      validate: {
+        validateStatus: null,
+        help: ''
+      }
+    });
     input = +input;
     // todo: give a friendly notify when verify the max and min
     // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
@@ -282,6 +296,14 @@ export default class ResourceBuy extends Component {
             buyFee,
             amountToPayPlusFee
           });
+          if (amountToPayPlusFee > account.balance) {
+            this.setState({
+              validate: {
+                validateStatus: status.ERROR,
+                help: BETWEEN_ZEOR_AND_BALANCE_TIP
+              }
+            });
+          }
           if (amountToPayPlusFee > 0) {
             this.setState({
               toBuy: true,
@@ -612,7 +634,7 @@ export default class ResourceBuy extends Component {
       buyInputLoading,
       buyEstimateValueLoading
     } = this.props;
-    const { menuName, account, inputMax, buyBtnLoading } = this.state;
+    const { menuName, account, inputMax, buyBtnLoading, validate } = this.state;
     const sliderHTML = this.getSlideMarksHTML();
     // todo: memoize?
     const rawBuyNumMax = +(
@@ -636,22 +658,27 @@ export default class ResourceBuy extends Component {
               </Col>
               <Col span={18}>
                 <Spin spinning={buyInputLoading}>
-                  <InputNumber
-                    // addonAfter={`x100,000 ${menuName}`}
-                    // todo: get the step according to the user's balance
-                    value={buyNum}
-                    onChange={this.onChangeResourceValue}
-                    placeholder={`Enter ${menuName} amount`}
-                    // todo: use parser to set the max decimal to 8, e.g. using parseFloat
-                    // parser={value => value.replace(/[^.\d]+/g, '')}
-                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                    formatter={value =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
-                    min={0}
-                    max={processedBuyNumMax}
-                    // precision={8}
-                  />
+                  <Form.Item
+                    validateStatus={validate.validateStatus}
+                    help={validate.help}
+                  >
+                    <InputNumber
+                      // addonAfter={`x100,000 ${menuName}`}
+                      // todo: get the step according to the user's balance
+                      value={buyNum}
+                      onChange={this.onChangeResourceValue}
+                      placeholder={`Enter ${menuName} amount`}
+                      // todo: use parser to set the max decimal to 8, e.g. using parseFloat
+                      // parser={value => value.replace(/[^.\d]+/g, '')}
+                      parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                      formatter={value =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      }
+                      min={0}
+                      max={processedBuyNumMax}
+                      // precision={8}
+                    />
+                  </Form.Item>
                 </Spin>
               </Col>
             </Row>
@@ -680,10 +707,10 @@ export default class ResourceBuy extends Component {
             </div>
           </div>
           <Button
-            className='trading-button'
-            style={{ background: '#007130', border: 'none', color: '#fff' }}
+            className='trading-button buy-btn'
             onClick={this.getBuyModalShow.bind(this)}
             loading={buyEstimateValueLoading || buyBtnLoading}
+            disabled={validate.validateStatus === status.ERROR}
           >
             Buy
           </Button>
