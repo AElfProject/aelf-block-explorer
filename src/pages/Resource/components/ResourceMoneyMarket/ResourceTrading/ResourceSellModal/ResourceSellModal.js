@@ -110,55 +110,58 @@ export default class ResourceSellModal extends PureComponent {
   }
 
   render() {
-    const { sellFee, SellELFValue, sellEstimateValueLoading, sellNum } = this.props;
-    const { menuName, currentWallet } = this.state;
-    console.log('sellFee', sellFee);
-    console.log('SellELFValue', SellELFValue);
+    const {
+      sellFee,
+      SellELFValue,
+      sellEstimateValueLoading,
+      sellNum
+    } = this.props;
+    const { menuName, currentWallet, loading } = this.state;
     console.log({
-      sellEstimateValueLoading
+      sellEstimateValueLoading,
+      SellELFValue,
+      sellFee
     });
 
     return (
       <div className='modal'>
-        <Spin size='large' spinning={this.state.loading}>
-          <Row className='display-box'>
-            <Col span={8} style={{ color: '#c8c7c7' }}>
-              Address
-            </Col>
-            <Col span={16}>{addressOmit(currentWallet.address)}</Col>
-          </Row>
-          <Row className='display-box'>
-            <Col span={8} style={{ color: '#c8c7c7' }}>
-              Sell {menuName} Quantity
-            </Col>
-            <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
-          </Row>
-          <Row className='display-box'>
-            <Col span={8} style={{ color: '#c8c7c7' }}>
-              Sell {SYMBOL}
-            </Col>
-            <Col span={16}>
-              <Spin spinning={sellEstimateValueLoading}>
-                {thousandsCommaWithDecimal(SellELFValue)}
-              </Spin>
-            </Col>
-          </Row>
-          <div className='service-charge'>
-            *Service Charge: {thousandsCommaWithDecimal(sellFee)} {SYMBOL}
-          </div>
-          <Button
-            className='modal-button'
-            style={{ background: '#cc2828', border: 'none' }}
-            loading={sellEstimateValueLoading}
-            onClick={this.getSellRes}
-          >
-            Sell
-          </Button>
-          <div className='modal-tip'>
-            * To avoid price fluctuations leading to transaction failure, please
-            complete the transaction within 30 seconds.
-          </div>
-        </Spin>
+        <Row className='display-box'>
+          <Col span={8} style={{ color: '#c8c7c7' }}>
+            Address
+          </Col>
+          <Col span={16}>{addressOmit(currentWallet.address)}</Col>
+        </Row>
+        <Row className='display-box'>
+          <Col span={8} style={{ color: '#c8c7c7' }}>
+            Sell {menuName} Quantity
+          </Col>
+          <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
+        </Row>
+        <Row className='display-box'>
+          <Col span={8} style={{ color: '#c8c7c7' }}>
+            Sell {SYMBOL}
+          </Col>
+          <Col span={16}>
+            <Spin spinning={sellEstimateValueLoading}>
+              {thousandsCommaWithDecimal(SellELFValue)}
+            </Spin>
+          </Col>
+        </Row>
+        <div className='service-charge'>
+          *Service Charge: {thousandsCommaWithDecimal(sellFee)} {SYMBOL}
+        </div>
+        <Button
+          className='modal-button'
+          style={{ background: '#cc2828', border: 'none' }}
+          loading={sellEstimateValueLoading || loading}
+          onClick={this.getSellRes}
+        >
+          Sell
+        </Button>
+        <div className='modal-tip'>
+          * To avoid price fluctuations leading to transaction failure, please
+          complete the transaction within 30 seconds.
+        </div>
       </div>
     );
   }
