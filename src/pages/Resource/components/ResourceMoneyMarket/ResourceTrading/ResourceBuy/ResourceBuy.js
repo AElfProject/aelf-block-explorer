@@ -79,7 +79,8 @@ export default class ResourceBuy extends Component {
       // todo: use an individual variable for slider as it's stuck using the father component's state elfValue
       // todo: after fix the stuck problem, instead with father component's state
       inputMax: 0,
-      operateNumToSmall: false
+      operateNumToSmall: false,
+      buyBtnLoading: false
     };
 
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
@@ -146,7 +147,7 @@ export default class ResourceBuy extends Component {
         menuName: getMenuName(this.props.menuIndex)
       });
       // todo: seems useless
-      handleModifyTradingState({ buyNum: 0, buyElfValue: 0 });
+      handleModifyTradingState({ buyNum: null, buyElfValue: 0 });
     }
 
     if (prevProps.account !== this.props.account) {
@@ -402,6 +403,10 @@ export default class ResourceBuy extends Component {
       nightElf,
       operateNumToSmall
     } = this.state;
+
+    this.setState({
+      buyBtnLoading: true
+    });
     console.log({
       buyNum,
       buyElfValue,
@@ -409,6 +414,7 @@ export default class ResourceBuy extends Component {
     });
     // todo: also verify the input here? fix the error message here appeared in the case didn't verify by the way(such as input -1)
 
+    // todo: extract the repeating code
     if (!regPos.test(buyNum) || buyNum === 0) {
       // if (buyNum !== '' && buyNum !== 0) {
       // todo: the case of balance insufficient will enter here, so I put the balance message here, after rewrite the verify code please seperate the message notification code.
@@ -416,22 +422,37 @@ export default class ResourceBuy extends Component {
         `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`
       );
       // }
+      this.setState({
+        buyBtnLoading: false
+      });
       return;
     }
     if (+buyNum === 0) {
       message.warning(TRANSACT_LARGE_THAN_ZERO_TIP);
+      this.setState({
+        buyBtnLoading: false
+      });
       return;
     }
     if (operateNumToSmall) {
       message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
+      this.setState({
+        buyBtnLoading: false
+      });
       return;
     }
     if (buyElfValue > account.balance) {
       message.warning(BUY_OR_SELL_MORE_THAN_ASSETS_TIP);
+      this.setState({
+        buyBtnLoading: false
+      });
       return;
     }
     if (!toBuy) {
       message.warning(BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP);
+      this.setState({
+        buyBtnLoading: false
+      });
       return;
     }
 
@@ -456,6 +477,9 @@ export default class ResourceBuy extends Component {
           });
         } else {
           message.warning(result.errorMessage.message, 3);
+          this.setState({
+            buyBtnLoading: false
+          });
         }
       }
     );
@@ -483,6 +507,9 @@ export default class ResourceBuy extends Component {
         );
       } else {
         message.info('Contract renewal completed...', 3);
+        this.setState({
+          buyBtnLoading: false
+        });
       }
     });
   }
@@ -491,12 +518,20 @@ export default class ResourceBuy extends Component {
   getApprove(result, time = 0) {
     const { buyElfValue, buyNum, handleModifyTradingState } = this.props;
     const contract = result || null;
+    // todo: handle the error case's loading
     if (contract) {
       if (result) {
         console.log('Approve', contract);
-        handleModifyTradingState({
-          buyVisible: true
-        });
+        handleModifyTradingState(
+          {
+            buyVisible: true
+          },
+          () => {
+            this.setState({
+              buyBtnLoading: false
+            });
+          }
+        );
       }
     }
   }
@@ -577,8 +612,13 @@ export default class ResourceBuy extends Component {
       buyInputLoading,
       buyEstimateValueLoading
     } = this.props;
-    const { menuName, account, inputMax } = this.state;
+    const { menuName, account, inputMax, buyBtnLoading } = this.state;
     const sliderHTML = this.getSlideMarksHTML();
+    // todo: memoize?
+    const rawBuyNumMax = +(
+      inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+    ).toFixed(GENERAL_PRECISION);
+    const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
     console.log("In buy's render", {
       buyElfValue,
       inputMax,
@@ -609,12 +649,7 @@ export default class ResourceBuy extends Component {
                       `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
                     min={0}
-                    max={
-                      +(
-                        inputMax -
-                        A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
-                      ).toFixed(GENERAL_PRECISION)
-                    }
+                    max={processedBuyNumMax}
                     // precision={8}
                   />
                 </Spin>
@@ -648,7 +683,7 @@ export default class ResourceBuy extends Component {
             className='trading-button'
             style={{ background: '#007130', border: 'none', color: '#fff' }}
             onClick={this.getBuyModalShow.bind(this)}
-            loading={buyEstimateValueLoading}
+            loading={buyEstimateValueLoading || buyBtnLoading}
           >
             Buy
           </Button>
