@@ -11,6 +11,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import Button from './components/Button/Button';
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from '../config/config';
 import { isArray } from 'zrender/lib/core/util';
+import { thousandsCommaWithDecimal } from '@utils/formater';
 
 dayjs.extend(relativeTime);
 
@@ -38,6 +39,8 @@ const ELF_PRECISION = `${ELF_DECIMAL}`.length - 1;
 const GENERAL_PRECISION = 2;
 const RESOURCE_OPERATE_LIMIT = 0.01;
 const TEMP_RESOURCE_DECIMAL = 100000;
+const REAL_TIME_FETCH_INTERVAL = 1000 * 30;
+const RESOURCE_CURRENCY_CHART_FETCH_INTERVAL = 1000 * 30;
 // todo: use the code as follows
 const TXSSTATUS = {
   // NotExisted: '不存在',
@@ -50,6 +53,8 @@ const TXSSTATUS = {
   Mined: 'Mined'
 };
 
+const FAILED_MESSAGE_DISPLAY_TIME = 20;
+// todo: use a object to gather all tip?
 const IE_ADVICE =
   "We recommend using Chrome/Safari/Firefox to view our page. In recent time we don't support IE!";
 const INPUT_STARTS_WITH_MINUS_TIP = "Input can't starts with minus symbol!";
@@ -68,6 +73,9 @@ const ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP =
 const CHECK_BALANCE_TIP = 'Please Check your balance Then.';
 const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
   'Sorry, you can not buy so many resources in one time.';
+const INPUT_NUMBER_TIP = 'Your should input a number';
+const BETWEEN_ZEOR_AND_BALANCE_TIP =
+  'The value must be between 0 and your balance';
 const FEE_RATE = 0.005;
 
 // TODO 用户可选RPCSERVER
@@ -217,9 +225,9 @@ const RESOURCE_DETAILS_COLUMN = [
       <Link to={`/tx/${row.tx_id}`} title={row.method}>
         {' '}
         {row.method === 'Buy' ? (
-          <span style={{ color: '#007230' }}>Buy</span>
+          <span style={{ color: '#05ac90' }}>Buy</span>
         ) : (
-          <span style={{ color: '#a30100' }}>Sell</span>
+          <span style={{ color: '#fe0030' }}>Sell</span>
         )}
       </Link>
     )
@@ -290,7 +298,7 @@ const RESOURCE_DETAILS_COLUMN = [
       fee /= ELF_DECIMAL;
       return (
         <Link to={`/tx/${row.tx_id}`} title={fee}>
-          {fee}
+          {thousandsCommaWithDecimal(fee)}
         </Link>
       );
     }
@@ -342,6 +350,9 @@ export {
   ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP,
   CHECK_BALANCE_TIP,
   BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
+  INPUT_NUMBER_TIP,
+  BETWEEN_ZEOR_AND_BALANCE_TIP,
+  FAILED_MESSAGE_DISPLAY_TIME,
   SYMBOL, // todo: get native token info
   CHAIN_ID, // todo: get chain status
   ELF_DECIMAL, // todo: similar to  get native token info
@@ -349,5 +360,7 @@ export {
   ELF_PRECISION,
   GENERAL_PRECISION,
   RESOURCE_OPERATE_LIMIT,
-  FEE_RATE
+  FEE_RATE,
+  REAL_TIME_FETCH_INTERVAL,
+  RESOURCE_CURRENCY_CHART_FETCH_INTERVAL
 };
