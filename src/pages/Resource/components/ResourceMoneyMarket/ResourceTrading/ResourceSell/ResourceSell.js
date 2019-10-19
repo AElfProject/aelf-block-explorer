@@ -47,6 +47,7 @@ import { regPos } from '@utils/regExps';
 
 // const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
 const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+const status = { ERROR: 'error' };
 
 class ResourceSell extends Component {
   constructor(props) {
@@ -268,7 +269,7 @@ class ResourceSell extends Component {
     if (nextSellNum > this.inputMax) {
       this.setState({
         validate: {
-          validateStatus: 'error',
+          validateStatus: status.ERROR,
           help: BETWEEN_ZEOR_AND_BALANCE_TIP
         }
       });
@@ -622,10 +623,10 @@ class ResourceSell extends Component {
             </div>
           </div>
           <Button
-            className='trading-button'
-            style={{ background: '#8c042a', border: 'none', color: '#fff' }}
+            className='trading-button sell-btn'
             onClick={this.getSellModalShow.bind(this)}
             loading={sellBtnLoading}
+            disabled={validate.validateStatus === status.ERROR}
           >
             Sell
           </Button>
