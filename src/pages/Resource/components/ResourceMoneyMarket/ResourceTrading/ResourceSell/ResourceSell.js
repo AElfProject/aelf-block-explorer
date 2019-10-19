@@ -13,7 +13,9 @@ import {
   Slider,
   message,
   Modal,
-  Spin
+  Spin,
+  Form,
+  Button
 } from 'antd';
 import contractChange from '../../../../../../utils/contractChange';
 import {
@@ -36,7 +38,9 @@ import {
   BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP,
   TRANSACT_LARGE_THAN_ZERO_TIP,
   ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP,
-  CHECK_BALANCE_TIP
+  CHECK_BALANCE_TIP,
+  INPUT_NUMBER_TIP,
+  BETWEEN_ZEOR_AND_BALANCE_TIP
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import { regPos } from '@utils/regExps';
@@ -44,7 +48,7 @@ import { regPos } from '@utils/regExps';
 // const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
 const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
 
-export default class ResourceSell extends Component {
+class ResourceSell extends Component {
   constructor(props) {
     super(props);
     this.debounceTimer;
@@ -67,7 +71,13 @@ export default class ResourceSell extends Component {
       },
       toSell: false,
 
-      operateNumToSmall: false
+      operateNumToSmall: false,
+      // todo: put the validateStatus with the validated value
+      validate: {
+        validateStatus: null,
+        help: ''
+      },
+      sellBtnLoading: false
     };
 
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
@@ -221,8 +231,16 @@ export default class ResourceSell extends Component {
     console.log("hey I'm here");
     // todo: give a friendly notify when verify the max and min
     // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
+    // todo: use antd's Form validate instead
+    this.setState({
+      validate: {
+        validateStatus: null,
+        help: ''
+      }
+    });
     // the symbol '+' used to handle the case of 0.===0 && 1.===1
     if (+sellNum === +input) return;
+    // todo: use a util function to instead the regExp in page Resource
     if (!regPos.test(input) || +input === 0) {
       this.setState({
         ELFValue: 0
@@ -237,11 +255,33 @@ export default class ResourceSell extends Component {
     }
     // todo: use async instead
     // todo: Is it neccessary to make the loading code write in the same place? And if the answer is yes, how to make it?
-    console.log('input', input);
+    // todo: It seems that it will cause some problem?
+    const nextSellNum = Number.isNaN(+input) ? input : +input;
+    console.log({
+      nextSellNum
+    });
     handleModifyTradingState({
       sellEstimateValueLoading: true,
-      sellNum: input
+      sellNum: nextSellNum
     });
+    // todo: use antd's Form validate instead
+    if (nextSellNum > this.inputMax) {
+      this.setState({
+        validate: {
+          validateStatus: 'error',
+          help: BETWEEN_ZEOR_AND_BALANCE_TIP
+        }
+      });
+    }
+    // todo: how to validate all?
+    // eslint-disable-next-line react/destructuring-assignment
+    // this.props.form.validateFields('inputSellNum', { force: true });
+    // this.props.form.validateFields((err, values) => {
+    //   console.log({
+    //     err,
+    //     values
+    //   });
+    // });
     this.debounce(input);
   }
 
@@ -348,8 +388,13 @@ export default class ResourceSell extends Component {
       nightElf,
       operateNumToSmall
     } = this.state;
+
     console.log({
       operateNumToSmall
+    });
+
+    this.setState({
+      sellBtnLoading: true
     });
     const menuName = getMenuName(menuIndex);
     // let reg = /^[1-9]\d*$/;
@@ -357,6 +402,7 @@ export default class ResourceSell extends Component {
     // message.error('The value must be numeric and greater than 0');
     // return;
     // }
+    // todo: extract the repeating code
     if (!regPos.test(sellNum) || sellNum === 0) {
       // if (sellNum !== '' && sellNum !== 0) {
       // todo: the case of balance insufficient will enter here, so I put the balance message here, after rewrite the verify code please seperate the message notification code.
@@ -364,22 +410,37 @@ export default class ResourceSell extends Component {
         `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`
       );
       // }
+      this.setState({
+        sellBtnLoading: false
+      });
       return;
     }
     if (+sellNum === 0) {
       message.warning(TRANSACT_LARGE_THAN_ZERO_TIP);
+      this.setState({
+        sellBtnLoading: false
+      });
       return;
     }
     if (operateNumToSmall) {
       message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
+      this.setState({
+        sellBtnLoading: false
+      });
       return;
     }
     if (sellNum > account[menuName]) {
       message.warning(BUY_OR_SELL_MORE_THAN_ASSETS_TIP);
+      this.setState({
+        sellBtnLoading: false
+      });
       return;
     }
     if (!toSell) {
       message.warning(BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP);
+      this.setState({
+        sellBtnLoading: false
+      });
       return;
     }
 
@@ -405,6 +466,9 @@ export default class ResourceSell extends Component {
           });
         } else {
           message.warning(result.errorMessage.message, 3);
+          this.setState({
+            sellBtnLoading: false
+          });
         }
       }
     );
@@ -430,6 +494,9 @@ export default class ResourceSell extends Component {
         );
       } else {
         message.info('Contract renewal completed...', 3);
+        this.setState({
+          sellBtnLoading: false
+        });
       }
     });
   }
@@ -437,11 +504,19 @@ export default class ResourceSell extends Component {
   getApprove(result, time = 0) {
     const { handleModifyTradingState } = this.props;
     const contract = result || null;
+    // todo: handle the error case's loading
     if (contract) {
       if (result) {
-        handleModifyTradingState({
-          sellVisible: true
-        });
+        handleModifyTradingState(
+          {
+            sellVisible: true
+          },
+          () => {
+            this.setState({
+              sellBtnLoading: false
+            });
+          }
+        );
       }
     }
   }
@@ -453,11 +528,18 @@ export default class ResourceSell extends Component {
       menuIndex,
       menuName,
       account,
-      ELFValue
+      ELFValue,
+      validate,
+      sellBtnLoading
     } = this.state;
+    // eslint-disable-next-line react/destructuring-assignment
+    // const { getFieldDecorator } = this.props.form;
+
+    this.inputMax = account[menuName];
     console.log('In sell render', {
       sellEstimateValueLoading,
-      sellNum
+      sellNum,
+      inputMax: this.inputMax
     });
     this.getRegion(menuIndex);
     const slideHTML = this.getSlideMarksHTML();
@@ -471,20 +553,48 @@ export default class ResourceSell extends Component {
                 Selling quantity{' '}
               </Col>
               <Col span={18}>
-                <InputNumber
-                  // addonAfter={`x100,000 ${menuName}`}
-                  value={sellNum}
-                  onChange={this.onChangeResourceValue}
-                  placeholder={`Enter ${menuName} amount`}
-                  // todo: use parser to set the max decimal to 8, e.g. using parseFloat
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  formatter={value =>
-                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                  }
-                  min={0}
-                  max={account[menuName]}
-                  // precision={GENERAL_PRECISION}
-                />
+                <Form.Item
+                  validateStatus={validate.validateStatus}
+                  help={validate.help}
+                >
+                  {/* {getFieldDecorator('inputSellNum', {
+                    rules: [
+                      {
+                        type: 'number',
+                        min: 0,
+                        max: inputMax,
+                        // transform: input => {
+                        //   console.log('In Transform', {
+                        //     input,
+                        //     inputMax
+                        //   });
+
+                        //   return +input;
+                        // },
+                        message: 'The value must be between 0 and your balance.'
+                      }
+                      // {
+                      //   type: 'number',
+                      //   message: INPUT_NUMBER_TIP
+                      // }
+                    ]
+                  })( */}
+                  <InputNumber
+                    // addonAfter={`x100,000 ${menuName}`}
+                    value={sellNum}
+                    onChange={this.onChangeResourceValue}
+                    placeholder={`Enter ${menuName} amount`}
+                    // todo: use parser to set the max decimal to 8, e.g. using parseFloat
+                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                    formatter={value =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    }
+                    min={0}
+                    max={this.inputMax}
+                    // precision={GENERAL_PRECISION}
+                  />
+                  {/* )} */}
+                </Form.Item>
               </Col>
             </Row>
             <div className='ELF-value'>
@@ -511,15 +621,46 @@ export default class ResourceSell extends Component {
               {thousandsCommaWithDecimal(purchaseQuantity)} {menuName}
             </div>
           </div>
-          <div
+          <Button
             className='trading-button'
-            style={{ background: '#8c042a' }}
+            style={{ background: '#8c042a', border: 'none', color: '#fff' }}
             onClick={this.getSellModalShow.bind(this)}
+            loading={sellBtnLoading}
           >
             Sell
-          </div>
+          </Button>
         </div>
       </div>
     );
   }
 }
+
+// todo: we can also use antd's validateStatus instead of Form.create and getFieldDecorator
+// export default Form.create({
+//   onFieldsChange(props, changedFields) {
+//     const { value } = changedFields.inputSellNum;
+//     console.log({
+//       value,
+//       changedFields
+//     });
+//     if (value !== null && value !== undefined && !Number.isNaN(+value)) {
+//       props.handleModifyTradingState({
+//         sellNum: value
+//       });
+//     }
+//   },
+//   mapPropsToFields(props) {
+//     console.log({
+//       props
+//     });
+//     // return {
+//     //   inputSellNum: Form.createFormField({
+//     //     inputSellNum: props.sellNum
+//     //   })
+//     // };
+//     return {
+//       inputSellNum: Form.createFormField(props.sellNum)
+//     };
+//   }
+// })(ResourceSell);
+export default ResourceSell;
