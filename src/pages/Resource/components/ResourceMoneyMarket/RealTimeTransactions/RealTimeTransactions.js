@@ -7,14 +7,22 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Divider } from 'antd';
 import { RESOURCE_REALTIME_RECORDS } from '../../../../../constants';
 import dayjs from 'dayjs';
+import moment from 'moment';
 import { get } from '../../../../../utils';
 import { Link } from 'react-router-dom';
-import { SYMBOL, ELF_DECIMAL, ELF_PRECISION } from '@src/constants';
+import {
+  SYMBOL,
+  ELF_DECIMAL,
+  ELF_PRECISION,
+  TXSSTATUS,
+  REAL_TIME_FETCH_INTERVAL
+} from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 // import Websocket from 'react-websocket';
 import './RealTimeTransactions.less';
 
-const limit = 5;
+const fetchLimit = 20;
+const displayLimit = 5;
 export default class RealTimeTransactions extends PureComponent {
   constructor(props) {
     super(props);
@@ -61,26 +69,36 @@ export default class RealTimeTransactions extends PureComponent {
   async getResourceRealtimeRecords() {
     const { menuIndex, menuName } = this.state;
     const type = menuName[menuIndex];
-    let data = await get(RESOURCE_REALTIME_RECORDS, {
-      limit,
+    const data = await get(RESOURCE_REALTIME_RECORDS, {
+      limit: fetchLimit,
       type
     });
-    data.buyRecords = data.buyRecords.map(item => {
-      item.resource = +item.resource / ELF_DECIMAL;
-      return item;
-    });
-    data.soldRecords = data.soldRecords.map(item => {
-      item.resource = +item.resource / ELF_DECIMAL;
-      return item;
-    });
-    console.log('data', data);
+    // todo: move the logic to backend
+    // todo: repeating code
+    data.buyRecords = data.buyRecords
+      .filter(item => item.tx_status === TXSSTATUS.Mined)
+      .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
+      .slice(0, displayLimit)
+      .map(item => {
+        item.resource = +item.resource / ELF_DECIMAL;
+        return item;
+      });
+    data.soldRecords = data.soldRecords
+      .filter(item => item.tx_status === TXSSTATUS.Mined)
+      .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
+      .slice(0, displayLimit)
+      .map(item => {
+        item.resource = +item.resource / ELF_DECIMAL;
+        return item;
+      });
+    // console.log('data', data);
     this.setState({
       recordsData: data || []
     });
     this.props.getRealTimeTransactionLoading();
     this.getResourceRealtimeRecordsTimer = setTimeout(() => {
       this.getResourceRealtimeRecords();
-    }, 30000);
+    }, REAL_TIME_FETCH_INTERVAL);
   }
 
   componentWillUnmount() {
@@ -107,9 +125,11 @@ export default class RealTimeTransactions extends PureComponent {
             <Col span={3} className='sell'>
               sell
             </Col>
-            <Col span={5}>{((elf - fee) / resource).toFixed(ELF_PRECISION)}</Col>
+            <Col span={5}>
+              {((elf - fee) / resource).toFixed(ELF_PRECISION)}
+            </Col>
             <Col span={6}>{thousandsCommaWithDecimal(resource)}</Col>
-            <Col span={6}>{elf}</Col>
+            <Col span={6}>{thousandsCommaWithDecimal(elf - fee)}</Col>
           </Row>
         );
       });
@@ -122,7 +142,7 @@ export default class RealTimeTransactions extends PureComponent {
     let data = null;
     if (recordsData) {
       data = recordsData.buyRecords || [];
-      console.log('data', data);
+      // console.log('data', data);
       const recordsDataHtml = data.map((item, index) => {
         const date = dayjs(item.time).format('HH:mm:ss.SSS');
         let { elf, fee } = item;
@@ -143,7 +163,7 @@ export default class RealTimeTransactions extends PureComponent {
               {((elf + fee) / item.resource).toFixed(ELF_PRECISION)}
             </Col>
             <Col span={6}>{thousandsCommaWithDecimal(item.resource)}</Col>
-            <Col span={6}>{elf}</Col>
+            <Col span={6}>{thousandsCommaWithDecimal(elf + fee)}</Col>
           </Row>
         );
       });
