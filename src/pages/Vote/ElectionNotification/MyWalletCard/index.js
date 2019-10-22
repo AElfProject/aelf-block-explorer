@@ -22,14 +22,16 @@ export default class MyWalletCard extends PureComponent {
       withdrawnVotedVotesAmount: '-',
       activeVotedVotesAmount: '-',
       totalAssets: '-',
-      loading: false
+      loading: false,
+      lastestUnlockTime: null
     };
 
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     // this.handleClaimDividendClick = this.handleClaimDividendClick.bind(this);
-    this.updateWallet = this.updateWallet.bind(this);
+    // this.updateWallet = this.updateWallet.bind(this);
+    this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
   }
 
   // todo: combine
@@ -77,7 +79,9 @@ export default class MyWalletCard extends PureComponent {
     // if (profitContract !== prevProps.profitContract) {
     //   this.fetchProfitAmount();
     // }
-
+    console.log({
+      shouldRefreshMyWallet
+    });
     if (shouldRefreshMyWallet) {
       changeVoteState(
         {
@@ -145,13 +149,13 @@ export default class MyWalletCard extends PureComponent {
     const lastestUnlockTimestamp = activeVotingRecords.sort(
       (a, b) => a.unlockTimestamp.seconds - b.unlockTimestamp.seconds
     )[0];
-    // todo: time is wrong
-    console.log(
-      'lastestUnlockTimestamp',
-      moment()
-        .set('second', lastestUnlockTimestamp.unlockTimestamp.seconds)
-        .format('YYYY-MM-DD  HH:mm:ss')
-    );
+
+    const lastestUnlockTime = moment
+      .unix(lastestUnlockTimestamp.unlockTimestamp.seconds)
+      .format('YYYY-MM-DD  HH:mm:ss');
+    this.setState({
+      lastestUnlockTime
+    });
   }
 
   computedTotalAssets() {
@@ -212,6 +216,19 @@ export default class MyWalletCard extends PureComponent {
     // this.fetchProfitAmount();
   }
 
+  handleUpdateWalletClick() {
+    const { changeVoteState, checkExtensionLockStatus } = this.props;
+    checkExtensionLockStatus()
+      .then(() => {
+        changeVoteState({
+          shouldRefreshMyWallet: true
+        });
+      })
+      .catch(err => {
+        console.error('checkExtensionLockStatus', err);
+      });
+  }
+
   render() {
     const { handleDividendClick, dividends } = this.props;
     const {
@@ -220,13 +237,15 @@ export default class MyWalletCard extends PureComponent {
       withdrawnVotedVotesAmount,
       activeVotedVotesAmount,
       totalAssets,
-      loading
+      loading,
+      lastestUnlockTime
     } = this.state;
     console.log({
       balance,
       withdrawnVotedVotesAmount,
       activeVotedVotesAmount,
-      totalAssets
+      totalAssets,
+      loading
     });
 
     const currentWallet = getCurrentWallet();
@@ -237,12 +256,12 @@ export default class MyWalletCard extends PureComponent {
           <h2 className={`${clsPrefix}-header-title`}>我的钱包</h2>
           <button
             className={`${clsPrefix}-header-sync-btn`}
-            onClick={this.updateWallet}
+            onClick={this.handleUpdateWalletClick}
           >
             <Icon type='sync' />
           </button>
         </div>
-        <Spin spining={loading}>
+        <Spin spinning={loading}>
           <div className={`${clsPrefix}-body`}>
             <div className={`${clsPrefix}-body-wallet-title`}>
               <h3 className={`${clsPrefix}-body-wallet-title-name`}>
@@ -273,7 +292,7 @@ export default class MyWalletCard extends PureComponent {
                 赎回总数：{' '}
                 {thousandsCommaWithDecimal(withdrawnVotedVotesAmount)}
               </li>
-              <li>最近投票到期时间： 2019/11/2</li>
+              <li>最近投票到期时间： {lastestUnlockTime}</li>
             </ul>
           </div>
         </Spin>
