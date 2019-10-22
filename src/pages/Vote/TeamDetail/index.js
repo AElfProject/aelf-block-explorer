@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-12 14:28:30
+ * @LastEditTime: 2019-10-21 07:56:06
  * @Description: file content
  */
 
@@ -27,6 +27,7 @@ import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
+import publicKeyToAddress from '@utils/publicKeyToAddress';
 import './index.less';
 
 const { Paragraph } = Typography;
@@ -126,10 +127,9 @@ export default class TeamDetail extends PureComponent {
     const terms = currentCandidateInfo.terms.length;
     const totalVotes = currentCandidate.obtainedVotesAmount;
     const votedRate = ((100 * totalVotes) / totalVoteAmount).toFixed(2);
-    const {
-      producedBlocks,
-      candidateAddresss: candidateAddress
-    } = currentCandidateInfo;
+    const { producedBlocks } = currentCandidateInfo;
+
+    const candidateAddress = publicKeyToAddress(this.pubkey);
 
     this.setState({
       rank,
@@ -241,12 +241,12 @@ export default class TeamDetail extends PureComponent {
           <Statistic title='Total Vote' value={totalVotes} />
           <Statistic title='Voted Rate' value={`${votedRate}%`} />
           <Statistic title='Produced Blocks' value={producedBlocks} />
-          <Statistic title='Dividens' value='15,333' />
+          {/* <Statistic title='Dividens' value='15,333' /> */}
         </section>
         <section className={`${clsPrefix}-intro card-container`}>
           <h5 className='card-header'>Intro</h5>
           <div className='card-content'>
-            {data.intro || "The team didn't fill the intro"}
+            {data.intro || "The team didn't fill the intro."}
           </div>
         </section>
         <section className={`${clsPrefix}-social-network card-container`}>
