@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-15 18:54:46
+ * @LastEditTime: 2019-10-21 14:31:12
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -179,7 +179,8 @@ export default class ElectionNotification extends PureComponent {
       electionContractFromExt,
       shouldRefreshNodeTable,
       changeVoteState,
-      shouldRefreshMyWallet
+      shouldRefreshMyWallet,
+      checkExtensionLockStatus
     } = this.props;
 
     const { electionContract } = this.props;
@@ -199,6 +200,7 @@ export default class ElectionNotification extends PureComponent {
           electionContractFromExt={electionContractFromExt}
           shouldRefreshMyWallet={shouldRefreshMyWallet}
           changeVoteState={changeVoteState}
+          checkExtensionLockStatus={checkExtensionLockStatus}
         />
         <NodeTable
           electionContract={electionContract}
