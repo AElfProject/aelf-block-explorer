@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-21 14:31:12
+ * @LastEditTime: 2019-10-22 19:38:13
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -126,13 +126,18 @@ export default class ElectionNotification extends PureComponent {
               method: 'GetCurrentMiningReward',
               processor: value => value,
               statisDataKey: 'currentMiningReward'
-            },
+            }
+            // { method: 'GetCandidates', processor: value => value.length }
+          ]
+        },
+        {
+          contract: consensusContract,
+          methods: [
             {
               method: 'GetNextElectCountDown',
               processor: value => moment().add(value, 'seconds'),
               statisDataKey: 'termEndTime'
             }
-            // { method: 'GetCandidates', processor: value => value.length }
           ]
         }
       ]
