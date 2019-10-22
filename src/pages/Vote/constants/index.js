@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-15 17:15:49
+ * @LastEditTime: 2019-10-21 15:05:30
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -53,7 +53,7 @@ const myVoteStatisData = {
   // myVoteProfit: {
   //   title: `投票收益(${SYMBOL})`
   // },
-  votesWithdrawnable: {
+  withdrawnableVotesAmount: {
     title: `可赎回票数(${SYMBOL})`
   }
 };

@@ -6,6 +6,7 @@ import { myVoteStatisData } from '../constants';
 import MyVoteRecord from './MyVoteRecords';
 import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
 import getCurrentWallet from '@utils/getCurrentWallet';
+import publicKeyToAddress from '@utils/publicKeyToAddress';
 import {
   NODE_DEFAULT_NAME,
   RANK_NOT_EXISTED_SYMBOL,
@@ -44,7 +45,8 @@ export default class MyVote extends Component {
       getAllTeamDesc(),
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
-        length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
+        // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
+        length: 5
       })
     ])
       .then(resArr => {
@@ -65,6 +67,8 @@ export default class MyVote extends Component {
         return item;
       });
     let allTeamInfo = null;
+    const withdrawnableVoteRecords = [];
+    let withdrawnableVoteAmount = 0;
     if (resArr[1].code === 0) {
       allTeamInfo = resArr[1].data;
     }
@@ -73,6 +77,12 @@ export default class MyVote extends Component {
       ...electorVotes.activeVotingRecords,
       ...electorVotes.withdrawnVotesRecords
     ];
+    electorVotes.activeVotingRecords.forEach(record => {
+      if (record.unlockTimestamp.seconds < moment().unix()) {
+        withdrawnableVoteRecords.push(record);
+      }
+    });
+
     // assign rank
     myVoteRecords.forEach(record => {
       const foundedNode = allNodeInfo.find(
@@ -89,10 +99,20 @@ export default class MyVote extends Component {
       }
     });
     const myTotalVotesAmount = electorVotes.allVotedVotesAmount;
+    withdrawnableVoteAmount = withdrawnableVoteRecords.reduce(
+      (total, current) => total + +current.amount,
+      0
+    );
     console.log({
-      myTotalVotesAmount
+      myTotalVotesAmount,
+      withdrawnableVoteAmount
     });
     this.processStatisData('myTotalVotesAmount', 'num', myTotalVotesAmount);
+    this.processStatisData(
+      'withdrawnableVotesAmount',
+      'num',
+      withdrawnableVoteAmount
+    );
     this.processTableData(myVoteRecords, allTeamInfo);
   }
 
@@ -106,7 +126,7 @@ export default class MyVote extends Component {
       );
       console.log('teamInfo', teamInfo);
       if (teamInfo === undefined) {
-        record.name = record.candidate;
+        record.name = publicKeyToAddress(record.candidate);
       } else {
         record.name = teamInfo.name;
       }
@@ -131,6 +151,8 @@ export default class MyVote extends Component {
       const start = moment.unix(record.voteTimestamp.seconds);
       const end = moment.unix(record.unlockTimestamp.seconds);
       record.formatedLockTime = end.from(start, true);
+      record.formatedUnlockTime = end.format('YYYY-MM-DD HH:mm:ss');
+      record.isRedeemable = record.unlockTimestamp.seconds <= moment().unix();
     });
     // todo: withdrawn's timestamp
 
