@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-19 19:24:34
+ * @LastEditTime: 2019-10-22 18:06:06
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -37,10 +37,11 @@ import TeamDetail from './TeamDetail';
 import VoteModal from './VoteModal';
 import DividendModal from './DividendModal';
 import RedeemModal from './RedeemModal';
+import RedeemAnVoteModal from './RedeemAnVoteModal';
 // todo: use a import instead
 import * as constants from './constants';
 import { contractsNeedToLoad, schemeIds } from './constants';
-import { SYMBOL, ELF_DECIMAL } from '@src/constants';
+import { SYMBOL, ELF_DECIMAL, GET_NULL } from '@src/constants';
 import getStateJudgment from '@utils/getStateJudgment';
 import { electionContractAddr } from '@config/config';
 import getCurrentWallet from '@utils/getCurrentWallet';
@@ -53,6 +54,7 @@ import {
   NODE_DEFAULT_NAME
 } from '@src/pages/Vote/constants';
 import { getFormatedLockTime } from '@pages/Vote/utils';
+import { tuple } from 'antd/lib/_util/type';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -127,7 +129,7 @@ function generateVoteConfirmForm({
         label: '锁定期',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {lockTime && lockTime.format('MMMM Do YYYY')}{' '}
+            {lockTime && lockTime.format('YYYY-MM-DD HH:mm:ss')}{' '}
             <span className='tip-color'>锁定期内不支持提币和转账</span>
           </span>
         )
@@ -235,7 +237,7 @@ class VoteContainer extends Component {
       switchableVoteRecords: [],
       withdrawnableVoteRecords: [],
       switchVoteAmount: 0,
-      voteFromExpiredVoteAmount: 0,
+      voteFromExpiredVoteAmount: null,
       voteType: FROM_WALLET,
       switchVoteSelectedRowKeys: [],
       voteFromExpiredSelectedRowKeys: [],
@@ -253,7 +255,17 @@ class VoteContainer extends Component {
 
       targetPublicKey: null,
       shouldRefreshNodeTable: false,
-      shouldRefreshMyWallet: false
+      shouldRefreshMyWallet: false,
+      voteToRedeem: {
+        nodeName: null,
+        nodeAddress: null,
+        amount: null,
+        voteId: {
+          value: null
+        }
+      },
+      redeemOneVoteModalVisible: false,
+      isLockTimeForTest: false
     };
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
@@ -279,6 +291,10 @@ class VoteContainer extends Component {
     this.handleDividendClick = this.handleDividendClick.bind(this);
     this.handleClaimDividendClick = this.handleClaimDividendClick.bind(this);
     this.changeVoteState = this.changeVoteState.bind(this);
+    this.checkExtensionLockStatus = this.checkExtensionLockStatus.bind(this);
+    this.handleRedeemOneVoteConfirm = this.handleRedeemOneVoteConfirm.bind(
+      this
+    );
 
     this.formGroup = null;
     this.isPluginLock = false;
@@ -622,6 +638,7 @@ class VoteContainer extends Component {
       // filter the vote voted to other node
       if (record.candidate === interestingNodePublicKey) return;
       // filter the vote don't expired
+      // todo: extract the judge code, there are some same code in page "my vote"
       if (record.unlockTimestamp.seconds > moment().unix()) {
         switchableVoteRecords.push(record);
         return;
@@ -690,29 +707,99 @@ class VoteContainer extends Component {
     // It can only be lower case
     const { shoulddetectlock, votetype } = ele.dataset;
     if (shoulddetectlock) {
-      this.getExtensionKeypairList();
+      this.checkExtensionLockStatus()
+        .then(() => {
+          switch (ele.dataset.role) {
+            case 'vote':
+              this.setState(
+                {
+                  voteType: votetype
+                },
+                () => {
+                  this.handleVoteClick(ele);
+                }
+              );
+              break;
+            case 'redeem':
+              this.handleRedeemClick(ele);
+              break;
+            case 'redeemOne':
+              this.handleRedeemOneVote(ele);
+              break;
+            default:
+              break;
+          }
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
       // todo: use async instead
-      setTimeout(() => {
-        if (this.isPluginLock) return;
-        switch (ele.dataset.role) {
-          case 'vote':
-            this.setState(
-              {
-                voteType: votetype
-              },
-              () => {
-                this.handleVoteClick(ele);
-              }
-            );
-            break;
-          case 'redeem':
-            this.handleRedeemClick(ele);
-            break;
-          default:
-            break;
-        }
-      }, 300);
     }
+  }
+
+  handleRedeemOneVote(ele) {
+    const {
+      nodeaddress: nodeAddress,
+      nodename: nodeName,
+      amount,
+      voteid
+    } = ele.dataset;
+    const voteId = JSON.parse(voteid);
+    console.log('<<<<', voteId);
+
+    this.setState({
+      voteToRedeem: {
+        nodeName,
+        nodeAddress,
+        amount,
+        voteId
+      },
+      redeemOneVoteModalVisible: true
+    });
+  }
+
+  handleRedeemOneVoteConfirm() {
+    const { nightElf, voteToRedeem } = this.state;
+
+    const currentWallet = getCurrentWallet();
+    const wallet = {
+      address: currentWallet.address
+    };
+    // todo: get the contract from extension in cdm or other suitable time
+    // todo: error handle
+    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
+      if (result) {
+        //
+        this.electionContractFromExt = result;
+        this.redeemSomeVote(this.electionContractFromExt, [
+          voteToRedeem.voteId.value
+        ]);
+        // todo: use async instead
+        setTimeout(() => {
+          this.setState({
+            redeemOneVoteModalVisible: false
+          });
+        }, 4000);
+      }
+    });
+  }
+
+  checkExtensionLockStatus() {
+    const { nightElf } = this.state;
+    const currentWallet = getCurrentWallet();
+
+    return nightElf
+      .checkPermission({
+        appName: APPNAME,
+        type: 'addresss',
+        address: currentWallet.address
+      })
+      .then(err => {
+        if (err.error !== 0) {
+          message.warning(err.errorMessage.message, 3);
+          throw new Error(err.errorMessage.message);
+        }
+      });
   }
 
   handleVoteClick(ele) {
@@ -816,6 +903,10 @@ class VoteContainer extends Component {
         })
         .catch(err => console.error(err));
     });
+    // todo: use Promise's finally instead
+    this.setState({
+      redeemVoteSelectedRowKeys: []
+    });
   }
 
   fetchUserVoteRecords() {
@@ -844,6 +935,8 @@ class VoteContainer extends Component {
           item.formatedVoteTime = moment
             .unix(item.voteTimestamp.seconds)
             .format('YYYY-MM-DD HH:mm:ss');
+          // todo: use the name team submit instead
+          item.name = publicKeyToAddress(item.candidate);
         });
 
         // todo: consider to generate redeemableVoteRecordsForOneCandidate in component RedeemModal, it will reduce state's counts
@@ -947,16 +1040,17 @@ class VoteContainer extends Component {
     // todo: error handle
     nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
       if (result) {
-        const electionContractFromExt = result;
+        //
+        this.electionContractFromExt = result;
         switch (voteType) {
           case FROM_WALLET:
-            this.handleVoteFromWallet(electionContractFromExt);
+            this.handleVoteFromWallet(this.electionContractFromExt);
             break;
           case FROM_EXPIRED_VOTES:
-            this.handleVoteFromExpiredVote(electionContractFromExt);
+            this.handleVoteFromExpiredVote(this.electionContractFromExt);
             break;
           case FROM_ACTIVE_VOTES:
-            this.handleSwitchVote(electionContractFromExt);
+            this.handleSwitchVote(this.electionContractFromExt);
             break;
           default:
             break;
@@ -966,12 +1060,15 @@ class VoteContainer extends Component {
   }
 
   handleVoteFromWallet(electionContractFromExt) {
-    const { voteAmountInput, targetPublicKey } = this.state;
+    const { voteAmountInput, targetPublicKey, isLockTimeForTest } = this.state;
+    let { lockTime } = this.state;
     // const timeMS = moment(lockTime).getMilliseconds();
     // console.log('ms', timeMS);
-    const lockTime = moment().add(4, 'minutes');
+    const lockTimeForTest = moment().add(4, 'minutes');
+    lockTime = isLockTimeForTest ? lockTimeForTest : lockTime;
     console.log({
-      targetPublicKey
+      targetPublicKey,
+      electionContractFromExt
     });
     const payload = {
       // candidatePubkey:
@@ -995,17 +1092,57 @@ class VoteContainer extends Component {
         if (res && res.error === 0) {
           this.checkTransactionResult(res).then(() => {
             this.setState({
-              shouldRefreshNodeTable: true
+              shouldRefreshNodeTable: true,
+              shouldRefreshMyWallet: true,
+              isLockTimeForTest: false
             });
           });
         } else {
           message.error(res.errorMessage.message, 3);
+          this.setState({
+            isLockTimeForTest: false
+          });
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          isLockTimeForTest: false
+        });
+      });
   }
 
-  handleVoteFromExpiredVote(electionContractFromExt) {}
+  handleVoteFromExpiredVote() {
+    const { voteFromExpiredVoteAmount, withdrawnableVoteRecords } = this.state;
+
+    // todo: optimize the method
+    const votesToRedeem = [];
+    const sortedRedeemableVoteRecords = withdrawnableVoteRecords.sort(
+      (a, b) => b.amount - a.amount
+    );
+    let voteIdsToRedeem = null;
+    for (let i = 0; i < sortedRedeemableVoteRecords.length; i++) {
+      const item = sortedRedeemableVoteRecords[i];
+      votesToRedeem.push(item);
+      const totalAmount = votesToRedeem.reduce(
+        (total, current) => total + +current.amount,
+        0
+      );
+      if (totalAmount >= voteFromExpiredVoteAmount) {
+        break;
+      }
+    }
+    voteIdsToRedeem = votesToRedeem.map(item => item.voteId.value);
+
+    this.redeemSomeVote(this.electionContractFromExt, voteIdsToRedeem);
+
+    console.log({
+      votesToRedeem,
+      withdrawnableVoteRecords,
+      voteFromExpiredVoteAmount,
+      sortedRedeemableVoteRecords
+    });
+  }
 
   // todo: global node address are public key actually
   handleSwitchVote(electionContractFromExt) {
@@ -1124,7 +1261,12 @@ class VoteContainer extends Component {
         console.log('GetAllProfitAmount', resArr);
         let total = 0;
         const dividendAmounts = schemeIds.map((item, index) => {
-          let amount = resArr[index].value;
+          let amount = null;
+          if (resArr[index].error !== 0) {
+            amount = 0;
+          } else {
+            amount = resArr[index].value;
+          }
           // todo: remove the judge when need
           amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;
           total += amount;
@@ -1150,10 +1292,16 @@ class VoteContainer extends Component {
   }
 
   handleDividendClick() {
-    this.fetchProfitAmount();
-    this.setState({
-      dividendModalVisible: true
-    });
+    this.checkExtensionLockStatus()
+      .then(() => {
+        this.fetchProfitAmount();
+        this.setState({
+          dividendModalVisible: true
+        });
+      })
+      .catch(err => {
+        console.error('checkExtensionLockStatus', err);
+      });
   }
 
   handleDividendChange(key, value) {
@@ -1168,17 +1316,23 @@ class VoteContainer extends Component {
   }
 
   handleClaimDividendClick(schemeId) {
-    this.profitContractFromExt
-      .ClaimProfits({
-        schemeId,
-        symbol: SYMBOL
-      })
-      .then(res => {
-        console.log('handleClaimDividendClick', res);
-        this.checkTransactionResult(res, 'dividendModalVisible');
+    this.checkExtensionLockStatus()
+      .then(() => {
+        this.profitContractFromExt
+          .ClaimProfits({
+            schemeId,
+            symbol: SYMBOL
+          })
+          .then(res => {
+            console.log('handleClaimDividendClick', res);
+            this.checkTransactionResult(res, 'dividendModalVisible');
+          })
+          .catch(err => {
+            console.error('handleClaimDividendClick', err);
+          });
       })
       .catch(err => {
-        console.error('handleClaimDividendClick', err);
+        console.error('checkExtensionLockStatus', err);
       });
   }
 
@@ -1224,7 +1378,9 @@ class VoteContainer extends Component {
       activeVoteRecordsForOneCandidate,
       dividends,
       shouldRefreshNodeTable,
-      shouldRefreshMyWallet
+      shouldRefreshMyWallet,
+      voteToRedeem,
+      redeemOneVoteModalVisible
     } = this.state;
 
     // todo: decouple
@@ -1266,6 +1422,7 @@ class VoteContainer extends Component {
                       shouldRefreshNodeTable={shouldRefreshNodeTable}
                       shouldRefreshMyWallet={shouldRefreshMyWallet}
                       changeVoteState={this.changeVoteState}
+                      checkExtensionLockStatus={this.checkExtensionLockStatus}
                     />
                   )}
                 />
@@ -1402,6 +1559,15 @@ class VoteContainer extends Component {
             handleRedeemVoteSelectedRowChange={
               this.handleRedeemVoteSelectedRowChange
             }
+            changeVoteState={this.changeVoteState}
+          />
+
+          <RedeemAnVoteModal
+            currentWallet={currentWallet}
+            voteToRedeem={voteToRedeem}
+            redeemOneVoteModalVisible={redeemOneVoteModalVisible}
+            changeVoteState={this.changeVoteState}
+            handleRedeemOneVoteConfirm={this.handleRedeemOneVoteConfirm}
           />
 
           <DividendModal
