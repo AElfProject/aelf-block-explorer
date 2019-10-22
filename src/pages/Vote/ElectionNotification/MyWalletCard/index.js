@@ -23,7 +23,7 @@ export default class MyWalletCard extends PureComponent {
       activeVotedVotesAmount: '-',
       totalAssets: '-',
       loading: false,
-      lastestUnlockTime: null
+      lastestUnlockTime: null // todo: rename the variable
     };
 
     this.showModal = this.showModal.bind(this);
@@ -79,9 +79,7 @@ export default class MyWalletCard extends PureComponent {
     // if (profitContract !== prevProps.profitContract) {
     //   this.fetchProfitAmount();
     // }
-    console.log({
-      shouldRefreshMyWallet
-    });
+
     if (shouldRefreshMyWallet) {
       changeVoteState(
         {
