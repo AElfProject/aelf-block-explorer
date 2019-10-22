@@ -282,7 +282,7 @@ export default class NodeTable extends PureComponent {
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
-        length: 5 // give a number large enough to make sure that we get all the nodes
+        length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
@@ -359,7 +359,7 @@ export default class NodeTable extends PureComponent {
         .reduce((total, current) => {
           return total + +current.amount;
         }, 0);
-      console.log('myTotalVoteAmount', myTotalVoteAmount || '-');
+
       item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
       item.candidateInformation.myRedeemableVoteAmountForOneCandidate =
         myRedeemableVoteAmountForOneCandidate || '-';
@@ -372,14 +372,19 @@ export default class NodeTable extends PureComponent {
       }
     });
 
+    console.log({
+      totalVotesAmount,
+      nodeInfos
+    });
+
     return nodeInfos
       .map(item => ({
         ...item.candidateInformation,
         obtainedVotesAmount: item.obtainedVotesAmount,
-        votedRate: (
-          (item.obtainedVotesAmount / totalVotesAmount) *
-          100
-        ).toFixed(2)
+        votedRate:
+          totalVotesAmount === 0
+            ? 0
+            : ((item.obtainedVotesAmount / totalVotesAmount) * 100).toFixed(2)
       }))
       .filter(item => item.isCurrentCandidate)
       .sort((a, b) => b.obtainedVotesAmount - a.obtainedVotesAmount) // todo: is it accurate?
@@ -393,16 +398,21 @@ export default class NodeTable extends PureComponent {
   fetchTotalVotesAmount() {
     const { electionContract } = this.props;
 
-    electionContract.GetVotesAmount.call().then(res => {
-      if (res === null) {
-        message.error('Get total vote amount failed.');
-        return;
-      }
-
-      this.setState({
-        totalVotesAmount: res.value
+    electionContract.GetVotesAmount.call()
+      .then(res => {
+        if (res === null) {
+          this.setState({
+            totalVotesAmount: 0
+          });
+          return;
+        }
+        this.setState({
+          totalVotesAmount: res.value
+        });
+      })
+      .catch(err => {
+        console.error('GetVotesAmount', err);
       });
-    });
   }
 
   render() {
