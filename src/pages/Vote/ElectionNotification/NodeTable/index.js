@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, message, Button, Input, Icon, Spin } from 'antd';
+import moment from 'moment';
 // import Highlighter from 'react-highlight-words';
 import {
   getAllTeamDesc,
@@ -132,7 +133,7 @@ export default class NodeTable extends PureComponent {
             to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}
             className='node-name-in-table'
             // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-            style={{ width: 270 }}
+            // style={{ width: 270 }}
           >
             {text}
           </Link>
@@ -209,7 +210,9 @@ export default class NodeTable extends PureComponent {
               data-nodeaddress={record.address}
               data-targetPublicKey={record.pubkey}
               data-nodename={record.name}
-              disabled={record.myTotalVoteAmount > 0 ? false : true}
+              disabled={
+                record.myRedeemableVoteAmountForOneCandidate > 0 ? false : true
+              }
             >
               Redeem
             </Button>
@@ -279,7 +282,7 @@ export default class NodeTable extends PureComponent {
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
-        length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
+        length: 5 // give a number large enough to make sure that we get all the nodes
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
@@ -341,15 +344,25 @@ export default class NodeTable extends PureComponent {
       }
 
       // add my vote amount
-      const myVoteRecords = activeVotingRecords.filter(
+      const myVoteRecordsForOneCandidate = activeVotingRecords.filter(
         votingRecord =>
           votingRecord.candidate === item.candidateInformation.pubkey
       );
-      const myTotalVoteAmount = myVoteRecords.reduce((total, current) => {
-        return total + +current.amount;
-      }, 0);
+      const myTotalVoteAmount = myVoteRecordsForOneCandidate.reduce(
+        (total, current) => {
+          return total + +current.amount;
+        },
+        0
+      );
+      const myRedeemableVoteAmountForOneCandidate = myVoteRecordsForOneCandidate
+        .filter(record => record.unlockTimestamp.seconds <= moment().unix())
+        .reduce((total, current) => {
+          return total + +current.amount;
+        }, 0);
       console.log('myTotalVoteAmount', myTotalVoteAmount || '-');
       item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
+      item.candidateInformation.myRedeemableVoteAmountForOneCandidate =
+        myRedeemableVoteAmountForOneCandidate || '-';
 
       // judge node type
       if (BPNodes.indexOf(item.candidateInformation.pubkey) !== -1) {
@@ -399,7 +412,7 @@ export default class NodeTable extends PureComponent {
     return (
       <section className={`${clsPrefix}`}>
         <h2 className={`${clsPrefix}-header`}>
-          <span>Node Table</span>
+          Node Table
           {/* <span className='node-color-intro-group'>
               <span className='node-color-intro-item'>BP节点</span>
               <span className='node-color-intro-item'>候选节点</span>
