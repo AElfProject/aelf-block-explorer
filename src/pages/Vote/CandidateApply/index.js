@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-11 20:57:05
+ * @LastEditTime: 2019-10-22 19:17:19
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -12,6 +12,7 @@ import { Form, Input, Button, Modal, message } from 'antd';
 
 import './index.less';
 import getCurrentWallet from '@utils/getCurrentWallet';
+import { NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
 import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE
@@ -263,7 +264,9 @@ class CandidateApply extends PureComponent {
                 );
               })}
           </Form>
-          <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
+          <p className='tip-color' style={{ marginTop: 10 }}>
+            {NEED_PLUGIN_AUTHORIZE_TIP}
+          </p>
         </Modal>
       </section>
     );

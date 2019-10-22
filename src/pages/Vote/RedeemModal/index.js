@@ -12,7 +12,11 @@ import {
 } from 'antd';
 // import Highlighter from 'react-highlight-words';
 
-import { SYMBOL, SELECT_SOMETHING_TIP } from '@src/constants';
+import {
+  SYMBOL,
+  SELECT_SOMETHING_TIP,
+  NEED_PLUGIN_AUTHORIZE_TIP
+} from '@src/constants';
 
 const { Search } = Input;
 
@@ -357,7 +361,7 @@ export default class RedeemModal extends PureComponent {
         <p className='tip-color' style={{ fontSize: 12 }}>
           本次赎回将扣除2ELF的手续费
         </p>
-        <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
+        <p style={{ marginTop: 10 }}>{NEED_PLUGIN_AUTHORIZE_TIP}</p>
       </Modal>
     );
   }

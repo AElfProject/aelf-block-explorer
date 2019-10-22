@@ -77,6 +77,7 @@ const INPUT_NUMBER_TIP = 'Your should input a number';
 const BETWEEN_ZEOR_AND_BALANCE_TIP =
   'The value must be between 0 and your balance';
 const SELECT_SOMETHING_TIP = 'Please select something to continue :)';
+const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
@@ -356,6 +357,7 @@ export {
   INPUT_NUMBER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
   SELECT_SOMETHING_TIP,
+  NEED_PLUGIN_AUTHORIZE_TIP,
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,

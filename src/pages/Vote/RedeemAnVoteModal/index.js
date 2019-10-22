@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Modal, Form } from 'antd';
 
+import { NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -99,10 +101,9 @@ export class RedeemAnVoteModal extends PureComponent {
               );
             })}
         </Form>
-        <p className='tip-color' style={{ fontSize: 12 }}>
-          本次赎回将扣除2ELF的手续费
+        <p className='tip-color' style={{ marginTop: 10 }}>
+          {NEED_PLUGIN_AUTHORIZE_TIP}
         </p>
-        <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
       </Modal>
     );
   }

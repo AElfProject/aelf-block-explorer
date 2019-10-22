@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-22 18:06:06
+ * @LastEditTime: 2019-10-22 19:19:02
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -41,7 +41,7 @@ import RedeemAnVoteModal from './RedeemAnVoteModal';
 // todo: use a import instead
 import * as constants from './constants';
 import { contractsNeedToLoad, schemeIds } from './constants';
-import { SYMBOL, ELF_DECIMAL, GET_NULL } from '@src/constants';
+import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
 import getStateJudgment from '@utils/getStateJudgment';
 import { electionContractAddr } from '@config/config';
 import getCurrentWallet from '@utils/getCurrentWallet';
@@ -54,7 +54,6 @@ import {
   NODE_DEFAULT_NAME
 } from '@src/pages/Vote/constants';
 import { getFormatedLockTime } from '@pages/Vote/utils';
-import { tuple } from 'antd/lib/_util/type';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -1541,7 +1540,9 @@ class VoteContainer extends Component {
                   );
                 })}
             </Form>
-            <p style={{ marginTop: 30 }}>该投票请求NightELF授权签名</p>
+            <p className='tip-color' style={{ marginTop: 30 }}>
+              {NEED_PLUGIN_AUTHORIZE_TIP}
+            </p>
           </Modal>
 
           <RedeemModal
