@@ -1,7 +1,18 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Input, Button, Table } from 'antd';
+import { Link } from 'react-router-dom';
+import {
+  Modal,
+  Form,
+  Input,
+  Button,
+  Table,
+  Icon,
+  Tooltip,
+  message
+} from 'antd';
+// import Highlighter from 'react-highlight-words';
 
-import { SYMBOL } from '@src/constants';
+import { SYMBOL, SELECT_SOMETHING_TIP } from '@src/constants';
 
 const { Search } = Input;
 
@@ -25,6 +36,7 @@ const pagination = {
 
 function getColumns() {
   // const { checkedGroup } = this.state;
+  const { changeVoteState } = this.props;
 
   return [
     // {
@@ -32,11 +44,33 @@ function getColumns() {
     //   dataIndex: 'rank',
     //   key: 'rank'
     // },
-    // {
-    //   title: 'Node Name',
-    //   dataIndex: 'name',
-    //   key: 'nodeName'
-    // },
+    {
+      title: 'Node Name',
+      dataIndex: 'name',
+      key: 'nodeName',
+      ...this.getColumnSearchProps('name'),
+      render: (text, record) => (
+        // todo: consider to extract the component as a independent component
+        <Tooltip title={text}>
+          <Link
+            to={{
+              pathname: '/vote/team',
+              search: `pubkey=${record.candidate}`
+            }}
+            className='node-name-in-table'
+            // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+            style={{ width: 150 }}
+            onClick={() => {
+              changeVoteState({
+                voteModalVisible: false
+              });
+            }}
+          >
+            {text}
+          </Link>
+        </Tooltip>
+      )
+    },
     {
       title: 'Vote Amount',
       dataIndex: 'amount',
@@ -72,10 +106,89 @@ function getColumns() {
     //   )
     // }
   ];
-  f;
 }
 
 export default class RedeemModal extends PureComponent {
+  constructor() {
+    super();
+    this.state = {
+      // searchText: ''
+    };
+
+    this.handleOk = this.handleOk.bind(this);
+  }
+
+  getColumnSearchProps = dataIndex => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={node => {
+            this.searchInput = node;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Button
+          type='primary'
+          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          icon='search'
+          size='small'
+          style={{ width: 90, marginRight: 8 }}
+        >
+          Search
+        </Button>
+        <Button
+          onClick={() => this.handleReset(clearFilters)}
+          size='small'
+          style={{ width: 90 }}
+        >
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: filtered => (
+      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: visible => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select());
+      }
+    }
+    // render: text => (
+    //   <Highlighter
+    //     highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+    //     searchWords={[this.state.searchText]}
+    //     autoEscape
+    //     textToHighlight={text.toString()}
+    //   />
+    // )
+  });
+
+  handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    // this.setState({ searchText: selectedKeys[0] });
+  };
+
+  handleReset = clearFilters => {
+    clearFilters();
+    // this.setState({ searchText: '' });
+  };
+
   generateVoteRedeemForm() {
     const {
       nodeAddress,
@@ -97,7 +210,7 @@ export default class RedeemModal extends PureComponent {
       0
     );
 
-    const columns = getColumns();
+    const columns = getColumns.call(this);
     const rowSelection = {
       selectedRowKeys: redeemVoteSelectedRowKeys,
       onChange: handleRedeemVoteSelectedRowChange,
@@ -152,11 +265,11 @@ export default class RedeemModal extends PureComponent {
           label: '投票记录选择',
           render: (
             <div>
-              <Search
+              {/* <Search
                 placeholder='Input Node Name'
                 onSearch={value => console.log(value)}
                 style={{ width: 200 }}
-              />
+              /> */}
               <Table
                 dataSource={redeemableVoteRecordsForOneCandidate}
                 columns={columns}
@@ -194,12 +307,17 @@ export default class RedeemModal extends PureComponent {
     };
   }
 
+  handleOk() {
+    const { redeemVoteSelectedRowKeys, handleRedeemConfirm } = this.props;
+    if (redeemVoteSelectedRowKeys.length > 0) {
+      handleRedeemConfirm();
+    } else {
+      message.warning(SELECT_SOMETHING_TIP);
+    }
+  }
+
   render() {
-    const {
-      voteRedeemModalVisible,
-      handleRedeemConfirm,
-      handleCancel
-    } = this.props;
+    const { voteRedeemModalVisible, handleCancel } = this.props;
     const voteRedeemForm = this.generateVoteRedeemForm();
 
     return (
@@ -207,11 +325,11 @@ export default class RedeemModal extends PureComponent {
         className='vote-redeem-modal'
         title='Vote Redeem'
         visible={voteRedeemModalVisible}
-        onOk={handleRedeemConfirm}
+        onOk={this.handleOk}
         onCancel={handleCancel.bind(this, 'voteRedeemModalVisible')}
-        width={860}
+        width={960}
         centered
-        maskClosablef
+        maskClosable
         keyboard
       >
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
