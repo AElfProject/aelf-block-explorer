@@ -8,14 +8,16 @@ import React, { PureComponent } from 'react';
 import { Spin } from 'antd';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
+import { isBeforeToday } from '@utils/timeUtils';
+import { ELF_DECIMAL, SYMBOL } from '@config/config';
+import dayjs from 'dayjs';
+import moment from 'moment';
 import { get } from '../../../../../utils';
 import formateTurnoverList from '../../../../../utils/formateTurnoverList';
 import {
   RESOURCE_TURNOVER,
   RESOURCE_CURRENCY_CHART_FETCH_INTERVAL
 } from '../../../../../constants';
-import { ELF_DECIMAL, SYMBOL } from '@config/config';
-import dayjs from 'dayjs';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/chart/line';
 import 'echarts/lib/component/tooltip';
@@ -79,8 +81,8 @@ export default class ResourceCurrencyChart extends PureComponent {
     this.setState({
       loading: bool
     });
-    let xAxisData = [];
-    let yAxisData = [];
+    const xAxisData = [];
+    const yAxisData = [];
 
     const data =
       (await get(RESOURCE_TURNOVER, {
@@ -109,6 +111,8 @@ export default class ResourceCurrencyChart extends PureComponent {
     buyRecords.map((item, index) => {
       if (buttonIndex > 3) {
         xAxisData.push(dayjs(item.date).format('MM-DD'));
+      } else if (isBeforeToday(item.date)) {
+        xAxisData.push(dayjs(item.date).format('MM-DD HH:mm'));
       } else {
         xAxisData.push(dayjs(item.date).format('HH:mm'));
       }
@@ -116,7 +120,7 @@ export default class ResourceCurrencyChart extends PureComponent {
         item.count > sellRecords[index].count ||
         item.count === sellRecords[index].count
       ) {
-        let data = {
+        const data = {
           value: (item.count + sellRecords[index].count) / ELF_DECIMAL,
           itemStyle: {
             color: '#007130'
@@ -124,7 +128,7 @@ export default class ResourceCurrencyChart extends PureComponent {
         };
         yAxisData.push(data);
       } else {
-        let data = {
+        const data = {
           value: (item.count + sellRecords[index].count) / ELF_DECIMAL,
           itemStyle: {
             color: '#a40000'
@@ -166,14 +170,14 @@ export default class ResourceCurrencyChart extends PureComponent {
   }
 
   getOption() {
-    const { xAxisData, yAxisData } = this.state;
+    const { xAxisData, yAxisData, intervalTime } = this.state;
     const maxValue = Math.max.apply(
       Math,
       yAxisData.map((item, index) => {
         return item.value;
       })
     );
-    let option = {
+    const option = {
       grid: {
         left: '3%',
         right: '3%',
@@ -189,6 +193,22 @@ export default class ResourceCurrencyChart extends PureComponent {
         axisPointer: {
           type: 'none'
         }
+        // todo: consider to add lastAxisValue to the tooltip
+        // formatter: data => {
+        //   console.log({
+        //     data
+        //   });
+        //   const { axisValue } = data[0];
+        //   const lastAxisValue = moment
+        //     .unix(moment(axisValue).unix() - intervalTime)
+        //     .format('MM-DD HH:mm');
+        //   // intervalTime;
+        //   console.log({
+        //     lastAxisValue
+        //   })
+        //   const tipStr = `${lastAxisValue}-${axisValue}`;
+        //   return tipStr;
+        // }
       },
       legend: {
         data: ['Total volume of business', 'Price']
@@ -205,7 +225,27 @@ export default class ResourceCurrencyChart extends PureComponent {
             }
           },
           axisLabel: {
-            interval: 0
+            interval: 0,
+            // todo: put the time before date
+            formatter: value => {
+              let ret = ''; // 拼接加\n返回的类目项
+              const maxLength = 6; // 每项显示文字个数
+              const valLength = value.length; // X轴类目项的文字个数
+              const rowN = Math.ceil(valLength / maxLength); // 类目项需要换行的行数
+              if (rowN > 1) {
+                // 如果类目项的文字大于3,
+                for (let i = 0; i < rowN; i++) {
+                  let temp = ''; // 每次截取的字符串
+                  const start = i * maxLength; // 开始截取的位置
+                  const end = start + maxLength; // 结束截取的位置
+                  // 这里也可以加一个是否是最后一行的判断，但是不加也没有影响，那就不加吧
+                  temp = `${value.substring(start, end)}\n`;
+                  ret += temp; // 凭借最终的字符串
+                }
+                return ret;
+              }
+              return value;
+            }
             // align: 'left'
           },
           axisTick: {
@@ -322,8 +362,8 @@ export default class ResourceCurrencyChart extends PureComponent {
           echarts={echarts}
           option={this.getOption()}
           style={{ height: '574px' }}
-          notMerge={true}
-          lazyUpdate={true}
+          notMerge
+          lazyUpdate
         />
         {/* </Spin> */}
       </div>
