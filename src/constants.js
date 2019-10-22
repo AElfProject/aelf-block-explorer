@@ -76,7 +76,9 @@ const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
 const INPUT_NUMBER_TIP = 'Your should input a number';
 const BETWEEN_ZEOR_AND_BALANCE_TIP =
   'The value must be between 0 and your balance';
+const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
+const SHORTEST_LOCK_TIME = 90; // day
 
 // TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
@@ -352,6 +354,8 @@ export {
   BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
   INPUT_NUMBER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
+  GET_NULL,
+  SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,
   SYMBOL, // todo: get native token info
   CHAIN_ID, // todo: get chain status

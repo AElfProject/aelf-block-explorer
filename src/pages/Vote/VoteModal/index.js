@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-19 18:50:07
+ * @LastEditTime: 2019-10-21 17:32:10
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -23,7 +23,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 
-import { SYMBOL } from '@src/constants';
+import { SYMBOL, SHORTEST_LOCK_TIME } from '@src/constants';
 import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
@@ -54,7 +54,13 @@ const switchVotePagination = {
 
 function disabledDate(current) {
   // Can not select days before today and today
-  return current && current < moment().endOf('day');
+  return (
+    current &&
+    current <
+      moment()
+        .add('days', SHORTEST_LOCK_TIME)
+        .endOf('day')
+  );
 }
 
 function getColumns() {
@@ -157,9 +163,7 @@ class VoteModal extends Component {
       expiredVotesAmount,
       switchableVoteRecords,
       withdrawnableVoteRecords,
-      estimatedProfit
-    } = this.props;
-    const {
+      estimatedProfit,
       switchVoteSelectedRowKeys,
       handleSwithVoteSelectedRowChange,
       voteFromExpiredVoteAmount,
@@ -248,108 +252,21 @@ class VoteModal extends Component {
                   value={lockTime}
                   onChange={handleLockTimeChange}
                 />
-                <span className='tip-color' style={{ marginLeft: 10 }}>
-                  锁定期内不支持提币和转账
-                </span>
-              </div>
-            )
-          }
-          // {
-          //   label: '预估投票收益',
-          //   render: (
-          //     <div>
-          //       <span>{estimatedProfit}</span>
-          //       <span className='tip-color' style={{ marginLeft: 10 }}>
-          //         投票收益=(锁定期*票数/总票数)*分红池奖励*20%
-          //       </span>
-          //     </div>
-          //   )
-          // }
-        ]
-      },
-      {
-        type: FROM_EXPIRED_VOTES,
-        label: '从过期投票转投',
-        index: 1,
-        formItems: [
-          {
-            label: '节点名称',
-            render: <span className='form-item-value ellipsis'>{nodeName}</span>
-          },
-          {
-            label: '地址',
-            render: (
-              <span
-                className='ellipsis'
-                style={{ color: '#fff', width: 600, display: 'inline-block' }}
-              >
-                {nodeAddress}
-              </span>
-            )
-          },
-          {
-            label: '过期票数',
-            render: (
-              <span className='form-item-value'>{expiredVotesAmount}</span>
-            )
-          },
-          {
-            label: '投票数量',
-            // todo: fix the max and others
-            render: (
-              <div>
-                <InputNumber
-                  suffix={SYMBOL}
-                  placeholder='Enter vote amount'
-                  style={{ marginRight: 20, width: 'auto' }}
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  formatter={value =>
-                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                  }
-                  min={0}
-                  max={expiredVotesAmount}
-                  value={voteFromExpiredVoteAmount}
-                  onChange={value => {
+                <Button
+                  onClick={() => {
                     changeVoteState({
-                      voteFromExpiredVoteAmount: value
+                      isLockTimeForTest: true
                     });
                   }}
-                />
-                <Button type='primary' onClick={this.handleAllIn}>
-                  All In
+                >
+                  lock for about 2 min
                 </Button>
-              </div>
-            )
-          },
-          {
-            label: '锁定期',
-            render: (
-              <div>
-                <DatePicker disabledDate={disabledDate} />
                 <span className='tip-color' style={{ marginLeft: 10 }}>
                   锁定期内不支持提币和转账
                 </span>
               </div>
             )
           }
-          // {
-          //   label: '投票记录选择',
-          //   render: (
-          //     <div>
-          //       {/* <Search
-          //         placeholder='Input Node Name'
-          //         onSearch={value => console.log(value)}
-          //         style={{ width: 200 }}
-          //       /> */}
-          //       <Table
-          //         dataSource={withdrawnableVoteRecords}
-          //         columns={columns}
-          //         rowSelection={voteFromExpiredRowSelection}
-          //         pagination={switchVotePagination}
-          //       />
-          //     </div>
-          //   )
-          // }
           // {
           //   label: '预估投票收益',
           //   render: (
@@ -363,6 +280,102 @@ class VoteModal extends Component {
           // }
         ]
       },
+      // {
+      //   type: FROM_EXPIRED_VOTES,
+      //   label: '从过期投票转投',
+      //   index: 1,
+      //   formItems: [
+      //     {
+      //       label: '节点名称',
+      //       render: <span className='form-item-value ellipsis'>{nodeName}</span>
+      //     },
+      //     {
+      //       label: '地址',
+      //       render: (
+      //         <span
+      //           className='ellipsis'
+      //           style={{ color: '#fff', width: 600, display: 'inline-block' }}
+      //         >
+      //           {nodeAddress}
+      //         </span>
+      //       )
+      //     },
+      //     {
+      //       label: '过期票数',
+      //       render: (
+      //         <span className='form-item-value'>{expiredVotesAmount}</span>
+      //       )
+      //     },
+      //     {
+      //       label: '投票数量',
+      //       // todo: fix the max and others
+      //       render: (
+      //         <div>
+      //           <InputNumber
+      //             suffix={SYMBOL}
+      //             placeholder='Enter vote amount'
+      //             style={{ marginRight: 20, width: 'auto' }}
+      //             parser={value => value.replace(/\$\s?|(,*)/g, '')}
+      //             formatter={value =>
+      //               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      //             }
+      //             min={0}
+      //             max={expiredVotesAmount}
+      //             value={voteFromExpiredVoteAmount}
+      //             onChange={value => {
+      //               changeVoteState({
+      //                 voteFromExpiredVoteAmount: value
+      //               });
+      //             }}
+      //           />
+      //           <Button type='primary' onClick={this.handleAllIn}>
+      //             All In
+      //           </Button>
+      //         </div>
+      //       )
+      //     },
+      //     {
+      //       label: '锁定期',
+      //       render: (
+      //         <div>
+      //           <DatePicker disabledDate={disabledDate} />
+      //           <span className='tip-color' style={{ marginLeft: 10 }}>
+      //             锁定期内不支持提币和转账
+      //           </span>
+      //         </div>
+      //       )
+      //     }
+      //     // {
+      //     //   label: '投票记录选择',
+      //     //   render: (
+      //     //     <div>
+      //     //       {/* <Search
+      //     //         placeholder='Input Node Name'
+      //     //         onSearch={value => console.log(value)}
+      //     //         style={{ width: 200 }}
+      //     //       /> */}
+      //     //       <Table
+      //     //         dataSource={withdrawnableVoteRecords}
+      //     //         columns={columns}
+      //     //         rowSelection={voteFromExpiredRowSelection}
+      //     //         pagination={switchVotePagination}
+      //     //       />
+      //     //     </div>
+      //     //   )
+      //     // }
+      //     // {
+      //     //   label: '预估投票收益',
+      //     //   render: (
+      //     //     <div>
+      //     //       <span>{estimatedProfit}</span>
+      //     //       <span className='tip-color' style={{ marginLeft: 10 }}>
+      //     //         投票收益=(锁定期*票数/总票数)*分红池奖励*20%
+      //     //       </span>
+      //     //     </div>
+      //     //   )
+      //     // }
+      //   ]
+      // },
       {
         type: FROM_ACTIVE_VOTES,
         label: '从未过期投票转投',
