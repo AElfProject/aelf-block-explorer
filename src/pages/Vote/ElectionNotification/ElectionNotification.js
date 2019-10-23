@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-22 19:38:13
+ * @LastEditTime: 2019-10-23 11:56:12
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -55,14 +55,20 @@ export default class ElectionNotification extends PureComponent {
       nodesCount: null,
       showDownloadPlugin: true,
       // todo: should I place statisData in state?
-      statisData: electionNotifiStatisData
+      statisData: electionNotifiStatisData,
+      statisDataLoading: false
     };
 
     this.hasRun = false;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { electionContract, consensusContract } = this.props;
+    const {
+      electionContract,
+      consensusContract,
+      shouldRefreshElectionNotifiStatis,
+      changeVoteState
+    } = this.props;
     const { statisData } = this.state;
     // console.log('statisData', statisData);
     // todo: decouple, it's too couple here
@@ -75,6 +81,18 @@ export default class ElectionNotification extends PureComponent {
       this.hasRun = true;
       this.fetchStatisData();
     }
+
+    if (shouldRefreshElectionNotifiStatis) {
+      // Avoid repeating refresh
+      changeVoteState(
+        {
+          shouldRefreshElectionNotifiStatis: false
+        },
+        () => {
+          this.fetchStatisData();
+        }
+      );
+    }
   }
 
   // fetchTotalVotesAmount() {
@@ -86,15 +104,25 @@ export default class ElectionNotification extends PureComponent {
     statisData[key][param] = value;
     // todo: Is it required?
     statisData = { ...statisData };
-    this.setState({
-      statisData
-    });
+    this.setState(
+      {
+        statisData
+      },
+      () => {
+        // todo: put the setState where it should be
+        this.setState({
+          statisDataLoading: false
+        });
+      }
+    );
   }
 
   fetchStatisData() {
     const { electionContract, consensusContract } = this.props;
     // todo: decouple, it's too couple here
-
+    this.setState({
+      statisDataLoading: true
+    });
     const dataSource = {
       title: [
         {
@@ -171,7 +199,12 @@ export default class ElectionNotification extends PureComponent {
   }
 
   render() {
-    const { totalVotesAmount, showDownloadPlugin, statisData } = this.state;
+    const {
+      totalVotesAmount,
+      showDownloadPlugin,
+      statisData,
+      statisDataLoading
+    } = this.state;
     const {
       consensusContract,
       multiTokenContract,
@@ -193,7 +226,11 @@ export default class ElectionNotification extends PureComponent {
 
     return (
       <section className='page-container'>
-        <StatisticalData data={statisData} />
+        <StatisticalData
+          data={statisData}
+          spinning={statisDataLoading}
+          style={{ marginBottom: 30 }}
+        />
         <ElectionRuleCard isCandidate={isCandidate} />
         <MyWalletCard
           multiTokenContract={multiTokenContract}

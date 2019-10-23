@@ -3,11 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-12 14:37:30
+ * @LastEditTime: 2019-10-23 11:56:44
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
-import { Row, Col, Tooltip, Icon, Statistic } from 'antd';
+import { Row, Col, Tooltip, Icon, Statistic, Spin } from 'antd';
 
 import './index.less';
 
@@ -32,6 +32,7 @@ class StatisticalData extends PureComponent {
   }
 
   render() {
+    const { spinning, style } = this.props;
     const { arr } = this.state;
 
     switch (arr.length) {
@@ -46,39 +47,43 @@ class StatisticalData extends PureComponent {
     }
 
     return (
-      <section className={`${clsPrefix}-container card-container `}>
+      // <section >
+      <Spin spinning={spinning} style={style}>
         {/* <Row> */}
-        {arr.map(item => {
-          return (
-            // <Col span={item.span} key={item.title}>
-            //   <p className={`${clsPrefix}-words`}>{item.title}</p>
-            //   <p className={`${clsPrefix}-number`}>{item.num}</p>
-            // </Col>
-            item.isCountdown ? (
-              <Countdown
-                key={Math.random()}
-                title={item.title}
-                value={item.num || 0}
-                format='D day H : m : s '
-                onFinish={() => {
-                  console.log('finished');
-                  this.handleFinish(item.id);
-                }}
-              />
-            ) : (
-              <Statistic
-                key={Math.random()}
-                title={item.title}
-                value={item.num}
-              />
-            )
-          );
-        })}
-        {/* </Row> */}
-        <Tooltip title='竞选周期为7天，届之间无间隔；节点数为当前BP和候选节点总数；投票数量为竞选以来投票数量总和；分红池包括为BP节点打包区块奖励+80%gas费+80%侧链收益。'>
-          <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
-        </Tooltip>
-      </section>
+        <section className={`${clsPrefix}-container card-container `}>
+          {arr.map(item => {
+            return (
+              // <Col span={item.span} key={item.title}>
+              //   <p className={`${clsPrefix}-words`}>{item.title}</p>
+              //   <p className={`${clsPrefix}-number`}>{item.num}</p>
+              // </Col>
+              item.isCountdown ? (
+                <Countdown
+                  key={Math.random()}
+                  title={item.title}
+                  value={item.num || 0}
+                  format='D day H : m : s '
+                  onFinish={() => {
+                    console.log('finished');
+                    this.handleFinish(item.id);
+                  }}
+                />
+              ) : (
+                <Statistic
+                  key={Math.random()}
+                  title={item.title}
+                  value={item.num}
+                />
+              )
+            );
+          })}
+          {/* </Row> */}
+          <Tooltip title='竞选周期为7天，届之间无间隔；节点数为当前BP和候选节点总数；投票数量为竞选以来投票数量总和；分红池包括为BP节点打包区块奖励+80%gas费+80%侧链收益。'>
+            <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
+          </Tooltip>
+        </section>
+      </Spin>
+      // </section>
     );
   }
 }
