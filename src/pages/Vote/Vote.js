@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-22 19:19:02
+ * @LastEditTime: 2019-10-23 14:05:33
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -255,6 +255,7 @@ class VoteContainer extends Component {
       targetPublicKey: null,
       shouldRefreshNodeTable: false,
       shouldRefreshMyWallet: false,
+      shouldRefreshElectionNotifiStatis: false,
       voteToRedeem: {
         nodeName: null,
         nodeAddress: null,
@@ -619,7 +620,7 @@ class VoteContainer extends Component {
 
   processDataVoteNeed(resArr) {
     // todo: the process code are  similar, can i unify it? Don't forget to consider the changablity.
-    const { nodeAddress: interestingNodePublicKey } = this.state;
+    const { targetPublicKey } = this.state;
     const electorVote = resArr[0];
     let allTeamInfo = null;
     let expiredVotesAmount = 0;
@@ -635,7 +636,7 @@ class VoteContainer extends Component {
     const withdrawnableVoteRecords = [];
     activeVotingRecords.forEach(record => {
       // filter the vote voted to other node
-      if (record.candidate === interestingNodePublicKey) return;
+      if (record.candidate === targetPublicKey) return;
       // filter the vote don't expired
       // todo: extract the judge code, there are some same code in page "my vote"
       if (record.unlockTimestamp.seconds > moment().unix()) {
@@ -890,7 +891,7 @@ class VoteContainer extends Component {
     });
   }
 
-  redeemSomeVote(electionContractFromExt, votesToRedeem) {
+  async redeemSomeVote(electionContractFromExt, votesToRedeem) {
     // todo: I run it as serial mode as the extension can only open one prompt in one time and the contract didn't support withdrawn many votes with a method
     // todo: After modify the contract don't forget to modify the code as follows
     votesToRedeem.forEach(async item => {
@@ -898,7 +899,16 @@ class VoteContainer extends Component {
       await electionContractFromExt
         .Withdraw(payload)
         .then(res => {
-          this.checkTransactionResult(res, 'voteRedeemModalVisible');
+          this.checkTransactionResult(res, 'voteRedeemModalVisible')
+            .then(() => {
+              // todo: only do the refresh in page election
+              this.refreshPageElectionNotifi();
+            })
+            .catch(err => {
+              console.error('checkTransactionResult', {
+                err
+              });
+            });
         })
         .catch(err => console.error(err));
     });
@@ -1088,13 +1098,9 @@ class VoteContainer extends Component {
       .Vote(payload)
       .then(res => {
         this.changeModalVisible('voteConfirmModalVisible', false);
-        if (res && res.error === 0) {
+        if (res) {
           this.checkTransactionResult(res).then(() => {
-            this.setState({
-              shouldRefreshNodeTable: true,
-              shouldRefreshMyWallet: true,
-              isLockTimeForTest: false
-            });
+            this.refreshPageElectionNotifi();
           });
         } else {
           message.error(res.errorMessage.message, 3);
@@ -1109,6 +1115,15 @@ class VoteContainer extends Component {
           isLockTimeForTest: false
         });
       });
+  }
+
+  refreshPageElectionNotifi() {
+    this.setState({
+      shouldRefreshNodeTable: true,
+      shouldRefreshMyWallet: true,
+      shouldRefreshElectionNotifiStatis: true,
+      isLockTimeForTest: false
+    });
   }
 
   handleVoteFromExpiredVote() {
@@ -1379,7 +1394,8 @@ class VoteContainer extends Component {
       shouldRefreshNodeTable,
       shouldRefreshMyWallet,
       voteToRedeem,
-      redeemOneVoteModalVisible
+      redeemOneVoteModalVisible,
+      shouldRefreshElectionNotifiStatis
     } = this.state;
 
     // todo: decouple
@@ -1422,6 +1438,9 @@ class VoteContainer extends Component {
                       shouldRefreshMyWallet={shouldRefreshMyWallet}
                       changeVoteState={this.changeVoteState}
                       checkExtensionLockStatus={this.checkExtensionLockStatus}
+                      shouldRefreshElectionNotifiStatis={
+                        shouldRefreshElectionNotifiStatis
+                      }
                     />
                   )}
                 />
@@ -1448,6 +1467,7 @@ class VoteContainer extends Component {
                     <TeamDetail
                       consensusContract={consensusContract}
                       electionContract={electionContract}
+                      currentWallet={currentWallet}
                     />
                   )}
                 />
