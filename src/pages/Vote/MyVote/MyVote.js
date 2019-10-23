@@ -20,6 +20,8 @@ export default class MyVote extends Component {
       statisData: myVoteStatisData,
       tableData: []
     };
+
+    this.hasRun = false;
   }
 
   componentDidMount() {
@@ -27,13 +29,16 @@ export default class MyVote extends Component {
   }
 
   // todo: update the vote info after switch to this tab
-  // componentDidUpdate(prevProps, prevState) {
-
-  //   this.fetchTableDataAndStatisData();
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.hasRun) {
+      this.fetchTableDataAndStatisData();
+    }
+  }
 
   fetchTableDataAndStatisData() {
     const { electionContract } = this.props;
+    if (!electionContract) return;
+    this.hasRun = true;
     const currentWallet = getCurrentWallet();
 
     // todo: is it ok to get the same data twice in different tabs
