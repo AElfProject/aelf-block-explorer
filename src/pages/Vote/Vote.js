@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 14:05:33
+ * @LastEditTime: 2019-10-23 15:09:41
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -328,6 +328,14 @@ class VoteContainer extends Component {
       console.error(e);
     }
     this.getExtensionKeypairList();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { shouldRefreshMyWallet } = this.state;
+    if (shouldRefreshMyWallet) {
+      // todo: put the method fetchProfitAmount run with the refresh of wallet
+      this.fetchProfitAmount();
+    }
   }
 
   // handleAllIn() {
@@ -1171,8 +1179,16 @@ class VoteContainer extends Component {
       .ChangeVotingOption(payload)
       .then(res => {
         console.log('ChangeVotingOption', res);
-        this.checkTransactionResult(res);
-        this.changeModalVisible('voteConfirmModalVisible', false);
+        return this.checkTransactionResult(res).then(() => {
+          this.setState(
+            {
+              voteConfirmModalVisible: false
+            },
+            () => {
+              this.refreshPageElectionNotifi();
+            }
+          );
+        });
       })
       .catch(err => {
         console.error('ChangeVotingOption', err);
@@ -1276,10 +1292,11 @@ class VoteContainer extends Component {
         let total = 0;
         const dividendAmounts = schemeIds.map((item, index) => {
           let amount = null;
-          if (resArr[index].error !== 0) {
+          const profitItem = resArr[index];
+          if (profitItem.error) {
             amount = 0;
           } else {
-            amount = resArr[index].value;
+            amount = +profitItem.value;
           }
           // todo: remove the judge when need
           amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;
@@ -1339,7 +1356,13 @@ class VoteContainer extends Component {
           })
           .then(res => {
             console.log('handleClaimDividendClick', res);
-            this.checkTransactionResult(res, 'dividendModalVisible');
+            this.checkTransactionResult(res, 'dividendModalVisible').then(
+              () => {
+                this.setState({
+                  shouldRefreshMyWallet: true
+                });
+              }
+            );
           })
           .catch(err => {
             console.error('handleClaimDividendClick', err);
