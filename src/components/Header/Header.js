@@ -30,6 +30,8 @@ export default class BrowserHeader extends PureComponent {
           ? '/home'
           : getPathnameFirstSlash(location.pathname)
     };
+
+    this.isSmallScreen = false;
   }
 
   getSearchStatus() {
@@ -94,6 +96,9 @@ export default class BrowserHeader extends PureComponent {
   handleClick = e => {
     clearTimeout(this.timerTimeout);
     this.timerTimeout = setTimeout(() => {
+      if (this.isSmallScreen) {
+        this.toggleMenu();
+      }
       this.setState({
         current: e.key
       });
@@ -210,13 +215,13 @@ export default class BrowserHeader extends PureComponent {
 
   render() {
     const screenWidth = document.body.offsetWidth;
-    const isSmallScreen = screenWidth <= 768;
-    const menuMode = isSmallScreen ? 'inline' : 'horizontal';
+    this.isSmallScreen = screenWidth <= 768;
+    const menuMode = this.isSmallScreen ? 'inline' : 'horizontal';
 
-    const mobileMoreHTML = isSmallScreen ? this.renderMobileMore() : '';
+    const mobileMoreHTML = this.isSmallScreen ? this.renderMobileMore() : '';
 
     let menuHtml;
-    if (isSmallScreen) {
+    if (this.isSmallScreen) {
       menuHtml = this.renderMenu(menuMode, this.state.showMobileMenu);
     } else {
       menuHtml = this.renderMenu(menuMode);
