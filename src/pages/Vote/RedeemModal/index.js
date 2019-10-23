@@ -48,33 +48,34 @@ function getColumns() {
     //   dataIndex: 'rank',
     //   key: 'rank'
     // },
-    {
-      title: 'Node Name',
-      dataIndex: 'name',
-      key: 'nodeName',
-      ...this.getColumnSearchProps('name'),
-      render: (text, record) => (
-        // todo: consider to extract the component as a independent component
-        <Tooltip title={text}>
-          <Link
-            to={{
-              pathname: '/vote/team',
-              search: `pubkey=${record.candidate}`
-            }}
-            className='node-name-in-table'
-            // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-            style={{ width: 150 }}
-            onClick={() => {
-              changeVoteState({
-                voteModalVisible: false
-              });
-            }}
-          >
-            {text}
-          </Link>
-        </Tooltip>
-      )
-    },
+    // todo: It seems that node name has already displayed in the Modal
+    // {
+    //   title: 'Node Name',
+    //   dataIndex: 'name',
+    //   key: 'nodeName',
+    //   ...this.getColumnSearchProps('name'),
+    //   render: (text, record) => (
+    //     // todo: consider to extract the component as a independent component
+    //     <Tooltip title={text}>
+    //       <Link
+    //         to={{
+    //           pathname: '/vote/team',
+    //           search: `pubkey=${record.candidate}`
+    //         }}
+    //         className='node-name-in-table'
+    //         // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+    //         style={{ width: 150 }}
+    //         onClick={() => {
+    //           changeVoteState({
+    //             voteModalVisible: false
+    //           });
+    //         }}
+    //       >
+    //         {text}
+    //       </Link>
+    //     </Tooltip>
+    //   )
+    // },
     {
       title: 'Vote Amount',
       dataIndex: 'amount',
