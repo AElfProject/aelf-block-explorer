@@ -76,15 +76,15 @@ const iconListHTML = (() => {
 const BrowserFooter = props => (
     <Footer {...props} className="footer">
         <div className='footer-container'>
-            <div className="footer-logo">
+            {/* <div className="footer-logo">
                 <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
                 <p>Contribute to communism around the world.</p>
-            </div>
+            </div> */}
             <div className="footer-links-container">
                 {iconListHTML}
             </div>
         </div>
-        <p>Copyright © 2018 ælf</p>
+        <p>Copyright © {new Date().getFullYear()} ælf</p>
     </Footer>
 );
 
