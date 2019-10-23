@@ -264,7 +264,8 @@ export default class NodeTable extends PureComponent {
             isLoading: true
           });
           // Need await to ensure the totalVotesCount take its seat.
-          await this.fetchTotalVotesAmount();
+          // todo: fetchTheTotalVotesAmount after contract changed
+          // await this.fetchTotalVotesAmount();
           this.fetchNodes();
         }
       );
@@ -314,10 +315,12 @@ export default class NodeTable extends PureComponent {
       });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   processNodesData(resArr) {
-    const { totalVotesAmount } = this.state;
+    // const { totalVotesAmount } = this.state;
 
     // todo: error handle
+    let totalActiveVotesAmount = 0;
     const nodeInfos = resArr[0].value;
     const { activeVotingRecords } = resArr[2];
     let teamInfos = null;
@@ -327,6 +330,9 @@ export default class NodeTable extends PureComponent {
     const BPNodes = resArr[3].pubkeys;
     // add node name, add my vote amount
     nodeInfos.forEach(item => {
+      // compute totalActiveVotesAmount
+      // FIXME: It will result in some problem when getPageable can only get 20 nodes info at most in one time
+      totalActiveVotesAmount += +item.obtainedVotesAmount;
       // add node name
       const teamInfo = teamInfos.find(
         team => team.public_key === item.candidateInformation.pubkey
@@ -377,9 +383,12 @@ export default class NodeTable extends PureComponent {
     return nodeInfos
       .map(item => {
         const votedRate =
-          totalVotesAmount === 0
+          totalActiveVotesAmount === 0
             ? 0
-            : ((item.obtainedVotesAmount / totalVotesAmount) * 100).toFixed(2);
+            : (
+                (item.obtainedVotesAmount / totalActiveVotesAmount) *
+                100
+              ).toFixed(2);
         return {
           ...item.candidateInformation,
           obtainedVotesAmount: item.obtainedVotesAmount,
