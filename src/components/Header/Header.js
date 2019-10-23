@@ -11,6 +11,7 @@ import './header.styles.less';
 import Search from './../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
 import config from '../../../config/config';
+import { getPathnameFirstSlash } from '@utils/urlUtils';
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -24,7 +25,10 @@ export default class BrowserHeader extends PureComponent {
     this.state = {
       showSearch: this.getSearchStatus(),
       showMobileMenu: false,
-      current: location.pathname === '/' ? '/home' : location.pathname
+      current:
+        location.pathname === '/'
+          ? '/home'
+          : getPathnameFirstSlash(location.pathname)
     };
   }
 
@@ -170,7 +174,7 @@ export default class BrowserHeader extends PureComponent {
         </Menu.Item> */}
         {voteHTML}
         {/* <Menu.Item key='/voteold'> */}
-          {/* <Link to='/voteold'>VoteOld</Link> */}
+        {/* <Link to='/voteold'>VoteOld</Link> */}
         {/* </Menu.Item> */}
         {resourceHTML}
         <Menu.Item key='/about'>
