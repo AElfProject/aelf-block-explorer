@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-22 19:17:19
+ * @LastEditTime: 2019-10-23 14:47:19
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -12,7 +12,11 @@ import { Form, Input, Button, Modal, message } from 'antd';
 
 import './index.less';
 import getCurrentWallet from '@utils/getCurrentWallet';
-import { NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
+import {
+  NEED_PLUGIN_AUTHORIZE_TIP,
+  txStatusInUpperCase,
+  UNKNOWN_ERROR_TIP
+} from '@src/constants';
 import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE
@@ -111,6 +115,7 @@ const applyConfirmForm = generateApplyConfirmForm({});
 
 const clsPrefix = 'candidate-apply';
 
+// todo: page off for those who already been candidate
 class CandidateApply extends PureComponent {
   constructor(props) {
     super(props);
@@ -144,7 +149,10 @@ class CandidateApply extends PureComponent {
               message.error(res.errorMessage.message);
               return;
             }
-
+            if (!res) {
+              message.error(UNKNOWN_ERROR_TIP);
+              return;
+            }
             const transactionId = res.result
               ? res.result.TransactionId
               : res.TransactionId;
@@ -159,7 +167,7 @@ class CandidateApply extends PureComponent {
                   applyConfirmVisible: false
                 });
                 // todo: handle the other status case
-                if (status === 'Mined') {
+                if (status === txStatusInUpperCase.mined) {
                   this.props.history.push('/vote/apply/keyin');
                 }
               });

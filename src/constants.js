@@ -53,6 +53,17 @@ const TXSSTATUS = {
   Mined: 'Mined'
 };
 
+const txStatusInUpperCase = {
+  // NotExisted: '不存在',
+  // Pending: '交易中',
+  // Failed: '失败',
+  // Mined: '成功',
+  notExisted: 'NOT_EXISTED',
+  pending: 'PENDING',
+  failed: 'FAILED',
+  mined: 'MINED'
+};
+
 const FAILED_MESSAGE_DISPLAY_TIME = 20; // seconds
 // todo: use a object to gather all tip?
 const IE_ADVICE =
@@ -78,6 +89,8 @@ const BETWEEN_ZEOR_AND_BALANCE_TIP =
   'The value must be between 0 and your balance';
 const SELECT_SOMETHING_TIP = 'Please select something to continue :)';
 const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
+const UNKNOWN_ERROR_TIP =
+  'Sorry, it seems that we encountered an unknown error.';
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
@@ -334,6 +347,7 @@ export {
   ELF_REST_TRADE_API,
   PAGE_SIZE,
   TXSSTATUS,
+  txStatusInUpperCase,
   RPCSERVER,
   BLOCKS_LIST_COLUMNS,
   ALL_TXS_LIST_COLUMNS,
@@ -358,6 +372,7 @@ export {
   BETWEEN_ZEOR_AND_BALANCE_TIP,
   SELECT_SOMETHING_TIP,
   NEED_PLUGIN_AUTHORIZE_TIP,
+  UNKNOWN_ERROR_TIP,
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,
