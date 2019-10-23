@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-21 15:05:30
+ * @LastEditTime: 2019-10-23 18:01:35
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -128,6 +128,15 @@ const NODE_DEFAULT_NAME = 'Default';
 // When the team I voted is not candidate in current term, use the symbol to display.
 const RANK_NOT_EXISTED_SYMBOL = '-';
 
+const routePaths = {
+  vote: '/vote',
+  electionNotifi: '/vote/election',
+  applyToBeANode: '/vote/apply',
+  teamInfoKeyin: '/vote/apply/keyin',
+  teamDetail: '/vote/team',
+  myVote: '/vote/myvote'
+};
+
 export {
   contractsNeedToLoad,
   contractsNeedToLoadFromExt,
@@ -145,5 +154,6 @@ export {
   FROM_ACTIVE_VOTES,
   NODE_DEFAULT_NAME,
   RANK_NOT_EXISTED_SYMBOL,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
+  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
+  routePaths
 };

@@ -3,12 +3,12 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 15:09:41
+ * @LastEditTime: 2019-10-23 18:00:23
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
 import { Tabs, Modal, Form, Input, Button, message } from 'antd';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, Link, withRouter, Redirect } from 'react-router-dom';
 import { toJS, reaction } from 'mobx';
 import { Provider } from 'mobx-react';
 import moment from 'moment';
@@ -51,7 +51,8 @@ import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
-  NODE_DEFAULT_NAME
+  NODE_DEFAULT_NAME,
+  routePaths
 } from '@src/pages/Vote/constants';
 import { getFormatedLockTime } from '@pages/Vote/utils';
 
@@ -295,6 +296,7 @@ class VoteContainer extends Component {
     this.handleRedeemOneVoteConfirm = this.handleRedeemOneVoteConfirm.bind(
       this
     );
+    this.refreshPageElectionNotifi = this.refreshPageElectionNotifi.bind(this);
 
     this.formGroup = null;
     this.isPluginLock = false;
@@ -303,6 +305,7 @@ class VoteContainer extends Component {
   }
 
   async componentDidMount() {
+    const { history } = this.props;
     // Get contracts
     try {
       const result = await getContractAddress();
@@ -316,7 +319,7 @@ class VoteContainer extends Component {
         );
         return;
       }
-      contractsNeedToLoad.forEach(contractItem => {
+      contractsNeedToLoad.forEach((contractItem, index) => {
         this.getContractByContractAddress(
           result,
           contractItem.contractAddrValName,
@@ -328,6 +331,10 @@ class VoteContainer extends Component {
       console.error(e);
     }
     this.getExtensionKeypairList();
+
+    console.log({
+      history
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -1431,78 +1438,95 @@ class VoteContainer extends Component {
           {showDownloadPlugin ? (
             <DownloadPlugins style={{ margin: '0 56px' }} />
           ) : null}
-          <Tabs defaultActiveKey='1' className='secondary-level-nav'>
+          <Tabs
+            defaultActiveKey={window.location.pathname}
+            className='secondary-level-nav'
+          >
             <TabPane
               tab={
-                <Link to='/vote' style={{ color: '#fff' }}>
+                <Link to={routePaths.electionNotifi} style={{ color: '#fff' }}>
                   Election Notification
                 </Link>
               }
-              key='electionNotification'
-            >
-              <Switch>
-                <Route
-                  exact
-                  path='/vote'
-                  render={() => (
-                    <ElectionNotification
-                      multiTokenContract={multiTokenContract}
-                      voteContract={voteContract}
-                      electionContract={electionContract}
-                      profitContract={profitContract}
-                      dividendContract={dividendContract}
-                      consensusContract={consensusContract}
-                      nightElf={nightElf}
-                      isCandidate={isCandidate}
-                      handleDividendClick={this.handleDividendClick}
-                      dividends={dividends}
-                      electionContractFromExt={electionContractFromExt}
-                      shouldRefreshNodeTable={shouldRefreshNodeTable}
-                      shouldRefreshMyWallet={shouldRefreshMyWallet}
-                      changeVoteState={this.changeVoteState}
-                      checkExtensionLockStatus={this.checkExtensionLockStatus}
-                      shouldRefreshElectionNotifiStatis={
-                        shouldRefreshElectionNotifiStatis
-                      }
-                    />
-                  )}
-                />
-                <Route
-                  exact
-                  path='/vote/apply'
-                  electionContract={electionContract}
-                  render={() => (
-                    <CandidateApply
-                      electionContract={electionContract}
-                      nightElf={nightElf}
-                    />
-                  )}
-                />
-                <Route
-                  path='/vote/apply/keyin'
-                  render={() => (
-                    <KeyInTeamInfo electionContract={electionContract} />
-                  )}
-                />
-                <Route
-                  path='/vote/team'
-                  render={() => (
-                    <TeamDetail
-                      consensusContract={consensusContract}
-                      electionContract={electionContract}
-                      currentWallet={currentWallet}
-                    />
-                  )}
-                />
-              </Switch>
-            </TabPane>
-            <TabPane tab='My Vote' key='myVote' style={{ color: '#fff' }}>
-              <MyVote
-                electionContract={electionContract}
-                handleVoteTypeChange={this.handleVoteTypeChange}
-              />
-            </TabPane>
+              key={routePaths.electionNotifi}
+            ></TabPane>
+            <TabPane
+              tab={
+                <Link to={routePaths.myVote} style={{ color: '#fff' }}>
+                  My Vote
+                </Link>
+              }
+              key={routePaths.myVote}
+              style={{ color: '#fff' }}
+            ></TabPane>
           </Tabs>
+
+          <Switch>
+            <Route
+              exact
+              path='/vote/election'
+              render={() => (
+                <ElectionNotification
+                  multiTokenContract={multiTokenContract}
+                  voteContract={voteContract}
+                  electionContract={electionContract}
+                  profitContract={profitContract}
+                  dividendContract={dividendContract}
+                  consensusContract={consensusContract}
+                  nightElf={nightElf}
+                  isCandidate={isCandidate}
+                  handleDividendClick={this.handleDividendClick}
+                  dividends={dividends}
+                  electionContractFromExt={electionContractFromExt}
+                  shouldRefreshNodeTable={shouldRefreshNodeTable}
+                  shouldRefreshMyWallet={shouldRefreshMyWallet}
+                  changeVoteState={this.changeVoteState}
+                  checkExtensionLockStatus={this.checkExtensionLockStatus}
+                  shouldRefreshElectionNotifiStatis={
+                    shouldRefreshElectionNotifiStatis
+                  }
+                  refreshPageElectionNotifi={this.refreshPageElectionNotifi}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={routePaths.applyToBeANode}
+              electionContract={electionContract}
+              render={() => (
+                <CandidateApply
+                  electionContract={electionContract}
+                  nightElf={nightElf}
+                />
+              )}
+            />
+            <Route
+              path={routePaths.teamInfoKeyin}
+              render={() => (
+                <KeyInTeamInfo electionContract={electionContract} />
+              )}
+            />
+            <Route
+              path={routePaths.teamDetail}
+              render={() => (
+                <TeamDetail
+                  consensusContract={consensusContract}
+                  electionContract={electionContract}
+                  currentWallet={currentWallet}
+                />
+              )}
+            />
+            <Route
+              path={routePaths.myVote}
+              render={() => (
+                <MyVote
+                  electionContract={electionContract}
+                  handleVoteTypeChange={this.handleVoteTypeChange}
+                />
+              )}
+            />
+            <Redirect from={routePaths.vote} to={routePaths.electionNotifi} />
+          </Switch>
 
           <VoteModal
             voteModalVisible={voteModalVisible}
@@ -1685,4 +1709,4 @@ class VoteContainer extends Component {
   }
 }
 
-export default VoteContainer;
+export default withRouter(VoteContainer);
