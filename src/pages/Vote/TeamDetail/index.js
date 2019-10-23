@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-21 07:56:06
+ * @LastEditTime: 2019-10-23 11:24:42
  * @Description: file content
  */
 
@@ -21,13 +21,18 @@ import {
 } from 'antd';
 import queryString from 'query-string';
 
-import { getTeamDesc } from '@api/vote';
+import { getTeamDesc, fetchElectorVoteWithRecords } from '@api/vote';
 import {
   NODE_DEFAULT_NAME,
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
+import getCurrentWallet from '@utils/getCurrentWallet';
+import {
+  filterUserVoteRecordsForOneCandidate,
+  computeUserRedeemableVoteAmountForOneCandidate
+} from '@utils/voteUtils';
 import './index.less';
 
 const { Paragraph } = Typography;
@@ -46,7 +51,8 @@ export default class TeamDetail extends PureComponent {
       terms: '-',
       totalVotes: '-',
       votedRate: '-',
-      producedBlocks: '-'
+      producedBlocks: '-',
+      userRedeemableVoteAmountForOneCandidate: 0
     };
 
     this.pubkey = queryString.parse(window.location.search).pubkey;
@@ -63,7 +69,7 @@ export default class TeamDetail extends PureComponent {
     }
 
     if (electionContract !== null) {
-      this.fetchAllCandidateInfo();
+      this.fetchDataFromElectionContract();
     }
   }
 
@@ -75,7 +81,7 @@ export default class TeamDetail extends PureComponent {
     }
 
     if (electionContract !== prevProps.electionContract) {
-      this.fetchAllCandidateInfo();
+      this.fetchDataFromElectionContract();
     }
   }
 
@@ -83,12 +89,16 @@ export default class TeamDetail extends PureComponent {
     getTeamDesc(this.pubkey)
       .then(res => {
         if (res.code !== 0) {
-          message.error(res.msg);
           return;
         }
         this.setState({ data: res.data });
       })
       .catch(err => message.err(err));
+  }
+
+  fetchDataFromElectionContract() {
+    this.fetchAllCandidateInfo();
+    this.fetchTheUsersActiveVoteRecords();
   }
 
   fetchAllCandidateInfo() {
@@ -126,7 +136,10 @@ export default class TeamDetail extends PureComponent {
       +candidateVotesArr.indexOf(currentCandidate.obtainedVotesAmount) + 1;
     const terms = currentCandidateInfo.terms.length;
     const totalVotes = currentCandidate.obtainedVotesAmount;
-    const votedRate = ((100 * totalVotes) / totalVoteAmount).toFixed(2);
+    const votedRate =
+      totalVoteAmount === 0
+        ? 0
+        : ((100 * totalVotes) / totalVoteAmount).toFixed(2);
     const { producedBlocks } = currentCandidateInfo;
 
     const candidateAddress = publicKeyToAddress(this.pubkey);
@@ -142,6 +155,37 @@ export default class TeamDetail extends PureComponent {
 
     console.log('candidateVotesArr', candidateVotesArr);
     console.log('currentCandidate', currentCandidate);
+  }
+
+  fetchTheUsersActiveVoteRecords() {
+    const { electionContract } = this.props;
+    // todo: Will it break the data consistency?
+    const currentWallet = getCurrentWallet();
+
+    fetchElectorVoteWithRecords(electionContract, {
+      value: currentWallet.pubKey
+    })
+      .then(res => {
+        this.computeUserRedeemableVoteAmountForOneCandidate(
+          res.activeVotingRecords
+        );
+      })
+      .catch(err => {
+        console.error('fetchElectorVoteWithRecords', err);
+      });
+  }
+
+  computeUserRedeemableVoteAmountForOneCandidate(usersActiveVotingRecords) {
+    const userVoteRecordsForOneCandidate = filterUserVoteRecordsForOneCandidate(
+      usersActiveVotingRecords,
+      this.pubkey
+    );
+    const userRedeemableVoteAmountForOneCandidate = computeUserRedeemableVoteAmountForOneCandidate(
+      userVoteRecordsForOneCandidate
+    );
+    this.setState({
+      userRedeemableVoteAmountForOneCandidate
+    });
   }
 
   // todo: confirm the method works well
@@ -182,11 +226,13 @@ export default class TeamDetail extends PureComponent {
       terms,
       totalVotes,
       votedRate,
-      producedBlocks
+      producedBlocks,
+      userRedeemableVoteAmountForOneCandidate
     } = this.state;
 
     // todo: Is it safe if the user keyin a url that is not safe?
     // todo: handle the error case of node-name
+    // FIXME: hide the edit button for the non-owner
     return (
       <section className={`${clsPrefix} page-container`}>
         <section className={`${clsPrefix}-header card-container`}>
@@ -223,13 +269,26 @@ export default class TeamDetail extends PureComponent {
                 size='large'
                 type='primary'
                 data-role='vote'
+                data-shoulddetectlock
                 data-votetype={FROM_WALLET}
-                data-nodeaddress={this.pubkey}
-                data-nodename={data.name || NODE_DEFAULT_NAME}
+                data-nodeaddress={candidateAddress}
+                data-nodename={data.name || candidateAddress}
+                data-targetPublicKey={this.pubkey}
               >
                 Vote
               </Button>
-              <Button size='large' type='primary' data-role='redeem'>
+              <Button
+                size='large'
+                type='primary'
+                data-role='redeem'
+                data-shoulddetectlock
+                data-nodeaddress={candidateAddress}
+                data-targetPublicKey={this.pubkey}
+                data-nodename={data.name}
+                disabled={
+                  userRedeemableVoteAmountForOneCandidate > 0 ? false : true
+                }
+              >
                 Redeem
               </Button>
             </Col>
