@@ -32,18 +32,30 @@ export default class MyWalletCard extends PureComponent {
     // this.handleClaimDividendClick = this.handleClaimDividendClick.bind(this);
     // this.updateWallet = this.updateWallet.bind(this);
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
+
+    this.hasRun = false;
   }
 
   // todo: combine
-  // componentDidMount() {
-  //   const { contractsStore } = this.props;
-  //   console.log('Mount');
-  //   if (contractsStore.electionContract !== null) {
-  //     athis.fetchData();
-  //   }
-  // }
+  componentDidMount() {
+    const {
+      changeVoteState,
+      electionContract,
+      multiTokenContract
+    } = this.props;
+    if (electionContract && multiTokenContract && !this.hasRun) {
+      changeVoteState({
+        shouldRefreshMyWallet: true
+      });
+    }
+  }
 
+  // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
+    this.fetchData(prevProps);
+  }
+
+  fetchData(prevProps) {
     // todo: optimize the judge
     const {
       multiTokenContract,
@@ -56,12 +68,13 @@ export default class MyWalletCard extends PureComponent {
     const { activeVotedVotesAmount, balance } = this.state;
 
     if (multiTokenContract !== prevProps.multiTokenContract) {
+      this.hasRun = true;
       this.fetchWalletBalance();
     }
 
     console.log('electionContractFromExt', electionContractFromExt);
 
-    if (electionContractFromExt !== prevProps.electionContractFromExt) {
+    if (electionContract !== prevProps.electionContract) {
       this.fetchElectorVoteInfo();
     }
 
@@ -117,10 +130,10 @@ export default class MyWalletCard extends PureComponent {
   }
 
   fetchElectorVoteInfo() {
-    const { electionContractFromExt } = this.props;
+    const { electionContract } = this.props;
     const currentWallet = getCurrentWallet();
 
-    return electionContractFromExt.GetElectorVoteWithRecords.call({
+    return electionContract.GetElectorVoteWithRecords.call({
       value: currentWallet.pubKey
     })
       .then(res => {
