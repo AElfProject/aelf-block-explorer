@@ -343,6 +343,7 @@ export default class NodeTable extends PureComponent {
         item.candidateInformation.name = teamInfo.name;
       }
 
+      // todo: use the method filterUserVoteRecordsForOneCandidate in voteUtil instead
       // add my vote amount
       const myVoteRecordsForOneCandidate = activeVotingRecords.filter(
         votingRecord =>
@@ -354,6 +355,7 @@ export default class NodeTable extends PureComponent {
         },
         0
       );
+      // todo: use the method computeUserRedeemableVoteAmountForOneCandidate in voteUtil instead
       const myRedeemableVoteAmountForOneCandidate = myVoteRecordsForOneCandidate
         .filter(record => record.unlockTimestamp.seconds <= moment().unix())
         .reduce((total, current) => {
@@ -372,20 +374,18 @@ export default class NodeTable extends PureComponent {
       }
     });
 
-    console.log({
-      totalVotesAmount,
-      nodeInfos
-    });
-
     return nodeInfos
-      .map(item => ({
-        ...item.candidateInformation,
-        obtainedVotesAmount: item.obtainedVotesAmount,
-        votedRate:
+      .map(item => {
+        const votedRate =
           totalVotesAmount === 0
             ? 0
-            : ((item.obtainedVotesAmount / totalVotesAmount) * 100).toFixed(2)
-      }))
+            : ((item.obtainedVotesAmount / totalVotesAmount) * 100).toFixed(2);
+        return {
+          ...item.candidateInformation,
+          obtainedVotesAmount: item.obtainedVotesAmount,
+          votedRate
+        };
+      })
       .filter(item => item.isCurrentCandidate)
       .sort((a, b) => b.obtainedVotesAmount - a.obtainedVotesAmount) // todo: is it accurate?
       .map((item, index) => ({
