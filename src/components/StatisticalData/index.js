@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 11:56:44
+ * @LastEditTime: 2019-10-23 16:07:04
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -87,4 +87,9 @@ class StatisticalData extends PureComponent {
     );
   }
 }
+
+StatisticalData.defaultProps = {
+  spinning: false
+};
+
 export default StatisticalData;
