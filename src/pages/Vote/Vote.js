@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-24 17:51:35
+ * @LastEditTime: 2019-10-24 18:53:43
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -1112,11 +1112,12 @@ class VoteContainer extends Component {
     electionContractFromExt
       .Vote(payload)
       .then(res => {
-        this.changeModalVisible('voteConfirmModalVisible', false);
         if (res) {
-          this.checkTransactionResult(res).then(() => {
-            this.refreshPageElectionNotifi();
-          });
+          this.checkTransactionResult(res, 'voteConfirmModalVisible').then(
+            () => {
+              this.refreshPageElectionNotifi();
+            }
+          );
         } else {
           message.error(res.errorMessage.message, 3);
           this.setState({
@@ -1186,16 +1187,11 @@ class VoteContainer extends Component {
       .ChangeVotingOption(payload)
       .then(res => {
         console.log('ChangeVotingOption', res);
-        return this.checkTransactionResult(res).then(() => {
-          this.setState(
-            {
-              voteConfirmModalVisible: false
-            },
-            () => {
-              this.refreshPageElectionNotifi();
-            }
-          );
-        });
+        return this.checkTransactionResult(res, 'voteConfirmModalVisible').then(
+          () => {
+            this.refreshPageElectionNotifi();
+          }
+        );
       })
       .catch(err => {
         console.error('ChangeVotingOption', err);
