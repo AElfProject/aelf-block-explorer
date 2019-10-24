@@ -1,7 +1,8 @@
-@import "./assets/less/_variables.less"; // todo: use the webpack's config instead the import
+@import './assets/less/_variables.less'; // todo: use the webpack's config instead the import
+@import './assets/less/theme.less';
 
 .App {
-  background: url("./assets/images/bg_purple@1x.jpg");
+  background: url('./assets/images/bg_purple@1x.jpg');
   background-size: cover;
   // TODO 在iOS下还有问题。header会跟着滚动。
   //position: fixed;
@@ -38,17 +39,17 @@
 thead {
   th {
     border: none !important;
-    color: #FFF !important;
+    color: #fff !important;
     border-radius: 0 !important;
     background: rgba(57, 0, 57, 0.3) !important;
   }
 }
 tbody {
   tr {
-    color: #FFF;
+    color: #fff;
     background: rgba(57, 0, 57, 0.1) !important;
     td {
-      color: #FFF;
+      color: #fff;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
   }
@@ -59,7 +60,7 @@ tbody {
     }
   }
   a {
-    color: #FFF;
+    color: #fff;
   }
 }
 
@@ -82,7 +83,7 @@ tbody {
   border: none;
   background: none;
   a {
-    color: @fontColorLightPurple
+    color: @fontColorLightPurple;
   }
 }
 
@@ -99,16 +100,16 @@ tbody {
   opacity: 0.8;
 }
 .ant-pagination-item-active a {
-  color: #FFF;
+  color: #fff;
 }
 .ant-pagination-item-active a:hover {
-   color: #FFF !important;
+  color: #fff !important;
 }
 .ant-pagination-item-active:hover a {
-  color: #FFF;
+  color: #fff;
 }
 .ant-pagination-item-active:focus a {
-  color: #FFF;
+  color: #fff;
 }
 .ant-pagination-item-ellipsis {
   color: @fontColorLightPurple !important;
@@ -130,7 +131,7 @@ tbody {
   }
 }
 
-.ant-table-small{
+.ant-table-small {
   border: none;
 }
 // rewriter ant table style end
