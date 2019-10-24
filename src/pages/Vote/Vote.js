@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 18:00:23
+ * @LastEditTime: 2019-10-24 17:51:35
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -296,7 +296,7 @@ class VoteContainer extends Component {
     this.handleRedeemOneVoteConfirm = this.handleRedeemOneVoteConfirm.bind(
       this
     );
-    this.refreshPageElectionNotifi = this.refreshPageElectionNotifi.bind(this);
+    // this.refreshPageElectionNotifi = this.refreshPageElectionNotifi.bind(this);
 
     this.formGroup = null;
     this.isPluginLock = false;
@@ -1276,57 +1276,60 @@ class VoteContainer extends Component {
     };
     // debugger;
 
-    nightElf.chain
-      .contractAt(
-        // todo: use object instead
-        profitContractAddr,
-        wallet
-      )
-      .then(res => {
-        // debugger;
-        this.profitContractFromExt = res;
-        return Promise.all(
-          schemeIds.map(item => {
-            return this.profitContractFromExt.GetProfitAmount.call({
-              symbol: SYMBOL,
+    // todo: add the && as Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
+    // todo: resolve it in nice way later
+    nightElf &&
+      nightElf.chain
+        .contractAt(
+          // todo: use object instead
+          profitContractAddr,
+          wallet
+        )
+        .then(res => {
+          // debugger;
+          this.profitContractFromExt = res;
+          return Promise.all(
+            schemeIds.map(item => {
+              return this.profitContractFromExt.GetProfitAmount.call({
+                symbol: SYMBOL,
+                schemeId: item.schemeId
+              });
+            })
+          );
+        })
+        .then(resArr => {
+          console.log('GetAllProfitAmount', resArr);
+          let total = 0;
+          const dividendAmounts = schemeIds.map((item, index) => {
+            let amount = null;
+            const profitItem = resArr[index];
+            if (profitItem.error) {
+              amount = 0;
+            } else {
+              amount = +profitItem.value;
+            }
+            // todo: remove the judge when need
+            amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;
+            total += amount;
+            return {
+              type: item.type,
+              amount,
               schemeId: item.schemeId
-            });
-          })
-        );
-      })
-      .then(resArr => {
-        console.log('GetAllProfitAmount', resArr);
-        let total = 0;
-        const dividendAmounts = schemeIds.map((item, index) => {
-          let amount = null;
-          const profitItem = resArr[index];
-          if (profitItem.error) {
-            amount = 0;
-          } else {
-            amount = +profitItem.value;
-          }
-          // todo: remove the judge when need
-          amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;
-          total += amount;
-          return {
-            type: item.type,
-            amount,
-            schemeId: item.schemeId
+            };
+          });
+          const dividends = {
+            total,
+            amounts: dividendAmounts
           };
+          this.setState({
+            dividends
+          });
+          // todo: maybe wrong
+          console.log("In state' dividends", dividends);
+        })
+        .catch(err => {
+          console.error('GetAllProfitAmount', err);
         });
-        const dividends = {
-          total,
-          amounts: dividendAmounts
-        };
-        this.setState({
-          dividends
-        });
-        // todo: maybe wrong
-        console.log("In state' dividends", dividends);
-      })
-      .catch(err => {
-        console.error('GetAllProfitAmount', err);
-      });
   }
 
   handleDividendClick() {
