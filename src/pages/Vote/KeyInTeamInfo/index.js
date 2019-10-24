@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-25 21:43:59
+ * @LastEditTime: 2019-10-24 19:33:00
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -64,7 +64,7 @@ function generateTeamInfoKeyInForm(data) {
             },
             {
               pattern: /^[.-\w]+$/,
-              message: 'Only support english alpha and symbol - . _'
+              message: 'Only support english alpha, number and symbol - . _'
             }
           ],
           validateTrigger: ['onChange', 'onBlur'],
@@ -84,7 +84,7 @@ function generateTeamInfoKeyInForm(data) {
               message: 'The input is not valid url!'
             }
           ],
-          validateTrigger: ['onChange', 'onBlur'],
+          validateTrigger: ['onBlur'],
           initialValue: data.avatar
         },
         render: <Input addonBefore='https://' placeholder='Input avatar url:' />
@@ -107,6 +107,7 @@ function generateTeamInfoKeyInForm(data) {
               message: 'The input is not valid url!'
             }
           ],
+          validateTrigger: ['onBlur'],
           initialValue: data.officialWebsite
         },
         render: (
@@ -123,7 +124,8 @@ function generateTeamInfoKeyInForm(data) {
             }
           ],
           fieldDecoratorid: 'mail',
-          initialValue: data.mail
+          initialValue: data.mail,
+          validateTrigger: ['onBlur']
         },
         placeholder: 'Input your email:'
       },
@@ -322,7 +324,7 @@ class CandidateApply extends PureComponent {
         key={k}
       >
         {getFieldDecorator(`socials[${k}]`, {
-          validateTrigger: ['onChange', 'onBlur'],
+          validateTrigger: ['onBlur'],
           rules: [
             {
               pattern: urlRegExp,
