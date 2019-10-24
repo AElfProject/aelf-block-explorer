@@ -297,11 +297,12 @@ export default class MyWalletCard extends PureComponent {
                 </Button>
               </li>
               <li>
-                投票总数： {thousandsCommaWithDecimal(activeVotedVotesAmount)}
+                投票总数：{' '}
+                {thousandsCommaWithDecimal(activeVotedVotesAmount, false)}
               </li>
               <li>
                 赎回总数：{' '}
-                {thousandsCommaWithDecimal(withdrawnVotedVotesAmount)}
+                {thousandsCommaWithDecimal(withdrawnVotedVotesAmount, false)}
               </li>
               <li>最近投票到期时间： {lastestUnlockTime}</li>
             </ul>

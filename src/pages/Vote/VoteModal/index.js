@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-21 17:32:10
+ * @LastEditTime: 2019-10-24 19:16:12
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -29,6 +29,7 @@ import {
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES
 } from '@src/pages/Vote/constants';
+import { thousandsCommaWithDecimal } from '@utils/formater';
 import './index.less';
 
 const { TabPane } = Tabs;
@@ -151,7 +152,6 @@ class VoteModal extends Component {
   getFormItems() {
     const {
       balance,
-      formatedBalance,
       nodeAddress,
       nodeName,
       currentWalletName,
@@ -216,7 +216,7 @@ class VoteModal extends Component {
             label: '可用票数',
             render: (
               <span className='form-item-value'>
-                {formatedBalance} {SYMBOL}
+                {thousandsCommaWithDecimal(balance, false)} {SYMBOL}
               </span>
             )
           },
@@ -233,7 +233,7 @@ class VoteModal extends Component {
                     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                   }
                   min={0}
-                  max={balance}
+                  max={Math.floor(balance)}
                   value={voteAmountInput}
                   onChange={handleVoteAmountChange}
                 />

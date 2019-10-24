@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-24 18:53:43
+ * @LastEditTime: 2019-10-24 19:19:36
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -1529,7 +1529,6 @@ class VoteContainer extends Component {
 
           <VoteModal
             voteModalVisible={voteModalVisible}
-            formatedBalance={formatedBalance}
             nodeAddress={nodeAddress}
             nodeName={nodeName}
             currentWalletName={currentWalletName}
