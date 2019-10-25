@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-24 19:19:36
+ * @LastEditTime: 2019-10-25 15:41:09
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -29,6 +29,8 @@ import config, {
 import { aelf } from '@src/utils';
 // import voteStore from '@store/vote';
 import contractsStore from '@store/contracts';
+import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
+import getStateJudgment from '@utils/getStateJudgment';
 import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
 import CandidateApply from './CandidateApply';
@@ -41,8 +43,6 @@ import RedeemAnVoteModal from './RedeemAnVoteModal';
 // todo: use a import instead
 import * as constants from './constants';
 import { contractsNeedToLoad, schemeIds } from './constants';
-import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
-import getStateJudgment from '@utils/getStateJudgment';
 import { electionContractAddr } from '@config/config';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
@@ -200,7 +200,6 @@ class VoteContainer extends Component {
     super(props);
     this.state = {
       // todo: sort out the state
-      contracts: null,
       nightElf: null,
 
       voteModalVisible: false,
@@ -300,8 +299,9 @@ class VoteContainer extends Component {
 
     this.formGroup = null;
     this.isPluginLock = false;
-    this.profitContractFromExt = null;
-    this.electionContractFromExt = null;
+    // this.profitContractFromExt = null;
+    // this.electionContractFromExt = null;
+    this.hasGetContractsFromExt = false;
   }
 
   async componentDidMount() {
@@ -309,9 +309,6 @@ class VoteContainer extends Component {
     // Get contracts
     try {
       const result = await getContractAddress();
-      this.setState({
-        contracts: result
-      });
       if (!result.chainInfo) {
         message.error(
           'The chain has stopped or cannot be connected to the chain. Please check your network or contact us.',
@@ -504,62 +501,72 @@ class VoteContainer extends Component {
     });
   }
 
-  insertKeypairs(result) {
+  insertKeypairs(checkPermissionResult) {
+    if (checkPermissionResult && checkPermissionResult.error === 0) {
+      this.isPluginLock = false;
+      this.loginPlugin(checkPermissionResult);
+      return;
+    }
+    if (checkPermissionResult.error === 200005) {
+      message.warning(checkPermissionResult.errorMessage.message, 3);
+      this.isPluginLock = true;
+      // return Promise.reject('Plugin lock!');
+    }
+  }
+
+  loginPlugin(checkPermissionResult) {
     const { nightElf } = this.state;
     const getLoginPayload = {
-      appName: APPNAME,
-      connectChain: this.connectChain
+      appName: APPNAME
     };
-    console.log('APPNAME', APPNAME);
-    if (result && result.error === 0) {
-      const { permissions } = result;
-      const payload = {
-        appName: APPNAME,
-        connectChain: this.connectChain,
-        result
-      };
-      this.isPluginLock = false;
-      // localStorage.setItem('currentWallet', null);
+    return new Promise((resolve, reject) => {
       getLogin(nightElf, getLoginPayload, result => {
         // todo: try to extract the code handle the result from extension as there are some repeating code
         if (result && result.error === 0) {
           console.log('result', result);
           const wallet = JSON.parse(result.detail);
-          if (permissions.length) {
+          if (checkPermissionResult.permissions.length) {
             // EXPLAIN: Need to redefine this scope
+            const payload = {
+              appName: APPNAME,
+              result: checkPermissionResult
+            };
             checkPermissionRepeat(nightElf, payload, () => {
               this.getNightElfKeypair(wallet);
               // todo: Extract
-              this.onExtensionAndWalletReady();
+              this.onExtensionAndWalletReady().then(() => {
+                resolve();
+              });
             });
           } else {
             this.getNightElfKeypair(wallet);
             // todo: Extract
-            this.onExtensionAndWalletReady();
+            this.onExtensionAndWalletReady().then(() => {
+              resolve();
+            });
             message.success('Login success!!', 3);
           }
         } else {
           message.error(result.errorMessage.message, 3);
         }
       });
-      // return Promise.resolve('Ok');
-    } else {
-      if (result.error === 200005) {
-        this.changeModalVisible('pluginLockModalVisible', true);
-        this.isPluginLock = true;
-        // return Promise.reject('Plugin lock!');
-      }
-      // message.error(result.errorMessage.message, 3);
-    }
+    });
   }
 
   onExtensionAndWalletReady() {
-    this.fetchProfitAmount();
-    this.fethContractFromExt();
+    return this.fetchContractFromExt()
+      .then(() => {
+        this.hasGetContractsFromExt = true;
+        this.fetchProfitAmount();
+      })
+      .catch(err => {
+        console.error('fetchContractFromExt', err);
+      });
   }
 
-  fethContractFromExt() {
+  fetchContractFromExt() {
     const { nightElf } = this.state;
+    const { contractsNeedToLoadFromExt } = constants;
 
     const currentWallet = getCurrentWallet();
     const wallet = {
@@ -568,17 +575,21 @@ class VoteContainer extends Component {
     // todo: get the contract from extension in cdm or other suitable time
     // todo: using the code as follows instead the repeat code in project
     // todo: error handle
-    constants.contractsNeedToLoadFromExt.forEach(item => {
-      nightElf.chain
-        .contractAt(config[item.contractAddrValName], wallet)
-        .then(res => {
-          console.log('Load contracts need to load from extension: ', res);
-          this.setState({
-            [item.contractNickname]: res
-          });
-        })
-        .catch(err => console.error(err));
-    });
+    // todo: If some contract load fail, will it cause problem?
+    // todo: Consider to get the contract seperately
+    return Promise.all(
+      contractsNeedToLoadFromExt.map(item => {
+        return nightElf.chain
+          .contractAt(config[item.contractAddrValName], wallet)
+          .then(res => {
+            console.log('Load contracts need to load from extension: ', res);
+            this.setState({
+              [item.contractNickname]: res
+            });
+          })
+          .catch(err => console.error(err));
+      })
+    );
   }
 
   changeModalVisible(modal, visible) {
@@ -774,47 +785,52 @@ class VoteContainer extends Component {
   }
 
   handleRedeemOneVoteConfirm() {
-    const { nightElf, voteToRedeem } = this.state;
+    const { voteToRedeem } = this.state;
 
-    const currentWallet = getCurrentWallet();
-    const wallet = {
-      address: currentWallet.address
-    };
     // todo: get the contract from extension in cdm or other suitable time
     // todo: error handle
-    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
-      if (result) {
-        //
-        this.electionContractFromExt = result;
-        this.redeemSomeVote(this.electionContractFromExt, [
-          voteToRedeem.voteId.value
-        ]);
-        // todo: use async instead
-        setTimeout(() => {
-          this.setState({
-            redeemOneVoteModalVisible: false
-          });
-        }, 4000);
-      }
-    });
+    this.redeemSomeVote([voteToRedeem.voteId.value]);
+    // todo: use async instead
+    setTimeout(() => {
+      this.setState({
+        redeemOneVoteModalVisible: false
+      });
+    }, 4000);
   }
 
   checkExtensionLockStatus() {
     const { nightElf } = this.state;
     const currentWallet = getCurrentWallet();
 
-    return nightElf
-      .checkPermission({
-        appName: APPNAME,
-        type: 'addresss',
-        address: currentWallet.address
-      })
-      .then(err => {
-        if (err.error !== 0) {
-          message.warning(err.errorMessage.message, 3);
-          throw new Error(err.errorMessage.message);
-        }
-      });
+    return new Promise((resolve, reject) => {
+      // Calling getChainStatus to make the extension connect the chain
+      // todo: There are some same code.
+      nightElf
+        .checkPermission({
+          appName: APPNAME,
+          type: 'addresss',
+          address: currentWallet.address
+        })
+        .then(checkPermissionResult => {
+          // When plugin is lock
+          if (checkPermissionResult.error !== 0) {
+            const { errorMessage } = checkPermissionResult;
+            message.warning(errorMessage.message, 3);
+            this.hasGetContractsFromExt = false; // Need to get contracts from ext again once plugin is locked.
+            throw new Error(errorMessage.message);
+          }
+          if (!this.hasGetContractsFromExt) {
+            // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
+            nightElf.chain.getChainStatus().then(() => {
+              this.loginPlugin(checkPermissionResult).then(() => {
+                resolve();
+              });
+            });
+            return;
+          }
+          resolve();
+        });
+    });
   }
 
   handleVoteClick(ele) {
@@ -877,36 +893,13 @@ class VoteContainer extends Component {
 
   handleRedeemConfirm() {
     // todo: should nightElf place in state?
-    const { nightElf, redeemVoteSelectedRowKeys } = this.state;
+    const { redeemVoteSelectedRowKeys } = this.state;
 
-    const currentWallet = getCurrentWallet();
-    const wallet = {
-      address: currentWallet.address
-    };
-    // todo: get the contract from extension in cdm or other suitable time
-    // todo: error handle
-    if (this.electionContractFromExt) {
-      // todo: there are the same code here
-      this.redeemSomeVote(
-        this.electionContractFromExt,
-        redeemVoteSelectedRowKeys
-      );
-      return;
-    }
-    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
-      if (result) {
-        this.electionContractFromExt = result;
-
-        // todo: there are the same code here
-        this.redeemSomeVote(
-          this.electionContractFromExt,
-          redeemVoteSelectedRowKeys
-        );
-      }
-    });
+    this.redeemSomeVote(redeemVoteSelectedRowKeys);
   }
 
-  async redeemSomeVote(electionContractFromExt, votesToRedeem) {
+  async redeemSomeVote(votesToRedeem) {
+    const { electionContractFromExt } = this.state;
     // todo: I run it as serial mode as the extension can only open one prompt in one time and the contract didn't support withdrawn many votes with a method
     // todo: After modify the contract don't forget to modify the code as follows
     votesToRedeem.forEach(async item => {
@@ -1054,37 +1047,32 @@ class VoteContainer extends Component {
   // }
 
   handleVoteConfirmOk() {
-    const { nightElf, voteType } = this.state;
+    const { voteType } = this.state;
 
-    const currentWallet = getCurrentWallet();
-    const wallet = {
-      address: currentWallet.address
-    };
     // todo: get the contract from extension in cdm or other suitable time
     // todo: error handle
-    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
-      if (result) {
-        //
-        this.electionContractFromExt = result;
-        switch (voteType) {
-          case FROM_WALLET:
-            this.handleVoteFromWallet(this.electionContractFromExt);
-            break;
-          case FROM_EXPIRED_VOTES:
-            this.handleVoteFromExpiredVote(this.electionContractFromExt);
-            break;
-          case FROM_ACTIVE_VOTES:
-            this.handleSwitchVote(this.electionContractFromExt);
-            break;
-          default:
-            break;
-        }
-      }
-    });
+    switch (voteType) {
+      case FROM_WALLET:
+        this.handleVoteFromWallet();
+        break;
+      case FROM_EXPIRED_VOTES:
+        this.handleVoteFromExpiredVote();
+        break;
+      case FROM_ACTIVE_VOTES:
+        this.handleSwitchVote();
+        break;
+      default:
+        break;
+    }
   }
 
-  handleVoteFromWallet(electionContractFromExt) {
-    const { voteAmountInput, targetPublicKey, isLockTimeForTest } = this.state;
+  handleVoteFromWallet() {
+    const {
+      voteAmountInput,
+      targetPublicKey,
+      isLockTimeForTest,
+      electionContractFromExt
+    } = this.state;
     let { lockTime } = this.state;
     // const timeMS = moment(lockTime).getMilliseconds();
     // console.log('ms', timeMS);
@@ -1164,7 +1152,7 @@ class VoteContainer extends Component {
     }
     voteIdsToRedeem = votesToRedeem.map(item => item.voteId.value);
 
-    this.redeemSomeVote(this.electionContractFromExt, voteIdsToRedeem);
+    this.redeemSomeVote(voteIdsToRedeem);
 
     console.log({
       votesToRedeem,
@@ -1175,8 +1163,8 @@ class VoteContainer extends Component {
   }
 
   // todo: global node address are public key actually
-  handleSwitchVote(electionContractFromExt) {
-    const { targetPublicKey } = this.state;
+  handleSwitchVote() {
+    const { electionContractFromExt, targetPublicKey } = this.state;
     // todo: limit max change num or handle the concurreny problem
     const { switchVoteSelectedRowKeys } = this.state;
     const payload = {
@@ -1260,72 +1248,49 @@ class VoteContainer extends Component {
   fetchProfitAmount() {
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
-    const { nightElf } = this.state;
-    const currentWallet = getCurrentWallet();
-    console.log({
-      schemeIds,
-      currentWallet,
-      profitContractFromExt: this.profitContractFromExt
-    });
-    const wallet = {
-      address: currentWallet.address
-    };
-    // debugger;
+    const { profitContractFromExt } = this.state;
 
-    // todo: add the && as Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
-    // todo: resolve it in nice way later
-    nightElf &&
-      nightElf.chain
-        .contractAt(
-          // todo: use object instead
-          profitContractAddr,
-          wallet
-        )
-        .then(res => {
-          // debugger;
-          this.profitContractFromExt = res;
-          return Promise.all(
-            schemeIds.map(item => {
-              return this.profitContractFromExt.GetProfitAmount.call({
-                symbol: SYMBOL,
-                schemeId: item.schemeId
-              });
-            })
-          );
-        })
-        .then(resArr => {
-          console.log('GetAllProfitAmount', resArr);
-          let total = 0;
-          const dividendAmounts = schemeIds.map((item, index) => {
-            let amount = null;
-            const profitItem = resArr[index];
-            if (profitItem.error) {
-              amount = 0;
-            } else {
-              amount = +profitItem.value;
-            }
-            // todo: remove the judge when need
-            amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;
-            total += amount;
-            return {
-              type: item.type,
-              amount,
-              schemeId: item.schemeId
-            };
-          });
-          const dividends = {
-            total,
-            amounts: dividendAmounts
-          };
-          this.setState({
-            dividends
-          });
-          // todo: maybe wrong
-          console.log("In state' dividends", dividends);
-        })
-        .catch(err => {
-          console.error('GetAllProfitAmount', err);
+    Promise.all(
+      schemeIds.map(item => {
+        return profitContractFromExt.GetProfitAmount.call({
+          symbol: SYMBOL,
+          schemeId: item.schemeId
         });
+      })
+    )
+      .then(resArr => {
+        console.log('GetAllProfitAmount', resArr);
+        let total = 0;
+        const dividendAmounts = schemeIds.map((item, index) => {
+          let amount = null;
+          const profitItem = resArr[index];
+          if (profitItem.error) {
+            amount = 0;
+          } else {
+            amount = +profitItem.value;
+          }
+          // todo: remove the judge when need
+          amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;
+          total += amount;
+          return {
+            type: item.type,
+            amount,
+            schemeId: item.schemeId
+          };
+        });
+        const dividends = {
+          total,
+          amounts: dividendAmounts
+        };
+        this.setState({
+          dividends
+        });
+        // todo: maybe wrong
+        console.log("In state' dividends", dividends);
+      })
+      .catch(err => {
+        console.error('GetAllProfitAmount', err);
+      });
   }
 
   handleDividendClick() {
@@ -1353,9 +1318,10 @@ class VoteContainer extends Component {
   }
 
   handleClaimDividendClick(schemeId) {
+    const { profitContractFromExt } = this.state;
     this.checkExtensionLockStatus()
       .then(() => {
-        this.profitContractFromExt
+        profitContractFromExt
           .ClaimProfits({
             schemeId,
             symbol: SYMBOL
@@ -1448,7 +1414,7 @@ class VoteContainer extends Component {
                 </Link>
               }
               key={routePaths.electionNotifi}
-            ></TabPane>
+            />
             <TabPane
               tab={
                 <Link to={routePaths.myVote} style={{ color: '#fff' }}>
@@ -1457,7 +1423,7 @@ class VoteContainer extends Component {
               }
               key={routePaths.myVote}
               style={{ color: '#fff' }}
-            ></TabPane>
+            />
           </Tabs>
 
           <Switch>

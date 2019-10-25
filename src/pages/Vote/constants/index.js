@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 18:01:35
+ * @LastEditTime: 2019-10-24 20:35:43
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -43,6 +43,10 @@ const contractsNeedToLoadFromExt = [
   {
     contractAddrValName: 'electionContractAddr',
     contractNickname: 'electionContractFromExt'
+  },
+  {
+    contractAddrValName: 'profitContractAddr',
+    contractNickname: 'profitContractFromExt'
   }
 ];
 
