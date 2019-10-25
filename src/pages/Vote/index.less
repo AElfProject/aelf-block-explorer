@@ -33,7 +33,7 @@ button {
 .remove-antd-tabs-default-style {
   .ant-tabs-bar {
     border-bottom: 0 !important;
-    margin: 0 56px 30px;
+    margin: @moduleMargin;
     .ant-tabs-nav-wrap {
       .ant-tabs-tab-active {
         color: #fff;
@@ -78,7 +78,11 @@ button {
 }
 
 .secondary-level-nav {
+  margin: @moduleMargin;
   .remove-antd-tabs-default-style;
+  .ant-radio-wrapper {
+    color: #fff;
+  }
   .ant-tabs-bar {
     .card-container;
   }

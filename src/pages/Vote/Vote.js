@@ -3,11 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-25 15:41:09
+ * @LastEditTime: 2019-10-25 19:42:03
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
-import { Tabs, Modal, Form, Input, Button, message } from 'antd';
+import { Tabs, Modal, Form, Input, Button, Radio, message } from 'antd';
 import { Switch, Route, Link, withRouter, Redirect } from 'react-router-dom';
 import { toJS, reaction } from 'mobx';
 import { Provider } from 'mobx-react';
@@ -1395,7 +1395,6 @@ class VoteContainer extends Component {
 
     // todo: decouple
     // this.formGroup = generateFormGroup.call(this, { nodeAddress: null });
-
     return (
       // todo: place the Provider in the uppest container
       <Provider contractsStore={contractsStore}>
@@ -1403,28 +1402,29 @@ class VoteContainer extends Component {
           {showDownloadPlugin ? (
             <DownloadPlugins style={{ margin: '0 56px' }} />
           ) : null}
-          <Tabs
-            defaultActiveKey={window.location.pathname}
+
+          {/* todo: optimize the radio group */}
+          <Radio.Group
             className='secondary-level-nav'
+            value={window.location.pathname}
           >
-            <TabPane
-              tab={
-                <Link to={routePaths.electionNotifi} style={{ color: '#fff' }}>
-                  Election Notification
-                </Link>
-              }
-              key={routePaths.electionNotifi}
-            />
-            <TabPane
-              tab={
-                <Link to={routePaths.myVote} style={{ color: '#fff' }}>
-                  My Vote
-                </Link>
-              }
-              key={routePaths.myVote}
-              style={{ color: '#fff' }}
-            />
-          </Tabs>
+            <Radio
+              value={routePaths.electionNotifi}
+              onClick={() => {
+                this.props.history.push(routePaths.electionNotifi);
+              }}
+            >
+              Election Notification
+            </Radio>
+            <Radio
+              value={routePaths.myVote}
+              onClick={() => {
+                this.props.history.push(routePaths.myVote);
+              }}
+            >
+              My Vote
+            </Radio>
+          </Radio.Group>
 
           <Switch>
             <Route
