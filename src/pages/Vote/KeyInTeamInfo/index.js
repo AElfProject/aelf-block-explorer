@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-24 19:33:00
+ * @LastEditTime: 2019-10-25 16:55:20
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -16,11 +16,13 @@ import {
   Icon,
   Result,
   message,
-  Modal
+  Modal,
+  Spin
 } from 'antd';
 
 // import PicUpload from './PicUpload';
 import { post, get } from '@src/utils';
+import { NO_AUTHORIZATION_ERROR_TIP } from '@src/constants';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { urlRegExp } from '@pages/Vote/constants';
 import { addUrlPrefix, removeUrlPrefix } from '@utils/formater';
@@ -152,6 +154,7 @@ class CandidateApply extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: true,
       hasAuth: false,
       teamInfoKeyInForm: generateTeamInfoKeyInForm({})
     };
@@ -229,6 +232,9 @@ class CandidateApply extends PureComponent {
             })
               .then(res => {
                 console.log('res', res);
+                this.setState({
+                  isLoading: false
+                });
                 if (res.code !== 0) return;
                 const values = res.data;
                 this.processUrl(values, removeUrlPrefix);
@@ -304,7 +310,7 @@ class CandidateApply extends PureComponent {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { hasAuth, teamInfoKeyInForm } = this.state;
+    const { hasAuth, teamInfoKeyInForm, isLoading } = this.state;
 
     getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
@@ -354,73 +360,81 @@ class CandidateApply extends PureComponent {
 
     console.log('hasAuth', hasAuth);
 
+    // todo: Skeleton is invisible in current background
     return (
-      <section
-        className={`${clsPrefix}-container card-container page-container`}
-      >
-        {hasAuth ? (
-          <React.Fragment>
-            <h3 className={`${clsPrefix}-title`}>填写节点信息</h3>
-            <Form
-              className={`${clsPrefix}-form`}
-              {...TeamInfoFormItemLayout}
-              onSubmit={this.handleSubmit}
-            >
-              {teamInfoKeyInForm.formItems &&
-                teamInfoKeyInForm.formItems.map(item => {
-                  return (
-                    <Form.Item label={item.label} key={item.label}>
-                      {/* todo: Optimize the judge */}
-                      {item.validator ? (
-                        getFieldDecorator(
-                          item.validator.fieldDecoratorid,
-                          item.validator
-                        )(item.render || <Input />)
-                      ) : (
-                        <Input placeholder={item.placeholder} />
-                      )}
-                    </Form.Item>
-                  );
-                })}
-              {formItems}
-              {keys.length < 5 ? (
-                <Form.Item {...formItemLayoutWithOutLabel}>
-                  <Button
-                    type='dashed'
-                    onClick={this.add}
-                    style={{ width: '90%', float: 'right' }}
-                  >
-                    <Icon type='plus' /> Add Social Network
-                  </Button>
-                </Form.Item>
-              ) : null}
-            </Form>
-            <div className={`${clsPrefix}-footer`}>
-              <Button
-                type='submit'
-                htmlType='submit'
-                onClick={this.handleSubmit}
-              >
-                Apply Now
-              </Button>
-            </div>
-          </React.Fragment>
+      <div className='loading-container'>
+        {isLoading ? (
+          <Spin spinning={isLoading} size='large' />
         ) : (
-          // <p className={`${clsPrefix}-no-auth`}>
-          //   Sorry, only the node that is current term's node can edit the team
-          //   info.
-          // </p>
-          <Result
-            status='warning'
-            title='There are some problems with your operation.'
-            extra={
-              <Button type='primary' onClick={this.handleBack}>
-                Go Back
-              </Button>
-            }
-          />
+          <section
+            className={`${clsPrefix}-container card-container page-container`}
+          >
+            {hasAuth ? (
+              // eslint-disable-next-line react/jsx-fragments
+              <React.Fragment>
+                <h3 className={`${clsPrefix}-title`}>填写节点信息</h3>
+                <Form
+                  className={`${clsPrefix}-form`}
+                  {...TeamInfoFormItemLayout}
+                  onSubmit={this.handleSubmit}
+                >
+                  {teamInfoKeyInForm.formItems &&
+                    teamInfoKeyInForm.formItems.map(item => {
+                      return (
+                        <Form.Item label={item.label} key={item.label}>
+                          {/* todo: Optimize the judge */}
+                          {item.validator ? (
+                            getFieldDecorator(
+                              item.validator.fieldDecoratorid,
+                              item.validator
+                            )(item.render || <Input />)
+                          ) : (
+                            <Input placeholder={item.placeholder} />
+                          )}
+                        </Form.Item>
+                      );
+                    })}
+                  {formItems}
+                  {keys.length < 5 ? (
+                    <Form.Item {...formItemLayoutWithOutLabel}>
+                      <Button
+                        type='dashed'
+                        onClick={this.add}
+                        style={{ width: '90%', float: 'right' }}
+                      >
+                        <Icon type='plus' /> Add Social Network
+                      </Button>
+                    </Form.Item>
+                  ) : null}
+                </Form>
+                <div className={`${clsPrefix}-footer`}>
+                  <Button
+                    type='submit'
+                    htmlType='submit'
+                    onClick={this.handleSubmit}
+                  >
+                    Apply Now
+                  </Button>
+                </div>
+              </React.Fragment>
+            ) : (
+              // <p className={`${clsPrefix}-no-auth`}>
+              //   Sorry, only the node that is current term's node can edit the team
+              //   info.
+              // </p>
+              <Result
+                status='warning'
+                title={NO_AUTHORIZATION_ERROR_TIP}
+                extra={
+                  <Button type='primary' onClick={this.handleBack}>
+                    Go Back
+                  </Button>
+                }
+              />
+            )}
+          </section>
         )}
-      </section>
+      </div>
     );
   }
 }

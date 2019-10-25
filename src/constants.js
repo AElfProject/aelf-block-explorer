@@ -91,6 +91,8 @@ const SELECT_SOMETHING_TIP = 'Please select something to continue :)';
 const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
 const UNKNOWN_ERROR_TIP =
   'Sorry, it seems that we encountered an unknown error.';
+const NO_AUTHORIZATION_ERROR_TIP =
+  "Sorry, you temporarily don't has the authorization to the page.";
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
@@ -373,6 +375,7 @@ export {
   SELECT_SOMETHING_TIP,
   NEED_PLUGIN_AUTHORIZE_TIP,
   UNKNOWN_ERROR_TIP,
+  NO_AUTHORIZATION_ERROR_TIP,
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,
