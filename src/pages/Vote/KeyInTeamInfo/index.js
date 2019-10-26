@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 18:25:46
+ * @LastEditTime: 2019-10-26 21:05:29
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -22,8 +22,10 @@ import {
 import queryString from 'query-string';
 
 // import PicUpload from './PicUpload';
+import { APPNAME } from '@config/config';
 import { post, get } from '@src/utils';
-import { NO_AUTHORIZATION_ERROR_TIP } from '@src/constants';
+import { rand16Num } from '@utils/utils';
+import { NO_AUTHORIZATION_ERROR_TIP, UNLOCK_PLUGIN_TIP } from '@src/constants';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { urlRegExp } from '@pages/Vote/constants';
 import { addUrlPrefix, removeUrlPrefix } from '@utils/formater';
@@ -198,135 +200,23 @@ class CandidateApply extends PureComponent {
     }
   }
 
-  remove = k => {
-    const { form } = this.props;
-    // can use data-binding to get
-    const keys = form.getFieldValue('keys');
-    // We need at least one passenger
-    if (keys.length === 1) {
-      return;
-    }
-
-    // todo: can I remove it?
-    // can use data-binding to set
-    form.setFieldsValue({
-      keys: keys.filter(key => key !== k)
-    });
-  };
-
-  add = () => {
-    const { form } = this.props;
-    // can use data-binding to get
-    const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(++id);
-    // can use data-binding to set
-    // important! notify form to detect changes
-    form.setFieldsValue({
-      keys: nextKeys
-    });
-  };
-
-  formatResData(data) {
-    data.avatar;
+  getUnlockPluginText() {
+    return (
+      <section className={`card-container page-container`}>
+        <Result
+          icon={<Icon type='lock' theme='twoTone' twoToneColor='#2b006c' />}
+          status='warning'
+          title={UNLOCK_PLUGIN_TIP}
+        />
+      </section>
+    );
   }
 
-  fetchCandidateInfo() {
-    const { currentWallet } = this.props;
+  getSocialFormItems() {
+    const { getFieldValue, getFieldDecorator } = this.props.form;
 
-    get('/vote/getTeamDesc', {
-      publicKey: currentWallet.pubKey
-    })
-      .then(res => {
-        console.log('res', res);
-        this.setState({
-          isLoading: false
-        });
-        if (res.code !== 0) return;
-        const values = res.data;
-        this.processUrl(values, removeUrlPrefix);
-        this.setState({
-          teamInfoKeyInForm: generateTeamInfoKeyInForm(values)
-        });
-      })
-      .catch(err => {
-        console.error('err', err);
-      });
-  }
-
-  // todo: optimize
-  processUrl(values, processor) {
-    ['avatar', 'officialWebsite', 'socials'].forEach(item => {
-      const value = values[item];
-      if (value === undefined || value === null) return;
-      if (Array.isArray(value)) {
-        values[item] = value.map(subItem => {
-          if (subItem === undefined || value === null) return;
-          return processor(subItem.url);
-        });
-      } else {
-        if (value === undefined || value === null) return;
-        values[item] = processor(value);
-      }
-    });
-  }
-
-  onSocialTypeChange(k, value) {
-    const socials = this.props.form.getFieldValue('socials');
-    socials[k].type = value;
-    console.log({
-      socials
-    });
-    this.props.form.setFieldsValue(socials);
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    const currentWallet = getCurrentWallet();
-    // todo: unify the name of public key. e.g. publicKey & pubkey & pubKey
-    const publicKey = `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`;
-
-    this.props.form.validateFields((err, values) => {
-      debugger;
-      if (!err) {
-        this.processUrl(values, addUrlPrefix);
-        // values.socials = null;
-        delete values.keys; // remove unneed element
-        post('/vote/addTeamDesc', {
-          isActive: true,
-          publicKey,
-          address: currentWallet.address,
-          ...values
-        }).then(res => {
-          if (res.code === 0)
-            this.props.history.push({
-              pathname: '/vote/team',
-              search: `pubkey=${publicKey}`
-            });
-          else {
-            console.error(res);
-            message.error(res.msg);
-          }
-        });
-      } else {
-        Modal.error({ title: 'Please input the right items', centered: true });
-      }
-    });
-  }
-
-  handleBack() {
-    // todo: if the user enter the page by input url, will it get wrong?
-    this.props.history.goBack();
-  }
-
-  render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { hasAuth, teamInfoKeyInForm, isLoading } = this.state;
-
-    getFieldDecorator('keys', { initialValue: [0] });
-    getFieldDecorator('socials', {
-      initialValue: [{ type: socialDefaultValue, value: null }]
-    });
     const keys = getFieldValue('keys');
+
     const formItems = keys.map((k, index) => {
       const socialItem = getFieldValue('socials')[k];
       if (!socialItem) return;
@@ -383,14 +273,21 @@ class CandidateApply extends PureComponent {
         </Form.Item>
       );
     });
+    return formItems;
+  }
 
-    console.log({
-      hasAuth,
-      teamPubkey: this.teamPubkey,
-      currentWallet: this.props.currentWallet
+  getRealContent() {
+    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { hasAuth, teamInfoKeyInForm, isLoading } = this.state;
+
+    const keys = getFieldValue('keys');
+    getFieldDecorator('keys', { initialValue: [0] });
+    getFieldDecorator('socials', {
+      initialValue: [{ type: socialDefaultValue, value: null }]
     });
 
-    // todo: Skeleton is invisible in current background
+    const socialFormItems = this.getSocialFormItems();
+
     return (
       <div className='loading-container'>
         {isLoading ? (
@@ -424,7 +321,7 @@ class CandidateApply extends PureComponent {
                         </Form.Item>
                       );
                     })}
-                  {formItems}
+                  {socialFormItems}
                   {keys.length < 5 ? (
                     <Form.Item {...formItemLayoutWithOutLabel}>
                       <Button
@@ -453,7 +350,7 @@ class CandidateApply extends PureComponent {
               //   info.
               // </p>
               <Result
-                status='warning'
+                status='403'
                 title={NO_AUTHORIZATION_ERROR_TIP}
                 extra={
                   <Button type='primary' onClick={this.handleBack}>
@@ -465,6 +362,153 @@ class CandidateApply extends PureComponent {
           </section>
         )}
       </div>
+    );
+  }
+
+  remove = k => {
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue('keys');
+    // We need at least one passenger
+    if (keys.length === 1) {
+      return;
+    }
+
+    // todo: can I remove it?
+    // can use data-binding to set
+    form.setFieldsValue({
+      keys: keys.filter(key => key !== k)
+    });
+  };
+
+  add = () => {
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue('keys');
+    const nextKeys = keys.concat(++id);
+    // can use data-binding to set
+    // important! notify form to detect changes
+    form.setFieldsValue({
+      keys: nextKeys
+    });
+  };
+
+  formatResData(data) {
+    data.avatar;
+  }
+
+  fetchCandidateInfo() {
+    const { currentWallet } = this.props;
+
+    get('/vote/getTeamDesc', {
+      publicKey: currentWallet.pubkey
+    })
+      .then(res => {
+        console.log('res', res);
+        this.setState({
+          isLoading: false
+        });
+        if (res.code !== 0) return;
+        const values = res.data;
+        this.processUrl(values, removeUrlPrefix);
+        this.setState({
+          teamInfoKeyInForm: generateTeamInfoKeyInForm(values)
+        });
+      })
+      .catch(err => {
+        console.error('err', err);
+      });
+  }
+
+  // todo: optimize
+  processUrl(values, processor) {
+    ['avatar', 'officialWebsite', 'socials'].forEach(item => {
+      const value = values[item];
+      if (value === undefined || value === null) return;
+      if (Array.isArray(value)) {
+        values[item] = value.map(subItem => {
+          if (subItem === undefined || value === null) return;
+          return processor(subItem.url);
+        });
+      } else {
+        if (value === undefined || value === null) return;
+        values[item] = processor(value);
+      }
+    });
+  }
+
+  onSocialTypeChange(k, value) {
+    const socials = this.props.form.getFieldValue('socials');
+    socials[k].type = value;
+    console.log({
+      socials
+    });
+    this.props.form.setFieldsValue(socials);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const { nightElf } = this.props;
+    console.log({
+      nightElf
+    });
+    const currentWallet = getCurrentWallet();
+    // todo: unify the name of public key. e.g. publicKey & pubkey & pubKey
+    const publicKey = `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`;
+    const randomNum = rand16Num(32);
+    this.props.form.validateFields(async (err, values) => {
+      debugger;
+      if (!err) {
+        this.processUrl(values, addUrlPrefix);
+        // values.socials = null;
+        delete values.keys; // remove unneed element
+        values.socials = [];
+        const { signature } = await nightElf.getSignature({
+          appName: APPNAME,
+          address: currentWallet.address,
+          hexToBeSign: randomNum
+        });
+        console.log({
+          signature
+        });
+        post('/vote/addTeamDesc', {
+          isActive: true,
+          publicKey,
+          address: currentWallet.address,
+          random: randomNum,
+          signature,
+          ...values
+        }).then(res => {
+          if (res.code === 0)
+            this.props.history.push({
+              pathname: '/vote/team',
+              search: `pubkey=${publicKey}`
+            });
+          else {
+            console.error(res);
+            message.error(res.msg);
+          }
+        });
+      }
+    });
+  }
+
+  handleBack() {
+    // todo: if the user enter the page by input url, will it get wrong?
+    this.props.history.goBack();
+  }
+
+  render() {
+    const { isPluginLock } = this.props;
+
+    const unlockPluginText = this.getUnlockPluginText();
+    const realContent = this.getRealContent();
+
+    // todo: Skeleton is invisible in current background
+    return (
+      <React.Fragment>
+        {isPluginLock ? unlockPluginText : realContent}
+      </React.Fragment>
     );
   }
 }
