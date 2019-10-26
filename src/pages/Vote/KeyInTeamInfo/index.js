@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 18:07:42
+ * @LastEditTime: 2019-10-26 18:25:46
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -157,7 +157,9 @@ class CandidateApply extends PureComponent {
     super(props);
     this.state = {
       isLoading: true,
-      hasAuth: false,
+      // todo: What if I put the state hasAuth in the upper component Vote? Will it better?
+      // todo: If the pattern of verifying authoriztion are all the same, consider to use HOC.
+      hasAuth: false, // todo: Is it necessary to verify the authorization in the page?
       teamInfoKeyInForm: generateTeamInfoKeyInForm({})
     };
 
