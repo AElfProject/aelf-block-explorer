@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 16:17:38
+ * @LastEditTime: 2019-10-26 17:36:09
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -443,6 +443,7 @@ class VoteContainer extends Component {
   getNightElfKeypair(wallet) {
     if (wallet) {
       console.log('wallet', wallet);
+      wallet.pubkey = '04' + wallet.publicKey.x + wallet.publicKey.y;
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
       this.setState({
         currentWallet: wallet,
@@ -1470,7 +1471,10 @@ class VoteContainer extends Component {
             <Route
               path={routePaths.teamInfoKeyin}
               render={() => (
-                <KeyInTeamInfo electionContract={electionContract} />
+                <KeyInTeamInfo
+                  electionContract={electionContract}
+                  currentWallet={currentWallet}
+                />
               )}
             />
             <Route

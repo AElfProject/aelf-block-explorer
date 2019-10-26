@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 11:24:42
+ * @LastEditTime: 2019-10-26 17:40:40
  * @Description: file content
  */
 
@@ -229,6 +229,9 @@ export default class TeamDetail extends PureComponent {
       producedBlocks,
       userRedeemableVoteAmountForOneCandidate
     } = this.state;
+    console.log({
+      teamPubkey: this.pubkey
+    });
 
     // todo: Is it safe if the user keyin a url that is not safe?
     // todo: handle the error case of node-name
@@ -259,7 +262,14 @@ export default class TeamDetail extends PureComponent {
                     </Paragraph>
                   </p>
                   <Button>
-                    <Link to='/vote/apply/keyin'>Edit</Link>
+                    <Link
+                      to={{
+                        pathname: '/vote/apply/keyin',
+                        search: `pubkey=${this.pubkey}`
+                      }}
+                    >
+                      Edit
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -311,7 +321,7 @@ export default class TeamDetail extends PureComponent {
         <section className={`${clsPrefix}-social-network card-container`}>
           <h5 className='card-header'>Social Networks</h5>
           <div className='card-content'>
-            {data.socials ? (
+            {data.socials && data.socials.length ? (
               <ul>
                 {data.socials.map(item => (
                   <li>

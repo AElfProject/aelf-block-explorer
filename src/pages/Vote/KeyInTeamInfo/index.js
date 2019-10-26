@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-25 16:55:20
+ * @LastEditTime: 2019-10-26 18:07:42
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -19,6 +19,7 @@ import {
   Modal,
   Spin
 } from 'antd';
+import queryString from 'query-string';
 
 // import PicUpload from './PicUpload';
 import { post, get } from '@src/utils';
@@ -33,6 +34,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 let id = 1;
+const socialDefaultValue = 'Github';
 
 const TeamInfoFormItemLayout = {
   labelCol: {
@@ -161,24 +163,36 @@ class CandidateApply extends PureComponent {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBack = this.handleBack.bind(this);
+
+    this.teamPubkey = queryString.parse(window.location.search).pubkey;
   }
 
   // todo: do the same thing when cdm and cdu, how to optimize?
   // cdm: jump from Vote; cdu: enter from url
 
   componentDidMount() {
-    const { electionContract } = this.props;
+    const { currentWallet } = this.props;
 
-    if (electionContract !== null) {
-      this.fetchCandidateInfo();
+    if (currentWallet) {
+      this.setState(
+        {
+          hasAuth: currentWallet.pubkey === this.teamPubkey
+        },
+        this.fetchCandidateInfo
+      );
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { electionContract } = this.props;
+    const { currentWallet } = this.props;
 
-    if (prevProps.electionContract !== electionContract) {
-      this.fetchCandidateInfo();
+    if (prevProps.currentWallet !== currentWallet) {
+      this.setState(
+        {
+          hasAuth: currentWallet.pubkey === this.teamPubkey
+        },
+        this.fetchCandidateInfo
+      );
     }
   }
 
@@ -215,41 +229,25 @@ class CandidateApply extends PureComponent {
   }
 
   fetchCandidateInfo() {
-    const { electionContract } = this.props;
-    const currentWallet = getCurrentWallet();
-    electionContract.GetCandidateInformation.call({
-      value: currentWallet.pubKey
+    const { currentWallet } = this.props;
+
+    get('/vote/getTeamDesc', {
+      publicKey: currentWallet.pubKey
     })
       .then(res => {
-        this.setState(
-          {
-            // todo: for dev
-            hasAuth: res.isCurrentCandidate
-          },
-          () => {
-            get('/vote/getTeamDesc', {
-              publicKey: currentWallet.pubKey
-            })
-              .then(res => {
-                console.log('res', res);
-                this.setState({
-                  isLoading: false
-                });
-                if (res.code !== 0) return;
-                const values = res.data;
-                this.processUrl(values, removeUrlPrefix);
-                this.setState({
-                  teamInfoKeyInForm: generateTeamInfoKeyInForm(values)
-                });
-              })
-              .catch(err => {
-                console.error('err', err);
-              });
-          }
-        );
+        console.log('res', res);
+        this.setState({
+          isLoading: false
+        });
+        if (res.code !== 0) return;
+        const values = res.data;
+        this.processUrl(values, removeUrlPrefix);
+        this.setState({
+          teamInfoKeyInForm: generateTeamInfoKeyInForm(values)
+        });
       })
       .catch(err => {
-        console.error(err);
+        console.error('err', err);
       });
   }
 
@@ -261,13 +259,22 @@ class CandidateApply extends PureComponent {
       if (Array.isArray(value)) {
         values[item] = value.map(subItem => {
           if (subItem === undefined || value === null) return;
-          return processor(subItem);
+          return processor(subItem.url);
         });
       } else {
         if (value === undefined || value === null) return;
         values[item] = processor(value);
       }
     });
+  }
+
+  onSocialTypeChange(k, value) {
+    const socials = this.props.form.getFieldValue('socials');
+    socials[k].type = value;
+    console.log({
+      socials
+    });
+    this.props.form.setFieldsValue(socials);
   }
 
   handleSubmit(e) {
@@ -277,6 +284,7 @@ class CandidateApply extends PureComponent {
     const publicKey = `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`;
 
     this.props.form.validateFields((err, values) => {
+      debugger;
       if (!err) {
         this.processUrl(values, addUrlPrefix);
         // values.socials = null;
@@ -313,52 +321,72 @@ class CandidateApply extends PureComponent {
     const { hasAuth, teamInfoKeyInForm, isLoading } = this.state;
 
     getFieldDecorator('keys', { initialValue: [0] });
+    getFieldDecorator('socials', {
+      initialValue: [{ type: socialDefaultValue, value: null }]
+    });
     const keys = getFieldValue('keys');
-    const formItems = keys.map((k, index) => (
-      <Form.Item
-        {...TeamInfoFormItemLayout}
-        label={
-          <Select defaultValue='Github' style={{ width: '60%' }}>
-            <Option value='Facebook'>Facebook</Option>
-            <Option value='Telegram'>Telegram</Option>
-            <Option value='Twitter'>Twitter</Option>
-            <Option value='Steemit'>Steemit</Option>
-            <Option value='Github'>Github</Option>
-          </Select>
-        }
-        required={false}
-        key={k}
-      >
-        {getFieldDecorator(`socials[${k}]`, {
-          validateTrigger: ['onBlur'],
-          rules: [
-            {
-              pattern: urlRegExp,
-              message: 'The input is not valid url!'
-            }
-          ]
-        })(
-          <Input
-            addonBefore='https://'
-            placeholder='input your social network website'
-            style={
-              keys.length === 1
-                ? { width: '100%', marginRight: 8 }
-                : { width: '95%', marginRight: 8 }
-            }
-          />
-        )}
-        {keys.length > 1 ? (
-          <Icon
-            className='dynamic-delete-button'
-            type='minus-circle-o'
-            onClick={() => this.remove(k)}
-          />
-        ) : null}
-      </Form.Item>
-    ));
+    const formItems = keys.map((k, index) => {
+      const socialItem = getFieldValue('socials')[k];
+      if (!socialItem) return;
+      const { type } = socialItem;
+      return (
+        <Form.Item
+          {...TeamInfoFormItemLayout}
+          label={
+            <Select
+              defaultValue={socialDefaultValue}
+              style={{ width: '60%' }}
+              onChange={value => {
+                this.onSocialTypeChange(k, value);
+              }}
+              value={type}
+            >
+              <Option value='Facebook'>Facebook</Option>
+              <Option value='Telegram'>Telegram</Option>
+              <Option value='Twitter'>Twitter</Option>
+              <Option value='Steemit'>Steemit</Option>
+              <Option value='Github'>Github</Option>
+            </Select>
+          }
+          required={false}
+          key={k}
+        >
+          {getFieldDecorator(`socials[${k}].url`, {
+            initialValue: null,
+            validateTrigger: ['onBlur'],
+            rules: [
+              {
+                pattern: urlRegExp,
+                message: 'The input is not valid url!'
+              }
+            ]
+          })(
+            <Input
+              addonBefore='https://'
+              placeholder='input your social network website'
+              style={
+                keys.length === 1
+                  ? { width: '100%', marginRight: 8 }
+                  : { width: '95%', marginRight: 8 }
+              }
+            />
+          )}
+          {keys.length > 1 ? (
+            <Icon
+              className='dynamic-delete-button'
+              type='minus-circle-o'
+              onClick={() => this.remove(k)}
+            />
+          ) : null}
+        </Form.Item>
+      );
+    });
 
-    console.log('hasAuth', hasAuth);
+    console.log({
+      hasAuth,
+      teamPubkey: this.teamPubkey,
+      currentWallet: this.props.currentWallet
+    });
 
     // todo: Skeleton is invisible in current background
     return (
