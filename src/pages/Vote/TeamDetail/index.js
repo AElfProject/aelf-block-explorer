@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 17:40:40
+ * @LastEditTime: 2019-10-26 18:28:09
  * @Description: file content
  */
 
@@ -52,15 +52,16 @@ export default class TeamDetail extends PureComponent {
       totalVotes: '-',
       votedRate: '-',
       producedBlocks: '-',
-      userRedeemableVoteAmountForOneCandidate: 0
+      userRedeemableVoteAmountForOneCandidate: 0,
+      hasAuth: false
     };
 
-    this.pubkey = queryString.parse(window.location.search).pubkey;
+    this.teamPubkey = queryString.parse(window.location.search).pubkey;
   }
 
   // todo: optimize the contract's storage
   componentDidMount() {
-    const { consensusContract, electionContract } = this.props;
+    const { consensusContract, electionContract, currentWallet } = this.props;
 
     this.fetchData();
 
@@ -71,10 +72,16 @@ export default class TeamDetail extends PureComponent {
     if (electionContract !== null) {
       this.fetchDataFromElectionContract();
     }
+
+    if (currentWallet) {
+      this.setState({
+        hasAuth: currentWallet.pubkey === this.teamPubkey
+      });
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { consensusContract, electionContract } = this.props;
+    const { consensusContract, electionContract, currentWallet } = this.props;
     console.log('consensusContract', consensusContract);
     if (consensusContract !== prevProps.consensusContract) {
       this.justifyIsBP();
@@ -83,10 +90,19 @@ export default class TeamDetail extends PureComponent {
     if (electionContract !== prevProps.electionContract) {
       this.fetchDataFromElectionContract();
     }
+
+    if (prevProps.currentWallet !== currentWallet) {
+      this.setState(
+        {
+          hasAuth: currentWallet.pubkey === this.teamPubkey
+        },
+        this.fetchCandidateInfo
+      );
+    }
   }
 
   fetchData() {
-    getTeamDesc(this.pubkey)
+    getTeamDesc(this.teamPubkey)
       .then(res => {
         if (res.code !== 0) {
           return;
@@ -117,13 +133,13 @@ export default class TeamDetail extends PureComponent {
 
   processAllCandidateInfo(allCandidateInfo) {
     console.log('allCandidateInfo', allCandidateInfo);
-    console.log('this.pubkey', this.pubkey);
+    console.log('this.teamPubkey', this.teamPubkey);
 
     const candidateVotesArr = allCandidateInfo
       .map(item => item.obtainedVotesAmount)
       .sort((a, b) => b - a);
     const currentCandidate = allCandidateInfo.find(
-      item => item.candidateInformation.pubkey === this.pubkey
+      item => item.candidateInformation.pubkey === this.teamPubkey
     );
 
     const totalVoteAmount = candidateVotesArr.reduce(
@@ -142,7 +158,7 @@ export default class TeamDetail extends PureComponent {
         : ((100 * totalVotes) / totalVoteAmount).toFixed(2);
     const { producedBlocks } = currentCandidateInfo;
 
-    const candidateAddress = publicKeyToAddress(this.pubkey);
+    const candidateAddress = publicKeyToAddress(this.teamPubkey);
 
     this.setState({
       rank,
@@ -178,7 +194,7 @@ export default class TeamDetail extends PureComponent {
   computeUserRedeemableVoteAmountForOneCandidate(usersActiveVotingRecords) {
     const userVoteRecordsForOneCandidate = filterUserVoteRecordsForOneCandidate(
       usersActiveVotingRecords,
-      this.pubkey
+      this.teamPubkey
     );
     const userRedeemableVoteAmountForOneCandidate = computeUserRedeemableVoteAmountForOneCandidate(
       userVoteRecordsForOneCandidate
@@ -227,10 +243,11 @@ export default class TeamDetail extends PureComponent {
       totalVotes,
       votedRate,
       producedBlocks,
-      userRedeemableVoteAmountForOneCandidate
+      userRedeemableVoteAmountForOneCandidate,
+      hasAuth
     } = this.state;
     console.log({
-      teamPubkey: this.pubkey
+      teamPubkey: this.teamPubkey
     });
 
     // todo: Is it safe if the user keyin a url that is not safe?
@@ -261,16 +278,18 @@ export default class TeamDetail extends PureComponent {
                       {candidateAddress}
                     </Paragraph>
                   </p>
-                  <Button>
-                    <Link
-                      to={{
-                        pathname: '/vote/apply/keyin',
-                        search: `pubkey=${this.pubkey}`
-                      }}
-                    >
-                      Edit
-                    </Link>
-                  </Button>
+                  {hasAuth ? (
+                    <Button>
+                      <Link
+                        to={{
+                          pathname: '/vote/apply/keyin',
+                          search: `pubkey=${this.teamPubkey}`
+                        }}
+                      >
+                        Edit
+                      </Link>
+                    </Button>
+                  ) : null}
                 </div>
               </div>
             </Col>
@@ -283,7 +302,7 @@ export default class TeamDetail extends PureComponent {
                 data-votetype={FROM_WALLET}
                 data-nodeaddress={candidateAddress}
                 data-nodename={data.name || candidateAddress}
-                data-targetPublicKey={this.pubkey}
+                data-targetPublicKey={this.teamPubkey}
               >
                 Vote
               </Button>
@@ -293,7 +312,7 @@ export default class TeamDetail extends PureComponent {
                 data-role='redeem'
                 data-shoulddetectlock
                 data-nodeaddress={candidateAddress}
-                data-targetPublicKey={this.pubkey}
+                data-targetPublicKey={this.teamPubkey}
                 data-nodename={data.name}
                 disabled={
                   userRedeemableVoteAmountForOneCandidate > 0 ? false : true
