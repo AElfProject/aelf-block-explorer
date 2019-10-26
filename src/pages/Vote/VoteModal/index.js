@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-24 19:16:12
+ * @LastEditTime: 2019-10-26 16:58:56
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -19,11 +19,19 @@ import {
   InputNumber,
   Icon,
   Checkbox,
-  Tooltip
+  Tooltip,
+  message
 } from 'antd';
 import moment from 'moment';
 
-import { SYMBOL, SHORTEST_LOCK_TIME } from '@src/constants';
+import {
+  SYMBOL,
+  SHORTEST_LOCK_TIME,
+  INPUT_SOMETHING_TIP,
+  SELECT_SOMETHING_TIP,
+  INTEGER_TIP,
+  BETWEEN_ZEOR_AND_BALANCE_TIP
+} from '@src/constants';
 import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
@@ -51,6 +59,27 @@ const switchVotePagination = {
   total: 0,
   showTotal: total => `Total ${total} items`,
   pageSize: 3
+};
+
+// todo: Consider to use it globally
+const validateMessages = {
+  // todo: Why is the fieldDecoratorId still appear?
+  required: INPUT_SOMETHING_TIP,
+  types: {
+    email: 'Not a validate email!',
+    number: 'Not a validate number!'
+  },
+  number: {
+    range: 'Must be between ${min} and ${max}'
+  }
+};
+
+// todo: Consider to use constant in Vote instead
+// todo: Consider to remove this after refactoring the component
+const formItemsNeedToValidateMap = {
+  fromWallet: ['lockTime', 'voteAmountInput'],
+  fromExpiredVotes: [],
+  fromActiveVotes: ['switchVoteRowSelection']
 };
 
 function disabledDate(current) {
@@ -143,7 +172,6 @@ class VoteModal extends Component {
     super(props);
 
     this.handleAllIn = this.handleAllIn.bind(this);
-    // this.handleVoteAmountChange = this.handleVoteAmountChange.bind(this);
     this.handleOk = this.handleOk.bind(this);
     // this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     // this.onSelectChange = this.onSelectChange.bind(this);
@@ -158,7 +186,6 @@ class VoteModal extends Component {
       // handleVoteNext,
       voteAmountInput,
       lockTime,
-      handleVoteAmountChange,
       handleLockTimeChange,
       expiredVotesAmount,
       switchableVoteRecords,
@@ -223,25 +250,49 @@ class VoteModal extends Component {
           {
             label: '投票数量',
             render: (
-              <div>
-                <InputNumber
-                  suffix={SYMBOL}
-                  placeholder='Enter vote amount'
-                  style={{ marginRight: 20, width: 'auto' }}
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  formatter={value =>
-                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                  }
-                  min={0}
-                  max={Math.floor(balance)}
-                  value={voteAmountInput}
-                  onChange={handleVoteAmountChange}
-                />
-                <Button type='primary' onClick={this.handleAllIn}>
-                  All In
-                </Button>
-              </div>
-            )
+              // <div>
+              <Input
+                // suffix={SYMBOL}
+                placeholder='Enter vote amount'
+                style={{ marginRight: 20, width: 'auto' }}
+                // todo: How to make parser/formatter work well with validator?
+                // parser={value => +value.replace(/\$\s?|(,*)/g, '')}
+                // formatter={value =>
+                //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                // }
+                // min={0}
+                // max={Math.floor(balance)}
+                // value={voteAmountInput}
+                // onChange={handleVoteAmountChange}
+              />
+              //   <Button type='primary' onClick={this.handleAllIn}>
+              //     All In
+              //   </Button>
+              // </div>
+            ),
+            validator: {
+              rules: [
+                {
+                  required: true,
+                  message: INPUT_SOMETHING_TIP
+                },
+                // todo: What if I want to validate a number and return ok for the number like 1. ?
+                {
+                  type: 'integer',
+                  transform: Number,
+                  message: INTEGER_TIP
+                },
+                {
+                  type: 'integer',
+                  min: 1,
+                  max: Math.floor(balance),
+                  message: BETWEEN_ZEOR_AND_BALANCE_TIP
+                }
+              ],
+              validateTrigger: ['onChange', 'onBlur'],
+              fieldDecoratorid: 'voteAmountInput',
+              validateFirst: true // todo: How to set it to default?
+            }
           },
           {
             label: '锁定期',
@@ -249,10 +300,15 @@ class VoteModal extends Component {
               <div>
                 <DatePicker
                   disabledDate={disabledDate}
-                  value={lockTime}
-                  onChange={handleLockTimeChange}
+                  // value={lockTime}
+                  // todo: Why do I need to set the field's value myself?
+                  onChange={value => {
+                    this.props.form.setFieldsValue({
+                      lockTime: value
+                    });
+                  }}
                 />
-                <Button
+                {/* <Button
                   onClick={() => {
                     changeVoteState({
                       isLockTimeForTest: true
@@ -260,12 +316,23 @@ class VoteModal extends Component {
                   }}
                 >
                   lock for about 2 min
-                </Button>
+                </Button> */}
                 <span className='tip-color' style={{ marginLeft: 10 }}>
                   锁定期内不支持提币和转账
                 </span>
               </div>
-            )
+            ),
+            validator: {
+              rules: [
+                {
+                  required: true,
+                  message: SELECT_SOMETHING_TIP
+                }
+              ],
+              fieldDecoratorid: 'lockTime'
+              // todo: How to validate DatePicker in a proper time?
+              // validateTrigger: ['onBlur']
+            }
           }
           // {
           //   label: '预估投票收益',
@@ -412,7 +479,18 @@ class VoteModal extends Component {
                   pagination={switchVotePagination}
                 />
               </div>
-            )
+            ),
+            validator: {
+              rules: [
+                {
+                  required: true,
+                  message: SELECT_SOMETHING_TIP
+                }
+              ],
+              fieldDecoratorid: 'switchVoteRowSelection'
+              // todo: How to validate DatePicker in a proper time?
+              // validateTrigger: ['onBlur']
+            }
           }
           // {
           //   label: '锁定期',
@@ -462,39 +540,40 @@ class VoteModal extends Component {
   // }
 
   handleAllIn() {
-    const { balance, handleVoteAmountChange } = this.props;
+    const { balance, changeVoteState } = this.props;
 
-    handleVoteAmountChange(balance);
+    changeVoteState({ voteAmountInput: { value: balance } });
   }
-
-  // handleVoteAmountChange(value) {
-  //   const { handleVoteAmountChange } = this.props;
-
-  //   this.setState({
-  //     voteAmountInput: value
-  //   });
-  // }
 
   // todo: the method seems useless
   handleOk() {
-    const { callback, handleSwitchVote } = this.props;
+    const { callback, changeVoteState, form } = this.props;
     const { voteType } = this.props;
+    const formItemsNeedToValidate = formItemsNeedToValidateMap[voteType];
     console.log('voteType', voteType);
 
-    switch (voteType) {
-      case FROM_WALLET:
-        // todo: change name
-        callback();
-        break;
-      case FROM_EXPIRED_VOTES:
-        callback();
-        break;
-      case FROM_ACTIVE_VOTES:
-        callback();
-        break;
-      default:
-        break;
-    }
+    form.validateFields(formItemsNeedToValidate, (err, values) => {
+      if (err) {
+        return;
+      }
+      changeVoteState(values, () => {
+        // The switch/case is for the future's product require changing.
+        switch (voteType) {
+          case FROM_WALLET:
+            // todo: Change the method's name
+            callback();
+            break;
+          case FROM_EXPIRED_VOTES:
+            callback();
+            break;
+          case FROM_ACTIVE_VOTES:
+            callback();
+            break;
+          default:
+            break;
+        }
+      });
+    });
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -585,6 +664,7 @@ class VoteModal extends Component {
         centered
         maskClosable
         keyboard
+        destroyOnClose
         // todo: optimize, can I use ...this.props instead of the code on the top?
         {...this.props}
       >
@@ -613,7 +693,12 @@ class VoteModal extends Component {
                 }
                 key={form.type}
               >
-                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                <Form
+                  {...formItemLayout}
+                  onSubmit={this.handleSubmit}
+                  // todo: why is the validateMessages don't work?
+                  // validateMessages={validateMessages}
+                >
                   {form.formItems.map(item => {
                     // todo: there are repeat code in form
                     return (
@@ -639,4 +724,31 @@ class VoteModal extends Component {
   }
 }
 
-export default Form.create({})(VoteModal);
+export default Form.create({
+  // name: 'global_state',
+  // onFieldsChange(props, changedFields) {
+  //   console.log({
+  //     changedFields
+  //   });
+  //   if (changedFields.voteAmountInput) {
+  //     changedFields.voteAmountInput.value = +changedFields.voteAmountInput
+  //       .value;
+  //   }
+  //   props.changeVoteState(changedFields);
+  // },
+  // mapPropsToFields(props) {
+  //   console.log({
+  //     propss
+  //   });
+  //   // todo: make the lockTime to be a moment object
+  //   return {
+  //     lockTime: Form.createFormField(props.lockTime),
+  //     voteAmountInput: Form.createFormField(props.voteAmountInput)
+  //   };
+  // },
+  onValuesChange(_, values) {
+    console.log('onValuesChange', values);
+  }
+  // todo: why is validateMessages didn't work when mapPropsToFields?
+  // validateMessages
+})(VoteModal);
