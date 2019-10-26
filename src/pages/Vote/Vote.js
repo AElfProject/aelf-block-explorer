@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-25 19:42:03
+ * @LastEditTime: 2019-10-26 16:17:38
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -274,7 +274,6 @@ class VoteContainer extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.voteNextCallback = this.voteNextCallback.bind(this);
     // this.handleAllIn = this.handleAllIn.bind(this);
-    this.handleVoteAmountChange = this.handleVoteAmountChange.bind(this);
     this.handleLockTimeChange = this.handleLockTimeChange.bind(this);
     this.handleVoteConfirmOk = this.handleVoteConfirmOk.bind(this);
     this.handleVoteTypeChange = this.handleVoteTypeChange.bind(this);
@@ -341,14 +340,6 @@ class VoteContainer extends Component {
       this.fetchProfitAmount();
     }
   }
-
-  // handleAllIn() {
-  //   const { balance } = this.state;
-
-  //   this.setState({
-  //     voteAmountInput: balance
-  //   });
-  // }
 
   getWalletBalance() {
     const { currentWallet, multiTokenContract } = this.state;
@@ -492,12 +483,6 @@ class VoteContainer extends Component {
 
     this.setState({
       redeemVoteSelectedRowKeys: selectedRowKeys
-    });
-  }
-
-  handleVoteAmountChange(value) {
-    this.setState({
-      voteAmountInput: value
     });
   }
 
@@ -977,6 +962,7 @@ class VoteContainer extends Component {
     const { voteType } = this.state;
     let voteConfirmForm = null;
     console.log('voteType', voteType);
+    // todo: Use voteTypeFormItemsMap instead in proper time
     switch (voteType) {
       case FROM_WALLET:
         voteConfirmForm = generateVoteConfirmForm.call(this, {
@@ -1101,11 +1087,19 @@ class VoteContainer extends Component {
       .Vote(payload)
       .then(res => {
         if (res) {
-          this.checkTransactionResult(res, 'voteConfirmModalVisible').then(
-            () => {
-              this.refreshPageElectionNotifi();
-            }
-          );
+          this.checkTransactionResult(res).then(() => {
+            // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
+            // Consider to do the samething after checkTransactionResult in the same page.
+            this.setState(
+              {
+                voteConfirmModalVisible: false,
+                voteModalVisible: false
+              },
+              () => {
+                this.refreshPageElectionNotifi();
+              }
+            );
+          });
         } else {
           message.error(res.errorMessage.message, 3);
           this.setState({
@@ -1175,11 +1169,19 @@ class VoteContainer extends Component {
       .ChangeVotingOption(payload)
       .then(res => {
         console.log('ChangeVotingOption', res);
-        return this.checkTransactionResult(res, 'voteConfirmModalVisible').then(
-          () => {
-            this.refreshPageElectionNotifi();
-          }
-        );
+        return this.checkTransactionResult(res).then(() => {
+          // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
+          // Consider to do the samething after checkTransactionResult in the same page.
+          this.setState(
+            {
+              voteConfirmModalVisible: false,
+              voteModalVisible: false
+            },
+            () => {
+              this.refreshPageElectionNotifi();
+            }
+          );
+        });
       })
       .catch(err => {
         console.error('ChangeVotingOption', err);
@@ -1499,9 +1501,8 @@ class VoteContainer extends Component {
             nodeName={nodeName}
             currentWalletName={currentWalletName}
             balance={balance}
-            callback={this.voteNextCallback}
+            callback={this.handleVoteConfirmOk}
             onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
-            handleVoteAmountChange={this.handleVoteAmountChange}
             handleSwitchVoteAmountChange={this.handleSwitchVoteAmountChange}
             handleLockTimeChange={this.handleLockTimeChange}
             voteAmountInput={voteAmountInput}
