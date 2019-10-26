@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 11:56:12
+ * @LastEditTime: 2019-10-26 18:39:54
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -11,7 +11,6 @@ import { Row, Col, message } from 'antd';
 import moment from 'moment';
 
 import StatisticalData from '@components/StatisticalData/';
-import getCurrentWallet from '@utils/getCurrentWallet';
 import NodeTable from './NodeTable';
 import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
 import MyWalletCard from './MyWalletCard/';
@@ -46,7 +45,6 @@ export default class ElectionNotification extends PureComponent {
     super(props);
 
     this.state = {
-      // currentWallet: null,
       contracts: null,
       showWallet: false,
       nightElf: null,
@@ -63,6 +61,10 @@ export default class ElectionNotification extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.fetchData();
+  }
+
+  fetchData() {
     const {
       electionContract,
       consensusContract,
@@ -200,12 +202,6 @@ export default class ElectionNotification extends PureComponent {
 
   render() {
     const {
-      totalVotesAmount,
-      showDownloadPlugin,
-      statisData,
-      statisDataLoading
-    } = this.state;
-    const {
       consensusContract,
       multiTokenContract,
       profitContract,
@@ -218,8 +214,15 @@ export default class ElectionNotification extends PureComponent {
       shouldRefreshNodeTable,
       changeVoteState,
       shouldRefreshMyWallet,
-      checkExtensionLockStatus
+      checkExtensionLockStatus,
+      currentWallet
     } = this.props;
+    const {
+      totalVotesAmount,
+      showDownloadPlugin,
+      statisData,
+      statisDataLoading
+    } = this.state;
 
     const { electionContract } = this.props;
     // console.log('electionNotifiStatisData', electionNotifiStatisData);
@@ -229,9 +232,12 @@ export default class ElectionNotification extends PureComponent {
         <StatisticalData
           data={statisData}
           spinning={statisDataLoading}
-          style={{ marginBottom: 30 }}
+          style={{ marginBottom: 20 }}
         />
-        <ElectionRuleCard isCandidate={isCandidate} />
+        <ElectionRuleCard
+          isCandidate={isCandidate}
+          currentWallet={currentWallet}
+        />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}

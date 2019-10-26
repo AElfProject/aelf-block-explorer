@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 17:36:09
+ * @LastEditTime: 2019-10-26 18:38:53
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -1454,6 +1454,7 @@ class VoteContainer extends Component {
                     shouldRefreshElectionNotifiStatis
                   }
                   refreshPageElectionNotifi={this.refreshPageElectionNotifi}
+                  currentWallet={currentWallet}
                 />
               )}
             />
