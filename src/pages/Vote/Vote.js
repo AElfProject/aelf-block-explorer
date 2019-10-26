@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 18:38:53
+ * @LastEditTime: 2019-10-26 21:03:03
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -265,7 +265,8 @@ class VoteContainer extends Component {
         }
       },
       redeemOneVoteModalVisible: false,
-      isLockTimeForTest: false
+      isLockTimeForTest: false,
+      isPluginLock: false
     };
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
@@ -297,7 +298,6 @@ class VoteContainer extends Component {
     // this.refreshPageElectionNotifi = this.refreshPageElectionNotifi.bind(this);
 
     this.formGroup = null;
-    this.isPluginLock = false;
     // this.profitContractFromExt = null;
     // this.electionContractFromExt = null;
     this.hasGetContractsFromExt = false;
@@ -417,6 +417,16 @@ class VoteContainer extends Component {
             // We can not do the work using extension here as the wallet maybe not stored in local yet.
             nightElf.chain.getChainStatus((error, result) => {
               if (result) {
+                if (result.error === 200005) {
+                  message.warning(result.errorMessage.message, 3);
+                  this.setState({
+                    isPluginLock: true
+                  });
+                  return;
+                }
+                this.setState({
+                  isPluginLock: false
+                });
                 nightElf.checkPermission(
                   {
                     APPNAME,
@@ -489,13 +499,18 @@ class VoteContainer extends Component {
 
   insertKeypairs(checkPermissionResult) {
     if (checkPermissionResult && checkPermissionResult.error === 0) {
-      this.isPluginLock = false;
+      this.setState({
+        isPluginLock: false
+      });
       this.loginPlugin(checkPermissionResult);
       return;
     }
+    // todo: There are some same codes
     if (checkPermissionResult.error === 200005) {
       message.warning(checkPermissionResult.errorMessage.message, 3);
-      this.isPluginLock = true;
+      this.setState({
+        isPluginLock: true
+      });
       // return Promise.reject('Plugin lock!');
     }
   }
@@ -1393,7 +1408,8 @@ class VoteContainer extends Component {
       shouldRefreshMyWallet,
       voteToRedeem,
       redeemOneVoteModalVisible,
-      shouldRefreshElectionNotifiStatis
+      shouldRefreshElectionNotifiStatis,
+      isPluginLock
     } = this.state;
 
     // todo: decouple
@@ -1475,6 +1491,8 @@ class VoteContainer extends Component {
                 <KeyInTeamInfo
                   electionContract={electionContract}
                   currentWallet={currentWallet}
+                  nightElf={nightElf}
+                  isPluginLock={isPluginLock}
                 />
               )}
             />
