@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 21:05:29
+ * @LastEditTime: 2019-10-28 15:20:24
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -35,7 +35,6 @@ import './index.less';
 const { Option } = Select;
 const { TextArea } = Input;
 
-let id = 1;
 const socialDefaultValue = 'Github';
 
 const TeamInfoFormItemLayout = {
@@ -154,7 +153,7 @@ function generateTeamInfoKeyInForm(data) {
 
 const clsPrefix = 'candidate-apply-team-info-key-in';
 
-class CandidateApply extends PureComponent {
+class KeyInTeamInfo extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -162,7 +161,8 @@ class CandidateApply extends PureComponent {
       // todo: What if I put the state hasAuth in the upper component Vote? Will it better?
       // todo: If the pattern of verifying authoriztion are all the same, consider to use HOC.
       hasAuth: false, // todo: Is it necessary to verify the authorization in the page?
-      teamInfoKeyInForm: generateTeamInfoKeyInForm({})
+      teamInfoKeyInForm: generateTeamInfoKeyInForm({}),
+      teamInfo: null
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -214,24 +214,28 @@ class CandidateApply extends PureComponent {
 
   getSocialFormItems() {
     const { getFieldValue, getFieldDecorator } = this.props.form;
+    const { teamInfo } = this.state;
 
     const keys = getFieldValue('keys');
 
     const formItems = keys.map((k, index) => {
-      const socialItem = getFieldValue('socials')[k];
-      if (!socialItem) return;
-      const { type } = socialItem;
       return (
         <Form.Item
           {...TeamInfoFormItemLayout}
-          label={
+          label={getFieldDecorator(`types[${k}]`, {
+            // todo: Optimize
+            initialValue:
+              (teamInfo &&
+                teamInfo.socials &&
+                teamInfo.socials[k] &&
+                teamInfo.socials[k].type) ||
+              socialDefaultValue
+          })(
             <Select
-              defaultValue={socialDefaultValue}
               style={{ width: '60%' }}
-              onChange={value => {
-                this.onSocialTypeChange(k, value);
-              }}
-              value={type}
+              // onChange={value => {
+              //   this.onSocialTypeChange(k, value);
+              // }}
             >
               <Option value='Facebook'>Facebook</Option>
               <Option value='Telegram'>Telegram</Option>
@@ -239,12 +243,19 @@ class CandidateApply extends PureComponent {
               <Option value='Steemit'>Steemit</Option>
               <Option value='Github'>Github</Option>
             </Select>
-          }
+          )}
           required={false}
           key={k}
         >
-          {getFieldDecorator(`socials[${k}].url`, {
-            initialValue: null,
+          {// todo: How to use the decorator id like socials[${k}].url?
+          getFieldDecorator(`socials[${k}]`, {
+            // todo: Optimize
+            initialValue:
+              (teamInfo &&
+                teamInfo.socials &&
+                teamInfo.socials[k] &&
+                teamInfo.socials[k].url) ||
+              null,
             validateTrigger: ['onBlur'],
             rules: [
               {
@@ -278,12 +289,13 @@ class CandidateApply extends PureComponent {
 
   getRealContent() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { hasAuth, teamInfoKeyInForm, isLoading } = this.state;
+    const { hasAuth, teamInfoKeyInForm, isLoading, teamInfo } = this.state;
 
     const keys = getFieldValue('keys');
-    getFieldDecorator('keys', { initialValue: [0] });
-    getFieldDecorator('socials', {
-      initialValue: [{ type: socialDefaultValue, value: null }]
+    getFieldDecorator('keys', {
+      initialValue: teamInfo
+        ? teamInfo.socials.map((item, index) => index)
+        : [0]
     });
 
     const socialFormItems = this.getSocialFormItems();
@@ -385,7 +397,8 @@ class CandidateApply extends PureComponent {
     const { form } = this.props;
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(++id);
+    // Avoid key repeating
+    const nextKeys = keys.concat(keys[keys.length - 1] + 1);
     // can use data-binding to set
     // important! notify form to detect changes
     form.setFieldsValue({
@@ -412,6 +425,7 @@ class CandidateApply extends PureComponent {
         const values = res.data;
         this.processUrl(values, removeUrlPrefix);
         this.setState({
+          teamInfo: values,
           teamInfoKeyInForm: generateTeamInfoKeyInForm(values)
         });
       })
@@ -427,11 +441,9 @@ class CandidateApply extends PureComponent {
       if (value === undefined || value === null) return;
       if (Array.isArray(value)) {
         values[item] = value.map(subItem => {
-          if (subItem === undefined || value === null) return;
-          return processor(subItem.url);
+          return { type: subItem.type, url: processor(subItem.url) };
         });
       } else {
-        if (value === undefined || value === null) return;
         values[item] = processor(value);
       }
     });
@@ -448,46 +460,56 @@ class CandidateApply extends PureComponent {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { nightElf } = this.props;
-    console.log({
-      nightElf
-    });
+    const { nightElf, checkExtensionLockStatus } = this.props;
+
     const currentWallet = getCurrentWallet();
     // todo: unify the name of public key. e.g. publicKey & pubkey & pubKey
     const publicKey = `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`;
     const randomNum = rand16Num(32);
-    this.props.form.validateFields(async (err, values) => {
-      debugger;
+    this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.processUrl(values, addUrlPrefix);
         // values.socials = null;
+        values.socials = values.socials
+          // todo: Maybe the comment below are wrong
+          // Do map before filter
+          .map((item, index) => {
+            return {
+              type: values.types[index],
+              url: item
+            };
+          })
+          .filter(
+            item =>
+              item.url !== undefined && item.url !== null && item.url !== ''
+          );
         delete values.keys; // remove unneed element
-        values.socials = [];
-        const { signature } = await nightElf.getSignature({
-          appName: APPNAME,
-          address: currentWallet.address,
-          hexToBeSign: randomNum
-        });
-        console.log({
-          signature
-        });
-        post('/vote/addTeamDesc', {
-          isActive: true,
-          publicKey,
-          address: currentWallet.address,
-          random: randomNum,
-          signature,
-          ...values
-        }).then(res => {
-          if (res.code === 0)
-            this.props.history.push({
-              pathname: '/vote/team',
-              search: `pubkey=${publicKey}`
-            });
-          else {
-            console.error(res);
-            message.error(res.msg);
-          }
+        delete values.types; // remove unneed element
+        this.processUrl(values, addUrlPrefix);
+
+        checkExtensionLockStatus().then(async () => {
+          const { signature } = await nightElf.getSignature({
+            appName: APPNAME,
+            address: currentWallet.address,
+            hexToBeSign: randomNum
+          });
+          post('/vote/addTeamDesc', {
+            isActive: true,
+            publicKey,
+            address: currentWallet.address,
+            random: randomNum,
+            signature,
+            ...values
+          }).then(res => {
+            if (res.code === 0)
+              this.props.history.push({
+                pathname: '/vote/team',
+                search: `pubkey=${publicKey}`
+              });
+            else {
+              console.error(res);
+              message.error(res.msg);
+            }
+          });
         });
       }
     });
@@ -513,4 +535,4 @@ class CandidateApply extends PureComponent {
   }
 }
 
-export default withRouter(Form.create({})(CandidateApply));
+export default withRouter(Form.create({})(KeyInTeamInfo));

@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 21:03:03
+ * @LastEditTime: 2019-10-28 13:58:50
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -1493,6 +1493,7 @@ class VoteContainer extends Component {
                   currentWallet={currentWallet}
                   nightElf={nightElf}
                   isPluginLock={isPluginLock}
+                  checkExtensionLockStatus={this.checkExtensionLockStatus}
                 />
               )}
             />
