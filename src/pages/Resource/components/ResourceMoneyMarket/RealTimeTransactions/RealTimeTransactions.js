@@ -18,7 +18,6 @@ import {
   REAL_TIME_FETCH_INTERVAL
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
-// import Websocket from 'react-websocket';
 import './RealTimeTransactions.less';
 
 const fetchLimit = 20;
