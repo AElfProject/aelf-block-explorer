@@ -41,9 +41,15 @@ export default class MyWalletCard extends PureComponent {
     const {
       changeVoteState,
       electionContract,
-      multiTokenContract
+      multiTokenContract,
+      profitContractFromExt
     } = this.props;
-    if (electionContract && multiTokenContract && !this.hasRun) {
+    if (
+      electionContract &&
+      multiTokenContract &&
+      profitContractFromExt &&
+      !this.hasRun
+    ) {
       changeVoteState({
         shouldRefreshMyWallet: true
       });
