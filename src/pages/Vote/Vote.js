@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 19:08:03
+ * @LastEditTime: 2019-10-28 19:55:48
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -230,7 +230,7 @@ class VoteContainer extends Component {
       currentWalletName: null,
       voteAmountInput: null,
       lockTime: null,
-      isCandidate: false,
+      isCandidate: false, // todo: Rename as isCurrentCandidate
       expiredVotesAmount: 0,
       activeVotingRecords: [],
       switchableVoteRecords: [],
@@ -256,6 +256,7 @@ class VoteContainer extends Component {
       shouldRefreshNodeTable: false,
       shouldRefreshMyWallet: false,
       shouldRefreshElectionNotifiStatis: false,
+      shouldJudgeIsCurrentCandidate: true,
       voteToRedeem: {
         nodeName: null,
         nodeAddress: null,
@@ -334,10 +335,19 @@ class VoteContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { shouldRefreshMyWallet } = this.state;
+    const {
+      shouldRefreshMyWallet,
+      electionContract,
+      currentWallet,
+      shouldJudgeIsCurrentCandidate
+    } = this.state;
     if (shouldRefreshMyWallet) {
       // todo: put the method fetchProfitAmount run with the refresh of wallet
       this.fetchProfitAmount();
+    }
+
+    if (electionContract && currentWallet && shouldJudgeIsCurrentCandidate) {
+      this.judgeIsCandidate();
     }
   }
 
@@ -373,10 +383,6 @@ class VoteContainer extends Component {
               this.chainInfo = res;
               // todo: We shouldn't get vote info by consensus contract
               // this.getInformation(result);
-            }
-
-            if (contractNickname === 'electionContract') {
-              this.judgeIsCandidate();
             }
 
             // if (contractNickname === 'profitContract') {
@@ -705,25 +711,33 @@ class VoteContainer extends Component {
   }
 
   judgeIsCandidate() {
-    const { electionContract } = this.state;
-    const currentWallet = getCurrentWallet();
-    if (!currentWallet.publicKey) {
-      console.log("The user didn't storage the publicKey to localStorage yet");
-      return;
-    }
-    // todo: unify the pubkey's getter
-    electionContract.GetCandidateInformation.call({
-      value: `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`
-    })
-      .then(res => {
-        console.log('GetCandidateInformation', res);
-        this.setState({
-          isCandidate: res.isCurrentCandidate
-        });
-      })
-      .catch(err => {
-        console.error('GetCandidateInformation', err);
-      });
+    const { electionContract, currentWallet } = this.state;
+    this.setState(
+      {
+        shouldJudgeIsCurrentCandidate: false
+      },
+      () => {
+        if (!currentWallet.publicKey) {
+          console.log(
+            "The user didn't storage the publicKey to localStorage yet"
+          );
+          return;
+        }
+        // todo: Maybe cause problem if the currentWallet is null
+        electionContract.GetCandidateInformation.call({
+          value: currentWallet.pubkey
+        })
+          .then(res => {
+            console.log('GetCandidateInformation', res);
+            this.setState({
+              isCandidate: res.isCurrentCandidate
+            });
+          })
+          .catch(err => {
+            console.error('GetCandidateInformation', err);
+          });
+      }
+    );
   }
 
   handleClick(e) {
@@ -1409,6 +1423,7 @@ class VoteContainer extends Component {
       voteToRedeem,
       redeemOneVoteModalVisible,
       shouldRefreshElectionNotifiStatis,
+      shouldJudgeIsCurrentCandidate,
       isPluginLock,
       isLockTimeForTest
     } = this.state;
@@ -1485,6 +1500,8 @@ class VoteContainer extends Component {
                   nightElf={nightElf}
                   currentWallet={currentWallet}
                   checkExtensionLockStatus={this.checkExtensionLockStatus}
+                  isCandidate={isCandidate}
+                  shouldJudgeIsCurrentCandidate={shouldJudgeIsCurrentCandidate}
                 />
               )}
             />

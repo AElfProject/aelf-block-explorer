@@ -3,19 +3,21 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 19:12:31
+ * @LastEditTime: 2019-10-28 20:22:06
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Form, Input, Button, Modal, message } from 'antd';
+import { Form, Input, Button, Modal, message, Tooltip } from 'antd';
 
 import './index.less';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import {
   NEED_PLUGIN_AUTHORIZE_TIP,
   txStatusInUpperCase,
-  UNKNOWN_ERROR_TIP
+  UNKNOWN_ERROR_TIP,
+  LONG_NOTIFI_TIME,
+  ALREADY_BEEN_CURRENT_CANDIDATE_TIP
 } from '@src/constants';
 import {
   ELECTION_MORTGAGE_NUM_STR,
@@ -156,13 +158,25 @@ class CandidateApply extends PureComponent {
           // todo: optimize the settimeout
           setTimeout(() => {
             console.log('transactionId', transactionId);
+            // todo: Extract the code getTxResult in the project
             aelf.chain.getTxResult(transactionId, (error, result) => {
-              console.log('result', result);
-              const { Status: status } = result;
-              getStateJudgment(status, transactionId);
               this.setState({
                 applyConfirmVisible: false
               });
+              if (error) {
+                message.error(
+                  `${error.Status}: ${error.Error}`,
+                  LONG_NOTIFI_TIME
+                );
+                message.error(
+                  `Transaction Id: ${transactionId}`,
+                  LONG_NOTIFI_TIME
+                );
+                return;
+              }
+              const { Status: status } = result;
+              getStateJudgment(status, transactionId);
+
               // todo: handle the other status case
               if (status === txStatusInUpperCase.mined) {
                 this.props.history.push(
@@ -200,6 +214,7 @@ class CandidateApply extends PureComponent {
   }
 
   render() {
+    const { isCandidate, shouldJudgeIsCurrentCandidate } = this.props;
     const { applyConfirmVisible } = this.state;
 
     return (
@@ -234,10 +249,36 @@ class CandidateApply extends PureComponent {
             })}
         </Form>
         <div className={`${clsPrefix}-footer`}>
-          <Button onClick={this.handleBack}>Cancel</Button>
-          <Button type='primary' onClick={this.showModal}>
-            Apply Now
+          <Button
+            className={`${clsPrefix}-footer-cancel-btn`}
+            onClick={this.handleBack}
+          >
+            Cancel
           </Button>
+
+          {// todo: Optimize the judge way
+          // todo: The loading reference shouldJudgeIsCurrentCandidate is no accurate, it don't contain the time judge if the user is current candidate, maybe we need to modify it later.
+          isCandidate ? (
+            <Tooltip title={ALREADY_BEEN_CURRENT_CANDIDATE_TIP}>
+              <Button
+                type='primary'
+                onClick={this.showModal}
+                disabled={isCandidate}
+                loading={shouldJudgeIsCurrentCandidate}
+              >
+                Apply Now
+              </Button>
+            </Tooltip>
+          ) : (
+            <Button
+              type='primary'
+              onClick={this.showModal}
+              disabled={isCandidate}
+              loading={shouldJudgeIsCurrentCandidate}
+            >
+              Apply Now
+            </Button>
+          )}
         </div>
         <Modal
           className='apply-confirm-modal'

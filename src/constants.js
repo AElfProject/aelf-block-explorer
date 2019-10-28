@@ -41,6 +41,7 @@ const RESOURCE_OPERATE_LIMIT = 0.01;
 const TEMP_RESOURCE_DECIMAL = 100000;
 const REAL_TIME_FETCH_INTERVAL = 1000 * 30;
 const RESOURCE_CURRENCY_CHART_FETCH_INTERVAL = 1000 * 30;
+const LONG_NOTIFI_TIME = 10; // s
 // todo: use the code as follows
 const TXSSTATUS = {
   // NotExisted: '不存在',
@@ -97,6 +98,9 @@ const INPUT_SOMETHING_TIP = 'Sorry, you should input something:)';
 const INTEGER_TIP = 'It can only be integer:)';
 const UNLOCK_PLUGIN_TIP =
   'Your plugin has beed locked, please unlock and refresh the page:)';
+const GET_TIP = 'It can only be integer:)';
+const ALREADY_BEEN_CURRENT_CANDIDATE_TIP =
+  'You already been candidate:)';
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
@@ -383,6 +387,7 @@ export {
   INPUT_SOMETHING_TIP,
   INTEGER_TIP,
   UNLOCK_PLUGIN_TIP,
+  ALREADY_BEEN_CURRENT_CANDIDATE_TIP,
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,
@@ -395,5 +400,6 @@ export {
   RESOURCE_OPERATE_LIMIT,
   FEE_RATE,
   REAL_TIME_FETCH_INTERVAL,
-  RESOURCE_CURRENCY_CHART_FETCH_INTERVAL
+  RESOURCE_CURRENCY_CHART_FETCH_INTERVAL,
+  LONG_NOTIFI_TIME
 };
