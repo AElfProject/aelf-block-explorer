@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 16:58:56
+ * @LastEditTime: 2019-10-28 15:42:47
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -20,7 +20,8 @@ import {
   Icon,
   Checkbox,
   Tooltip,
-  message
+  message,
+  Switch
 } from 'antd';
 import moment from 'moment';
 
@@ -196,7 +197,8 @@ class VoteModal extends Component {
       voteFromExpiredVoteAmount,
       voteFromExpiredSelectedRowKeys,
       handleVoteFromExpiredSelectedRowChange,
-      changeVoteState
+      changeVoteState,
+      isLockTimeForTest
     } = this.props;
 
     const columns = getColumns.call(this);
@@ -308,15 +310,17 @@ class VoteModal extends Component {
                     });
                   }}
                 />
-                {/* <Button
-                  onClick={() => {
+                <Switch
+                  checkedChildren='lock for about 2 min'
+                  unCheckedChildren='lock according to the time left'
+                  onChange={() => {
+                    const { isLockTimeForTest } = this.props;
                     changeVoteState({
-                      isLockTimeForTest: true
+                      isLockTimeForTest: !isLockTimeForTest
                     });
                   }}
-                >
-                  lock for about 2 min
-                </Button> */}
+                  checked={isLockTimeForTest}
+                />
                 <span className='tip-color' style={{ marginLeft: 10 }}>
                   锁定期内不支持提币和转账
                 </span>

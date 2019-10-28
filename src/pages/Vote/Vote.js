@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 13:58:50
+ * @LastEditTime: 2019-10-28 15:37:52
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -1409,7 +1409,8 @@ class VoteContainer extends Component {
       voteToRedeem,
       redeemOneVoteModalVisible,
       shouldRefreshElectionNotifiStatis,
-      isPluginLock
+      isPluginLock,
+      isLockTimeForTest
     } = this.state;
 
     // todo: decouple
@@ -1547,6 +1548,7 @@ class VoteContainer extends Component {
               this.handleVoteFromExpiredSelectedRowChange
             }
             changeVoteState={this.changeVoteState}
+            isLockTimeForTest={isLockTimeForTest}
           />
 
           <Modal
