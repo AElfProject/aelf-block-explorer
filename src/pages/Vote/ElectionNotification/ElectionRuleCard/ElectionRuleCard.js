@@ -21,7 +21,7 @@ export default memo(function ElectionRuleCard(props) {
             <Link
               to={{
                 pathname: '/vote/apply/keyin',
-                search: `pubkey=${currentWallet.pubkey}`
+                search: `pubkey=${currentWallet && currentWallet.pubkey}`
               }}
             >
               修改团队信息
