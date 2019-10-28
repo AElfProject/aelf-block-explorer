@@ -1,15 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
-import {
-  Modal,
-  Form,
-  Input,
-  Button,
-  Table,
-  Icon,
-  Tooltip,
-  message
-} from 'antd';
+import { Modal, Form, Input, Button, Table, Icon, message } from 'antd';
 // import Highlighter from 'react-highlight-words';
 
 import {
@@ -113,7 +103,7 @@ function getColumns() {
   ];
 }
 
-export default class RedeemModal extends PureComponent {
+class RedeemModal extends PureComponent {
   constructor() {
     super();
     this.state = {
@@ -201,9 +191,10 @@ export default class RedeemModal extends PureComponent {
       redeemableVoteRecordsForOneCandidate,
       activeVoteRecordsForOneCandidate,
       currentWallet,
-      redeemVoteSelectedRowKeys,
+      // redeemVoteSelectedRowKeys,
       handleRedeemVoteSelectedRowChange
     } = this.props;
+    const { getFieldValue, setFieldsValue } = this.props.form;
 
     const activeVoteAmountForOneCandidate = activeVoteRecordsForOneCandidate.reduce(
       (total, current) => total + +current.amount,
@@ -215,10 +206,19 @@ export default class RedeemModal extends PureComponent {
       0
     );
 
+    const redeemVoteSelectedRowKeys = getFieldValue(
+      'redeemVoteSelectedRowKeys'
+    );
+
     const columns = getColumns.call(this);
     const rowSelection = {
       selectedRowKeys: redeemVoteSelectedRowKeys,
-      onChange: handleRedeemVoteSelectedRowChange,
+      // onChange: handleRedeemVoteSelectedRowChange,
+      onChange: value => {
+        setFieldsValue({
+          redeemVoteSelectedRowKeys: value
+        });
+      },
       hideDefaultSelections: true,
       type: 'radio'
     };
@@ -283,7 +283,17 @@ export default class RedeemModal extends PureComponent {
                 rowSelection={rowSelection}
               />
             </div>
-          )
+          ),
+          validator: {
+            rules: [
+              {
+                required: true,
+                message: SELECT_SOMETHING_TIP
+              }
+            ],
+            fieldDecoratorid: 'redeemVoteSelectedRowKeys'
+            // validateTrigger: ['onBlur']
+          }
         },
         // {
         //   label: '赎回数量',
@@ -313,16 +323,23 @@ export default class RedeemModal extends PureComponent {
   }
 
   handleOk() {
-    const { redeemVoteSelectedRowKeys, handleRedeemConfirm } = this.props;
-    if (redeemVoteSelectedRowKeys.length > 0) {
-      handleRedeemConfirm();
-    } else {
-      message.warning(SELECT_SOMETHING_TIP);
-    }
+    const { handleRedeemConfirm, form, changeVoteState } = this.props;
+    form.validateFields((err, values) => {
+      if (err) return;
+      const { redeemVoteSelectedRowKeys } = values;
+      changeVoteState(
+        { redeemVoteSelectedRowKeys: [redeemVoteSelectedRowKeys] },
+        () => {
+          handleRedeemConfirm();
+        }
+      );
+    });
   }
 
   render() {
     const { voteRedeemModalVisible, handleCancel } = this.props;
+    const { getFieldDecorator } = this.props.form;
+
     const voteRedeemForm = this.generateVoteRedeemForm();
 
     return (
@@ -336,25 +353,20 @@ export default class RedeemModal extends PureComponent {
         centered
         maskClosable
         keyboard
+        destroyOnClose
       >
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           {voteRedeemForm.formItems &&
             voteRedeemForm.formItems.map(item => {
               return (
                 <Form.Item label={item.label} key={item.label}>
-                  {/* {getFieldDecorator('email', {
-      rules: [
-        {
-          type: 'email',
-          message: 'The input is not valid E-mail!'
-        },
-        {
-          required: true,
-          message: 'Please input your E-mail!'
-        }
-      ]
-    })(<Input />)} */}
-                  {item.render ? item.render : <Input />}
+                  {/* todo: Optimize the judge */}
+                  {item.validator
+                    ? getFieldDecorator(
+                        item.validator.fieldDecoratorid,
+                        item.validator
+                      )(item.render || <Input />)
+                    : item.render}
                 </Form.Item>
               );
             })}
@@ -367,3 +379,5 @@ export default class RedeemModal extends PureComponent {
     );
   }
 }
+
+export default Form.create()(RedeemModal);
