@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 14:47:19
+ * @LastEditTime: 2019-10-28 19:12:31
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -24,7 +24,6 @@ import {
 import { SYMBOL } from '@src/constants';
 import { aelf } from '@src/utils';
 import getStateJudgment from '@utils/getStateJudgment';
-import { electionContractAddr } from '@config/config';
 
 const currentWallet = getCurrentWallet();
 
@@ -130,53 +129,53 @@ class CandidateApply extends PureComponent {
   }
 
   handleOk() {
-    const { nightElf } = this.props;
-    const currentWallet = getCurrentWallet();
-    const wallet = {
-      address: currentWallet.address
-    };
+    const {
+      currentWallet,
+      electionContractFromExt,
+      checkExtensionLockStatus
+    } = this.props;
+
     // todo: there are the same code in Vote.js
     // todo: error handle
-    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
-      if (result) {
-        console.log('result', result);
-        const electionContract = result;
-        electionContract
-          .AnnounceElection()
-          .then(res => {
-            // todo: handle gloabally, like the way api using
-            if (res.error) {
-              message.error(res.errorMessage.message);
-              return;
-            }
-            if (!res) {
-              message.error(UNKNOWN_ERROR_TIP);
-              return;
-            }
-            const transactionId = res.result
-              ? res.result.TransactionId
-              : res.TransactionId;
-            // todo: optimize the settimeout
-            setTimeout(() => {
-              console.log('transactionId', transactionId);
-              aelf.chain.getTxResult(transactionId, (error, result) => {
-                console.log('result', result);
-                const { Status: status } = result;
-                getStateJudgment(status, transactionId);
-                this.setState({
-                  applyConfirmVisible: false
-                });
-                // todo: handle the other status case
-                if (status === txStatusInUpperCase.mined) {
-                  this.props.history.push('/vote/apply/keyin');
-                }
+    checkExtensionLockStatus().then(() => {
+      electionContractFromExt
+        .AnnounceElection()
+        .then(res => {
+          // todo: handle gloabally, like the way api using
+          if (res.error) {
+            message.error(res.errorMessage.message);
+            return;
+          }
+          if (!res) {
+            message.error(UNKNOWN_ERROR_TIP);
+            return;
+          }
+          const transactionId = res.result
+            ? res.result.TransactionId
+            : res.TransactionId;
+          // todo: optimize the settimeout
+          setTimeout(() => {
+            console.log('transactionId', transactionId);
+            aelf.chain.getTxResult(transactionId, (error, result) => {
+              console.log('result', result);
+              const { Status: status } = result;
+              getStateJudgment(status, transactionId);
+              this.setState({
+                applyConfirmVisible: false
               });
-            }, 4000);
-          })
-          .catch(err => {
-            console.error(err);
-          });
-      }
+              // todo: handle the other status case
+              if (status === txStatusInUpperCase.mined) {
+                this.props.history.push(
+                  `/vote/apply/keyin?pubkey=${currentWallet &&
+                    currentWallet.pubkey}`
+                );
+              }
+            });
+          }, 4000);
+        })
+        .catch(err => {
+          console.error(err);
+        });
     });
 
     // this.setState({

@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 15:37:52
+ * @LastEditTime: 2019-10-28 19:08:03
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -1481,8 +1481,10 @@ class VoteContainer extends Component {
               electionContract={electionContract}
               render={() => (
                 <CandidateApply
-                  electionContract={electionContract}
+                  electionContractFromExt={electionContractFromExt}
                   nightElf={nightElf}
+                  currentWallet={currentWallet}
+                  checkExtensionLockStatus={this.checkExtensionLockStatus}
                 />
               )}
             />
