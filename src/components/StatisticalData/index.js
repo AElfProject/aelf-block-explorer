@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-23 19:00:24
+ * @LastEditTime: 2019-10-29 20:33:03
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -32,7 +32,7 @@ class StatisticalData extends PureComponent {
   }
 
   render() {
-    const { spinning, style } = this.props;
+    const { spinning, style, tooltip } = this.props;
     const { arr } = this.state;
 
     switch (arr.length) {
@@ -78,9 +78,11 @@ class StatisticalData extends PureComponent {
               );
             })}
             {/* </Row> */}
-            <Tooltip title='竞选周期为7天，届之间无间隔；节点数为当前BP和候选节点总数；投票数量为竞选以来投票数量总和；分红池包括为BP节点打包区块奖励+80%gas费+80%侧链收益。'>
-              <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
-            </Tooltip>
+            {tooltip ? (
+              <Tooltip title={tooltip}>
+                <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
+              </Tooltip>
+            ) : null}
           </section>
         </Spin>
       </section>

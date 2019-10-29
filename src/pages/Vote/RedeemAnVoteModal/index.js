@@ -21,7 +21,7 @@ export class RedeemAnVoteModal extends PureComponent {
     return {
       formItems: [
         {
-          label: '节点名称',
+          label: 'Node Name',
           // todo: use classname isteads of the inline-css
           render: (
             <span
@@ -32,7 +32,7 @@ export class RedeemAnVoteModal extends PureComponent {
           )
         },
         {
-          label: '地址',
+          label: 'Node Add',
           render: (
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}
@@ -42,7 +42,7 @@ export class RedeemAnVoteModal extends PureComponent {
           )
         },
         {
-          label: '赎回数量',
+          label: 'Redeem Amount',
           render: (
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}
@@ -52,7 +52,7 @@ export class RedeemAnVoteModal extends PureComponent {
           )
         },
         {
-          label: '赎回至',
+          label: 'Redeem To',
           render: (
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}

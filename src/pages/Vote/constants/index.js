@@ -3,12 +3,12 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 19:30:40
+ * @LastEditTime: 2019-10-29 19:53:04
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
 // todo: handle the code as follow
-import { SYMBOL } from '@src/constants';
+import { LOWER_SYMBOL } from '@src/constants';
 import { ELF_DECIMAL } from '@config/config';
 
 //  The contracts need to load in page ElectionNotification
@@ -52,13 +52,13 @@ const contractsNeedToLoadFromExt = [
 
 const myVoteStatisData = {
   myTotalVotesAmount: {
-    title: `投票总数(${SYMBOL})`
+    title: `Total Votes (${LOWER_SYMBOL})`
   },
   // myVoteProfit: {
-  //   title: `投票收益(${SYMBOL})`
+  //   title: `投票收益(${LOWER_SYMBOL})`
   // },
   withdrawnableVotesAmount: {
-    title: `可赎回票数(${SYMBOL})`
+    title: `Redeemable Votes (${LOWER_SYMBOL})`
   }
 };
 

@@ -106,6 +106,10 @@ const NOT_CURRENT_CANDIDATE_TIP =
 const THE_REASON_TO_BECOME_A_NON_CANDIDATE =
   'It may be result from: \n 1. The node has quitted election during the time. \n 2. The node became an evil node then was kicked out of the candidates.';
 const FEE_TIP = 'A fee of 2 elf will be deducted from the operation :)';
+const ELECTION_NOTIFI_DATA_TIP =
+  'The election term is 7 days, there is no interval between terms; the number of nodes is the total number of current BP and candidate nodes; the number of votes is the sum of the votes amount since the election started; the bonus pool includes a block bonus of the BP node + 80% of the gas fee + 80% of the side chain income.';
+const MY_VOTE_DATA_TIP =
+  'The Total Votes is the votes amount you voted, and the Redeemable Votes is the number of votes that has expired.';
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
@@ -394,6 +398,8 @@ export {
   UNLOCK_PLUGIN_TIP,
   ALREADY_BEEN_CURRENT_CANDIDATE_TIP,
   NOT_CURRENT_CANDIDATE_TIP,
+  ELECTION_NOTIFI_DATA_TIP,
+  MY_VOTE_DATA_TIP,
   THE_REASON_TO_BECOME_A_NON_CANDIDATE,
   FEE_TIP,
   GET_NULL,

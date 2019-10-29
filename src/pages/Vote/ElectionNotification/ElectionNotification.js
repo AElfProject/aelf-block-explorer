@@ -14,7 +14,7 @@ import StatisticalData from '@components/StatisticalData/';
 import NodeTable from './NodeTable';
 import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
 import MyWalletCard from './MyWalletCard/';
-import { SYMBOL } from '@src/constants';
+import { SYMBOL, ELECTION_NOTIFI_DATA_TIP } from '@src/constants';
 import './ElectionNotification.style.less';
 
 const deadline = Date.now() + 1000 * 15; // Moment is also OK
@@ -233,6 +233,7 @@ export default class ElectionNotification extends PureComponent {
           data={statisData}
           spinning={statisDataLoading}
           style={{ marginBottom: 20 }}
+          tooltip={ELECTION_NOTIFI_DATA_TIP}
         />
         <ElectionRuleCard
           isCandidate={isCandidate}

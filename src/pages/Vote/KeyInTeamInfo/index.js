@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 15:20:24
+ * @LastEditTime: 2019-10-29 20:04:42
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -311,7 +311,7 @@ class KeyInTeamInfo extends PureComponent {
             {hasAuth ? (
               // eslint-disable-next-line react/jsx-fragments
               <React.Fragment>
-                <h3 className={`${clsPrefix}-title`}>填写节点信息</h3>
+                <h3 className={`${clsPrefix}-title`}>Keyin Team Info</h3>
                 <Form
                   className={`${clsPrefix}-form`}
                   {...TeamInfoFormItemLayout}

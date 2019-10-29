@@ -12,6 +12,7 @@ import {
   RANK_NOT_EXISTED_SYMBOL,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
+import { MY_VOTE_DATA_TIP } from '@src/constants';
 
 export default class MyVote extends Component {
   constructor(props) {
@@ -181,7 +182,7 @@ export default class MyVote extends Component {
 
     return (
       <section className='page-container'>
-        <StatisticalData data={statisData} />
+        <StatisticalData data={statisData} tooltip={MY_VOTE_DATA_TIP}/>
         <MyVoteRecord data={tableData} />
       </section>
     );
