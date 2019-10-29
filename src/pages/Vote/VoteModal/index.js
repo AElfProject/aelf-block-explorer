@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 15:42:47
+ * @LastEditTime: 2019-10-29 17:34:16
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -220,21 +220,21 @@ class VoteModal extends Component {
     return [
       {
         type: FROM_WALLET,
-        label: '从钱包投',
+        label: 'From Wallet',
         index: 0,
         formItems: [
           {
-            label: '节点名称',
+            label: 'Node Name',
             render: <span className='form-item-value ellipsis'>{nodeName}</span>
           },
           {
-            label: '地址',
+            label: 'Node Add',
             render: (
               <span className='form-item-value ellipsis'>{nodeAddress}</span>
             )
           },
           {
-            label: '钱包',
+            label: 'Wallet',
             render: (
               <span className='form-item-value ellipsis'>
                 {currentWalletName}
@@ -242,7 +242,7 @@ class VoteModal extends Component {
             )
           },
           {
-            label: '可用票数',
+            label: 'Usable Balance',
             render: (
               <span className='form-item-value'>
                 {thousandsCommaWithDecimal(balance, false)} {SYMBOL}
@@ -250,7 +250,7 @@ class VoteModal extends Component {
             )
           },
           {
-            label: '投票数量',
+            label: 'Vote Amount',
             render: (
               // <div>
               <Input
@@ -297,7 +297,7 @@ class VoteModal extends Component {
             }
           },
           {
-            label: '锁定期',
+            label: 'Lock Time',
             render: (
               <div>
                 <DatePicker
@@ -322,7 +322,8 @@ class VoteModal extends Component {
                   checked={isLockTimeForTest}
                 />
                 <span className='tip-color' style={{ marginLeft: 10 }}>
-                  锁定期内不支持提币和转账
+                  Withdraw and transfer are not supported during the locking
+                  period
                 </span>
               </div>
             ),
@@ -449,15 +450,15 @@ class VoteModal extends Component {
       // },
       {
         type: FROM_ACTIVE_VOTES,
-        label: '从未过期投票转投',
+        label: 'From Not Expired Votes',
         index: 2,
         formItems: [
           {
-            label: '节点名称',
+            label: 'Node Name',
             render: <span className='form-item-value ellipsis'>{nodeName}</span>
           },
           {
-            label: '地址',
+            label: 'Node Add',
             render: (
               <span
                 className='ellipsis'
@@ -468,7 +469,7 @@ class VoteModal extends Component {
             )
           },
           {
-            label: '投票记录选择',
+            label: 'Select Vote',
             render: (
               <div>
                 {/* <Search
@@ -659,12 +660,12 @@ class VoteModal extends Component {
 
     return (
       <Modal
-        title='节点投票'
+        title='Node Vote'
         visible={voteModalVisible}
         onOk={this.handleOk}
         // confirmLoading={confirmLoading}
         width={980}
-        okText='Next'
+        // okText='Next'
         centered
         maskClosable
         keyboard
@@ -722,7 +723,9 @@ class VoteModal extends Component {
             );
           })}
         </Tabs>
-        <p className='tip-color'>本次投票将扣除2ELF的手续费</p>
+        <p className='tip-color'>
+          A fee of 2 elf will be deducted from this vote
+        </p>
       </Modal>
     );
   }
