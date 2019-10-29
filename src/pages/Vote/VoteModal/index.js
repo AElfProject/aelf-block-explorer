@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 17:34:16
+ * @LastEditTime: 2019-10-29 17:47:06
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -31,7 +31,8 @@ import {
   INPUT_SOMETHING_TIP,
   SELECT_SOMETHING_TIP,
   INTEGER_TIP,
-  BETWEEN_ZEOR_AND_BALANCE_TIP
+  BETWEEN_ZEOR_AND_BALANCE_TIP,
+  FEE_TIP
 } from '@src/constants';
 import {
   FROM_WALLET,
@@ -723,9 +724,7 @@ class VoteModal extends Component {
             );
           })}
         </Tabs>
-        <p className='tip-color'>
-          A fee of 2 elf will be deducted from this vote
-        </p>
+        <p className='tip-color'>{FEE_TIP}</p>
       </Modal>
     );
   }

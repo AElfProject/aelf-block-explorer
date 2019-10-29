@@ -5,7 +5,8 @@ import { Modal, Form, Input, Button, Table, Icon, message } from 'antd';
 import {
   SYMBOL,
   SELECT_SOMETHING_TIP,
-  NEED_PLUGIN_AUTHORIZE_TIP
+  NEED_PLUGIN_AUTHORIZE_TIP,
+  FEE_TIP
 } from '@src/constants';
 
 const { Search } = Input;
@@ -226,7 +227,7 @@ class RedeemModal extends PureComponent {
     return {
       formItems: [
         {
-          label: '节点名称',
+          label: 'Node Name',
           // todo: use classname isteads of the inline-css
           render: (
             <span
@@ -237,7 +238,7 @@ class RedeemModal extends PureComponent {
           )
         },
         {
-          label: '地址',
+          label: 'Node Add',
           render: (
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}
@@ -247,7 +248,7 @@ class RedeemModal extends PureComponent {
           )
         },
         {
-          label: '当前投票总数',
+          label: 'Active Vote',
           render: (
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}
@@ -257,7 +258,7 @@ class RedeemModal extends PureComponent {
           )
         },
         {
-          label: '过期票数/可赎回票数',
+          label: 'Expired Vote',
           render: (
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}
@@ -267,7 +268,7 @@ class RedeemModal extends PureComponent {
           )
         },
         {
-          label: '投票记录选择',
+          label: 'Select Vote',
           render: (
             <div>
               {/* <Search
@@ -309,7 +310,7 @@ class RedeemModal extends PureComponent {
         //   )
         // },
         {
-          label: '赎回至',
+          label: 'Redeem To',
           render: (
             <span
               style={{ color: '#fff', width: 600, display: 'inline-block' }}
@@ -372,7 +373,7 @@ class RedeemModal extends PureComponent {
             })}
         </Form>
         <p className='tip-color' style={{ fontSize: 12 }}>
-          本次赎回将扣除2ELF的手续费
+          {FEE_TIP}
         </p>
         <p style={{ marginTop: 10 }}>{NEED_PLUGIN_AUTHORIZE_TIP}</p>
       </Modal>
