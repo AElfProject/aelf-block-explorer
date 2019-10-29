@@ -3,11 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 18:39:54
+ * @LastEditTime: 2019-10-29 17:11:11
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
-import { Row, Col, message } from 'antd';
+import { message } from 'antd';
 import moment from 'moment';
 
 import StatisticalData from '@components/StatisticalData/';
@@ -22,21 +22,21 @@ const deadline = Date.now() + 1000 * 15; // Moment is also OK
 const electionNotifiStatisData = {
   termEndTime: {
     id: 0,
-    title: '距本届（第-届）投票结束还有',
+    title: "Current Term's Countdown (-th term)",
     isCountdown: true,
     resetTime: 1000 * 60 * 60 * 24 * 7
   },
   currentNodesAmount: {
     id: 1,
-    title: '当前节点数'
+    title: "Current Node's Amount"
   },
   currentVotesAmount: {
     id: 2,
-    title: '当前总票数'
+    title: 'Current Votes Amount'
   },
   currentMiningReward: {
     id: 3,
-    title: `分红池(${SYMBOL})`
+    title: `Current Mining Reward ( ${SYMBOL} )`
   }
 };
 
@@ -133,7 +133,7 @@ export default class ElectionNotification extends PureComponent {
             {
               method: 'GetCurrentTermNumber',
               statisDataKey: 'termEndTime',
-              processor: value => `距本届（第${value}届）投票结束还有`
+              processor: value => `Current Term's Countdown ( ${value}th term )`
             }
           ]
         }

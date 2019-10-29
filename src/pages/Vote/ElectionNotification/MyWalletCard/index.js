@@ -270,7 +270,7 @@ export default class MyWalletCard extends PureComponent {
     return (
       <section className={`${clsPrefix}`}>
         <div className={`${clsPrefix}-header`}>
-          <h2 className={`${clsPrefix}-header-title`}>我的钱包</h2>
+          <h2 className={`${clsPrefix}-header-title`}>My Wallet</h2>
           <button
             className={`${clsPrefix}-header-sync-btn`}
             onClick={this.handleUpdateWalletClick}
@@ -290,27 +290,27 @@ export default class MyWalletCard extends PureComponent {
             </div>
             {/* todo: extract the lis code in ul */}
             <ul className={`${clsPrefix}-body-wallet-content`}>
-              <li>资产总数： {thousandsCommaWithDecimal(totalAssets)}</li>
-              <li>可用余额： {thousandsCommaWithDecimal(balance)}</li>
+              <li>Total assets: {thousandsCommaWithDecimal(totalAssets)}</li>
+              <li>Balance: {thousandsCommaWithDecimal(balance)}</li>
               <li>
-                待领取分红金额： {dividends.total.toFixed(2)}
+                Claimable profit： {dividends.total.toFixed(2)}
                 <Button
                   shape='round'
                   className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
                   onClick={handleDividendClick}
                 >
-                  领取
+                  Claim
                 </Button>
               </li>
               <li>
-                投票总数：{' '}
+                Active votes：
                 {thousandsCommaWithDecimal(activeVotedVotesAmount, false)}
               </li>
               <li>
-                赎回总数：{' '}
+                Redeemed votes:
                 {thousandsCommaWithDecimal(withdrawnVotedVotesAmount, false)}
               </li>
-              <li>最近投票到期时间： {lastestUnlockTime}</li>
+              <li>Earlyest vote expired time: {lastestUnlockTime}</li>
             </ul>
           </div>
         </Spin>

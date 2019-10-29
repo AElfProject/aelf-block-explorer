@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 15:14:43
+ * @LastEditTime: 2019-10-29 15:43:14
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -764,7 +764,6 @@ class VoteContainer extends Component {
           switch (role) {
             case 'vote':
               this.judgeANodeIsCandidate(targetpublickey).then(res => {
-                console.log(res);
                 if (res) {
                   this.setState(
                     {
@@ -798,7 +797,6 @@ class VoteContainer extends Component {
                   });
                 }
               });
-
               break;
             case 'redeem':
               this.handleRedeemClick(ele);
