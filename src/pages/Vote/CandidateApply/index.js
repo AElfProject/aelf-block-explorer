@@ -3,12 +3,12 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 20:22:06
+ * @LastEditTime: 2019-10-29 19:45:47
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Form, Input, Button, Modal, message, Tooltip } from 'antd';
+import { Form, Input, Button, Modal, message, Tooltip, Icon } from 'antd';
 
 import './index.less';
 import getCurrentWallet from '@utils/getCurrentWallet';
@@ -17,13 +17,13 @@ import {
   txStatusInUpperCase,
   UNKNOWN_ERROR_TIP,
   LONG_NOTIFI_TIME,
-  ALREADY_BEEN_CURRENT_CANDIDATE_TIP
+  ALREADY_BEEN_CURRENT_CANDIDATE_TIP,
+  LOWER_SYMBOL
 } from '@src/constants';
 import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE
 } from '@pages/Vote/constants';
-import { SYMBOL } from '@src/constants';
 import { aelf } from '@src/utils';
 import getStateJudgment from '@utils/getStateJudgment';
 
@@ -40,6 +40,17 @@ const formItemLayout = {
   }
 };
 
+const modalFormItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 12 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 12 }
+  }
+};
+
 function generateCandidateApplyForm({
   nodeAddress,
   currentWalletName,
@@ -48,7 +59,7 @@ function generateCandidateApplyForm({
   return {
     formItems: [
       {
-        label: '抵押地址',
+        label: 'Mortgage Add',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
             {currentWallet.address}
@@ -56,15 +67,15 @@ function generateCandidateApplyForm({
         )
       },
       {
-        label: '抵押数量',
+        label: 'Mortgage Amount',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL}
+            {ELECTION_MORTGAGE_NUM_STR} {LOWER_SYMBOL}
           </span>
         )
       },
       {
-        label: '钱包',
+        label: 'Wallet',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
             {currentWallet.name}
@@ -72,7 +83,7 @@ function generateCandidateApplyForm({
         )
       },
       {
-        label: '硬件建议',
+        label: 'Hardware Advice',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
             {HARDWARE_ADVICE}
@@ -91,16 +102,21 @@ function generateApplyConfirmForm({
   return {
     formItems: [
       {
-        label: '抵押数量',
+        label: 'Mortgage Amount',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {ELECTION_MORTGAGE_NUM_STR}{' '}
-            <span className='tip-color'>成为BP节点后该ELF不能提取</span>
+            {ELECTION_MORTGAGE_NUM_STR} &nbsp;&nbsp;&nbsp;
+            <Tooltip
+              title={`The ${LOWER_SYMBOL} cannot be redeemed during the time being a BP
+              node`}
+            >
+              <Icon type='exclamation-circle' />
+            </Tooltip>
           </span>
         )
       },
       {
-        label: '钱包',
+        label: 'Wallet',
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
             {currentWallet.name}
@@ -221,7 +237,7 @@ class CandidateApply extends PureComponent {
       <section
         className={`${clsPrefix}-container card-container page-container`}
       >
-        <h3 className={`${clsPrefix}-title`}>申请节点</h3>
+        <h3 className={`${clsPrefix}-title`}>Apply Node</h3>
         <Form
           className={`${clsPrefix}-form`}
           {...formItemLayout}
@@ -290,7 +306,7 @@ class CandidateApply extends PureComponent {
           maskClosable
           keyboard
         >
-          <Form {...formItemLayout}>
+          <Form {...modalFormItemLayout}>
             {applyConfirmForm.formItems &&
               applyConfirmForm.formItems.map(item => {
                 return (

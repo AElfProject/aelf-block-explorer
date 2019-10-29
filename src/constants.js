@@ -32,6 +32,7 @@ const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
 const SOCKET_URL = '/socket';
 
+const LOWER_SYMBOL = SYMBOL.toLocaleLowerCase();
 const PAGE_SIZE = 25;
 // todo: remove ELF_DECIMAL
 const ELF_DECIMAL = 100000000;
@@ -399,6 +400,7 @@ export {
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,
   SYMBOL, // todo: get native token info
+  LOWER_SYMBOL,
   CHAIN_ID, // todo: get chain status
   ELF_DECIMAL, // todo: similar to  get native token info
   TEMP_RESOURCE_DECIMAL,

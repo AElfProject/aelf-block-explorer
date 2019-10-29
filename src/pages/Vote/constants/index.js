@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-24 20:35:43
+ * @LastEditTime: 2019-10-29 19:30:40
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -62,7 +62,7 @@ const myVoteStatisData = {
   }
 };
 
-const HARDWARE_ADVICE = '8核 16GB 5TB 宽带100Mbps';
+const HARDWARE_ADVICE = '8Core 16GB 5TB Bandwidth 100Mbps';
 
 const ELECTION_MORTGAGE_NUM = 100000;
 const ELECTION_MORTGAGE_NUM_STR = thousandsComma(ELECTION_MORTGAGE_NUM);
@@ -129,6 +129,12 @@ const FROM_EXPIRED_VOTES = 'fromExpiredVotes';
 const FROM_ACTIVE_VOTES = 'fromActiveVotes';
 const NODE_DEFAULT_NAME = 'Default';
 
+const voteTypeFormItemsMap = {
+  [FROM_WALLET]: ['voteAmount', 'lockTime'],
+  [FROM_EXPIRED_VOTES]: ['voteFromExpiredVoteAmount', 'lockTime'],
+  [FROM_ACTIVE_VOTES]: ['nodeName', 'nodeAddress', 'switchVoteAmount']
+};
+
 // When the team I voted is not candidate in current term, use the symbol to display.
 const RANK_NOT_EXISTED_SYMBOL = '-';
 
@@ -159,5 +165,6 @@ export {
   NODE_DEFAULT_NAME,
   RANK_NOT_EXISTED_SYMBOL,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
-  routePaths
+  routePaths,
+  voteTypeFormItemsMap
 };
