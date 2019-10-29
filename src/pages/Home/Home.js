@@ -166,13 +166,13 @@ export default class HomePage extends Component {
         // TODO:getBasicInfo data
         const basicInfo = [{
             title: 'Block Height',
-            info: this.blockHeight
+            info: +this.blockHeight
         }, {
             title: 'Unconfirmed Block',
-            info: this.unconfirmedBlockHeight
+            info: +this.unconfirmedBlockHeight
         }, {
             title: 'Total Transactions',
-            info: this.state.totalTransactions
+            info: +this.state.totalTransactions
         }, {
             title: 'Total Applications',
             info: '-'
