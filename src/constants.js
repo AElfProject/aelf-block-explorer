@@ -99,8 +99,11 @@ const INTEGER_TIP = 'It can only be integer:)';
 const UNLOCK_PLUGIN_TIP =
   'Your plugin has beed locked, please unlock and refresh the page:)';
 const GET_TIP = 'It can only be integer:)';
-const ALREADY_BEEN_CURRENT_CANDIDATE_TIP =
-  'You already been candidate:)';
+const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = 'You already been candidate:)';
+const NOT_CURRENT_CANDIDATE_TIP =
+  'Sorry, the node is not current candidate:) \n Please refresh the page then choose another node to vote.';
+const THE_REASON_TO_BECOME_A_NON_CANDIDATE =
+  'It may be result from: \n 1. The node has quitted election during the time. \n 2. The node became an evil node then was kicked out of the candidates.';
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
@@ -388,6 +391,8 @@ export {
   INTEGER_TIP,
   UNLOCK_PLUGIN_TIP,
   ALREADY_BEEN_CURRENT_CANDIDATE_TIP,
+  NOT_CURRENT_CANDIDATE_TIP,
+  THE_REASON_TO_BECOME_A_NON_CANDIDATE,
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,

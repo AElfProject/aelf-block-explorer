@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 21:58:30
+ * @LastEditTime: 2019-10-29 15:14:43
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -29,7 +29,13 @@ import config, {
 import { aelf } from '@src/utils';
 // import voteStore from '@store/vote';
 import contractsStore from '@store/contracts';
-import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
+import {
+  SYMBOL,
+  ELF_DECIMAL,
+  NEED_PLUGIN_AUTHORIZE_TIP,
+  NOT_CURRENT_CANDIDATE_TIP,
+  THE_REASON_TO_BECOME_A_NON_CANDIDATE
+} from '@src/constants';
 import getStateJudgment from '@utils/getStateJudgment';
 import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
@@ -347,7 +353,7 @@ class VoteContainer extends Component {
     }
 
     if (electionContract && currentWallet && shouldJudgeIsCurrentCandidate) {
-      this.judgeIsCandidate();
+      this.judgeCurrentUserIsCandidate();
     }
   }
 
@@ -710,7 +716,7 @@ class VoteContainer extends Component {
     });
   }
 
-  judgeIsCandidate() {
+  judgeCurrentUserIsCandidate() {
     const { electionContract, currentWallet } = this.state;
     this.setState(
       {
@@ -742,24 +748,57 @@ class VoteContainer extends Component {
 
   handleClick(e) {
     // todo: handle the useless click
+    const {
+      role,
+      shoulddetectlock,
+      votetype,
+      targetpublickey
+    } = e.target.dataset;
     const ele = e.target;
-    if (!ele.dataset.role) return;
+    if (!role) return;
     // To make sure that all the operation use wallet take effects on the correct wallet
     // It can only be lower case
-    const { shoulddetectlock, votetype } = ele.dataset;
     if (shoulddetectlock) {
       this.checkExtensionLockStatus()
         .then(() => {
-          switch (ele.dataset.role) {
+          switch (role) {
             case 'vote':
-              this.setState(
-                {
-                  voteType: votetype
-                },
-                () => {
-                  this.handleVoteClick(ele);
+              this.judgeANodeIsCandidate(targetpublickey).then(res => {
+                console.log(res);
+                if (res) {
+                  this.setState(
+                    {
+                      voteType: votetype
+                    },
+                    () => {
+                      this.handleVoteClick(ele);
+                    }
+                  );
+                } else {
+                  Modal.confirm({
+                    content: (
+                      <React.Fragment>
+                        <h4
+                          style={{ color: '#fff' }}
+                          className='text-wrap-container'
+                        >
+                          {NOT_CURRENT_CANDIDATE_TIP}
+                        </h4>
+                        <p className='tip-color text-wrap-container'>
+                          {THE_REASON_TO_BECOME_A_NON_CANDIDATE}
+                        </p>
+                      </React.Fragment>
+                    ),
+                    onOk: () => {
+                      // Use reload rather than refreshing the component as the voting button is on different pages. If we use refresh we need to confirm which part to refresh that will spent some developing time.
+                      window.location.reload();
+                    },
+                    centered: true,
+                    okText: 'Refresh'
+                  });
                 }
-              );
+              });
+
               break;
             case 'redeem':
               this.handleRedeemClick(ele);
@@ -776,6 +815,19 @@ class VoteContainer extends Component {
         });
       // todo: use async instead
     }
+  }
+
+  judgeANodeIsCandidate(pubkey) {
+    const { electionContract } = this.state;
+    return electionContract.GetCandidateInformation.call({
+      value: pubkey
+    })
+      .then(res => {
+        return Promise.resolve(res.isCurrentCandidate);
+      })
+      .catch(err => {
+        console.error('GetCandidateInformation', err);
+      });
   }
 
   handleRedeemOneVote(ele) {
@@ -856,23 +908,15 @@ class VoteContainer extends Component {
         const formatedBalance = thousandsCommaWithDecimal(balance);
         this.fetchDataVoteNeed();
 
-        this.setState(
-          {
-            balance,
-            nodeAddress: ele.dataset.nodeaddress,
-            targetPublicKey: ele.dataset.targetpublickey,
-            currentWalletName: JSON.parse(localStorage.getItem('currentWallet'))
-              .name,
-            formatedBalance,
-            nodeName: ele.dataset.nodename || ''
-          },
-          () => {
-            const { targetPublicKey } = this.state;
-            console.log({
-              targetPublicKey
-            });
-          }
-        );
+        this.setState({
+          balance,
+          nodeAddress: ele.dataset.nodeaddress,
+          targetPublicKey: ele.dataset.targetpublickey,
+          currentWalletName: JSON.parse(localStorage.getItem('currentWallet'))
+            .name,
+          formatedBalance,
+          nodeName: ele.dataset.nodename || ''
+        });
         this.changeModalVisible('voteModalVisible', true);
       })
       .then(() => {
