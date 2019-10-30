@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 18:28:09
+ * @LastEditTime: 2019-10-30 14:59:55
  * @Description: file content
  */
 
@@ -22,6 +22,7 @@ import {
 import queryString from 'query-string';
 
 import { getTeamDesc, fetchElectorVoteWithRecords } from '@api/vote';
+import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import {
   NODE_DEFAULT_NAME,
   FROM_WALLET,
@@ -65,7 +66,7 @@ export default class TeamDetail extends PureComponent {
 
     this.fetchData();
 
-    if (consensusContract !== null) {
+    if (consensusContract) {
       this.justifyIsBP();
     }
 
@@ -82,7 +83,7 @@ export default class TeamDetail extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const { consensusContract, electionContract, currentWallet } = this.props;
-    console.log('consensusContract', consensusContract);
+
     if (consensusContract !== prevProps.consensusContract) {
       this.justifyIsBP();
     }
@@ -207,29 +208,17 @@ export default class TeamDetail extends PureComponent {
   // todo: confirm the method works well
   justifyIsBP() {
     const { consensusContract } = this.props;
-    const { data } = this.state;
-    consensusContract.GetCurrentMinerList.call()
+
+    fetchCurrentMinerPubkeyList(consensusContract)
       .then(res => {
-        console.log('GetCurrentMinerList', res);
-        // To confirm justify is BP or not after get the team's pulic key
-        if (!data.publicKey) {
-          this.timer = setInterval(() => {
-            if (data.publicKey) {
-              clearInterval(this.timer);
-              this.timer = null;
-            }
-          }, 300);
-        }
-        console.log('data.publicKey', data.publicKey);
-        if (res.pubkeys.indexOf(data.publicKey) !== -1) {
-          console.log("I'm BP.");
+        if (res.pubkeys.indexOf(this.teamPubkey) !== -1) {
           this.setState({
             isBP: true
           });
         }
       })
       .catch(err => {
-        console.error('GetCurrentMinerList', err);
+        console.error('fetchCurrentMinerPubkeyList', err);
       });
   }
 
@@ -246,9 +235,6 @@ export default class TeamDetail extends PureComponent {
       userRedeemableVoteAmountForOneCandidate,
       hasAuth
     } = this.state;
-    console.log({
-      teamPubkey: this.teamPubkey
-    });
 
     // todo: Is it safe if the user keyin a url that is not safe?
     // todo: handle the error case of node-name

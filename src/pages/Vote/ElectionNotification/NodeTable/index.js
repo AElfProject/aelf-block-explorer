@@ -8,7 +8,7 @@ import {
   fetchPageableCandidateInformation,
   fetchElectorVoteWithRecords
 } from '@api/vote';
-import { fetchCurrentMinerList } from '@api/consensus';
+import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import {
@@ -290,7 +290,7 @@ export default class NodeTable extends PureComponent {
       fetchElectorVoteWithRecords(electionContract, {
         value: currentWallet.pubKey
       }),
-      fetchCurrentMinerList(consensusContract)
+      fetchCurrentMinerPubkeyList(consensusContract)
     ])
       .then(resArr => {
         // process data
