@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 19:53:04
+ * @LastEditTime: 2019-10-30 11:18:55
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -52,13 +52,13 @@ const contractsNeedToLoadFromExt = [
 
 const myVoteStatisData = {
   myTotalVotesAmount: {
-    title: `Total Votes (${LOWER_SYMBOL})`
+    title: `Total Votes`
   },
   // myVoteProfit: {
   //   title: `投票收益(${LOWER_SYMBOL})`
   // },
   withdrawnableVotesAmount: {
-    title: `Redeemable Votes (${LOWER_SYMBOL})`
+    title: `Redeemable Votes`
   }
 };
 
