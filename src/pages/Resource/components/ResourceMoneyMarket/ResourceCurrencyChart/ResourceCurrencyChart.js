@@ -125,6 +125,7 @@ export default class ResourceCurrencyChart extends PureComponent {
           itemStyle: {
             // todo: Use the variable in less instead
             color: '#05ac90'
+            // width: '10px'
           }
         };
         yAxisData.push(data);
@@ -133,6 +134,7 @@ export default class ResourceCurrencyChart extends PureComponent {
           value: (item.count + sellRecords[index].count) / ELF_DECIMAL,
           itemStyle: {
             color: '#d34a64'
+            // width: '10px'
           }
         };
         yAxisData.push(data);
@@ -174,9 +176,7 @@ export default class ResourceCurrencyChart extends PureComponent {
     const { xAxisData, yAxisData, intervalTime } = this.state;
     const maxValue = Math.max.apply(
       Math,
-      yAxisData.map((item, index) => {
-        return item.value;
-      })
+      yAxisData.map((item, index) => item.value)
     );
     const option = {
       grid: {
@@ -306,9 +306,11 @@ export default class ResourceCurrencyChart extends PureComponent {
           name: `Total volume/${SYMBOL} of business`,
           type: 'bar',
           zlevel: 2,
-          data: yAxisData
+          data: yAxisData,
+          barWidth: 40
         }
       ]
+      // backgroundColor: 'rgba(0, 0, 0, 0.1)'
     };
 
     return option;

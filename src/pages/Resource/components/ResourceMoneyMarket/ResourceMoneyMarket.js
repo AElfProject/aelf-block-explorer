@@ -106,8 +106,8 @@ export default class ResourceMoneyMarket extends PureComponent {
     const menu = menuNames.map((item, index) => {
       return (
         <Col
-          xxl={24}
-          xl={24}
+          xxl={16}
+          xl={16}
           lg={6}
           key={index}
           style={{ marginBottom: '20px' }}
