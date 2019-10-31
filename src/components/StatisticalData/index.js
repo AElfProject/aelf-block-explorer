@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 20:33:03
+ * @LastEditTime: 2019-10-31 20:36:10
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -18,8 +18,26 @@ class StatisticalData extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      arr: Object.values(props.data)
+      arr: null
     };
+  }
+
+  componentDidMount() {
+    const { data } = this.props;
+
+    this.setState({
+      arr: Object.values(data)
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { data } = this.props;
+
+    if (prevProps.data !== data) {
+      this.setState({
+        arr: Object.values(data)
+      });
+    }
   }
 
   handleFinish(id) {
@@ -32,8 +50,9 @@ class StatisticalData extends PureComponent {
   }
 
   render() {
-    const { spinning, style, tooltip } = this.props;
+    const { spinning, style, tooltip, inline } = this.props;
     const { arr } = this.state;
+    if (!arr) return null;
 
     switch (arr.length) {
       case 4:
@@ -50,7 +69,11 @@ class StatisticalData extends PureComponent {
       <section style={style}>
         <Spin spinning={spinning}>
           {/* <Row> */}
-          <section className={`${clsPrefix}-container card-container `}>
+          <section
+            className={`${clsPrefix}-container card-container ${
+              inline ? 'inline-style' : ''
+            }`}
+          >
             {arr.map(item => {
               return (
                 // <Col span={item.span} key={item.title}>
