@@ -1,6 +1,6 @@
 .trading-box {
   padding-top: 22px;
-  background: #2e1875;
+  background: @cardBodyColor;
   display: flex;
   justify-content: center;
 
@@ -26,27 +26,27 @@
 }
 
 .trading-buy {
-  border-right: 1px #422c7e solid;
+  border-right: 1px solid @cardSplitColor;
 
   .trading-title {
-    color: #007130;
+    color: @buyColor;
     font-size: 16px;
     font-weight: 900;
   }
 
   .ant-slider-track {
-    background: #007130;
+    background: @buyColor;
   }
 
   .ant-slider-dot-active {
-    border-color: #007130;
-    background: #007130;
+    border-color: @buyColor;
+    background: @buyColor;
   }
 
   .ant-slider-handle {
-    border-color: #007130;
-    background: #007130;
-    border: solid 2px #007130;
+    border-color: @buyColor;
+    background: @buyColor;
+    border: solid 2px @buyColor;
   }
 
   .ant-slider-handle:focus {
@@ -54,11 +54,11 @@
   }
 
   .ant-slider-track:focus {
-    background: #007130;
+    background: @buyColor;
   }
 
   .ant-slider:hover .ant-slider-track {
-    background: #007130;
+    background: @buyColor;
   }
 
   .ant-slider:hover .ant-slider-handle {

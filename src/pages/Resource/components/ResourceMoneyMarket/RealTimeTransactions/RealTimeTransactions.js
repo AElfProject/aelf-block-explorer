@@ -19,6 +19,10 @@ import {
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import './RealTimeTransactions.less';
+// import lessVariables from '@src/assets/less/_variables.less';
+// console.log({
+//   lessVariables
+// })
 
 const fetchLimit = 20;
 const displayLimit = 5;
@@ -181,7 +185,12 @@ export default class RealTimeTransactions extends PureComponent {
           {tabaleHead}
           {sellInfo}
           <Divider
-            style={{ width: '94%', margin: '8px auto', background: '#411cb6' }}
+            style={{
+              width: '94%',
+              margin: '8px auto',
+              // background: lessVariables.cardSplitColor
+              background: 'rgba(255, 255, 255, 0.19)'
+            }}
           />
           {buyInfo}
         </div>

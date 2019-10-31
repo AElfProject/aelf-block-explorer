@@ -557,6 +557,7 @@ class ResourceSell extends Component {
                 <Form.Item
                   validateStatus={validate.validateStatus}
                   help={validate.help}
+                  style={{ padding: 3 }}
                 >
                   {/* {getFieldDecorator('inputSellNum', {
                     rules: [

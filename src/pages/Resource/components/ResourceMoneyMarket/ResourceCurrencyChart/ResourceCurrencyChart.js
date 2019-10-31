@@ -123,7 +123,8 @@ export default class ResourceCurrencyChart extends PureComponent {
         const data = {
           value: (item.count + sellRecords[index].count) / ELF_DECIMAL,
           itemStyle: {
-            color: '#007130'
+            // todo: Use the variable in less instead
+            color: '#05ac90'
           }
         };
         yAxisData.push(data);
@@ -131,7 +132,7 @@ export default class ResourceCurrencyChart extends PureComponent {
         const data = {
           value: (item.count + sellRecords[index].count) / ELF_DECIMAL,
           itemStyle: {
-            color: '#a40000'
+            color: '#d34a64'
           }
         };
         yAxisData.push(data);
