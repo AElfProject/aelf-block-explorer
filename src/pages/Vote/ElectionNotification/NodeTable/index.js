@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, message, Button, Input, Icon, Spin } from 'antd';
+import { Table, message, Button, Input, Icon, Spin, Progress } from 'antd';
 import moment from 'moment';
 // import Highlighter from 'react-highlight-words';
 import {
@@ -173,7 +173,9 @@ export default class NodeTable extends PureComponent {
         key: 'votedRate',
         dataIndex: 'votedRate',
         defaultSortOrder: 'descend',
-        render: value => `${value}%`,
+        render: value => (
+          <Progress percent={value} status='active' strokeColor='#fff' />
+        ),
         sorter: (a, b) => a.votedRate - b.votedRate
       },
       {
@@ -189,7 +191,7 @@ export default class NodeTable extends PureComponent {
           <div className={`${clsPrefix}-btn-group`}>
             {/* todo: replace pubkey by address? */}
             <Button
-              className='vote-btn'
+              className='table-btn vote-btn'
               key={record.pubkey}
               type='primary'
               style={{ marginRight: '20px' }}
@@ -203,6 +205,7 @@ export default class NodeTable extends PureComponent {
               Vote
             </Button>
             <Button
+              className='table-btn redeem-btn'
               key={record.pubkey + 1}
               type='primary'
               data-role='redeem'

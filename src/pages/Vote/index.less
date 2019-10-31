@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 15:08:54
+ * @LastEditTime: 2019-10-31 20:49:13
  * @Description: file content
  */
 // remove default style
@@ -209,4 +209,21 @@ button {
 .text-wrap-container {
   text-align: left;
   white-space: pre-line;
+}
+
+// todo: Consider to using a more proper name to instead table-btn
+.table-btn {
+  border: none;
+  width: 84px;
+  height: 32px;
+  border-radius: 16px;
+  &.ant-btn-primary[disabled] {
+    background: #f5f5f5;
+  }
+  &.vote-btn {
+    background-color: @buyColor;
+  }
+  &.redeem-btn {
+    background-color: @neuterColor;
+  }
 }

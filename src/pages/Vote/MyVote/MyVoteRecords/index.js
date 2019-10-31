@@ -89,6 +89,7 @@ function genMyVoteRecordsCols() {
         <div className='node-list-btn-group'>
           <Button
             type='primary'
+            className='table-btn redeem-btn'
             data-role='redeemOne'
             data-nodeaddress={publicKeyToAddress(record.candidate)}
             data-nodename={record.nane || publicKeyToAddress(record.candidate)}
