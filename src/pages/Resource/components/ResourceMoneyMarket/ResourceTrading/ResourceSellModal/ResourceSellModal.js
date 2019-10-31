@@ -151,8 +151,7 @@ export default class ResourceSellModal extends PureComponent {
           *Service Charge: {thousandsCommaWithDecimal(sellFee)} {SYMBOL}
         </div>
         <Button
-          className='modal-button'
-          style={{ background: '#cc2828', border: 'none' }}
+          className='modal-button sell-btn'
           loading={sellEstimateValueLoading || loading}
           onClick={this.getSellRes}
         >

@@ -182,8 +182,7 @@ export default class ResourceBuyModal extends PureComponent {
         </div>
         <Button
           type='primary'
-          className='modal-button'
-          style={{ background: '#007130' }}
+          className='modal-button buy-btn'
           onClick={this.getBuyRes.bind(this)}
           loading={loading}
         >

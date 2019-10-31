@@ -261,9 +261,9 @@ const RESOURCE_DETAILS_COLUMN = [
       <Link to={`/tx/${row.tx_id}`} title={row.method}>
         {' '}
         {row.method === 'Buy' ? (
-          <span style={{ color: '#05ac90' }}>Buy</span>
+          <span className='buy-color'>Buy</span>
         ) : (
-          <span style={{ color: '#fe0030' }}>Sell</span>
+          <span className='sell-color'>Sell</span>
         )}
       </Link>
     )
