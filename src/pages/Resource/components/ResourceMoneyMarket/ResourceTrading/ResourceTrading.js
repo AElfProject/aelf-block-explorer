@@ -203,6 +203,7 @@ export default class ResourceTrading extends PureComponent {
           centered={true}
           maskClosable
           onCancel={this.handleCancel}
+          width={820}
         >
           <ResourceBuyModal
             currentWallet={currentWallet}
@@ -234,6 +235,7 @@ export default class ResourceTrading extends PureComponent {
           centered={true}
           maskClosable
           onCancel={this.handleCancel}
+          width={820}
         >
           <ResourceSellModal
             currentWallet={currentWallet}

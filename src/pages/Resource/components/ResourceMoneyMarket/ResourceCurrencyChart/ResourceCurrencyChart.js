@@ -319,13 +319,13 @@ export default class ResourceCurrencyChart extends PureComponent {
   selectButtonHTML() {
     // 'days'
     const buttons = [
-      '5 minutes',
-      '30 minutes',
-      'hours',
-      '4 hours',
-      'days',
-      '5 days',
-      'weeks'
+      '5min',
+      '30min',
+      '1hour',
+      '4hours',
+      '1day',
+      '5days',
+      '1week'
     ];
     const { buttonIndex } = this.state;
     const buttonsHTML = buttons.map((item, index) => {
