@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-30 14:59:55
+ * @LastEditTime: 2019-11-01 11:14:35
  * @Description: file content
  */
 
@@ -21,6 +21,7 @@ import {
 } from 'antd';
 import queryString from 'query-string';
 
+import StatisticalData from '@components/StatisticalData/';
 import { getTeamDesc, fetchElectorVoteWithRecords } from '@api/vote';
 import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import {
@@ -222,19 +223,47 @@ export default class TeamDetail extends PureComponent {
       });
   }
 
+  getStatisData() {
+    const { rank, terms, totalVotes, votedRate, producedBlocks } = this.state;
+
+    // todo: Consider to modify the data structure with easier one
+    const statisData = {
+      rank: {
+        title: 'Rank',
+        num: rank
+      },
+      terms: {
+        title: 'Terms',
+        num: terms
+      },
+      totalVotes: {
+        title: 'Total Vote',
+        num: totalVotes
+      },
+      votedRate: {
+        title: 'Voted Rate',
+        num: `${votedRate}%`
+      },
+      producedBlocks: {
+        title: 'Produced Blocks',
+        num: producedBlocks
+      }
+    };
+    return statisData;
+  }
+
   render() {
     const {
       data,
       candidateAddress,
       isBP,
-      rank,
-      terms,
-      totalVotes,
-      votedRate,
-      producedBlocks,
       userRedeemableVoteAmountForOneCandidate,
       hasAuth
     } = this.state;
+
+    // todo: The component StatisData is PureComponent so I have to create a new heap space to place the object
+    // todo: Consider to make the component StatisData non-PureComponent
+    const statisData = { ...this.getStatisData() };
 
     // todo: Is it safe if the user keyin a url that is not safe?
     // todo: handle the error case of node-name
@@ -281,6 +310,7 @@ export default class TeamDetail extends PureComponent {
             </Col>
             <Col span={6} className='card-container-right'>
               <Button
+                className='table-btn vote-btn'
                 size='large'
                 type='primary'
                 data-role='vote'
@@ -293,6 +323,7 @@ export default class TeamDetail extends PureComponent {
                 Vote
               </Button>
               <Button
+                className='table-btn redeem-btn'
                 size='large'
                 type='primary'
                 data-role='redeem'
@@ -309,14 +340,7 @@ export default class TeamDetail extends PureComponent {
             </Col>
           </Row>
         </section>
-        <section className={`${clsPrefix}-statistic card-container`}>
-          <Statistic title='Rank' value={rank} />
-          <Statistic title='Terms' value={terms} />
-          <Statistic title='Total Vote' value={totalVotes} />
-          <Statistic title='Voted Rate' value={`${votedRate}%`} />
-          <Statistic title='Produced Blocks' value={producedBlocks} />
-          {/* <Statistic title='Dividens' value='15,333' /> */}
-        </section>
+        <StatisticalData data={statisData} inline></StatisticalData>
         <section className={`${clsPrefix}-intro card-container`}>
           <h5 className='card-header'>Intro</h5>
           <div className='card-content'>

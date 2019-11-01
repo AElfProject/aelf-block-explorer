@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:54:31
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-30 11:26:16
+ * @LastEditTime: 2019-10-31 19:55:05
  * @Description: file content
  */
 @clsPrefix: team-detail;
@@ -18,7 +18,7 @@
         margin-left: 20px;
         vertical-align: top;
         .@{clsPrefix}-node-name {
-          color: #fff;
+          color: @gold;
           max-width: 500px;
         }
         &-address {
@@ -47,18 +47,9 @@
       }
     }
   }
-  .@{clsPrefix}-statistic {
-    display: flex;
-    justify-content: space-around;
-    .ant-statistic-title {
-      color: #ccc;
-    }
-    .ant-statistic-content {
-      color: #fff;
-    }
-  }
   .@{clsPrefix}-intro {
     padding-top: 0;
+    margin-top: 20px;
     &-text {
       text-indent: 2em;
     }
