@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-01 11:14:35
+ * @LastEditTime: 2019-11-01 15:19:27
  * @Description: file content
  */
 
@@ -275,9 +275,11 @@ export default class TeamDetail extends PureComponent {
             <Col span={18} className='card-container-left'>
               <div className={`${clsPrefix}-team-avatar-info`}>
                 {data.avatar ? (
-                  <Avatar shape='square' size={100} src={data.avatar} />
+                  <Avatar shape='square' size={144} src={data.avatar} />
                 ) : (
-                  <Avatar shape='square' size={100} icon='user' />
+                  <Avatar shape='square' size={144} icon='user'>
+                    U
+                  </Avatar>
                 )}
                 <div className={`${clsPrefix}-team-info`}>
                   <h5 className={`${clsPrefix}-node-name ellipsis`}>
@@ -294,7 +296,7 @@ export default class TeamDetail extends PureComponent {
                     </Paragraph>
                   </p>
                   {hasAuth ? (
-                    <Button>
+                    <Button type='primary' shape='round'>
                       <Link
                         to={{
                           pathname: '/vote/apply/keyin',
@@ -310,9 +312,10 @@ export default class TeamDetail extends PureComponent {
             </Col>
             <Col span={6} className='card-container-right'>
               <Button
-                className='table-btn vote-btn'
+                className='vote-btn'
                 size='large'
                 type='primary'
+                shape='round'
                 data-role='vote'
                 data-shoulddetectlock
                 data-votetype={FROM_WALLET}
@@ -323,9 +326,10 @@ export default class TeamDetail extends PureComponent {
                 Vote
               </Button>
               <Button
-                className='table-btn redeem-btn'
+                className='redeem-btn'
                 size='large'
                 type='primary'
+                shape='round'
                 data-role='redeem'
                 data-shoulddetectlock
                 data-nodeaddress={candidateAddress}
@@ -354,7 +358,7 @@ export default class TeamDetail extends PureComponent {
               <ul>
                 {data.socials.map(item => (
                   <li>
-                    {item.type}:<a href={item.url}>{item.url}</a>
+                    {item.type}: <a href={item.url}>{item.url}</a>
                   </li>
                 ))}
               </ul>
