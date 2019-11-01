@@ -13,6 +13,7 @@ import { schemeIds } from '@pages/Vote/constants';
 const clsPrefix = 'my-wallet-card';
 
 // @inject('contractsStore') @observer
+// todo: move the code fetch data on the upper component
 export default class MyWalletCard extends PureComponent {
   constructor(props) {
     super(props);
@@ -265,6 +266,42 @@ export default class MyWalletCard extends PureComponent {
       loading
     });
 
+    const walletItems = [
+      {
+        type: 'Total assets',
+        value: thousandsCommaWithDecimal(totalAssets)
+      },
+      {
+        type: 'Balance',
+        value: thousandsCommaWithDecimal(balance)
+      },
+      {
+        type: 'Claimable profit',
+        value: dividends.total.toFixed(2),
+        extra: (
+          <Button
+            shape='round'
+            className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
+            onClick={handleDividendClick}
+          >
+            Claim
+          </Button>
+        )
+      },
+      {
+        type: 'Active votes',
+        value: thousandsCommaWithDecimal(activeVotedVotesAmount, false)
+      },
+      {
+        type: 'Redeemed votes',
+        value: thousandsCommaWithDecimal(withdrawnVotedVotesAmount, false)
+      },
+      {
+        type: 'Earlyest vote expired time',
+        value: thousandsCommaWithDecimal(lastestUnlockTime)
+      }
+    ];
+
     const currentWallet = getCurrentWallet();
 
     return (
@@ -288,29 +325,16 @@ export default class MyWalletCard extends PureComponent {
               解除绑定
             </Button> */}
             </div>
-            {/* todo: extract the lis code in ul */}
             <ul className={`${clsPrefix}-body-wallet-content`}>
-              <li>Total assets: {thousandsCommaWithDecimal(totalAssets)}</li>
-              <li>Balance: {thousandsCommaWithDecimal(balance)}</li>
-              <li>
-                Claimable profit： {dividends.total.toFixed(2)}
-                <Button
-                  shape='round'
-                  className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
-                  onClick={handleDividendClick}
-                >
-                  Claim
-                </Button>
-              </li>
-              <li>
-                Active votes：
-                {thousandsCommaWithDecimal(activeVotedVotesAmount, false)}
-              </li>
-              <li>
-                Redeemed votes:
-                {thousandsCommaWithDecimal(withdrawnVotedVotesAmount, false)}
-              </li>
-              <li>Earlyest vote expired time: {lastestUnlockTime}</li>
+              {walletItems.map(item => {
+                return (
+                  <li>
+                    {item.type}:
+                    <span className='wallet-item-value'>{item.value}</span>
+                    {item.extra}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </Spin>
