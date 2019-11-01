@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 20:04:42
+ * @LastEditTime: 2019-11-01 17:15:09
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -337,7 +337,7 @@ class KeyInTeamInfo extends PureComponent {
                   {keys.length < 5 ? (
                     <Form.Item {...formItemLayoutWithOutLabel}>
                       <Button
-                        type='dashed'
+                        type='primary'
                         onClick={this.add}
                         style={{ width: '90%', float: 'right' }}
                       >
@@ -352,7 +352,7 @@ class KeyInTeamInfo extends PureComponent {
                     htmlType='submit'
                     onClick={this.handleSubmit}
                   >
-                    Apply Now
+                    Submit
                   </Button>
                 </div>
               </React.Fragment>
