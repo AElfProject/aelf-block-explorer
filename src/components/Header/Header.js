@@ -8,12 +8,12 @@ import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 
 import './header.styles.less';
-import Search from './../Search/Search';
+import { getPathnameFirstSlash } from '@utils/urlUtils';
+import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
 import config from '../../../config/config';
-import { getPathnameFirstSlash } from '@utils/urlUtils';
 
-const SubMenu = Menu.SubMenu;
+const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
 
 export default class BrowserHeader extends PureComponent {
@@ -28,17 +28,20 @@ export default class BrowserHeader extends PureComponent {
       current:
         location.pathname === '/'
           ? '/home'
-          : getPathnameFirstSlash(location.pathname)
+          : getPathnameFirstSlash(location.pathname),
+      screenWidth: document.body.offsetWidth
     };
 
     this.isSmallScreen = false;
+
+    this.handleResize = this.handleResize.bind(this);
   }
 
   getSearchStatus() {
-    const pathname = location.pathname;
+    const { pathname } = location;
     let showSearch = false;
     if (pathname === '/' && document.body.offsetWidth > 768) {
-      const scrollTop = document.documentElement.scrollTop;
+      const { scrollTop } = document.documentElement;
       if (scrollTop >= this.showSearchTop) {
         showSearch = true;
       } else {
@@ -53,7 +56,7 @@ export default class BrowserHeader extends PureComponent {
   // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
   setSeleted() {
     this.timerInterval = setInterval(() => {
-      let pathname = '/' + location.pathname.split('/')[1];
+      let pathname = `/${location.pathname.split('/')[1]}`;
       pathname = pathname === '/' ? '/home' : pathname;
       if (this.state.current !== pathname) {
         // white list
@@ -74,6 +77,7 @@ export default class BrowserHeader extends PureComponent {
   componentDidMount() {
     this.setSeleted();
     window.addEventListener('scroll', this.handleScroll.bind(this));
+    window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
@@ -90,6 +94,16 @@ export default class BrowserHeader extends PureComponent {
           showSearch
         });
       }
+    }
+  }
+
+  handleResize() {
+    const { screenWidth } = this.state;
+    const { offsetWidth } = document.body;
+    if (offsetWidth !== screenWidth) {
+      this.setState({
+        screenWidth: offsetWidth
+      });
     }
   }
 
@@ -114,7 +128,7 @@ export default class BrowserHeader extends PureComponent {
     if (chain_id === config.MAINCHAINID) {
       voteHTML = (
         <Menu.Item key='/vote'>
-          {/*<Icon type='appstore' />*/}
+          {/* <Icon type='appstore' /> */}
           <Link to='/vote'>VOTE</Link>
           {/* <Link to='/voteold'>VoteOld</Link> */}
           {/* <span>APP CENTER [Building]</span> */}
@@ -122,7 +136,7 @@ export default class BrowserHeader extends PureComponent {
       );
       resourceHTML = (
         <Menu.Item key='/resource'>
-          {/*<Icon type='appstore' />*/}
+          {/* <Icon type='appstore' /> */}
           <Link to='/resource'>RESOURCE</Link>
           {/* <span>APP CENTER [Building]</span> */}
         </Menu.Item>
@@ -140,13 +154,13 @@ export default class BrowserHeader extends PureComponent {
         className={menuClass}
       >
         <Menu.Item key='/home'>
-          {/*<Icon type='home' />*/}
+          {/* <Icon type='home' /> */}
           <Link to='/'>HOME</Link>
         </Menu.Item>
         <SubMenu
           title={
             <span className='submenu-title-wrapper'>
-              {/*<Icon type='gold' />*/}
+              {/* <Icon type='gold' /> */}
               BLOCK CHAIN
             </span>
           }
@@ -154,13 +168,13 @@ export default class BrowserHeader extends PureComponent {
         >
           <MenuItemGroup title='Block'>
             <Menu.Item key='/blocks'>
-              {/*<Icon type='gold' />*/}
+              {/* <Icon type='gold' /> */}
               <Link to='/blocks'>View Blocks</Link>
             </Menu.Item>
           </MenuItemGroup>
           <MenuItemGroup title='Transaction'>
             <Menu.Item key='/txs'>
-              {/*<Icon type='pay-circle' />*/}
+              {/* <Icon type='pay-circle' /> */}
               <Link to='/txs'>View Transactions</Link>
             </Menu.Item>
           </MenuItemGroup>
@@ -183,7 +197,7 @@ export default class BrowserHeader extends PureComponent {
         {/* </Menu.Item> */}
         {resourceHTML}
         <Menu.Item key='/about'>
-          {/*<Icon type='profile' />*/}
+          {/* <Icon type='profile' /> */}
           <a
             href='https://www.aelf.io/'
             target='_blank'
@@ -214,7 +228,7 @@ export default class BrowserHeader extends PureComponent {
   }
 
   render() {
-    const screenWidth = document.body.offsetWidth;
+    const { screenWidth } = this.state;
     this.isSmallScreen = screenWidth <= 768;
     const menuMode = this.isSmallScreen ? 'inline' : 'horizontal';
 
