@@ -5,10 +5,10 @@
 
 import React, { PureComponent } from 'react';
 import { Row, Col, Divider } from 'antd';
-import { RESOURCE_REALTIME_RECORDS } from '../../../../../constants';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { get } from '../../../../../utils';
+import { connect } from 'react-redux';
+
 import { Link } from 'react-router-dom';
 import {
   SYMBOL,
@@ -18,6 +18,8 @@ import {
   REAL_TIME_FETCH_INTERVAL
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
+import { get } from '../../../../../utils';
+import { RESOURCE_REALTIME_RECORDS } from '../../../../../constants';
 import './RealTimeTransactions.less';
 // import lessVariables from '@src/assets/less/_variables.less';
 // console.log({
@@ -26,7 +28,7 @@ import './RealTimeTransactions.less';
 
 const fetchLimit = 20;
 const displayLimit = 5;
-export default class RealTimeTransactions extends PureComponent {
+class RealTimeTransactions extends PureComponent {
   constructor(props) {
     super(props);
     this.getResourceRealtimeRecordsTimer = null;
@@ -114,7 +116,7 @@ export default class RealTimeTransactions extends PureComponent {
     if (recordsData) {
       data = recordsData.soldRecords || [];
       const recordsDataHtml = data.map((item, index) => {
-        const date = dayjs(item.time).format('HH:mm:ss.SSS');
+        const date = this.formatDate(item.time);
         // const fee = Math.ceil(item.fee / 1000);
         const { resource } = item;
         let { elf, fee } = item;
@@ -140,14 +142,24 @@ export default class RealTimeTransactions extends PureComponent {
     }
   }
 
+  // todo: Move to utils or redesign the mobile view
+  formatDate(date) {
+    const { isSmallScreen } = this.props;
+
+    const format = isSmallScreen ? 'HH:mm:ss' : 'HH:mm:ss.SSS';
+    return moment(date).format(format);
+  }
+
+  // todo: decrease the repeating code
   getBuyInfoHTML() {
     const { recordsData } = this.state;
+
     let data = null;
     if (recordsData) {
       data = recordsData.buyRecords || [];
       // console.log('data', data);
       const recordsDataHtml = data.map((item, index) => {
-        const date = dayjs(item.time).format('HH:mm:ss.SSS');
+        const date = this.formatDate(item.time);
         let { elf, fee } = item;
         elf /= ELF_DECIMAL;
         fee /= ELF_DECIMAL;
@@ -198,3 +210,9 @@ export default class RealTimeTransactions extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  ...state.common
+});
+
+export default connect(mapStateToProps)(RealTimeTransactions);

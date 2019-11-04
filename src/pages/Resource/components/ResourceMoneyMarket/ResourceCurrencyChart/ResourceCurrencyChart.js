@@ -20,6 +20,7 @@ import {
 } from '../../../../../constants';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/chart/line';
+import 'echarts/lib/component/dataZoom';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/toolbox';
 import './ResourceCurrencyChart.less';
@@ -212,7 +213,9 @@ export default class ResourceCurrencyChart extends PureComponent {
         // }
       },
       legend: {
-        data: ['Total volume of business', 'Price']
+        data: ['Total volume of business', 'Price'],
+        type: 'scroll',
+        orient: 'horizontal'
       },
       // todo: how to make the xAxis/yAxis offset?
       xAxis: [
@@ -310,6 +313,43 @@ export default class ResourceCurrencyChart extends PureComponent {
           barWidth: 40
         }
       ]
+      // dataZoom: [
+      //   {
+      //     type: 'slider',
+      //     realtime: true, // 拖动滚动条时是否动态的更新图表数据
+      //     height: 20, // 滚动条高度
+      //     start: 40, // 滚动条开始位置（共100等份）
+      //     end: 65, // 结束位置（共100等份）,
+      //     handleColor: '#ddd', // h滑动图标的颜色
+      //     handleStyle: {
+      //       borderColor: '#cacaca',
+      //       borderWidth: '1',
+      //       shadowBlur: 2,
+      //       background: '#ddd',
+      //       shadowColor: '#ddd'
+      //     },
+      //     fillerColor: new echarts.graphic.LinearGradient(1, 0, 0, 0, [
+      //       {
+      //         // 给颜色设置渐变色 前面4个参数，给第一个设置1，第四个设置0 ，就是水平渐变
+      //         // 给第一个设置0，第四个设置1，就是垂直渐变
+      //         offset: 0,
+      //         color: '#1eb5e5'
+      //       },
+      //       {
+      //         offset: 1,
+      //         color: '#5ccbb1'
+      //       }
+      //     ]),
+      //     backgroundColor: '#ddd' // 两边未选中的滑动条区域的颜色
+      //   },
+      //   {
+      //     type: 'inside',
+      //     show: true,
+      //     xAxisIndex: [0],
+      //     end: 100 - 1500 / 31, // 默认为100
+      //     start: 0
+      //   }
+      // ]
       // backgroundColor: 'rgba(0, 0, 0, 0.1)'
     };
 
@@ -364,7 +404,7 @@ export default class ResourceCurrencyChart extends PureComponent {
         <ReactEchartsCore
           echarts={echarts}
           option={this.getOption()}
-          style={{ height: '574px' }}
+          style={{ height: 470, minWidth: 900 }}
           notMerge
           lazyUpdate
         />

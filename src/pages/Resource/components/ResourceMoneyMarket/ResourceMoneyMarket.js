@@ -111,9 +111,10 @@ export default class ResourceMoneyMarket extends PureComponent {
           lg={6}
           key={index}
           style={{ marginBottom: '20px' }}
+          className='menu-btn-container'
         >
           <div
-            className={(index === menuIndex ? 'active ' : '') + 'menu-button'}
+            className={`${index === menuIndex ? 'active ' : ''}menu-button`}
             onClick={this.getMenuClick.bind(this, index)}
           >
             {item}
@@ -146,7 +147,7 @@ export default class ResourceMoneyMarket extends PureComponent {
           <div className='resource-body'>
             <Row>
               <Col xxl={3} xl={3} lg={24}>
-                <Row>{menu}</Row>
+                <Row className='menu-container'>{menu}</Row>
               </Col>
               <Col xxl={21} xl={21} lg={24}>
                 <ResourceCurrencyChart
