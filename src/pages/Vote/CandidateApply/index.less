@@ -3,27 +3,38 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:54:37
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-28 20:15:42
+ * @LastEditTime: 2019-11-01 20:42:05
  * @Description: file content
  */
 @clsPrefix: candidate-apply;
 
+// todo: Use common component Card instead
 .@{clsPrefix}-container {
-  padding: 50px;
+  padding: 0 0 50px 0;
   .@{clsPrefix}-title {
-    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 20px;
     color: #fff;
-    margin: 20px;
+    background: @cardHeaderColor;
   }
-  .@{clsPrefix}-form {
-    width: 50%;
-    margin: 0 auto;
-    .ant-form-item {
-      .ant-form-item-label label {
-        color: #fff;
+
+  .@{clsPrefix}-body {
+    padding: 50px;
+    .@{clsPrefix}-form {
+      width: 50%;
+      margin: 0 auto;
+      .ant-form-item {
+        .ant-form-item-label label {
+          color: #fff;
+        }
+        .list-item-value {
+          color: @gold;
+        }
       }
     }
   }
+
   .@{clsPrefix}-footer {
     text-align: center;
     &-cancel-btn {

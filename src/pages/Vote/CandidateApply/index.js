@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 19:45:47
+ * @LastEditTime: 2019-11-04 14:58:13
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -60,34 +60,25 @@ function generateCandidateApplyForm({
     formItems: [
       {
         label: 'Mortgage Add',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {currentWallet.address}
-          </span>
-        )
+        render: <span className='list-item-value'>{currentWallet.address}</span>
       },
       {
         label: 'Mortgage Amount',
         render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
+          <span className='list-item-value'>
             {ELECTION_MORTGAGE_NUM_STR} {LOWER_SYMBOL}
           </span>
         )
       },
       {
         label: 'Wallet',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {currentWallet.name}
-          </span>
-        )
+        render: <span className='list-item-value'>{currentWallet.name}</span>
       },
       {
         label: 'Hardware Advice',
         render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {HARDWARE_ADVICE}
-          </span>
+          // <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
+          <span className='list-item-value'>{HARDWARE_ADVICE}</span>
         )
       }
     ]
@@ -238,16 +229,17 @@ class CandidateApply extends PureComponent {
         className={`${clsPrefix}-container card-container page-container`}
       >
         <h3 className={`${clsPrefix}-title`}>Apply Node</h3>
-        <Form
-          className={`${clsPrefix}-form`}
-          {...formItemLayout}
-          onSubmit={this.handleSubmit}
-        >
-          {candidateApplyForm.formItems &&
-            candidateApplyForm.formItems.map(item => {
-              return (
-                <Form.Item label={item.label} key={item.label}>
-                  {/* {getFieldDecorator('email', {
+        <div className={`${clsPrefix}-body`}>
+          <Form
+            className={`${clsPrefix}-form`}
+            {...formItemLayout}
+            onSubmit={this.handleSubmit}
+          >
+            {candidateApplyForm.formItems &&
+              candidateApplyForm.formItems.map(item => {
+                return (
+                  <Form.Item label={item.label} key={item.label}>
+                    {/* {getFieldDecorator('email', {
               rules: [
                 {
                   type: 'email',
@@ -259,15 +251,17 @@ class CandidateApply extends PureComponent {
                 }
               ]
             })(<Input />)} */}
-                  {item.render ? item.render : <Input />}
-                </Form.Item>
-              );
-            })}
-        </Form>
+                    {item.render ? item.render : <Input />}
+                  </Form.Item>
+                );
+              })}
+          </Form>
+        </div>
         <div className={`${clsPrefix}-footer`}>
           <Button
             className={`${clsPrefix}-footer-cancel-btn`}
             onClick={this.handleBack}
+            shape='round'
           >
             Cancel
           </Button>
@@ -281,6 +275,7 @@ class CandidateApply extends PureComponent {
                 onClick={this.showModal}
                 disabled={isCandidate}
                 loading={shouldJudgeIsCurrentCandidate}
+                shape='round'
               >
                 Apply Now
               </Button>
@@ -291,6 +286,7 @@ class CandidateApply extends PureComponent {
               onClick={this.showModal}
               disabled={isCandidate}
               loading={shouldJudgeIsCurrentCandidate}
+              shape='round'
             >
               Apply Now
             </Button>
