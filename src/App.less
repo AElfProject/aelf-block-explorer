@@ -1,9 +1,11 @@
-@import './assets/less/_variables.less'; // todo: use the webpack's config instead the import
 @import './assets/less/theme.less';
 
 .App {
+  position: relative;
+  min-height: 100vh;
   background: url('./assets/images/bg_purple_darker@1x.jpg');
   background-size: cover;
+  padding-bottom: @footerHeight; // Ugly code
   // TODO 在iOS下还有问题。header会跟着滚动。
   //position: fixed;
   //width: 100%;
