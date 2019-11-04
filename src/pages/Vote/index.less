@@ -3,9 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-31 20:49:13
+ * @LastEditTime: 2019-11-04 15:12:49
  * @Description: file content
  */
+@modalFormItemHeight: 34px;
+
 // remove default style
 p {
   margin-bottom: 0;
@@ -226,4 +228,79 @@ button {
   &.redeem-btn {
     background-color: @neuterColor;
   }
+}
+
+// todo: Consider to write the code myself rather than modify antd's component
+.ant-modal {
+  .ant-form {
+    width: 70%;
+    margin: 0 auto;
+    .ant-form-item {
+      text-align: center;
+      height: @modalFormItemHeight;
+      margin-bottom: 24px;
+      // Used to realize unfixed height
+      .ant-form-item-control-wrapper {
+        height: 100%;
+        .ant-form-item-control {
+          height: 100%;
+          .ant-form-item-children {
+            display: block;
+            line-height: normal; // Remove default style
+          }
+        }
+      }
+      .ant-form-item-label,
+      .form-item-value {
+        font-size: 14px;
+        text-align: center;
+        color: #000;
+        background: #fff;
+        line-height: @modalFormItemHeight;
+        overflow: hidden;
+      }
+      .ant-form-item-label {
+        border-top-left-radius: 16px;
+        border-bottom-left-radius: 16px;
+        label {
+          color: #000;
+        }
+      }
+      .form-item-value,
+      .ant-input {
+        border-top-right-radius: 16px;
+        border-bottom-right-radius: 16px;
+        border-top-left-radius: 0; // Remove default style
+        border-bottom-left-radius: 0; // Remove default style
+        width: 100%;
+        height: @modalFormItemHeight;
+        text-align: center;
+      }
+      .ant-calendar-picker {
+        width: 100%;
+        > div {
+          height: @modalFormItemHeight;
+        }
+      }
+    }
+  }
+  .ant-modal-footer {
+    border: none;
+
+    .ant-btn {
+      width: 320px;
+      &:first-child {
+        display: none;
+      }
+    }
+  }
+}
+
+// todo: Limit the work range to certain item such as the Calendar inner Modal
+.ant-calendar {
+  width: 450px;
+}
+.ant-calendar-disabled-cell.ant-calendar-selected-day
+  .ant-calendar-date::before {
+  left: 18px;
 }

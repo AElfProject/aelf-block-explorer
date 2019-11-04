@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 17:47:06
+ * @LastEditTime: 2019-11-01 20:27:17
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -48,11 +48,11 @@ const { Search } = Input;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 }
+    sm: { span: 8 }
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 }
+    sm: { span: 16 }
   }
 };
 
@@ -198,8 +198,7 @@ class VoteModal extends Component {
       voteFromExpiredVoteAmount,
       voteFromExpiredSelectedRowKeys,
       handleVoteFromExpiredSelectedRowChange,
-      changeVoteState,
-      isLockTimeForTest
+      changeVoteState
     } = this.props;
 
     const columns = getColumns.call(this);
@@ -257,7 +256,6 @@ class VoteModal extends Component {
               <Input
                 // suffix={SYMBOL}
                 placeholder='Enter vote amount'
-                style={{ marginRight: 20, width: 'auto' }}
                 // todo: How to make parser/formatter work well with validator?
                 // parser={value => +value.replace(/\$\s?|(,*)/g, '')}
                 // formatter={value =>
@@ -302,6 +300,7 @@ class VoteModal extends Component {
             render: (
               <div>
                 <DatePicker
+                  className='date-picker-in-modal'
                   disabledDate={disabledDate}
                   // value={lockTime}
                   // todo: Why do I need to set the field's value myself?
@@ -310,17 +309,6 @@ class VoteModal extends Component {
                       lockTime: value
                     });
                   }}
-                />
-                <Switch
-                  checkedChildren='lock for about 2 min'
-                  unCheckedChildren='lock according to the time left'
-                  onChange={() => {
-                    const { isLockTimeForTest } = this.props;
-                    changeVoteState({
-                      isLockTimeForTest: !isLockTimeForTest
-                    });
-                  }}
-                  checked={isLockTimeForTest}
                 />
                 <span className='tip-color' style={{ marginLeft: 10 }}>
                   Withdraw and transfer are not supported during the locking
@@ -461,12 +449,7 @@ class VoteModal extends Component {
           {
             label: 'Node Add',
             render: (
-              <span
-                className='ellipsis'
-                style={{ color: '#fff', width: 600, display: 'inline-block' }}
-              >
-                {nodeAddress}
-              </span>
+              <span className='form-item-value ellipsis'>{nodeAddress}</span>
             )
           },
           {
@@ -479,6 +462,7 @@ class VoteModal extends Component {
                   style={{ width: 200 }}
                 /> */}
                 <Table
+                  size='small'
                   dataSource={switchableVoteRecords}
                   columns={columns}
                   rowSelection={switchVoteRowSelection}
@@ -654,7 +638,13 @@ class VoteModal extends Component {
   };
 
   render() {
-    const { voteModalVisible, handleVoteTypeChange, voteType } = this.props;
+    const {
+      voteModalVisible,
+      handleVoteTypeChange,
+      voteType,
+      isLockTimeForTest,
+      changeVoteState
+    } = this.props;
     const { getFieldDecorator } = this.props.form;
     const formItems = this.getFormItems();
     console.log('voteType', voteType);
@@ -664,6 +654,7 @@ class VoteModal extends Component {
         title='Node Vote'
         visible={voteModalVisible}
         onOk={this.handleOk}
+        okText='Confirm'
         // confirmLoading={confirmLoading}
         width={980}
         // okText='Next'
@@ -671,6 +662,9 @@ class VoteModal extends Component {
         maskClosable
         keyboard
         destroyOnClose
+        okButtonProps={{
+          type: 'primary'
+        }}
         // todo: optimize, can I use ...this.props instead of the code on the top?
         {...this.props}
       >
@@ -719,6 +713,18 @@ class VoteModal extends Component {
                       </Form.Item>
                     );
                   })}
+                  <Switch
+                    style={{ marginTop: 30 }}
+                    checkedChildren='lock for about 2 min'
+                    unCheckedChildren='lock according to the time left'
+                    onChange={() => {
+                      const { isLockTimeForTest } = this.props;
+                      changeVoteState({
+                        isLockTimeForTest: !isLockTimeForTest
+                      });
+                    }}
+                    checked={isLockTimeForTest}
+                  />
                 </Form>
               </TabPane>
             );

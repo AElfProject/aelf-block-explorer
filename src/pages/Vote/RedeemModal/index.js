@@ -228,31 +228,17 @@ class RedeemModal extends PureComponent {
       formItems: [
         {
           label: 'Node Name',
-          // todo: use classname isteads of the inline-css
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {nodeName}
-            </span>
-          )
+          // todo: use iterator optimize
+          render: <span className='form-item-value'>{nodeName}</span>
         },
         {
           label: 'Node Add',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {nodeAddress}
-            </span>
-          )
+          render: <span className='form-item-value'>{nodeAddress}</span>
         },
         {
           label: 'Active Vote',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
+            <span className='form-item-value'>
               {activeVoteAmountForOneCandidate} {SYMBOL}
             </span>
           )
@@ -260,9 +246,7 @@ class RedeemModal extends PureComponent {
         {
           label: 'Expired Vote',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
+            <span className='form-item-value'>
               {redeemableVoteAmountForOneCandidate} {SYMBOL}
             </span>
           )
@@ -312,9 +296,7 @@ class RedeemModal extends PureComponent {
         {
           label: 'Redeem To',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
+            <span className='form-item-value'>
               {currentWallet && currentWallet.name}
             </span>
           )
