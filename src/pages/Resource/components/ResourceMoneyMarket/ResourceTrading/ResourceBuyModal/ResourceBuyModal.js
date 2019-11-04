@@ -151,13 +151,13 @@ export default class ResourceBuyModal extends PureComponent {
 
     return (
       <div className='modal'>
-        <Row className='display-box'>
+        <Row className='modal-form-item'>
           <Col span={8} style={{ color: '#c8c7c7' }}>
             Address
           </Col>
           <Col span={16}>{addressOmit(currentWallet.address)}</Col>
         </Row>
-        <Row className='display-box'>
+        <Row className='modal-form-item'>
           <Col span={8} style={{ color: '#c8c7c7' }}>
             Buy{menuName}Quantity
           </Col>
@@ -167,7 +167,7 @@ export default class ResourceBuyModal extends PureComponent {
             </Spin>
           </Col>
         </Row>
-        <Row className='display-box'>
+        <Row className='modal-form-item'>
           <Col span={8} style={{ color: '#c8c7c7' }}>
             {SYMBOL}
           </Col>

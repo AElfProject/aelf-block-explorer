@@ -125,19 +125,19 @@ export default class ResourceSellModal extends PureComponent {
 
     return (
       <div className='modal'>
-        <Row className='display-box'>
+        <Row className='modal-form-item'>
           <Col span={8} style={{ color: '#c8c7c7' }}>
             Address
           </Col>
           <Col span={16}>{addressOmit(currentWallet.address)}</Col>
         </Row>
-        <Row className='display-box'>
+        <Row className='modal-form-item'>
           <Col span={8} style={{ color: '#c8c7c7' }}>
             Sell {menuName} Quantity
           </Col>
           <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
         </Row>
-        <Row className='display-box'>
+        <Row className='modal-form-item'>
           <Col span={8} style={{ color: '#c8c7c7' }}>
             Sell {SYMBOL}
           </Col>
