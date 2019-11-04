@@ -7,6 +7,8 @@
 
 import React, { Component } from 'react';
 import { message } from 'antd';
+import { connect } from 'react-redux';
+
 import { aelf } from '../../utils';
 import { DEFAUTRPCSERVER, APPNAME } from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
@@ -21,7 +23,7 @@ import './Resource.less';
 
 const appName = APPNAME;
 let nightElf;
-export default class Resource extends Component {
+class Resource extends Component {
   constructor(props) {
     super(props);
     this.informationTimer;
@@ -110,7 +112,12 @@ export default class Resource extends Component {
                     if (result && result.error === 0) {
                       this.insertKeypairs(result);
                     } else {
-                      message.warning(result.errorMessage.message, 3);
+                      // todo: Centralized manage the code about nightElf's lock status warning
+                      // todo: Use the variable in redux instead, remind the cdm
+                      const isSmallScreen = document.body.offsetWidth < 768;
+                      if (!isSmallScreen) {
+                        message.warning(result.errorMessage.message, 3);
+                      }
                     }
                   }
                 );
@@ -252,6 +259,7 @@ export default class Resource extends Component {
       );
     }
   }
+
   render() {
     const {
       showDownloadPlugins,
@@ -301,3 +309,9 @@ export default class Resource extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  ...state.common
+});
+
+export default connect(mapStateToProps)(Resource);
