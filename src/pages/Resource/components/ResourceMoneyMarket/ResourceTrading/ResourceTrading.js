@@ -6,13 +6,15 @@
 
 import React, { PureComponent } from 'react';
 import { Row, Col, Modal } from 'antd';
+import { connect } from 'react-redux';
+
 import ResourceBuy from './ResourceBuy/ResourceBuy';
 import ResourceSell from './ResourceSell/ResourceSell';
 import ResourceBuyModal from './ResourceBuyModal/ResourceBuyModal';
 import ResourceSellModal from './ResourceSellModal/ResourceSellModal';
 import './ResourceTrading.less';
 
-export default class ResourceTrading extends PureComponent {
+class ResourceTrading extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -129,6 +131,7 @@ export default class ResourceTrading extends PureComponent {
   }
 
   render() {
+    const { isSmallScreen } = this.props;
     const {
       menuIndex,
       sellVisible,
@@ -154,8 +157,15 @@ export default class ResourceTrading extends PureComponent {
       sellFee,
       sellEstimateValueLoading
     } = this.state;
+
     return (
       <div className='resource-trading'>
+        {isSmallScreen ? (
+          <div className='mobile-mask'>
+            <p className='mobile-mask-text'>View more on the PC</p>
+          </div>
+        ) : null}
+
         <div className='resource-trading-head'>Transaction</div>
         <div className='resource-trading-body'>
           <Row>
@@ -196,11 +206,11 @@ export default class ResourceTrading extends PureComponent {
         <Modal
           className='modal-display-box'
           title='Resource buying'
-          destroyOnClose={true}
+          destroyOnClose
           closable={false}
           footer={null}
           visible={buyVisible}
-          centered={true}
+          centered
           maskClosable
           onCancel={this.handleCancel}
           width={820}
@@ -228,11 +238,11 @@ export default class ResourceTrading extends PureComponent {
         <Modal
           className='modal-display-box'
           title='Resource selling'
-          destroyOnClose={true}
+          destroyOnClose
           closable={false}
           footer={null}
           visible={sellVisible}
-          centered={true}
+          centered
           maskClosable
           onCancel={this.handleCancel}
           width={820}
@@ -260,3 +270,9 @@ export default class ResourceTrading extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  ...state.common
+});
+
+export default connect(mapStateToProps)(ResourceTrading);

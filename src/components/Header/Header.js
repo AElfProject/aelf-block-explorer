@@ -6,9 +6,11 @@
 import React, { PureComponent } from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import './header.styles.less';
 import { getPathnameFirstSlash } from '@utils/urlUtils';
+import { setIsSmallScreen } from '@actions/common';
 import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
 import config from '../../../config/config';
@@ -16,7 +18,7 @@ import config from '../../../config/config';
 const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
 
-export default class BrowserHeader extends PureComponent {
+class BrowserHeader extends PureComponent {
   constructor() {
     super();
     this.timerInterval = null;
@@ -28,11 +30,8 @@ export default class BrowserHeader extends PureComponent {
       current:
         location.pathname === '/'
           ? '/home'
-          : getPathnameFirstSlash(location.pathname),
-      screenWidth: document.body.offsetWidth
+          : getPathnameFirstSlash(location.pathname)
     };
-
-    this.isSmallScreen = false;
 
     this.handleResize = this.handleResize.bind(this);
   }
@@ -76,6 +75,8 @@ export default class BrowserHeader extends PureComponent {
 
   componentDidMount() {
     this.setSeleted();
+    this.handleResize();
+
     window.addEventListener('scroll', this.handleScroll.bind(this));
     window.addEventListener('resize', this.handleResize);
   }
@@ -98,19 +99,21 @@ export default class BrowserHeader extends PureComponent {
   }
 
   handleResize() {
-    const { screenWidth } = this.state;
+    const { setIsSmallScreen, isSmallScreen } = this.props;
     const { offsetWidth } = document.body;
-    if (offsetWidth !== screenWidth) {
-      this.setState({
-        screenWidth: offsetWidth
-      });
+
+    const newIsMobile = offsetWidth <= 768;
+
+    if (newIsMobile !== isSmallScreen) {
+      setIsSmallScreen(newIsMobile);
     }
   }
 
   handleClick = e => {
     clearTimeout(this.timerTimeout);
     this.timerTimeout = setTimeout(() => {
-      if (this.isSmallScreen) {
+      const { isSmallScreen } = this.props;
+      if (isSmallScreen) {
         this.toggleMenu();
       }
       this.setState({
@@ -228,14 +231,13 @@ export default class BrowserHeader extends PureComponent {
   }
 
   render() {
-    const { screenWidth } = this.state;
-    this.isSmallScreen = screenWidth <= 768;
-    const menuMode = this.isSmallScreen ? 'inline' : 'horizontal';
+    const { isSmallScreen } = this.props;
 
-    const mobileMoreHTML = this.isSmallScreen ? this.renderMobileMore() : '';
+    const menuMode = isSmallScreen ? 'inline' : 'horizontal';
+    const mobileMoreHTML = isSmallScreen ? this.renderMobileMore() : '';
 
     let menuHtml;
-    if (this.isSmallScreen) {
+    if (isSmallScreen) {
       menuHtml = this.renderMenu(menuMode, this.state.showMobileMenu);
     } else {
       menuHtml = this.renderMenu(menuMode);
@@ -260,3 +262,14 @@ export default class BrowserHeader extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({ ...state.common });
+
+const mapDispatchToProps = dispatch => ({
+  setIsSmallScreen: isSmallScreen => dispatch(setIsSmallScreen(isSmallScreen))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BrowserHeader);

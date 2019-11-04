@@ -9,11 +9,14 @@ module.exports = {
   babel: {
     cherryPick: 'lodash',
     plugins: [
-      ['import', {
-        libraryName: 'antd',
-        libraryDirectory: 'es',
-        style: true
-      }]
+      [
+        'import',
+        {
+          libraryName: 'antd',
+          libraryDirectory: 'es',
+          style: true
+        }
+      ]
     ]
   },
   webpack: {
@@ -32,7 +35,8 @@ module.exports = {
       '@components': path.resolve('src/components'),
       '@utils': path.resolve('src/utils'),
       '@store': path.resolve('src/store'),
-      '@api': path.resolve('src/api')
+      '@api': path.resolve('src/api'),
+      '@actions': path.resolve('src/redux/actions/')
     },
     extra: {
       optimization: {
@@ -49,8 +53,7 @@ module.exports = {
             }
           })
         ]
-      },
-      devtool: process.env.NODE_ENV === 'development' ? 'eval' : false
+      }
     }
   },
   devServer: {
@@ -82,4 +85,4 @@ module.exports = {
       }
     }
   }
-}
+};
