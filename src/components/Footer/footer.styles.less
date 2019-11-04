@@ -1,6 +1,7 @@
 .footer {
   position: absolute;
   bottom: 0;
+  left: 0;
   width: 100%;
   height: @footerHeight;
   text-align: center;
@@ -15,14 +16,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
     min-height: 88px;
+    .copyright-container {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: 5%;
+      text-align: center;
+    }
   }
 
   .footer-logo {
     text-align: left;
     //margin-bottom: @mgb30;
   }
+  // todo: limit the links within main body of page
   .footer-links-container {
     //margin-bottom: @mgb30;
     // float: right; // todo: why is float didn't work?
@@ -46,8 +54,16 @@
 }
 @media (max-width: 768px) {
   .footer {
+    padding: 0;
     .footer-container {
-      min-height: 180px;
+      display: block;
+      position: static;
+      .footer-links-container {
+        //margin-bottom: @mgb30;
+        // float: right; // todo: why is float didn't work?
+        position: static; // for cover upper code
+        margin-top: 5%;
+      }
     }
   }
 }
