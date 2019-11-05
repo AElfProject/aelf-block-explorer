@@ -181,7 +181,7 @@ export default class MyVote extends Component {
     const { statisData, tableData } = this.state;
 
     return (
-      <section className='page-container'>
+      <section>
         <StatisticalData data={statisData} tooltip={MY_VOTE_DATA_TIP}/>
         <MyVoteRecord data={tableData} />
       </section>

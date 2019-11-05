@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 16:38:29
+ * @LastEditTime: 2019-11-05 18:05:16
  * @Description: file content
  */
 
@@ -272,7 +272,7 @@ class TeamDetail extends PureComponent {
     // todo: handle the error case of node-name
     // FIXME: hide the edit button for the non-owner
     return (
-      <section className={`${clsPrefix} page-container`}>
+      <section className={`${clsPrefix}`}>
         <section className={`${clsPrefix}-header card-container`}>
           <Row>
             <Col

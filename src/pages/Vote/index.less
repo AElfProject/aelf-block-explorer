@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 16:06:28
+ * @LastEditTime: 2019-11-05 18:05:42
  * @Description: file content
  */
 @modalFormItemHeight: 34px;
@@ -31,10 +31,6 @@ button {
 }
 
 // common style selector
-.page-container {
-  margin: 0 56px;
-}
-
 .card-container {
   margin-bottom: 20px;
   padding: 20px 30px;
@@ -97,6 +93,12 @@ button {
   }
   .ant-tabs-bar {
     .card-container;
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .secondary-level-nav {
+    margin: 0 5px 16px;
   }
 }
 
@@ -309,10 +311,6 @@ button {
 
 // todo: Centralized manage the page body's margins
 @media (max-width: @smallScreenWidth) {
-  .page-container {
-    margin: 0 16px;
-  }
-
   .card-container {
     padding: 20px;
   }

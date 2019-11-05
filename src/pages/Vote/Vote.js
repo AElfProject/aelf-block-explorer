@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 15:43:14
+ * @LastEditTime: 2019-11-05 17:46:32
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -1476,7 +1476,7 @@ class VoteContainer extends Component {
     return (
       // todo: place the Provider in the uppest container
       <Provider contractsStore={contractsStore}>
-        <section className='vote-container' onClick={this.handleClick}>
+        <section className='vote-container basic-container' onClick={this.handleClick}>
           {showDownloadPlugin ? (
             <DownloadPlugins style={{ margin: '0 56px' }} />
           ) : null}

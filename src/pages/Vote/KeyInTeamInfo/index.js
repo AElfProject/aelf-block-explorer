@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 17:16:49
+ * @LastEditTime: 2019-11-05 18:03:06
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -202,7 +202,7 @@ class KeyInTeamInfo extends PureComponent {
 
   getUnlockPluginText() {
     return (
-      <section className={`card-container page-container`}>
+      <section className={`card-container`}>
         <Result
           icon={<Icon type='lock' theme='twoTone' twoToneColor='#2b006c' />}
           status='warning'
@@ -306,7 +306,7 @@ class KeyInTeamInfo extends PureComponent {
           <Spin spinning={isLoading} size='large' />
         ) : (
           <section
-            className={`${clsPrefix}-container card-container page-container`}
+            className={`${clsPrefix}-container card-container`}
           >
             {hasAuth ? (
               // eslint-disable-next-line react/jsx-fragments

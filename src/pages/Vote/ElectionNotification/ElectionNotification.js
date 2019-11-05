@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-29 17:11:11
+ * @LastEditTime: 2019-11-05 18:04:25
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -58,6 +58,27 @@ export default class ElectionNotification extends PureComponent {
     };
 
     this.hasRun = false;
+  }
+
+  componentDidMount() {
+    const {
+      changeVoteState,
+      electionContract,
+      multiTokenContract,
+      profitContractFromExt
+    } = this.props;
+
+    console.log({
+      props: this.props
+    });
+
+    this.fetchData();
+
+    if (electionContract && multiTokenContract && profitContractFromExt) {
+      changeVoteState({
+        shouldRefreshMyWallet: true
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -228,7 +249,7 @@ export default class ElectionNotification extends PureComponent {
     // console.log('electionNotifiStatisData', electionNotifiStatisData);
 
     return (
-      <section className='page-container'>
+      <section>
         <StatisticalData
           data={statisData}
           spinning={statisDataLoading}

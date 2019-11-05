@@ -289,7 +289,7 @@ class Resource extends Component {
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
     return (
-      <div className='resource-body'>
+      <div className='resource-body basic-container'>
         {downloadPlugins}
         {resourceAElfWalletHtml}
         <div className='resource-money-market'>
