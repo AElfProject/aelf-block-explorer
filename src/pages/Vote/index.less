@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-04 15:12:49
+ * @LastEditTime: 2019-11-05 15:18:55
  * @Description: file content
  */
 @modalFormItemHeight: 34px;
@@ -303,4 +303,11 @@ button {
 .ant-calendar-disabled-cell.ant-calendar-selected-day
   .ant-calendar-date::before {
   left: 18px;
+}
+
+// todo: Centralized manage the page body's margins
+@media (max-width: @smallScreenWidth) {
+  .page-container {
+    margin: 0 16px;
+  }
 }
