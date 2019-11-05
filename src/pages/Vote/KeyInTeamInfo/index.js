@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-01 17:15:09
+ * @LastEditTime: 2019-11-05 17:16:49
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -301,7 +301,7 @@ class KeyInTeamInfo extends PureComponent {
     const socialFormItems = this.getSocialFormItems();
 
     return (
-      <div className='loading-container'>
+      <div className='loading-container has-mask-on-mobile'>
         {isLoading ? (
           <Spin spinning={isLoading} size='large' />
         ) : (
