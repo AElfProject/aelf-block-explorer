@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Input, Button, Table, Icon } from 'antd';
+import { connect } from 'react-redux';
+import { Input, Button, Table, Icon, Tooltip } from 'antd';
 
 import {
   NODE_DEFAULT_NAME,
@@ -8,11 +9,14 @@ import {
   RANK_NOT_EXISTED_SYMBOL
 } from '@src/pages/Vote/constants';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
+import { centerEllipsis } from '@utils/formater';
 
 const { Search } = Input;
 const clsPrefix = 'my-vote-records';
 
 function genMyVoteRecordsCols() {
+  const { isSmallScreen } = this.props;
+
   const myVoteRecordsCols = [
     {
       title: 'Rank',
@@ -26,16 +30,20 @@ function genMyVoteRecordsCols() {
       title: 'Node Name',
       dataIndex: 'name',
       key: 'nodeName',
-      width: 300,
+      width: 250,
       ...this.getColumnSearchProps('name'),
       render: (text, record) => (
-        <Link
-          to={{ pathname: '/vote/team', search: `pubkey=${record.candidate}` }}
-          className='node-name-in-table'
-          // style={{ width: 300 }}
-        >
-          {text}
-        </Link>
+        <Tooltip title={text}>
+          <Link
+            to={{
+              pathname: '/vote/team',
+              search: `pubkey=${record.candidate}`
+            }}
+            // style={{ width: 300 }}
+          >
+            {centerEllipsis(text)}
+          </Link>
+        </Tooltip>
       )
     },
     {
@@ -104,6 +112,12 @@ function genMyVoteRecordsCols() {
       )
     }
   ];
+
+  // todo: Use css way
+  if (isSmallScreen) {
+    myVoteRecordsCols.pop();
+  }
+
   myVoteRecordsCols.forEach(item => {
     // eslint-disable-next-line no-param-reassign
     item.align = 'center';
@@ -213,10 +227,15 @@ class MyVoteRecords extends Component {
           // loading={loading}
           pagination={pagination}
           rowKey={record => record.voteId.value}
+          scroll={{ x: 1300 }}
         />
       </section>
     );
   }
 }
 
-export default MyVoteRecords;
+const mapStateToProps = state => ({
+  ...state.common
+});
+
+export default connect(mapStateToProps)(MyVoteRecords);
