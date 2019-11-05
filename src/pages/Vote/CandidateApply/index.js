@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-04 14:58:13
+ * @LastEditTime: 2019-11-05 17:02:56
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -226,7 +226,7 @@ class CandidateApply extends PureComponent {
 
     return (
       <section
-        className={`${clsPrefix}-container card-container page-container`}
+        className={`${clsPrefix}-container card-container page-container has-mask-on-mobile`}
       >
         <h3 className={`${clsPrefix}-title`}>Apply Node</h3>
         <div className={`${clsPrefix}-body`}>

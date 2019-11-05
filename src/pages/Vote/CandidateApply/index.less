@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:54:37
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-01 20:42:05
+ * @LastEditTime: 2019-11-05 17:05:46
  * @Description: file content
  */
 @clsPrefix: candidate-apply;
@@ -39,6 +39,23 @@
     text-align: center;
     &-cancel-btn {
       margin-right: 100px;
+    }
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .@{clsPrefix}-container {
+    .@{clsPrefix}-body {
+      padding: 30px;
+      .@{clsPrefix}-form {
+        width: 95%;
+      }
+    }
+
+    .@{clsPrefix}-footer {
+      &-cancel-btn {
+        margin-right: 20px;
+      }
     }
   }
 }
