@@ -1,12 +1,14 @@
 import React from 'react';
-import { Layout, Icon, Button } from 'antd';
+import { connect } from 'react-redux';
+import { Icon, Button } from 'antd';
+
 import { BitcoinIcon, RedditIcon, SendIcon } from '../custom.icons';
 
 import './footer.styles.less';
 
-const { Footer } = Layout;
+function getIconList(props) {
+  const { isSmallScreen } = props;
 
-const iconListHTML = (() => {
   const listInfo = [
     {
       href: 'mailto:contact@aelf.io',
@@ -83,22 +85,31 @@ const iconListHTML = (() => {
       </Button>
     );
   });
-  return html;
-})();
 
-const BrowserFooter = props => (
-  <Footer {...props} className='footer'>
-    <div className='footer-container'>
-      {/* <div className="footer-logo">
+  return html;
+}
+
+const BrowserFooter = props => {
+  const iconListHTML = getIconList(props);
+
+  return (
+    <section {...props} className='footer'>
+      <div className='footer-container basic-container'>
+        {/* <div className="footer-logo">
                 <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
                 <p>Contribute to communism around the world.</p>
             </div> */}
-      <div className='footer-links-container'>{iconListHTML}</div>
-      <p className='copyright-container'>
-        Copyright © {new Date().getFullYear()} ælf
-      </p>
-    </div>
-  </Footer>
-);
+        <div className='footer-links-container'>{iconListHTML}</div>
+        <p className='copyright-container'>
+          Copyright © {new Date().getFullYear()} ælf
+        </p>
+      </div>
+    </section>
+  );
+};
 
-export default BrowserFooter;
+const mapStateToProps = state => ({
+  ...state.common
+});
+
+export default connect(mapStateToProps)(BrowserFooter);

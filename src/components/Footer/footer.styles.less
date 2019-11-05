@@ -9,14 +9,15 @@
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: #fff;
+  overflow: hidden;
 
   .footer-container {
-    margin: auto;
-    max-width: @maxWidth;
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     min-height: 88px;
+    height: 100%;
     .copyright-container {
       position: absolute;
       width: 100%;
@@ -52,7 +53,7 @@
     }
   }
 }
-@media (max-width: 768px) {
+@media (max-width: @smallScreenWidth) {
   .footer {
     padding: 0;
     .footer-container {
@@ -62,7 +63,9 @@
         //margin-bottom: @mgb30;
         // float: right; // todo: why is float didn't work?
         position: static; // for cover upper code
-        margin-top: 5%;
+        .ant-btn:last-child {
+          display: none; // Hide the last icon on mobile
+        }
       }
     }
   }
