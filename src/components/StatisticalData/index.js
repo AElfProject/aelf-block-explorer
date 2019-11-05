@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-31 20:36:10
+ * @LastEditTime: 2019-11-05 15:29:44
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -74,6 +74,11 @@ class StatisticalData extends PureComponent {
               inline ? 'inline-style' : ''
             }`}
           >
+            {tooltip ? (
+              <Tooltip title={tooltip}>
+                <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
+              </Tooltip>
+            ) : null}
             {arr.map(item => {
               return (
                 // <Col span={item.span} key={item.title}>
@@ -101,11 +106,6 @@ class StatisticalData extends PureComponent {
               );
             })}
             {/* </Row> */}
-            {tooltip ? (
-              <Tooltip title={tooltip}>
-                <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
-              </Tooltip>
-            ) : null}
           </section>
         </Spin>
       </section>
