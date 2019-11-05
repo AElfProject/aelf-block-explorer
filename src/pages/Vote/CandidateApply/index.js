@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 17:02:56
+ * @LastEditTime: 2019-11-05 17:10:49
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -95,7 +95,7 @@ function generateApplyConfirmForm({
       {
         label: 'Mortgage Amount',
         render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
+          <span className='form-item-value'>
             {ELECTION_MORTGAGE_NUM_STR} &nbsp;&nbsp;&nbsp;
             <Tooltip
               title={`The ${LOWER_SYMBOL} cannot be redeemed during the time being a BP
@@ -108,11 +108,7 @@ function generateApplyConfirmForm({
       },
       {
         label: 'Wallet',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {currentWallet.name}
-          </span>
-        )
+        render: <span className='form-item-value'>{currentWallet.name}</span>
       }
     ]
   };
