@@ -8,7 +8,7 @@ import { Row, Col, Spin, message, Button } from 'antd';
 import { aelf } from '../../../../../../utils';
 import { tokenConverter } from '../../../../../../../config/config';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
-import addressOmit from '../../../../../../utils/addressOmit';
+import { centerEllipsis } from '@utils/formater';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
 import getFees from '../../../../../../utils/getFees';
 import './ResourceSellModal.less';
@@ -129,7 +129,7 @@ export default class ResourceSellModal extends PureComponent {
           <Col span={8} style={{ color: '#c8c7c7' }}>
             Address
           </Col>
-          <Col span={16}>{addressOmit(currentWallet.address)}</Col>
+          <Col span={16}>{centerEllipsis(currentWallet.address)}</Col>
         </Row>
         <Row className='modal-form-item'>
           <Col span={8} style={{ color: '#c8c7c7' }}>
