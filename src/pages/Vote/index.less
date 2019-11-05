@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 15:18:55
+ * @LastEditTime: 2019-11-05 16:06:28
  * @Description: file content
  */
 @modalFormItemHeight: 34px;
@@ -34,10 +34,12 @@ button {
 .page-container {
   margin: 0 56px;
 }
+
 .card-container {
   margin-bottom: 20px;
   padding: 20px 30px;
   background: rgba(57, 0, 57, 0.3);
+  overflow: hidden;
 }
 
 .remove-antd-tabs-default-style {
@@ -309,5 +311,9 @@ button {
 @media (max-width: @smallScreenWidth) {
   .page-container {
     margin: 0 16px;
+  }
+
+  .card-container {
+    padding: 20px;
   }
 }

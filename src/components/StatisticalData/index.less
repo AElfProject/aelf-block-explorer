@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 16:09:44
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 15:30:48
+ * @LastEditTime: 2019-11-05 16:53:22
  * @Description: file content
  */
 .statistical-data {
@@ -62,10 +62,29 @@
   .statistical-data-container {
     flex-direction: column;
     padding: 20px;
+    flex-wrap: wrap;
     .ant-statistic {
+      overflow: hidden;
       margin-bottom: 15px;
       &:last-child {
         margin-bottom: 0;
+      }
+    }
+
+    // todo: Use a more compatible to handle the case in mobile device
+    &.inline-style {
+      flex-direction: row;
+      .ant-statistic {
+        width: 33.33%;
+        height: auto;
+        line-height: inherit;
+        .ant-statistic-title {
+          display: block;
+          white-space: nowrap;
+        }
+        .ant-statistic-content {
+          display: block;
+        }
       }
     }
   }

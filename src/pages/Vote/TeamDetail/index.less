@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:54:31
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-01 17:02:17
+ * @LastEditTime: 2019-11-05 16:28:10
  * @Description: file content
  */
 @clsPrefix: team-detail;
@@ -28,12 +28,16 @@
             margin-left: 5px;
           }
         }
+        &-location {
+          margin: 5px;
+        }
         &-address {
+          margin: 5px;
           margin-bottom: 10px;
           .ant-typography {
-            color: #fff;
+            display: inline; // Using inline-block here will cause style problem, solve it if time permitting
             max-width: 500px;
-            display: inline;
+            color: #fff;
           }
         }
       }
@@ -77,4 +81,50 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   color: #fff;
   font-size: 18px;
+}
+
+// todo: Optimzie the way writting the css
+@media (max-width: @smallScreenWidth) {
+  .@{clsPrefix} {
+    color: #fff;
+    .@{clsPrefix}-header {
+      .card-container-left {
+        padding: 0;
+        .@{clsPrefix}-team-avatar-info {
+          position: relative;
+          .@{clsPrefix}-team-info {
+            margin-left: 0;
+            .@{clsPrefix}-node-name {
+              // todo: Reorganize the html code to avoid of using absolute
+              position: absolute;
+              right: 0;
+              top: 5%;
+              max-width: 250px;
+              font-size: 16px;
+              // .ant-tag {
+              //   margin-left: 5px;
+              // }
+            }
+            &-address {
+              position: relative;
+              margin-bottom: 0;
+              .ant-typography {
+                display: inline-block;
+                max-width: 250px;
+                .ant-typography-copy {
+                  position: absolute;
+                  top: 0;
+                  right: 5%;
+                  // transform: translateY(50%);
+                }
+              }
+            }
+          }
+        }
+      }
+      .card-container-right {
+        display: none;
+      }
+    }
+  }
 }

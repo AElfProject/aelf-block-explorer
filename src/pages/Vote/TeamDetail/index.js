@@ -3,12 +3,13 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-01 15:19:27
+ * @LastEditTime: 2019-11-05 16:38:29
  * @Description: file content
  */
 
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
   Statistic,
   Row,
@@ -42,7 +43,7 @@ const { Paragraph } = Typography;
 const clsPrefix = 'team-detail';
 
 // todo: compitable for the case where user hasn't submit the team info yet.
-export default class TeamDetail extends PureComponent {
+class TeamDetail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -253,6 +254,7 @@ export default class TeamDetail extends PureComponent {
   }
 
   render() {
+    const { isSmallScreen } = this.props;
     const {
       data,
       candidateAddress,
@@ -264,6 +266,7 @@ export default class TeamDetail extends PureComponent {
     // todo: The component StatisData is PureComponent so I have to create a new heap space to place the object
     // todo: Consider to make the component StatisData non-PureComponent
     const statisData = { ...this.getStatisData() };
+    const avatarSize = isSmallScreen ? 'large' : 144;
 
     // todo: Is it safe if the user keyin a url that is not safe?
     // todo: handle the error case of node-name
@@ -272,12 +275,20 @@ export default class TeamDetail extends PureComponent {
       <section className={`${clsPrefix} page-container`}>
         <section className={`${clsPrefix}-header card-container`}>
           <Row>
-            <Col span={18} className='card-container-left'>
+            <Col
+              xxl={82}
+              xl={18}
+              lg={18}
+              md={18}
+              sm={24}
+              xs={24}
+              className='card-container-left'
+            >
               <div className={`${clsPrefix}-team-avatar-info`}>
                 {data.avatar ? (
-                  <Avatar shape='square' size={144} src={data.avatar} />
+                  <Avatar shape='square' size={avatarSize} src={data.avatar} />
                 ) : (
-                  <Avatar shape='square' size={144} icon='user'>
+                  <Avatar shape='square' size={avatarSize}>
                     U
                   </Avatar>
                 )}
@@ -310,7 +321,15 @@ export default class TeamDetail extends PureComponent {
                 </div>
               </div>
             </Col>
-            <Col span={6} className='card-container-right'>
+            <Col
+              xxl={6}
+              xl={6}
+              lg={6}
+              md={6}
+              sm={0}
+              xs={0}
+              className='card-container-right'
+            >
               <Button
                 className='vote-btn'
                 size='large'
@@ -371,3 +390,7 @@ export default class TeamDetail extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({ ...state.common });
+
+export default connect(mapStateToProps)(TeamDetail);
