@@ -210,7 +210,7 @@ export default class ResourceAElfWallet extends PureComponent {
     const walltetHTML = this.accountListHTML();
     const { currentWallet, balance, RAM, CPU, NET, STO } = this.state;
     return (
-      <div className='resource-wallet'>
+      <div className='resource-wallet has-mask-on-mobile'>
         <div className='resource-wallet-head'>
           <div className='title'>{this.props.title}</div>
           <div

@@ -5,9 +5,11 @@
  */
 
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { Spin } from 'antd';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
+
 import { isBeforeToday } from '@utils/timeUtils';
 import { ELF_DECIMAL, SYMBOL } from '@config/config';
 import dayjs from 'dayjs';
@@ -25,7 +27,7 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/toolbox';
 import './ResourceCurrencyChart.less';
 
-export default class ResourceCurrencyChart extends PureComponent {
+class ResourceCurrencyChart extends PureComponent {
   constructor(props) {
     super(props);
     this.getEchartDataTime;
@@ -395,8 +397,12 @@ export default class ResourceCurrencyChart extends PureComponent {
   }
 
   render() {
+    const { isSmallScreen } = this.props;
     const { loading } = this.state;
+
     const selectButton = this.selectButtonHTML();
+    const chartHeight = isSmallScreen ? 450 : 470;
+
     return (
       <div className='resource-currency-chart'>
         <div className='select-button'>{selectButton}</div>
@@ -404,7 +410,7 @@ export default class ResourceCurrencyChart extends PureComponent {
         <ReactEchartsCore
           echarts={echarts}
           option={this.getOption()}
-          style={{ height: 470, minWidth: 900 }}
+          style={{ height: chartHeight, minWidth: 900 }}
           notMerge
           lazyUpdate
         />
@@ -413,3 +419,9 @@ export default class ResourceCurrencyChart extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  ...state.common
+});
+
+export default connect(mapStateToProps)(ResourceCurrencyChart);
