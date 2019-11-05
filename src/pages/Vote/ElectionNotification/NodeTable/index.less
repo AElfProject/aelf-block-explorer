@@ -16,4 +16,26 @@
     background: none;
     border: 1px solid #fff;
   }
+  &-btn-group {
+    // display: flex;
+    // justify-content: space-around;
+    // // flex-wrap: wrap;
+    // // todo: Write in a more compatible way
+    // min-width: 300px;
+    > button {
+      display: inline-block;
+    }
+    > button:first-child {
+      margin-right: 20px;
+    }
+  }
+}
+
+// todo: Realize the mask on mobile
+@media (max-width: @smallScreenWidth) {
+  .ant-table-thead > tr > th:last-child,
+  .ant-table-tbody > tr > td:last-child {
+    // min-width: 100px;
+    // display: none;
+  }
 }

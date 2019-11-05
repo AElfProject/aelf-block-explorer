@@ -1,8 +1,19 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, message, Button, Input, Icon, Spin, Progress } from 'antd';
+import {
+  Table,
+  message,
+  Button,
+  Input,
+  Icon,
+  Spin,
+  Progress,
+  Tooltip
+} from 'antd';
 import moment from 'moment';
 // import Highlighter from 'react-highlight-words';
+import { connect } from 'react-redux';
+
 import {
   getAllTeamDesc,
   fetchPageableCandidateInformation,
@@ -11,6 +22,7 @@ import {
 import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
+import { centerEllipsis } from '@utils/formater';
 import {
   NODE_DEFAULT_NAME,
   FROM_WALLET,
@@ -29,7 +41,7 @@ const pagination = {
   pageSize: 3
 };
 
-export default class NodeTable extends PureComponent {
+class NodeTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -113,11 +125,14 @@ export default class NodeTable extends PureComponent {
   });
 
   getCols() {
+    const { isSmallScreen } = this.props;
+
     const nodeListCols = [
       {
         title: 'Rank',
         dataIndex: 'rank',
         key: 'rank',
+        width: 90,
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.rank - b.rank
       },
@@ -125,24 +140,26 @@ export default class NodeTable extends PureComponent {
         title: 'Node Name',
         dataIndex: 'name',
         key: 'nodeName',
-        // width: 270,
+        width: 250,
         // todo: ellipsis useless
         // ellipsis: true,
         render: (text, record) => (
-          <Link
-            to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}
-            className='node-name-in-table'
-            // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-            // style={{ width: 270 }}
-          >
-            {text}
-          </Link>
+          <Tooltip title={text}>
+            <Link
+              to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}
+              // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+              // style={{ width: 270 }}
+            >
+              {centerEllipsis(text)}
+            </Link>
+          </Tooltip>
         ),
         ...this.getColumnSearchProps('name')
       },
       {
         title: 'Node Type',
         dataIndex: 'nodeType',
+        width: 120,
         key: 'nodeType'
         // todo: write the sorter after the api is ready
         // sorter: (a, b) => a.nodeType - b.nodeType
@@ -150,6 +167,7 @@ export default class NodeTable extends PureComponent {
       {
         title: 'Terms',
         dataIndex: 'terms',
+        width: 100,
         key: 'terms',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.terms - b.terms
@@ -157,6 +175,7 @@ export default class NodeTable extends PureComponent {
       {
         title: 'Produce Blocks',
         dataIndex: 'producedBlocks',
+        // width: 150,
         key: 'producedBlocks',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.producedBlocks - b.producedBlocks
@@ -181,12 +200,14 @@ export default class NodeTable extends PureComponent {
       {
         title: 'My Votes',
         key: 'myVotes',
+        width: 120,
         dataIndex: 'myTotalVoteAmount',
         sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount
       },
       {
         title: 'Operations',
         key: 'operations',
+        width: 220,
         render: (text, record) => (
           <div className={`${clsPrefix}-btn-group`}>
             {/* todo: replace pubkey by address? */}
@@ -223,6 +244,12 @@ export default class NodeTable extends PureComponent {
         )
       }
     ];
+
+    // todo: Realize it using css
+    // Hide operations on mobile
+    if (isSmallScreen) {
+      nodeListCols.pop();
+    }
 
     nodeListCols.forEach(item => {
       item.align = 'center';
@@ -461,8 +488,16 @@ export default class NodeTable extends PureComponent {
           loading={isLoading}
           pagination={pagination}
           rowKey={record => record.pubkey}
+          scroll={{ x: 1300 }}
+          // size='middle'
         />
       </section>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  ...state.common
+});
+
+export default connect(mapStateToProps)(NodeTable);
