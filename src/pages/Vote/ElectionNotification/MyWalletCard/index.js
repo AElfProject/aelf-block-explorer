@@ -305,7 +305,7 @@ export default class MyWalletCard extends PureComponent {
     const currentWallet = getCurrentWallet();
 
     return (
-      <section className={`${clsPrefix}`}>
+      <section className={`${clsPrefix} has-mask-on-mobile`}>
         <div className={`${clsPrefix}-header`}>
           <h2 className={`${clsPrefix}-header-title`}>My Wallet</h2>
           <button
@@ -329,9 +329,9 @@ export default class MyWalletCard extends PureComponent {
               {walletItems.map(item => {
                 return (
                   <li>
-                    {item.type}:
-                    <span className='wallet-item-value'>{item.value}</span>
-                    {item.extra}
+                    <span className='item-type'>{item.type}:</span>
+                    <span className='item-value'>{item.value}</span>
+                    <span className='item-extra'>{item.extra}</span>
                   </li>
                 );
               })}
