@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 18:05:16
+ * @LastEditTime: 2019-11-06 19:30:22
  * @Description: file content
  */
 
@@ -331,7 +331,7 @@ class TeamDetail extends PureComponent {
               className='card-container-right'
             >
               <Button
-                className='vote-btn'
+                className='table-btn vote-btn'
                 size='large'
                 type='primary'
                 shape='round'
@@ -345,7 +345,7 @@ class TeamDetail extends PureComponent {
                 Vote
               </Button>
               <Button
-                className='redeem-btn'
+                className='table-btn redeem-btn'
                 size='large'
                 type='primary'
                 shape='round'
