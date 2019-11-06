@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 20:19:38
+ * @LastEditTime: 2019-11-06 20:53:15
  * @Description: file content
  */
 @modalFormItemHeight: 34px;
@@ -312,12 +312,15 @@ button {
 }
 
 // todo: Limit the work range to certain item such as the Calendar inner Modal
-.ant-calendar {
-  width: 450px;
-}
-.ant-calendar-disabled-cell.ant-calendar-selected-day
-  .ant-calendar-date::before {
-  left: 18px;
+.ant-calendar-picker-container {
+  .ant-calendar {
+    width: 450px;
+
+    .ant-calendar-disabled-cell.ant-calendar-selected-day
+      .ant-calendar-date::before {
+      left: 18px;
+    }
+  }
 }
 
 // todo: Centralized manage the page body's margins
