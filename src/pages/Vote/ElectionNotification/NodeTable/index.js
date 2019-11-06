@@ -181,7 +181,7 @@ class NodeTable extends PureComponent {
         sorter: (a, b) => a.producedBlocks - b.producedBlocks
       },
       {
-        title: 'Obtained Votes Count',
+        title: 'Obtain Votes',
         dataIndex: 'obtainedVotesAmount',
         key: 'obtainedVotesCount',
         defaultSortOrder: 'descend',
@@ -488,7 +488,7 @@ class NodeTable extends PureComponent {
           loading={isLoading}
           pagination={pagination}
           rowKey={record => record.pubkey}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1350 }}
           // size='middle'
         />
       </section>
