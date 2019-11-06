@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-01 20:27:17
+ * @LastEditTime: 2019-11-06 20:34:35
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -233,22 +233,14 @@ class VoteModal extends Component {
               <span className='form-item-value ellipsis'>{nodeAddress}</span>
             )
           },
-          {
-            label: 'Wallet',
-            render: (
-              <span className='form-item-value ellipsis'>
-                {currentWalletName}
-              </span>
-            )
-          },
-          {
-            label: 'Usable Balance',
-            render: (
-              <span className='form-item-value'>
-                {thousandsCommaWithDecimal(balance, false)} {SYMBOL}
-              </span>
-            )
-          },
+          // {
+          //   label: 'Wallet',
+          //   render: (
+          //     <span className='form-item-value ellipsis'>
+          //       {currentWalletName}
+          //     </span>
+          //   )
+          // },
           {
             label: 'Vote Amount',
             render: (
@@ -293,7 +285,12 @@ class VoteModal extends Component {
               validateTrigger: ['onChange', 'onBlur'],
               fieldDecoratorid: 'voteAmountInput',
               validateFirst: true // todo: How to set it to default?
-            }
+            },
+            // todo: extra should compatible with ReactElement and string
+            extra: `Usable Balance: ${thousandsCommaWithDecimal(
+              balance,
+              false
+            )} ${SYMBOL}`
           },
           {
             label: 'Lock Time',
@@ -702,7 +699,14 @@ class VoteModal extends Component {
                   {form.formItems.map(item => {
                     // todo: there are repeat code in form
                     return (
-                      <Form.Item label={item.label} key={item.label}>
+                      <Form.Item
+                        label={item.label}
+                        key={item.label}
+                        className={item.extra ? 'form-item-with-extra' : ''}
+                      >
+                        {item.extra && (
+                          <div className='form-item-extra'>{item.extra}</div>
+                        )}
                         {/* todo: Optimize the judge */}
                         {item.validator
                           ? getFieldDecorator(

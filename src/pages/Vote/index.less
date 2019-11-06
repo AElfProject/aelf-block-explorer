@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 19:29:40
+ * @LastEditTime: 2019-11-06 20:19:38
  * @Description: file content
  */
 @modalFormItemHeight: 34px;
@@ -154,6 +154,7 @@ button {
       .form-item-label {
         text-align: right;
       }
+      // todo: Is the code about form-item-xxx useless now?
       .form-item-value {
         text-align: left;
         text-indent: 10px;
@@ -243,6 +244,16 @@ button {
       text-align: center;
       height: @modalFormItemHeight;
       margin-bottom: 24px;
+      &.form-item-with-extra {
+        position: relative;
+        .form-item-extra {
+          position: absolute;
+          right: 0;
+          top: -18px;
+          color: #ccc;
+          font-size: 13px;
+        }
+      }
       // Used to realize unfixed height
       .ant-form-item-control-wrapper {
         height: 100%;
