@@ -371,23 +371,13 @@ class ResourceCurrencyChart extends PureComponent {
     ];
     const { buttonIndex } = this.state;
     const buttonsHTML = buttons.map((item, index) => {
-      if (index !== buttonIndex) {
-        return (
-          <div
-            className='select-button-style'
-            key={index}
-            onClick={this.handleButtonClick.bind(this, index)}
-          >
-            {item}
-          </div>
-        );
-      }
       return (
         <div
-          className='select-button-style'
+          className={`select-button-style ${
+            index === buttonIndex ? 'active' : ''
+          }`}
           key={index}
           onClick={this.handleButtonClick.bind(this, index)}
-          style={{ background: '#26b7ff' }}
         >
           {item}
         </div>
