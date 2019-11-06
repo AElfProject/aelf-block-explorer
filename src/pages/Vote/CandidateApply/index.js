@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 18:01:45
+ * @LastEditTime: 2019-11-06 17:53:54
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
@@ -297,6 +297,7 @@ class CandidateApply extends PureComponent {
           centered
           maskClosable
           keyboard
+          width={640}
         >
           <Form {...modalFormItemLayout}>
             {applyConfirmForm.formItems &&
