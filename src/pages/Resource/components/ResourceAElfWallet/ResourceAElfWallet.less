@@ -19,14 +19,13 @@
 
     .button {
       line-height: 28px;
-      margin-top: 6px;
+      margin: 6px 20px 0 0;
       float: right;
     }
   }
 
   .resource-wallet-body {
     position: relative;
-    padding: 10px;
     .number {
       color: #db912e;
     }
@@ -59,13 +58,6 @@
   background: #618c01;
 }
 
-.refresh-button {
-  position: absolute;
-  z-index: 9;
-  right: 20px;
-  top: 0;
-}
-
 @media screen and (max-width: 992px) {
   .resource-wallet {
     margin: 20px;
@@ -79,8 +71,9 @@
   }
 }
 
+// todo: Use the device width comment as a reference
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {
+@media (min-width: @smallScreenWidth) {
   .list-border {
     border-bottom: 1px @cardSplitColor solid;
     border-right: none;
@@ -105,4 +98,10 @@
 
 .current-name {
   text-align: center;
+}
+
+@media (max-width: @smallScreenWidth) {
+  .resource-wallet-body {
+    padding: 10px;
+  }
 }

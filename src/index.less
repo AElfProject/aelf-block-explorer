@@ -89,3 +89,24 @@ body {
   border-radius: 20px;
   background-color: #4285f4; // todo: Centralized manage antd's theme color
 }
+
+.update-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  &:hover,
+  &:focus {
+    background: none;
+    border: none;
+    &:after {
+      display: none; // Remove antd's default style
+    }
+  }
+  &:focus {
+    color: #fff;
+  }
+  &:hover {
+    color: @gold;
+  }
+}

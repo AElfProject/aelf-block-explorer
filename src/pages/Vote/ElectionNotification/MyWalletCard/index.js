@@ -310,12 +310,12 @@ export default class MyWalletCard extends PureComponent {
       <section className={`${clsPrefix} has-mask-on-mobile`}>
         <div className={`${clsPrefix}-header`}>
           <h2 className={`${clsPrefix}-header-title`}>My Wallet</h2>
-          <button
-            className={`${clsPrefix}-header-sync-btn`}
+          <Button
+            className={`${clsPrefix}-header-sync-btn update-btn`}
             onClick={this.handleUpdateWalletClick}
           >
-            <Icon type='sync' />
-          </button>
+            <Icon type='sync' spin={loading} />
+          </Button>
         </div>
         <Spin spinning={loading}>
           <div className={`${clsPrefix}-body`}>

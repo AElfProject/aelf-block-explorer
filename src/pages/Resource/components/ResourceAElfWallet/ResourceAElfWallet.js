@@ -4,9 +4,9 @@
  */
 
 import React, { PureComponent } from 'react';
-import { Row, Col, Spin } from 'antd';
-import Svg from '../../../../components/Svg/Svg';
 import { Link } from 'react-router-dom';
+import { Row, Col, Spin, Button, Icon } from 'antd';
+
 import './ResourceAElfWallet.less';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
@@ -207,22 +207,20 @@ export default class ResourceAElfWallet extends PureComponent {
   }
 
   render() {
+    const { currentWallet, balance, RAM, CPU, NET, STO, loading } = this.state;
+
     const walltetHTML = this.accountListHTML();
-    const { currentWallet, balance, RAM, CPU, NET, STO } = this.state;
+
     return (
       <div className='resource-wallet has-mask-on-mobile'>
         <div className='resource-wallet-head'>
           <div className='title'>{this.props.title}</div>
-          <div
-            className='refresh-button'
+          <Button
+            className='update-btn button'
             onClick={() => this.props.onRefresh()}
           >
-            <Svg
-              className={this.state.loading ? 'refresh-animate' : ''}
-              icon='refresh'
-              style={{ width: '60px', height: '45px' }}
-            />
-          </div>
+            <Icon type='sync' spin={loading} />
+          </Button>
         </div>
         <div className='resource-wallet-body'>
           <Spin tip='loading....' size='large' spinning={this.state.loading}>
