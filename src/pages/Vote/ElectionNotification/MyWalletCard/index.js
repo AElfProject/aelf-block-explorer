@@ -280,6 +280,8 @@ export default class MyWalletCard extends PureComponent {
         value: dividends.total.toFixed(2),
         extra: (
           <Button
+            type='primary'
+            size='small'
             shape='round'
             className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
             onClick={handleDividendClick}

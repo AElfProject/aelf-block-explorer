@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 18:04:25
+ * @LastEditTime: 2019-11-06 13:17:38
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -36,7 +36,7 @@ const electionNotifiStatisData = {
   },
   currentMiningReward: {
     id: 3,
-    title: `Current Mining Reward ( ${SYMBOL} )`
+    title: `Current Mining Reward (${SYMBOL})`
   }
 };
 
@@ -154,7 +154,7 @@ export default class ElectionNotification extends PureComponent {
             {
               method: 'GetCurrentTermNumber',
               statisDataKey: 'termEndTime',
-              processor: value => `Current Term's Countdown ( ${value}th term )`
+              processor: value => `Current Term's Countdown (${value}th term)`
             }
           ]
         }
