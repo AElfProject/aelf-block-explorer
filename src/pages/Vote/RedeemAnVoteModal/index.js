@@ -36,15 +36,15 @@ export class RedeemAnVoteModal extends PureComponent {
         {
           label: 'Redeem Amount',
           render: <span className='form-item-value'>{voteToRedeem.amount}</span>
-        },
-        {
-          label: 'Redeem To',
-          render: (
-            <span className='form-item-value'>
-              {currentWallet && currentWallet.name}
-            </span>
-          )
         }
+        // {
+        //   label: 'Redeem To',
+        //   render: (
+        //     <span className='form-item-value'>
+        //       {currentWallet && currentWallet.name}
+        //     </span>
+        //   )
+        // }
       ]
     };
   }
