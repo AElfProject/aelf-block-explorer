@@ -24,39 +24,23 @@ export class RedeemAnVoteModal extends PureComponent {
           label: 'Node Name',
           // todo: use classname isteads of the inline-css
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {voteToRedeem.nodeName}
-            </span>
+            <span className='form-item-value'>{voteToRedeem.nodeName}</span>
           )
         },
         {
           label: 'Node Add',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {voteToRedeem.nodeAddress}
-            </span>
+            <span className='form-item-value'>{voteToRedeem.nodeAddress}</span>
           )
         },
         {
           label: 'Redeem Amount',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {voteToRedeem.amount}
-            </span>
-          )
+          render: <span className='form-item-value'>{voteToRedeem.amount}</span>
         },
         {
           label: 'Redeem To',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
+            <span className='form-item-value'>
               {currentWallet && currentWallet.name}
             </span>
           )
