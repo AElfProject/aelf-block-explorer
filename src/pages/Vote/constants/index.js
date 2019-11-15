@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-27 18:59:38
+ * @LastEditTime: 2019-11-15 21:04:25
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -12,15 +12,15 @@ import { SYMBOL } from '@src/constants';
 //  The contracts need to load in page ElectionNotification
 const contractsNeedToLoad = [
   {
-    contractAddrValName: 'consensusContractAddr',
+    contractAddrValName: 'consensusDPoS',
     contractNickname: 'consensusContract'
   },
   {
-    contractAddrValName: 'dividendContractAddr',
+    contractAddrValName: 'dividends',
     contractNickname: 'dividendContract'
   },
   {
-    contractAddrValName: 'multiTokenContractAddr',
+    contractAddrValName: 'multiToken',
     contractNickname: 'multiTokenContract'
   },
   {
