@@ -4,6 +4,8 @@
   "description": "Describe browser here",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/queryConfigs.js",
+    "prestart": "node scripts/queryConfigs.js",
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
     "commit": "git-cz",

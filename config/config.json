@@ -1,0 +1,14 @@
+{
+  "SYMBOL": "ELF",
+  "CHAIN_ID": "AELF",
+  "CONTRACTS": {
+    "voteContractAddr": "AElf.ContractNames.Vote",
+    "electionContractAddr": "AElf.ContractNames.Election",
+    "profitContractAddr": "AElf.ContractNames.Profit",
+    "multiToken": "AElf.ContractNames.Token",
+    "dividends": "AElf.ContractNames.Treasury",
+    "consensusDPoS": "AElf.ContractNames.Consensus",
+    "tokenConverter": "AElf.ContractNames.TokenConverter",
+    "feeReceiverContract": "AElf.ContractNames.Token"
+  }
+}
