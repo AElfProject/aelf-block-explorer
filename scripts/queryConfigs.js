@@ -10,7 +10,9 @@ const endpoint = mergedConfig.BUILD_ENDPOINT;
 const aelf = new AElf(new AElf.providers.HttpProvider(endpoint));
 const wallet = AElf.wallet.getWalletByPrivateKey(mergedConfig.commonPrivateKey);
 
-const result = {};
+const result = {
+    ...config
+};
 
 async function getConfig() {
     const {

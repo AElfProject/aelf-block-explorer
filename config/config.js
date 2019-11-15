@@ -5,7 +5,7 @@
 const config = require('./config.json');
 
 // the block chain URL this explorer is serving
-const BUILD_ENDPOINT = 'http://127.0.0.1:8000';
+const BUILD_ENDPOINT = 'http://13.231.179.27:8000';
 
 const DEFAUTRPCSERVER = `${location.protocol}//${location.host}/chain`;
 
@@ -17,7 +17,7 @@ const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
 // const WALLET_DOMAIN = 'https://wallet-test-side01.aelf.io/';
 // const WALLET_DOMAIN = 'https://wallet-test-side02.aelf.io/';
 
-
+delete config.CONTRACTS;
 module.exports = {
     DEFAUTRPCSERVER,
     commonPrivateKey,
