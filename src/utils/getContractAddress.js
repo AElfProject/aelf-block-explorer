@@ -4,7 +4,6 @@
  * 获取查询使用的公共钱包与合约地址
  */
 
-import { aelf } from '../utils';
 import * as AElf from 'aelf-sdk';
 // todo: The exist of dividends is for compatibility, after all man use the more accurate name 'dividendContractAddr', we can drop the name of 'dividends'.
 import {
@@ -13,13 +12,12 @@ import {
   consensusDPoS,
   dividends,
   tokenConverter,
-  dividendContractAddr,
   electionContractAddr,
   voteContractAddr,
-  consensusContractAddr,
-  multiTokenContractAddr,
   profitContractAddr
 } from '@config/config';
+import { aelf } from '../utils';
+
 export default function getContractAddress() {
   return new Promise((resolve, reject) => {
     const wallet = AElf.wallet.getWalletByPrivateKey(commonPrivateKey);
@@ -31,11 +29,9 @@ export default function getContractAddress() {
         tokenConverter,
         wallet,
         chainInfo: result,
-        dividendContractAddr,
         voteContractAddr,
         electionContractAddr,
-        consensusContractAddr,
-        multiTokenContractAddr,
+
         profitContractAddr
       };
       resolve(output);
