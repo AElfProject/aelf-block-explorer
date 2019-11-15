@@ -17,7 +17,6 @@ const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
 // const WALLET_DOMAIN = 'https://wallet-test-side01.aelf.io/';
 // const WALLET_DOMAIN = 'https://wallet-test-side02.aelf.io/';
 
-delete config.CONTRACTS;
 module.exports = {
     DEFAUTRPCSERVER,
     commonPrivateKey,
