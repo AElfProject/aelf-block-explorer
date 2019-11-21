@@ -181,7 +181,7 @@ export default class HomePage extends Component {
             info: '-'
         }, {
             title: 'Total Side Chains',
-            info: '-'
+            info: 5
         }];
 
         const html = basicInfo.map(item => {

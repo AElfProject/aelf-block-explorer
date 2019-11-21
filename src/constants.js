@@ -1,6 +1,6 @@
 /**
  * @file Home.js
- * @author longyue, huangzongzhe
+ * @author longyue, huangzongzhe, yangpeiyang
  */
 /* eslint-disable fecs-camelcase */
 import React from 'react';
@@ -67,9 +67,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Age',
     dataIndex: 'time',
     key: 'time',
-    render: time => (
-      <span> {dayjs(time).format('YYYY/MM / DD HH: mm: ss ')} </span>
-    )
+    render: time => <span> {dayjs(time).format('YYYY/MM/DD HH:mm:ss')} </span>
     //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   },
   {
@@ -128,7 +126,7 @@ const ALL_TXS_LIST_COLUMNS = [
     title: null,
     key: 'payIcon ',
     width: 50,
-    render: () => <Icon type='arrow-right' theme='outlined' />
+    render: () => <Icon type="arrow-right" theme="outlined" />
   },
   {
     title: 'To ',
@@ -222,7 +220,7 @@ const RESOURCE_DETAILS_COLUMN = [
       const fee = Math.ceil(row.fee / 1000);
       price = ((row.elf - fee) / row.resource).toFixed(9);
       return (
-        <Link to={`/tx/${row.tx_id}`} title='price'>
+        <Link to={`/tx/${row.tx_id}`} title="price">
           {price}
         </Link>
       );
