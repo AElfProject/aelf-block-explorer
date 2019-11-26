@@ -12,7 +12,6 @@ import { isArray } from 'zrender/lib/core/util';
 
 import Button from './components/Button/Button';
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from '../config/config';
-import { isArray } from 'zrender/lib/core/util';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 
 dayjs.extend(relativeTime);

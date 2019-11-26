@@ -72,7 +72,7 @@ export default class ResourceSellModal extends PureComponent {
     console.log('menuName', menuName);
     const payload = {
       symbol: menuName,
-      amount: sellNum * ELF_DECIMAL
+      amount: +(sellNum * ELF_DECIMAL)
     };
     result.Sell(payload, (error, result) => {
       if (result.error) {

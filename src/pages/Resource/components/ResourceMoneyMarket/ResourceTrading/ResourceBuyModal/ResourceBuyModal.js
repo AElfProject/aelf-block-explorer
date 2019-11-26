@@ -11,7 +11,6 @@ import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import { centerEllipsis } from '@utils/formater';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
-import config from '@config/config';
 import {
   SYMBOL,
   ELF_DECIMAL,
@@ -62,10 +61,10 @@ export default class ResourceBuyModal extends PureComponent {
   requestBuy(result) {
     const { buyNum, handleModifyTradingState } = this.props;
     const { menuName } = this.state;
-    console.log('buyNum * config.ELF_DECIMAL', buyNum, config.ELF_DECIMAL);
+    console.log('buyNum * ELF_DECIMAL', buyNum, ELF_DECIMAL);
     const payload = {
       symbol: menuName,
-      amount: buyNum * config.ELF_DECIMAL
+      amount: buyNum * ELF_DECIMAL
     };
     console.log('result', result);
     console.log('payload', payload);
