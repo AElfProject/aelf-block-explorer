@@ -1,7 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Input, Button, Table } from 'antd';
+import { Modal, Form, Input, Button, Table, Icon, message } from 'antd';
+// import Highlighter from 'react-highlight-words';
 
-import { SYMBOL } from '@src/constants';
+import {
+  SYMBOL,
+  SELECT_SOMETHING_TIP,
+  NEED_PLUGIN_AUTHORIZE_TIP,
+  FEE_TIP
+} from '@src/constants';
 
 const { Search } = Input;
 
@@ -25,6 +31,7 @@ const pagination = {
 
 function getColumns() {
   // const { checkedGroup } = this.state;
+  const { changeVoteState } = this.props;
 
   return [
     // {
@@ -32,10 +39,33 @@ function getColumns() {
     //   dataIndex: 'rank',
     //   key: 'rank'
     // },
+    // todo: It seems that node name has already displayed in the Modal
     // {
     //   title: 'Node Name',
     //   dataIndex: 'name',
-    //   key: 'nodeName'
+    //   key: 'nodeName',
+    //   ...this.getColumnSearchProps('name'),
+    //   render: (text, record) => (
+    //     // todo: consider to extract the component as a independent component
+    //     <Tooltip title={text}>
+    //       <Link
+    //         to={{
+    //           pathname: '/vote/team',
+    //           search: `pubkey=${record.candidate}`
+    //         }}
+    //         className='node-name-in-table'
+    //         // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+    //         style={{ width: 150 }}
+    //         onClick={() => {
+    //           changeVoteState({
+    //             voteModalVisible: false
+    //           });
+    //         }}
+    //       >
+    //         {text}
+    //       </Link>
+    //     </Tooltip>
+    //   )
     // },
     {
       title: 'Vote Amount',
@@ -72,10 +102,89 @@ function getColumns() {
     //   )
     // }
   ];
-  f;
 }
 
-export default class RedeemModal extends PureComponent {
+class RedeemModal extends PureComponent {
+  constructor() {
+    super();
+    this.state = {
+      // searchText: ''
+    };
+
+    this.handleOk = this.handleOk.bind(this);
+  }
+
+  getColumnSearchProps = dataIndex => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={node => {
+            this.searchInput = node;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Button
+          type='primary'
+          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          icon='search'
+          size='small'
+          style={{ width: 90, marginRight: 8 }}
+        >
+          Search
+        </Button>
+        <Button
+          onClick={() => this.handleReset(clearFilters)}
+          size='small'
+          style={{ width: 90 }}
+        >
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: filtered => (
+      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: visible => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select());
+      }
+    }
+    // render: text => (
+    //   <Highlighter
+    //     highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+    //     searchWords={[this.state.searchText]}
+    //     autoEscape
+    //     textToHighlight={text.toString()}
+    //   />
+    // )
+  });
+
+  handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    // this.setState({ searchText: selectedKeys[0] });
+  };
+
+  handleReset = clearFilters => {
+    clearFilters();
+    // this.setState({ searchText: '' });
+  };
+
   generateVoteRedeemForm() {
     const {
       nodeAddress,
@@ -83,9 +192,10 @@ export default class RedeemModal extends PureComponent {
       redeemableVoteRecordsForOneCandidate,
       activeVoteRecordsForOneCandidate,
       currentWallet,
-      redeemVoteSelectedRowKeys,
+      // redeemVoteSelectedRowKeys,
       handleRedeemVoteSelectedRowChange
     } = this.props;
+    const { getFieldValue, setFieldsValue } = this.props.form;
 
     const activeVoteAmountForOneCandidate = activeVoteRecordsForOneCandidate.reduce(
       (total, current) => total + +current.amount,
@@ -97,10 +207,19 @@ export default class RedeemModal extends PureComponent {
       0
     );
 
-    const columns = getColumns();
+    const redeemVoteSelectedRowKeys = getFieldValue(
+      'redeemVoteSelectedRowKeys'
+    );
+
+    const columns = getColumns.call(this);
     const rowSelection = {
       selectedRowKeys: redeemVoteSelectedRowKeys,
-      onChange: handleRedeemVoteSelectedRowChange,
+      // onChange: handleRedeemVoteSelectedRowChange,
+      onChange: value => {
+        setFieldsValue({
+          redeemVoteSelectedRowKeys: value
+        });
+      },
       hideDefaultSelections: true,
       type: 'radio'
     };
@@ -108,55 +227,39 @@ export default class RedeemModal extends PureComponent {
     return {
       formItems: [
         {
-          label: '节点名称',
-          // todo: use classname isteads of the inline-css
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {nodeName}
-            </span>
-          )
+          label: 'Node Name',
+          // todo: use iterator optimize
+          render: <span className='form-item-value'>{nodeName}</span>
         },
         {
-          label: '地址',
-          render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
-              {nodeAddress}
-            </span>
-          )
+          label: 'Node Add',
+          render: <span className='form-item-value'>{nodeAddress}</span>
         },
         {
-          label: '当前投票总数',
+          label: 'Active Vote',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
+            <span className='form-item-value'>
               {activeVoteAmountForOneCandidate} {SYMBOL}
             </span>
           )
         },
         {
-          label: '过期票数/可赎回票数',
+          label: 'Expired Vote',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
+            <span className='form-item-value'>
               {redeemableVoteAmountForOneCandidate} {SYMBOL}
             </span>
           )
         },
         {
-          label: '投票记录选择',
+          label: 'Select Vote',
           render: (
             <div>
-              <Search
+              {/* <Search
                 placeholder='Input Node Name'
                 onSearch={value => console.log(value)}
                 style={{ width: 200 }}
-              />
+              /> */}
               <Table
                 dataSource={redeemableVoteRecordsForOneCandidate}
                 columns={columns}
@@ -165,7 +268,17 @@ export default class RedeemModal extends PureComponent {
                 rowSelection={rowSelection}
               />
             </div>
-          )
+          ),
+          validator: {
+            rules: [
+              {
+                required: true,
+                message: SELECT_SOMETHING_TIP
+              }
+            ],
+            fieldDecoratorid: 'redeemVoteSelectedRowKeys'
+            // validateTrigger: ['onBlur']
+          }
         },
         // {
         //   label: '赎回数量',
@@ -181,11 +294,9 @@ export default class RedeemModal extends PureComponent {
         //   )
         // },
         {
-          label: '赎回至',
+          label: 'Redeem To',
           render: (
-            <span
-              style={{ color: '#fff', width: 600, display: 'inline-block' }}
-            >
+            <span className='form-item-value'>
               {currentWallet && currentWallet.name}
             </span>
           )
@@ -194,12 +305,24 @@ export default class RedeemModal extends PureComponent {
     };
   }
 
+  handleOk() {
+    const { handleRedeemConfirm, form, changeVoteState } = this.props;
+    form.validateFields((err, values) => {
+      if (err) return;
+      const { redeemVoteSelectedRowKeys } = values;
+      changeVoteState(
+        { redeemVoteSelectedRowKeys: [redeemVoteSelectedRowKeys] },
+        () => {
+          handleRedeemConfirm();
+        }
+      );
+    });
+  }
+
   render() {
-    const {
-      voteRedeemModalVisible,
-      handleRedeemConfirm,
-      handleCancel
-    } = this.props;
+    const { voteRedeemModalVisible, handleCancel } = this.props;
+    const { getFieldDecorator } = this.props.form;
+
     const voteRedeemForm = this.generateVoteRedeemForm();
 
     return (
@@ -207,40 +330,37 @@ export default class RedeemModal extends PureComponent {
         className='vote-redeem-modal'
         title='Vote Redeem'
         visible={voteRedeemModalVisible}
-        onOk={handleRedeemConfirm}
+        onOk={this.handleOk}
         onCancel={handleCancel.bind(this, 'voteRedeemModalVisible')}
-        width={860}
+        width={960}
         centered
-        maskClosablef
+        maskClosable
         keyboard
+        destroyOnClose
       >
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           {voteRedeemForm.formItems &&
             voteRedeemForm.formItems.map(item => {
               return (
                 <Form.Item label={item.label} key={item.label}>
-                  {/* {getFieldDecorator('email', {
-      rules: [
-        {
-          type: 'email',
-          message: 'The input is not valid E-mail!'
-        },
-        {
-          required: true,
-          message: 'Please input your E-mail!'
-        }
-      ]
-    })(<Input />)} */}
-                  {item.render ? item.render : <Input />}
+                  {/* todo: Optimize the judge */}
+                  {item.validator
+                    ? getFieldDecorator(
+                        item.validator.fieldDecoratorid,
+                        item.validator
+                      )(item.render || <Input />)
+                    : item.render}
                 </Form.Item>
               );
             })}
         </Form>
         <p className='tip-color' style={{ fontSize: 12 }}>
-          本次赎回将扣除2ELF的手续费
+          {FEE_TIP}
         </p>
-        <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
+        <p style={{ marginTop: 10 }}>{NEED_PLUGIN_AUTHORIZE_TIP}</p>
       </Modal>
     );
   }
 }
+
+export default Form.create()(RedeemModal);

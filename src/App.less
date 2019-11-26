@@ -1,8 +1,11 @@
-@import "./assets/less/_variables.less";
+@import './assets/less/theme.less';
 
 .App {
-  background: url("./assets/images/bg_purple@1x.jpg");
+  position: relative;
+  min-height: 100vh;
+  background: url('./assets/images/bg_purple_darker@1x.jpg');
   background-size: cover;
+  padding-bottom: @footerHeight; // Ugly code
   // TODO 在iOS下还有问题。header会跟着滚动。
   //position: fixed;
   //width: 100%;
@@ -16,7 +19,7 @@
   .basic-container {
     max-width: @maxWidth;
     margin: auto;
-    padding: 0 56px 0 56px;
+    padding: 20px 30px 30px;
   }
   .basic-bottom-blank {
     height: 64px;
@@ -25,7 +28,7 @@
 
   @media screen and (max-width: 768px) {
     .basic-container {
-      padding: 0 16px 0 16px;
+      padding: 16px;
     }
     .basic-bottom-blank {
       height: 16px;
@@ -38,17 +41,17 @@
 thead {
   th {
     border: none !important;
-    color: #FFF !important;
+    color: #fff !important;
     border-radius: 0 !important;
     background: rgba(57, 0, 57, 0.3) !important;
   }
 }
 tbody {
   tr {
-    color: #FFF;
+    color: #fff;
     background: rgba(57, 0, 57, 0.1) !important;
     td {
-      color: #FFF;
+      color: #fff;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
   }
@@ -59,7 +62,7 @@ tbody {
     }
   }
   a {
-    color: #FFF;
+    color: #fff;
   }
 }
 
@@ -82,7 +85,7 @@ tbody {
   border: none;
   background: none;
   a {
-    color: @fontColorLightPurple
+    color: @fontColorLightPurple;
   }
 }
 
@@ -99,16 +102,16 @@ tbody {
   opacity: 0.8;
 }
 .ant-pagination-item-active a {
-  color: #FFF;
+  color: #fff;
 }
 .ant-pagination-item-active a:hover {
-   color: #FFF !important;
+  color: #fff !important;
 }
 .ant-pagination-item-active:hover a {
-  color: #FFF;
+  color: #fff;
 }
 .ant-pagination-item-active:focus a {
-  color: #FFF;
+  color: #fff;
 }
 .ant-pagination-item-ellipsis {
   color: @fontColorLightPurple !important;
@@ -130,7 +133,7 @@ tbody {
   }
 }
 
-.ant-table-small{
+.ant-table-small {
   border: none;
 }
 // rewriter ant table style end

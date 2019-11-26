@@ -1,20 +1,42 @@
-.select-button {
-    margin-left: 50px;
-    position: absolute;
-    z-index: 1;
-    top: 40px;
-}
+@menuBtnActiveColor: rgba(255, 255, 255, 0.25);
 
+.select-button {
+  margin-left: 74px;
+  // position: absolute;
+  overflow: hidden;
+}
 
 .select-button-style {
-    width: 78px;
-    height: 30px;
-    color: #fff;
-    line-height: 30px;
-    border-radius: 15px;
-    cursor: pointer;
-    float: left;
-    margin-right: 20px;
-    text-align: center;
+  min-width: 78px;
+  height: 30px;
+  color: #fff;
+  line-height: 30px;
+  border-radius: 15px;
+  cursor: pointer;
+  float: left;
+  margin-right: 20px;
+  text-align: center;
+  &.active {
+    background-color: @menuBtnActiveColor;
+  }
 }
 
+@media (min-width: 1600px) {
+  .ant-col-xxl-16 {
+    margin-left: 40px;
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .resource-currency-chart {
+    overflow: scroll;
+    margin-bottom: 20px;
+  }
+
+  .select-button {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-left: 0; // Remove default style
+  }
+}

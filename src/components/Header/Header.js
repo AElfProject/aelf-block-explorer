@@ -6,16 +6,19 @@
 import React, { PureComponent } from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import './header.styles.less';
-import Search from './../Search/Search';
+import { getPathnameFirstSlash } from '@utils/urlUtils';
+import { setIsSmallScreen } from '@actions/common';
+import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
 import config from '../../../config/config';
 
-const SubMenu = Menu.SubMenu;
+const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
 
-export default class BrowserHeader extends PureComponent {
+class BrowserHeader extends PureComponent {
   constructor() {
     super();
     this.timerInterval = null;
@@ -24,15 +27,20 @@ export default class BrowserHeader extends PureComponent {
     this.state = {
       showSearch: this.getSearchStatus(),
       showMobileMenu: false,
-      current: location.pathname === '/' ? '/home' : location.pathname
+      current:
+        location.pathname === '/'
+          ? '/home'
+          : getPathnameFirstSlash(location.pathname)
     };
+
+    this.handleResize = this.handleResize.bind(this);
   }
 
   getSearchStatus() {
-    const pathname = location.pathname;
+    const { pathname } = location;
     let showSearch = false;
     if (pathname === '/' && document.body.offsetWidth > 768) {
-      const scrollTop = document.documentElement.scrollTop;
+      const { scrollTop } = document.documentElement;
       if (scrollTop >= this.showSearchTop) {
         showSearch = true;
       } else {
@@ -47,7 +55,7 @@ export default class BrowserHeader extends PureComponent {
   // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
   setSeleted() {
     this.timerInterval = setInterval(() => {
-      let pathname = '/' + location.pathname.split('/')[1];
+      let pathname = `/${location.pathname.split('/')[1]}`;
       pathname = pathname === '/' ? '/home' : pathname;
       if (this.state.current !== pathname) {
         // white list
@@ -67,7 +75,10 @@ export default class BrowserHeader extends PureComponent {
 
   componentDidMount() {
     this.setSeleted();
+    this.handleResize();
+
     window.addEventListener('scroll', this.handleScroll.bind(this));
+    window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
@@ -87,9 +98,24 @@ export default class BrowserHeader extends PureComponent {
     }
   }
 
+  handleResize() {
+    const { setIsSmallScreen, isSmallScreen } = this.props;
+    const { offsetWidth } = document.body;
+
+    const newIsMobile = offsetWidth <= 768;
+
+    if (newIsMobile !== isSmallScreen) {
+      setIsSmallScreen(newIsMobile);
+    }
+  }
+
   handleClick = e => {
     clearTimeout(this.timerTimeout);
     this.timerTimeout = setTimeout(() => {
+      const { isSmallScreen } = this.props;
+      if (isSmallScreen) {
+        this.toggleMenu();
+      }
       this.setState({
         current: e.key
       });
@@ -102,23 +128,23 @@ export default class BrowserHeader extends PureComponent {
 
     let voteHTML = '';
     let resourceHTML = '';
-    // if (chain_id === config.MAINCHAINID) {
-    //   voteHTML = (
-    //     <Menu.Item key='/vote'>
-    //       {/*<Icon type='appstore' />*/}
-    //       <Link to='/vote'>VOTE</Link>
-    //       {/* <Link to='/voteold'>VoteOld</Link> */}
-    //       {/* <span>APP CENTER [Building]</span> */}
-    //     </Menu.Item>
-    //   );
-    //   resourceHTML = (
-    //     <Menu.Item key='/resource'>
-    //       {/*<Icon type='appstore' />*/}
-    //       <Link to='/resource'>RESOURCE</Link>
-    //       {/* <span>APP CENTER [Building]</span> */}
-    //     </Menu.Item>
-    //   );
-    // }
+    if (chain_id === config.MAINCHAINID) {
+      voteHTML = (
+        <Menu.Item key='/vote'>
+          {/* <Icon type='appstore' /> */}
+          <Link to='/vote'>VOTE</Link>
+          {/* <Link to='/voteold'>VoteOld</Link> */}
+          {/* <span>APP CENTER [Building]</span> */}
+        </Menu.Item>
+      );
+      resourceHTML = (
+        <Menu.Item key='/resource'>
+          {/* <Icon type='appstore' /> */}
+          <Link to='/resource'>RESOURCE</Link>
+          {/* <span>APP CENTER [Building]</span> */}
+        </Menu.Item>
+      );
+    }
 
     const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
 
@@ -131,13 +157,13 @@ export default class BrowserHeader extends PureComponent {
         className={menuClass}
       >
         <Menu.Item key='/home'>
-          {/*<Icon type='home' />*/}
+          {/* <Icon type='home' /> */}
           <Link to='/'>HOME</Link>
         </Menu.Item>
         <SubMenu
           title={
             <span className='submenu-title-wrapper'>
-              {/*<Icon type='gold' />*/}
+              {/* <Icon type='gold' /> */}
               BLOCK CHAIN
             </span>
           }
@@ -145,13 +171,13 @@ export default class BrowserHeader extends PureComponent {
         >
           <MenuItemGroup title='Block'>
             <Menu.Item key='/blocks'>
-              {/*<Icon type='gold' />*/}
+              {/* <Icon type='gold' /> */}
               <Link to='/blocks'>View Blocks</Link>
             </Menu.Item>
           </MenuItemGroup>
           <MenuItemGroup title='Transaction'>
             <Menu.Item key='/txs'>
-              {/*<Icon type='pay-circle' />*/}
+              {/* <Icon type='pay-circle' /> */}
               <Link to='/txs'>View Transactions</Link>
             </Menu.Item>
           </MenuItemGroup>
@@ -168,13 +194,13 @@ export default class BrowserHeader extends PureComponent {
         <Menu.Item key='/apps'>
           <Link to='/apps'>APP CENTER[Building]</Link>
         </Menu.Item> */}
-        {voteHTML}
+        {/* {voteHTML} */}
         {/* <Menu.Item key='/voteold'> */}
-          {/* <Link to='/voteold'>VoteOld</Link> */}
+        {/* <Link to='/voteold'>VoteOld</Link> */}
         {/* </Menu.Item> */}
-        {resourceHTML}
+        {/* {resourceHTML} */}
         <Menu.Item key='/about'>
-          {/*<Icon type='profile' />*/}
+          {/* <Icon type='profile' /> */}
           <a
             href='https://www.aelf.io/'
             target='_blank'
@@ -205,10 +231,9 @@ export default class BrowserHeader extends PureComponent {
   }
 
   render() {
-    const screenWidth = document.body.offsetWidth;
-    const isSmallScreen = screenWidth <= 768;
-    const menuMode = isSmallScreen ? 'inline' : 'horizontal';
+    const { isSmallScreen } = this.props;
 
+    const menuMode = isSmallScreen ? 'inline' : 'horizontal';
     const mobileMoreHTML = isSmallScreen ? this.renderMobileMore() : '';
 
     let menuHtml;
@@ -237,3 +262,14 @@ export default class BrowserHeader extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({ ...state.common });
+
+const mapDispatchToProps = dispatch => ({
+  setIsSmallScreen: isSmallScreen => dispatch(setIsSmallScreen(isSmallScreen))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BrowserHeader);

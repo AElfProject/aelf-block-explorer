@@ -5,22 +5,33 @@ import { Button } from 'antd';
 import './ElectionRuleCard.style.less';
 
 export default memo(function ElectionRuleCard(props) {
-  const { isCandidate } = props;
+  const { isCandidate, currentWallet } = props;
   return (
     <section className='election-rule-card'>
       <p className='election-intro'>
-        每个代币持有者都有机会成为BP节点。然而，为了让网络和社区更加平稳有效地运作，我们制定了一套标准和规定，让符合条件的人成为候选节点。我们以投票的方式
-        ，增加他们当选的机会。我们每周进行新一届BP共识节点投票，并公布选举结果。
+        Every token holder has the opportunity to become a BP node. However, in
+        order to make our networks and communities operate more smoothly and
+        effectively, we have developed a set of standards and regulations to
+        make eligible people candidate nodes. We increased their chances of
+        being elected by voting. We will vote on the new BP consensus node every
+        week and publish the election results.
       </p>
       <div className='btn-group'>
         <button className='view-node-election-plan-btn'>
-          <a href=''>查看节点竞选计划书 ></a>
+          <a href=''>View the node election plan ></a>
         </button>
         <Button type='primary' className='apply-to-be-a-node-btn'>
           {isCandidate ? (
-            <Link to='/vote/apply/keyin'>修改团队信息</Link>
+            <Link
+              to={{
+                pathname: '/vote/apply/keyin',
+                search: `pubkey=${currentWallet && currentWallet.pubkey}`
+              }}
+            >
+              Modify team information
+            </Link>
           ) : (
-            <Link to='/vote/apply'>成为候选节点</Link>
+            <Link to='/vote/apply'>Become a candidate node</Link>
           )}
         </Button>
       </div>

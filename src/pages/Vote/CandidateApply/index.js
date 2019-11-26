@@ -3,23 +3,29 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 16:44:14
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-25 21:38:55
+ * @LastEditTime: 2019-11-06 17:53:54
  * @Description: page for candidate apply
  */
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Form, Input, Button, Modal, message } from 'antd';
+import { Form, Input, Button, Modal, message, Tooltip, Icon } from 'antd';
 
 import './index.less';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import {
+  NEED_PLUGIN_AUTHORIZE_TIP,
+  txStatusInUpperCase,
+  UNKNOWN_ERROR_TIP,
+  LONG_NOTIFI_TIME,
+  ALREADY_BEEN_CURRENT_CANDIDATE_TIP,
+  LOWER_SYMBOL
+} from '@src/constants';
+import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE
 } from '@pages/Vote/constants';
-import { SYMBOL } from '@src/constants';
 import { aelf } from '@src/utils';
 import getStateJudgment from '@utils/getStateJudgment';
-import { electionContractAddr } from '@config/config';
 
 const currentWallet = getCurrentWallet();
 
@@ -34,6 +40,17 @@ const formItemLayout = {
   }
 };
 
+const modalFormItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 12 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 12 }
+  }
+};
+
 function generateCandidateApplyForm({
   nodeAddress,
   currentWalletName,
@@ -42,35 +59,26 @@ function generateCandidateApplyForm({
   return {
     formItems: [
       {
-        label: '抵押地址',
+        label: 'Mortgage Add',
+        render: <span className='list-item-value'>{currentWallet.address}</span>
+      },
+      {
+        label: 'Mortgage Amount',
         render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {currentWallet.address}
+          <span className='list-item-value'>
+            {ELECTION_MORTGAGE_NUM_STR} {LOWER_SYMBOL}
           </span>
         )
       },
       {
-        label: '抵押数量',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL}
-          </span>
-        )
+        label: 'Wallet',
+        render: <span className='list-item-value'>{currentWallet.name}</span>
       },
       {
-        label: '钱包',
+        label: 'Hardware Advice',
         render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {currentWallet.name}
-          </span>
-        )
-      },
-      {
-        label: '硬件建议',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {HARDWARE_ADVICE}
-          </span>
+          // <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
+          <span className='list-item-value'>{HARDWARE_ADVICE}</span>
         )
       }
     ]
@@ -85,21 +93,22 @@ function generateApplyConfirmForm({
   return {
     formItems: [
       {
-        label: '抵押数量',
+        label: 'Mortgage Amount',
         render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {ELECTION_MORTGAGE_NUM_STR}{' '}
-            <span className='tip-color'>成为BP节点后该ELF不能提取</span>
+          <span className='form-item-value'>
+            {ELECTION_MORTGAGE_NUM_STR} &nbsp;&nbsp;&nbsp;
+            <Tooltip
+              title={`The ${LOWER_SYMBOL} cannot be redeemed during the time being a BP
+              node`}
+            >
+              <Icon type='exclamation-circle' />
+            </Tooltip>
           </span>
         )
       },
       {
-        label: '钱包',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {currentWallet.name}
-          </span>
-        )
+        label: 'Wallet',
+        render: <span className='form-item-value'>{currentWallet.name}</span>
       }
     ]
   };
@@ -110,6 +119,7 @@ const applyConfirmForm = generateApplyConfirmForm({});
 
 const clsPrefix = 'candidate-apply';
 
+// todo: page off for those who already been candidate
 class CandidateApply extends PureComponent {
   constructor(props) {
     super(props);
@@ -124,32 +134,58 @@ class CandidateApply extends PureComponent {
   }
 
   handleOk() {
-    const { nightElf } = this.props;
-    const currentWallet = getCurrentWallet();
-    const wallet = {
-      address: currentWallet.address
-    };
+    const {
+      currentWallet,
+      electionContractFromExt,
+      checkExtensionLockStatus
+    } = this.props;
+
     // todo: there are the same code in Vote.js
     // todo: error handle
-    nightElf.chain.contractAt(electionContractAddr, wallet, (err, result) => {
-      if (result) {
-        console.log('result', result);
-        const electionContract = result;
-        electionContract
+    checkExtensionLockStatus().then(() => {
+      electionContractFromExt
         .AnnounceElection()
         .then(res => {
+          // todo: handle gloabally, like the way api using
+          if (res.error) {
+            message.error(res.errorMessage.message);
+            return;
+          }
+          if (!res) {
+            message.error(UNKNOWN_ERROR_TIP);
+            return;
+          }
           const transactionId = res.result
             ? res.result.TransactionId
             : res.TransactionId;
+          // todo: optimize the settimeout
           setTimeout(() => {
             console.log('transactionId', transactionId);
+            // todo: Extract the code getTxResult in the project
             aelf.chain.getTxResult(transactionId, (error, result) => {
-              console.log('result', result);
+              this.setState({
+                applyConfirmVisible: false
+              });
+              if (error) {
+                message.error(
+                  `${error.Status}: ${error.Error}`,
+                  LONG_NOTIFI_TIME
+                );
+                message.error(
+                  `Transaction Id: ${transactionId}`,
+                  LONG_NOTIFI_TIME
+                );
+                return;
+              }
               const { Status: status } = result;
               getStateJudgment(status, transactionId);
+
               // todo: handle the other status case
-              if (status === 'Mined') {
-                this.props.history.push('/vote/apply/keyin');
+              if (status === txStatusInUpperCase.mined) {
+                this.props.history.push(
+                  `/vote/apply/keyin?pubkey=${currentWallet &&
+                    currentWallet.pubkey}`
+                );
               }
             });
           }, 4000);
@@ -157,8 +193,7 @@ class CandidateApply extends PureComponent {
         .catch(err => {
           console.error(err);
         });
-      }
-    })
+    });
 
     // this.setState({
     //   applyConfirmVisible: false
@@ -182,23 +217,25 @@ class CandidateApply extends PureComponent {
   }
 
   render() {
+    const { isCandidate, shouldJudgeIsCurrentCandidate } = this.props;
     const { applyConfirmVisible } = this.state;
 
     return (
       <section
-        className={`${clsPrefix}-container card-container page-container`}
+        className={`${clsPrefix}-container card-container has-mask-on-mobile`}
       >
-        <h3 className={`${clsPrefix}-title`}>申请节点</h3>
-        <Form
-          className={`${clsPrefix}-form`}
-          {...formItemLayout}
-          onSubmit={this.handleSubmit}
-        >
-          {candidateApplyForm.formItems &&
-            candidateApplyForm.formItems.map(item => {
-              return (
-                <Form.Item label={item.label} key={item.label}>
-                  {/* {getFieldDecorator('email', {
+        <h3 className={`${clsPrefix}-title`}>Apply Node</h3>
+        <div className={`${clsPrefix}-body`}>
+          <Form
+            className={`${clsPrefix}-form`}
+            {...formItemLayout}
+            onSubmit={this.handleSubmit}
+          >
+            {candidateApplyForm.formItems &&
+              candidateApplyForm.formItems.map(item => {
+                return (
+                  <Form.Item label={item.label} key={item.label}>
+                    {/* {getFieldDecorator('email', {
               rules: [
                 {
                   type: 'email',
@@ -210,16 +247,46 @@ class CandidateApply extends PureComponent {
                 }
               ]
             })(<Input />)} */}
-                  {item.render ? item.render : <Input />}
-                </Form.Item>
-              );
-            })}
-        </Form>
+                    {item.render ? item.render : <Input />}
+                  </Form.Item>
+                );
+              })}
+          </Form>
+        </div>
         <div className={`${clsPrefix}-footer`}>
-          <Button onClick={this.handleBack}>Cancel</Button>
-          <Button type='primary' onClick={this.showModal}>
-            Apply Now
+          <Button
+            className={`${clsPrefix}-footer-cancel-btn`}
+            onClick={this.handleBack}
+            shape='round'
+          >
+            Cancel
           </Button>
+
+          {// todo: Optimize the judge way
+          // todo: The loading reference shouldJudgeIsCurrentCandidate is no accurate, it don't contain the time judge if the user is current candidate, maybe we need to modify it later.
+          isCandidate ? (
+            <Tooltip title={ALREADY_BEEN_CURRENT_CANDIDATE_TIP}>
+              <Button
+                type='primary'
+                onClick={this.showModal}
+                disabled={isCandidate}
+                loading={shouldJudgeIsCurrentCandidate}
+                shape='round'
+              >
+                Apply Now
+              </Button>
+            </Tooltip>
+          ) : (
+            <Button
+              type='primary'
+              onClick={this.showModal}
+              disabled={isCandidate}
+              loading={shouldJudgeIsCurrentCandidate}
+              shape='round'
+            >
+              Apply Now
+            </Button>
+          )}
         </div>
         <Modal
           className='apply-confirm-modal'
@@ -230,8 +297,9 @@ class CandidateApply extends PureComponent {
           centered
           maskClosable
           keyboard
+          width={640}
         >
-          <Form {...formItemLayout}>
+          <Form {...modalFormItemLayout}>
             {applyConfirmForm.formItems &&
               applyConfirmForm.formItems.map(item => {
                 return (
@@ -253,7 +321,9 @@ class CandidateApply extends PureComponent {
                 );
               })}
           </Form>
-          <p style={{ marginTop: 10 }}>该投票请求NightELF授权签名</p>
+          <p className='tip-color' style={{ marginTop: 10 }}>
+            {NEED_PLUGIN_AUTHORIZE_TIP}
+          </p>
         </Modal>
       </section>
     );

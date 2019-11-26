@@ -1,109 +1,107 @@
 .resource-wallet {
-    margin: 0 56px;
-    margin-bottom: 40px;
-    background: rgba(65, 4, 115, .3);
+  margin: 40px 0;
+  background: @cardBodyColor;
+  color: #fff;
+  font-size: 16px;
+
+  .resource-wallet-head {
+    position: relative;
+    height: 50px;
+    background: @cardHeaderColor;
+    line-height: 50px;
     color: #fff;
-    font-size: 16px;
 
-    .resource-wallet-head {
-        height: 50px;
-        background: #470570;
-        line-height: 50px;
-        color: #fff;
-
-        .title {
-            padding-left: 30px;
-            font-size: 16px;
-            float: left;
-        }
-
-        .button {
-            line-height: 28px;
-            margin-top: 6px;
-            float: right;
-        }
+    .title {
+      padding-left: 30px;
+      font-size: 16px;
+      float: left;
     }
 
-    .resource-wallet-body {
-        position: relative;
-        .number {
-            color: #db912e;
-        }
+    .button {
+      line-height: 28px;
+      margin: 6px 20px 0 0;
+      float: right;
     }
+  }
 
+  .resource-wallet-body {
+    position: relative;
+    .number {
+      color: #db912e;
+    }
+  }
 }
 
 .resource-wallet .ant-radio-group {
-    width: 100%;
+  width: 100%;
 }
 .resource-wallet .ant-radio-wrapper {
-    display: block;
-    color: #fff;
-    font-size: 16px;
-    margin-bottom: 15px;
+  display: block;
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 15px;
 }
 
 .list-col-padding {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .resource-wallet .ant-radio-wrapper:nth-last-child(1) {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .resource-wallet .ant-radio-checked .ant-radio-inner {
-    border-color: #618c01;
+  border-color: #618c01;
 }
 
 .resource-wallet .ant-radio-inner:after {
-    background: #618c01;
+  background: #618c01;
 }
 
-.refresh-button {
-    position: absolute;
-    z-index: 9;
-    right: 20px;
-    top: 0;
-}
-
-@media screen and (max-width: 992px){
-    .resource-wallet  {
-        margin: 20px;
-    }
+@media screen and (max-width: 992px) {
+  .resource-wallet {
+    margin: 20px;
+  }
 }
 
 @media (min-width: 576px) {
-    .list-border {
-        border-bottom: 1px #77389f solid;
-        border-right: none;
-    }
+  .list-border {
+    border-bottom: 1px @cardSplitColor solid;
+    border-right: none;
+  }
 }
 
+// todo: Use the device width comment as a reference
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {
-    .list-border {
-        border-bottom: 1px #77389f solid;
-        border-right: none;
-    }
+@media (min-width: @smallScreenWidth) {
+  .list-border {
+    border-bottom: 1px @cardSplitColor solid;
+    border-right: none;
+  }
 }
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
-    .list-border {
-        border-bottom: 1px #77389f solid;
-        border-right: none;
-    }
+  .list-border {
+    border-bottom: 1px @cardSplitColor solid;
+    border-right: none;
+  }
 }
 
 // Extra large devices (large desktops, 1200px and up)
 @media (min-width: 1200px) {
-    .list-border {
-        border-right: 1px #77389f solid;
-        border-bottom: none;
-    }
+  .list-border {
+    border-right: 1px @cardSplitColor solid;
+    border-bottom: none;
+  }
 }
 
 .current-name {
-    padding-left: 24px;
-    height: 100%;
+  text-align: center;
+}
+
+@media (max-width: @smallScreenWidth) {
+  .resource-wallet-body {
+    padding: 10px;
+  }
 }

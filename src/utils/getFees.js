@@ -1,10 +1,11 @@
 /**
  * @file getFees
- * @author zhouminghui
-*/
+ * @author zhouminghui yangpeiyang
+ * @role used to get a part of resource transaction fee
+ */
+import { FEE_RATE } from '@src/constants';
 
 export default function getFees(pidElf) {
-    let resourceFees =  pidElf * 0.005;
-    resourceFees = Math.ceil(resourceFees);
-    return resourceFees;
+  const resourceFees = pidElf * FEE_RATE;
+  return resourceFees;
 }

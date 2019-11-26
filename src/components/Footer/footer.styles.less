@@ -1,26 +1,37 @@
-@import "../../assets/less/_variables.less";
-
 .footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: @footerHeight;
   text-align: center;
-  background: url("../../assets/images/bg_purple_darker@1x.jpg");
+  background: url('../../assets/images/bg_purple_darker@1x.jpg');
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  color: #FFF;
+  color: #fff;
+  overflow: hidden;
 
   .footer-container {
-    margin: auto;
-    max-width: @maxWidth;
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
     min-height: 88px;
+    height: 100%;
+    .copyright-container {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: 5%;
+      text-align: center;
+    }
   }
 
   .footer-logo {
     text-align: left;
     //margin-bottom: @mgb30;
   }
+  // todo: limit the links within main body of page
   .footer-links-container {
     //margin-bottom: @mgb30;
     // float: right; // todo: why is float didn't work?
@@ -33,7 +44,7 @@
       margin: 10px 10px 0 10px;
       color: @iconColor;
       //background-color: @bgColor;
-      background-color: #FFF;
+      background-color: #fff;
       border-color: @bgColor;
 
       &:hover {
@@ -42,10 +53,20 @@
     }
   }
 }
-@media(max-width: 768px){
+@media (max-width: @smallScreenWidth) {
   .footer {
+    padding: 0;
     .footer-container {
-      min-height: 180px;
+      display: block;
+      position: static;
+      .footer-links-container {
+        //margin-bottom: @mgb30;
+        // float: right; // todo: why is float didn't work?
+        position: static; // for cover upper code
+        .ant-btn:last-child {
+          display: none; // Hide the last icon on mobile
+        }
+      }
     }
   }
 }

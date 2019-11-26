@@ -10,6 +10,8 @@ import {
 } from 'apisauce';
 import * as AElf from 'aelf-sdk';
 import dayjs from 'dayjs';
+import Cookies from 'js-cookie';
+
 import {
     RPCSERVER
 } from './constants';
@@ -61,8 +63,8 @@ const get = async (url, params, config) => {
 const post = async (url, data, config) => {
     // todo: handle the other case
     if(!config){config = {headers: {}}}
-    
-    const csrf = document.cookie.match(/csrfToken=[^;]*/)[0].replace('csrfToken=', '');
+
+    const csrf = Cookies.get('csrfToken');
     config.headers['x-csrf-token'] = csrf;
     const res = await api.post(url, data, config);
     if (res.ok) {

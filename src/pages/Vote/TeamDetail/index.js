@@ -3,12 +3,13 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-25 14:20:38
+ * @LastEditTime: 2019-11-06 19:30:22
  * @Description: file content
  */
 
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
   Statistic,
   Row,
@@ -21,8 +22,20 @@ import {
 } from 'antd';
 import queryString from 'query-string';
 
-import { getTeamDesc } from '@api/vote';
-import { NODE_DEFAULT_NAME, FROM_WALLET } from '@src/pages/Vote/constants';
+import StatisticalData from '@components/StatisticalData/';
+import { getTeamDesc, fetchElectorVoteWithRecords } from '@api/vote';
+import { fetchCurrentMinerPubkeyList } from '@api/consensus';
+import {
+  NODE_DEFAULT_NAME,
+  FROM_WALLET,
+  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
+} from '@src/pages/Vote/constants';
+import publicKeyToAddress from '@utils/publicKeyToAddress';
+import getCurrentWallet from '@utils/getCurrentWallet';
+import {
+  filterUserVoteRecordsForOneCandidate,
+  computeUserRedeemableVoteAmountForOneCandidate
+} from '@utils/voteUtils';
 import './index.less';
 
 const { Paragraph } = Typography;
@@ -30,54 +43,71 @@ const { Paragraph } = Typography;
 const clsPrefix = 'team-detail';
 
 // todo: compitable for the case where user hasn't submit the team info yet.
-export default class TeamDetail extends PureComponent {
+class TeamDetail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       data: {},
+      candidateAddress: '',
       isBP: false,
       rank: '-',
       terms: '-',
       totalVotes: '-',
       votedRate: '-',
-      producedBlocks: '-'
+      producedBlocks: '-',
+      userRedeemableVoteAmountForOneCandidate: 0,
+      hasAuth: false
     };
 
-    this.pubkey = queryString.parse(window.location.search).pubkey;
+    this.teamPubkey = queryString.parse(window.location.search).pubkey;
   }
 
   // todo: optimize the contract's storage
   componentDidMount() {
-    const { consensusContract, electionContract } = this.props;
+    const { consensusContract, electionContract, currentWallet } = this.props;
 
     this.fetchData();
 
-    if (consensusContract !== null) {
+    if (consensusContract) {
       this.justifyIsBP();
     }
 
     if (electionContract !== null) {
-      this.fetchAllCandidateInfo();
+      this.fetchDataFromElectionContract();
+    }
+
+    if (currentWallet) {
+      this.setState({
+        hasAuth: currentWallet.pubkey === this.teamPubkey
+      });
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { consensusContract, electionContract } = this.props;
-    console.log('consensusContract', consensusContract);
+    const { consensusContract, electionContract, currentWallet } = this.props;
+
     if (consensusContract !== prevProps.consensusContract) {
       this.justifyIsBP();
     }
 
     if (electionContract !== prevProps.electionContract) {
-      this.fetchAllCandidateInfo();
+      this.fetchDataFromElectionContract();
+    }
+
+    if (prevProps.currentWallet !== currentWallet) {
+      this.setState(
+        {
+          hasAuth: currentWallet.pubkey === this.teamPubkey
+        },
+        this.fetchCandidateInfo
+      );
     }
   }
 
   fetchData() {
-    getTeamDesc(this.pubkey)
+    getTeamDesc(this.teamPubkey)
       .then(res => {
         if (res.code !== 0) {
-          message.error(res.msg);
           return;
         }
         this.setState({ data: res.data });
@@ -85,12 +115,17 @@ export default class TeamDetail extends PureComponent {
       .catch(err => message.err(err));
   }
 
+  fetchDataFromElectionContract() {
+    this.fetchAllCandidateInfo();
+    this.fetchTheUsersActiveVoteRecords();
+  }
+
   fetchAllCandidateInfo() {
     const { electionContract } = this.props;
 
     electionContract.GetPageableCandidateInformation.call({
       start: 0,
-      length: 5 // give a number large enough to make sure that we get all the nodes
+      length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
       // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
     })
       .then(res => this.processAllCandidateInfo(res.value))
@@ -101,13 +136,13 @@ export default class TeamDetail extends PureComponent {
 
   processAllCandidateInfo(allCandidateInfo) {
     console.log('allCandidateInfo', allCandidateInfo);
-    console.log('this.pubkey', this.pubkey);
+    console.log('this.teamPubkey', this.teamPubkey);
 
     const candidateVotesArr = allCandidateInfo
       .map(item => item.obtainedVotesAmount)
       .sort((a, b) => b - a);
     const currentCandidate = allCandidateInfo.find(
-      item => item.candidateInformation.pubkey === this.pubkey
+      item => item.candidateInformation.pubkey === this.teamPubkey
     );
 
     const totalVoteAmount = candidateVotesArr.reduce(
@@ -120,129 +155,229 @@ export default class TeamDetail extends PureComponent {
       +candidateVotesArr.indexOf(currentCandidate.obtainedVotesAmount) + 1;
     const terms = currentCandidateInfo.terms.length;
     const totalVotes = currentCandidate.obtainedVotesAmount;
-    const votedRate = ((100 * totalVotes) / totalVoteAmount).toFixed(2);
-    const producedBlocks = currentCandidateInfo.producedBlocks;
+    const votedRate =
+      totalVoteAmount === 0
+        ? 0
+        : ((100 * totalVotes) / totalVoteAmount).toFixed(2);
+    const { producedBlocks } = currentCandidateInfo;
+
+    const candidateAddress = publicKeyToAddress(this.teamPubkey);
 
     this.setState({
       rank,
       terms,
       totalVotes,
       votedRate,
-      producedBlocks
+      producedBlocks,
+      candidateAddress
     });
 
     console.log('candidateVotesArr', candidateVotesArr);
     console.log('currentCandidate', currentCandidate);
   }
 
+  fetchTheUsersActiveVoteRecords() {
+    const { electionContract } = this.props;
+    // todo: Will it break the data consistency?
+    const currentWallet = getCurrentWallet();
+
+    fetchElectorVoteWithRecords(electionContract, {
+      value: currentWallet.pubKey
+    })
+      .then(res => {
+        this.computeUserRedeemableVoteAmountForOneCandidate(
+          res.activeVotingRecords
+        );
+      })
+      .catch(err => {
+        console.error('fetchElectorVoteWithRecords', err);
+      });
+  }
+
+  computeUserRedeemableVoteAmountForOneCandidate(usersActiveVotingRecords) {
+    const userVoteRecordsForOneCandidate = filterUserVoteRecordsForOneCandidate(
+      usersActiveVotingRecords,
+      this.teamPubkey
+    );
+    const userRedeemableVoteAmountForOneCandidate = computeUserRedeemableVoteAmountForOneCandidate(
+      userVoteRecordsForOneCandidate
+    );
+    this.setState({
+      userRedeemableVoteAmountForOneCandidate
+    });
+  }
+
   // todo: confirm the method works well
   justifyIsBP() {
     const { consensusContract } = this.props;
-    const { data } = this.state;
-    consensusContract.GetCurrentMinerList.call()
+
+    fetchCurrentMinerPubkeyList(consensusContract)
       .then(res => {
-        console.log('GetCurrentMinerList', res);
-        // To confirm justify is BP or not after get the team's pulic key
-        if (!data.publicKey) {
-          this.timer = setInterval(() => {
-            if (data.publicKey) {
-              clearInterval(this.timer);
-              this.timer = null;
-            }
-          }, 300);
-        }
-        console.log('data.publicKey', data.publicKey);
-        if (res.pubkeys.indexOf(data.publicKey) !== -1) {
-          console.log("I'm BP.");
+        if (res.pubkeys.indexOf(this.teamPubkey) !== -1) {
           this.setState({
             isBP: true
           });
         }
       })
       .catch(err => {
-        console.error('GetCurrentMinerList', err);
+        console.error('fetchCurrentMinerPubkeyList', err);
       });
   }
 
+  getStatisData() {
+    const { rank, terms, totalVotes, votedRate, producedBlocks } = this.state;
+
+    // todo: Consider to modify the data structure with easier one
+    const statisData = {
+      rank: {
+        title: 'Rank',
+        num: rank
+      },
+      terms: {
+        title: 'Terms',
+        num: terms
+      },
+      totalVotes: {
+        title: 'Total Vote',
+        num: totalVotes
+      },
+      votedRate: {
+        title: 'Voted Rate',
+        num: `${votedRate}%`
+      },
+      producedBlocks: {
+        title: 'Produced Blocks',
+        num: producedBlocks
+      }
+    };
+    return statisData;
+  }
+
   render() {
+    const { isSmallScreen } = this.props;
     const {
       data,
+      candidateAddress,
       isBP,
-      rank,
-      terms,
-      totalVotes,
-      votedRate,
-      producedBlocks
+      userRedeemableVoteAmountForOneCandidate,
+      hasAuth
     } = this.state;
 
+    // todo: The component StatisData is PureComponent so I have to create a new heap space to place the object
+    // todo: Consider to make the component StatisData non-PureComponent
+    const statisData = { ...this.getStatisData() };
+    const avatarSize = isSmallScreen ? 'large' : 144;
+
     // todo: Is it safe if the user keyin a url that is not safe?
+    // todo: handle the error case of node-name
+    // FIXME: hide the edit button for the non-owner
     return (
-      <section className={`${clsPrefix} page-container`}>
+      <section className={`${clsPrefix}`}>
         <section className={`${clsPrefix}-header card-container`}>
           <Row>
-            <Col span={18} className='card-container-left'>
+            <Col
+              xxl={82}
+              xl={18}
+              lg={18}
+              md={18}
+              sm={24}
+              xs={24}
+              className='card-container-left'
+            >
               <div className={`${clsPrefix}-team-avatar-info`}>
                 {data.avatar ? (
-                  <Avatar shape='square' size={100} src={data.avatar} />
+                  <Avatar shape='square' size={avatarSize} src={data.avatar} />
                 ) : (
-                  <Avatar shape='square' size={100} icon='user' />
+                  <Avatar shape='square' size={avatarSize}>
+                    U
+                  </Avatar>
                 )}
                 <div className={`${clsPrefix}-team-info`}>
-                  <h5 className={`${clsPrefix}-node-name`}>
-                    {data.name || NODE_DEFAULT_NAME}
+                  <h5 className={`${clsPrefix}-node-name ellipsis`}>
+                    {data.name ? data.name : candidateAddress}
                     <Tag color='#f50'>{isBP ? 'BP' : 'Candidate'}</Tag>
                   </h5>
                   <p className={`${clsPrefix}-team-info-location`}>
                     Location: {data.location}
                   </p>
                   <p className={`${clsPrefix}-team-info-address`}>
-                    Node Address: <Paragraph copyable>{data.address}</Paragraph>
+                    Node Address:{' '}
+                    <Paragraph copyable className='ellipsis'>
+                      {candidateAddress}
+                    </Paragraph>
                   </p>
-                  <Button>
-                    <Link to='/vote/apply/keyin'>Edit</Link>
-                  </Button>
+                  {hasAuth ? (
+                    <Button type='primary' shape='round'>
+                      <Link
+                        to={{
+                          pathname: '/vote/apply/keyin',
+                          search: `pubkey=${this.teamPubkey}`
+                        }}
+                      >
+                        Edit
+                      </Link>
+                    </Button>
+                  ) : null}
                 </div>
               </div>
             </Col>
-            <Col span={6} className='card-container-right'>
+            <Col
+              xxl={6}
+              xl={6}
+              lg={6}
+              md={6}
+              sm={0}
+              xs={0}
+              className='card-container-right'
+            >
               <Button
+                className='table-btn vote-btn'
                 size='large'
                 type='primary'
+                shape='round'
                 data-role='vote'
+                data-shoulddetectlock
                 data-votetype={FROM_WALLET}
-                data-nodeaddress={this.pubkey}
-                data-nodename={data.name || NODE_DEFAULT_NAME}
+                data-nodeaddress={candidateAddress}
+                data-nodename={data.name || candidateAddress}
+                data-targetPublicKey={this.teamPubkey}
               >
                 Vote
               </Button>
-              <Button size='large' type='primary' data-role='redeem'>
+              <Button
+                className='table-btn redeem-btn'
+                size='large'
+                type='primary'
+                shape='round'
+                data-role='redeem'
+                data-shoulddetectlock
+                data-nodeaddress={candidateAddress}
+                data-targetPublicKey={this.teamPubkey}
+                data-nodename={data.name}
+                disabled={
+                  userRedeemableVoteAmountForOneCandidate > 0 ? false : true
+                }
+              >
                 Redeem
               </Button>
             </Col>
           </Row>
         </section>
-        <section className={`${clsPrefix}-statistic card-container`}>
-          <Statistic title='Rank' value={rank} />
-          <Statistic title='Terms' value={terms} />
-          <Statistic title='Total Vote' value={totalVotes} />
-          <Statistic title='Voted Rate' value={`${votedRate}%`} />
-          <Statistic title='Produced Blocks' value={producedBlocks} />
-          <Statistic title='Dividens' value='15,333' />
-        </section>
+        <StatisticalData data={statisData} inline></StatisticalData>
         <section className={`${clsPrefix}-intro card-container`}>
           <h5 className='card-header'>Intro</h5>
           <div className='card-content'>
-            {data.intro || "The team didn't fill the intro"}
+            {data.intro || "The team didn't fill the intro."}
           </div>
         </section>
         <section className={`${clsPrefix}-social-network card-container`}>
           <h5 className='card-header'>Social Networks</h5>
           <div className='card-content'>
-            {data.socials ? (
+            {data.socials && data.socials.length ? (
               <ul>
                 {data.socials.map(item => (
                   <li>
-                    {item.type}:<a href={item.url}>{item.url}</a>
+                    {item.type}: <a href={item.url}>{item.url}</a>
                   </li>
                 ))}
               </ul>
@@ -255,3 +390,7 @@ export default class TeamDetail extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({ ...state.common });
+
+export default connect(mapStateToProps)(TeamDetail);

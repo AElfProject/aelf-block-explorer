@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-25 15:55:24
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-26 20:03:01
+ * @LastEditTime: 2019-11-06 13:30:00
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -75,6 +75,7 @@ export default class DividendModal extends PureComponent {
         centered
         maskClosable
         keyboard
+        footer={null}
       >
         {/* <div
           style={{
@@ -130,6 +131,7 @@ export default class DividendModal extends PureComponent {
                   <Button
                     disabled={item.amount > 0 ? false : true}
                     type='primary'
+                    shape='round'
                     onClick={() => {
                       handleClaimDividendClick(item.schemeId);
                     }}

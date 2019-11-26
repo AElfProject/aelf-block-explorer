@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:54:31
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-17 16:54:36
+ * @LastEditTime: 2019-11-05 16:28:10
  * @Description: file content
  */
 @clsPrefix: team-detail;
@@ -13,16 +13,30 @@
   .@{clsPrefix}-header {
     .@{clsPrefix}-team-avatar-info {
       display: inline-block;
+      .ant-avatar-square {
+        border-radius: 20px;
+      }
       .@{clsPrefix}-team-info {
         display: inline-block;
         margin-left: 20px;
         vertical-align: top;
         .@{clsPrefix}-node-name {
-          color: #fff;
+          color: @gold;
+          max-width: 500px;
+          font-size: 20px;
+          .ant-tag {
+            margin-left: 5px;
+          }
+        }
+        &-location {
+          margin: 5px;
         }
         &-address {
+          margin: 5px;
+          margin-bottom: 10px;
           .ant-typography {
-            display: inline;
+            display: inline; // Using inline-block here will cause style problem, solve it if time permitting
+            max-width: 500px;
             color: #fff;
           }
         }
@@ -40,23 +54,21 @@
       padding: 30px;
       .ant-btn {
         display: block;
-        margin-bottom: 10px;
+        margin-bottom: 30px;
         min-width: 100px;
+        border: none;
+        &.vote-btn {
+          background-color: @buyColor;
+        }
+        &.redeem-btn {
+          background-color: @neuterColor;
+        }
       }
-    }
-  }
-  .@{clsPrefix}-statistic {
-    display: flex;
-    justify-content: space-around;
-    .ant-statistic-title {
-      color: #ccc;
-    }
-    .ant-statistic-content {
-      color: #fff;
     }
   }
   .@{clsPrefix}-intro {
     padding-top: 0;
+    margin-top: 20px;
     &-text {
       text-indent: 2em;
     }
@@ -69,4 +81,50 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   color: #fff;
   font-size: 18px;
+}
+
+// todo: Optimzie the way writting the css
+@media (max-width: @smallScreenWidth) {
+  .@{clsPrefix} {
+    color: #fff;
+    .@{clsPrefix}-header {
+      .card-container-left {
+        padding: 0;
+        .@{clsPrefix}-team-avatar-info {
+          position: relative;
+          .@{clsPrefix}-team-info {
+            margin-left: 0;
+            .@{clsPrefix}-node-name {
+              // todo: Reorganize the html code to avoid of using absolute
+              position: absolute;
+              right: 0;
+              top: 5%;
+              max-width: 250px;
+              font-size: 16px;
+              // .ant-tag {
+              //   margin-left: 5px;
+              // }
+            }
+            &-address {
+              position: relative;
+              margin-bottom: 0;
+              .ant-typography {
+                display: inline-block;
+                max-width: 250px;
+                .ant-typography-copy {
+                  position: absolute;
+                  top: 0;
+                  right: 5%;
+                  // transform: translateY(50%);
+                }
+              }
+            }
+          }
+        }
+      }
+      .card-container-right {
+        display: none;
+      }
+    }
+  }
 }

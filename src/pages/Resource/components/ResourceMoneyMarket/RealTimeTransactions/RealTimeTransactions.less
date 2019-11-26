@@ -1,46 +1,43 @@
 .real-time-transactions {
-    .real-time-transactions-head {
-        height: 44px;
-        line-height: 44px;
-        text-indent: 26px;
-        color: #fff;
-        background: #2c0a59;
+  .real-time-transactions-head {
+    height: 44px;
+    line-height: 44px;
+    text-indent: 26px;
+    color: #fff;
+    background: @cardHeaderColor;
+  }
+
+  .real-time-transactions-body {
+    padding-top: 4px;
+    color: #fff;
+    background: @cardBodyColor;
+    padding-bottom: 16px;
+    min-height: 288px;
+
+    .table-head {
+      color: #6d6976;
+      text-align: center;
+      font-size: 12px;
     }
 
-    .real-time-transactions-body {
-        padding-top: 4px;
-        color: #fff;
-        background: #2e1875;
-        padding-bottom: 16px;
-        min-height: 273px;
-
-        .table-head {
-            color: #6d6976;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        .table-sell {
-            color: #fff;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 900;
-            height: 20px;
-            .sell {
-                color: #9e0108;
-            }
-        }
-
-        .table-buy {
-            color: #fff;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 900;
-            height: 20px;
-            .sell {
-                color: #046838;
-            }
-        }
+    .table-sell {
+      color: #fff;
+      text-align: center;
+      font-size: 12px;
+      height: 20px;
+      .sell {
+        color: @sellColor;
+      }
     }
+
+    .table-buy {
+      color: #fff;
+      text-align: center;
+      font-size: 12px;
+      height: 20px;
+      .sell {
+        color: @buyColor;
+      }
+    }
+  }
 }

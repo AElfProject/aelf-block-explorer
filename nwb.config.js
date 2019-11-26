@@ -1,22 +1,31 @@
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
+const { getLessVariables } = require('./build/utils');
+
+const ROOT = path.resolve(__dirname);
 
 module.exports = {
   type: 'react-app',
   babel: {
     cherryPick: 'lodash',
     plugins: [
-      ['import', {
-        libraryName: 'antd',
-        libraryDirectory: 'es',
-        style: true
-      }]
+      [
+        'import',
+        {
+          libraryName: 'antd',
+          libraryDirectory: 'es',
+          style: true
+        }
+      ]
     ]
   },
   webpack: {
     rules: {
       less: {
-        javascriptEnabled: true
+        javascriptEnabled: true,
+        globalVars: getLessVariables(
+          path.resolve(ROOT, 'src/assets/less/_variables.less')
+        )
       }
     },
     aliases: {
@@ -26,7 +35,8 @@ module.exports = {
       '@components': path.resolve('src/components'),
       '@utils': path.resolve('src/utils'),
       '@store': path.resolve('src/store'),
-      '@api': path.resolve('src/api')
+      '@api': path.resolve('src/api'),
+      '@actions': path.resolve('src/redux/actions/')
     },
     extra: {
       optimization: {
@@ -43,8 +53,7 @@ module.exports = {
             }
           })
         ]
-      },
-      devtool: process.env.NODE_ENV === 'development' ? 'eval' : false
+      }
     }
   },
   devServer: {
@@ -76,4 +85,4 @@ module.exports = {
       }
     }
   }
-}
+};
