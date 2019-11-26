@@ -1,9 +1,7 @@
 .address-container {
-  margin: 0;
-  padding: 0;
-
   h3 {
-    color: #FFF;
+    color: #fff;
+    padding: 10px;
   }
 
   .address-header-container {
@@ -14,9 +12,16 @@
   .header-list {
     margin-bottom: 45px;
   }
+
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    white-space: nowrap;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
 }
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 768px) {
   .address-container {
     .address-header-container {
       .ant-table-thead > tr:first-child > th:first-child {

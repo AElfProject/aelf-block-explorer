@@ -1,6 +1,6 @@
 /**
  * @file Home.js
- * @author longyue, huangzongzhe
+ * @author longyue, huangzongzhe, yangpeiyang
  */
 /* eslint-disable fecs-camelcase */
 import React from 'react';
@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { isArray } from 'zrender/lib/core/util';
+
 import Button from './components/Button/Button';
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from '../config/config';
 import { isArray } from 'zrender/lib/core/util';
@@ -129,9 +131,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Age',
     dataIndex: 'time',
     key: 'time',
-    render: time => (
-      <span> {dayjs(time).format('YYYY/MM / DD HH: mm: ss ')} </span>
-    )
+    render: time => <span> {dayjs(time).format('YYYY/MM/DD HH:mm:ss')} </span>
     //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   },
   {
@@ -152,11 +152,11 @@ const ALL_TXS_LIST_COLUMNS = [
     title: 'Tx Id ',
     dataIndex: 'tx_id ',
     key: 'tx_id ',
+    width: 400,
+    ellipsis: true,
     render: (text, row) => (
       <Link to={`/tx/${row.tx_id}`} title={row.tx_id}>
-        {' '}
-        {row.tx_id.slice(0, 17)}
-        ...
+        {row.tx_id}
       </Link>
     )
   },
@@ -164,6 +164,8 @@ const ALL_TXS_LIST_COLUMNS = [
     title: 'Block Height ',
     dataIndex: 'block_height ',
     key: 'block_height ',
+    width: 150,
+    align: 'center',
     render: (text, row) => (
       <Link to={`/block/${row.block_height}`} title={row.block_height}>
         {' '}
@@ -175,6 +177,8 @@ const ALL_TXS_LIST_COLUMNS = [
     title: 'From ',
     dataIndex: 'address_from ',
     key: 'address_from ',
+    // width: 300,
+    ellipsis: true,
     render: (text, row) => (
       <Link to={`/address/${row.address_from}`} title={row.address_from}>
         {' '}
@@ -185,12 +189,14 @@ const ALL_TXS_LIST_COLUMNS = [
   {
     title: null,
     key: 'payIcon ',
-    render: () => <Icon type='arrow-right' theme='outlined' />
+    width: 50,
+    render: () => <Icon type="arrow-right" theme="outlined" />
   },
   {
     title: 'To ',
     dataIndex: 'address_to ',
     key: 'address_to ',
+    ellipsis: true,
     render: (text, row) => (
       <Link to={`/address/${row.address_to}`} title={row.address_to}>
         {' '}

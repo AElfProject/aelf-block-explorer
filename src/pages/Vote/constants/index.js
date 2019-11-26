@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-30 11:18:55
+ * @LastEditTime: 2019-11-26 13:26:37
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -14,15 +14,15 @@ import { ELF_DECIMAL } from '@config/config';
 //  The contracts need to load in page ElectionNotification
 const contractsNeedToLoad = [
   {
-    contractAddrValName: 'consensusContractAddr',
+    contractAddrValName: 'consensusDPoS',
     contractNickname: 'consensusContract'
   },
   {
-    contractAddrValName: 'dividendContractAddr',
+    contractAddrValName: 'dividends',
     contractNickname: 'dividendContract'
   },
   {
-    contractAddrValName: 'multiTokenContractAddr',
+    contractAddrValName: 'multiToken',
     contractNickname: 'multiTokenContract'
   },
   {
