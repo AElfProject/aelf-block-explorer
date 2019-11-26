@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 20:34:35
+ * @LastEditTime: 2019-11-26 15:12:57
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -717,7 +717,7 @@ class VoteModal extends Component {
                       </Form.Item>
                     );
                   })}
-                  <Switch
+                  {/* <Switch
                     style={{ marginTop: 30 }}
                     checkedChildren='lock for about 2 min'
                     unCheckedChildren='lock according to the time left'
@@ -728,7 +728,7 @@ class VoteModal extends Component {
                       });
                     }}
                     checked={isLockTimeForTest}
-                  />
+                  /> */}
                 </Form>
               </TabPane>
             );
