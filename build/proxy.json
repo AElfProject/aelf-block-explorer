@@ -1,0 +1,31 @@
+[
+  {
+    "target": "http://127.0.0.1:7250",
+    "context": [
+      "/api",
+      "/chain"
+    ],
+    "headers": {},
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "target": "https://api.huobi.pro",
+    "context": [
+      "/market"
+    ],
+    "headers": {},
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "target": "ws://127.0.0.1:7101",
+    "context": [
+      "/socket"
+    ],
+    "headers": {},
+    "changeOrigin": true,
+    "ws": true,
+    "secure": false
+  }
+]

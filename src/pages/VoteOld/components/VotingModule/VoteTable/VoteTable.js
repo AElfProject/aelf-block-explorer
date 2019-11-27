@@ -10,7 +10,7 @@ import {Table, message} from 'antd';
 import getPublicKey from '../../../../../utils/getPublicKey';
 import {commonPrivateKey, APPNAME} from '../../../../../../config/config';
 import contractChange from '../../../../../utils/contractChange';
-import * as AElf from 'aelf-sdk';
+import AElf from 'aelf-sdk';
 import './VoteTable.less';
 
 let pageSize = 20;

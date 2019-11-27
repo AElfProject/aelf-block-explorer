@@ -150,7 +150,6 @@ const routePaths = {
 export {
   contractsNeedToLoad,
   contractsNeedToLoadFromExt,
-  electionNotifiStatisData,
   myVoteStatisData,
   HARDWARE_ADVICE,
   ELECTION_MORTGAGE_NUM,

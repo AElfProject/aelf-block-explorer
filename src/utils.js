@@ -8,7 +8,7 @@ import {
 import {
     create
 } from 'apisauce';
-import * as AElf from 'aelf-sdk';
+import AElf from 'aelf-sdk';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 
