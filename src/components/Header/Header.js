@@ -8,6 +8,7 @@ import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import Svg from '../../components/Svg/Svg';
 import './header.styles.less';
 import { getPathnameFirstSlash } from '@utils/urlUtils';
 import { setIsSmallScreen } from '@actions/common';
@@ -244,10 +245,13 @@ class BrowserHeader extends PureComponent {
     }
 
     return (
-      <div className='header-fixed-contaier'>
+      <div className='header-fixed-container'>
         <div className='header-container'>
           <Link to='/' key='logo'>
-            <img src='https://aelf.io/assets/images/logo.jpg' />
+            <Svg
+              icon='aelf_logo_purple'
+              className='aelf-logo-container'
+            />
           </Link>
 
           {mobileMoreHTML}

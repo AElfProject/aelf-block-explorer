@@ -6,6 +6,8 @@ import ReactEchartsCore from "echarts-for-react/lib/core";
 import echarts from "echarts/lib/echarts";
 import "echarts/lib/chart/line";
 
+import './TPSChart.less';
+
 import { get } from "../../utils";
 import {
     TPS_LIST_API_URL
@@ -18,10 +20,13 @@ export default class TPSChart extends React.Component {
         this.state = {
             tpsList: []
         };
+        this.hadRenderedOnce = false;
         this.getTpsDataTimer;
+        this.myRef = React.createRef();
     }
 
     componentDidMount() {
+        this.hadRenderedOnce = true;
         this.getTpsData();
     }
 
@@ -47,8 +52,6 @@ export default class TPSChart extends React.Component {
     componentWillUnmount() {
         clearTimeout(this.getTpsDataTimer);
     }
-
-
 
     getOption() {
 
@@ -97,13 +100,15 @@ export default class TPSChart extends React.Component {
                 axisLine: {
                     show: false,
                     lineStyle: {
-                        color: '#C7B8CC'
+                        // color: '#C7B8CC'
+                        color: '#999'
                     }
                 },
                 splitLine: {
                     show: true,
                     lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
+                        // color: 'rgba(255, 255, 255, 0.3)'
+                        color: 'rgba(0, 0, 0, 0.1)'
                     }
                 }
             },
@@ -112,7 +117,8 @@ export default class TPSChart extends React.Component {
                 axisLine: {
                     show: false,
                     lineStyle: {
-                        color: '#C7B8CC'
+                        // color: '#C7B8CC'
+                        color: '#999'
                     }
                 },
                 splitLine: {
@@ -137,10 +143,13 @@ export default class TPSChart extends React.Component {
                 smooth: true,
                 type: 'line',
                 lineStyle: {
-                    color: '#DF80FF'
+                    // color: '#DF80FF'
+                    color: '#666'
                 },
                 itemStyle: {
-                    color: '#D24CFF'
+                    // color: '#D24CFF'
+                    // color: '#666'
+                    opacity: 0
                 },
                 areaStyle: {
                     color: {
@@ -149,11 +158,13 @@ export default class TPSChart extends React.Component {
                         y2: 0,
                         colorStops: [{
                             offset: 1,
-                            color: '#D24CFF' // 0% 处的颜色
+                            // color: '#D24CFF' // 0% 处的颜色
+                            color: '#FFF' // 0% 处的颜色
                         },
                             {
                                 offset: 0,
-                                color: 'rgba(51, 177, 255, 0)' // 100% 处的颜色
+                                // color: 'rgba(51, 177, 255, 0)' // 100% 处的颜色
+                                color: 'rgba(255, 255, 255, 0)' // 100% 处的颜色
                             }],
                         globalCoord: false // 缺省为 false
                     }
@@ -166,15 +177,20 @@ export default class TPSChart extends React.Component {
 
     render() {
         let loading = false;
+        let ecahrtsHTML;
+        if (this.hadRenderedOnce) {
+            ecahrtsHTML = <ReactEchartsCore
+                style={{height: this.myRef.current.clientHeight + 'px'}}
+                echarts={echarts}
+                showLoading={loading}
+                option={this.getOption()}
+                notMerge={true}
+                lazyUpdate={true}
+            />;
+        }
         return (
-            <div>
-                <ReactEchartsCore
-                    echarts={echarts}
-                    showLoading={loading}
-                    option={this.getOption()}
-                    notMerge={true}
-                    lazyUpdate={true}
-                />
+            <div className='TPS-chart-container' ref={this.myRef} >
+              {ecahrtsHTML}
             </div>
         );
     }

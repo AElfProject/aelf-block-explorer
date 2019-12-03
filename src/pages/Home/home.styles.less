@@ -2,15 +2,17 @@
 .home-basic-information {
   height: 100%;
   .home-basic-title-con {
-    margin: 56px 0 0 0;
+    margin: 18px 0 0 0;
     height: 36px;
-    color: #fff;
+    //color: #fff;
+    color: @textContext;
     font-size: 16px;
     font-weight: 300;
     .TPSChart-title {
       font-size: 24px;
       display: inline-block;
       margin-right: 50px;
+      font-weight: 500;
     }
     .TPSChart-text {
       display: inline-block;
@@ -25,33 +27,49 @@
   }
   .home-basic-info-content-con {
     height: 137px;
-    color: #fff;
+    //color: #fff;
+    color: @textContext;
     padding: 16px;
   }
   .home-basic-info-title {
+    color: #666;
     font-size: 20px;
     font-weight: 200;
     white-space: nowrap;
+    text-align: center;
   }
   .home-basic-info-num {
     font-size: 30px;
     line-height: 80px;
+    text-align: center;
+    font-weight: 500;
   }
 }
 
-.home-bg-earth {
-  min-height: 866px;
-  background-image: url('../../assets/images/bg@1x.jpg');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+//.home-bg-earth {
+//  min-height: 866px;
+//  background-image: url('../../assets/images/bg@1x.jpg');
+//  background-repeat: no-repeat;
+//  background-size: 100% 100%;
+//}
+
+.home-bg-grey {
+  //min-height: 866px;
+  background: @bgBlankGrey;
 }
 
-.home-bg-blue {
-  background-image: url('../../assets/images/bg_blue@1x.jpg');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+.home-bg-white {
+  //min-height: 866px;
+  background: @bgBlankWhite;
   padding: 56px 0 56px 0;
 }
+
+//.home-bg-blue {
+//  background-image: url('../../assets/images/bg_blue@1x.jpg');
+//  background-repeat: no-repeat;
+//  background-size: 100% 100%;
+//  padding: 56px 0 56px 0;
+//}
 
 .home-header-blank {
   height: 128px;
@@ -71,18 +89,24 @@
 @media screen and (max-width: 1400px) {
   .home-basic-info-content-con {
     .home-basic-info-title {
-      font-size: 14px;
+      //font-size: 14px;
+      font-size: 16px;
     }
     .home-basic-info-num {
-      font-size: 22px;
+      //font-size: 22px;
+      font-size: 18px;
     }
   }
 }
 
 @media screen and (max-width: 1200px) {
   .home-basic-info-content-con {
+    .home-basic-info-title {
+      font-size: 14px;
+    }
     .home-basic-info-num {
-      font-size: 18px;
+      //font-size: 18px;
+      font-size: 16px;
     }
   }
 }
@@ -96,12 +120,14 @@
 @media screen and (max-width: 768px) {
   .home-basic-information {
     .home-basic-title-con {
-      margin: 16px 0 0 0;
-      color: #fff;
+      //margin: 16px 0 0 0;
+      //color: #fff;
+      color: @textContext;
       font-size: 14px;
-      font-weight: 300;
+      font-weight: 700;
       .TPSChart-title {
-        font-size: 20px;
+        //font-weight: 700;
+        font-size: 24px;
         display: inline-block;
         margin-right: 16px;
       }
@@ -112,7 +138,8 @@
     }
     .home-basic-info-content-con {
       height: 100px;
-      color: #fff;
+      //color: #fff;
+      color: @textContext;
       padding: 8px;
     }
     .home-basic-info-title {
@@ -126,21 +153,46 @@
   .home-bg-earth {
     background-size: cover;
   }
+
+  .content-container {
+    .container-list {
+      margin-bottom: 40px;
+    }
+
+    .panel-heading {
+      padding: 6px;
+      .panel-title {
+        font-size: 20px;
+        .panel-subtitle {
+          font-size: 14px;
+        }
+      }
+    }
+  }
 } // @media end
 // start
 .home-blocksInfo-title {
   height: 50px;
-  background-color: rgba(57, 0, 57, 0.3);
+  //background-color: rgba(57, 0, 57, 0.3);
+  background-color: @bgBlankGrey;
+  //border: 1px solid @borderColor;
+  padding: 0 15px 0 15px;
 }
 
 .home-blocksInfo-list-con {
-  background-color: rgba(57, 0, 57, 0.15);
+  //background-color: rgba(57, 0, 57, 0.15);
+  background-color: @bgBlankWhite;
+  border-left: 1px solid @borderColor;
+  border-bottom: 1px solid @borderColor;
+  border-right: 1px solid @borderColor;
 }
 
 .blocks-list-container {
   height: 50px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  :last-child {
+  //border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid @borderColor;
+  margin: 0 15px 0 15px;
+  &:last-child {
     border: none;
   }
   .ant-col-8 {
@@ -161,10 +213,10 @@
     div,
     a {
       text-align: center;
-      color: #c7b8cc;
+      color: @textContext;
     }
     a:hover {
-      color: #eee;
+      color:@linkHover;
     }
   }
   .ant-list {
@@ -173,17 +225,18 @@
   .panel-heading {
     display: flex; //color: #222;
     color: #fff; //background: @bgWhite;
-    padding: 7px 15px; //border: 1px solid #eee;
+    //padding: 7px 15px; //border: 1px solid #eee;
     overflow: hidden;
     justify-content: space-between;
     align-items: center;
-    margin: 0 0 8px 0;
+    margin: 0 0 32px 0;
     .panel-title {
       margin: 0;
       padding: 0;
       font-size: 24px;
       line-height: 24px;
-      color: #fff;
+      color: #000;
+      //color: #fff;
       text-align: left;
       .anticon {
         margin-right: 5px;
@@ -198,24 +251,21 @@
     .pannel-btn {
       //color: #555;
       color: #fff;
-      background-color: #26b7ff;
+      //background-color: #26b7ff;
+      background-color: @bgMain;
       border-radius: 20px;
       padding: 5px 13px; //border: 1px solid transparent;
       transition: all 0.1s ease-in-out;
-      max-height: 32px;
-      min-width: 74px;
+      max-height: 26px;
+      min-width: 78px;
+      font-size: 14px;
+      line-height: 14px;
       &:hover {
         //color: #fff;
         opacity: 0.8; //background: #333;
       }
     }
-  } //.infoList-desc {
-  //  font-size: 12px;
-  //  a {
-  //    margin-left: 6px;
-  //    margin-right: 12px;
-  //  }
-  //}
+  }
   .fade-enter {
     opacity: 0.01;
   }
@@ -232,20 +282,15 @@
   }
 }
 
-@media (max-width: 768px) {
-  .content-container {
-    .container-list {
-      margin-bottom: 40px;
-    }
+.first-page-sub-container {
+  background: #FFF;
+  //&:first-child {
+  margin-bottom: 28px;
+  //}
+  //height: 320px;
+  //max-height: 320px;
+}
 
-    .panel-heading {
-      padding: 6px;
-      .panel-title {
-        font-size: 20px;
-        .panel-subtitle {
-          font-size: 14px;
-        }
-      }
-    }
-  }
+.flex-column {
+  flex-direction: column;
 }

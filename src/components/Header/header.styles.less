@@ -1,14 +1,16 @@
 @import "../../assets/less/_variables.less";
 
-
-.header-fixed-contaier {
+.header-fixed-container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
-  background-color: rgba(0, 0, 0, 0.5);
+  //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
+  //box-shadow: 0 2px 10px rgba(151,164,175,.1);
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+  //background-color: rgba(0, 0, 0, 0.5);
+  background-color: @bgBlankWhite;
   height: @header-height;
 }
 
@@ -27,7 +29,7 @@
   }
 
   .ant-menu {
-    color: #FFF;
+    color: @textContext;
     background: rgba(0, 0, 0, 0);
     border: none;
 
@@ -42,17 +44,27 @@
     }
 
     .ant-menu-item-selected,.ant-menu-item-active,.ant-menu-submenu-active,.ant-menu-submenu-selected {
-      border-bottom: 2px solid @borderWhite;
-      color: @borderWhite;
+      //border-bottom: 2px solid @hoverColor;
+      //border-bottom: 2px solid @hoverColor;
+      border-bottom: 0;
+      color: @hoverColor;
       > a {
-        color: @borderWhite;
+        color: @hoverColor;
       }
       > a:hover {
-        color: @borderWhite;
+        color: @hoverColor;
       }
     }
+
     .ant-menu-submenu-title:hover {
-      color: @borderWhite;
+      color: @hoverColor;
+    }
+
+    .ant-menu-submenu-selected .ant-menu-submenu-title {
+      .submenu-title-wrapper {
+        display: inline-block;
+        border-bottom: 2px solid @hoverColor;
+      }
     }
   }
 
@@ -70,7 +82,17 @@
     > .ant-menu-item {
       > a {
         display: inline-block;
-        color: @borderWhite;
+        color: @textContext;
+      }
+    }
+  }
+
+  .ant-menu-horizontal {
+    > .ant-menu-item-selected {
+      > a {
+        display: inline-block;
+        color: @hoverColor;
+        border-bottom: 2px solid @hoverColor;
       }
     }
   }
@@ -101,6 +123,13 @@
   .ant-menu-item-selected {
     background-color: rgba(255, 255, 255, 0.3) !important;
   }
+}
+
+.aelf-logo-container {
+  width: 100px;
+  height: 30px;
+  margin-top: 16px;
+  overflow: hidden;
 }
 
 @media screen and (max-width: 768px) {

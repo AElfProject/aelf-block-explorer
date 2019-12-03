@@ -3,8 +3,9 @@
 .App {
   position: relative;
   min-height: 100vh;
-  background: url('./assets/images/bg_purple_darker@1x.jpg');
-  background-size: cover;
+  background: @bgBlankGrey;
+  //background: url('./assets/images/bg_purple_darker@1x.jpg');
+  //background-size: cover;
   padding-bottom: @footerHeight; // Ugly code
   // TODO 在iOS下还有问题。header会跟着滚动。
   //position: fixed;
@@ -19,7 +20,7 @@
   .basic-container {
     max-width: @maxWidth;
     margin: auto;
-    padding: 20px 30px 30px;
+    padding: 20px 30px 0 30px;
   }
   .basic-bottom-blank {
     height: 64px;
@@ -140,4 +141,11 @@ tbody {
 
 a:hover {
   color: @hoverColor !important;
+}
+
+.ant-input:focus {
+  box-shadow: 0 0 0 2px @purpleInputFocus;
+}
+input {
+  outline-color: @purpleInputFocus
 }

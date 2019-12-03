@@ -1,4 +1,4 @@
-
+@import "../../assets/less/_variables";
 .search-banner-container {
   text-align: center;
   height: 205px;
@@ -8,23 +8,24 @@
 
     text-align: center;
     h2{
-      font-size: 56px;
+      font-size: 28px;
       margin: 0;
-      font-weight: 400;
-      color: #FFF;
+      font-weight: 700;
+      color: @textContext;
     }
     h3{
-      font-size: 24px;
-      margin: 0 0 46px 0;
-      font-weight: 100;
-      color: #FFF;
+      font-size: 20px;
+      margin: 0 0 28px 0;
+      font-weight: 400;
+      color: @textContext;
     }
 
     .header-search {
-      width: 538px;
+      width: 559px;
+      border: 1px solid #999;
       .ant-input {
         background: #FFF;
-        color: #333;
+        color: @textContext;
       }
     }
 

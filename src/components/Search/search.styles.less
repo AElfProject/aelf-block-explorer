@@ -21,9 +21,10 @@
 
   .header-search {
     background: rgba(255, 255, 255, 0.15);
-    height: 36px;
-    min-height: 36px;
-    border-radius: 36px;
+    height: 38px;
+    min-height: 38px;
+    border-radius: 38px;
+    border: 1px solid @borderColor;
 
     width: 300px;
     .search-icon {
@@ -47,14 +48,15 @@
   .search-icon-container {
     color: #FFF;
     display: inline-block;
-    height: 36px;
-    width: 60px;
-    background: rgba(38, 183, 255, 1);
-    margin: 0 0 0 10px;
-    border-radius: 20px;
-    line-height: 36px;
+    height: 40px;
+    width: 41px;
+    //background: rgba(38, 183, 255, 1);
+    background: @bgMain;
+    margin: 0 0 0 22px;
+    border-radius: 40px;
+    line-height: 40px;
     text-align: center;
-    font-size: 22px;
+    font-size: 19px;
     cursor: pointer;
 
     :active {
