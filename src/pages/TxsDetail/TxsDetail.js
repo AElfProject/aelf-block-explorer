@@ -123,11 +123,13 @@ export default class TxsDetailPage extends React.Component {
     }
 
     return (
-      <div className='tx-block-detail-container basic-container'>
-        <div className='tx-block-detail-panle'>Overview</div>
+      <div className='tx-block-detail-container basic-container basic-container-white'>
+        <div className='tx-block-detail-panel tx-block-detail-panel-simple'>
+          <span className='title'>Overview</span>
+        </div>
         <Row className='tx-block-detail-body'>{colsHtml}</Row>
 
-        <div className='basic-bottom-blank' />
+        {/*<div className='basic-bottom-blank' />*/}
       </div>
     );
   }

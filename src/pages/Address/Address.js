@@ -172,7 +172,7 @@ export default class AddressPage extends React.Component {
     ];
 
     return (
-      <div className='address-container basic-container' key='body'>
+      <div className='address-container basic-container basic-container-white' key='body'>
         {/* <div className='address-header-container'>
                     <h3>Overview</h3>
                     <Table
@@ -195,9 +195,9 @@ export default class AddressPage extends React.Component {
           rowKey='tx_id'
           loading={txs_loading}
           onChange={pagination => this.handleTableChange(pagination)}
-          scroll={{ x: 1200 }}
+          // scroll={{ x: 1200 }}
         />
-        <div className='basic-bottom-blank' />
+        {/*<div className='basic-bottom-blank' />*/}
       </div>
     );
   }

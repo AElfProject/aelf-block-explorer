@@ -11,7 +11,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { isArray } from 'zrender/lib/core/util';
 
 import Button from './components/Button/Button';
-import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from '../config/config';
+import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID, ADDRESS_INFO } from '../config/config';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 
 dayjs.extend(relativeTime);
@@ -181,7 +181,7 @@ const ALL_TXS_LIST_COLUMNS = [
     render: (text, row) => (
       <Link to={`/address/${row.address_from}`} title={row.address_from}>
         {' '}
-        {row.address_from}{' '}
+        {ADDRESS_INFO.PREFIX}_{row.address_from}{' '}_{ADDRESS_INFO.CURRENT_CHAIN_ID}
       </Link>
     )
   },
@@ -199,7 +199,7 @@ const ALL_TXS_LIST_COLUMNS = [
     render: (text, row) => (
       <Link to={`/address/${row.address_to}`} title={row.address_to}>
         {' '}
-        {row.address_to}{' '}
+        {ADDRESS_INFO.PREFIX}_{row.address_to}{' '}_{ADDRESS_INFO.CURRENT_CHAIN_ID}
       </Link>
     )
   }

@@ -101,7 +101,7 @@ export default class BlocksPage extends Component {
         } = this;
 
         return (
-            <div className="blocks-page-container basic-container" key="body">
+            <div className="blocks-page-container basic-container basic-container-white" key="body">
                 <Table
                     columns={BLOCKS_LIST_COLUMNS}
                     dataSource={data}
@@ -110,7 +110,7 @@ export default class BlocksPage extends Component {
                     loading={loading}
                     onChange={handleTableChange}
                 />
-                <div className="basic-bottom-blank"></div>
+                {/*<div className="basic-bottom-blank"></div>*/}
             </div>
         );
     }

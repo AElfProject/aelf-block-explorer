@@ -3,6 +3,8 @@ import { Link, withRouter } from 'react-router-dom';
 
 import { Breadcrumb } from 'antd';
 
+import {ADDRESS_INFO} from '../../../config/config';
+
 import './breadcrumb.styles.less';
 
 const BREADCRUMBNAMEMAP = {
@@ -89,6 +91,26 @@ class BrowserBreadcrumb extends Component {
     );
   }
 
+  checkLocation (breadcrumbTitle) {
+
+    console.log('this.props.history: ', this.props.history);
+    console.log('this.props.history: breadcrumbTitle: ', breadcrumbTitle, BREADCRUMBNAMESTATE.currentState);
+    const current = BREADCRUMBNAMESTATE.currentState;
+    const pathname = location.pathname;
+
+    // hummm, stupid solution
+    const inBlockDetail = current === 'block' && breadcrumbTitle === 'Blocks List';
+    const inTxList = current === 'txs' && breadcrumbTitle === 'Transactions List' && pathname !== '/txs';
+    const inAddress = current === 'address' && breadcrumbTitle === 'Transactions List';
+    const inTxDetail = current === 'tx' && breadcrumbTitle === 'Transactions List';
+
+    if (inBlockDetail || inTxList || inAddress || inTxDetail) {
+      return false;
+    }
+
+    return location.pathname.includes(current);
+  }
+
   // TODO: 如果没有收录，则不展示面包屑。
   getExtraBreadcrumbItems(pathSnippets, reloadUrl) {
     const extraBreadcrumbItems = pathSnippets.map((item, index) => {
@@ -116,9 +138,16 @@ class BrowserBreadcrumb extends Component {
           : STATE.url[index] ||
             `/${pathSnippets.slice(0, index + 1).join('/')}`;
 
+      const isCurrentTitle =  this.checkLocation(breadcrumbTitle);
+
       return (
         <Breadcrumb.Item key={url}>
-          <Link to={url}> {breadcrumbTitle} </Link>
+          {isCurrentTitle ?
+            <span className={isCurrentTitle ? 'current-title' : ''}>{breadcrumbTitle}</span>
+            :
+            <Link to={url}> {breadcrumbTitle} </Link>
+          }
+
         </Breadcrumb.Item>
       );
     });
@@ -152,7 +181,10 @@ class BrowserBreadcrumb extends Component {
       pageNameMap[pathSnippets[0]],
       !!pathSnippets[1] ? (
         <span className='breadcrumb-sub-title' key='breadcrumb-sub-title'>
-          #{pathSnippets[1]}
+          { pathSnippets[0] === 'address' ?
+            '#' + ADDRESS_INFO.PREFIX + '_' + pathSnippets[1] + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID
+            :
+            '#' + pathSnippets[1]}
         </span>
       ) : (
         ''

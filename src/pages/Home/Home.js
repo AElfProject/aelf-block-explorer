@@ -28,6 +28,7 @@ import {
     ALL_TXS_API_URL,
     SOCKET_URL
 } from '../../constants';
+import {ADDRESS_INFO} from '../../../config/config';
 
 import './home.styles.less';
 
@@ -41,7 +42,8 @@ export default class HomePage extends Component {
     state = {
         blocks: [],
         transactions: [],
-        totalTransactions: 0
+        totalTransactions: 0,
+        totalAccounts: '-',
     };
 
     blockHeight = 0;
@@ -101,21 +103,26 @@ export default class HomePage extends Component {
             }
         });
 
-        this.socket.on('getOnFirst', data => {
-            this.handleSocketData(data, true);
-            this.socket.on('getBlocksList', data => {
-                console.log();
-                this.handleSocketData(data);
-            });
+        // this.socket.on('getOnFirst', data => {
+        //     this.handleSocketData(data, true);
+        //     this.socket.on('getBlocksList', data => {
+        //         console.log();
+        //         this.handleSocketData(data);
+        //     });
+        // });
+        // this.socket.emit('getBlocksList');
+        this.socket.on('getBlocksList', data => {
+          console.log();
+          this.handleSocketData(data);
         });
-        this.socket.emit('getBlocksList');
     }
 
     handleSocketData({
         list = [],
         height = 0,
         totalTxs,
-        unconfirmedBlockHeight = 0
+        unconfirmedBlockHeight = 0,
+        accountNumber = 0
     }, isFirst) {
         let arr = list;
         if (!isFirst) {
@@ -131,7 +138,8 @@ export default class HomePage extends Component {
         this.setState({
             blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
             transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
-            totalTransactions: totalTxs
+            totalTransactions: totalTxs,
+            totalAccounts: accountNumber
         });
     }
 
@@ -166,7 +174,7 @@ export default class HomePage extends Component {
             info: '-'
         }, {
             title: 'Total Accounts',
-            info: '-'
+            info: +this.state.totalAccounts || '-'
         }, {
             title: 'Total Side Chains',
             info: 5
@@ -301,14 +309,14 @@ export default class HomePage extends Component {
         const from = (
             <span className="infoList-desc">
                 <Link to={`/address/${item.address_from}`}>
-                    {item.address_from.slice(0, 12)}...
+                    {ADDRESS_INFO.PREFIX + '_' + item.address_from.slice(0, 12)}...
                 </Link>
             </span>
         );
 
         const to = (
             <Link to={`/address/${item.address_to}`}>
-                {item.address_to.slice(0, 12)}...
+                {ADDRESS_INFO.PREFIX + '_' + item.address_to.slice(0, 12)}...
             </Link>
         );
 

@@ -100,7 +100,7 @@ export default class TxsPage extends Component {
         } = this;
 
         return (
-            <div className="txs-page-container basic-container" key="body">
+            <div className="txs-page-container basic-container basic-container-white" key="body">
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={data}
@@ -109,7 +109,7 @@ export default class TxsPage extends Component {
                     loading={loading}
                     onChange={handleTableChange}
                 />
-                <div className="basic-bottom-blank"></div>
+                {/*<div className="basic-bottom-blank"></div>*/}
             </div>
         );
     }

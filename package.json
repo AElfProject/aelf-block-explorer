@@ -13,7 +13,7 @@
     "commit": "git-cz"
   },
   "dependencies": {
-    "aelf-sdk": "3.2.21",
+    "aelf-sdk": "3.2.23",
     "antd": "^3.24.2",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",
