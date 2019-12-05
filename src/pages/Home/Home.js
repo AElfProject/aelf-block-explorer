@@ -103,18 +103,13 @@ export default class HomePage extends Component {
             }
         });
 
-        // this.socket.on('getOnFirst', data => {
-        //     this.handleSocketData(data, true);
-        //     this.socket.on('getBlocksList', data => {
-        //         console.log();
-        //         this.handleSocketData(data);
-        //     });
-        // });
-        // this.socket.emit('getBlocksList');
-        this.socket.on('getBlocksList', data => {
-          console.log();
-          this.handleSocketData(data);
+        this.socket.on('getOnFirst', data => {
+            this.handleSocketData(data, true);
+            this.socket.on('getBlocksList', data => {
+                this.handleSocketData(data);
+            });
         });
+        this.socket.emit('getBlocksList');
     }
 
     handleSocketData({

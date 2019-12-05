@@ -183,6 +183,9 @@ class BrowserHeader extends PureComponent {
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
+        {/*<Menu.Item key='/contract'>*/}
+        {/*  <Link to='/contract'>CONTRACT</Link>*/}
+        {/*</Menu.Item>*/}
         {/* <Menu.Item key='/wallet'>
           <a
             href={config.WALLET_DOMAIN}

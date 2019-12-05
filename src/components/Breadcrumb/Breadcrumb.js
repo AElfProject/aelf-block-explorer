@@ -181,7 +181,8 @@ class BrowserBreadcrumb extends Component {
       block: 'Block',
       txs: 'Transactions',
       tx: 'Transaction',
-      address: 'Address'
+      address: 'Address',
+      contract: 'Contract'
     };
 
     let title = [
