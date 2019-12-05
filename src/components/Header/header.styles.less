@@ -76,6 +76,11 @@
   .ant-menu-item,
   .ant-menu-submenu {
     line-height: @default-line-height;
+    &:hover {
+      color: @hoverColor;
+      //border-bottom: 2px solid @hoverColor;
+      border-bottom: none;
+    }
   }
 
   .ant-menu-horizontal {
