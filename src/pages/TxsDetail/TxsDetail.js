@@ -63,7 +63,7 @@ export default class TxsDetailPage extends React.Component {
       return;
     }
     return (
-      <Row className='tx-detail-row'>
+      <Row className='tx-detail-row' key={key}>
         <Col
           xs={12}
           sm={12}
