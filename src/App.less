@@ -6,7 +6,7 @@
   background: @bgBlankGrey;
   //background: url('./assets/images/bg_purple_darker@1x.jpg');
   //background-size: cover;
-  padding-bottom: @footerHeight; // Ugly code
+  //padding-bottom: @footerHeight; // Ugly code
   // TODO 在iOS下还有问题。header会跟着滚动。
   //position: fixed;
   //width: 100%;
@@ -36,14 +36,35 @@
 
   @media screen and (max-width: 768px) {
     .basic-container {
-      padding: 16px;
+      padding: 8px;
     }
     .basic-bottom-blank {
       height: 16px;
       width: 10px;
     }
   }
+  //@media screen and (max-width: 414px) {
+  //  .basic-container {
+  //    padding: 8px;
+  //  }
+  //  .basic-bottom-blank {
+  //    height: 16px;
+  //    width: 10px;
+  //  }
+  //}
 }
+
+//@media screen and (min-width: 768px) {
+//  .App {
+//    padding: 0 16px;
+//  }
+//}
+//
+//@media screen and (max-width: 768px) {
+//  .App {
+//    padding: 0 8px;
+//  }
+//}
 
 // rewriter ant table style
 thead {

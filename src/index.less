@@ -125,3 +125,25 @@ body {
 .md-modal{
   width: 640px;
 }
+
+/* header menu rewrite start */
+.ant-menu-item:active, .ant-menu-submenu-title:active {
+  background: @bgBlankWhite;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background: none;
+}
+
+.ant-menu-item-selected, .ant-menu-item-selected>a, .ant-menu-item-selected>a:hover {
+  color: @hoverColor;
+}
+
+.ant-menu-submenu-inline>.ant-menu-submenu-title:hover .ant-menu-submenu-arrow:before {
+  background: @hoverColor;
+}
+
+.ant-menu-submenu-inline>.ant-menu-submenu-title:hover .ant-menu-submenu-arrow:after {
+  background: @hoverColor;
+}
+/* header menu rewrite end */

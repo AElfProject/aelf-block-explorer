@@ -295,8 +295,13 @@ export default class HomePage extends Component {
 
     txsRenderItem = item => {
 
+        let cutNum = 12;
+        if (document.body.offsetWidth <= 414) {
+          cutNum = 11;
+        }
+
         let tx_id = item.tx_id;
-        let txIDShow = tx_id.slice(0, 12) + '...';
+        let txIDShow = tx_id.slice(0, cutNum) + '...';
 
         const title = (
             <span>
@@ -309,14 +314,14 @@ export default class HomePage extends Component {
         const from = (
             <span className="infoList-desc">
                 <Link to={`/address/${item.address_from}`}>
-                    {ADDRESS_INFO.PREFIX + '_' + item.address_from.slice(0, 12)}...
+                    {ADDRESS_INFO.PREFIX + '_' + item.address_from.slice(0, cutNum)}...
                 </Link>
             </span>
         );
 
         const to = (
             <Link to={`/address/${item.address_to}`}>
-                {ADDRESS_INFO.PREFIX + '_' + item.address_to.slice(0, 12)}...
+                {ADDRESS_INFO.PREFIX + '_' + item.address_to.slice(0, cutNum)}...
             </Link>
         );
 
@@ -327,9 +332,9 @@ export default class HomePage extends Component {
                 className="blocks-list-container"
                 key={tx_id}
             >
-                <Col span={8}>{title}</Col>
-                <Col span={8}>{from}</Col>
-                <Col span={8}>{to}</Col>
+                <Col span={6}>{title}</Col>
+                <Col span={9}>{from}</Col>
+                <Col span={9}>{to}</Col>
             </Row>
         );
     };
@@ -337,7 +342,8 @@ export default class HomePage extends Component {
     renderBlocksAndTxsList() {
         const {blocks, transactions} = this.state;
 
-        const blocksHTML = blocks.map(item => {
+        const blocksReversed = blocks.reverse();
+        const blocksHTML = blocksReversed.map(item => {
             return this.blockRenderItem(item);
         });
 
@@ -417,9 +423,9 @@ export default class HomePage extends Component {
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
                         >
-                            <Col span={8}>Tx ID</Col>
-                            <Col span={8}>From</Col>
-                            <Col span={8}>To</Col>
+                            <Col span={6}>Tx ID</Col>
+                            <Col span={9}>From</Col>
+                            <Col span={9}>To</Col>
                             {/*<Col span='6'>Time</Col>*/}
                         </Row>
                     </div>

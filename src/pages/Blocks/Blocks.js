@@ -109,6 +109,7 @@ export default class BlocksPage extends Component {
                     rowKey="block_hash"
                     loading={loading}
                     onChange={handleTableChange}
+                    scroll={{x: 414}}
                 />
                 {/*<div className="basic-bottom-blank"></div>*/}
             </div>

@@ -108,6 +108,7 @@ export default class TxsPage extends Component {
                     rowKey="tx_id"
                     loading={loading}
                     onChange={handleTableChange}
+                    scroll={{x: 1024}}
                 />
                 {/*<div className="basic-bottom-blank"></div>*/}
             </div>

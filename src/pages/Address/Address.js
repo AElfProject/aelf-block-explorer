@@ -195,7 +195,7 @@ export default class AddressPage extends React.Component {
           rowKey='tx_id'
           loading={txs_loading}
           onChange={pagination => this.handleTableChange(pagination)}
-          // scroll={{ x: 1200 }}
+          scroll={{ x: 1024 }}
         />
         {/*<div className='basic-bottom-blank' />*/}
       </div>

@@ -170,6 +170,7 @@ export default class BlockDetailPage extends React.Component {
                     rowKey = 'tx_id'
                     loading={txs_loading}
                     onChange={this.handleTableChange}
+                    scroll={{x: 768}}
                 />
             </div>
         );

@@ -124,6 +124,8 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Block Height',
     dataIndex: 'block_height',
     key: 'block_height',
+    sorter: (a, b) => b.block_height - a.block_height,
+    defaultSortOrder: 'ascend',
     render: text => <Link to={`/block/${text}`}> {text} </Link>
   },
   {
@@ -165,6 +167,8 @@ const ALL_TXS_LIST_COLUMNS = [
     key: 'block_height ',
     width: 150,
     align: 'center',
+    sorter: (a, b) => b.block_height - a.block_height,
+    defaultSortOrder: 'ascend',
     render: (text, row) => (
       <Link to={`/block/${row.block_height}`} title={row.block_height}>
         {' '}
