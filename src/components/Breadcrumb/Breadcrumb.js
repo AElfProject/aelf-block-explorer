@@ -24,6 +24,7 @@ const BREADCRUMBNAMEMAP = {
   '/vote': 'Vote',
   '/resource': 'Resource',
   '/resourceDetail': 'Resource Detail List',
+  '/contract': 'Contract',
   myvote: 'My Vote'
 };
 
@@ -70,6 +71,12 @@ const BREADCRUMBNAMESTATE = {
       name: [
         BREADCRUMBNAMEMAP['/resource'],
         BREADCRUMBNAMEMAP['/resourceDetail']
+      ]
+    },
+    contract: {
+      url: ['/contract'],
+      name: [
+        BREADCRUMBNAMEMAP['/contract']
       ]
     }
   }

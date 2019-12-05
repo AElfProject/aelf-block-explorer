@@ -182,7 +182,7 @@ export default class HomePage extends Component {
 
         const html = basicInfo.map(item => {
             return (
-                <Col xs={6} sm={6} md={6} lg={4}
+                <Col xs={8} sm={8} md={6} lg={4}
                      className='home-basic-info-con'
                      key={item.title}
                 >
