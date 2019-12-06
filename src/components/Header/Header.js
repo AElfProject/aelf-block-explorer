@@ -4,7 +4,7 @@
  */
 /* eslint-disable fecs-camelcase */
 import React, { PureComponent } from 'react';
-import { Menu } from 'antd';
+import { Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -229,7 +229,8 @@ class BrowserHeader extends PureComponent {
         className='header-navbar-mobile-more'
         onClick={() => this.toggleMenu()}
       >
-        ...
+        {/*...*/}
+        <Icon type="menu" />
       </div>
     );
   }

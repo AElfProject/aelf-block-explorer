@@ -35,6 +35,11 @@
   }
 
   @media screen and (max-width: 768px) {
+    .basic-container-white {
+      background: @bgBlankWhite;
+      margin: auto;
+      padding: 20px 20px 0 20px;
+    }
     .basic-container {
       padding: 8px;
     }
@@ -42,29 +47,16 @@
       height: 16px;
       width: 10px;
     }
-  }
-  //@media screen and (max-width: 414px) {
-  //  .basic-container {
-  //    padding: 8px;
-  //  }
-  //  .basic-bottom-blank {
-  //    height: 16px;
-  //    width: 10px;
-  //  }
-  //}
-}
 
-//@media screen and (min-width: 768px) {
-//  .App {
-//    padding: 0 16px;
-//  }
-//}
-//
-//@media screen and (max-width: 768px) {
-//  .App {
-//    padding: 0 8px;
-//  }
-//}
+    .ant-pagination-total-text {
+      display: block;
+    }
+    .ant-table-pagination.ant-pagination {
+      padding: 8px;
+    }
+
+  }
+}
 
 // rewriter ant table style
 thead {
@@ -188,4 +180,11 @@ a:hover {
 }
 input {
   outline-color: @purpleInputFocus
+}
+
+
+@media screen and (max-width: 768px){
+  .App {
+    background: @bgBlankWhite;
+  }
 }
