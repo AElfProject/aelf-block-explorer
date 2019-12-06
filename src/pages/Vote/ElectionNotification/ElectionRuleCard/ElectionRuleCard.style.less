@@ -1,27 +1,50 @@
+@import "../../../../assets/less/_variables";
 .election-rule-card {
-  margin-bottom: 20px;
-  padding: 40px 100px;
-  background: rgba(57, 0, 57, 0.3);
+  //margin-bottom: 20px;
+  //padding: 40px 100px;
+  //padding: 20px 57px;
+  background: @bgBlankWhite;
 
   .election-intro {
-    text-indent: 40px;
-    color: #fff;
-    font-size: 16px;
-    margin-bottom: 60px;
+    //text-indent: 40px;
+    color: @textContext;
+    font-size: 14px;
+    //margin-bottom: 60px;
+  }
+
+  .election-container {
+    padding: 20px 57px;
+  }
+
+  .election-header-title {
+    background: @bgBlankWhite;
+    padding: 8px 57px;
+    overflow: hidden;
+    border-bottom: 1px solid @borderColor;
   }
   .btn-group {
     position: relative;
     overflow: hidden;
+    text-align: center;
     .view-node-election-plan-btn {
       a {
-        color: @gold;
-        font-size: 16px;
+        color: @textContext;
+        font-size: 14px;
       }
     }
     .apply-to-be-a-node-btn {
-      float: right;
-      bottom: 0;
-      right: 0;
+      height: 32px;
+      width: 320px;
+      background: @bgMain;
+      border: none;
+      border-radius: 5px;
+      margin-top: 16px;
+      &:hover {
+        background: @bgMainHover;
+      }
+      a:hover {
+        color: #FFF !important;
+      }
     }
   }
 }
@@ -30,12 +53,12 @@
   .election-rule-card {
     padding: 20px 16px;
     .election-intro {
-      font-size: 14px;
+      font-size: 12px;
       margin-bottom: 20px;
     }
     .btn-group {
       .view-node-election-plan-btn {
-        font-size: 14px;
+        font-size: 12px;
         margin-bottom: 10px;
       }
     }

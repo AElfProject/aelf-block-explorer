@@ -198,11 +198,11 @@ class BrowserHeader extends PureComponent {
         <Menu.Item key='/apps'>
           <Link to='/apps'>APP CENTER[Building]</Link>
         </Menu.Item> */}
-        {/* {voteHTML} */}
+         {voteHTML}
         {/* <Menu.Item key='/voteold'> */}
         {/* <Link to='/voteold'>VoteOld</Link> */}
         {/* </Menu.Item> */}
-        {/* {resourceHTML} */}
+         {resourceHTML}
         <Menu.Item key='/about'>
           {/* <Icon type='profile' /> */}
           <a

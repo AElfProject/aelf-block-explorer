@@ -311,6 +311,7 @@ class VoteContainer extends Component {
   }
 
   async componentDidMount() {
+    this.checkExtensionExit();
     const { history } = this.props;
     // Get contracts
     try {
@@ -861,6 +862,50 @@ class VoteContainer extends Component {
         redeemOneVoteModalVisible: false
       });
     }, 4000);
+  }
+
+  // TODO: 当前有重复判断逻辑，需要拆分
+  checkExtensionExit (){
+    let nightElfInstance = null;
+    class NightElfCheck {
+      constructor() {
+        const readyMessage = 'NightElf is ready';
+        let resolveTemp = null;
+        this.check = new Promise((resolve, reject) => {
+          if (window.NightElf) {
+            resolve(readyMessage);
+          }
+          setTimeout(() => {
+            reject({
+              error: 200001,
+              message: 'timeout / can not find NightElf / please install the extension'
+            });
+          }, 1000);
+          resolveTemp = resolve;
+        });
+        document.addEventListener('NightElf', result => {
+          console.log('test.js check the status of extension named nightElf: ', result);
+          resovleTemp(readyMessage);
+        });
+      }
+      static getInstance() {
+        if (!nightElfInstance) {
+          nightElfInstance = new NightElfCheck();
+          return nightElfInstance;
+        }
+        return nightElfInstance;
+      }
+    }
+    const nightElfCheck = NightElfCheck.getInstance();
+    nightElfCheck.check.then(message => {
+      console.log('nightElfCheck :', message);
+      // connectChain -> Login -> initContract -> call contract methods
+    }).catch(error => {
+      console.log('nightElfCheck error:', error);
+      this.setState({
+        showDownloadPlugin: true
+      });
+    });
   }
 
   checkExtensionLockStatus() {
@@ -1476,171 +1521,180 @@ class VoteContainer extends Component {
     return (
       // todo: place the Provider in the uppest container
       <Provider contractsStore={contractsStore}>
-        <section className='vote-container basic-container' onClick={this.handleClick}>
-          {showDownloadPlugin ? (
-            <DownloadPlugins style={{ margin: '0 56px' }} />
-          ) : null}
+        <div>
+          {showDownloadPlugin ?
+            <section className='vote-container vote-container-simple basic-container basic-container-white'>
+              <DownloadPlugins style={{ margin: '0 56px' }} />
+            </section> : null}
 
-          {/* todo: optimize the radio group */}
-          <Radio.Group
-            className='secondary-level-nav'
-            value={window.location.pathname}
-          >
-            <Radio
-              value={routePaths.electionNotifi}
-              onClick={() => {
-                this.props.history.push(routePaths.electionNotifi);
-              }}
+          <section className='vote-container vote-container-simple basic-container basic-container-white'>
+            {/* todo: optimize the radio group */}
+            <Radio.Group
+              className='secondary-level-nav'
+              value={window.location.pathname}
             >
-              Election Notification
-            </Radio>
-            <Radio
-              value={routePaths.myVote}
-              onClick={() => {
-                this.props.history.push(routePaths.myVote);
-              }}
+              <Radio
+                value={routePaths.electionNotifi}
+                onClick={() => {
+                  this.props.history.push(routePaths.electionNotifi);
+                }}
+              >
+                Election Notification
+              </Radio>
+              <Radio
+                value={routePaths.myVote}
+                onClick={() => {
+                  this.props.history.push(routePaths.myVote);
+                }}
+              >
+                My Vote
+              </Radio>
+            </Radio.Group>
+          </section>
+
+          <section className='vote-container vote-container-simple basic-container basic-container-white'>
+
+          </section>
+          <section className='vote-container vote-container-simple basic-container basic-container-white' onClick={this.handleClick}>
+            <Switch>
+              <Route
+                exact
+                path='/vote/election'
+                render={() => (
+                  <ElectionNotification
+                    multiTokenContract={multiTokenContract}
+                    voteContract={voteContract}
+                    electionContract={electionContract}
+                    profitContract={profitContract}
+                    profitContractFromExt={profitContractFromExt}
+                    dividendContract={dividendContract}
+                    consensusContract={consensusContract}
+                    nightElf={nightElf}
+                    isCandidate={isCandidate}
+                    handleDividendClick={this.handleDividendClick}
+                    dividends={dividends}
+                    electionContractFromExt={electionContractFromExt}
+                    shouldRefreshNodeTable={shouldRefreshNodeTable}
+                    shouldRefreshMyWallet={shouldRefreshMyWallet}
+                    changeVoteState={this.changeVoteState}
+                    checkExtensionLockStatus={this.checkExtensionLockStatus}
+                    shouldRefreshElectionNotifiStatis={
+                      shouldRefreshElectionNotifiStatis
+                    }
+                    refreshPageElectionNotifi={this.refreshPageElectionNotifi}
+                    currentWallet={currentWallet}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path={routePaths.applyToBeANode}
+                electionContract={electionContract}
+                render={() => (
+                  <CandidateApply
+                    electionContractFromExt={electionContractFromExt}
+                    nightElf={nightElf}
+                    currentWallet={currentWallet}
+                    checkExtensionLockStatus={this.checkExtensionLockStatus}
+                    isCandidate={isCandidate}
+                    shouldJudgeIsCurrentCandidate={shouldJudgeIsCurrentCandidate}
+                  />
+                )}
+              />
+              <Route
+                path={routePaths.teamInfoKeyin}
+                render={() => (
+                  <KeyInTeamInfo
+                    electionContract={electionContract}
+                    currentWallet={currentWallet}
+                    nightElf={nightElf}
+                    isPluginLock={isPluginLock}
+                    checkExtensionLockStatus={this.checkExtensionLockStatus}
+                  />
+                )}
+              />
+              <Route
+                path={routePaths.teamDetail}
+                render={() => (
+                  <TeamDetail
+                    consensusContract={consensusContract}
+                    electionContract={electionContract}
+                    currentWallet={currentWallet}
+                  />
+                )}
+              />
+              <Route
+                path={routePaths.myVote}
+                render={() => (
+                  <MyVote
+                    electionContract={electionContract}
+                    handleVoteTypeChange={this.handleVoteTypeChange}
+                  />
+                )}
+              />
+              <Redirect from={routePaths.vote} to={routePaths.electionNotifi} />
+            </Switch>
+            {/* 以上是有用的界面*/}
+
+            <VoteModal
+              voteModalVisible={voteModalVisible}
+              nodeAddress={nodeAddress}
+              nodeName={nodeName}
+              currentWalletName={currentWalletName}
+              balance={balance}
+              callback={this.handleVoteConfirmOk}
+              onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
+              handleSwitchVoteAmountChange={this.handleSwitchVoteAmountChange}
+              handleLockTimeChange={this.handleLockTimeChange}
+              voteAmountInput={voteAmountInput}
+              lockTime={lockTime}
+              expiredVotesAmount={expiredVotesAmount}
+              switchableVoteRecords={switchableVoteRecords}
+              withdrawnableVoteRecords={withdrawnableVoteRecords}
+              handleSwitchVote={this.handleSwitchVote}
+              handleVoteTypeChange={this.handleVoteTypeChange}
+              voteType={voteType}
+              handleSwithVoteSelectedRowChange={
+                this.handleSwithVoteSelectedRowChange
+              }
+              switchVoteSelectedRowKeys={switchVoteSelectedRowKeys}
+              voteFromExpiredVoteAmount={voteFromExpiredVoteAmount}
+              voteFromExpiredSelectedRowKeys={voteFromExpiredSelectedRowKeys}
+              handleVoteFromExpiredSelectedRowChange={
+                this.handleVoteFromExpiredSelectedRowChange
+              }
+              changeVoteState={this.changeVoteState}
+              isLockTimeForTest={isLockTimeForTest}
+            />
+
+            <Modal
+              className='plugin-lock-modal'
+              visible={pluginLockModalVisible}
+              onOk={() => this.handleOk('pluginLockModalVisible')}
+              // confirmLoading={confirmLoading}
+              onCancel={() => this.handleCancel('pluginLockModalVisible')}
+              centered
+              maskClosable
+              keyboard
             >
-              My Vote
-            </Radio>
-          </Radio.Group>
+              {/*您的NightELF已锁定，请重新解锁*/}
+              You NightELF extension is locked. Please unlock it.
+            </Modal>
 
-          <Switch>
-            <Route
-              exact
-              path='/vote/election'
-              render={() => (
-                <ElectionNotification
-                  multiTokenContract={multiTokenContract}
-                  voteContract={voteContract}
-                  electionContract={electionContract}
-                  profitContract={profitContract}
-                  profitContractFromExt={profitContractFromExt}
-                  dividendContract={dividendContract}
-                  consensusContract={consensusContract}
-                  nightElf={nightElf}
-                  isCandidate={isCandidate}
-                  handleDividendClick={this.handleDividendClick}
-                  dividends={dividends}
-                  electionContractFromExt={electionContractFromExt}
-                  shouldRefreshNodeTable={shouldRefreshNodeTable}
-                  shouldRefreshMyWallet={shouldRefreshMyWallet}
-                  changeVoteState={this.changeVoteState}
-                  checkExtensionLockStatus={this.checkExtensionLockStatus}
-                  shouldRefreshElectionNotifiStatis={
-                    shouldRefreshElectionNotifiStatis
-                  }
-                  refreshPageElectionNotifi={this.refreshPageElectionNotifi}
-                  currentWallet={currentWallet}
-                />
-              )}
-            />
-            <Route
-              exact
-              path={routePaths.applyToBeANode}
-              electionContract={electionContract}
-              render={() => (
-                <CandidateApply
-                  electionContractFromExt={electionContractFromExt}
-                  nightElf={nightElf}
-                  currentWallet={currentWallet}
-                  checkExtensionLockStatus={this.checkExtensionLockStatus}
-                  isCandidate={isCandidate}
-                  shouldJudgeIsCurrentCandidate={shouldJudgeIsCurrentCandidate}
-                />
-              )}
-            />
-            <Route
-              path={routePaths.teamInfoKeyin}
-              render={() => (
-                <KeyInTeamInfo
-                  electionContract={electionContract}
-                  currentWallet={currentWallet}
-                  nightElf={nightElf}
-                  isPluginLock={isPluginLock}
-                  checkExtensionLockStatus={this.checkExtensionLockStatus}
-                />
-              )}
-            />
-            <Route
-              path={routePaths.teamDetail}
-              render={() => (
-                <TeamDetail
-                  consensusContract={consensusContract}
-                  electionContract={electionContract}
-                  currentWallet={currentWallet}
-                />
-              )}
-            />
-            <Route
-              path={routePaths.myVote}
-              render={() => (
-                <MyVote
-                  electionContract={electionContract}
-                  handleVoteTypeChange={this.handleVoteTypeChange}
-                />
-              )}
-            />
-            <Redirect from={routePaths.vote} to={routePaths.electionNotifi} />
-          </Switch>
-
-          <VoteModal
-            voteModalVisible={voteModalVisible}
-            nodeAddress={nodeAddress}
-            nodeName={nodeName}
-            currentWalletName={currentWalletName}
-            balance={balance}
-            callback={this.handleVoteConfirmOk}
-            onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
-            handleSwitchVoteAmountChange={this.handleSwitchVoteAmountChange}
-            handleLockTimeChange={this.handleLockTimeChange}
-            voteAmountInput={voteAmountInput}
-            lockTime={lockTime}
-            expiredVotesAmount={expiredVotesAmount}
-            switchableVoteRecords={switchableVoteRecords}
-            withdrawnableVoteRecords={withdrawnableVoteRecords}
-            handleSwitchVote={this.handleSwitchVote}
-            handleVoteTypeChange={this.handleVoteTypeChange}
-            voteType={voteType}
-            handleSwithVoteSelectedRowChange={
-              this.handleSwithVoteSelectedRowChange
-            }
-            switchVoteSelectedRowKeys={switchVoteSelectedRowKeys}
-            voteFromExpiredVoteAmount={voteFromExpiredVoteAmount}
-            voteFromExpiredSelectedRowKeys={voteFromExpiredSelectedRowKeys}
-            handleVoteFromExpiredSelectedRowChange={
-              this.handleVoteFromExpiredSelectedRowChange
-            }
-            changeVoteState={this.changeVoteState}
-            isLockTimeForTest={isLockTimeForTest}
-          />
-
-          <Modal
-            className='plugin-lock-modal'
-            visible={pluginLockModalVisible}
-            onOk={() => this.handleOk('pluginLockModalVisible')}
-            // confirmLoading={confirmLoading}
-            onCancel={() => this.handleCancel('pluginLockModalVisible')}
-            centered
-            maskClosable
-            keyboard
-          >
-            您的NightELF已锁定，请重新解锁
-          </Modal>
-
-          <Modal
-            className='vote-confirm-modal'
-            title='Vote Confirm'
-            visible={voteConfirmModalVisible}
-            onOk={this.handleVoteConfirmOk}
-            // confirmLoading={confirmLoading}
-            onCancel={this.handleCancel.bind(this, 'voteConfirmModalVisible')}
-            width={860}
-            centered
-            maskClosable
-            keyboard
-          >
-            <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
-              {voteConfirmForm.formItems &&
+            <Modal
+              className='vote-confirm-modal'
+              title='Vote Confirm'
+              visible={voteConfirmModalVisible}
+              onOk={this.handleVoteConfirmOk}
+              // confirmLoading={confirmLoading}
+              onCancel={this.handleCancel.bind(this, 'voteConfirmModalVisible')}
+              width={860}
+              centered
+              maskClosable
+              keyboard
+            >
+              <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
+                {voteConfirmForm.formItems &&
                 voteConfirmForm.formItems.map(item => {
                   return (
                     <Form.Item label={item.label} key={item.label}>
@@ -1660,47 +1714,47 @@ class VoteContainer extends Component {
                     </Form.Item>
                   );
                 })}
-            </Form>
-            <p className='tip-color' style={{ marginTop: 30 }}>
-              {NEED_PLUGIN_AUTHORIZE_TIP}
-            </p>
-          </Modal>
+              </Form>
+              <p className='tip-color' style={{ marginTop: 30 }}>
+                {NEED_PLUGIN_AUTHORIZE_TIP}
+              </p>
+            </Modal>
 
-          <RedeemModal
-            nodeAddress={nodeAddress}
-            nodeName={nodeName}
-            voteRedeemModalVisible={voteRedeemModalVisible}
-            handleRedeemConfirm={this.handleRedeemConfirm}
-            handleCancel={this.handleCancel}
-            redeemableVoteRecordsForOneCandidate={
-              redeemableVoteRecordsForOneCandidate
-            }
-            activeVoteRecordsForOneCandidate={activeVoteRecordsForOneCandidate}
-            currentWallet={currentWallet}
-            redeemVoteSelectedRowKeys={redeemVoteSelectedRowKeys}
-            handleRedeemVoteSelectedRowChange={
-              this.handleRedeemVoteSelectedRowChange
-            }
-            changeVoteState={this.changeVoteState}
-          />
+            <RedeemModal
+              nodeAddress={nodeAddress}
+              nodeName={nodeName}
+              voteRedeemModalVisible={voteRedeemModalVisible}
+              handleRedeemConfirm={this.handleRedeemConfirm}
+              handleCancel={this.handleCancel}
+              redeemableVoteRecordsForOneCandidate={
+                redeemableVoteRecordsForOneCandidate
+              }
+              activeVoteRecordsForOneCandidate={activeVoteRecordsForOneCandidate}
+              currentWallet={currentWallet}
+              redeemVoteSelectedRowKeys={redeemVoteSelectedRowKeys}
+              handleRedeemVoteSelectedRowChange={
+                this.handleRedeemVoteSelectedRowChange
+              }
+              changeVoteState={this.changeVoteState}
+            />
 
-          <RedeemAnVoteModal
-            currentWallet={currentWallet}
-            voteToRedeem={voteToRedeem}
-            redeemOneVoteModalVisible={redeemOneVoteModalVisible}
-            changeVoteState={this.changeVoteState}
-            handleRedeemOneVoteConfirm={this.handleRedeemOneVoteConfirm}
-          />
+            <RedeemAnVoteModal
+              currentWallet={currentWallet}
+              voteToRedeem={voteToRedeem}
+              redeemOneVoteModalVisible={redeemOneVoteModalVisible}
+              changeVoteState={this.changeVoteState}
+              handleRedeemOneVoteConfirm={this.handleRedeemOneVoteConfirm}
+            />
 
-          <DividendModal
-            dividendModalVisible={dividendModalVisible}
-            changeModalVisible={this.changeModalVisible}
-            dividends={dividends}
-            handleClaimDividendClick={this.handleClaimDividendClick}
-          />
+            <DividendModal
+              dividendModalVisible={dividendModalVisible}
+              changeModalVisible={this.changeModalVisible}
+              dividends={dividends}
+              handleClaimDividendClick={this.handleClaimDividendClick}
+            />
 
-          {/* ===== Test Btn ===== */}
-          {/* <button
+            {/* ===== Test Btn ===== */}
+            {/* <button
             // onClick={async () => {
             //   voteStore.setPluginLockModalVisible(
             //     !voteStore.pluginLockModalVisible
@@ -1756,8 +1810,9 @@ class VoteContainer extends Component {
           >
             show vote redeem modal
           </button> */}
-          {/* ===== Test Btn ===== */}
-        </section>
+            {/* ===== Test Btn ===== */}
+          </section>
+        </div>
       </Provider>
     );
   }

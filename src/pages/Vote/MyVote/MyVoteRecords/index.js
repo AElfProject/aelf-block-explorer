@@ -11,6 +11,8 @@ import {
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import { centerEllipsis } from '@utils/formater';
 
+import './MyVoteRecords.less';
+
 const { Search } = Input;
 const clsPrefix = 'my-vote-records';
 
@@ -22,6 +24,7 @@ function genMyVoteRecordsCols() {
       title: 'Rank',
       dataIndex: 'displayedRank',
       key: 'rank',
+      width: 70,
       sorter: (a, b) => {
         return a.rank - b.rank;
       }
@@ -49,18 +52,20 @@ function genMyVoteRecordsCols() {
     {
       title: 'Type',
       dataIndex: 'type',
-      key: 'type'
+      key: 'type',
+      width: 90,
     },
     {
       title: 'Vote Amount',
       dataIndex: 'amount',
       key: 'voteAmount',
+      width: 100,
       sorter: (a, b) => a.amount - b.amount
     },
     {
       title: 'Lock Time',
       dataIndex: 'formatedLockTime',
-      key: 'formatedLockTime'
+      key: 'formatedLockTime',
     },
     {
       title: 'Unlock Time',
@@ -70,7 +75,8 @@ function genMyVoteRecordsCols() {
     {
       title: 'Status',
       key: 'status',
-      dataIndex: 'status'
+      dataIndex: 'status',
+      width: 110,
     },
     {
       title: 'Operation Time',
@@ -208,7 +214,7 @@ class MyVoteRecords extends Component {
     const myVoteRecordsCols = genMyVoteRecordsCols.call(this);
 
     return (
-      <section>
+      <section className={`${clsPrefix}-section`}>
         <h2 className={`${clsPrefix}-header`}>
           <span>My Votes</span>
           {/* <span className='node-color-intro-group'>
@@ -227,7 +233,7 @@ class MyVoteRecords extends Component {
           // loading={loading}
           pagination={pagination}
           rowKey={record => record.voteId.value}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1024 }}
         />
       </section>
     );

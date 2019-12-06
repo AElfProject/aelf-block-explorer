@@ -2,15 +2,13 @@ import React, { PureComponent } from 'react';
 import { Button, Icon, Modal, message, Spin } from 'antd';
 import moment from 'moment';
 
-import './index.less';
+import './MyWalletCard.less';
 // import { inject, observer } from 'mobx-react';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
 import { schemeIds } from '@pages/Vote/constants';
-
-const clsPrefix = 'my-wallet-card';
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -283,7 +281,7 @@ export default class MyWalletCard extends PureComponent {
             type='primary'
             size='small'
             shape='round'
-            className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
+            className={'my-wallet-card-body-wallet-content-withdraw-btn'}
             onClick={handleDividendClick}
           >
             Claim
@@ -307,27 +305,32 @@ export default class MyWalletCard extends PureComponent {
     const currentWallet = getCurrentWallet();
 
     return (
-      <section className={`${clsPrefix} has-mask-on-mobile`}>
-        <div className={`${clsPrefix}-header`}>
-          <h2 className={`${clsPrefix}-header-title`}>My Wallet</h2>
+      <section className='my-wallet-card has-mask-on-mobile'>
+        <div className='my-wallet-card-header'>
+          <h2 className='my-wallet-card-header-title'>My Wallet</h2>
           <Button
-            className={`${clsPrefix}-header-sync-btn update-btn`}
+            className='my-wallet-card-header-sync-btn update-btn'
             onClick={this.handleUpdateWalletClick}
           >
             <Icon type='sync' spin={loading} />
           </Button>
         </div>
-        <Spin spinning={loading}>
-          <div className={`${clsPrefix}-body`}>
-            <div className={`${clsPrefix}-body-wallet-title`}>
-              <h3 className={`${clsPrefix}-body-wallet-title-name`}>
-                {currentWallet.name}
-              </h3>
-              {/* <Button shape='round' onClick={this.showModal}>
+        <div className='my-wallet-card-body-wallet-title'>
+          <span className='my-wallet-card-body-wallet-title-key'>Name: </span>
+          <span>{currentWallet.name}</span>
+          <span className='my-wallet-card-body-wallet-title-blank'></span>
+          <span className='my-wallet-card-body-wallet-title-key'>Address: </span>
+          <span>{currentWallet.address}</span>
+          {/*<h3 className='my-wallet-card-body-wallet-title-name'>*/}
+            {/*{currentWallet.name}*/}
+          {/*</h3>*/}
+          {/* <Button shape='round' onClick={this.showModal}>
               解除绑定
             </Button> */}
-            </div>
-            <ul className={`${clsPrefix}-body-wallet-content`}>
+        </div>
+        <Spin spinning={loading}>
+          <div className='my-wallet-card-body'>
+            <ul className='my-wallet-card-body-wallet-content'>
               {walletItems.map(item => {
                 return (
                   <li>
