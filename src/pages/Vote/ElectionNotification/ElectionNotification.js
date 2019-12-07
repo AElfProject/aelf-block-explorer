@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 13:17:38
+ * @LastEditTime: 2019-12-07 14:32:56
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -250,18 +250,18 @@ export default class ElectionNotification extends PureComponent {
 
     return (
       <section>
-        <ElectionRuleCard
-          isCandidate={isCandidate}
-          currentWallet={currentWallet}
-        />
-        <div className='election-blank'></div>
         <StatisticalData
           data={statisData}
           spinning={statisDataLoading}
           style={{ marginBottom: 20 }}
           tooltip={ELECTION_NOTIFI_DATA_TIP}
         />
-        <div className='election-blank'></div>
+        <div className="election-blank"></div>
+        <ElectionRuleCard
+          isCandidate={isCandidate}
+          currentWallet={currentWallet}
+        />
+        <div className="election-blank"></div>
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -274,7 +274,7 @@ export default class ElectionNotification extends PureComponent {
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
         />
-        <div className='election-blank'></div>
+        <div className="election-blank"></div>
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}

@@ -93,7 +93,7 @@ body {
 .update-btn {
   background: none;
   border: none;
-  color: @blue;
+  color: #ccc;
   font-size: 20px;
   &:hover,
   &:focus {
@@ -104,10 +104,10 @@ body {
     }
   }
   &:focus {
-    color: #fff;
+    color: #ccc;
   }
   &:hover {
-    color: @gold;
+    color: @primary-color;
   }
 }
 
@@ -122,12 +122,13 @@ body {
 
 // todo: Use css to unify the modal's style
 // modal style
-.md-modal{
+.md-modal {
   width: 640px;
 }
 
 /* header menu rewrite start */
-.ant-menu-item:active, .ant-menu-submenu-title:active {
+.ant-menu-item:active,
+.ant-menu-submenu-title:active {
   background: @bgBlankWhite;
 }
 
@@ -135,15 +136,21 @@ body {
   background: none;
 }
 
-.ant-menu-item-selected, .ant-menu-item-selected>a, .ant-menu-item-selected>a:hover {
+.ant-menu-item-selected,
+.ant-menu-item-selected > a,
+.ant-menu-item-selected > a:hover {
   color: @hoverColor;
 }
 
-.ant-menu-submenu-inline>.ant-menu-submenu-title:hover .ant-menu-submenu-arrow:before {
+.ant-menu-submenu-inline
+  > .ant-menu-submenu-title:hover
+  .ant-menu-submenu-arrow:before {
   background: @hoverColor;
 }
 
-.ant-menu-submenu-inline>.ant-menu-submenu-title:hover .ant-menu-submenu-arrow:after {
+.ant-menu-submenu-inline
+  > .ant-menu-submenu-title:hover
+  .ant-menu-submenu-arrow:after {
   background: @hoverColor;
 }
 /* header menu rewrite end */
