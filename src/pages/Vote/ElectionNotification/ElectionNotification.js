@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 14:32:56
+ * @LastEditTime: 2019-12-07 20:35:32
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
@@ -14,8 +14,17 @@ import StatisticalData from '@components/StatisticalData/';
 import NodeTable from './NodeTable';
 import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
 import MyWalletCard from './MyWalletCard/MyWalletCard';
-import { SYMBOL, ELECTION_NOTIFI_DATA_TIP } from '@src/constants';
+import {
+  SYMBOL,
+  ELECTION_NOTIFI_DATA_TIP,
+  txStatusInUpperCase,
+  UNKNOWN_ERROR_TIP,
+  LONG_NOTIFI_TIME
+} from '@src/constants';
 import './ElectionNotification.style.less';
+import CandidateApplyModal from './CandidateApplyModal/CandidateApplyModal';
+import { aelf } from '@src/utils';
+import getStateJudgment from '@utils/getStateJudgment';
 
 const deadline = Date.now() + 1000 * 15; // Moment is also OK
 
@@ -54,10 +63,16 @@ export default class ElectionNotification extends PureComponent {
       showDownloadPlugin: true,
       // todo: should I place statisData in state?
       statisData: electionNotifiStatisData,
-      statisDataLoading: false
+      statisDataLoading: false,
+
+      applyModalVisible: false
     };
 
     this.hasRun = false;
+
+    this.handleApplyModalOk = this.handleApplyModalOk.bind(this);
+    this.handleApplyModalCancel = this.handleApplyModalCancel.bind(this);
+    this.displayApplyModal = this.displayApplyModal.bind(this);
   }
 
   componentDidMount() {
@@ -67,10 +82,6 @@ export default class ElectionNotification extends PureComponent {
       multiTokenContract,
       profitContractFromExt
     } = this.props;
-
-    console.log({
-      props: this.props
-    });
 
     this.fetchData();
 
@@ -221,6 +232,81 @@ export default class ElectionNotification extends PureComponent {
     }
   }
 
+  handleApplyModalOk() {
+    const {
+      currentWallet,
+      electionContractFromExt,
+      checkExtensionLockStatus
+    } = this.props;
+
+    // todo: there are the same code in Vote.js
+    // todo: error handle
+    checkExtensionLockStatus().then(() => {
+      electionContractFromExt
+        .AnnounceElection()
+        .then(res => {
+          // todo: handle gloabally, like the way api using
+          if (res.error) {
+            message.error(res.errorMessage.message);
+            return;
+          }
+          if (!res) {
+            message.error(UNKNOWN_ERROR_TIP);
+            return;
+          }
+          const transactionId = res.result
+            ? res.result.TransactionId
+            : res.TransactionId;
+          // todo: optimize the settimeout
+          setTimeout(() => {
+            console.log('transactionId', transactionId);
+            // todo: Extract the code getTxResult in the project
+            aelf.chain.getTxResult(transactionId, (error, result) => {
+              this.setState({
+                applyModalVisible: false
+              });
+              if (error) {
+                message.error(
+                  `${error.Status}: ${error.Error}`,
+                  LONG_NOTIFI_TIME
+                );
+                message.error(
+                  `Transaction Id: ${transactionId}`,
+                  LONG_NOTIFI_TIME
+                );
+                return;
+              }
+              const { Status: status } = result;
+              getStateJudgment(status, transactionId);
+
+              // todo: handle the other status case
+              if (status === txStatusInUpperCase.mined) {
+                this.props.history.push(
+                  `/vote/apply/keyin?pubkey=${currentWallet &&
+                    currentWallet.pubkey}`
+                );
+              }
+            });
+          }, 4000);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+  }
+
+  displayApplyModal() {
+    this.setState({
+      applyModalVisible: true
+    });
+  }
+
+  handleApplyModalCancel() {
+    this.setState({
+      applyModalVisible: false
+    });
+  }
+
   render() {
     const {
       consensusContract,
@@ -242,7 +328,8 @@ export default class ElectionNotification extends PureComponent {
       totalVotesAmount,
       showDownloadPlugin,
       statisData,
-      statisDataLoading
+      statisDataLoading,
+      applyModalVisible
     } = this.state;
 
     const { electionContract } = this.props;
@@ -260,6 +347,7 @@ export default class ElectionNotification extends PureComponent {
         <ElectionRuleCard
           isCandidate={isCandidate}
           currentWallet={currentWallet}
+          displayApplyModal={this.displayApplyModal}
         />
         <div className="election-blank"></div>
         <MyWalletCard
@@ -282,6 +370,12 @@ export default class ElectionNotification extends PureComponent {
           shouldRefreshNodeTable={shouldRefreshNodeTable}
           changeVoteState={changeVoteState}
         />
+        <CandidateApplyModal
+          visible={applyModalVisible}
+          onOk={this.handleApplyModalOk}
+          onCancel={this.handleApplyModalCancel}
+          currentWallet={currentWallet}
+        ></CandidateApplyModal>
       </section>
     );
   }

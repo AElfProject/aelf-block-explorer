@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import { Button, Icon } from 'antd';
 
 import { PRIMARY_COLOR } from '@src/constants/themeConstants';
 import './ElectionRuleCard.style.less';
 
-export default memo(function ElectionRuleCard(props) {
-  const { isCandidate, currentWallet } = props;
+function ElectionRuleCard(props) {
+  const { isCandidate, displayApplyModal, currentWallet } = props;
   return (
     <section className="election-rule-card">
       <h2 className="election-header-title">
@@ -30,25 +30,29 @@ export default memo(function ElectionRuleCard(props) {
           </a>
         </p>
         <div className="btn-group">
-          {/*<button className='view-node-election-plan-btn'>*/}
-          {/*<a href=''>View the node election plan ></a>*/}
-          {/*</button>*/}
-          <Button type="primary" className="apply-to-be-a-node-btn">
-            {isCandidate ? (
-              <Link
-                to={{
+          <Button
+            type="primary"
+            className="apply-to-be-a-node-btn"
+            onClick={() => {
+              if (isCandidate) {
+                const { history } = props;
+                history.push({
                   pathname: '/vote/apply/keyin',
                   search: `pubkey=${currentWallet && currentWallet.pubkey}`
-                }}
-              >
-                Modify team information
-              </Link>
-            ) : (
-              <Link to="/vote/apply">Become a candidate node</Link>
-            )}
+                });
+              } else {
+                displayApplyModal();
+              }
+            }}
+          >
+            {isCandidate
+              ? 'Modify team information'
+              : 'Become a candidate node'}
           </Button>
         </div>
       </div>
     </section>
   );
-});
+}
+
+export default withRouter(memo(ElectionRuleCard));

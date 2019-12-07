@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 15:40:39
+ * @LastEditTime: 2019-12-07 20:40:06
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -39,7 +39,6 @@ import {
 import getStateJudgment from '@utils/getStateJudgment';
 import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
-import CandidateApply from './CandidateApply';
 import KeyInTeamInfo from './KeyInTeamInfo';
 import TeamDetail from './TeamDetail';
 import VoteModal from './VoteModal';
@@ -1591,23 +1590,6 @@ class VoteContainer extends Component {
                     }
                     refreshPageElectionNotifi={this.refreshPageElectionNotifi}
                     currentWallet={currentWallet}
-                  />
-                )}
-              />
-              <Route
-                exact
-                path={routePaths.applyToBeANode}
-                electionContract={electionContract}
-                render={() => (
-                  <CandidateApply
-                    electionContractFromExt={electionContractFromExt}
-                    nightElf={nightElf}
-                    currentWallet={currentWallet}
-                    checkExtensionLockStatus={this.checkExtensionLockStatus}
-                    isCandidate={isCandidate}
-                    shouldJudgeIsCurrentCandidate={
-                      shouldJudgeIsCurrentCandidate
-                    }
                   />
                 )}
               />
