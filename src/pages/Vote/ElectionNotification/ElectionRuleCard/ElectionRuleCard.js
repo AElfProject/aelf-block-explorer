@@ -1,14 +1,22 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 
+import { PRIMARY_COLOR } from '@src/constants/themeConstants';
 import './ElectionRuleCard.style.less';
 
 export default memo(function ElectionRuleCard(props) {
   const { isCandidate, currentWallet } = props;
   return (
     <section className="election-rule-card">
-      <h2 className="election-header-title">Node Election</h2>
+      <h2 className="election-header-title">
+        <Icon
+          type="file-text"
+          theme="filled"
+          style={{ marginRight: 12, color: PRIMARY_COLOR }}
+        ></Icon>
+        Node Election
+      </h2>
       <div className="election-container">
         <p className="election-intro">
           Every token holder has the opportunity to become a BP node. However,

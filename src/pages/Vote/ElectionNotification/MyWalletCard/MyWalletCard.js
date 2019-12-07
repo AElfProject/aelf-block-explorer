@@ -1,3 +1,11 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-07 13:16:37
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-07 16:21:30
+ * @Description: file content
+ */
 import React, { PureComponent } from 'react';
 import { Button, Icon, Modal, message, Spin } from 'antd';
 import moment from 'moment';
@@ -8,6 +16,7 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
+import { PRIMARY_COLOR } from '@src/constants/themeConstants';
 import { schemeIds } from '@pages/Vote/constants';
 
 // @inject('contractsStore') @observer
@@ -256,13 +265,6 @@ export default class MyWalletCard extends PureComponent {
       loading,
       lastestUnlockTime
     } = this.state;
-    console.log({
-      balance,
-      withdrawnVotedVotesAmount,
-      activeVotedVotesAmount,
-      totalAssets,
-      loading
-    });
 
     const walletItems = [
       {
@@ -278,9 +280,9 @@ export default class MyWalletCard extends PureComponent {
         value: dividends.total.toFixed(2),
         extra: (
           <Button
-            type='primary'
-            size='small'
-            shape='round'
+            type="primary"
+            size="small"
+            shape="round"
             className={'my-wallet-card-body-wallet-content-withdraw-btn'}
             onClick={handleDividendClick}
           >
@@ -305,38 +307,47 @@ export default class MyWalletCard extends PureComponent {
     const currentWallet = getCurrentWallet();
 
     return (
-      <section className='my-wallet-card has-mask-on-mobile'>
-        <div className='my-wallet-card-header'>
-          <h2 className='my-wallet-card-header-title'>My Wallet</h2>
+      <section className="my-wallet-card has-mask-on-mobile">
+        <div className="my-wallet-card-header">
+          <h2 className="my-wallet-card-header-title">
+            <Icon
+              type="wallet"
+              theme="filled"
+              style={{ marginRight: 12, color: PRIMARY_COLOR }}
+            ></Icon>
+            My Wallet
+          </h2>
           <Button
-            className='my-wallet-card-header-sync-btn update-btn'
+            className="my-wallet-card-header-sync-btn update-btn"
             onClick={this.handleUpdateWalletClick}
           >
-            <Icon type='sync' spin={loading} />
+            <Icon type="sync" spin={loading} />
           </Button>
         </div>
-        <div className='my-wallet-card-body-wallet-title'>
-          <span className='my-wallet-card-body-wallet-title-key'>Name: </span>
-          <span className='primary-color'>{currentWallet.name}</span>
-          <span className='my-wallet-card-body-wallet-title-blank'></span>
-          <span className='my-wallet-card-body-wallet-title-key'>Address: </span>
-          <span className='primary-color'>{currentWallet.address}</span>
+        <div className="my-wallet-card-body-wallet-title">
+          <span className="my-wallet-card-body-wallet-title-key">Name: </span>
+          <span className="primary-color">{currentWallet.name}</span>
+          <span className="my-wallet-card-body-wallet-title-blank"></span>
+          <span className="my-wallet-card-body-wallet-title-key">
+            Address:{' '}
+          </span>
+          <span className="primary-color">{currentWallet.address}</span>
           {/*<h3 className='my-wallet-card-body-wallet-title-name'>*/}
-            {/*{currentWallet.name}*/}
+          {/*{currentWallet.name}*/}
           {/*</h3>*/}
           {/* <Button shape='round' onClick={this.showModal}>
               解除绑定
             </Button> */}
         </div>
         <Spin spinning={loading}>
-          <div className='my-wallet-card-body'>
-            <ul className='my-wallet-card-body-wallet-content'>
+          <div className="my-wallet-card-body">
+            <ul className="my-wallet-card-body-wallet-content">
               {walletItems.map(item => {
                 return (
                   <li>
-                    <span className='item-type'>{item.type}:</span>
-                    <span className='item-value'>{item.value}</span>
-                    <span className='item-extra'>{item.extra}</span>
+                    <span className="item-type">{item.type}:</span>
+                    <span className="item-value">{item.value}</span>
+                    <span className="item-extra">{item.extra}</span>
                   </li>
                 );
               })}
@@ -345,12 +356,12 @@ export default class MyWalletCard extends PureComponent {
         </Spin>
 
         <Modal
-          className='unbind-account-modal'
-          title='Unbind Account'
+          className="unbind-account-modal"
+          title="Unbind Account"
           visible={unbindAccountModalVisible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          okText='Authorize'
+          okText="Authorize"
           centered
           maskClosable
           keyboard
