@@ -13,7 +13,7 @@ import moment from 'moment';
 import StatisticalData from '@components/StatisticalData/';
 import NodeTable from './NodeTable';
 import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
-import MyWalletCard from './MyWalletCard/';
+import MyWalletCard from './MyWalletCard/MyWalletCard';
 import { SYMBOL, ELECTION_NOTIFI_DATA_TIP } from '@src/constants';
 import './ElectionNotification.style.less';
 
@@ -250,16 +250,18 @@ export default class ElectionNotification extends PureComponent {
 
     return (
       <section>
+        <ElectionRuleCard
+          isCandidate={isCandidate}
+          currentWallet={currentWallet}
+        />
+        <div className='election-blank'></div>
         <StatisticalData
           data={statisData}
           spinning={statisDataLoading}
           style={{ marginBottom: 20 }}
           tooltip={ELECTION_NOTIFI_DATA_TIP}
         />
-        <ElectionRuleCard
-          isCandidate={isCandidate}
-          currentWallet={currentWallet}
-        />
+        <div className='election-blank'></div>
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -272,6 +274,7 @@ export default class ElectionNotification extends PureComponent {
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
         />
+        <div className='election-blank'></div>
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}

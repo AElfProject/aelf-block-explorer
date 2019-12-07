@@ -6,22 +6,24 @@
  * @LastEditTime: 2019-11-06 14:06:02
  * @Description: file content
  */
+@import "../../../../assets/less/_variables";
 @cardSplit: 1px solid rgba(57, 0, 57, 0.3);
 
 // todo: Unify the way write css selector
 .my-wallet-card {
   margin-bottom: 20px;
   // padding: 20px 30px;
-  background: rgba(57, 0, 57, 0.3);
+  background: @bgBlankWhite;
 
   &-header {
-    background: rgba(57, 0, 57, 0.5);
-    padding: 5px 20px;
+    background: @bgBlankWhite;
+    padding: 8px 57px;
     overflow: hidden;
+    border-bottom: 1px solid @borderColor;
     &-title {
       display: inline-block;
       vertical-align: middle;
-      color: #fff;
+      color: @textContext;
     }
     &-sync-btn {
       float: right;
@@ -33,24 +35,37 @@
       display: flex;
       flex: 1;
       align-items: center;
-      justify-content: center;
-      border-right: @cardSplit;
+      padding: 18px 0px;
+      margin: 0 57px;
+      font-size: 14px;
+      line-height: 14px;
+      border-bottom: 1px solid @borderColor;
       &-name {
-        color: #fff;
+        color: @textContext;
         margin-right: 20px;
+      }
+      &-key {
+        font-weight: 500;
+        margin-right: 8px;
+      }
+      &-blank {
+        margin: 0 12px;
+      }
+      &-value {
+
       }
     }
     &-wallet-content {
       flex: 4;
-      padding: 10px 10px 10px 60px;
-      color: #fff;
+      padding: 10px 10px 0px 57px;
+      color: @textContext;
       > li {
         display: inline-block;
         width: 33%;
         margin: 5px 0;
         .item-value {
           margin-left: 3px;
-          color: @gold;
+          color: @bgMain;
         }
       }
       &-withdraw-btn {
@@ -61,7 +76,7 @@
 }
 
 .ant-modal-confirm-body .ant-modal-confirm-title {
-  color: #fff;
+  color: @textContext;
 }
 
 // todo: Use rem instead

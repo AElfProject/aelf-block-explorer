@@ -132,7 +132,7 @@ class NodeTable extends PureComponent {
         title: 'Rank',
         dataIndex: 'rank',
         key: 'rank',
-        width: 90,
+        width: 70,
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.rank - b.rank
       },
@@ -159,7 +159,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Node Type',
         dataIndex: 'nodeType',
-        width: 120,
+        width: 90,
         key: 'nodeType'
         // todo: write the sorter after the api is ready
         // sorter: (a, b) => a.nodeType - b.nodeType
@@ -167,7 +167,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Terms',
         dataIndex: 'terms',
-        width: 100,
+        width: 90,
         key: 'terms',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.terms - b.terms
@@ -200,14 +200,14 @@ class NodeTable extends PureComponent {
       {
         title: 'My Votes',
         key: 'myVotes',
-        width: 120,
+        width: 100,
         dataIndex: 'myTotalVoteAmount',
         sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount
       },
       {
         title: 'Operations',
         key: 'operations',
-        width: 220,
+        width: 210,
         render: (text, record) => (
           <div className={`${clsPrefix}-btn-group`}>
             {/* todo: replace pubkey by address? */}
@@ -488,7 +488,7 @@ class NodeTable extends PureComponent {
           loading={isLoading}
           pagination={pagination}
           rowKey={record => record.pubkey}
-          scroll={{ x: 1350 }}
+          scroll={{ x: 1024 }}
           // size='middle'
         />
       </section>

@@ -65,24 +65,14 @@ export default class TxsDetailPage extends React.Component {
     return (
       <Row className='tx-detail-row' key={key}>
         <Col
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={6}
-          xxl={6}
+          xs={24} sm={24} md={6} lg={6} xl={6} className='title'
           style={{ height: 'auto' }}
         >
           {formatKey(key)}
         </Col>
         <Col
           style={{ height: 'auto', wordBreak: 'break-all' }}
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={18}
-          xxl={18}
+          xs={24} sm={24} md={18} lg={18} xl={18}
         >
           <div>{value}</div>
         </Col>

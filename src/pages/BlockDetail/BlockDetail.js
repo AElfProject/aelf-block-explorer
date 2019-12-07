@@ -170,7 +170,7 @@ export default class BlockDetailPage extends React.Component {
                     rowKey = 'tx_id'
                     loading={txs_loading}
                     onChange={this.handleTableChange}
-                    scroll={{x: 768}}
+                    scroll={{x: 1024}}
                 />
             </div>
         );
@@ -181,8 +181,10 @@ export default class BlockDetailPage extends React.Component {
         // Because of the 'float'? I do not clear it.
         return (
             <Row key={key + Math.random()}>
-                <Col span={8}>{formatKey(key)}</Col>
-                <Col span={16}><div>{value}</div></Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6} className='title'>{formatKey(key)}</Col>
+                <Col xs={24} sm={24} md={18} lg={18} xl={18}><div>{value}</div></Col>
+              {/*<Col span={6}>{formatKey(key)}</Col>*/}
+              {/*<Col span={18}><div>{value}</div></Col>*/}
             </Row>
         );
     }

@@ -1,5 +1,5 @@
 /**
- * @file index.js
+ * @file MyWalletCard.js
  * @author huangzongzhe,longyue,zhouminghui
  */
 /* eslint-disable fecs-camelcase */

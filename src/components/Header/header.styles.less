@@ -76,11 +76,19 @@
   .ant-menu-item,
   .ant-menu-submenu {
     line-height: @default-line-height;
+    transform: none;
     &:hover {
       color: @hoverColor;
       //border-bottom: 2px solid @hoverColor;
       border-bottom: none;
     }
+  }
+  //
+  //.ant-menu-item-active {
+  //  border-bottom: 2px solid @hoverColor;
+  //}
+  .ant-menu-item, .ant-menu-submenu-title, .ant-menu-submenu-inline {
+    transition: none;
   }
 
   .ant-menu-horizontal {
@@ -192,7 +200,7 @@
 
   .search-container {
     background: @bgBlankWhite;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
     padding: 16px;
   }
 

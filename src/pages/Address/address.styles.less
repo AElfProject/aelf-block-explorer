@@ -23,6 +23,10 @@
   }
 }
 
+.address-context {
+  display: none;
+}
+
 @media screen and (max-width: 768px) {
   .address-container {
     .address-header-container {
@@ -30,5 +34,17 @@
         width: 33%;
       }
     }
+  }
+  .address-context {
+    display: block;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0 10px;
+    font-size: 14px;
+    word-break: break-all;
+  }
+  .transaction-counts {
+    font-weight: 400;
+    font-size: 14px;
   }
 }
