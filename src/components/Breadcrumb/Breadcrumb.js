@@ -111,8 +111,9 @@ class BrowserBreadcrumb extends Component {
     const inAddress = current === 'address' && breadcrumbTitle === 'Transactions List';
     const inTxDetail = current === 'tx' && breadcrumbTitle === 'Transactions List';
     const inResourceDetail = current === 'resourceDetail' && breadcrumbTitle === 'Resource';
+    const inContract = current === 'contract';
 
-    if (inBlockDetail || inTxList || inAddress || inTxDetail || inResourceDetail) {
+    if (inBlockDetail || inTxList || inAddress || inTxDetail || inResourceDetail || inContract) {
       return false;
     }
 
@@ -147,6 +148,13 @@ class BrowserBreadcrumb extends Component {
             `/${pathSnippets.slice(0, index + 1).join('/')}`;
 
       const isCurrentTitle =  this.checkLocation(breadcrumbTitle);
+
+      // TODO: stupid atom-young. NM.
+      if (BREADCRUMBNAMESTATE.currentState === 'contract') {
+        return <Breadcrumb.Item key={url}>
+            <a href={url}> {breadcrumbTitle} </a>
+        </Breadcrumb.Item>;
+      }
 
       return (
         <Breadcrumb.Item key={url}>
