@@ -127,7 +127,7 @@ export default class ResourceMoneyMarket extends PureComponent {
                 getMenuClick={this.getMenuClick}
                 getEchartsLoading={this.getEchartsLoading}
             />
-            <Row>
+            <Row className="resource-sub-container">
               <Col xxl={14} xl={24} lg={24}>
                 <ResourceTrading
                   menuIndex={menuIndex}

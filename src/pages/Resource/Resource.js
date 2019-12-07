@@ -221,7 +221,7 @@ class Resource extends Component {
       tokenConverterContract,
       currentWallet
     } = this.state;
-    if (showWallet) {
+    // if (showWallet) {
       return (
         <ResourceAElfWallet
           title='AElf Wallet'
@@ -232,7 +232,7 @@ class Resource extends Component {
           getResource={this.getResource}
         />
       );
-    }
+    // }
   }
 
   render() {
@@ -260,7 +260,7 @@ class Resource extends Component {
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {
-      downloadPlugins = this.getDownloadPluginsHTML();
+      downloadPlugins = [this.getDownloadPluginsHTML(), <div className='resource-blank'></div>];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
     return (

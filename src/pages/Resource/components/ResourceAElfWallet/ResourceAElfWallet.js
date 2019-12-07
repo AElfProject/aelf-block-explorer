@@ -14,35 +14,57 @@ import {
   Icon,
   Divider
 } from 'antd';
+import {ADDRESS_INFO} from '../../../../../config/config';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import './ResourceAElfWallet.less';
 
 export default class ResourceAElfWallet extends PureComponent {
 
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    tokenContract: PropTypes.object.isRequired,
-    tokenConverterContract: PropTypes.object.isRequired,
-    currentWallet: PropTypes.object.isRequired,
-    getCurrentBalance: PropTypes.func.isRequired,
-    getResource: PropTypes.func.isRequired
-  };
-
   constructor(props) {
     super(props);
     this.state = {
-      balance: 0,
-      RAM: 0,
-      CPU: 0,
-      NET: 0,
-      STO: 0,
+      defaultWallet: {
+        name: '-',
+        address: '-'
+      },
+      balance: '-',
+      RAM: '-',
+      CPU: '-',
+      NET: '-',
+      STO: '-',
       loading: false
     };
     this.onRefresh = this.onRefresh.bind(this);
   }
 
   componentDidMount() {
+    this.refreshWalletInfo();
+  }
+
+  // TODO: 组件要尽量无状态，这是个反模式
+  // 数据都从父组件传递进来。
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const preIsNotNull = prevProps.currentWallet !== null;
+    let canBeRefresh = false;
+    if (preIsNotNull) {
+      if (prevProps.currentWallet.address !== this.props.currentWallet.address) {
+        canBeRefresh = true;
+      }
+    }
+    else if (this.props.currentWallet && this.props.currentWallet.address) {
+      canBeRefresh = true;
+    }
+    if (this.props.tokenContract) {
+      canBeRefresh = true;
+    }
+
+    if (canBeRefresh) {
+      this.refreshWalletInfo();
+    }
+  }
+
+  refreshWalletInfo() {
     const {
       tokenContract,
       currentWallet
@@ -137,78 +159,79 @@ export default class ResourceAElfWallet extends PureComponent {
       CPU,
       NET,
       STO,
-      loading
+      loading,
+      defaultWallet,
     } = this.state;
+
+    const propsTile = title || '-';
+    const wallet = (currentWallet && currentWallet.address) ?  currentWallet : defaultWallet;
 
     return (
       <div className='resource-wallet resource-block'>
         <Spin tip='loading....' size='large' spinning={loading}>
-          <div className='resource-wallet-header'>
+          <div className='resource-wallet-header resource-header'>
             <Icon type="wallet" className="resource-icon" />
-            <span className="resource-title">{title}</span>
+            <span className="resource-title">{propsTile}</span>
           </div>
-          <Divider />
-          <div className="resource-wallet-address">
-            <span className='resource-wallet-address-name'>{currentWallet.name}</span>
-            <Button
-                className='resource-wallet-address-update update-btn'
-                onClick={this.onRefresh}
-            >
-              <Icon type='sync' spin={loading} />
-            </Button>
-          </div>
-          <Divider />
-          <div className='resource-wallet-info'>
-            <Row type="flex" align="middle">
-              <Col span={24}>
-                <span className="resource-wallet-info-name balance">Balance:</span>
-                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(balance)} ELF</span>
-              </Col>
-              <Col
-                  lg={12}
-                  xs={24}
-                  sm={12}
+          <div className="resource-sub-container">
+            <div className="resource-wallet-address">
+              <span className='resource-wallet-address-name'>
+                {wallet.name}
+                &nbsp;&nbsp;&nbsp;
+                {ADDRESS_INFO.PREFIX + '_' + wallet.address + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Link to={`/resourceDetail/${wallet.address}`}>
+                  Transaction Details
+                </Link>
+              </span>
+              <Button
+                  className='resource-wallet-address-update update-btn'
+                  onClick={this.onRefresh}
               >
-                <span className="resource-wallet-info-name">RAM Quantity:</span>
-                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(RAM)}</span>
-              </Col>
-              <Col
-                  lg={12}
-                  xs={24}
-                  sm={12}
-              >
-                <span className="resource-wallet-info-name">NET Quantity:</span>
-                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(NET)}</span>
-              </Col>
-              <Col
-                  lg={12}
-                  xs={24}
-                  sm={12}
-              >
-                <span className="resource-wallet-info-name">CPU Quantity:</span>
-                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(CPU)}</span>
-              </Col>
-              <Col
-                  lg={12}
-                  xs={24}
-                  sm={12}
-              >
-                <span className="resource-wallet-info-name">STO Quantity:</span>
-                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(STO)}</span>
-              </Col>
-              <Col
-                  lg={12}
-                  xs={24}
-                  sm={12}
-                  className="last-col"
-              >
-                <span className="resource-wallet-info-name detail">
-                  <Link to={`/resourceDetail/${currentWallet.address}`}>
-                    Transaction Details
-                  </Link>
-                </span>
-              </Col>
-            </Row>
+                <Icon type='sync' spin={loading} />
+              </Button>
+            </div>
+
+            <div className='resource-wallet-info'>
+              <Row type="flex" align="middle">
+                <Col span={24}>
+                  <span className="resource-wallet-info-name balance">Balance:</span>
+                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(balance)} ELF</span>
+                </Col>
+                <Col
+                    lg={12}
+                    xs={24}
+                    sm={12}
+                >
+                  <span className="resource-wallet-info-name">RAM Quantity:</span>
+                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(RAM)}</span>
+                </Col>
+                <Col
+                    lg={12}
+                    xs={24}
+                    sm={12}
+                >
+                  <span className="resource-wallet-info-name">NET Quantity:</span>
+                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(NET)}</span>
+                </Col>
+                <Col
+                    lg={12}
+                    xs={24}
+                    sm={12}
+                >
+                  <span className="resource-wallet-info-name">CPU Quantity:</span>
+                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(CPU)}</span>
+                </Col>
+                <Col
+                    lg={12}
+                    xs={24}
+                    sm={12}
+                >
+                  <span className="resource-wallet-info-name">STO Quantity:</span>
+                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(STO)}</span>
+                </Col>
+              </Row>
+            </div>
           </div>
         </Spin>
       </div>

@@ -256,22 +256,23 @@ const RESOURCE_DETAILS_COLUMN = [
     render: text => dayjs(text).format('YYYY-MM-DD HH:mm:ss')
   },
   {
-    title: 'Resource type',
+    title: 'Type(Resource)',
     dataIndex: 'type',
     key: 'type',
     align: 'center'
   },
   {
-    title: 'Direction',
+    title: 'Operation',
     dataIndex: 'method',
     key: 'method',
     align: 'center',
+    width: 80,
     render: text => {
       return (<span className={`${(text || 'buy').toLocaleLowerCase()}-color`}>{text}</span>)
     }
   },
   {
-    title: 'Price',
+    title: 'Price(ELF)',
     dataIndex: 'fee',
     key: 'fee',
     align: 'center',
@@ -289,13 +290,13 @@ const RESOURCE_DETAILS_COLUMN = [
     }
   },
   {
-    title: 'Number',
+    title: 'Amount(Resource)',
     dataIndex: 'resource',
     key: 'number',
     align: 'center'
   },
   {
-    title: `${SYMBOL} Number`,
+    title: `Sum(${SYMBOL})`,
     dataIndex: 'elf',
     key: 'elfNumber',
     align: 'center',
@@ -312,7 +313,7 @@ const RESOURCE_DETAILS_COLUMN = [
     }
   },
   {
-    title: 'Service Charge',
+    title: 'Fee(ELF)',
     dataIndex: 'fee',
     key: 'serviceCharge',
     align: 'center',

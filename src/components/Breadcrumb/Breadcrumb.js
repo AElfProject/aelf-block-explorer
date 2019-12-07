@@ -25,7 +25,7 @@ const BREADCRUMBNAMEMAP = {
   '/resource': 'Resource',
   '/resourceDetail': 'Resource Detail List',
   '/contract': 'Contract',
-  myvote: 'My Vote'
+  'myvote': 'My Vote'
 };
 
 // Notice: we need register the route in Breadcurmb.js.
@@ -207,11 +207,19 @@ class BrowserBreadcrumb extends Component {
     return title;
   }
 
+  checkBreadcrumbShow(pathname) {
+    const isMainPage = pathname === '/' ? true : false;
+    const isVotePage = pathname.includes('/vote');
+    return !isMainPage && !isVotePage;
+  }
+
   render() {
-    const { location } = this.props;
+    const {
+      location
+    } = this.props;
     const pathname = location.pathname;
     const reloadUrl = pathname + location.search;
-    const className = pathname !== '/' ? 'breadcrumb' : 'breadcrumb hide';
+    const className = this.checkBreadcrumbShow(pathname) ? 'breadcrumb' : 'breadcrumb hide';
     const pathSnippets = pathname.split('/').filter(i => i);
 
     const firstBreadcrumbItem = this.getFirstBreadcrumbItem();
