@@ -310,7 +310,6 @@ class VoteContainer extends Component {
   }
 
   async componentDidMount() {
-    this.checkExtensionExit();
     const { history } = this.props;
     // Get contracts
     try {
@@ -861,56 +860,6 @@ class VoteContainer extends Component {
         redeemOneVoteModalVisible: false
       });
     }, 4000);
-  }
-
-  // TODO: 当前有重复判断逻辑，需要拆分
-  checkExtensionExit() {
-    let nightElfInstance = null;
-    class NightElfCheck {
-      constructor() {
-        const readyMessage = 'NightElf is ready';
-        let resolveTemp = null;
-        this.check = new Promise((resolve, reject) => {
-          if (window.NightElf) {
-            resolve(readyMessage);
-          }
-          setTimeout(() => {
-            reject({
-              error: 200001,
-              message:
-                'timeout / can not find NightElf / please install the extension'
-            });
-          }, 1000);
-          resolveTemp = resolve;
-        });
-        document.addEventListener('NightElf', result => {
-          console.log(
-            'test.js check the status of extension named nightElf: ',
-            result
-          );
-          resovleTemp(readyMessage);
-        });
-      }
-      static getInstance() {
-        if (!nightElfInstance) {
-          nightElfInstance = new NightElfCheck();
-          return nightElfInstance;
-        }
-        return nightElfInstance;
-      }
-    }
-    const nightElfCheck = NightElfCheck.getInstance();
-    nightElfCheck.check
-      .then(message => {
-        console.log('nightElfCheck :', message);
-        // connectChain -> Login -> initContract -> call contract methods
-      })
-      .catch(error => {
-        console.log('nightElfCheck error:', error);
-        this.setState({
-          showDownloadPlugin: true
-        });
-      });
   }
 
   checkExtensionLockStatus() {

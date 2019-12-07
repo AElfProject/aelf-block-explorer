@@ -28,26 +28,12 @@ export default class TxsDetailPage extends React.Component {
     if (isEmpty(txsId)) {
       return;
     }
-
-    // const { result = {
-    //     block_hash: 'Not found',
-    //     block_number: 'Not found',
-    //     tx_info: {},
-    //     tx_status: 'Not found',
-    // }, error = '' } = aelf.chain.getTxResult(txsId);
     aelf.chain.getTxResult(txsId, (error, result) => {
       this.setState({
         result,
         error
       });
     });
-    // console.log(aelf.chain.getTxResult(txsId));
-    // const result = aelf.chain.getTxResult(txsId);
-    // console.log(result);
-    // this.setState({
-    //     result,
-    //     error
-    // });
   };
 
   componentDidMount() {
@@ -58,9 +44,6 @@ export default class TxsDetailPage extends React.Component {
   renderCol(key, value) {
     if (typeof value === 'object') {
       value = JSON.stringify(value);
-    }
-    if (formatKey(key) === 'ExecutedInBlock') {
-      return;
     }
     return (
       <Row className='tx-detail-row' key={key}>
@@ -82,25 +65,17 @@ export default class TxsDetailPage extends React.Component {
   }
 
   renderCols() {
-    const { result } = this.state;
-    const html = [];
+    const { result = {} } = this.state;
     const blackList = ['tx_trc', 'return'];
-    for (const item in result) {
-      if (blackList.indexOf(item) >= 0) {
-      } else if (typeof result[item] === 'object') {
-        const resultItem = result[item];
-        for (const each in resultItem) {
-          if (resultItem.length) {
-            html.push(this.renderCol(item, resultItem[each]));
-          } else {
-            html.push(this.renderCol(each, resultItem[each]));
-          }
-        }
-      } else {
-        html.push(this.renderCol(item, result[item]));
+    return Object.keys(result).filter(v => blackList.indexOf(v) < 0).map(key => {
+      const item = result[key];
+      if (item && typeof item === 'object' && key.toLowerCase() !== 'logs') {
+        return Object.keys(item).map(innerKey => {
+          return this.renderCol(`${key}_${innerKey}`, item[innerKey]);
+        });
       }
-    }
-    return html;
+      return this.renderCol(key, item);
+    }).reduce((acc, v) => acc.concat(v), []);
   }
 
   render() {

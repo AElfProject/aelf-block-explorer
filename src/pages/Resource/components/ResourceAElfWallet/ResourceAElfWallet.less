@@ -1,9 +1,15 @@
+@import "../../../../assets/less/_variables";
 .resource-wallet {
   a {
     color: @purple;
   }
+  .resource-wallet-address {
+    margin: 16px 0;
+    padding: 0 0 8px 0;
+    border-bottom: 1px solid @borderColor;
+  }
   .ant-divider.ant-divider-horizontal {
-    margin: 17px 0;
+    margin: 8px 0;
   }
   &-address {
     display: flex;
@@ -12,8 +18,11 @@
     &-name {
       font-weight: bold;
     }
+    &-update {
+      color: @bgMain;
+    }
     &-update:hover, &-update:active, &-update:focus {
-      color: @purpleHover;
+      color: @hoverColor;
     }
   }
   &-info {

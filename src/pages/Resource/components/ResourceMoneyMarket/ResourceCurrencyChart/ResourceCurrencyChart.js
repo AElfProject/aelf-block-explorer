@@ -59,7 +59,7 @@ class ResourceCurrencyChart extends PureComponent {
     const chartHeight = isSmallScreen ? 450 : 470;
     this.echartStyle = {
       height: chartHeight,
-      minWidth: 900
+      // minWidth: 900
     };
     await this.getEchartData();
   }
@@ -119,7 +119,8 @@ class ResourceCurrencyChart extends PureComponent {
       yAxisData.push({
         value: ((item.count + sellRecords[index].count) / ELF_DECIMAL).toFixed(2),
         itemStyle: {
-          color: '#235AA9'
+          opacity: 0
+          // color: 'green'
         }
       });
     });
@@ -183,7 +184,8 @@ class ResourceCurrencyChart extends PureComponent {
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#C7B8CC'
+              // color: '#C7B8CC'
+              color: '#666'
             }
           },
           axisLabel: {
@@ -231,7 +233,7 @@ class ResourceCurrencyChart extends PureComponent {
         },
         {
           type: 'value',
-          name: `Trading volume / ${SYMBOL}`,
+          name: `Volume / ${SYMBOL}`,
           show: true,
           label: {
             normal: {
@@ -242,7 +244,7 @@ class ResourceCurrencyChart extends PureComponent {
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#C7B8CC'
+              color: '#666'
             }
           },
           splitLine: {
@@ -257,7 +259,7 @@ class ResourceCurrencyChart extends PureComponent {
       ],
       markLine: {
         lineStyle: {
-          color: 'red'
+          color: '#666'
         }
       },
       series: [
@@ -268,7 +270,7 @@ class ResourceCurrencyChart extends PureComponent {
           zlevel: 2,
           data: yAxisData,
           lineStyle: {
-            color: '#5C28A9'
+            color: '#666'
           },
         }
       ]
@@ -328,22 +330,23 @@ class ResourceCurrencyChart extends PureComponent {
             {selectButton}
           </div>
         </div>
-        <Divider />
-        <Tabs className="resource-type-switch" onChange={this.typeChange}>
-          {menuList.map((v, i) => (
-              <Tabs.TabPane
-                  key={i}
-                  tab={v}
-              />
-          ))}
-        </Tabs>
-        <ReactEchartsCore
-          echarts={echarts}
-          option={this.getOption()}
-          style={this.echartStyle}
-          notMerge
-          lazyUpdate
-        />
+        <div className="resource-sub-container">
+          <Tabs className="resource-type-switch" onChange={this.typeChange}>
+            {menuList.map((v, i) => (
+                <Tabs.TabPane
+                    key={i}
+                    tab={v}
+                />
+            ))}
+          </Tabs>
+          <ReactEchartsCore
+            echarts={echarts}
+            option={this.getOption()}
+            style={this.echartStyle}
+            notMerge
+            lazyUpdate
+          />
+        </div>
       </div>
     );
   }

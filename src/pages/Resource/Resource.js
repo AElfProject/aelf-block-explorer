@@ -18,6 +18,7 @@ import getContractAddress from '../../utils/getContractAddress.js';
 import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
 import ResourceMoneyMarket from './components/ResourceMoneyMarket/ResourceMoneyMarket';
 import getLogin from '../../utils/getLogin';
+import { isPhoneCheck } from '../../utils/deviceCheck';
 import './Resource.less';
 
 const appName = APPNAME;
@@ -221,10 +222,10 @@ class Resource extends Component {
       tokenConverterContract,
       currentWallet
     } = this.state;
-    if (showWallet) {
+    // if (showWallet) {
       return (
         <ResourceAElfWallet
-          title='AElf Wallet'
+          title='AELF Wallet'
           tokenContract={tokenContract}
           tokenConverterContract={tokenConverterContract}
           currentWallet={currentWallet}
@@ -232,7 +233,7 @@ class Resource extends Component {
           getResource={this.getResource}
         />
       );
-    }
+    // }
   }
 
   render() {
@@ -260,12 +261,13 @@ class Resource extends Component {
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {
-      downloadPlugins = this.getDownloadPluginsHTML();
+      downloadPlugins = [this.getDownloadPluginsHTML(), <div className='resource-blank'></div>];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
+    const isPhone = isPhoneCheck();
     return (
       <div className='resource-body basic-container basic-container-white'>
-        {downloadPlugins}
+        {!isPhone && downloadPlugins}
         {resourceAElfWalletHtml}
         <div className='resource-money-market'>
           <ResourceMoneyMarket
