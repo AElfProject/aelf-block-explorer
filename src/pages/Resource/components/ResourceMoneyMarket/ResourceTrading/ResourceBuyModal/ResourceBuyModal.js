@@ -6,19 +6,18 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Spin, message, Button } from 'antd';
 import { aelf } from '../../../../../../utils';
-import getFees from '../../../../../../utils/getFees';
 import getMenuName from '../../../../../../utils/getMenuName';
-import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
-import { centerEllipsis } from '@utils/formater';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
+import {
+  CHAIN_ID
+} from '@config/config';
 import {
   SYMBOL,
   ELF_DECIMAL,
-  TEMP_RESOURCE_DECIMAL,
   BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
   FAILED_MESSAGE_DISPLAY_TIME
 } from '@src/constants';
-import { thousandsCommaWithDecimal } from '@utils/formater';
+import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
 import { regBuyTooManyResource } from '@utils/regExps';
 import './ResourceBuyModal.less';
 
@@ -50,7 +49,6 @@ export default class ResourceBuyModal extends PureComponent {
       contracts.tokenConverter,
       wallet,
       (err, result) => {
-        console.log('err, result', err, result);
         if (result) {
           this.requestBuy(result);
         }
@@ -61,13 +59,10 @@ export default class ResourceBuyModal extends PureComponent {
   requestBuy(result) {
     const { buyNum, handleModifyTradingState } = this.props;
     const { menuName } = this.state;
-    console.log('buyNum * ELF_DECIMAL', buyNum, ELF_DECIMAL);
     const payload = {
       symbol: menuName,
       amount: buyNum * ELF_DECIMAL
     };
-    console.log('result', result);
-    console.log('payload', payload);
     result.Buy(payload, (error, result) => {
       if (result.error && result.error !== 0) {
         message.error(result.errorMessage.message, 3);
@@ -81,15 +76,10 @@ export default class ResourceBuyModal extends PureComponent {
         ? result.result.TransactionId
         : result.TransactionId;
       setTimeout(() => {
-        console.log('transactionId', transactionId);
         aelf.chain
           .getTxResult(transactionId)
           .then(result => {
             // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
-            console.log({
-              error,
-              result
-            });
             getStateJudgment(result.Status, transactionId);
             this.props.onRefresh();
             this.setState({
@@ -110,7 +100,6 @@ export default class ResourceBuyModal extends PureComponent {
                 loading: false
               },
               () => {
-                console.error('err', err, BUY_MORE_THAN_HALT_OF_INVENTORY_TIP);
                 if (regBuyTooManyResource.test(err.Error)) {
                   message.error(
                     BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
@@ -146,19 +135,18 @@ export default class ResourceBuyModal extends PureComponent {
       buyEstimateValueLoading
     } = this.props;
     const { menuName, currentWallet, loading } = this.state;
-    console.log('buyEstimateValueLoading', buyEstimateValueLoading);
 
     return (
       <div className='modal'>
         <Row className='modal-form-item'>
-          <Col span={8} style={{ color: '#c8c7c7' }}>
+          <Col span={8}>
             Address
           </Col>
-          <Col span={16}>{centerEllipsis(currentWallet.address)}</Col>
+          <Col span={16}>{centerEllipsis(`ELF_${currentWallet.address}_${CHAIN_ID}`)}</Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8} style={{ color: '#c8c7c7' }}>
-            Buy{menuName}Quantity
+          <Col span={8}>
+            Buy {menuName} Quantity
           </Col>
           <Col span={16}>
             <Spin spinning={buyInputLoading}>
@@ -167,7 +155,7 @@ export default class ResourceBuyModal extends PureComponent {
           </Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8} style={{ color: '#c8c7c7' }}>
+          <Col span={8}>
             {SYMBOL}
           </Col>
           <Col span={16}>

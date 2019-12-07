@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
 import { Breadcrumb } from 'antd';
@@ -182,8 +182,14 @@ class BrowserBreadcrumb extends Component {
       txs: 'Transactions',
       tx: 'Transaction',
       address: 'Address',
-      contract: 'Contract'
+      contract: 'Contract',
+      resourceDetail: (
+        <span className='breadcrumb-title breadcrumb-small-title'>
+          Transaction Details
+        </span>
+      )
     };
+    console.log(pathSnippets);
 
     let title = [
       pageNameMap[pathSnippets[0]],

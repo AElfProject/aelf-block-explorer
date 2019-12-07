@@ -9,7 +9,7 @@
 import { thousandsComma } from '@utils/formater';
 // todo: handle the code as follow
 import { LOWER_SYMBOL } from '@src/constants';
-import { ELF_DECIMAL } from '@config/config';
+import { ELF_DECIMAL } from '@src/constants';
 
 //  The contracts need to load in page ElectionNotification
 const contractsNeedToLoad = [

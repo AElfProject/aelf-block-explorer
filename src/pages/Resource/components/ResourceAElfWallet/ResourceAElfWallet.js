@@ -4,334 +4,213 @@
  */
 
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Row, Col, Spin, Button, Icon } from 'antd';
-
-import './ResourceAElfWallet.less';
+import {
+  Row,
+  Col,
+  Spin,
+  Button,
+  Icon,
+  Divider
+} from 'antd';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
+import './ResourceAElfWallet.less';
 
 export default class ResourceAElfWallet extends PureComponent {
+
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+    tokenContract: PropTypes.object.isRequired,
+    tokenConverterContract: PropTypes.object.isRequired,
+    currentWallet: PropTypes.object.isRequired,
+    getCurrentBalance: PropTypes.func.isRequired,
+    getResource: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
-    this.resource = null;
-    this.wallet = null;
     this.state = {
-      currentWallet: this.props.currentWallet,
-      tokenContract: this.props.tokenContract,
-      balance: null,
+      balance: 0,
       RAM: 0,
       CPU: 0,
       NET: 0,
       STO: 0,
-      resourceReady: 0,
-      loading: null
+      loading: false
     };
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.tokenContract !== state.tokenContract) {
-      return {
-        tokenContract: props.tokenContract
-      };
-    }
-
-    if (props.currentWallet !== state.currentWallet) {
-      return {
-        currentWallet: props.currentWallet
-      };
-    }
-
-    if (props.loading !== state.loading) {
-      return {
-        loading: props.loading
-      };
-    }
-
-    return null;
+    this.onRefresh = this.onRefresh.bind(this);
   }
 
   componentDidMount() {
-    if (this.state.tokenContract && this.state.currentWallet) {
-      this.getCurrentWalletBalance();
-      this.getCurrentWalletResource();
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.tokenContract !== this.props.tokenContract) {
-      this.props.onRefresh();
-      this.getCurrentWalletBalance();
-    }
-
-    if (prevState.currentWallet !== this.state.currentWallet) {
-      this.props.onRefresh();
-      this.getCurrentWalletResource();
-      this.getCurrentWalletBalance();
-    }
-
-    if (prevState.loading !== this.state.loading) {
-      const { tokenContract, currentWallet } = this.state;
-      if (tokenContract && currentWallet) {
-        if (this.state.loading) {
-          this.getCurrentWalletResource();
-          this.getCurrentWalletBalance();
-        }
-      }
-    }
-
-    if (this.state.resourceReady === 5) {
-      this.setState({
-        resourceReady: 0
+    const {
+      tokenContract,
+      currentWallet
+    } = this.props;
+    if (tokenContract && currentWallet) {
+      Promise.all([
+        this.getCurrentWalletBalance(),
+        this.getCurrentWalletResource()
+      ]).then(() => {
+        this.setState({
+          loading: false
+        })
+      }).catch(() => {
+        this.setState({
+          loading: false
+        })
       });
-      this.props.endRefresh();
     }
   }
 
-  // REVIEW: this.props.xxxx This method transfers state and shares values with other components
-  // 获取token数量
   getCurrentWalletBalance = async () => {
-    const { tokenContract, currentWallet } = this.state;
+    const {
+      tokenContract,
+      currentWallet,
+      getCurrentBalance
+    } = this.props;
     const payload = {
       symbol: SYMBOL,
       owner: currentWallet.address || currentWallet
     };
-    tokenContract.GetBalance.call(payload, (error, result) => {
-      if (result) {
-        const balance = result.balance || 0;
-        this.setState({
-          balance: +balance / ELF_DECIMAL,
-          resourceReady: this.state.resourceReady + 1
-        });
-        this.props.getCurrentBalance(+balance / ELF_DECIMAL);
-      }
+    const result = await tokenContract.GetBalance.call(payload);
+    const balance = parseInt(result.balance || 0, 10) / ELF_DECIMAL;
+    this.setState({
+      balance
     });
+    getCurrentBalance(balance);
   };
 
   // 获取资源币数量
-  getCurrentWalletResource = async () => {
-    const { tokenContract, currentWallet } = this.state;
-    const payloadRAM = {
-      symbol: 'RAM',
-      owner: currentWallet.address || currentWallet
-    };
-    tokenContract.GetBalance.call(payloadRAM, (error, result) => {
-      if (result) {
-        this.setState({
-          RAM: +result.balance / ELF_DECIMAL,
-          resourceReady: this.state.resourceReady + 1
-        });
-        this.props.getCurrentRam(+result.balance / ELF_DECIMAL);
-      } else {
-        this.setState({
-          RAM: 0,
-          resourceReady: this.state.resourceReady + 1
-        });
-      }
-    });
-
-    const payloadCPU = {
-      symbol: 'CPU',
-      owner: currentWallet.address || currentWallet
-    };
-    tokenContract.GetBalance.call(payloadCPU, (error, result) => {
-      if (result) {
-        this.setState({
-          CPU: +result.balance / ELF_DECIMAL,
-          resourceReady: this.state.resourceReady + 1
-        });
-        this.props.getCurrentCpu(+result.balance / ELF_DECIMAL);
-      } else {
-        this.setState({
-          CPU: 0,
-          resourceReady: this.state.resourceReady + 1
-        });
-      }
-    });
-
-    const payloadNET = {
-      symbol: 'NET',
-      owner: currentWallet.address || currentWallet
-    };
-    tokenContract.GetBalance.call(payloadNET, (error, result) => {
-      if (result) {
-        this.setState({
-          NET: +result.balance / ELF_DECIMAL,
-          resourceReady: this.state.resourceReady + 1
-        });
-        this.props.getCurrentNet(+result.balance / ELF_DECIMAL);
-      } else {
-        this.setState({
-          NET: 0,
-          resourceReady: this.state.resourceReady + 1
-        });
-      }
-    });
-
-    const payloadSTO = {
-      symbol: 'STO',
-      owner: currentWallet.address || currentWallet
-    };
-    tokenContract.GetBalance.call(payloadSTO, (error, result) => {
-      if (result) {
-        this.setState({
-          STO: +result.balance / ELF_DECIMAL,
-          resourceReady: this.state.resourceReady + 1
-        });
-        this.props.getCurrentSto(+result.balance / ELF_DECIMAL);
-      } else {
-        this.setState({
-          STO: 0,
-          resourceReady: this.state.resourceReady + 1
-        });
-      }
+  getCurrentWalletResource = () => {
+    const {
+      tokenContract,
+      currentWallet,
+      getResource
+    } = this.props;
+    const owner = currentWallet.address || currentWallet;
+    const symbols = ['RAM', 'CPU', 'NET', 'STO'];
+    return Promise.all(symbols.map(symbol => {
+      return tokenContract.GetBalance.call({
+        symbol,
+        owner
+      });
+    })).then(results => {
+      const newState = results.reduce((acc, v) => {
+        const balance = parseInt(v.balance || 0, 10) / ELF_DECIMAL;
+        return {
+          ...acc,
+          [v.symbol]: balance
+        }
+      }, {});
+      this.setState(newState);
+      getResource(newState);
     });
   };
 
-  componentWillUnmount() {
-    this.state = {};
-    this.setState = () => {};
-  }
-
-  accountListHTML() {
-    const { currentWallet } = this.state;
-    return (
-      <Row key={currentWallet.name} className='list-col-padding'>
-        <Col>
-          <Col span={24}>
-            <div className='current-name'>{currentWallet.name}</div>
-          </Col>
-        </Col>
-      </Row>
-    );
+  onRefresh() {
+    this.setState({
+      loading: true
+    });
+    Promise.all([
+      this.getCurrentWalletBalance(),
+      this.getCurrentWalletResource()
+    ]).then(() => {
+      this.setState({
+        loading: false
+      })
+    }).catch(() => {
+      this.setState({
+        loading: false
+      })
+    });
   }
 
   render() {
-    const { currentWallet, balance, RAM, CPU, NET, STO, loading } = this.state;
-
-    const walltetHTML = this.accountListHTML();
+    const {
+      title,
+      currentWallet,
+    } = this.props;
+    const {
+      balance,
+      RAM,
+      CPU,
+      NET,
+      STO,
+      loading
+    } = this.state;
 
     return (
-      <div className='resource-wallet has-mask-on-mobile'>
-        <div className='resource-wallet-head'>
-          <div className='title'>{this.props.title}</div>
-          <Button
-            className='update-btn button'
-            onClick={() => this.props.onRefresh()}
-          >
-            <Icon type='sync' spin={loading} />
-          </Button>
-        </div>
-        <div className='resource-wallet-body'>
-          <Spin tip='loading....' size='large' spinning={this.state.loading}>
-            <Row type='flex' align='middle'>
-              <Col
-                xs={24}
-                sm={24}
-                md={24}
-                lg={24}
-                xl={6}
-                xxl={6}
-                className='list-border'
-              >
-                {walltetHTML}
+      <div className='resource-wallet resource-block'>
+        <Spin tip='loading....' size='large' spinning={loading}>
+          <div className='resource-wallet-header'>
+            <Icon type="wallet" className="resource-icon" />
+            <span className="resource-title">{title}</span>
+          </div>
+          <Divider />
+          <div className="resource-wallet-address">
+            <span className='resource-wallet-address-name'>{currentWallet.name}</span>
+            <Button
+                className='resource-wallet-address-update update-btn'
+                onClick={this.onRefresh}
+            >
+              <Icon type='sync' spin={loading} />
+            </Button>
+          </div>
+          <Divider />
+          <div className='resource-wallet-info'>
+            <Row type="flex" align="middle">
+              <Col span={24}>
+                <span className="resource-wallet-info-name balance">Balance:</span>
+                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(balance)} ELF</span>
               </Col>
               <Col
-                xs={24}
-                sm={24}
-                md={24}
-                lg={24}
-                xl={18}
-                xxl={18}
-                style={{ paddingLeft: '1%' }}
+                  lg={12}
+                  xs={24}
+                  sm={12}
               >
-                <Row gutter={16} type='flex' align='middle'>
-                  <Col span={19} style={{ marginTop: '10px' }}>
-                    {/* todo:  */}
-                    {/* Account balance: <span className='number' >{thousandsCommaWithDecimal(balance/ELF_DECIMAL)} {SYMBOL}</span> */}
-                    Account balance:{' '}
-                    <span className='number'>
-                      {thousandsCommaWithDecimal(balance)} {SYMBOL}
-                    </span>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: '20px' }} gutter={16}>
-                  <Col
-                    xs={12}
-                    sm={12}
-                    md={5}
-                    lg={5}
-                    xl={5}
-                    xxl={5}
-                    style={{ margin: '10px 0' }}
-                  >
-                    RAM quantity:{' '}
-                    <span className='number'>
-                      {thousandsCommaWithDecimal(RAM)}
-                    </span>
-                  </Col>
-                  <Col
-                    xs={12}
-                    sm={12}
-                    md={5}
-                    lg={5}
-                    xl={5}
-                    xxl={5}
-                    style={{ margin: '10px 0' }}
-                  >
-                    CPU quantity:{' '}
-                    <span className='number'>
-                      {thousandsCommaWithDecimal(CPU)}
-                    </span>
-                  </Col>
-                  <Col
-                    xs={12}
-                    sm={12}
-                    md={5}
-                    lg={5}
-                    xl={5}
-                    xxl={5}
-                    style={{ margin: '10px 0' }}
-                  >
-                    NET quantity:{' '}
-                    <span className='number'>
-                      {thousandsCommaWithDecimal(NET)}
-                    </span>
-                  </Col>
-                  <Col
-                    xs={12}
-                    sm={12}
-                    md={5}
-                    lg={5}
-                    xl={5}
-                    xxl={5}
-                    style={{ margin: '10px 0' }}
-                  >
-                    STO quantity:{' '}
-                    <span className='number'>
-                      {thousandsCommaWithDecimal(STO)}
-                    </span>
-                  </Col>
-                  <Col
-                    xs={12}
-                    sm={12}
-                    md={4}
-                    lg={4}
-                    xl={4}
-                    xxl={4}
-                    style={{ margin: '10px 0' }}
-                  >
-                    <Link to={'/resourceDetail/' + currentWallet.address}>
-                      <span style={{ marginRight: '10px' }}>
-                        Transaction details
-                      </span>
-                    </Link>
-                  </Col>
-                </Row>
+                <span className="resource-wallet-info-name">RAM Quantity:</span>
+                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(RAM)}</span>
+              </Col>
+              <Col
+                  lg={12}
+                  xs={24}
+                  sm={12}
+              >
+                <span className="resource-wallet-info-name">NET Quantity:</span>
+                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(NET)}</span>
+              </Col>
+              <Col
+                  lg={12}
+                  xs={24}
+                  sm={12}
+              >
+                <span className="resource-wallet-info-name">CPU Quantity:</span>
+                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(CPU)}</span>
+              </Col>
+              <Col
+                  lg={12}
+                  xs={24}
+                  sm={12}
+              >
+                <span className="resource-wallet-info-name">STO Quantity:</span>
+                <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(STO)}</span>
+              </Col>
+              <Col
+                  lg={12}
+                  xs={24}
+                  sm={12}
+                  className="last-col"
+              >
+                <span className="resource-wallet-info-name detail">
+                  <Link to={`/resourceDetail/${currentWallet.address}`}>
+                    Transaction Details
+                  </Link>
+                </span>
               </Col>
             </Row>
-          </Spin>
-        </div>
+          </div>
+        </Spin>
       </div>
     );
   }

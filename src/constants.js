@@ -89,7 +89,7 @@ const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
   'Sorry, you can not buy so many resources in one time.';
 const INPUT_NUMBER_TIP = 'Your should input a number';
 const BETWEEN_ZEOR_AND_BALANCE_TIP =
-  'The value must be between 0 and your balance';
+  'Too large value';
 const SELECT_SOMETHING_TIP = 'Please select something to continue :)';
 const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
 const UNKNOWN_ERROR_TIP =
@@ -206,13 +206,13 @@ const ALL_TXS_LIST_COLUMNS = [
         {ADDRESS_INFO.PREFIX}_{row.address_to}{' '}_{ADDRESS_INFO.CURRENT_CHAIN_ID}
       </Link>
     )
+  },
+  {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: text => <span>{text}</span>
   }
-  // {
-  //     title: 'Quantity',
-  //     dataIndex: 'quantity',
-  //     key: 'quantity',
-  //     render: text => <span>{text}</span>
-  // }
 ];
 
 const ADDRESS_INFO_COLUMN = [

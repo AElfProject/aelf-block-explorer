@@ -32,7 +32,7 @@ Viewer.propTypes = {
 };
 
 Viewer.defaultProps = {
-    url: process.env.NODE_ENV === 'production' ? '/viewer/list.html' : 'http://127.0.0.1:8526/list.html'
+    url: process.env.NODE_ENV === 'production' ? '/viewer/list.html' : 'http://192.168.199.128:8526/list.html'
 };
 
 module.exports = Viewer;

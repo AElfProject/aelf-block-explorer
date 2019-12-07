@@ -547,41 +547,18 @@ class ResourceSell extends Component {
     return (
       <div className='trading-box trading-sell'>
         <div className='trading'>
-          <div className='trading-title'>Sell</div>
           <div className='trading-input'>
-            <Row type='flex' align='middle'>
-              <Col span={6} style={{ color: '#fff' }}>
-                Selling quantity{' '}
-              </Col>
-              <Col span={18}>
-                <Form.Item
+            <div className="resource-action-block">
+              <span className="resource-action-title">
+                Selling quantity:
+              </span>
+              <Form.Item
+                  className="resource-action-input"
                   validateStatus={validate.validateStatus}
                   help={validate.help}
                   style={{ padding: 3 }}
-                >
-                  {/* {getFieldDecorator('inputSellNum', {
-                    rules: [
-                      {
-                        type: 'number',
-                        min: 0,
-                        max: inputMax,
-                        // transform: input => {
-                        //   console.log('In Transform', {
-                        //     input,
-                        //     inputMax
-                        //   });
-
-                        //   return +input;
-                        // },
-                        message: 'The value must be between 0 and your balance.'
-                      }
-                      // {
-                      //   type: 'number',
-                      //   message: INPUT_NUMBER_TIP
-                      // }
-                    ]
-                  })( */}
-                  <InputNumber
+              >
+                <InputNumber
                     // addonAfter={`x100,000 ${menuName}`}
                     value={sellNum}
                     onChange={this.onChangeResourceValue}
@@ -589,33 +566,31 @@ class ResourceSell extends Component {
                     // todo: use parser to set the max decimal to 8, e.g. using parseFloat
                     parser={value => value.replace(/\$\s?|(,*)/g, '')}
                     formatter={value =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
                     min={0}
                     max={this.inputMax}
                     // precision={GENERAL_PRECISION}
-                  />
-                  {/* )} */}
-                </Form.Item>
-              </Col>
-            </Row>
+                />
+                {/* )} */}
+              </Form.Item>
+            </div>
             <div className='ELF-value'>
               <Spin spinning={sellEstimateValueLoading}>
                 ≈ {thousandsCommaWithDecimal(ELFValue)} {SYMBOL}
               </Spin>
             </div>
-            <Row type='flex' align='middle'>
-              <Col span={6} style={{ color: '#fff' }}>
-                Available
-              </Col>
-              <Col span={18}>
-                <Input
+            <div className="resource-action-block">
+              <span className="resource-action-title">
+                Available:
+              </span>
+              <Input
+                  className="resource-action-input"
                   value={thousandsCommaWithDecimal(account[menuName])}
                   addonAfter={menuName}
                   disabled={true}
-                />
-              </Col>
-            </Row>
+              />
+            </div>
           </div>
           <div className='trading-slide'>
             {slideHTML}

@@ -5,7 +5,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { Row, Col, Spin } from 'antd';
+import { Row, Col, Spin, Icon } from 'antd';
 import ResourceCurrencyChart from './ResourceCurrencyChart/ResourceCurrencyChart';
 import ResourceTrading from './ResourceTrading/ResourceTrading';
 import RealTimeTransactions from './RealTimeTransactions/RealTimeTransactions';
@@ -14,6 +14,7 @@ import './ResourceMoneyMarket.less';
 export default class ResourceMoneyMarket extends PureComponent {
   constructor(props) {
     super(props);
+    this.menuNames = ['RAM', 'CPU', 'NET', 'STO'];
     // 这个组件作为一个集合可以用作组件之间数据交互
     this.state = {
       menuIndex: 0,
@@ -23,7 +24,7 @@ export default class ResourceMoneyMarket extends PureComponent {
       tokenConverterContract: null,
       loading: false,
       echartsLoading: false,
-      realTimeTransactionLoaidng: false,
+      realTimeTransactionLoading: false,
       nightElf: this.props.nightElf,
       account: {
         balance: 0,
@@ -33,6 +34,8 @@ export default class ResourceMoneyMarket extends PureComponent {
         STO: 0
       }
     };
+    this.getMenuClick = this.getMenuClick.bind(this);
+    this.getEchartsLoading = this.getEchartsLoading.bind(this);
   }
 
   getMenuClick(index) {
@@ -43,7 +46,7 @@ export default class ResourceMoneyMarket extends PureComponent {
     this.setState({
       menuIndex: index,
       loading: true,
-      realTimeTransactionLoaidng: true,
+      realTimeTransactionLoading: true,
       echartsLoading: true
     });
   }
@@ -56,7 +59,7 @@ export default class ResourceMoneyMarket extends PureComponent {
 
   getRealTimeTransactionLoading() {
     this.setState({
-      realTimeTransactionLoaidng: false
+      realTimeTransactionLoading: false
     });
   }
 
@@ -100,33 +103,7 @@ export default class ResourceMoneyMarket extends PureComponent {
     return null;
   }
 
-  getMenuHTML() {
-    const menuNames = ['RAM', 'CPU', 'NET', 'STO'];
-    const { menuIndex } = this.state;
-    const menu = menuNames.map((item, index) => {
-      return (
-        <Col
-          xxl={16}
-          xl={16}
-          lg={6}
-          key={index}
-          style={{ marginBottom: '20px' }}
-          className='menu-btn-container'
-        >
-          <div
-            className={`${index === menuIndex ? 'active ' : ''}menu-button`}
-            onClick={this.getMenuClick.bind(this, index)}
-          >
-            {item}
-          </div>
-        </Col>
-      );
-    });
-    return menu;
-  }
-
   render() {
-    const menu = this.getMenuHTML();
     const {
       menuIndex,
       currentWallet,
@@ -135,27 +112,21 @@ export default class ResourceMoneyMarket extends PureComponent {
       tokenContract,
       account
     } = this.state;
-    const { realTimeTransactionLoaidng, echartsLoading, nightElf } = this.state;
+    const { realTimeTransactionLoading, echartsLoading, nightElf } = this.state;
     let loading = true;
-    if (!realTimeTransactionLoaidng && !echartsLoading) {
+    if (!realTimeTransactionLoading && !echartsLoading) {
       loading = false;
     }
     return (
-      <div className='resource-market-body'>
-        <div className='resource-head'>Resource Money Market</div>
+      <div className='resource-market-body resource-block'>
         <Spin size='large' spinning={loading}>
           <div className='resource-body'>
-            <Row>
-              <Col xxl={3} xl={3} lg={24}>
-                <Row className='menu-container'>{menu}</Row>
-              </Col>
-              <Col xxl={21} xl={21} lg={24}>
-                <ResourceCurrencyChart
-                  menuIndex={menuIndex}
-                  getEchartsLoading={this.getEchartsLoading.bind(this)}
-                />
-              </Col>
-            </Row>
+            <ResourceCurrencyChart
+                menuList={this.menuNames}
+                menuIndex={menuIndex}
+                getMenuClick={this.getMenuClick}
+                getEchartsLoading={this.getEchartsLoading}
+            />
             <Row>
               <Col xxl={14} xl={24} lg={24}>
                 <ResourceTrading
@@ -171,12 +142,10 @@ export default class ResourceMoneyMarket extends PureComponent {
                   appName={this.props.appName}
                 />
               </Col>
-              <Col xxl={{ span: 8, offset: 2 }} xl={24} lg={24}>
+              <Col xxl={{ span: 9, offset: 1 }} xl={24} lg={24}>
                 <RealTimeTransactions
                   menuIndex={menuIndex}
-                  getRealTimeTransactionLoading={this.getRealTimeTransactionLoading.bind(
-                    this
-                  )}
+                  getRealTimeTransactionLoading={this.getRealTimeTransactionLoading.bind(this)}
                 />
               </Col>
             </Row>

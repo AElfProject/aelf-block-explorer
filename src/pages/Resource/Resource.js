@@ -18,7 +18,6 @@ import getContractAddress from '../../utils/getContractAddress.js';
 import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
 import ResourceMoneyMarket from './components/ResourceMoneyMarket/ResourceMoneyMarket';
 import getLogin from '../../utils/getLogin';
-// import ResourceTransacitionDetails from '../../components/ResourceTransacitionDetails/ResourceTransacitionDetails';
 import './Resource.less';
 
 const appName = APPNAME;
@@ -42,6 +41,8 @@ class Resource extends Component {
       loading: false,
       nightElf: null
     };
+    this.getResource = this.getResource.bind(this);
+    this.getCurrentBalance = this.getCurrentBalance.bind(this);
   }
 
   componentDidMount() {
@@ -172,10 +173,6 @@ class Resource extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.setState = function() {};
-  }
-
   getNightElfKeypair(wallet) {
     if (wallet) {
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
@@ -189,30 +186,6 @@ class Resource extends Component {
   getCurrentBalance(value) {
     this.setState({
       currentBalance: value
-    });
-  }
-
-  getCurrentCpu(value) {
-    this.setState({
-      currentCpu: value
-    });
-  }
-
-  getCurrentRam(value) {
-    this.setState({
-      currentRam: value
-    });
-  }
-
-  getCurrentNet(value) {
-    this.setState({
-      currentNet: value
-    });
-  }
-
-  getCurrentSto(value) {
-    this.setState({
-      currentSto: value
     });
   }
 
@@ -232,13 +205,21 @@ class Resource extends Component {
     });
   }
 
+  getResource(resource) {
+    this.setState({
+      currentCpu: resource.CPU,
+      currentRam: resource.RAM,
+      currentNet: resource.NET,
+      currentSto: resource.STO,
+    });
+  }
+
   resourceAElfWalletHtml() {
     const {
       showWallet,
       tokenContract,
       tokenConverterContract,
-      currentWallet,
-      loading
+      currentWallet
     } = this.state;
     if (showWallet) {
       return (
@@ -247,14 +228,8 @@ class Resource extends Component {
           tokenContract={tokenContract}
           tokenConverterContract={tokenConverterContract}
           currentWallet={currentWallet}
-          getCurrentBalance={this.getCurrentBalance.bind(this)}
-          getCurrentCpu={this.getCurrentCpu.bind(this)}
-          getCurrentRam={this.getCurrentRam.bind(this)}
-          getCurrentNet={this.getCurrentNet.bind(this)}
-          getCurrentSto={this.getCurrentSto.bind(this)}
-          onRefresh={this.onRefresh.bind(this)}
-          endRefresh={this.endRefresh.bind(this)}
-          loading={loading}
+          getCurrentBalance={this.getCurrentBalance}
+          getResource={this.getResource}
         />
       );
     }
@@ -289,7 +264,7 @@ class Resource extends Component {
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
     return (
-      <div className='resource-body basic-container'>
+      <div className='resource-body basic-container basic-container-white'>
         {downloadPlugins}
         {resourceAElfWalletHtml}
         <div className='resource-money-market'>

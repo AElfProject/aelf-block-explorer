@@ -1,107 +1,38 @@
 .resource-wallet {
-  margin: 40px 0;
-  background: @cardBodyColor;
-  color: #fff;
-  font-size: 16px;
-
-  .resource-wallet-head {
-    position: relative;
-    height: 50px;
-    background: @cardHeaderColor;
-    line-height: 50px;
-    color: #fff;
-
-    .title {
-      padding-left: 30px;
-      font-size: 16px;
-      float: left;
+  a {
+    color: @purple;
+  }
+  .ant-divider.ant-divider-horizontal {
+    margin: 17px 0;
+  }
+  &-address {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    &-name {
+      font-weight: bold;
     }
-
-    .button {
-      line-height: 28px;
-      margin: 6px 20px 0 0;
-      float: right;
+    &-update:hover, &-update:active, &-update:focus {
+      color: @purpleHover;
     }
   }
-
-  .resource-wallet-body {
-    position: relative;
-    .number {
-      color: #db912e;
+  &-info {
+    .ant-row-flex {
+      .ant-col {
+        margin-bottom: 25px;
+      }
+      .last-col {
+        margin-bottom: 0;
+      }
     }
-  }
-}
-
-.resource-wallet .ant-radio-group {
-  width: 100%;
-}
-.resource-wallet .ant-radio-wrapper {
-  display: block;
-  color: #fff;
-  font-size: 16px;
-  margin-bottom: 15px;
-}
-
-.list-col-padding {
-  padding: 10px 0;
-}
-
-.resource-wallet .ant-radio-wrapper:nth-last-child(1) {
-  margin-bottom: 0;
-}
-
-.resource-wallet .ant-radio-checked .ant-radio-inner {
-  border-color: #618c01;
-}
-
-.resource-wallet .ant-radio-inner:after {
-  background: #618c01;
-}
-
-@media screen and (max-width: 992px) {
-  .resource-wallet {
-    margin: 20px;
-  }
-}
-
-@media (min-width: 576px) {
-  .list-border {
-    border-bottom: 1px @cardSplitColor solid;
-    border-right: none;
-  }
-}
-
-// todo: Use the device width comment as a reference
-// Medium devices (tablets, 768px and up)
-@media (min-width: @smallScreenWidth) {
-  .list-border {
-    border-bottom: 1px @cardSplitColor solid;
-    border-right: none;
-  }
-}
-
-// Large devices (desktops, 992px and up)
-@media (min-width: 992px) {
-  .list-border {
-    border-bottom: 1px @cardSplitColor solid;
-    border-right: none;
-  }
-}
-
-// Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {
-  .list-border {
-    border-right: 1px @cardSplitColor solid;
-    border-bottom: none;
-  }
-}
-
-.current-name {
-  text-align: center;
-}
-
-@media (max-width: @smallScreenWidth) {
-  .resource-wallet-body {
-    padding: 10px;
+    &-name {
+      color: #4C4C4C;
+      width: 180px;
+      display: inline-block;
+    }
+    .balance {
+      font-weight: bold;
+      color: @textContext
+    }
   }
 }
