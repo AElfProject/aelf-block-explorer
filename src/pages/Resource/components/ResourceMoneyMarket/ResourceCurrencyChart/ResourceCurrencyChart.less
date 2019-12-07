@@ -10,6 +10,8 @@
     &-title {
       height: 32px;
       line-height: 32px;
+      display: flex;
+      align-items: center;
     }
   }
   .time-button {
@@ -17,7 +19,7 @@
     width: 72px;
     &.ant-btn-round.ant-btn-sm:not(.ant-btn-primary) {
       background-color: @bgBlankWhite;
-      border: 1px solid #e5e5e5;
+      border: 1px solid @borderColor;
     }
   }
   .ant-divider.ant-divider-horizontal {
@@ -44,5 +46,14 @@
     flex-wrap: wrap;
     justify-content: space-around;
     margin-left: 0; // Remove default style
+  }
+}
+
+
+@media screen and (max-width: 768px){
+  .resource-currency-chart {
+    .resource-header {
+      padding: 0;
+    }
   }
 }

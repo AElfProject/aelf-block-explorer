@@ -33,7 +33,7 @@ export default class ResourceAElfWallet extends PureComponent {
       CPU: '-',
       NET: '-',
       STO: '-',
-      loading: false
+      loading: true
     };
     this.onRefresh = this.onRefresh.bind(this);
   }
@@ -180,9 +180,9 @@ export default class ResourceAElfWallet extends PureComponent {
                 &nbsp;&nbsp;&nbsp;
                 {ADDRESS_INFO.PREFIX + '_' + wallet.address + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Link to={`/resourceDetail/${wallet.address}`}>
+                { wallet.address !== '-' && <Link to={`/resourceDetail/${wallet.address}`}>
                   Transaction Details
-                </Link>
+                </Link> }
               </span>
               <Button
                   className='resource-wallet-address-update update-btn'
