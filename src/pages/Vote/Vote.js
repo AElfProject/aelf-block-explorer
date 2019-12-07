@@ -3,11 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 17:46:32
+ * @LastEditTime: 2019-12-07 15:40:39
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
-import { Tabs, Modal, Form, Input, Button, Radio, message } from 'antd';
+import { Tabs, Modal, Form, Input, Button, Radio, message, Menu } from 'antd';
 import { Switch, Route, Link, withRouter, Redirect } from 'react-router-dom';
 import { toJS, reaction } from 'mobx';
 import { Provider } from 'mobx-react';
@@ -98,12 +98,12 @@ function generateVoteConfirmForm({
       {
         type: 'nodeName',
         label: '所选节点名称',
-        render: <span className='form-item-value'>{nodeName}</span>
+        render: <span className="form-item-value">{nodeName}</span>
       },
       {
         type: 'nodeAddress',
         label: '地址',
-        render: <span className='form-item-value'>{nodeAddress}</span>
+        render: <span className="form-item-value">{nodeAddress}</span>
       },
       {
         label: '可用票数',
@@ -136,7 +136,7 @@ function generateVoteConfirmForm({
         render: (
           <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
             {lockTime && lockTime.format('YYYY-MM-DD HH:mm:ss')}{' '}
-            <span className='tip-color'>锁定期内不支持提币和转账</span>
+            <span className="tip-color">锁定期内不支持提币和转账</span>
           </span>
         )
       },
@@ -154,7 +154,7 @@ function generateVoteConfirmForm({
         //   </div>
         // )
         render: (
-          <span className='form-item-value'>
+          <span className="form-item-value">
             {switchVoteAmount} {SYMBOL}
           </span>
         )
@@ -173,7 +173,7 @@ function generateVoteConfirmForm({
         //   </div>
         // )
         render: (
-          <span className='form-item-value'>
+          <span className="form-item-value">
             {voteFromExpiredVoteAmount} {SYMBOL}
           </span>
         )
@@ -780,11 +780,11 @@ class VoteContainer extends Component {
                       <React.Fragment>
                         <h4
                           style={{ color: '#fff' }}
-                          className='text-wrap-container'
+                          className="text-wrap-container"
                         >
                           {NOT_CURRENT_CANDIDATE_TIP}
                         </h4>
-                        <p className='tip-color text-wrap-container'>
+                        <p className="tip-color text-wrap-container">
                           {THE_REASON_TO_BECOME_A_NON_CANDIDATE}
                         </p>
                       </React.Fragment>
@@ -865,7 +865,7 @@ class VoteContainer extends Component {
   }
 
   // TODO: 当前有重复判断逻辑，需要拆分
-  checkExtensionExit (){
+  checkExtensionExit() {
     let nightElfInstance = null;
     class NightElfCheck {
       constructor() {
@@ -878,13 +878,17 @@ class VoteContainer extends Component {
           setTimeout(() => {
             reject({
               error: 200001,
-              message: 'timeout / can not find NightElf / please install the extension'
+              message:
+                'timeout / can not find NightElf / please install the extension'
             });
           }, 1000);
           resolveTemp = resolve;
         });
         document.addEventListener('NightElf', result => {
-          console.log('test.js check the status of extension named nightElf: ', result);
+          console.log(
+            'test.js check the status of extension named nightElf: ',
+            result
+          );
           resovleTemp(readyMessage);
         });
       }
@@ -897,15 +901,17 @@ class VoteContainer extends Component {
       }
     }
     const nightElfCheck = NightElfCheck.getInstance();
-    nightElfCheck.check.then(message => {
-      console.log('nightElfCheck :', message);
-      // connectChain -> Login -> initContract -> call contract methods
-    }).catch(error => {
-      console.log('nightElfCheck error:', error);
-      this.setState({
-        showDownloadPlugin: true
+    nightElfCheck.check
+      .then(message => {
+        console.log('nightElfCheck :', message);
+        // connectChain -> Login -> initContract -> call contract methods
+      })
+      .catch(error => {
+        console.log('nightElfCheck error:', error);
+        this.setState({
+          showDownloadPlugin: true
+        });
       });
-    });
   }
 
   checkExtensionLockStatus() {
@@ -1522,44 +1528,46 @@ class VoteContainer extends Component {
       // todo: place the Provider in the uppest container
       <Provider contractsStore={contractsStore}>
         <div>
-          {showDownloadPlugin ?
-            <section className='vote-container vote-container-simple basic-container basic-container-white'>
+          {showDownloadPlugin ? (
+            <section className="vote-container vote-container-simple basic-container basic-container-white">
               <DownloadPlugins style={{ margin: '0 56px' }} />
-            </section> : null}
+            </section>
+          ) : null}
 
-          <section className='vote-container vote-container-simple basic-container basic-container-white'>
-            {/* todo: optimize the radio group */}
-            <Radio.Group
-              className='secondary-level-nav'
-              value={window.location.pathname}
+          <section className="vote-container vote-container-simple basic-container basic-container-white">
+            <Menu
+              // onClick={this.handleClick}
+              selectedKeys={[window.location.pathname]}
+              mode="horizontal"
             >
-              <Radio
-                value={routePaths.electionNotifi}
+              <Menu.Item
+                key={routePaths.electionNotifi}
                 onClick={() => {
                   this.props.history.push(routePaths.electionNotifi);
                 }}
               >
                 Election Notification
-              </Radio>
-              <Radio
-                value={routePaths.myVote}
+              </Menu.Item>
+              <Menu.Item
+                key={routePaths.myVote}
                 onClick={() => {
                   this.props.history.push(routePaths.myVote);
                 }}
               >
                 My Vote
-              </Radio>
-            </Radio.Group>
+              </Menu.Item>
+            </Menu>
           </section>
 
-          <section className='vote-container vote-container-simple basic-container basic-container-white'>
-
-          </section>
-          <section className='vote-container vote-container-simple basic-container basic-container-white' onClick={this.handleClick}>
+          <section className="vote-container vote-container-simple basic-container basic-container-white"></section>
+          <section
+            className="vote-container vote-container-simple basic-container basic-container-white"
+            onClick={this.handleClick}
+          >
             <Switch>
               <Route
                 exact
-                path='/vote/election'
+                path="/vote/election"
                 render={() => (
                   <ElectionNotification
                     multiTokenContract={multiTokenContract}
@@ -1597,7 +1605,9 @@ class VoteContainer extends Component {
                     currentWallet={currentWallet}
                     checkExtensionLockStatus={this.checkExtensionLockStatus}
                     isCandidate={isCandidate}
-                    shouldJudgeIsCurrentCandidate={shouldJudgeIsCurrentCandidate}
+                    shouldJudgeIsCurrentCandidate={
+                      shouldJudgeIsCurrentCandidate
+                    }
                   />
                 )}
               />
@@ -1668,7 +1678,7 @@ class VoteContainer extends Component {
             />
 
             <Modal
-              className='plugin-lock-modal'
+              className="plugin-lock-modal"
               visible={pluginLockModalVisible}
               onOk={() => this.handleOk('pluginLockModalVisible')}
               // confirmLoading={confirmLoading}
@@ -1682,8 +1692,8 @@ class VoteContainer extends Component {
             </Modal>
 
             <Modal
-              className='vote-confirm-modal'
-              title='Vote Confirm'
+              className="vote-confirm-modal"
+              title="Vote Confirm"
               visible={voteConfirmModalVisible}
               onOk={this.handleVoteConfirmOk}
               // confirmLoading={confirmLoading}
@@ -1695,10 +1705,10 @@ class VoteContainer extends Component {
             >
               <Form {...voteConfirmFormItemLayout} onSubmit={this.handleSubmit}>
                 {voteConfirmForm.formItems &&
-                voteConfirmForm.formItems.map(item => {
-                  return (
-                    <Form.Item label={item.label} key={item.label}>
-                      {/* {getFieldDecorator('email', {
+                  voteConfirmForm.formItems.map(item => {
+                    return (
+                      <Form.Item label={item.label} key={item.label}>
+                        {/* {getFieldDecorator('email', {
                 rules: [
                   {
                     type: 'email',
@@ -1710,12 +1720,12 @@ class VoteContainer extends Component {
                   }
                 ]
               })(<Input />)} */}
-                      {item.render ? item.render : <Input />}
-                    </Form.Item>
-                  );
-                })}
+                        {item.render ? item.render : <Input />}
+                      </Form.Item>
+                    );
+                  })}
               </Form>
-              <p className='tip-color' style={{ marginTop: 30 }}>
+              <p className="tip-color" style={{ marginTop: 30 }}>
                 {NEED_PLUGIN_AUTHORIZE_TIP}
               </p>
             </Modal>
@@ -1729,7 +1739,9 @@ class VoteContainer extends Component {
               redeemableVoteRecordsForOneCandidate={
                 redeemableVoteRecordsForOneCandidate
               }
-              activeVoteRecordsForOneCandidate={activeVoteRecordsForOneCandidate}
+              activeVoteRecordsForOneCandidate={
+                activeVoteRecordsForOneCandidate
+              }
               currentWallet={currentWallet}
               redeemVoteSelectedRowKeys={redeemVoteSelectedRowKeys}
               handleRedeemVoteSelectedRowChange={
