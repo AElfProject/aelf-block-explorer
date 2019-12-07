@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 19:00:59
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 20:43:43
+ * @LastEditTime: 2019-12-07 20:48:45
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -16,7 +16,6 @@ import {
 } from '@pages/Vote/constants';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { centerEllipsis } from '@utils/formater';
-import './CandidateApplyModal.style.less';
 
 const modalFormItemLayout = {
   labelCol: {
