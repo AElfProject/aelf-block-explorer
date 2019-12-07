@@ -235,55 +235,48 @@ const ADDRESS_INFO_COLUMN = [
 
 const RESOURCE_DETAILS_COLUMN = [
   {
+    title: 'Tx Id',
+    dataIndex: 'tx_id',
+    key: 'tx_id',
+    align: 'center',
+    ellipsis: true,
+    render: text => (
+        <Link
+            to={`/tx/${text}`}
+        >
+          {text}
+        </Link>
+    )
+  },
+  {
     title: 'Time',
     dataIndex: 'time',
     key: 'time',
     align: 'center',
-    render: (text, row) => (
-      <Link
-        to={`/tx/${row.tx_id}`}
-        title={dayjs(row.time).format('YYYY-MM-DD HH:mm:ss')}
-      >
-        {' '}
-        {dayjs(row.time).format('YYYY-MM-DD HH:mm:ss')}
-      </Link>
-    )
+    render: text => dayjs(text).format('YYYY-MM-DD HH:mm:ss')
   },
   {
     title: 'Resource type',
-    dataIndex: 'resourceType',
-    key: 'resourceType',
-    align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.type}>
-        {' '}
-        {row.type}
-      </Link>
-    )
+    dataIndex: 'type',
+    key: 'type',
+    align: 'center'
   },
   {
     title: 'Direction',
-    dataIndex: 'direction',
-    key: 'direction',
+    dataIndex: 'method',
+    key: 'method',
     align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.method}>
-        {' '}
-        {row.method === 'Buy' ? (
-          <span className='buy-color'>Buy</span>
-        ) : (
-          <span className='sell-color'>Sell</span>
-        )}
-      </Link>
-    )
+    render: text => {
+      return (<span className={`${(text || 'buy').toLocaleLowerCase()}-color`}>{text}</span>)
+    }
   },
   {
     title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
+    dataIndex: 'fee',
+    key: 'fee',
     align: 'center',
-    render: (text, row) => {
-      let price = '-';
+    render: (_, row) => {
+      let price;
       const { resource, method } = row;
       let { elf, fee } = row;
       elf /= ELF_DECIMAL;
@@ -291,25 +284,15 @@ const RESOURCE_DETAILS_COLUMN = [
       price = ((method === 'Buy' ? elf + fee : elf - fee) / resource).toFixed(
         ELF_PRECISION
       );
-      // const fee = Math.ceil(row.fee / 1000);
-      // price = ((row.elf - fee) / row.resource).toFixed(9);
-      return (
-        <Link to={`/tx/${row.tx_id}`} title='price'>
-          {price}
-        </Link>
-      );
+      price = isNaN(price) ? '-' : price;
+      return price;
     }
   },
   {
     title: 'Number',
     dataIndex: 'resource',
     key: 'number',
-    align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.resource}>
-        {row.resource}
-      </Link>
-    )
+    align: 'center'
   },
   {
     title: `${SYMBOL} Number`,
@@ -319,17 +302,13 @@ const RESOURCE_DETAILS_COLUMN = [
     render: (text, row) => {
       const { method } = row;
       let { elf, fee } = row;
-      let actualNumber = null;
+      let actualNumber;
       elf /= ELF_DECIMAL;
       fee /= ELF_DECIMAL;
       actualNumber = (method === 'Buy' ? elf + fee : elf - fee).toFixed(
         ELF_PRECISION
       );
-      return (
-        <Link to={`/tx/${row.tx_id}`} title={actualNumber}>
-          {actualNumber}
-        </Link>
-      );
+      return actualNumber;
     }
   },
   {
@@ -338,27 +317,16 @@ const RESOURCE_DETAILS_COLUMN = [
     key: 'serviceCharge',
     align: 'center',
     render: (text, row) => {
-      // const fee = Math.ceil(row.fee / 1000);
       let { fee } = row;
       fee /= ELF_DECIMAL;
-      return (
-        <Link to={`/tx/${row.tx_id}`} title={fee}>
-          {thousandsCommaWithDecimal(fee)}
-        </Link>
-      );
+      return thousandsCommaWithDecimal(fee);
     }
   },
   {
     title: 'Tx status',
-    dataIndex: 'txStatus',
-    key: 'txStatus',
-    align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.tx_status}>
-        {' '}
-        {row.tx_status}
-      </Link>
-    )
+    dataIndex: 'tx_status',
+    key: 'tx_status',
+    align: 'center'
   }
 ];
 
