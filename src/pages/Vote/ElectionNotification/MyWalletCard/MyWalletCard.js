@@ -317,10 +317,10 @@ export default class MyWalletCard extends PureComponent {
         </div>
         <div className='my-wallet-card-body-wallet-title'>
           <span className='my-wallet-card-body-wallet-title-key'>Name: </span>
-          <span>{currentWallet.name}</span>
+          <span className='primary-color'>{currentWallet.name}</span>
           <span className='my-wallet-card-body-wallet-title-blank'></span>
           <span className='my-wallet-card-body-wallet-title-key'>Address: </span>
-          <span>{currentWallet.address}</span>
+          <span className='primary-color'>{currentWallet.address}</span>
           {/*<h3 className='my-wallet-card-body-wallet-title-name'>*/}
             {/*{currentWallet.name}*/}
           {/*</h3>*/}
