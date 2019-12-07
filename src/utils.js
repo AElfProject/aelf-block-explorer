@@ -92,7 +92,7 @@ const formatKey = (inputString) => {
     const piecesFormatted = pieces.map(item => {
         return firstUpperCase(item);
     });
-    return piecesFormatted.join('');
+    return piecesFormatted.join('').replace(/([A-Z])/g, ' $1').trim();
 };
 
 function transactionFormat(result) {
