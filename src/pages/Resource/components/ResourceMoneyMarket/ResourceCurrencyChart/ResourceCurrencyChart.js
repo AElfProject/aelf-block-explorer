@@ -148,10 +148,10 @@ class ResourceCurrencyChart extends PureComponent {
 
   getOption() {
     const { xAxisData, yAxisData,  } = this.state;
-    const maxValue = Math.max.apply(
+    const maxValue = Math.ceil(Math.max.apply(
       Math,
       yAxisData.map(item => item.value)
-    );
+    ));
     return {
       grid: {
         left: '0',
@@ -268,7 +268,7 @@ class ResourceCurrencyChart extends PureComponent {
           zlevel: 2,
           data: yAxisData,
           lineStyle: {
-            color: '#235AA9'
+            color: '#5C28A9'
           },
         }
       ]

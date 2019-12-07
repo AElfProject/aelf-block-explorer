@@ -4,13 +4,20 @@
   margin-bottom: 40px;
   .resource-header {
     display: flex;
-    flex-flow: row;
+    flex-flow: row wrap;
     justify-content: space-between;
+    line-height: 32px;
+    &-title {
+      height: 32px;
+      line-height: 32px;
+    }
   }
   .time-button {
-    margin-left: 10px;
+    margin-left: 8px;
+    width: 72px;
     &.ant-btn-round.ant-btn-sm:not(.ant-btn-primary) {
       background-color: @bgBlankWhite;
+      border: 1px solid #e5e5e5;
     }
   }
   .ant-divider.ant-divider-horizontal {

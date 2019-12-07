@@ -62,7 +62,7 @@ class RealTimeTransactions extends PureComponent {
   getTableHeadHTML() {
     return (
       <Row className='table-head' type='flex' align='middle'>
-        <Col span={7} offset={5}>
+        <Col span={6} offset={6}>
           Average price({SYMBOL})
         </Col>
         <Col span={6}>Number</Col>
