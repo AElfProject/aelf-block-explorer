@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 17:42:20
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 17:46:16
+ * @LastEditTime: 2019-12-07 18:52:10
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -468,7 +468,7 @@ class NodeTable extends PureComponent {
 
     return (
       <section className={`${clsPrefix}`}>
-        <h2 className={`${clsPrefix}-header`}>
+        <h2 className={`${clsPrefix}-header table-card-header`}>
           Node Table
           {/* <span className='node-color-intro-group'>
               <span className='node-color-intro-item'>BP节点</span>
