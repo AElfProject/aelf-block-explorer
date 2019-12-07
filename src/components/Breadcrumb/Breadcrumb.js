@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, Icon } from 'antd';
 
 import {ADDRESS_INFO} from '../../../config/config';
 
@@ -110,8 +110,9 @@ class BrowserBreadcrumb extends Component {
     const inTxList = current === 'txs' && breadcrumbTitle === 'Transactions List' && pathname !== '/txs';
     const inAddress = current === 'address' && breadcrumbTitle === 'Transactions List';
     const inTxDetail = current === 'tx' && breadcrumbTitle === 'Transactions List';
+    const inResourceDetail = current === 'resourceDetail' && breadcrumbTitle === 'Resource';
 
-    if (inBlockDetail || inTxList || inAddress || inTxDetail) {
+    if (inBlockDetail || inTxList || inAddress || inTxDetail || inResourceDetail) {
       return false;
     }
 
@@ -183,6 +184,11 @@ class BrowserBreadcrumb extends Component {
       tx: 'Transaction',
       address: 'Address',
       contract: 'Contract',
+      resource: (
+        <span className='breadcrumb-title breadcrumb-small-title'>
+          Resource Trading
+        </span>
+      ),
       resourceDetail: (
         <span className='breadcrumb-title breadcrumb-small-title'>
           Transaction Details
@@ -195,7 +201,7 @@ class BrowserBreadcrumb extends Component {
       pageNameMap[pathSnippets[0]],
       !!pathSnippets[1] ? (
         <span className='breadcrumb-sub-title' key='breadcrumb-sub-title'>
-          { pathSnippets[0] === 'address' ?
+          { pathSnippets[0] === 'address' || pathSnippets[0] === 'resourceDetail' ?
             '#' + ADDRESS_INFO.PREFIX + '_' + pathSnippets[1] + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID
             :
             '#' + pathSnippets[1]}

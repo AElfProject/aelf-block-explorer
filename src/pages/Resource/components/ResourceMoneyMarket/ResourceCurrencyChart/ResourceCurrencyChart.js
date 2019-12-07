@@ -59,7 +59,7 @@ class ResourceCurrencyChart extends PureComponent {
     const chartHeight = isSmallScreen ? 450 : 470;
     this.echartStyle = {
       height: chartHeight,
-      minWidth: 900
+      // minWidth: 900
     };
     await this.getEchartData();
   }

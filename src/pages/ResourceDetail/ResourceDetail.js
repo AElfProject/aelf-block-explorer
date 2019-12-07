@@ -80,6 +80,7 @@ export default class ResourceDetail extends PureComponent {
           dataSource={data}
           loading={loading}
           onChange={handleTableChange}
+          scroll={{ x: 1024 }}
         />
       </div>
     );
