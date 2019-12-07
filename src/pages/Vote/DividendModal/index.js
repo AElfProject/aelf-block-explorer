@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-25 15:55:24
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 13:30:00
+ * @LastEditTime: 2019-12-07 21:22:37
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -11,9 +11,6 @@ import { Checkbox, Row, Col, Modal, Button } from 'antd';
 
 import { schemeIds } from '@pages/Vote/constants';
 import './index.less';
-
-const plainOptions = ['Apple', 'Pear', 'Orange'];
-const defaultCheckedList = ['Apple', 'Orange'];
 
 export default class DividendModal extends PureComponent {
   constructor(props) {
@@ -56,12 +53,11 @@ export default class DividendModal extends PureComponent {
       handleClaimDividendClick
     } = this.props;
     const { checkAll, indeterminate, checkedList } = this.state;
-    console.log('dividends', dividends);
 
     return (
       <Modal
-        className='dividend-modal'
-        title='Get Dividend'
+        className="dividend-modal"
+        title="Get Dividend"
         visible={dividendModalVisible}
         onOk={() => {
           changeModalVisible('dividendModalVisible', false);
@@ -70,7 +66,7 @@ export default class DividendModal extends PureComponent {
         onCancel={() => {
           changeModalVisible('dividendModalVisible', false);
         }}
-        okText='Get!'
+        okText="Get!"
         width={860}
         centered
         maskClosable
@@ -123,15 +119,18 @@ export default class DividendModal extends PureComponent {
           {dividends.amounts.map(item => {
             console.log('item', item);
             return (
-              <Col className='claim-profit-item' span={12} key={item.type}>
-                <Col span={12}>
-                  <label>{`${item.type}: ${item.amount.toFixed(2)}`}</label>
+              <Col className="claim-profit-item" span={12} key={item.type}>
+                <Col span={12} className="text-left">
+                  <span className="profit-item-key">{item.type}: </span>
+                  <span className="profit-item-value">
+                    {item.amount.toFixed(2)}
+                  </span>
                 </Col>
                 <Col span={12}>
                   <Button
                     disabled={item.amount > 0 ? false : true}
-                    type='primary'
-                    shape='round'
+                    type="primary"
+                    shape="round"
                     onClick={() => {
                       handleClaimDividendClick(item.schemeId);
                     }}
