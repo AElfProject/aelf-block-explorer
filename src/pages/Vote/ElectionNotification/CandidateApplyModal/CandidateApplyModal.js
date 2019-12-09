@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 19:00:59
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 20:48:45
+ * @LastEditTime: 2019-12-09 15:05:34
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -16,6 +16,7 @@ import {
 } from '@pages/Vote/constants';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { centerEllipsis } from '@utils/formater';
+import './CandidateApplyModal.style.less';
 
 const modalFormItemLayout = {
   labelCol: {
@@ -82,7 +83,7 @@ export default class CandidateApplyModal extends PureComponent {
 
     return (
       <Modal
-        className="apply-confirm-modal"
+        className="apply-node-modal"
         title="Apply Node"
         visible={visible}
         okText="Apply Now"
