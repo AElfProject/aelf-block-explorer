@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 17:42:20
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 23:00:53
+ * @LastEditTime: 2019-12-10 01:08:41
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -36,7 +36,7 @@ import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
-
+import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 
 const { Search } = Input;
@@ -158,7 +158,7 @@ class NodeTable extends PureComponent {
               // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               // style={{ width: 270 }}
             >
-              {centerEllipsis(text)}
+              {text}
             </Link>
           </Tooltip>
         ),
@@ -223,7 +223,7 @@ class NodeTable extends PureComponent {
               className="table-btn vote-btn"
               key={record.pubkey}
               type="primary"
-              style={{ marginRight: '20px' }}
+              style={{ marginRight: 14 }}
               data-nodeaddress={record.address}
               data-targetPublicKey={record.pubkey}
               data-role="vote"
@@ -384,7 +384,9 @@ class NodeTable extends PureComponent {
       );
       if (teamInfo === undefined) {
         // todo: use address instead after api modified
-        item.candidateInformation.name = item.candidateInformation.address;
+        item.candidateInformation.name = centerEllipsis(
+          `${ADDRESS_INFO.PREFIX}_${item.candidateInformation.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`
+        );
       } else {
         item.candidateInformation.name = teamInfo.name;
       }

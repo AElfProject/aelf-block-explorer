@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-19 00:49:09
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 21:37:11
+ * @LastEditTime: 2019-12-10 01:01:54
  * @Description: file content
  */
 import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from '@src/constants';
@@ -36,8 +36,8 @@ const thousandsCommaWithDecimal = (value, hasDecimal = true) => {
   return processedValue;
 };
 
-const centerEllipsis = address => {
-  return address && address.replace(address.slice(10, 36), '...');
+const centerEllipsis = str => {
+  return str && `${str.slice(0, 10)}...${str.slice(str.length - 10)}`;
 };
 
 export {
