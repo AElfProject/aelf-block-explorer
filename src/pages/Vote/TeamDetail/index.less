@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:54:31
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 16:36:37
+ * @LastEditTime: 2019-12-09 18:24:07
  * @Description: file content
  */
 @clsPrefix: team-detail;
@@ -107,18 +107,21 @@
 // todo: Optimzie the way writting the css
 @media (max-width: @smallScreenWidth) {
   .@{clsPrefix} {
+    padding: 20px;
     .@{clsPrefix}-header {
       .card-container-left {
         padding: 0;
         .@{clsPrefix}-team-avatar-info {
           position: relative;
+          display: block;
+          .team-avatar-container {
+            padding-top: 12px;
+          }
           .@{clsPrefix}-team-info {
-            margin-left: 0;
+            width: 80%;
+            margin-left: 10px;
             .@{clsPrefix}-node-name {
               // todo: Reorganize the html code to avoid of using absolute
-              position: absolute;
-              right: 0;
-              top: 5%;
               max-width: 250px;
               font-size: 16px;
               // .ant-tag {
@@ -127,6 +130,7 @@
             }
             &-address {
               position: relative;
+              display: block;
               margin-bottom: 0;
               .ant-typography {
                 display: inline-block;

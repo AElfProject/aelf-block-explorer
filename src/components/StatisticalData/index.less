@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 16:09:44
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 17:58:18
+ * @LastEditTime: 2019-12-09 17:57:00
  * @Description: file content
  */
 .statistical-data {
@@ -72,13 +72,16 @@
       &:last-child {
         margin-bottom: 0;
       }
+      .ant-statistic-title {
+        margin-bottom: 10px;
+      }
     }
 
     // todo: Use a more compatible to handle the case in mobile device
     &.inline-style {
       flex-direction: row;
       .ant-statistic {
-        width: 33.33%;
+        min-width: 33.33%; // Use min-width to handle the case numebr is too big
         height: auto;
         line-height: inherit;
         .ant-statistic-title {

@@ -1,17 +1,22 @@
-@import "../../../../assets/less/_variables";
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-09 16:54:34
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-09 17:19:06
+ * @Description: file content
+ */
 .election-rule-card {
   //margin-bottom: 20px;
   //padding: 40px 100px;
   //padding: 20px 57px;
   background: @bgBlankWhite;
-
   .election-intro {
     //text-indent: 40px;
     color: @textContext;
     font-size: 14px;
     //margin-bottom: 60px;
   }
-
   .election-container {
     padding: 20px 57px;
     .view-plan-link {
@@ -19,7 +24,6 @@
       margin-left: 30px;
     }
   }
-
   .election-header-title {
     background: @bgBlankWhite;
     padding: 30px 57px 20px;
@@ -48,7 +52,7 @@
         background: @bgMainHover;
       }
       a:hover {
-        color: #FFF !important;
+        color: #fff !important;
       }
     }
   }
@@ -57,15 +61,24 @@
 @media (max-width: @smallScreenWidth) {
   .election-rule-card {
     padding: 20px 16px;
+    .election-header-title {
+      padding: 20px;
+    }
+    .election-container {
+      padding: 20px;
+      .view-plan-link {
+        display: block;
+        margin-left: 0;
+        text-align: center;
+        margin-top: 20px;
+      }
+    }
     .election-intro {
-      font-size: 12px;
+      font-size: 14px;
       margin-bottom: 20px;
     }
     .btn-group {
-      .view-node-election-plan-btn {
-        font-size: 12px;
-        margin-bottom: 10px;
-      }
+      display: none;
     }
   }
 }
