@@ -17,7 +17,7 @@ export default class NightElfCheck {
                     error: 200001,
                     message: 'timeout'
                 });
-            }, 233);
+            }, 4000);
             resovleTemp = resolve;
         });
         document.addEventListener('NightElf', result => {
