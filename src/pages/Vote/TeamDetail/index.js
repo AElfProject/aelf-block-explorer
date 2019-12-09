@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 18:27:16
+ * @LastEditTime: 2019-12-09 18:45:03
  * @Description: file content
  */
 
@@ -319,7 +319,7 @@ class TeamDetail extends PureComponent {
                   </Paragraph>
                 </span>
                 {hasAuth ? (
-                  <Button type="primary" shape="round">
+                  <Button type="primary" shape="round" className="edit-btn">
                     <Link
                       to={{
                         pathname: '/vote/apply/keyin',

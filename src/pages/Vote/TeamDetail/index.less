@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:54:31
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 18:31:49
+ * @LastEditTime: 2019-12-09 19:07:24
  * @Description: file content
  */
 @clsPrefix: team-detail;
@@ -35,7 +35,6 @@
     border-bottom: 1px solid @borderColor;
     margin-bottom: 0;
     .@{clsPrefix}-team-avatar-info {
-      display: inline-block;
       .ant-avatar-square {
         border-radius: 20px;
       }
@@ -49,6 +48,9 @@
           .ant-tag {
             margin-left: 5px;
           }
+        }
+        .edit-btn {
+          margin-left: 20px;
         }
         &-location {
           margin-right: 100px;
@@ -113,6 +115,9 @@
         .@{clsPrefix}-team-avatar-info {
           position: relative;
           display: block;
+          .edit-btn {
+            display: none;
+          }
           .team-avatar-container {
             padding-top: 12px;
           }
