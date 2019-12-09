@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 17:42:20
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 18:52:10
+ * @LastEditTime: 2019-12-09 22:50:18
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -325,9 +325,11 @@ class NodeTable extends PureComponent {
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
-      fetchElectorVoteWithRecords(electionContract, {
-        value: currentWallet.pubKey
-      }),
+      currentWallet.pubKey.x
+        ? fetchElectorVoteWithRecords(electionContract, {
+            value: currentWallet.pubKey
+          })
+        : null,
       fetchCurrentMinerPubkeyList(consensusContract)
     ])
       .then(resArr => {
@@ -360,7 +362,7 @@ class NodeTable extends PureComponent {
     // todo: error handle
     let totalActiveVotesAmount = 0;
     const nodeInfos = resArr[0].value;
-    const { activeVotingRecords } = resArr[2];
+    const { activeVotingRecords } = resArr[2] || {};
     let teamInfos = null;
     if (resArr[1].code === 0) {
       teamInfos = resArr[1].data;
@@ -387,6 +389,11 @@ class NodeTable extends PureComponent {
         item.candidateInformation.name = teamInfo.name;
       }
 
+      if (!activeVotingRecords) {
+        item.candidateInformation.myTotalVoteAmount = '-';
+        item.candidateInformation.myRedeemableVoteAmountForOneCandidate = '-';
+        return;
+      }
       // todo: use the method filterUserVoteRecordsForOneCandidate in voteUtil instead
       // add my vote amount
       const myVoteRecordsForOneCandidate = activeVotingRecords.filter(
