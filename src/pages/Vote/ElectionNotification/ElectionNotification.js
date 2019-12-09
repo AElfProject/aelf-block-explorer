@@ -3,10 +3,11 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:53:57
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 20:35:32
+ * @LastEditTime: 2019-12-09 18:36:12
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
+import { withRouter } from 'react-router-dom';
 import { message } from 'antd';
 import moment from 'moment';
 
@@ -49,7 +50,7 @@ const electionNotifiStatisData = {
   }
 };
 
-export default class ElectionNotification extends PureComponent {
+class ElectionNotification extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -380,3 +381,5 @@ export default class ElectionNotification extends PureComponent {
     );
   }
 }
+
+export default withRouter(ElectionNotification);
