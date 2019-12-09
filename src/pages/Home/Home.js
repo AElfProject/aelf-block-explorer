@@ -165,9 +165,6 @@ export default class HomePage extends Component {
             title: 'Total Transactions',
             info: +this.state.totalTransactions
         }, {
-            title: 'Total Applications',
-            info: '-'
-        }, {
             title: 'Total Accounts',
             info: +this.state.totalAccounts || '-'
         }, {
@@ -177,7 +174,7 @@ export default class HomePage extends Component {
 
         const html = basicInfo.map(item => {
             return (
-                <Col xs={12} sm={8} md={6} lg={4}
+                <Col xs={12} sm={8} md={6}
                      className='home-basic-info-con'
                      key={item.title}
                 >
