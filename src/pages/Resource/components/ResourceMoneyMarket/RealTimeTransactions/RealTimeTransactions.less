@@ -14,7 +14,7 @@
     min-height: 268px;
 
     .table-head {
-      background-color: #e5e5e5;
+      background-color: @bgBlankGrey;
       height: 30px;
       margin-bottom: 8px;
       color: @textContext;
@@ -40,6 +40,23 @@
       .sell {
         color: @buyColor;
       }
+    }
+  }
+}
+
+@media screen and (max-width: 768px){
+  .real-time-transactions {
+    .real-time-transactions-body {
+      .table-head {
+        background-color: @bgBlankGrey;
+        height: 34px;
+        margin-bottom: 8px;
+        color: @textContext;
+        text-align: center;
+        font-weight: 300;
+        font-size: 9px;
+      }
+
     }
   }
 }

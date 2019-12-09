@@ -118,7 +118,7 @@ class Resource extends Component {
                       // todo: Use the variable in redux instead, remind the cdm
                       const isSmallScreen = document.body.offsetWidth < 768;
                       if (!isSmallScreen) {
-                        message.warning(result.errorMessage.message, 3);
+                        message.warning(result.errorMessage.message, 6);
                       }
                     }
                   }
@@ -129,7 +129,7 @@ class Resource extends Component {
         }
       })
       .catch(error => {
-        console.log('error', error);
+        // console.log('NightElfCheck : error', error);
         this.setState({
           showDownloadPlugins: true
         });
@@ -268,7 +268,8 @@ class Resource extends Component {
     return (
       <div className='resource-body basic-container basic-container-white'>
         {!isPhone && downloadPlugins}
-        {resourceAElfWalletHtml}
+        {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}
+        {!isPhone && resourceAElfWalletHtml}
         <div className='resource-money-market'>
           <ResourceMoneyMarket
             currentWallet={currentWallet}

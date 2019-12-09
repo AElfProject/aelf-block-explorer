@@ -92,8 +92,8 @@ class ResourceCurrencyChart extends PureComponent {
     this.setState({
       loading: true
     });
-    const xAxisData = [];
-    const yAxisData = [];
+    let xAxisData = [];
+    let yAxisData = [];
 
     const data =
       (await get(RESOURCE_TURNOVER, {
@@ -124,6 +124,19 @@ class ResourceCurrencyChart extends PureComponent {
         }
       });
     });
+
+    const offsetWidth = document.body.offsetWidth;
+    if (offsetWidth < 900 && offsetWidth > 768) {
+      xAxisData = xAxisData.slice(5);
+      yAxisData = yAxisData.slice(5);
+    } else if (offsetWidth < 768) {
+      xAxisData = xAxisData.slice(12);
+      yAxisData = yAxisData.slice(12);
+    } else if (offsetWidth <= 414) {
+      xAxisData = xAxisData.slice(18);
+      yAxisData = yAxisData.slice(18);
+    }
+
     this.setState({
       xAxisData,
       yAxisData,
@@ -267,7 +280,6 @@ class ResourceCurrencyChart extends PureComponent {
           smooth: true,
           name: `Total volume/${SYMBOL} of business`,
           type: 'line',
-          zlevel: 2,
           data: yAxisData,
           lineStyle: {
             color: '#666'
@@ -343,8 +355,8 @@ class ResourceCurrencyChart extends PureComponent {
             echarts={echarts}
             option={this.getOption()}
             style={this.echartStyle}
-            notMerge
-            lazyUpdate
+            notMerge={true}
+            lazyUpdate={true}
           />
         </div>
       </div>
