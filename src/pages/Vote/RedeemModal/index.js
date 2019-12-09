@@ -8,6 +8,7 @@ import {
   NEED_PLUGIN_AUTHORIZE_TIP,
   FEE_TIP
 } from '@src/constants';
+import { centerEllipsis } from '@utils/formater';
 
 const { Search } = Input;
 
@@ -135,17 +136,17 @@ class RedeemModal extends PureComponent {
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -153,7 +154,7 @@ class RedeemModal extends PureComponent {
       </div>
     ),
     filterIcon: filtered => (
-      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -229,16 +230,22 @@ class RedeemModal extends PureComponent {
         {
           label: 'Node Name',
           // todo: use iterator optimize
-          render: <span className='form-item-value'>{nodeName}</span>
+          render: (
+            <span className="form-item-value">{centerEllipsis(nodeName)}</span>
+          )
         },
         {
           label: 'Node Add',
-          render: <span className='form-item-value'>{nodeAddress}</span>
+          render: (
+            <span className="form-item-value">
+              {centerEllipsis(nodeAddress)}
+            </span>
+          )
         },
         {
           label: 'Active Vote',
           render: (
-            <span className='form-item-value'>
+            <span className="form-item-value">
               {activeVoteAmountForOneCandidate} {SYMBOL}
             </span>
           )
@@ -246,7 +253,7 @@ class RedeemModal extends PureComponent {
         {
           label: 'Expired Vote',
           render: (
-            <span className='form-item-value'>
+            <span className="form-item-value">
               {redeemableVoteAmountForOneCandidate} {SYMBOL}
             </span>
           )
@@ -296,7 +303,7 @@ class RedeemModal extends PureComponent {
         {
           label: 'Redeem To',
           render: (
-            <span className='form-item-value'>
+            <span className="form-item-value">
               {currentWallet && currentWallet.name}
             </span>
           )
@@ -327,8 +334,8 @@ class RedeemModal extends PureComponent {
 
     return (
       <Modal
-        className='vote-redeem-modal'
-        title='Vote Redeem'
+        className="vote-redeem-modal"
+        title="Vote Redeem"
         visible={voteRedeemModalVisible}
         onOk={this.handleOk}
         onCancel={handleCancel.bind(this, 'voteRedeemModalVisible')}
@@ -354,7 +361,7 @@ class RedeemModal extends PureComponent {
               );
             })}
         </Form>
-        <p className='tip-color' style={{ fontSize: 12 }}>
+        <p className="tip-color" style={{ fontSize: 12 }}>
           {FEE_TIP}
         </p>
         <p style={{ marginTop: 10 }}>{NEED_PLUGIN_AUTHORIZE_TIP}</p>
