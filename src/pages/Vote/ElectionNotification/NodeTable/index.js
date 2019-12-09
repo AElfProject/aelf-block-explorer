@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 17:42:20
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 22:50:18
+ * @LastEditTime: 2019-12-09 23:00:53
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -389,13 +389,20 @@ class NodeTable extends PureComponent {
         item.candidateInformation.name = teamInfo.name;
       }
 
+      // judge node type
+      if (BPNodes.indexOf(item.candidateInformation.pubkey) !== -1) {
+        item.candidateInformation.nodeType = 'BP';
+      } else {
+        item.candidateInformation.nodeType = 'Candidate';
+      }
+
+      // add my vote amount
       if (!activeVotingRecords) {
         item.candidateInformation.myTotalVoteAmount = '-';
         item.candidateInformation.myRedeemableVoteAmountForOneCandidate = '-';
         return;
       }
       // todo: use the method filterUserVoteRecordsForOneCandidate in voteUtil instead
-      // add my vote amount
       const myVoteRecordsForOneCandidate = activeVotingRecords.filter(
         votingRecord =>
           votingRecord.candidate === item.candidateInformation.pubkey
@@ -416,13 +423,6 @@ class NodeTable extends PureComponent {
       item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
       item.candidateInformation.myRedeemableVoteAmountForOneCandidate =
         myRedeemableVoteAmountForOneCandidate || '-';
-
-      // judge node type
-      if (BPNodes.indexOf(item.candidateInformation.pubkey) !== -1) {
-        item.candidateInformation.nodeType = 'BP';
-      } else {
-        item.candidateInformation.nodeType = 'Candidate';
-      }
     });
 
     return nodeInfos
