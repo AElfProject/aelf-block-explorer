@@ -12,6 +12,7 @@ import {
   RANK_NOT_EXISTED_SYMBOL,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
+import { ADDRESS_INFO } from '@config/config';
 import { MY_VOTE_DATA_TIP } from '@src/constants';
 
 export default class MyVote extends Component {
@@ -132,7 +133,8 @@ export default class MyVote extends Component {
       );
       console.log('teamInfo', teamInfo);
       if (teamInfo === undefined) {
-        record.name = publicKeyToAddress(record.candidate);
+        record.address = publicKeyToAddress(record.candidate);
+        record.name = `${ADDRESS_INFO.PREFIX}_${record.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       } else {
         record.name = teamInfo.name;
       }
@@ -182,7 +184,7 @@ export default class MyVote extends Component {
 
     return (
       <section>
-        <StatisticalData data={statisData} tooltip={MY_VOTE_DATA_TIP}/>
+        <StatisticalData data={statisData} tooltip={MY_VOTE_DATA_TIP} />
         <MyVoteRecord data={tableData} />
       </section>
     );

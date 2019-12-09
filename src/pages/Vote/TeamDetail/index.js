@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 18:45:03
+ * @LastEditTime: 2019-12-10 02:22:19
  * @Description: file content
  */
 
@@ -37,6 +37,7 @@ import {
   filterUserVoteRecordsForOneCandidate,
   computeUserRedeemableVoteAmountForOneCandidate
 } from '@utils/voteUtils';
+import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 
 const { Paragraph } = Typography;
@@ -50,6 +51,7 @@ class TeamDetail extends PureComponent {
     this.state = {
       data: {},
       candidateAddress: '',
+      formattedAddress: '',
       isBP: false,
       rank: '-',
       terms: '-',
@@ -163,6 +165,7 @@ class TeamDetail extends PureComponent {
     const { producedBlocks } = currentCandidateInfo;
 
     const candidateAddress = publicKeyToAddress(this.teamPubkey);
+    const formattedAddress = `${ADDRESS_INFO.PREFIX}_${candidateAddress}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
 
     this.setState({
       rank,
@@ -170,7 +173,8 @@ class TeamDetail extends PureComponent {
       totalVotes,
       votedRate,
       producedBlocks,
-      candidateAddress
+      candidateAddress,
+      formattedAddress
     });
 
     console.log('candidateVotesArr', candidateVotesArr);
@@ -258,6 +262,7 @@ class TeamDetail extends PureComponent {
     const { isSmallScreen } = this.props;
     const {
       candidateAddress,
+      formattedAddress,
       isBP,
       userRedeemableVoteAmountForOneCandidate,
       hasAuth,
@@ -306,7 +311,7 @@ class TeamDetail extends PureComponent {
                 xs={20}
               >
                 <h5 className={`${clsPrefix}-node-name ellipsis`}>
-                  {data.name ? data.name : candidateAddress}
+                  {data.name ? data.name : formattedAddress}
                   <Tag color="#f50">{isBP ? 'BP' : 'Candidate'}</Tag>
                 </h5>
                 <span className={`${clsPrefix}-team-info-location`}>
@@ -314,8 +319,8 @@ class TeamDetail extends PureComponent {
                 </span>
                 <span className={`${clsPrefix}-team-info-address`}>
                   Address:{' '}
-                  <Paragraph copyable={{ text: candidateAddress }}>
-                    {candidateAddress.slice(0, 20)}...
+                  <Paragraph copyable={{ text: formattedAddress }}>
+                    {formattedAddress.slice(0, 20)}...
                   </Paragraph>
                 </span>
                 {hasAuth ? (
@@ -350,8 +355,8 @@ class TeamDetail extends PureComponent {
               data-role="vote"
               data-shoulddetectlock
               data-votetype={FROM_WALLET}
-              data-nodeaddress={candidateAddress}
-              data-nodename={data.name || candidateAddress}
+              data-nodeaddress={formattedAddress}
+              data-nodename={data.name || formattedAddress}
               data-targetPublicKey={this.teamPubkey}
             >
               Vote
@@ -363,7 +368,7 @@ class TeamDetail extends PureComponent {
               shape="round"
               data-role="redeem"
               data-shoulddetectlock
-              data-nodeaddress={candidateAddress}
+              data-nodeaddress={formattedAddress}
               data-targetPublicKey={this.teamPubkey}
               data-nodename={data.name}
               disabled={

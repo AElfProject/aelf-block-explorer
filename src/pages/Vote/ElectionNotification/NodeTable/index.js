@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 17:42:20
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 23:00:53
+ * @LastEditTime: 2019-12-10 01:58:14
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -36,7 +36,7 @@ import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
-
+import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 
 const { Search } = Input;
@@ -158,7 +158,7 @@ class NodeTable extends PureComponent {
               // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               // style={{ width: 270 }}
             >
-              {centerEllipsis(text)}
+              {text}
             </Link>
           </Tooltip>
         ),
@@ -223,8 +223,8 @@ class NodeTable extends PureComponent {
               className="table-btn vote-btn"
               key={record.pubkey}
               type="primary"
-              style={{ marginRight: '20px' }}
-              data-nodeaddress={record.address}
+              style={{ marginRight: 14 }}
+              data-nodeaddress={record.formattedAddress}
               data-targetPublicKey={record.pubkey}
               data-role="vote"
               data-nodename={record.name}
@@ -239,7 +239,7 @@ class NodeTable extends PureComponent {
               type="primary"
               data-role="redeem"
               data-shoulddetectlock
-              data-nodeaddress={record.address}
+              data-nodeaddress={record.formattedAddress}
               data-targetPublicKey={record.pubkey}
               data-nodename={record.name}
               disabled={
@@ -382,9 +382,12 @@ class NodeTable extends PureComponent {
       item.candidateInformation.address = publicKeyToAddress(
         item.candidateInformation.pubkey
       );
+      item.candidateInformation.formattedAddress = `${ADDRESS_INFO.PREFIX}_${item.candidateInformation.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       if (teamInfo === undefined) {
         // todo: use address instead after api modified
-        item.candidateInformation.name = item.candidateInformation.address;
+        item.candidateInformation.name = centerEllipsis(
+          item.candidateInformation.formattedAddress
+        );
       } else {
         item.candidateInformation.name = teamInfo.name;
       }
