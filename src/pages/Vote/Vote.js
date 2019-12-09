@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 17:34:41
+ * @LastEditTime: 2019-12-10 02:15:51
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -24,7 +24,7 @@ import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 import config, {
   DEFAUTRPCSERVER as DEFAUT_RPC_SERVER,
   APPNAME,
-  profitContractAddr
+  ADDRESS_INFO
 } from '@config/config';
 import { aelf } from '@src/utils';
 // import voteStore from '@store/vote';
@@ -377,7 +377,6 @@ class VoteContainer extends Component {
     aelf.chain
       .contractAt(result[contractAddrValName], result.wallet)
       .then(res => {
-        console.log('res', res);
         contractsStore.setContract(contractNickname, res);
         this.setState(
           { [contractNickname]: contractsStore[contractNickname] },
@@ -420,7 +419,6 @@ class VoteContainer extends Component {
             ],
             APPNAME // TODO: 这个需要content.js 主动获取
           });
-          console.log('nightElf', nightElf);
           if (nightElf) {
             this.setState({
               nightElf
@@ -463,8 +461,8 @@ class VoteContainer extends Component {
 
   getNightElfKeypair(wallet) {
     if (wallet) {
-      console.log('wallet', wallet);
       wallet.pubkey = '04' + wallet.publicKey.x + wallet.publicKey.y;
+      wallet.formattedAddress = `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
       this.setState({
         currentWallet: wallet,
@@ -691,9 +689,9 @@ class VoteContainer extends Component {
       const teamInfo = allTeamInfo.find(
         team => team.public_key === record.candidate
       );
-      console.log('teamInfo', teamInfo);
       if (teamInfo === undefined) {
-        record.name = publicKeyToAddress(record.candidate);
+        record.address = publicKeyToAddress(record.candidate);
+        record.name = `${ADDRESS_INFO.PREFIX}_${record.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       } else {
         record.name = teamInfo.name;
       }
@@ -733,7 +731,6 @@ class VoteContainer extends Component {
           value: currentWallet.pubkey
         })
           .then(res => {
-            console.log('GetCandidateInformation', res);
             this.setState({
               isCandidate: res.isCurrentCandidate
             });
@@ -1032,7 +1029,7 @@ class VoteContainer extends Component {
   voteNextCallback() {
     const { voteType } = this.state;
     let voteConfirmForm = null;
-    console.log('voteType', voteType);
+
     // todo: Use voteTypeFormItemsMap instead in proper time
     switch (voteType) {
       case FROM_WALLET:
@@ -1056,8 +1053,6 @@ class VoteContainer extends Component {
         break;
     }
 
-    console.log('voteConfirmForm', voteConfirmForm);
-
     this.setState(
       {
         voteConfirmForm,
@@ -1074,7 +1069,7 @@ class VoteContainer extends Component {
 
   handleLockTimeChange(value) {
     const { dividendContract } = this.state;
-    console.log('value', value);
+
     this.setState(
       {
         lockTime: value
@@ -1135,10 +1130,7 @@ class VoteContainer extends Component {
     // console.log('ms', timeMS);
     const lockTimeForTest = moment().add(4, 'minutes');
     lockTime = isLockTimeForTest ? lockTimeForTest : lockTime;
-    console.log({
-      targetPublicKey,
-      electionContractFromExt
-    });
+
     const payload = {
       // candidatePubkey:
       // '041f1af590bc633b30efef64f971f5e12ccd7d20a4b88fceb3f489fd3b787bc274695e8ba55574c502d8572916773c5bb74e93ad375c02014360e496098c74b4fa',

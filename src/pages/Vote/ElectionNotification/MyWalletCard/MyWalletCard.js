@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 13:16:37
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 16:07:02
+ * @LastEditTime: 2019-12-10 01:42:39
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -65,7 +65,10 @@ export default class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    this.fetchData(prevProps);
+    const { checkExtensionLockStatus } = this.props;
+    checkExtensionLockStatus().then(() => {
+      this.fetchData(prevProps);
+    });
   }
 
   fetchData(prevProps) {
@@ -242,15 +245,11 @@ export default class MyWalletCard extends PureComponent {
 
   handleUpdateWalletClick() {
     const { changeVoteState, checkExtensionLockStatus } = this.props;
-    checkExtensionLockStatus()
-      .then(() => {
-        changeVoteState({
-          shouldRefreshMyWallet: true
-        });
-      })
-      .catch(err => {
-        console.error('checkExtensionLockStatus', err);
+    checkExtensionLockStatus().then(() => {
+      changeVoteState({
+        shouldRefreshMyWallet: true
       });
+    });
   }
 
   render() {
@@ -330,7 +329,9 @@ export default class MyWalletCard extends PureComponent {
           <span className="my-wallet-card-body-wallet-title-key">
             Address:{' '}
           </span>
-          <span className="primary-color">{currentWallet.address}</span>
+          <span className="primary-color">
+            {currentWallet.formattedAddress}
+          </span>
           {/*<h3 className='my-wallet-card-body-wallet-title-name'>*/}
           {/*{currentWallet.name}*/}
           {/*</h3>*/}

@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 17:42:20
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-10 01:08:41
+ * @LastEditTime: 2019-12-10 01:58:14
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -224,7 +224,7 @@ class NodeTable extends PureComponent {
               key={record.pubkey}
               type="primary"
               style={{ marginRight: 14 }}
-              data-nodeaddress={record.address}
+              data-nodeaddress={record.formattedAddress}
               data-targetPublicKey={record.pubkey}
               data-role="vote"
               data-nodename={record.name}
@@ -239,7 +239,7 @@ class NodeTable extends PureComponent {
               type="primary"
               data-role="redeem"
               data-shoulddetectlock
-              data-nodeaddress={record.address}
+              data-nodeaddress={record.formattedAddress}
               data-targetPublicKey={record.pubkey}
               data-nodename={record.name}
               disabled={
@@ -382,10 +382,11 @@ class NodeTable extends PureComponent {
       item.candidateInformation.address = publicKeyToAddress(
         item.candidateInformation.pubkey
       );
+      item.candidateInformation.formattedAddress = `${ADDRESS_INFO.PREFIX}_${item.candidateInformation.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       if (teamInfo === undefined) {
         // todo: use address instead after api modified
         item.candidateInformation.name = centerEllipsis(
-          `${ADDRESS_INFO.PREFIX}_${item.candidateInformation.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`
+          item.candidateInformation.formattedAddress
         );
       } else {
         item.candidateInformation.name = teamInfo.name;
