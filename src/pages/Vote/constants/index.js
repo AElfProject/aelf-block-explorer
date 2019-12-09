@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 19:43:55
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-26 13:26:37
+ * @LastEditTime: 2019-12-07 21:16:44
  * @Description: The constants used in Vote pages
  */
 import { thousandsComma } from '@utils/formater';
@@ -85,15 +85,15 @@ const schemeIds = [
     schemeId: '208d098067699730d220f1997d48c8b8d8881bb8507abfad1b07d9af8ba94bb0'
   },
   {
-    type: 'VotesWeightReward',
+    type: 'VotesWeight',
     schemeId: '9a7f406cf485dd91439c848dea23b5c03029aee63cd8077710ca05865f73ed99'
   },
   {
-    type: 'MinerBasicReward',
+    type: 'MinerBasic',
     schemeId: '58c0ee2b5eab330cafa5df680399a6374c7e86bbbcabeda0b70eb0a98a4f788a'
   },
   {
-    type: 'ReElectionReward',
+    type: 'ReElection',
     schemeId: '291c0cc8fd51e02c02cb95c235f8d41a14793f8e8bf4810e3e44aaf89e7c3389'
   }
 ];

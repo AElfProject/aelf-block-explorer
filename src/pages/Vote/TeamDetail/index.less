@@ -3,47 +3,67 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:54:31
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 16:28:10
+ * @LastEditTime: 2019-12-09 19:07:24
  * @Description: file content
  */
 @clsPrefix: team-detail;
 
 .@{clsPrefix} {
-  color: #fff;
+  color: @cusBlack;
+  padding: 50px;
+  .card-container {
+    padding: 20px 0;
+    .card-header {
+      color: #000;
+      font-weight: bold;
+    }
+    .card-content {
+      background: @bgBlankGrey;
+      color: @cusBlack;
+      min-height: 136px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  .statistical-data-container {
+    background: #fff;
+    border-bottom: 1px solid @borderColor;
+    padding: 20px 30px;
+  }
   .@{clsPrefix}-header {
+    border-bottom: 1px solid @borderColor;
+    margin-bottom: 0;
     .@{clsPrefix}-team-avatar-info {
-      display: inline-block;
       .ant-avatar-square {
         border-radius: 20px;
       }
       .@{clsPrefix}-team-info {
         display: inline-block;
-        margin-left: 20px;
         vertical-align: top;
         .@{clsPrefix}-node-name {
-          color: @gold;
+          color: @primary-color;
           max-width: 500px;
           font-size: 20px;
           .ant-tag {
             margin-left: 5px;
           }
         }
+        .edit-btn {
+          margin-left: 20px;
+        }
         &-location {
-          margin: 5px;
+          margin-right: 100px;
         }
         &-address {
-          margin: 5px;
           margin-bottom: 10px;
           .ant-typography {
             display: inline; // Using inline-block here will cause style problem, solve it if time permitting
             max-width: 500px;
-            color: #fff;
+            color: @cusBlack;
           }
         }
       }
-    }
-    .card-container-left {
-      padding: 30px 30px 30px 100px;
     }
     .card-container-right {
       display: flex;
@@ -51,18 +71,19 @@
       justify-content: space-around;
       align-items: center;
       flex-direction: column;
-      padding: 30px;
       .ant-btn {
         display: block;
-        margin-bottom: 30px;
-        min-width: 100px;
+        margin-bottom: 12px;
         border: none;
+        width: 78px;
+        height: 26px;
+        border-radius: 26px;
+        font-size: 14px;
         &.vote-btn {
-          //background-color: @buyColor;
-          background-color: @bgMain;
+          background-color: @primary-color;
         }
         &.redeem-btn {
-          background-color: @neuterColor;
+          background-color: @buyColor;
         }
       }
     }
@@ -80,26 +101,31 @@
   padding: 10px 10px 10px 10px;
   margin-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  color: #fff;
+  color: @cusBlack;
   font-size: 18px;
 }
 
 // todo: Optimzie the way writting the css
 @media (max-width: @smallScreenWidth) {
   .@{clsPrefix} {
-    color: #fff;
+    padding: 20px;
     .@{clsPrefix}-header {
       .card-container-left {
         padding: 0;
         .@{clsPrefix}-team-avatar-info {
           position: relative;
+          display: block;
+          .edit-btn {
+            display: none;
+          }
+          .team-avatar-container {
+            padding-top: 12px;
+          }
           .@{clsPrefix}-team-info {
-            margin-left: 0;
+            width: 80%;
+            margin-left: 10px;
             .@{clsPrefix}-node-name {
               // todo: Reorganize the html code to avoid of using absolute
-              position: absolute;
-              right: 0;
-              top: 5%;
               max-width: 250px;
               font-size: 16px;
               // .ant-tag {
@@ -108,6 +134,7 @@
             }
             &-address {
               position: relative;
+              display: block;
               margin-bottom: 0;
               .ant-typography {
                 display: inline-block;

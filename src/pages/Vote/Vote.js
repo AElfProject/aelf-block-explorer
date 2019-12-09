@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 15:40:39
+ * @LastEditTime: 2019-12-09 17:34:41
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -39,7 +39,6 @@ import {
 import getStateJudgment from '@utils/getStateJudgment';
 import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
-import CandidateApply from './CandidateApply';
 import KeyInTeamInfo from './KeyInTeamInfo';
 import TeamDetail from './TeamDetail';
 import VoteModal from './VoteModal';
@@ -1419,6 +1418,39 @@ class VoteContainer extends Component {
       });
   }
 
+  renderSecondaryLevelNav() {
+    const isSmallScreen = document.body.offsetWidth < 768;
+
+    return (
+      <section className="vote-container vote-container-simple basic-container basic-container-white">
+        <Menu
+          // onClick={this.handleClick}
+          selectedKeys={[window.location.pathname]}
+          mode="horizontal"
+        >
+          <Menu.Item
+            key={routePaths.electionNotifi}
+            onClick={() => {
+              this.props.history.push(routePaths.electionNotifi);
+            }}
+          >
+            Election Notification
+          </Menu.Item>
+          {isSmallScreen ? null : (
+            <Menu.Item
+              key={routePaths.myVote}
+              onClick={() => {
+                this.props.history.push(routePaths.myVote);
+              }}
+            >
+              My Vote
+            </Menu.Item>
+          )}
+        </Menu>
+      </section>
+    );
+  }
+
   render() {
     const {
       voteModalVisible,
@@ -1471,6 +1503,8 @@ class VoteContainer extends Component {
       isLockTimeForTest
     } = this.state;
 
+    const secondaryLevelNav = this.renderSecondaryLevelNav();
+
     // todo: decouple
     // this.formGroup = generateFormGroup.call(this, { nodeAddress: null });
     return (
@@ -1483,32 +1517,7 @@ class VoteContainer extends Component {
             </section>
           ) : null}
 
-          <section className="vote-container vote-container-simple basic-container basic-container-white">
-            <Menu
-              // onClick={this.handleClick}
-              selectedKeys={[window.location.pathname]}
-              mode="horizontal"
-            >
-              <Menu.Item
-                key={routePaths.electionNotifi}
-                onClick={() => {
-                  this.props.history.push(routePaths.electionNotifi);
-                }}
-              >
-                Election Notification
-              </Menu.Item>
-              <Menu.Item
-                key={routePaths.myVote}
-                onClick={() => {
-                  this.props.history.push(routePaths.myVote);
-                }}
-              >
-                My Vote
-              </Menu.Item>
-            </Menu>
-          </section>
-
-          <section className="vote-container vote-container-simple basic-container basic-container-white"></section>
+          {secondaryLevelNav}
           <section
             className="vote-container vote-container-simple basic-container basic-container-white"
             onClick={this.handleClick}
@@ -1540,23 +1549,6 @@ class VoteContainer extends Component {
                     }
                     refreshPageElectionNotifi={this.refreshPageElectionNotifi}
                     currentWallet={currentWallet}
-                  />
-                )}
-              />
-              <Route
-                exact
-                path={routePaths.applyToBeANode}
-                electionContract={electionContract}
-                render={() => (
-                  <CandidateApply
-                    electionContractFromExt={electionContractFromExt}
-                    nightElf={nightElf}
-                    currentWallet={currentWallet}
-                    checkExtensionLockStatus={this.checkExtensionLockStatus}
-                    isCandidate={isCandidate}
-                    shouldJudgeIsCurrentCandidate={
-                      shouldJudgeIsCurrentCandidate
-                    }
                   />
                 )}
               />

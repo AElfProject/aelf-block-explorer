@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 13:16:37
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 16:21:30
+ * @LastEditTime: 2019-12-09 16:07:02
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -16,7 +16,6 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
-import { PRIMARY_COLOR } from '@src/constants/themeConstants';
 import { schemeIds } from '@pages/Vote/constants';
 
 // @inject('contractsStore') @observer
@@ -313,7 +312,7 @@ export default class MyWalletCard extends PureComponent {
             <Icon
               type="wallet"
               theme="filled"
-              style={{ marginRight: 12, color: PRIMARY_COLOR }}
+              className="card-header-icon"
             ></Icon>
             My Wallet
           </h2>

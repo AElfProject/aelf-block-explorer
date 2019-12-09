@@ -53,7 +53,7 @@ function genMyVoteRecordsCols() {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      width: 90,
+      width: 90
     },
     {
       title: 'Vote Amount',
@@ -65,7 +65,7 @@ function genMyVoteRecordsCols() {
     {
       title: 'Lock Time',
       dataIndex: 'formatedLockTime',
-      key: 'formatedLockTime',
+      key: 'formatedLockTime'
     },
     {
       title: 'Unlock Time',
@@ -76,7 +76,7 @@ function genMyVoteRecordsCols() {
       title: 'Status',
       key: 'status',
       dataIndex: 'status',
-      width: 110,
+      width: 110
     },
     {
       title: 'Operation Time',
@@ -100,11 +100,11 @@ function genMyVoteRecordsCols() {
       title: 'Operations',
       key: 'operations',
       render: (text, record) => (
-        <div className='node-list-btn-group'>
+        <div className="node-list-btn-group">
           <Button
-            type='primary'
-            className='table-btn redeem-btn'
-            data-role='redeemOne'
+            type="primary"
+            className="table-btn redeem-btn"
+            data-role="redeemOne"
             data-nodeaddress={publicKeyToAddress(record.candidate)}
             data-nodename={record.nane || publicKeyToAddress(record.candidate)}
             data-amount={record.amount}
@@ -159,17 +159,17 @@ class MyVoteRecords extends Component {
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -177,7 +177,7 @@ class MyVoteRecords extends Component {
       </div>
     ),
     filterIcon: filtered => (
-      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -215,7 +215,7 @@ class MyVoteRecords extends Component {
 
     return (
       <section className={`${clsPrefix}-section`}>
-        <h2 className={`${clsPrefix}-header`}>
+        <h2 className={`${clsPrefix}-header table-card-header`}>
           <span>My Votes</span>
           {/* <span className='node-color-intro-group'>
             <span className='node-color-intro-item'>BP节点</span>

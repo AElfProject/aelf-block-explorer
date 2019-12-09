@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-16 17:33:33
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 18:03:06
+ * @LastEditTime: 2019-12-09 19:06:59
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -92,7 +92,7 @@ function generateTeamInfoKeyInForm(data) {
           validateTrigger: ['onBlur'],
           initialValue: data.avatar
         },
-        render: <Input addonBefore='https://' placeholder='Input avatar url:' />
+        render: <Input addonBefore="https://" placeholder="Input avatar url:" />
       },
       {
         label: 'Location',
@@ -116,7 +116,7 @@ function generateTeamInfoKeyInForm(data) {
           initialValue: data.officialWebsite
         },
         render: (
-          <Input addonBefore='https://' placeholder='Input your website:' />
+          <Input addonBefore="https://" placeholder="Input your website:" />
         )
       },
       {
@@ -142,7 +142,7 @@ function generateTeamInfoKeyInForm(data) {
         },
         render: (
           <TextArea
-            placeholder='Intro your team here:'
+            placeholder="Intro your team here:"
             autosize={{ minRows: 3, maxRows: 6 }}
           />
         )
@@ -204,8 +204,8 @@ class KeyInTeamInfo extends PureComponent {
     return (
       <section className={`card-container`}>
         <Result
-          icon={<Icon type='lock' theme='twoTone' twoToneColor='#2b006c' />}
-          status='warning'
+          icon={<Icon type="lock" theme="twoTone" twoToneColor="#2b006c" />}
+          status="warning"
           title={UNLOCK_PLUGIN_TIP}
         />
       </section>
@@ -237,11 +237,11 @@ class KeyInTeamInfo extends PureComponent {
               //   this.onSocialTypeChange(k, value);
               // }}
             >
-              <Option value='Facebook'>Facebook</Option>
-              <Option value='Telegram'>Telegram</Option>
-              <Option value='Twitter'>Twitter</Option>
-              <Option value='Steemit'>Steemit</Option>
-              <Option value='Github'>Github</Option>
+              <Option value="Facebook">Facebook</Option>
+              <Option value="Telegram">Telegram</Option>
+              <Option value="Twitter">Twitter</Option>
+              <Option value="Steemit">Steemit</Option>
+              <Option value="Github">Github</Option>
             </Select>
           )}
           required={false}
@@ -265,8 +265,8 @@ class KeyInTeamInfo extends PureComponent {
             ]
           })(
             <Input
-              addonBefore='https://'
-              placeholder='input your social network website'
+              addonBefore="https://"
+              placeholder="input your social network website"
               style={
                 keys.length === 1
                   ? { width: '100%', marginRight: 8 }
@@ -276,8 +276,8 @@ class KeyInTeamInfo extends PureComponent {
           )}
           {keys.length > 1 ? (
             <Icon
-              className='dynamic-delete-button'
-              type='minus-circle-o'
+              className="dynamic-delete-button"
+              type="minus-circle-o"
               onClick={() => this.remove(k)}
             />
           ) : null}
@@ -301,13 +301,11 @@ class KeyInTeamInfo extends PureComponent {
     const socialFormItems = this.getSocialFormItems();
 
     return (
-      <div className='loading-container has-mask-on-mobile'>
+      <div className="loading-container has-mask-on-mobile">
         {isLoading ? (
-          <Spin spinning={isLoading} size='large' />
+          <Spin spinning={isLoading} />
         ) : (
-          <section
-            className={`${clsPrefix}-container card-container`}
-          >
+          <section className={`${clsPrefix}-container card-container`}>
             {hasAuth ? (
               // eslint-disable-next-line react/jsx-fragments
               <React.Fragment>
@@ -337,19 +335,19 @@ class KeyInTeamInfo extends PureComponent {
                   {keys.length < 5 ? (
                     <Form.Item {...formItemLayoutWithOutLabel}>
                       <Button
-                        type='primary'
+                        type="primary"
                         onClick={this.add}
                         style={{ width: '90%', float: 'right' }}
                       >
-                        <Icon type='plus' /> Add Social Network
+                        <Icon type="plus" /> Add Social Network
                       </Button>
                     </Form.Item>
                   ) : null}
                 </Form>
                 <div className={`${clsPrefix}-footer`}>
                   <Button
-                    type='submit'
-                    htmlType='submit'
+                    type="submit"
+                    htmlType="submit"
                     onClick={this.handleSubmit}
                   >
                     Submit
@@ -362,10 +360,10 @@ class KeyInTeamInfo extends PureComponent {
               //   info.
               // </p>
               <Result
-                status='403'
+                status="403"
                 title={NO_AUTHORIZATION_ERROR_TIP}
                 extra={
-                  <Button type='primary' onClick={this.handleBack}>
+                  <Button type="primary" onClick={this.handleBack}>
                     Go Back
                   </Button>
                 }

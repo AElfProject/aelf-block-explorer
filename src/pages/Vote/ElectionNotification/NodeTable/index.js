@@ -1,3 +1,11 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-07 17:42:20
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-07 18:52:10
+ * @Description: file content
+ */
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -84,17 +92,17 @@ class NodeTable extends PureComponent {
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -102,7 +110,7 @@ class NodeTable extends PureComponent {
       </div>
     ),
     filterIcon: filtered => (
-      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -192,9 +200,9 @@ class NodeTable extends PureComponent {
         key: 'votedRate',
         dataIndex: 'votedRate',
         defaultSortOrder: 'descend',
-        render: value => (
-          <Progress percent={value} status='active' strokeColor='#fff' />
-        ),
+        render: value =>
+          // <Progress percent={value} status="active" strokeColor="#fff" />
+          `${value}%`,
         sorter: (a, b) => a.votedRate - b.votedRate
       },
       {
@@ -212,13 +220,13 @@ class NodeTable extends PureComponent {
           <div className={`${clsPrefix}-btn-group`}>
             {/* todo: replace pubkey by address? */}
             <Button
-              className='table-btn vote-btn'
+              className="table-btn vote-btn"
               key={record.pubkey}
-              type='primary'
+              type="primary"
               style={{ marginRight: '20px' }}
               data-nodeaddress={record.address}
               data-targetPublicKey={record.pubkey}
-              data-role='vote'
+              data-role="vote"
               data-nodename={record.name}
               data-shoulddetectlock
               data-votetype={FROM_WALLET}
@@ -226,10 +234,10 @@ class NodeTable extends PureComponent {
               Vote
             </Button>
             <Button
-              className='table-btn redeem-btn'
+              className="table-btn redeem-btn"
               key={record.pubkey + 1}
-              type='primary'
-              data-role='redeem'
+              type="primary"
+              data-role="redeem"
               data-shoulddetectlock
               data-nodeaddress={record.address}
               data-targetPublicKey={record.pubkey}
@@ -460,7 +468,7 @@ class NodeTable extends PureComponent {
 
     return (
       <section className={`${clsPrefix}`}>
-        <h2 className={`${clsPrefix}-header`}>
+        <h2 className={`${clsPrefix}-header table-card-header`}>
           Node Table
           {/* <span className='node-color-intro-group'>
               <span className='node-color-intro-item'>BP节点</span>

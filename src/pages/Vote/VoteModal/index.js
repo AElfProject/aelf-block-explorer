@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-26 15:12:57
+ * @LastEditTime: 2019-12-09 21:06:10
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -39,7 +39,7 @@ import {
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES
 } from '@src/pages/Vote/constants';
-import { thousandsCommaWithDecimal } from '@utils/formater';
+import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
 import './index.less';
 
 const { TabPane } = Tabs;
@@ -118,7 +118,7 @@ function getColumns() {
               pathname: '/vote/team',
               search: `pubkey=${record.candidate}`
             }}
-            className='node-name-in-table'
+            className="node-name-in-table"
             // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
             style={{ width: 150 }}
             onClick={() => {
@@ -173,6 +173,10 @@ class VoteModal extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      tableVisible: false
+    };
+
     this.handleAllIn = this.handleAllIn.bind(this);
     this.handleOk = this.handleOk.bind(this);
     // this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
@@ -212,10 +216,20 @@ class VoteModal extends Component {
 
     const switchVoteRowSelection = {
       selectedRowKeys: switchVoteSelectedRowKeys,
-      onChange: handleSwithVoteSelectedRowChange,
+      onChange: (...params) => {
+        handleSwithVoteSelectedRowChange(...params);
+        this.setState({
+          tableVisible: false
+        });
+      },
       hideDefaultSelections: true,
       type: 'radio'
     };
+
+    const switchVoteRecord = switchableVoteRecords.find(
+      record => record.key === switchVoteSelectedRowKeys[0]
+    );
+    const switchVoteAmount = switchVoteRecord && switchVoteRecord.amount;
 
     return [
       {
@@ -225,12 +239,19 @@ class VoteModal extends Component {
         formItems: [
           {
             label: 'Node Name',
-            render: <span className='form-item-value ellipsis'>{nodeName}</span>
+            // FIXME: handle the other case
+            render: (
+              <span className="form-item-value">
+                {centerEllipsis(nodeName)}
+              </span>
+            )
           },
           {
             label: 'Node Add',
             render: (
-              <span className='form-item-value ellipsis'>{nodeAddress}</span>
+              <span className="form-item-value">
+                {centerEllipsis(nodeAddress)}
+              </span>
             )
           },
           // {
@@ -246,8 +267,9 @@ class VoteModal extends Component {
             render: (
               // <div>
               <Input
+                className="vote-input"
                 // suffix={SYMBOL}
-                placeholder='Enter vote amount'
+                placeholder="Enter vote amount"
                 // todo: How to make parser/formatter work well with validator?
                 // parser={value => +value.replace(/\$\s?|(,*)/g, '')}
                 // formatter={value =>
@@ -287,7 +309,7 @@ class VoteModal extends Component {
               validateFirst: true // todo: How to set it to default?
             },
             // todo: extra should compatible with ReactElement and string
-            extra: `Usable Balance: ${thousandsCommaWithDecimal(
+            tip: `Usable Balance: ${thousandsCommaWithDecimal(
               balance,
               false
             )} ${SYMBOL}`
@@ -295,24 +317,20 @@ class VoteModal extends Component {
           {
             label: 'Lock Time',
             render: (
-              <div>
-                <DatePicker
-                  className='date-picker-in-modal'
-                  disabledDate={disabledDate}
-                  // value={lockTime}
-                  // todo: Why do I need to set the field's value myself?
-                  onChange={value => {
-                    this.props.form.setFieldsValue({
-                      lockTime: value
-                    });
-                  }}
-                />
-                <span className='tip-color' style={{ marginLeft: 10 }}>
-                  Withdraw and transfer are not supported during the locking
-                  period
-                </span>
-              </div>
+              <DatePicker
+                className="date-picker-in-modal"
+                disabledDate={disabledDate}
+                // value={lockTime}
+                // todo: Why do I need to set the field's value myself?
+                onChange={value => {
+                  this.props.form.setFieldsValue({
+                    lockTime: value
+                  });
+                }}
+              />
             ),
+            tip:
+              'Withdraw and transfer are not supported during the locking period',
             validator: {
               rules: [
                 {
@@ -441,12 +459,18 @@ class VoteModal extends Component {
         formItems: [
           {
             label: 'Node Name',
-            render: <span className='form-item-value ellipsis'>{nodeName}</span>
+            render: (
+              <span className="form-item-value">
+                {centerEllipsis(nodeName)}
+              </span>
+            )
           },
           {
             label: 'Node Add',
             render: (
-              <span className='form-item-value ellipsis'>{nodeAddress}</span>
+              <span className="form-item-value">
+                {centerEllipsis(nodeAddress)}
+              </span>
             )
           },
           {
@@ -458,13 +482,38 @@ class VoteModal extends Component {
                   onSearch={value => console.log(value)}
                   style={{ width: 200 }}
                 /> */}
-                <Table
-                  size='small'
-                  dataSource={switchableVoteRecords}
-                  columns={columns}
-                  rowSelection={switchVoteRowSelection}
-                  pagination={switchVotePagination}
+                <Input
+                  value={switchVoteAmount}
+                  placeholder="Please select vote"
+                  onClick={() => {
+                    this.setState({
+                      tableVisible: true
+                    });
+                  }}
                 />
+
+                {this.state.tableVisible ? (
+                  <>
+                    <div className="table-container">
+                      <Table
+                        // className=''
+                        size="middle"
+                        dataSource={switchableVoteRecords}
+                        columns={columns}
+                        rowSelection={switchVoteRowSelection}
+                        pagination={switchVotePagination}
+                      />
+                    </div>
+                    <div
+                      className="modal-mask"
+                      onClick={e => {
+                        this.setState({
+                          tableVisible: false
+                        });
+                      }}
+                    />
+                  </>
+                ) : null}
               </div>
             ),
             validator: {
@@ -584,17 +633,17 @@ class VoteModal extends Component {
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -602,7 +651,7 @@ class VoteModal extends Component {
       </div>
     ),
     filterIcon: filtered => (
-      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -648,10 +697,11 @@ class VoteModal extends Component {
 
     return (
       <Modal
-        title='Node Vote'
+        className="vote-modal"
+        title="Node Vote"
         visible={voteModalVisible}
         onOk={this.handleOk}
-        okText='Confirm'
+        okText="OK"
         // confirmLoading={confirmLoading}
         width={980}
         // okText='Next'
@@ -679,7 +729,7 @@ class VoteModal extends Component {
                 tab={
                   <span>
                     <input
-                      type='radio'
+                      type="radio"
                       checked={voteType === form.type}
                       value={form.type}
                       style={{ marginRight: 10 }}
@@ -699,22 +749,35 @@ class VoteModal extends Component {
                   {form.formItems.map(item => {
                     // todo: there are repeat code in form
                     return (
-                      <Form.Item
-                        label={item.label}
-                        key={item.label}
-                        className={item.extra ? 'form-item-with-extra' : ''}
-                      >
-                        {item.extra && (
-                          <div className='form-item-extra'>{item.extra}</div>
-                        )}
-                        {/* todo: Optimize the judge */}
-                        {item.validator
-                          ? getFieldDecorator(
-                              item.validator.fieldDecoratorid,
-                              item.validator
-                            )(item.render || <Input />)
-                          : item.render}
-                      </Form.Item>
+                      <>
+                        <Form.Item
+                          label={item.label}
+                          key={item.label}
+                          className={item.extra ? 'form-item-with-extra' : ''}
+                        >
+                          {/* {item.extra && (
+                            <div className="form-item-extra">{item.extra}</div>
+                          )} */}
+                          {/* todo: Optimize the judge */}
+                          {item.validator
+                            ? getFieldDecorator(
+                                item.validator.fieldDecoratorid,
+                                item.validator
+                              )(item.render || <Input />)
+                            : item.render}
+                          {item.tip ? (
+                            <Tooltip title={item.tip}>
+                              <Icon
+                                className="right-icon"
+                                theme="filled"
+                                type="info-circle"
+                                // width={16}
+                                // height={16}
+                              />
+                            </Tooltip>
+                          ) : null}
+                        </Form.Item>
+                      </>
                     );
                   })}
                   {/* <Switch
@@ -734,7 +797,7 @@ class VoteModal extends Component {
             );
           })}
         </Tabs>
-        <p className='tip-color'>{FEE_TIP}</p>
+        <p className="tip-color">{FEE_TIP}</p>
       </Modal>
     );
   }
