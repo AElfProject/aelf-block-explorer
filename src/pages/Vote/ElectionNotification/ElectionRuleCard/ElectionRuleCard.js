@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { withRouter } from 'react-router';
 import { Button, Icon } from 'antd';
 
-import { PRIMARY_COLOR } from '@src/constants/themeConstants';
 import './ElectionRuleCard.style.less';
 
 function ElectionRuleCard(props) {
@@ -13,7 +12,7 @@ function ElectionRuleCard(props) {
         <Icon
           type="file-text"
           theme="filled"
-          style={{ marginRight: 12, color: PRIMARY_COLOR }}
+          className="card-header-icon"
         ></Icon>
         Node Election
       </h2>

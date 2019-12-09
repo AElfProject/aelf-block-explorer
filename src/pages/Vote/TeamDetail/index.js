@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 19:30:22
+ * @LastEditTime: 2019-12-09 16:37:54
  * @Description: file content
  */
 
@@ -18,7 +18,8 @@ import {
   Avatar,
   Tag,
   Typography,
-  message
+  message,
+  Icon
 } from 'antd';
 import queryString from 'query-string';
 
@@ -266,7 +267,7 @@ class TeamDetail extends PureComponent {
     // todo: The component StatisData is PureComponent so I have to create a new heap space to place the object
     // todo: Consider to make the component StatisData non-PureComponent
     const statisData = { ...this.getStatisData() };
-    const avatarSize = isSmallScreen ? 'large' : 144;
+    const avatarSize = isSmallScreen ? 'large' : 92;
 
     // todo: Is it safe if the user keyin a url that is not safe?
     // todo: handle the error case of node-name
@@ -282,32 +283,32 @@ class TeamDetail extends PureComponent {
               md={18}
               sm={24}
               xs={24}
-              className='card-container-left'
+              className="card-container-left"
             >
               <div className={`${clsPrefix}-team-avatar-info`}>
                 {data.avatar ? (
-                  <Avatar shape='square' size={avatarSize} src={data.avatar} />
+                  <Avatar shape="square" size={avatarSize} src={data.avatar} />
                 ) : (
-                  <Avatar shape='square' size={avatarSize}>
+                  <Avatar shape="square" size={avatarSize}>
                     U
                   </Avatar>
                 )}
                 <div className={`${clsPrefix}-team-info`}>
                   <h5 className={`${clsPrefix}-node-name ellipsis`}>
                     {data.name ? data.name : candidateAddress}
-                    <Tag color='#f50'>{isBP ? 'BP' : 'Candidate'}</Tag>
+                    <Tag color="#f50">{isBP ? 'BP' : 'Candidate'}</Tag>
                   </h5>
-                  <p className={`${clsPrefix}-team-info-location`}>
-                    Location: {data.location}
-                  </p>
-                  <p className={`${clsPrefix}-team-info-address`}>
-                    Node Address:{' '}
-                    <Paragraph copyable className='ellipsis'>
-                      {candidateAddress}
+                  <span className={`${clsPrefix}-team-info-location`}>
+                    Location: {data.location || '-'}
+                  </span>
+                  <span className={`${clsPrefix}-team-info-address`}>
+                    Address:{' '}
+                    <Paragraph copyable={{ text: candidateAddress }}>
+                      {candidateAddress.slice(0, 20)}...
                     </Paragraph>
-                  </p>
+                  </span>
                   {hasAuth ? (
-                    <Button type='primary' shape='round'>
+                    <Button type="primary" shape="round">
                       <Link
                         to={{
                           pathname: '/vote/apply/keyin',
@@ -328,14 +329,14 @@ class TeamDetail extends PureComponent {
               md={6}
               sm={0}
               xs={0}
-              className='card-container-right'
+              className="card-container-right"
             >
               <Button
-                className='table-btn vote-btn'
-                size='large'
-                type='primary'
-                shape='round'
-                data-role='vote'
+                className="table-btn vote-btn"
+                // size="large"
+                type="primary"
+                shape="round"
+                data-role="vote"
                 data-shoulddetectlock
                 data-votetype={FROM_WALLET}
                 data-nodeaddress={candidateAddress}
@@ -345,11 +346,11 @@ class TeamDetail extends PureComponent {
                 Vote
               </Button>
               <Button
-                className='table-btn redeem-btn'
-                size='large'
-                type='primary'
-                shape='round'
-                data-role='redeem'
+                className="table-btn redeem-btn"
+                // size="large"
+                type="primary"
+                shape="round"
+                data-role="redeem"
                 data-shoulddetectlock
                 data-nodeaddress={candidateAddress}
                 data-targetPublicKey={this.teamPubkey}
@@ -365,14 +366,20 @@ class TeamDetail extends PureComponent {
         </section>
         <StatisticalData data={statisData} inline></StatisticalData>
         <section className={`${clsPrefix}-intro card-container`}>
-          <h5 className='card-header'>Intro</h5>
-          <div className='card-content'>
+          <h5 className="card-header">
+            <Icon type="edit" className="card-header-icon"></Icon>
+            Intro
+          </h5>
+          <div className="card-content">
             {data.intro || "The team didn't fill the intro."}
           </div>
         </section>
         <section className={`${clsPrefix}-social-network card-container`}>
-          <h5 className='card-header'>Social Networks</h5>
-          <div className='card-content'>
+          <h5 className="card-header">
+            <Icon type="team" className="card-header-icon"></Icon>
+            Social Network
+          </h5>
+          <div className="card-content">
             {data.socials && data.socials.length ? (
               <ul>
                 {data.socials.map(item => (
