@@ -24,9 +24,9 @@ function ElectionRuleCard(props) {
           to make eligible people candidate nodes. We increased their chances of
           being elected by voting. We will vote on the new BP consensus node
           every week and publish the election results.
-          <a className="view-plan-link" href="">
+          {/* <a className="view-plan-link" href="">
             View the node election plan >
-          </a>
+          </a> */}
         </p>
         <div className="btn-group">
           <Button
