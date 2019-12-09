@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-10-23 15:20:28
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-07 20:54:09
+ * @LastEditTime: 2019-12-09 14:52:43
  * @Description: file content
  */
 @import '../../assets/less/_variables';
@@ -62,7 +62,7 @@ button {
 }
 
 .form-item-value {
-  color: #fff;
+  // color: #fff;
   width: 600px;
   display: inline-block;
 }
@@ -212,7 +212,7 @@ button {
 
   .ant-tabs {
     label {
-      color: #ccc;
+      // color: #ccc;
       &:hover {
         //color: #1890ff;
         color: @hoverColor;
@@ -221,7 +221,7 @@ button {
     }
     .ant-tabs-tab-active {
       label {
-        color: #fff;
+        color: @primary-color;
       }
     }
   }
@@ -264,7 +264,10 @@ button {
       text-align: left;
       height: @modalFormItemHeight;
       margin-bottom: 24px;
-      color: @primary-color;
+      color: #000;
+      border: 1px solid @tipColor;
+      border-radius: 16px;
+      // overflow: hidden;
       &.form-item-with-extra {
         position: relative;
         .form-item-extra {
@@ -279,25 +282,39 @@ button {
       .form-item-value {
         font-size: 14px;
         text-align: left;
-        font-weight: bold;
+        // font-weight: bold;
         line-height: @modalFormItemHeight;
+        // border: 1px solid @tipColor;
       }
       .ant-form-item-label {
-        border-top-left-radius: 16px;
-        border-bottom-left-radius: 16px;
+        // border-top-left-radius: 16px;
+        // border-bottom-left-radius: 16px;
         label {
-          color: #4c4c4c;
+          // color: #4c4c4c;
+          color: @tipColor;
+          margin-left: 20px;
         }
       }
       .form-item-value,
       .ant-input {
         border-top-right-radius: 16px;
         border-bottom-right-radius: 16px;
-        border-top-left-radius: 0; // Remove default style
-        border-bottom-left-radius: 0; // Remove default style
+        // border-top-left-radius: 0; // Remove default style
+        // border-bottom-left-radius: 0; // Remove default style
         width: 100%;
-        height: @modalFormItemHeight;
+        // height: @modalFormItemHeight;
+        // border: none;
         text-align: center;
+      }
+      .ant-form-item-control {
+        // line-height: @modalFormItemHeight;
+        line-height: inherit;
+        .right-icon {
+          position: absolute;
+          right: -30px;
+          top: 0;
+          color: @tipColor;
+        }
       }
       .ant-calendar-picker {
         width: 100%;
