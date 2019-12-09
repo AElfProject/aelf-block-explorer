@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-24 16:15:00
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 14:36:30
+ * @LastEditTime: 2019-12-09 21:07:21
  * @Description: file content
  */
 //  todo: use alias instead
@@ -27,11 +27,46 @@
 }
 
 .vote-modal {
+  overflow: visible; // Make table enable overflow
+  .table-container {
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    min-width: 569px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden; // Required
+    background: #fff;
+    padding: 10px;
+  }
+  .ant-tabs {
+    overflow: visible; // Make table enable overflow
+  }
+
+  .ant-table-wrapper {
+    .ant-table-body {
+      margin: 0;
+      tr > th {
+        padding: 14px 10px;
+      }
+    }
+  }
+
   .ant-tabs-nav-scroll {
     text-align: left;
     label {
       color: @tipColor;
     }
+  }
+  .modal-mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9;
+    width: 100vw;
+    height: 100vh;
   }
 }
 

@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-23 14:07:46
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 14:30:09
+ * @LastEditTime: 2019-12-09 21:06:10
  * @Description: file content
  */
 import React, { Component } from 'react';
@@ -173,6 +173,10 @@ class VoteModal extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      tableVisible: false
+    };
+
     this.handleAllIn = this.handleAllIn.bind(this);
     this.handleOk = this.handleOk.bind(this);
     // this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
@@ -212,10 +216,20 @@ class VoteModal extends Component {
 
     const switchVoteRowSelection = {
       selectedRowKeys: switchVoteSelectedRowKeys,
-      onChange: handleSwithVoteSelectedRowChange,
+      onChange: (...params) => {
+        handleSwithVoteSelectedRowChange(...params);
+        this.setState({
+          tableVisible: false
+        });
+      },
       hideDefaultSelections: true,
       type: 'radio'
     };
+
+    const switchVoteRecord = switchableVoteRecords.find(
+      record => record.key === switchVoteSelectedRowKeys[0]
+    );
+    const switchVoteAmount = switchVoteRecord && switchVoteRecord.amount;
 
     return [
       {
@@ -468,13 +482,38 @@ class VoteModal extends Component {
                   onSearch={value => console.log(value)}
                   style={{ width: 200 }}
                 /> */}
-                <Table
-                  size="small"
-                  dataSource={switchableVoteRecords}
-                  columns={columns}
-                  rowSelection={switchVoteRowSelection}
-                  pagination={switchVotePagination}
+                <Input
+                  value={switchVoteAmount}
+                  placeholder="Please select vote"
+                  onClick={() => {
+                    this.setState({
+                      tableVisible: true
+                    });
+                  }}
                 />
+
+                {this.state.tableVisible ? (
+                  <>
+                    <div className="table-container">
+                      <Table
+                        // className=''
+                        size="middle"
+                        dataSource={switchableVoteRecords}
+                        columns={columns}
+                        rowSelection={switchVoteRowSelection}
+                        pagination={switchVotePagination}
+                      />
+                    </div>
+                    <div
+                      className="modal-mask"
+                      onClick={e => {
+                        this.setState({
+                          tableVisible: false
+                        });
+                      }}
+                    />
+                  </>
+                ) : null}
               </div>
             ),
             validator: {
