@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-08-31 17:47:40
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-10 02:15:51
+ * @LastEditTime: 2019-12-10 16:56:29
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
@@ -47,22 +47,18 @@ import RedeemModal from './RedeemModal';
 import RedeemAnVoteModal from './RedeemAnVoteModal';
 // todo: use a import instead
 import * as constants from './constants';
-import { contractsNeedToLoad, schemeIds } from './constants';
-import { electionContractAddr } from '@config/config';
-import getCurrentWallet from '@utils/getCurrentWallet';
-import publicKeyToAddress from '@utils/publicKeyToAddress';
-import { getAllTeamDesc } from '@api/vote';
 import {
+  contractsNeedToLoad,
+  schemeIds,
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
-  NODE_DEFAULT_NAME,
   routePaths
-} from '@src/pages/Vote/constants';
-import { getFormatedLockTime } from '@pages/Vote/utils';
-
-const { TabPane } = Tabs;
-const { Search } = Input;
+} from './constants';
+import getCurrentWallet from '@utils/getCurrentWallet';
+import publicKeyToAddress from '@utils/publicKeyToAddress';
+import { getAllTeamDesc } from '@api/vote';
+import { getFormatedLockTime } from './utils';
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -333,10 +329,6 @@ class VoteContainer extends Component {
       console.error(e);
     }
     this.getExtensionKeypairList();
-
-    console.log({
-      history
-    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -592,7 +584,6 @@ class VoteContainer extends Component {
         return nightElf.chain
           .contractAt(config[item.contractAddrValName], wallet)
           .then(res => {
-            console.log('Load contracts need to load from extension: ', res);
             this.setState({
               [item.contractNickname]: res
             });
@@ -629,7 +620,6 @@ class VoteContainer extends Component {
   }
 
   handleCancel(visible) {
-    console.log('Clicked cancel button');
     this.setState({
       [visible]: false
     });
@@ -646,7 +636,6 @@ class VoteContainer extends Component {
       getAllTeamDesc()
     ])
       .then(resArr => {
-        console.log('fetchDataVoteNeed', resArr);
         this.processDataVoteNeed(resArr);
       })
       .catch(err => {
@@ -988,16 +977,11 @@ class VoteContainer extends Component {
     })
       .then(res => {
         // todo: error handle
-        console.log('GetElectorVoteWithRecords', res);
         const activeVoteRecordsForOneCandidate = res.activeVotingRecords.filter(
           item => item.candidate === targetPublicKey
         );
         const redeemableVoteRecordsForOneCandidate = this.computeRedeemableVoteRecords(
           activeVoteRecordsForOneCandidate
-        );
-        console.log(
-          'redeemableVoteRecordsForOneCandidate',
-          redeemableVoteRecordsForOneCandidate
         );
 
         redeemableVoteRecordsForOneCandidate.forEach(item => {
@@ -1059,7 +1043,6 @@ class VoteContainer extends Component {
         voteModalVisible: false
       },
       () => {
-        console.log('Closed vote modal!');
         this.setState({
           voteConfirmModalVisible: true
         });
@@ -1278,7 +1261,6 @@ class VoteContainer extends Component {
       setTimeout(() => {
         console.log('transactionId', transactionId);
         aelf.chain.getTxResult(transactionId, (error, result) => {
-          console.log('result', JSON.stringify(result));
           if (!result) {
             message.info(
               "Temporaryly didn' get the transaction info. Please query the transaction later"

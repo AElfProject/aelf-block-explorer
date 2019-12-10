@@ -33,7 +33,7 @@ export default class ResourceAElfWallet extends PureComponent {
       CPU: '-',
       NET: '-',
       STO: '-',
-      loading: true
+      loading: false
     };
     this.onRefresh = this.onRefresh.bind(this);
   }
