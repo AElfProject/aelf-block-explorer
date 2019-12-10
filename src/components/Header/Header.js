@@ -165,7 +165,7 @@ class BrowserHeader extends PureComponent {
           title={
             <span className='submenu-title-wrapper'>
               {/* <Icon type='gold' /> */}
-              BLOCK CHAIN
+              BLOCKCHAIN
             </span>
           }
           className='aelf-submenu-container'
