@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 15:29:44
+ * @LastEditTime: 2019-12-10 17:00:44
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -14,7 +14,7 @@ import './index.less';
 const { Countdown } = Statistic;
 const clsPrefix = 'statistical-data';
 
-const arrFormate = function (arr) {
+const arrFormate = function(arr) {
   // const arr = new Array(arrInput);
   switch (arr.length) {
     case 4:
@@ -70,24 +70,21 @@ export default class StatisticalData extends PureComponent {
       if (item.id === 3) {
         number = (number / 100000000).toFixed(2);
       }
-      if (item.isCountdown) {
-        console.log('item.isCountdown: ', item.isCountdown, item.num);
-      }
 
-      return item.isCountdown ? <Countdown
-        key={Math.random()}
-        title={item.title}
-        value={item.num || 0}
-        format='D day HH : mm : ss '
-        onFinish={() => {
-          console.log('finished');
-          this.handleFinish(item.id);
-        }}
-      /> : <Statistic
-        key={Math.random()}
-        title={item.title}
-        value={number}
-      />;
+      return item.isCountdown ? (
+        <Countdown
+          key={Math.random()}
+          title={item.title}
+          value={item.num || 0}
+          format="D day HH : mm : ss "
+          onFinish={() => {
+            console.log('finished');
+            this.handleFinish(item.id);
+          }}
+        />
+      ) : (
+        <Statistic key={Math.random()} title={item.title} value={number} />
+      );
     });
   }
 
@@ -109,7 +106,7 @@ export default class StatisticalData extends PureComponent {
           >
             {tooltip ? (
               <Tooltip title={tooltip}>
-                <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
+                <Icon style={{ fontSize: 20 }} type="exclamation-circle" />
               </Tooltip>
             ) : null}
             {listHTML}

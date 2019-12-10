@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-12-07 13:16:37
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-10 01:42:39
+ * @LastEditTime: 2019-12-10 17:07:00
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -65,10 +65,10 @@ export default class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    const { checkExtensionLockStatus } = this.props;
-    checkExtensionLockStatus().then(() => {
-      this.fetchData(prevProps);
-    });
+    // const { checkExtensionLockStatus } = this.props;
+    // checkExtensionLockStatus().then(() => {
+    this.fetchData(prevProps);
+    // });
   }
 
   fetchData(prevProps) {
@@ -87,8 +87,6 @@ export default class MyWalletCard extends PureComponent {
       this.hasRun = true;
       this.fetchWalletBalance();
     }
-
-    console.log('electionContractFromExt', electionContractFromExt);
 
     if (electionContract !== prevProps.electionContract) {
       this.fetchElectorVoteInfo();
