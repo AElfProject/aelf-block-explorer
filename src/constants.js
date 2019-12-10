@@ -211,7 +211,17 @@ const ALL_TXS_LIST_COLUMNS = [
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      render: text => <span>{text}</span>
+      render: (text, row) => {
+        let amount = '-';
+        let symbol;
+        if (row.quantity && row.decimals) {
+          amount = row.quantity / Math.pow(10, row.decimals);
+        }
+        if (row.symbol) {
+          symbol = `(${row.symbol})`;
+        }
+        return <span>{amount}{symbol}</span>;
+      }
   }
 ];
 
