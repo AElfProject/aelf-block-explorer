@@ -14,7 +14,7 @@ import { getPathnameFirstSlash } from '@utils/urlUtils';
 import { setIsSmallScreen } from '@actions/common';
 import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
-import config, {CHAINS_LINK, ADDRESS_INFO} from '../../../config/config';
+import config, {CHAINS_LINK, CHAINS_LINK_NAMES, ADDRESS_INFO} from '../../../config/config';
 import {isPhoneCheck} from '../../utils/deviceCheck';
 
 const { SubMenu } = Menu;
@@ -131,7 +131,7 @@ class BrowserHeader extends PureComponent {
         classSelected = 'header-chain-selected';
       }
       return  <Menu.Item key={item}>
-        <a href={CHAINS_LINK[item]} className={classSelected}>{item}</a>
+        <a href={CHAINS_LINK[item]} className={classSelected}>{CHAINS_LINK_NAMES[item]}</a>
       </Menu.Item>;
     });
     return <SubMenu

@@ -25,6 +25,14 @@ const CHAINS_LINK = {
   tDVY: 'https://explorer-test-side04.aelf.io',
   tDVZ: 'https://explorer-test-side05.aelf.io'
 };
+const CHAINS_LINK_NAMES = {
+  AELF: 'Main chain AELF',
+  tDVV: 'Side chain tDVV',
+  tDVW: 'Side chain tDVW',
+  tDVX: 'Side chain tDVX',
+  tDVY: 'Side chain tDVY',
+  tDVZ: 'Side chain tDVZ'
+};
 const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
 const APPNAME = 'explorer.aelf.io';
 const commonPrivateKey = 'd351aa6e20d353c6a1bee1f4cba8dc6d79ba63e2799381ec9dc75398ed58828b';
@@ -37,6 +45,7 @@ module.exports = {
   APPNAME,
   ADDRESS_INFO,
   CHAINS_LINK,
+  CHAINS_LINK_NAMES,
   // The following variable are with suitable name
   WALLET_DOMAIN,
   BUILD_ENDPOINT,
