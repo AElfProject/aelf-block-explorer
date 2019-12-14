@@ -14,7 +14,8 @@ import { getPathnameFirstSlash } from '@utils/urlUtils';
 import { setIsSmallScreen } from '@actions/common';
 import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
-import config from '../../../config/config';
+import config, {CHAINS_LINK, ADDRESS_INFO} from '../../../config/config';
+import {isPhoneCheck} from '../../utils/deviceCheck';
 
 const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -123,6 +124,29 @@ class BrowserHeader extends PureComponent {
     }, this.interval);
   };
 
+  renderPhoneMenu() {
+    const chainIdHTML = Object.keys(CHAINS_LINK).map(item => {
+      let classSelected = '';
+      if (ADDRESS_INFO.CURRENT_CHAIN_ID === item) {
+        classSelected = 'header-chain-selected';
+      }
+      return  <Menu.Item key={item}>
+        <a href={CHAINS_LINK[item]} className={classSelected}>{item}</a>
+      </Menu.Item>;
+    });
+    return <SubMenu
+      title={
+        <span className='submenu-title-wrapper'>
+                  EXPLORERS
+            </span>
+      }
+      className='aelf-submenu-container'
+    >
+      {chainIdHTML}
+    </SubMenu>;
+  }
+
+
   renderMenu(menuMode, showMenu = true) {
     const nodeInfo = JSON.parse(localStorage.getItem('currentChain'));
     const { chain_id } = nodeInfo;
@@ -148,6 +172,7 @@ class BrowserHeader extends PureComponent {
     }
 
     const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
+    const isPhone = isPhoneCheck();
 
     return (
       <Menu
@@ -213,6 +238,7 @@ class BrowserHeader extends PureComponent {
             ABOUT
           </a>
         </Menu.Item>
+        {isPhone && this.renderPhoneMenu()}
       </Menu>
     );
   }
@@ -248,6 +274,8 @@ class BrowserHeader extends PureComponent {
       menuHtml = this.renderMenu(menuMode);
     }
 
+    const isPhone = isPhoneCheck();
+
     return (
       <div className='header-fixed-container'>
         <div className='header-container'>
@@ -263,7 +291,7 @@ class BrowserHeader extends PureComponent {
           <nav className='header-navbar'>
             {menuHtml}
             {this.state.showSearch && <Search />}
-            {/* <ChainSelect /> */}
+            {!isPhone && <ChainSelect />}
           </nav>
         </div>
       </div>

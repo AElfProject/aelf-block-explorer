@@ -13,8 +13,10 @@ import {
     aelf,
     format,
     get,
-    formatKey
+    formatKey,
 } from '../../utils';
+
+import {isPhoneCheck} from '../../utils/deviceCheck'
 
 import {
     ALL_TXS_LIST_COLUMNS
@@ -32,7 +34,7 @@ export default class BlockDetailPage extends React.Component {
             blockTime: 0,
             txs: [],
             pagination: {
-                pageSize: 5,
+                pageSize: isPhoneCheck() ? 8 : 20,
                 showQuickJumper: true,
                 showTotal: total => `Total ${total} items`
             },
@@ -42,7 +44,7 @@ export default class BlockDetailPage extends React.Component {
 
     async getTxsList(blockhash, page) {
         let getTxsOption = {
-            limit: 5,
+            limit: isPhoneCheck() ? 8 : 20,
             page: page || 0,
             order: 'asc',
             block_hash: blockhash
