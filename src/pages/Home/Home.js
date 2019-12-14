@@ -8,9 +8,7 @@ import io from 'socket.io-client';
 import {Link} from 'react-router-dom';
 import {
     Row,
-    Col,
-    List,
-    message
+    Col
 } from 'antd';
 
 import SearchBanner from '../../components/SearchBanner/SearchBanner';
