@@ -106,7 +106,7 @@ const baseConfig = {
       filename: 'index.html',
       chunks: isProdMode ? ['runtime.app', 'vendors', 'app'] : ['app'],
       name: 'app',
-      title: 'AELF Block Explore'
+      title: 'AELF Block Explorer'
     }),
     new webpack.ProvidePlugin({
       React: 'react'
