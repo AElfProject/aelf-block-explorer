@@ -1,3 +1,11 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-07 17:42:20
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-10 01:58:14
+ * @Description: file content
+ */
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -28,7 +36,7 @@ import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
-
+import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 
 const { Search } = Input;
@@ -38,7 +46,7 @@ const pagination = {
   showQuickJumper: true,
   total: 0,
   showTotal: total => `Total ${total} items`,
-  pageSize: 3
+  pageSize: 20
 };
 
 class NodeTable extends PureComponent {
@@ -84,17 +92,17 @@ class NodeTable extends PureComponent {
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -102,7 +110,7 @@ class NodeTable extends PureComponent {
       </div>
     ),
     filterIcon: filtered => (
-      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -132,7 +140,7 @@ class NodeTable extends PureComponent {
         title: 'Rank',
         dataIndex: 'rank',
         key: 'rank',
-        width: 90,
+        width: 70,
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.rank - b.rank
       },
@@ -150,7 +158,7 @@ class NodeTable extends PureComponent {
               // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               // style={{ width: 270 }}
             >
-              {centerEllipsis(text)}
+              {text}
             </Link>
           </Tooltip>
         ),
@@ -159,7 +167,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Node Type',
         dataIndex: 'nodeType',
-        width: 120,
+        width: 90,
         key: 'nodeType'
         // todo: write the sorter after the api is ready
         // sorter: (a, b) => a.nodeType - b.nodeType
@@ -167,7 +175,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Terms',
         dataIndex: 'terms',
-        width: 100,
+        width: 90,
         key: 'terms',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.terms - b.terms
@@ -192,33 +200,33 @@ class NodeTable extends PureComponent {
         key: 'votedRate',
         dataIndex: 'votedRate',
         defaultSortOrder: 'descend',
-        render: value => (
-          <Progress percent={value} status='active' strokeColor='#fff' />
-        ),
+        render: value =>
+          // <Progress percent={value} status="active" strokeColor="#fff" />
+          `${value}%`,
         sorter: (a, b) => a.votedRate - b.votedRate
       },
       {
         title: 'My Votes',
         key: 'myVotes',
-        width: 120,
+        width: 100,
         dataIndex: 'myTotalVoteAmount',
         sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount
       },
       {
         title: 'Operations',
         key: 'operations',
-        width: 220,
+        width: 210,
         render: (text, record) => (
           <div className={`${clsPrefix}-btn-group`}>
             {/* todo: replace pubkey by address? */}
             <Button
-              className='table-btn vote-btn'
+              className="table-btn vote-btn"
               key={record.pubkey}
-              type='primary'
-              style={{ marginRight: '20px' }}
-              data-nodeaddress={record.address}
+              type="primary"
+              style={{ marginRight: 14 }}
+              data-nodeaddress={record.formattedAddress}
               data-targetPublicKey={record.pubkey}
-              data-role='vote'
+              data-role="vote"
               data-nodename={record.name}
               data-shoulddetectlock
               data-votetype={FROM_WALLET}
@@ -226,12 +234,12 @@ class NodeTable extends PureComponent {
               Vote
             </Button>
             <Button
-              className='table-btn redeem-btn'
+              className="table-btn redeem-btn"
               key={record.pubkey + 1}
-              type='primary'
-              data-role='redeem'
+              type="primary"
+              data-role="redeem"
               data-shoulddetectlock
-              data-nodeaddress={record.address}
+              data-nodeaddress={record.formattedAddress}
               data-targetPublicKey={record.pubkey}
               data-nodename={record.name}
               disabled={
@@ -317,9 +325,11 @@ class NodeTable extends PureComponent {
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
-      fetchElectorVoteWithRecords(electionContract, {
-        value: currentWallet.pubKey
-      }),
+      currentWallet.pubKey.x
+        ? fetchElectorVoteWithRecords(electionContract, {
+            value: currentWallet.pubKey
+          })
+        : null,
       fetchCurrentMinerPubkeyList(consensusContract)
     ])
       .then(resArr => {
@@ -352,7 +362,7 @@ class NodeTable extends PureComponent {
     // todo: error handle
     let totalActiveVotesAmount = 0;
     const nodeInfos = resArr[0].value;
-    const { activeVotingRecords } = resArr[2];
+    const { activeVotingRecords } = resArr[2] || {};
     let teamInfos = null;
     if (resArr[1].code === 0) {
       teamInfos = resArr[1].data;
@@ -372,15 +382,30 @@ class NodeTable extends PureComponent {
       item.candidateInformation.address = publicKeyToAddress(
         item.candidateInformation.pubkey
       );
+      item.candidateInformation.formattedAddress = `${ADDRESS_INFO.PREFIX}_${item.candidateInformation.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       if (teamInfo === undefined) {
         // todo: use address instead after api modified
-        item.candidateInformation.name = item.candidateInformation.address;
+        item.candidateInformation.name = centerEllipsis(
+          item.candidateInformation.formattedAddress
+        );
       } else {
         item.candidateInformation.name = teamInfo.name;
       }
 
-      // todo: use the method filterUserVoteRecordsForOneCandidate in voteUtil instead
+      // judge node type
+      if (BPNodes.indexOf(item.candidateInformation.pubkey) !== -1) {
+        item.candidateInformation.nodeType = 'BP';
+      } else {
+        item.candidateInformation.nodeType = 'Candidate';
+      }
+
       // add my vote amount
+      if (!activeVotingRecords) {
+        item.candidateInformation.myTotalVoteAmount = '-';
+        item.candidateInformation.myRedeemableVoteAmountForOneCandidate = '-';
+        return;
+      }
+      // todo: use the method filterUserVoteRecordsForOneCandidate in voteUtil instead
       const myVoteRecordsForOneCandidate = activeVotingRecords.filter(
         votingRecord =>
           votingRecord.candidate === item.candidateInformation.pubkey
@@ -401,13 +426,6 @@ class NodeTable extends PureComponent {
       item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
       item.candidateInformation.myRedeemableVoteAmountForOneCandidate =
         myRedeemableVoteAmountForOneCandidate || '-';
-
-      // judge node type
-      if (BPNodes.indexOf(item.candidateInformation.pubkey) !== -1) {
-        item.candidateInformation.nodeType = 'BP';
-      } else {
-        item.candidateInformation.nodeType = 'Candidate';
-      }
     });
 
     return nodeInfos
@@ -460,7 +478,7 @@ class NodeTable extends PureComponent {
 
     return (
       <section className={`${clsPrefix}`}>
-        <h2 className={`${clsPrefix}-header`}>
+        <h2 className={`${clsPrefix}-header table-card-header`}>
           Node Table
           {/* <span className='node-color-intro-group'>
               <span className='node-color-intro-item'>BP节点</span>
@@ -482,13 +500,14 @@ class NodeTable extends PureComponent {
           </Button> */}
         </h2>
         <Table
+          className="node-table-wrapper"
           columns={nodeListCols}
           dataSource={nodeList}
           // onChange={handleTableChange}
           loading={isLoading}
           pagination={pagination}
           rowKey={record => record.pubkey}
-          scroll={{ x: 1350 }}
+          scroll={{ x: 1024 }}
           // size='middle'
         />
       </section>

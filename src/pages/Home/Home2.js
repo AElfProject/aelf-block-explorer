@@ -48,7 +48,7 @@ export default class HomePage extends Component {
     //     super(props)
     //     this.getBlockHeightPromise = this.getBlockHeightPromise.bind(this); // to fix a bug
     // }
-    
+
 
     state = {
         blocks: [],

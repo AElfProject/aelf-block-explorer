@@ -1,13 +1,14 @@
+@import "../../assets/less/_variables";
 .footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: @footerHeight;
+  //position: absolute;
+  //bottom: 0;
+  //left: 0;
+  //width: 100%;
+  ////height: @footerHeight;
+  //min-height: @footerHeight;
   text-align: center;
-  background: url('../../assets/images/bg_purple_darker@1x.jpg');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background: linear-gradient(to right, @purpleDark, @purpleLight);
+  //background-size: 100% 100%;
   color: #fff;
   overflow: hidden;
 
@@ -18,12 +19,8 @@
     align-items: center;
     min-height: 88px;
     height: 100%;
-    .copyright-container {
-      position: absolute;
+    .footer-information {
       width: 100%;
-      left: 0;
-      bottom: 5%;
-      text-align: center;
     }
   }
 
@@ -33,10 +30,8 @@
   }
   // todo: limit the links within main body of page
   .footer-links-container {
-    //margin-bottom: @mgb30;
-    // float: right; // todo: why is float didn't work?
-    position: absolute;
-    right: 20px;
+    height: 91px;
+    padding: 40px 0 0 0;
     .ant-btn {
       width: 40px;
       height: 40px;
@@ -52,7 +47,26 @@
       }
     }
   }
+
+  .copyright-container {
+    text-align: center;
+    margin: 16px 0 16px 0;
+  }
 }
+@media (max-width: 1050px) {
+  .footer {
+    padding: 0;
+    .footer-container {
+      .footer-links-container {
+        padding: 0;
+        display: flex;
+        width: 360px;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}
+
 @media (max-width: @smallScreenWidth) {
   .footer {
     padding: 0;
@@ -60,13 +74,35 @@
       display: block;
       position: static;
       .footer-links-container {
-        //margin-bottom: @mgb30;
-        // float: right; // todo: why is float didn't work?
-        position: static; // for cover upper code
+        margin-top: 32px;
+        width: 100%;
+        .ant-btn:first-child {
+          margin-left: 0;
+        }
         .ant-btn:last-child {
-          display: none; // Hide the last icon on mobile
         }
       }
     }
   }
 }
+
+@media (max-width: 682px) {
+  .footer {
+    padding: 0;
+    .footer-container {
+      .footer-links-container {
+        height: auto;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        .ant-btn:first-child {
+          margin: 10px;
+        }
+      }
+    }
+    .footer-logo {
+      margin-left: 10px;
+    }
+  }
+}
+

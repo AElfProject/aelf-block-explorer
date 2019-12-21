@@ -18,7 +18,7 @@ import getContractAddress from '../../utils/getContractAddress.js';
 import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
 import ResourceMoneyMarket from './components/ResourceMoneyMarket/ResourceMoneyMarket';
 import getLogin from '../../utils/getLogin';
-// import ResourceTransacitionDetails from '../../components/ResourceTransacitionDetails/ResourceTransacitionDetails';
+import { isPhoneCheck } from '../../utils/deviceCheck';
 import './Resource.less';
 
 const appName = APPNAME;
@@ -42,6 +42,8 @@ class Resource extends Component {
       loading: false,
       nightElf: null
     };
+    this.getResource = this.getResource.bind(this);
+    this.getCurrentBalance = this.getCurrentBalance.bind(this);
   }
 
   componentDidMount() {
@@ -116,7 +118,7 @@ class Resource extends Component {
                       // todo: Use the variable in redux instead, remind the cdm
                       const isSmallScreen = document.body.offsetWidth < 768;
                       if (!isSmallScreen) {
-                        message.warning(result.errorMessage.message, 3);
+                        message.warning(result.errorMessage.message, 6);
                       }
                     }
                   }
@@ -127,7 +129,7 @@ class Resource extends Component {
         }
       })
       .catch(error => {
-        console.log('error', error);
+        // console.log('NightElfCheck : error', error);
         this.setState({
           showDownloadPlugins: true
         });
@@ -172,10 +174,6 @@ class Resource extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.setState = function() {};
-  }
-
   getNightElfKeypair(wallet) {
     if (wallet) {
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
@@ -189,30 +187,6 @@ class Resource extends Component {
   getCurrentBalance(value) {
     this.setState({
       currentBalance: value
-    });
-  }
-
-  getCurrentCpu(value) {
-    this.setState({
-      currentCpu: value
-    });
-  }
-
-  getCurrentRam(value) {
-    this.setState({
-      currentRam: value
-    });
-  }
-
-  getCurrentNet(value) {
-    this.setState({
-      currentNet: value
-    });
-  }
-
-  getCurrentSto(value) {
-    this.setState({
-      currentSto: value
     });
   }
 
@@ -232,32 +206,34 @@ class Resource extends Component {
     });
   }
 
+  getResource(resource) {
+    this.setState({
+      currentCpu: resource.CPU,
+      currentRam: resource.RAM,
+      currentNet: resource.NET,
+      currentSto: resource.STO,
+    });
+  }
+
   resourceAElfWalletHtml() {
     const {
       showWallet,
       tokenContract,
       tokenConverterContract,
-      currentWallet,
-      loading
+      currentWallet
     } = this.state;
-    if (showWallet) {
+    // if (showWallet) {
       return (
         <ResourceAElfWallet
-          title='AElf Wallet'
+          title='AELF Wallet'
           tokenContract={tokenContract}
           tokenConverterContract={tokenConverterContract}
           currentWallet={currentWallet}
-          getCurrentBalance={this.getCurrentBalance.bind(this)}
-          getCurrentCpu={this.getCurrentCpu.bind(this)}
-          getCurrentRam={this.getCurrentRam.bind(this)}
-          getCurrentNet={this.getCurrentNet.bind(this)}
-          getCurrentSto={this.getCurrentSto.bind(this)}
-          onRefresh={this.onRefresh.bind(this)}
-          endRefresh={this.endRefresh.bind(this)}
-          loading={loading}
+          getCurrentBalance={this.getCurrentBalance}
+          getResource={this.getResource}
         />
       );
-    }
+    // }
   }
 
   render() {
@@ -285,13 +261,15 @@ class Resource extends Component {
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {
-      downloadPlugins = this.getDownloadPluginsHTML();
+      downloadPlugins = [this.getDownloadPluginsHTML(), <div className='resource-blank'></div>];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
+    const isPhone = isPhoneCheck();
     return (
-      <div className='resource-body basic-container'>
-        {downloadPlugins}
-        {resourceAElfWalletHtml}
+      <div className='resource-body basic-container basic-container-white'>
+        {!isPhone && downloadPlugins}
+        {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}
+        {!isPhone && resourceAElfWalletHtml}
         <div className='resource-money-market'>
           <ResourceMoneyMarket
             currentWallet={currentWallet}

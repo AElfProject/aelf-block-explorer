@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button } from 'antd';
+import { Icon, Button, Row, Col } from 'antd';
 
 import { BitcoinIcon, RedditIcon, SendIcon } from '../custom.icons';
 
@@ -94,16 +94,22 @@ const BrowserFooter = props => {
 
   return (
     <section {...props} className='footer'>
-      <div className='footer-container basic-container'>
-        {/* <div className="footer-logo">
-                <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
-                <p>Contribute to communism around the world.</p>
-            </div> */}
-        <div className='footer-links-container'>{iconListHTML}</div>
-        <p className='copyright-container'>
-          Copyright © {new Date().getFullYear()} ælf
-        </p>
+      <div
+        className='footer-container basic-container'
+      >
+        <div
+          className="footer-logo"
+        >
+          <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
+          <p>Decentralized Cloud Computing Blockchain Network</p>
+        </div>
+        <div
+          className='footer-links-container'
+        >{iconListHTML}</div>
       </div>
+      <p className='copyright-container'>
+        Copyright © {new Date().getFullYear()} ælf
+      </p>
     </section>
   );
 };

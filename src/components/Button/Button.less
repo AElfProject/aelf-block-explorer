@@ -1,10 +1,14 @@
 @import "../../assets/less/_variables.less";
 .AElf-button {
-    background: #26b8fe;
-    color: #fff;
-    border-radius: 16px;
+    background: @bgMain;
+    color: #FFF;
+    //border-radius: 16px;
+    border-radius: 30px;
     display: inline-block;
     cursor: pointer;
     padding: 4px 19px;
     margin: 0 10px;
+    &:hover {
+        background: @bgMainHover;
+    }
 }

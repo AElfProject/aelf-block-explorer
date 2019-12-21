@@ -18,6 +18,7 @@ import VotePage from './pages/Vote/Vote';
 import OldVotePage from './pages/VoteOld/Vote';
 import Resource from './pages/Resource/Resource';
 import ResourceDetail from './pages/ResourceDetail/ResourceDetail';
+import Viewer from './pages/Viewer';
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
@@ -35,5 +36,6 @@ export default () => [
     <Route path='/voteold' component={OldVotePage} key='voteOld' />,
     <Route path='/resource' component={Resource} key='resource' />,
     <Route path='/resourceDetail/:id' component={ResourceDetail} key='resourceDetail' />,
-    <Route path='/apps/details/:id' component={VotePage} key='transcationdetails' />
+    <Route path='/apps/details/:id' component={VotePage} key='transcationdetails' />,
+    <Route path='/contract' component={Viewer} key='contract' />
 ];

@@ -1,7 +1,0 @@
-*.md
-LICENSE
-dist/
-node_modules/
-.travis.yml
-.gitignore
-public/

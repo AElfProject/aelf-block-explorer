@@ -40,12 +40,6 @@ export default class ResourceDetail extends PureComponent {
     this.setState({
       loading: true
     });
-    console.log('<<<GetRecords', {
-      limit: PAGE_SIZE,
-      page: page,
-      order: 'desc',
-      address
-    });
     const data = await get(RESOURCE_RECORDS, {
       limit: PAGE_SIZE,
       page: page,
@@ -79,14 +73,14 @@ export default class ResourceDetail extends PureComponent {
     const { pagination, data, loading } = this.state;
     const { handleTableChange } = this;
     return (
-      <div className='transaction-details'>
-        <div className='transaction-details-head'>Transaction Details</div>
+      <div className='transaction-details basic-container basic-container-white'>
         <Table
           columns={RESOURCE_DETAILS_COLUMN}
           pagination={pagination}
           dataSource={data}
           loading={loading}
           onChange={handleTableChange}
+          scroll={{ x: 1024 }}
         />
       </div>
     );

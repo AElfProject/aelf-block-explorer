@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-17 15:40:06
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 19:30:22
+ * @LastEditTime: 2019-12-10 02:22:19
  * @Description: file content
  */
 
@@ -18,7 +18,8 @@ import {
   Avatar,
   Tag,
   Typography,
-  message
+  message,
+  Icon
 } from 'antd';
 import queryString from 'query-string';
 
@@ -36,6 +37,7 @@ import {
   filterUserVoteRecordsForOneCandidate,
   computeUserRedeemableVoteAmountForOneCandidate
 } from '@utils/voteUtils';
+import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 
 const { Paragraph } = Typography;
@@ -49,6 +51,7 @@ class TeamDetail extends PureComponent {
     this.state = {
       data: {},
       candidateAddress: '',
+      formattedAddress: '',
       isBP: false,
       rank: '-',
       terms: '-',
@@ -162,6 +165,7 @@ class TeamDetail extends PureComponent {
     const { producedBlocks } = currentCandidateInfo;
 
     const candidateAddress = publicKeyToAddress(this.teamPubkey);
+    const formattedAddress = `${ADDRESS_INFO.PREFIX}_${candidateAddress}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
 
     this.setState({
       rank,
@@ -169,7 +173,8 @@ class TeamDetail extends PureComponent {
       totalVotes,
       votedRate,
       producedBlocks,
-      candidateAddress
+      candidateAddress,
+      formattedAddress
     });
 
     console.log('candidateVotesArr', candidateVotesArr);
@@ -253,126 +258,161 @@ class TeamDetail extends PureComponent {
     return statisData;
   }
 
-  render() {
+  renderTopTeamInfo() {
     const { isSmallScreen } = this.props;
     const {
-      data,
       candidateAddress,
+      formattedAddress,
       isBP,
       userRedeemableVoteAmountForOneCandidate,
-      hasAuth
+      hasAuth,
+      data
     } = this.state;
+
+    const avatarSize = isSmallScreen ? 50 : 92;
+
+    return (
+      <section className={`${clsPrefix}-header card-container`}>
+        <Row>
+          <Col
+            xxl={82}
+            xl={18}
+            lg={18}
+            md={18}
+            sm={24}
+            xs={24}
+            className="card-container-left"
+          >
+            <Row className={`${clsPrefix}-team-avatar-info`}>
+              <Col
+                xxl={82}
+                xl={4}
+                lg={18}
+                md={18}
+                sm={4}
+                xs={4}
+                className="team-avatar-container"
+              >
+                {data.avatar ? (
+                  <Avatar shape="square" size={avatarSize} src={data.avatar} />
+                ) : (
+                  <Avatar shape="square" size={avatarSize}>
+                    U
+                  </Avatar>
+                )}
+              </Col>
+              <Col
+                className={`${clsPrefix}-team-info`}
+                xxl={82}
+                xl={20}
+                lg={18}
+                md={18}
+                sm={20}
+                xs={20}
+              >
+                <h5 className={`${clsPrefix}-node-name ellipsis`}>
+                  {data.name ? data.name : formattedAddress}
+                  <Tag color="#f50">{isBP ? 'BP' : 'Candidate'}</Tag>
+                </h5>
+                <span className={`${clsPrefix}-team-info-location`}>
+                  Location: {data.location || '-'}
+                </span>
+                <span className={`${clsPrefix}-team-info-address`}>
+                  Address:{' '}
+                  <Paragraph copyable={{ text: formattedAddress }}>
+                    {formattedAddress.slice(0, 20)}...
+                  </Paragraph>
+                </span>
+                {hasAuth ? (
+                  <Button type="primary" shape="round" className="edit-btn">
+                    <Link
+                      to={{
+                        pathname: '/vote/apply/keyin',
+                        search: `pubkey=${this.teamPubkey}`
+                      }}
+                    >
+                      Edit
+                    </Link>
+                  </Button>
+                ) : null}
+              </Col>
+            </Row>
+          </Col>
+          <Col
+            xxl={6}
+            xl={6}
+            lg={6}
+            md={6}
+            sm={0}
+            xs={0}
+            className="card-container-right"
+          >
+            <Button
+              className="table-btn vote-btn"
+              // size="large"
+              type="primary"
+              shape="round"
+              data-role="vote"
+              data-shoulddetectlock
+              data-votetype={FROM_WALLET}
+              data-nodeaddress={formattedAddress}
+              data-nodename={data.name || formattedAddress}
+              data-targetPublicKey={this.teamPubkey}
+            >
+              Vote
+            </Button>
+            <Button
+              className="table-btn redeem-btn"
+              // size="large"
+              type="primary"
+              shape="round"
+              data-role="redeem"
+              data-shoulddetectlock
+              data-nodeaddress={formattedAddress}
+              data-targetPublicKey={this.teamPubkey}
+              data-nodename={data.name}
+              disabled={
+                userRedeemableVoteAmountForOneCandidate > 0 ? false : true
+              }
+            >
+              Redeem
+            </Button>
+          </Col>
+        </Row>
+      </section>
+    );
+  }
+
+  render() {
+    const { data } = this.state;
 
     // todo: The component StatisData is PureComponent so I have to create a new heap space to place the object
     // todo: Consider to make the component StatisData non-PureComponent
     const statisData = { ...this.getStatisData() };
-    const avatarSize = isSmallScreen ? 'large' : 144;
+    const topTeamInfo = this.renderTopTeamInfo();
 
     // todo: Is it safe if the user keyin a url that is not safe?
     // todo: handle the error case of node-name
     // FIXME: hide the edit button for the non-owner
     return (
       <section className={`${clsPrefix}`}>
-        <section className={`${clsPrefix}-header card-container`}>
-          <Row>
-            <Col
-              xxl={82}
-              xl={18}
-              lg={18}
-              md={18}
-              sm={24}
-              xs={24}
-              className='card-container-left'
-            >
-              <div className={`${clsPrefix}-team-avatar-info`}>
-                {data.avatar ? (
-                  <Avatar shape='square' size={avatarSize} src={data.avatar} />
-                ) : (
-                  <Avatar shape='square' size={avatarSize}>
-                    U
-                  </Avatar>
-                )}
-                <div className={`${clsPrefix}-team-info`}>
-                  <h5 className={`${clsPrefix}-node-name ellipsis`}>
-                    {data.name ? data.name : candidateAddress}
-                    <Tag color='#f50'>{isBP ? 'BP' : 'Candidate'}</Tag>
-                  </h5>
-                  <p className={`${clsPrefix}-team-info-location`}>
-                    Location: {data.location}
-                  </p>
-                  <p className={`${clsPrefix}-team-info-address`}>
-                    Node Address:{' '}
-                    <Paragraph copyable className='ellipsis'>
-                      {candidateAddress}
-                    </Paragraph>
-                  </p>
-                  {hasAuth ? (
-                    <Button type='primary' shape='round'>
-                      <Link
-                        to={{
-                          pathname: '/vote/apply/keyin',
-                          search: `pubkey=${this.teamPubkey}`
-                        }}
-                      >
-                        Edit
-                      </Link>
-                    </Button>
-                  ) : null}
-                </div>
-              </div>
-            </Col>
-            <Col
-              xxl={6}
-              xl={6}
-              lg={6}
-              md={6}
-              sm={0}
-              xs={0}
-              className='card-container-right'
-            >
-              <Button
-                className='table-btn vote-btn'
-                size='large'
-                type='primary'
-                shape='round'
-                data-role='vote'
-                data-shoulddetectlock
-                data-votetype={FROM_WALLET}
-                data-nodeaddress={candidateAddress}
-                data-nodename={data.name || candidateAddress}
-                data-targetPublicKey={this.teamPubkey}
-              >
-                Vote
-              </Button>
-              <Button
-                className='table-btn redeem-btn'
-                size='large'
-                type='primary'
-                shape='round'
-                data-role='redeem'
-                data-shoulddetectlock
-                data-nodeaddress={candidateAddress}
-                data-targetPublicKey={this.teamPubkey}
-                data-nodename={data.name}
-                disabled={
-                  userRedeemableVoteAmountForOneCandidate > 0 ? false : true
-                }
-              >
-                Redeem
-              </Button>
-            </Col>
-          </Row>
-        </section>
+        {topTeamInfo}
         <StatisticalData data={statisData} inline></StatisticalData>
         <section className={`${clsPrefix}-intro card-container`}>
-          <h5 className='card-header'>Intro</h5>
-          <div className='card-content'>
+          <h5 className="card-header">
+            <Icon type="edit" className="card-header-icon"></Icon>
+            Intro
+          </h5>
+          <div className="card-content">
             {data.intro || "The team didn't fill the intro."}
           </div>
         </section>
         <section className={`${clsPrefix}-social-network card-container`}>
-          <h5 className='card-header'>Social Networks</h5>
-          <div className='card-content'>
+          <h5 className="card-header">
+            <Icon type="team" className="card-header-icon"></Icon>
+            Social Network
+          </h5>
+          <div className="card-content">
             {data.socials && data.socials.length ? (
               <ul>
                 {data.socials.map(item => (

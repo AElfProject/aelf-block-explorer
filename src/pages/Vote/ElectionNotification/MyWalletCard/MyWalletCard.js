@@ -1,16 +1,22 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-07 13:16:37
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-10 17:07:00
+ * @Description: file content
+ */
 import React, { PureComponent } from 'react';
 import { Button, Icon, Modal, message, Spin } from 'antd';
 import moment from 'moment';
 
-import './index.less';
+import './MyWalletCard.less';
 // import { inject, observer } from 'mobx-react';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
 import { schemeIds } from '@pages/Vote/constants';
-
-const clsPrefix = 'my-wallet-card';
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -59,7 +65,10 @@ export default class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
+    // const { checkExtensionLockStatus } = this.props;
+    // checkExtensionLockStatus().then(() => {
     this.fetchData(prevProps);
+    // });
   }
 
   fetchData(prevProps) {
@@ -78,8 +87,6 @@ export default class MyWalletCard extends PureComponent {
       this.hasRun = true;
       this.fetchWalletBalance();
     }
-
-    console.log('electionContractFromExt', electionContractFromExt);
 
     if (electionContract !== prevProps.electionContract) {
       this.fetchElectorVoteInfo();
@@ -236,15 +243,11 @@ export default class MyWalletCard extends PureComponent {
 
   handleUpdateWalletClick() {
     const { changeVoteState, checkExtensionLockStatus } = this.props;
-    checkExtensionLockStatus()
-      .then(() => {
-        changeVoteState({
-          shouldRefreshMyWallet: true
-        });
-      })
-      .catch(err => {
-        console.error('checkExtensionLockStatus', err);
+    checkExtensionLockStatus().then(() => {
+      changeVoteState({
+        shouldRefreshMyWallet: true
       });
+    });
   }
 
   render() {
@@ -258,13 +261,6 @@ export default class MyWalletCard extends PureComponent {
       loading,
       lastestUnlockTime
     } = this.state;
-    console.log({
-      balance,
-      withdrawnVotedVotesAmount,
-      activeVotedVotesAmount,
-      totalAssets,
-      loading
-    });
 
     const walletItems = [
       {
@@ -280,10 +276,10 @@ export default class MyWalletCard extends PureComponent {
         value: dividends.total.toFixed(2),
         extra: (
           <Button
-            type='primary'
-            size='small'
-            shape='round'
-            className={`${clsPrefix}-body-wallet-content-withdraw-btn`}
+            type="primary"
+            size="small"
+            shape="round"
+            className={'my-wallet-card-body-wallet-content-withdraw-btn'}
             onClick={handleDividendClick}
           >
             Claim
@@ -307,33 +303,49 @@ export default class MyWalletCard extends PureComponent {
     const currentWallet = getCurrentWallet();
 
     return (
-      <section className={`${clsPrefix} has-mask-on-mobile`}>
-        <div className={`${clsPrefix}-header`}>
-          <h2 className={`${clsPrefix}-header-title`}>My Wallet</h2>
+      <section className="my-wallet-card has-mask-on-mobile">
+        <div className="my-wallet-card-header">
+          <h2 className="my-wallet-card-header-title">
+            <Icon
+              type="wallet"
+              theme="filled"
+              className="card-header-icon"
+            ></Icon>
+            My Wallet
+          </h2>
           <Button
-            className={`${clsPrefix}-header-sync-btn update-btn`}
+            className="my-wallet-card-header-sync-btn update-btn"
             onClick={this.handleUpdateWalletClick}
           >
-            <Icon type='sync' spin={loading} />
+            <Icon type="sync" spin={loading} />
           </Button>
         </div>
-        <Spin spinning={loading}>
-          <div className={`${clsPrefix}-body`}>
-            <div className={`${clsPrefix}-body-wallet-title`}>
-              <h3 className={`${clsPrefix}-body-wallet-title-name`}>
-                {currentWallet.name}
-              </h3>
-              {/* <Button shape='round' onClick={this.showModal}>
+        <div className="my-wallet-card-body-wallet-title">
+          <span className="my-wallet-card-body-wallet-title-key">Name: </span>
+          <span className="primary-color">{currentWallet.name}</span>
+          <span className="my-wallet-card-body-wallet-title-blank"></span>
+          <span className="my-wallet-card-body-wallet-title-key">
+            Address:{' '}
+          </span>
+          <span className="primary-color">
+            {currentWallet.formattedAddress}
+          </span>
+          {/*<h3 className='my-wallet-card-body-wallet-title-name'>*/}
+          {/*{currentWallet.name}*/}
+          {/*</h3>*/}
+          {/* <Button shape='round' onClick={this.showModal}>
               解除绑定
             </Button> */}
-            </div>
-            <ul className={`${clsPrefix}-body-wallet-content`}>
+        </div>
+        <Spin spinning={loading}>
+          <div className="my-wallet-card-body">
+            <ul className="my-wallet-card-body-wallet-content">
               {walletItems.map(item => {
                 return (
                   <li>
-                    <span className='item-type'>{item.type}:</span>
-                    <span className='item-value'>{item.value}</span>
-                    <span className='item-extra'>{item.extra}</span>
+                    <span className="item-type">{item.type}:</span>
+                    <span className="item-value">{item.value}</span>
+                    <span className="item-extra">{item.extra}</span>
                   </li>
                 );
               })}
@@ -342,12 +354,12 @@ export default class MyWalletCard extends PureComponent {
         </Spin>
 
         <Modal
-          className='unbind-account-modal'
-          title='Unbind Account'
+          className="unbind-account-modal"
+          title="Unbind Account"
           visible={unbindAccountModalVisible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          okText='Authorize'
+          okText="Authorize"
           centered
           maskClosable
           keyboard

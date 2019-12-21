@@ -6,19 +6,10 @@
 import React, {Component} from 'react';
 import io from 'socket.io-client';
 import {Link} from 'react-router-dom';
-// import { observer, inject } from "mobx-react";
 import {
     Row,
-    Col,
-    List,
-    message
+    Col
 } from 'antd';
-
-// object, array, string, or  jQuery - like
-import isEmpty from 'lodash/isEmpty';
-// import InfoList from "../../components/InfoList/InfoList";
-// import TradeCards from "../../components/TradeCards/TradeCards";
-// import TradeChart from "../../components/TradeChart";
 
 import SearchBanner from '../../components/SearchBanner/SearchBanner';
 import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
@@ -35,27 +26,22 @@ import {
     ALL_TXS_API_URL,
     SOCKET_URL
 } from '../../constants';
+import {ADDRESS_INFO} from '../../../config/config';
 
 import './home.styles.less';
 
 SmoothScrollbar.use(OverscrollPlugin);
 
-// const fetchInfoByChainIntervalTime = 4000;
 const fetchInfoByChainIntervalTime = 500;
 
 // @inject("appIncrStore")
 // @observer
 export default class HomePage extends Component {
-    // constructor (props) {
-    //     super(props)
-    //     this.getBlockHeightPromise = this.getBlockHeightPromise.bind(this); // to fix a bug
-    // }
-    
-
     state = {
         blocks: [],
         transactions: [],
-        totalTransactions: 0
+        totalTransactions: 0,
+        totalAccounts: '-',
     };
 
     blockHeight = 0;
@@ -128,7 +114,8 @@ export default class HomePage extends Component {
         list = [],
         height = 0,
         totalTxs,
-        unconfirmedBlockHeight = 0
+        unconfirmedBlockHeight = 0,
+        accountNumber = 0
     }, isFirst) {
         let arr = list;
         if (!isFirst) {
@@ -144,7 +131,8 @@ export default class HomePage extends Component {
         this.setState({
             blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
             transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
-            totalTransactions: totalTxs
+            totalTransactions: totalTxs,
+            totalAccounts: accountNumber
         });
     }
 
@@ -175,11 +163,8 @@ export default class HomePage extends Component {
             title: 'Total Transactions',
             info: +this.state.totalTransactions
         }, {
-            title: 'Total Applications',
-            info: '-'
-        }, {
             title: 'Total Accounts',
-            info: '-'
+            info: +this.state.totalAccounts || '-'
         }, {
             title: 'Total Side Chains',
             info: 5
@@ -187,7 +172,7 @@ export default class HomePage extends Component {
 
         const html = basicInfo.map(item => {
             return (
-                <Col xs={12} sm={12} md={12} lg={8}
+                <Col xs={12} sm={8} md={6}
                      className='home-basic-info-con'
                      key={item.title}
                 >
@@ -214,13 +199,19 @@ export default class HomePage extends Component {
 
     renderFirstPage() {
         const screenWidth = document.body.offsetWidth;
-        const screenHeight = screenWidth > 992 ? document.body.offsetHeight : 'auto';
+        // const screenHeight = screenWidth > 992 ? document.body.offsetHeight : 'auto';
+        // const screenHeight = screenWidth < 992 ? 'auto' : document.body.offsetHeight;
+        const height = document.body.offsetHeight >= 915 ? 915 : 'auto';
+        const screenHeight = screenWidth < 992 ? 'auto' : height;
+        // const screenHeight = screenWidth > 992 ? 'auto' : '100%';
+        // const screenHeight = 'auto';
         const BasicInfoBlocksHTML = this.renderBasicInfoBlocks();
 
         // TODO: getTPS data
         return (
             <section
-                className='home-bg-earth'
+                // className='home-bg-earth'
+                className='home-bg-grey'
                 style={{
                     height: screenHeight
                 }}
@@ -229,6 +220,7 @@ export default class HomePage extends Component {
                     <div className="home-header-blank"></div>
                     {this.renderSearchBanner()}
                     <Row
+                        className='flex-column flex-column-reverse-mobile'
                         type="flex"
                         justify="space-between"
                         align="middle"
@@ -237,26 +229,21 @@ export default class HomePage extends Component {
                             { xs: 8, sm: 16, md: 24, lg: 32 }
                         }
                     >
-                        <Col xs={24} sm={24} md={24} lg={12}>
+                        <Col xs={24} sm={24} md={24} lg={24} className="first-page-sub-container">
                             <div className='home-basic-title-con'>
-                                {/*<span className='TPSChart-title'>TPS Monitor</span>*/}
                                 <span className='TPSChart-title'>Transaction Per Minute</span>
-                                {/*<span className='TPSChart-text'>Realtime：233</span>*/}
-                                {/*<span>Peak：23333</span>*/}
                             </div>
                             <ContainerRichard>
                                 <TPSChart/>
                             </ContainerRichard>
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={12}>
-                            <div className='home-basic-title-con'>&nbsp;</div>
+                        <Col xs={24} sm={24} md={24} lg={24} className="first-page-sub-container">
                             <Row
                                 type="flex"
-                                justify="space-between"
                                 align="middle"
                                 key="basicinfo-1"
                                 gutter={
-                                    {xs: 8, sm: 16, md: 16, lg: 16}
+                                    {xs: 4, sm: 8, md: 8, lg: 8}
                                 }
                             >
                                 {BasicInfoBlocksHTML}
@@ -291,19 +278,20 @@ export default class HomePage extends Component {
                 <Col span={4}>{title}</Col>
                 <Col span={4}>{desc}</Col>
                 <Col span={16}>{format(item.time)}</Col>
-                {/*<Col span='2'>hzz780</Col>*/}
             </Row>
         );
 
     };
 
     txsRenderItem = item => {
-        // const blockHeight = item.block_height;
+
+        let cutNum = 12;
+        if (document.body.offsetWidth <= 414) {
+          cutNum = 11;
+        }
 
         let tx_id = item.tx_id;
-        // let txIDlength = tx_id.length;
-        // let txIDShow = tx_id.slice(0, 10) + '...' + tx_id.slice(txIDlength - 10, txIDlength);
-        let txIDShow = tx_id.slice(0, 12) + '...';
+        let txIDShow = tx_id.slice(0, cutNum) + '...';
 
         const title = (
             <span>
@@ -316,14 +304,14 @@ export default class HomePage extends Component {
         const from = (
             <span className="infoList-desc">
                 <Link to={`/address/${item.address_from}`}>
-                    {item.address_from.slice(0, 12)}...
+                    {ADDRESS_INFO.PREFIX + '_' + item.address_from.slice(0, cutNum)}...
                 </Link>
             </span>
         );
 
         const to = (
             <Link to={`/address/${item.address_to}`}>
-                {item.address_to.slice(0, 12)}...
+                {ADDRESS_INFO.PREFIX + '_' + item.address_to.slice(0, cutNum)}...
             </Link>
         );
 
@@ -334,24 +322,18 @@ export default class HomePage extends Component {
                 className="blocks-list-container"
                 key={tx_id}
             >
-                <Col span={8}>{title}</Col>
-                <Col span={8}>{from}</Col>
-                <Col span={8}>{to}</Col>
+                <Col span={6}>{title}</Col>
+                <Col span={9}>{from}</Col>
+                <Col span={9}>{to}</Col>
             </Row>
         );
-
-        // return (
-        //     <List.Item key={blockHeight}>
-        //         <List.Item.Meta title={title} description={desc} />
-        //         <div>Trading Status: {TXSSTATUS[item.tx_status]}</div>
-        //     </List.Item>
-        // );
     };
 
     renderBlocksAndTxsList() {
         const {blocks, transactions} = this.state;
 
-        const blocksHTML = blocks.map(item => {
+        const blocksReversed = blocks.reverse();
+        const blocksHTML = blocksReversed.map(item => {
             return this.blockRenderItem(item);
         });
 
@@ -384,12 +366,10 @@ export default class HomePage extends Component {
                     {xs: 8, sm: 16, md: 24, lg: 32}
                 }
             >
-                {/*<Col span={12} className="container-list">*/}
                 <Col xs={24} sm={24} md={12} className="container-list">
                     <div className="panel-heading">
                         <h2 className="panel-title">
-                            {/*<Icon type="gold" className="anticon" />*/}
-                            Blocks <span className='tip-color' style={{ fontSize: 16 }}>( Includes unconfirmed blocks )</span>
+                            Latest Blocks
                         </h2>
                         <Link to="/blocks" className="pannel-btn">
                             View all
@@ -398,7 +378,6 @@ export default class HomePage extends Component {
                     <div>
                         <Row
                             type="flex"
-                            // justify="space-between"
                             align="middle"
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
@@ -406,7 +385,6 @@ export default class HomePage extends Component {
                             <Col span={4}>Height</Col>
                             <Col span={4}>TXS</Col>
                             <Col span={16}>Time</Col>
-                            {/*<Col span='2'>Miner</Col>*/}
                         </Row>
                     </div>
                     <div
@@ -419,12 +397,10 @@ export default class HomePage extends Component {
                         </Scrollbar>
                     </div>
                 </Col>
-                {/*<Col span={12} className="container-list">*/}
                 <Col xs={24} sm={24} md={12} className="container-list">
                     <div className="panel-heading">
                         <h2 className="panel-title">
-                            {/*<Icon type="gold" className="anticon" />*/}
-                            Transactions
+                            Latest Transactions
                         </h2>
                         <Link to="/txs" className="pannel-btn">
                             View all
@@ -433,14 +409,13 @@ export default class HomePage extends Component {
                     <div>
                         <Row
                             type="flex"
-                            // justify="space-between"
                             align="middle"
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
                         >
-                            <Col span={8}>Tx ID</Col>
-                            <Col span={8}>From</Col>
-                            <Col span={8}>To</Col>
+                            <Col span={6}>Tx ID</Col>
+                            <Col span={9}>From</Col>
+                            <Col span={9}>To</Col>
                             {/*<Col span='6'>Time</Col>*/}
                         </Row>
                     </div>
@@ -465,13 +440,12 @@ export default class HomePage extends Component {
         return (
             <div className='fullscreen-container'>
                 {firstPageHTML}
-                <section className='home-bg-blue'>
+                <section className='home-bg-white'>
                     <div className='basic-container'>
                         {blocksAndTxsListHTML}
                     </div>
                 </section>
             </div>
-
         )
     }
 }

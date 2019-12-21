@@ -4,16 +4,18 @@
  */
 /* eslint-disable fecs-camelcase */
 import React, { PureComponent } from 'react';
-import { Menu } from 'antd';
+import { Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import Svg from '../../components/Svg/Svg';
 import './header.styles.less';
 import { getPathnameFirstSlash } from '@utils/urlUtils';
 import { setIsSmallScreen } from '@actions/common';
 import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
-import config from '../../../config/config';
+import config, {CHAINS_LINK, CHAINS_LINK_NAMES, ADDRESS_INFO} from '../../../config/config';
+import {isPhoneCheck} from '../../utils/deviceCheck';
 
 const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -122,6 +124,29 @@ class BrowserHeader extends PureComponent {
     }, this.interval);
   };
 
+  renderPhoneMenu() {
+    const chainIdHTML = Object.keys(CHAINS_LINK).map(item => {
+      let classSelected = '';
+      if (ADDRESS_INFO.CURRENT_CHAIN_ID === item) {
+        classSelected = 'header-chain-selected';
+      }
+      return  <Menu.Item key={item}>
+        <a href={CHAINS_LINK[item]} className={classSelected}>{CHAINS_LINK_NAMES[item]}</a>
+      </Menu.Item>;
+    });
+    return <SubMenu
+      title={
+        <span className='submenu-title-wrapper'>
+                  EXPLORERS
+            </span>
+      }
+      className='aelf-submenu-container'
+    >
+      {chainIdHTML}
+    </SubMenu>;
+  }
+
+
   renderMenu(menuMode, showMenu = true) {
     const nodeInfo = JSON.parse(localStorage.getItem('currentChain'));
     const { chain_id } = nodeInfo;
@@ -147,6 +172,7 @@ class BrowserHeader extends PureComponent {
     }
 
     const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
+    const isPhone = isPhoneCheck();
 
     return (
       <Menu
@@ -164,7 +190,7 @@ class BrowserHeader extends PureComponent {
           title={
             <span className='submenu-title-wrapper'>
               {/* <Icon type='gold' /> */}
-              BLOCK CHAIN
+              BLOCKCHAIN
             </span>
           }
           className='aelf-submenu-container'
@@ -182,6 +208,9 @@ class BrowserHeader extends PureComponent {
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
+        <Menu.Item key='/contract'>
+          <Link to='/contract'>CONTRACT</Link>
+        </Menu.Item>
         {/* <Menu.Item key='/wallet'>
           <a
             href={config.WALLET_DOMAIN}
@@ -194,11 +223,11 @@ class BrowserHeader extends PureComponent {
         <Menu.Item key='/apps'>
           <Link to='/apps'>APP CENTER[Building]</Link>
         </Menu.Item> */}
-        {/* {voteHTML} */}
+         {voteHTML}
         {/* <Menu.Item key='/voteold'> */}
         {/* <Link to='/voteold'>VoteOld</Link> */}
         {/* </Menu.Item> */}
-        {/* {resourceHTML} */}
+         {resourceHTML}
         <Menu.Item key='/about'>
           {/* <Icon type='profile' /> */}
           <a
@@ -209,6 +238,7 @@ class BrowserHeader extends PureComponent {
             ABOUT
           </a>
         </Menu.Item>
+        {isPhone && this.renderPhoneMenu()}
       </Menu>
     );
   }
@@ -225,7 +255,8 @@ class BrowserHeader extends PureComponent {
         className='header-navbar-mobile-more'
         onClick={() => this.toggleMenu()}
       >
-        ...
+        {/*...*/}
+        <Icon type="menu" />
       </div>
     );
   }
@@ -243,11 +274,16 @@ class BrowserHeader extends PureComponent {
       menuHtml = this.renderMenu(menuMode);
     }
 
+    const isPhone = isPhoneCheck();
+
     return (
-      <div className='header-fixed-contaier'>
+      <div className='header-fixed-container'>
         <div className='header-container'>
           <Link to='/' key='logo'>
-            <img src='https://aelf.io/assets/images/logo.jpg' />
+            <Svg
+              icon='aelf_logo_purple'
+              className='aelf-logo-container'
+            />
           </Link>
 
           {mobileMoreHTML}
@@ -255,7 +291,7 @@ class BrowserHeader extends PureComponent {
           <nav className='header-navbar'>
             {menuHtml}
             {this.state.showSearch && <Search />}
-            {/* <ChainSelect /> */}
+            {!isPhone && <ChainSelect />}
           </nav>
         </div>
       </div>

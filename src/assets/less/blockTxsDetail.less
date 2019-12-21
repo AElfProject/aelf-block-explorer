@@ -4,21 +4,50 @@
   margin-bottom: 20px;
   border: 1px solid transparent;
 
-  .tx-block-detail-panle {
+  .tx-block-detail-panel {
     display: flex;
     justify-content: space-between;
 
     height: 38px;
     padding: 5px 16px;
     font-size: 18px;
-    color: #FFF;
-    background-color: @bgPurpleDark03;
+    color: @textContext;
+    background-color: @bgBlankGrey;
+  }
+
+  .tx-block-detail-panel-simple {
+    background: @bgBlankWhite;
+    font-size: 14px;
+    border-bottom: 1px solid @borderColor;
+    margin: 16px 16px 0 16px;
+    padding: 0;
+
+    .title {
+      font-weight: 700;
+      color: @bgMain;
+    }
+
+    a {
+      height: 26px;
+      width: 26px;
+      display: inline-block;
+      text-align: center;
+      line-height: 26px;
+      border-radius: 3px;
+      background: @bgBlankGrey;
+      color: @textContext;
+      transition: none;
+      &:hover {
+        background: @hoverColor;
+        color: @textContextWhite !important;
+      }
+    }
   }
 
   .tx-block-detail-body {
     padding: 16px;
-    color: #FFF;
-    background-color: @bgPurpleDark01;
+    color: @textContext;
+    background-color: @bgBlankWhite;
 
     //.ant-col-3,
     //.ant-col-21 {
@@ -64,6 +93,19 @@
         width: 100%;
         font-size: 12px;
       }
+    }
+    .tx-block-detail-panel-simple {
+      margin: 0;
+    }
+    .tx-block-detail-panel-simple {
+      padding: 0;
+    }
+    .ant-row {
+      padding: 8px 0 8px 0;
+    }
+    .title {
+      font-weight: 500;
+      margin: 0 0 4px 0;
     }
   }
 

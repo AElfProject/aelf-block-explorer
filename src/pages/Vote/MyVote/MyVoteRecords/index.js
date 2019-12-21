@@ -11,6 +11,8 @@ import {
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import { centerEllipsis } from '@utils/formater';
 
+import './MyVoteRecords.less';
+
 const { Search } = Input;
 const clsPrefix = 'my-vote-records';
 
@@ -22,6 +24,7 @@ function genMyVoteRecordsCols() {
       title: 'Rank',
       dataIndex: 'displayedRank',
       key: 'rank',
+      width: 70,
       sorter: (a, b) => {
         return a.rank - b.rank;
       }
@@ -49,12 +52,14 @@ function genMyVoteRecordsCols() {
     {
       title: 'Type',
       dataIndex: 'type',
-      key: 'type'
+      key: 'type',
+      width: 90
     },
     {
       title: 'Vote Amount',
       dataIndex: 'amount',
       key: 'voteAmount',
+      width: 100,
       sorter: (a, b) => a.amount - b.amount
     },
     {
@@ -70,7 +75,8 @@ function genMyVoteRecordsCols() {
     {
       title: 'Status',
       key: 'status',
-      dataIndex: 'status'
+      dataIndex: 'status',
+      width: 110
     },
     {
       title: 'Operation Time',
@@ -94,11 +100,11 @@ function genMyVoteRecordsCols() {
       title: 'Operations',
       key: 'operations',
       render: (text, record) => (
-        <div className='node-list-btn-group'>
+        <div className="node-list-btn-group">
           <Button
-            type='primary'
-            className='table-btn redeem-btn'
-            data-role='redeemOne'
+            type="primary"
+            className="table-btn redeem-btn"
+            data-role="redeemOne"
             data-nodeaddress={publicKeyToAddress(record.candidate)}
             data-nodename={record.nane || publicKeyToAddress(record.candidate)}
             data-amount={record.amount}
@@ -153,17 +159,17 @@ class MyVoteRecords extends Component {
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -171,7 +177,7 @@ class MyVoteRecords extends Component {
       </div>
     ),
     filterIcon: filtered => (
-      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -208,8 +214,8 @@ class MyVoteRecords extends Component {
     const myVoteRecordsCols = genMyVoteRecordsCols.call(this);
 
     return (
-      <section>
-        <h2 className={`${clsPrefix}-header`}>
+      <section className={`${clsPrefix}-section`}>
+        <h2 className={`${clsPrefix}-header table-card-header`}>
           <span>My Votes</span>
           {/* <span className='node-color-intro-group'>
             <span className='node-color-intro-item'>BP节点</span>
@@ -227,7 +233,7 @@ class MyVoteRecords extends Component {
           // loading={loading}
           pagination={pagination}
           rowKey={record => record.voteId.value}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1024 }}
         />
       </section>
     );

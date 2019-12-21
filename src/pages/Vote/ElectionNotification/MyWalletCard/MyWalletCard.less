@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-28 18:14:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-06 14:06:02
+ * @LastEditTime: 2019-12-09 17:21:56
  * @Description: file content
  */
 @cardSplit: 1px solid rgba(57, 0, 57, 0.3);
@@ -12,16 +12,18 @@
 .my-wallet-card {
   margin-bottom: 20px;
   // padding: 20px 30px;
-  background: rgba(57, 0, 57, 0.3);
+  background: @bgBlankWhite;
+  overflow: hidden;
 
   &-header {
-    background: rgba(57, 0, 57, 0.5);
-    padding: 5px 20px;
+    background: @bgBlankWhite;
+    padding: 30px 57px 20px;
     overflow: hidden;
+    border-bottom: 1px solid @borderColor;
     &-title {
       display: inline-block;
       vertical-align: middle;
-      color: #fff;
+      color: @textContext;
     }
     &-sync-btn {
       float: right;
@@ -33,35 +35,48 @@
       display: flex;
       flex: 1;
       align-items: center;
-      justify-content: center;
-      border-right: @cardSplit;
+      padding: 18px 0px;
+      margin: 0 57px;
+      font-size: 14px;
+      line-height: 14px;
+      border-bottom: 1px solid @borderColor;
       &-name {
-        color: #fff;
+        color: @textContext;
         margin-right: 20px;
+      }
+      &-key {
+        font-weight: 500;
+        margin-right: 8px;
+      }
+      &-blank {
+        margin: 0 12px;
+      }
+      &-value {
       }
     }
     &-wallet-content {
       flex: 4;
-      padding: 10px 10px 10px 60px;
-      color: #fff;
+      padding: 10px 10px 0px 57px;
+      color: @textContext;
       > li {
         display: inline-block;
         width: 33%;
         margin: 5px 0;
         .item-value {
           margin-left: 3px;
-          color: @gold;
+          color: @bgMain;
         }
       }
-      &-withdraw-btn {
+      &-withdraw-btn.ant-btn.ant-btn-sm {
         margin-left: 10px;
+        background-color: @buyColor;
       }
     }
   }
 }
 
 .ant-modal-confirm-body .ant-modal-confirm-title {
-  color: #fff;
+  color: @textContext;
 }
 
 // todo: Use rem instead

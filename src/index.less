@@ -22,7 +22,7 @@ body {
 }
 
 .tip-color {
-  color: #ccc;
+  color: @tipColor;
 }
 
 .buy-color {
@@ -42,7 +42,7 @@ body {
   height: 34px;
   line-height: 34px;
   border-radius: 16px;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
   overflow: hidden;
 }
 
@@ -93,7 +93,7 @@ body {
 .update-btn {
   background: none;
   border: none;
-  color: #fff;
+  color: #ccc;
   font-size: 20px;
   &:hover,
   &:focus {
@@ -104,10 +104,10 @@ body {
     }
   }
   &:focus {
-    color: #fff;
+    color: #ccc;
   }
   &:hover {
-    color: @gold;
+    color: @primary-color;
   }
 }
 
@@ -122,6 +122,35 @@ body {
 
 // todo: Use css to unify the modal's style
 // modal style
-.md-modal{
+.md-modal {
   width: 640px;
 }
+
+/* header menu rewrite start */
+.ant-menu-item:active,
+.ant-menu-submenu-title:active {
+  background: @bgBlankWhite;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background: none;
+}
+
+.ant-menu-item-selected,
+.ant-menu-item-selected > a,
+.ant-menu-item-selected > a:hover {
+  color: @hoverColor;
+}
+
+.ant-menu-submenu-inline
+  > .ant-menu-submenu-title:hover
+  .ant-menu-submenu-arrow:before {
+  background: @hoverColor;
+}
+
+.ant-menu-submenu-inline
+  > .ant-menu-submenu-title:hover
+  .ant-menu-submenu-arrow:after {
+  background: @hoverColor;
+}
+/* header menu rewrite end */

@@ -72,10 +72,18 @@ export default class Search extends PureComponent {
     }
 
     handleSearch = e => {
-        const value = e.target && e.target.value || e.searchValue || '';
+        let value = e.target && e.target.value || e.searchValue || '';
         if (!value.trim()) {
             return;
         }
+
+        if (value.indexOf('_') > 0) {
+            value = value.split('_')[1];
+        }
+
+        // AElf.utils;
+        // value = ;
+
         const length = value.length;
         const isAddress = [49, 50, 51, 52, 53, 47];
         const isTxid = [64];

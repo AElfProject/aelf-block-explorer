@@ -650,19 +650,20 @@ export default class ResourceBuy extends Component {
     return (
       <div className='trading-box trading-buy'>
         <div className='trading'>
-          <div className='trading-title'>Buy</div>
           <div className='trading-input'>
-            <Row type='flex' align='middle'>
-              <Col span={6} style={{ color: '#fff' }}>
-                Buying quantity{' '}
-              </Col>
-              <Col span={18}>
-                <Spin spinning={buyInputLoading}>
-                  <Form.Item
+            <div className="resource-action-block">
+              <span className="resource-action-title">
+                Buying quantity:
+              </span>
+              <Spin
+                  spinning={buyInputLoading}
+                  wrapperClassName="resource-action-input"
+              >
+                <Form.Item
                     validateStatus={validate.validateStatus}
                     help={validate.help}
-                  >
-                    <InputNumber
+                >
+                  <InputNumber
                       // addonAfter={`x100,000 ${menuName}`}
                       // todo: get the step according to the user's balance
                       value={buyNum}
@@ -672,33 +673,31 @@ export default class ResourceBuy extends Component {
                       // parser={value => value.replace(/[^.\d]+/g, '')}
                       parser={value => value.replace(/\$\s?|(,*)/g, '')}
                       formatter={value =>
-                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                          `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                       }
                       min={0}
                       max={processedBuyNumMax}
                       // precision={8}
-                    />
-                  </Form.Item>
-                </Spin>
-              </Col>
-            </Row>
+                  />
+                </Form.Item>
+              </Spin>
+            </div>
             <div className='ELF-value'>
               <Spin spinning={buyEstimateValueLoading}>
                 ≈ {thousandsCommaWithDecimal(buyElfValue)} {SYMBOL}
               </Spin>
             </div>
-            <Row type='flex' align='middle'>
-              <Col span={6} style={{ color: '#fff' }}>
-                Available
-              </Col>
-              <Col span={18}>
-                <Input
+            <div className="resource-action-block">
+              <span className="resource-action-title">
+                Available:
+              </span>
+              <Input
+                  className="resource-action-input"
                   value={thousandsCommaWithDecimal(account.balance)}
                   addonAfter={SYMBOL}
                   disabled={true}
-                />
-              </Col>
-            </Row>
+              />
+            </div>
           </div>
           <div className='trading-slide'>
             {sliderHTML}

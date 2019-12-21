@@ -76,7 +76,8 @@ export default class TxsPage extends Component {
     };
 
     handleTableChange = pagination => {
-        const pager = { ...this.state.pagination
+        const pager = {
+            ...this.state.pagination
         };
         pager.current = pagination.current;
         this.setState({
@@ -100,7 +101,7 @@ export default class TxsPage extends Component {
         } = this;
 
         return (
-            <div className="txs-page-container basic-container" key="body">
+            <div className="txs-page-container basic-container basic-container-white" key="body">
                 <Table
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={data}
@@ -108,8 +109,9 @@ export default class TxsPage extends Component {
                     rowKey="tx_id"
                     loading={loading}
                     onChange={handleTableChange}
+                    scroll={{x: 1024}}
                 />
-                <div className="basic-bottom-blank"></div>
+                {/*<div className="basic-bottom-blank"></div>*/}
             </div>
         );
     }

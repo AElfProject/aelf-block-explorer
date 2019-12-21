@@ -6,15 +6,13 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Spin, message, Button } from 'antd';
 import { aelf } from '../../../../../../utils';
-import { tokenConverter } from '../../../../../../../config/config';
-import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
-import { centerEllipsis } from '@utils/formater';
+import {
+  CHAIN_ID
+} from '@config/config';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
-import getFees from '../../../../../../utils/getFees';
-import './ResourceSellModal.less';
 import getMenuName from '../../../../../../utils/getMenuName';
-import { thousandsCommaWithDecimal } from '@utils/formater';
-import { SYMBOL, ELF_DECIMAL, TEMP_RESOURCE_DECIMAL } from '@src/constants';
+import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
+import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 
 export default class ResourceSellModal extends PureComponent {
   constructor(props) {
@@ -126,19 +124,19 @@ export default class ResourceSellModal extends PureComponent {
     return (
       <div className='modal'>
         <Row className='modal-form-item'>
-          <Col span={8} style={{ color: '#c8c7c7' }}>
+          <Col span={8}>
             Address
           </Col>
-          <Col span={16}>{centerEllipsis(currentWallet.address)}</Col>
+          <Col span={16}>{centerEllipsis(`ELF_${currentWallet.address}_${CHAIN_ID}`)}</Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8} style={{ color: '#c8c7c7' }}>
+          <Col span={8}>
             Sell {menuName} Quantity
           </Col>
           <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8} style={{ color: '#c8c7c7' }}>
+          <Col span={8}>
             Sell {SYMBOL}
           </Col>
           <Col span={16}>

@@ -4,7 +4,7 @@
  * 获取查询使用的公共钱包与合约地址
  */
 
-import * as AElf from 'aelf-sdk';
+import AElf from 'aelf-sdk';
 // todo: The exist of dividends is for compatibility, after all man use the more accurate name 'dividendContractAddr', we can drop the name of 'dividends'.
 import {
   commonPrivateKey,

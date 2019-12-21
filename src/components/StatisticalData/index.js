@@ -3,7 +3,7 @@
  * @Github: https://github.com/cat-walk
  * @Date: 2019-09-09 18:52:15
  * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-11-05 15:29:44
+ * @LastEditTime: 2019-12-10 17:00:44
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
@@ -14,7 +14,22 @@ import './index.less';
 const { Countdown } = Statistic;
 const clsPrefix = 'statistical-data';
 
-class StatisticalData extends PureComponent {
+const arrFormate = function(arr) {
+  // const arr = new Array(arrInput);
+  switch (arr.length) {
+    case 4:
+      // eslint-disable-next-line no-return-assign, no-param-reassign
+      arr.forEach((item, index) => (item.span = 8 - 4 * (index % 2)));
+      break;
+    default:
+      // eslint-disable-next-line no-return-assign, no-param-reassign
+      arr.forEach(item => (item.span = 24 / arr.length));
+      break;
+  }
+  return arr;
+};
+
+export default class StatisticalData extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,26 +64,41 @@ class StatisticalData extends PureComponent {
     // todo: update the current term number at the same time
   }
 
+  renderList(arr) {
+    return arr.map(item => {
+      let number = item.num;
+      if (item.id === 3) {
+        number = (number / 100000000).toFixed(2);
+      }
+
+      return item.isCountdown ? (
+        <Countdown
+          key={Math.random()}
+          title={item.title}
+          value={item.num || 0}
+          format="D day HH : mm : ss "
+          onFinish={() => {
+            console.log('finished');
+            this.handleFinish(item.id);
+          }}
+        />
+      ) : (
+        <Statistic key={Math.random()} title={item.title} value={number} />
+      );
+    });
+  }
+
   render() {
     const { spinning, style, tooltip, inline } = this.props;
     const { arr } = this.state;
     if (!arr) return null;
 
-    switch (arr.length) {
-      case 4:
-        // eslint-disable-next-line no-return-assign, no-param-reassign
-        arr.forEach((item, index) => (item.span = 8 - 4 * (index % 2)));
-        break;
-      default:
-        // eslint-disable-next-line no-return-assign, no-param-reassign
-        arr.forEach(item => (item.span = 24 / arr.length));
-        break;
-    }
+    const arrFormatted = arrFormate(arr);
+    const listHTML = this.renderList(arrFormatted);
 
     return (
       <section style={style}>
         <Spin spinning={spinning}>
-          {/* <Row> */}
           <section
             className={`${clsPrefix}-container card-container ${
               inline ? 'inline-style' : ''
@@ -76,36 +106,10 @@ class StatisticalData extends PureComponent {
           >
             {tooltip ? (
               <Tooltip title={tooltip}>
-                <Icon style={{ fontSize: 20 }} type='exclamation-circle' />
+                <Icon style={{ fontSize: 20 }} type="exclamation-circle" />
               </Tooltip>
             ) : null}
-            {arr.map(item => {
-              return (
-                // <Col span={item.span} key={item.title}>
-                //   <p className={`${clsPrefix}-words`}>{item.title}</p>
-                //   <p className={`${clsPrefix}-number`}>{item.num}</p>
-                // </Col>
-                item.isCountdown ? (
-                  <Countdown
-                    key={Math.random()}
-                    title={item.title}
-                    value={item.num || 0}
-                    format='D day H : m : s '
-                    onFinish={() => {
-                      console.log('finished');
-                      this.handleFinish(item.id);
-                    }}
-                  />
-                ) : (
-                  <Statistic
-                    key={Math.random()}
-                    title={item.title}
-                    value={item.num}
-                  />
-                )
-              );
-            })}
-            {/* </Row> */}
+            {listHTML}
           </section>
         </Spin>
       </section>
@@ -116,5 +120,3 @@ class StatisticalData extends PureComponent {
 StatisticalData.defaultProps = {
   spinning: false
 };
-
-export default StatisticalData;

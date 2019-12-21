@@ -1,28 +1,38 @@
 @import '../../assets/less/_variables.less';
 
 .DownloadPlugins {
-  // margin: 0 56px;
-  padding: 0 0 30px 0;
+  background: @bgBlankWhite;
   .Tips {
     padding: 16px 35px 16px 82px;
-    background: url(../../assets/images/exclamation_mark.png) no-repeat 35px
-      center #976271;
-    background-size: 28px 25px;
-    border: 1px solid #a77c4d;
     font-size: 16px;
-    color: #fff;
+    color: @bgMain;
   }
 }
 
 .Step-con {
-  height: 152px;
+  height: 100px;
   display: flex;
-  color: #dc9534;
+  color: @textContext;
   font-size: 20px;
-  border-right: 1px solid #73399b;
-  background: #5b1189;
+  background: @bgBlankWhite;
   align-items: center;
   justify-content: center;
+}
+
+.download-button {
+  width: 118px;
+  height: 32px;
+  background: @bgMain;
+  color: @textContextWhite;
+  text-align: center;
+  border-radius: 30px;
+  font-size: 18px;
+  line-height: 32px;
+  margin-left: 16px;
+  &:hover {
+    background: @bgMainHover;
+    color: @textContextWhite !important;
+  }
 }
 
 @media screen and (max-width: 1200px) {
@@ -37,13 +47,8 @@
   }
 }
 
-@media screen and (max-width: 992px) {
-  .Step-con {
-    border-right: none;
-    border-bottom: 1px solid #73399b;
-  }
-
+@media (max-width: @smallScreenWidth) {
   .DownloadPlugins {
-    margin: 0 20px;
+    display: none;
   }
 }

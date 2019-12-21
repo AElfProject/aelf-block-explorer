@@ -1,11 +1,13 @@
 @import './assets/less/theme.less';
+@import './assets/less/common.less';
 
 .App {
   position: relative;
   min-height: 100vh;
-  background: url('./assets/images/bg_purple_darker@1x.jpg');
-  background-size: cover;
-  padding-bottom: @footerHeight; // Ugly code
+  background: @bgBlankGrey;
+  //background: url('./assets/images/bg_purple_darker@1x.jpg');
+  //background-size: cover;
+  //padding-bottom: @footerHeight; // Ugly code
   // TODO 在iOS下还有问题。header会跟着滚动。
   //position: fixed;
   //width: 100%;
@@ -19,21 +21,41 @@
   .basic-container {
     max-width: @maxWidth;
     margin: auto;
-    padding: 20px 30px 30px;
+    padding: 20px 30px 0 30px;
   }
+
+  .basic-container-white {
+    background: @bgBlankWhite;
+    margin: 0 auto 62px auto;
+    padding: 20px 20px 0 20px;
+  }
+
   .basic-bottom-blank {
     height: 64px;
     width: 10px;
   }
 
   @media screen and (max-width: 768px) {
+    .basic-container-white {
+      background: @bgBlankWhite;
+      margin: auto;
+      padding: 20px 20px 0 20px;
+    }
     .basic-container {
-      padding: 16px;
+      padding: 8px;
     }
     .basic-bottom-blank {
       height: 16px;
       width: 10px;
     }
+
+    .ant-pagination-total-text {
+      display: block;
+    }
+    .ant-table-pagination.ant-pagination {
+      padding: 8px;
+    }
+
   }
 }
 
@@ -41,51 +63,57 @@
 thead {
   th {
     border: none !important;
-    color: #fff !important;
+    color: @textContext !important;
     border-radius: 0 !important;
-    background: rgba(57, 0, 57, 0.3) !important;
+    //background: rgba(57, 0, 57, 0.3) !important;
+    background: @bgBlankGrey !important;
   }
 }
 tbody {
   tr {
-    color: #fff;
-    background: rgba(57, 0, 57, 0.1) !important;
+    color: @textContext;
+    //background: rgba(57, 0, 57, 0.1) !important;
+    background: @bgBlankWhite !important;
     td {
-      color: #fff;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: @textContext;
+      border-bottom: 1px solid @borderColor !important;
     }
   }
   tr:hover {
-    background: rgba(57, 0, 57, 0.2) !important;
+    background: @bgBlankGrey !important;
     td {
       background: none !important;
     }
   }
   a {
-    color: #fff;
+    color: @linkMain;
   }
 }
 
 .ant-table-pagination.ant-pagination {
-  color: @fontColorLightPurple;
+  color: @textContext;
   width: 100%;
   text-align: center;
-  background: rgba(57, 0, 57, 0.1) !important;
+  background: @bgBlankWhite !important;
   margin: 0;
-  padding: 16px 0;
+  padding: 32px 0 24px 0;
 }
 
 .ant-pagination-item-link {
   background: none !important;
   border: none !important;
-  color: @fontColorLightPurple !important;
+  color: @textContext !important;
 }
 
 .ant-pagination-item {
   border: none;
-  background: none;
+  background: @bgBlankGrey;
+  height: 26px;
+  min-width: 26px;
+  line-height: 26px;
   a {
-    color: @fontColorLightPurple;
+    //color: @fontColorLightPurple;
+    color: @cusBlack;
   }
 }
 
@@ -122,13 +150,15 @@ tbody {
 
 .ant-pagination-options-quick-jumper input {
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: @fontColorLightPurple;
+  border: 1px solid @borderColor;
+  color: @textContext;
+  width: 63px;
+  height: 26px;
 
   outline: none;
   &:hover,
   &:focus {
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid @purpleInputFocus;
     box-shadow: none;
   }
 }
@@ -136,8 +166,26 @@ tbody {
 .ant-table-small {
   border: none;
 }
+
+.ant-spin-dot-item {
+  background: @bgMain;
+}
 // rewriter ant table style end
 
 a:hover {
   color: @hoverColor !important;
+}
+
+.ant-input:focus {
+  box-shadow: 0 0 0 2px @purpleInputFocus;
+}
+input {
+  outline-color: @purpleInputFocus
+}
+
+
+@media screen and (max-width: 768px){
+  .App {
+    background: @bgBlankWhite;
+  }
 }

@@ -8,7 +8,7 @@ import {
 import {
     create
 } from 'apisauce';
-import * as AElf from 'aelf-sdk';
+import AElf from 'aelf-sdk';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 
@@ -92,7 +92,7 @@ const formatKey = (inputString) => {
     const piecesFormatted = pieces.map(item => {
         return firstUpperCase(item);
     });
-    return piecesFormatted.join('');
+    return piecesFormatted.join('').replace(/([A-Z])/g, ' $1').trim();
 };
 
 function transactionFormat(result) {

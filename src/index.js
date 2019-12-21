@@ -1,5 +1,5 @@
 /**
- * @file index.js
+ * @file MyWalletCard.js
  * @author huangzongzhe,longyue,zhouminghui
  */
 /* eslint-disable fecs-camelcase */
@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import Cookies from 'js-cookie';
 
 // 为组件内建文案提供统一的国际化支持。
-import { LocaleProvider, message } from 'antd';
+import { ConfigProvider, message } from 'antd';
 
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from 'antd/lib/locale-provider/en_US';
@@ -25,8 +25,6 @@ import './index.less';
 
 import App from './App';
 
-// const appIncrStore = AppIncrStore.create({});
-
 function initPage() {
   // @TODO: compose mst store to make app running.
   if (isIESeries()) {
@@ -34,13 +32,13 @@ function initPage() {
   }
 
   render(
-    <LocaleProvider locale={en_US}>
+    <ConfigProvider locale={en_US}>
       <Provider store={store}>
         <Router>
           <App />
         </Router>
       </Provider>
-    </LocaleProvider>,
+    </ConfigProvider>,
     document.querySelector('#app')
   );
 }

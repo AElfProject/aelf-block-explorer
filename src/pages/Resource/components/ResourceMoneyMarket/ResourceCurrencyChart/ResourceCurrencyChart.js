@@ -4,22 +4,18 @@
  * echarts
  */
 
-import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { Spin } from 'antd';
+import React, {PureComponent} from 'react';
+import {connect} from 'react-redux';
+import { Icon, Tabs, Button, Divider } from 'antd';
+
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
-
-import { isBeforeToday } from '@utils/timeUtils';
-import { ELF_DECIMAL, SYMBOL } from '@config/config';
+import {isBeforeToday} from '@utils/timeUtils';
+import {ELF_DECIMAL, SYMBOL} from '@src/constants';
 import dayjs from 'dayjs';
-import moment from 'moment';
-import { get } from '../../../../../utils';
+import {get} from '../../../../../utils';
 import formateTurnoverList from '../../../../../utils/formateTurnoverList';
-import {
-  RESOURCE_TURNOVER,
-  RESOURCE_CURRENCY_CHART_FETCH_INTERVAL
-} from '../../../../../constants';
+import {RESOURCE_CURRENCY_CHART_FETCH_INTERVAL, RESOURCE_TURNOVER} from '../../../../../constants';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/chart/line';
 import 'echarts/lib/component/dataZoom';
@@ -52,9 +48,19 @@ class ResourceCurrencyChart extends PureComponent {
       yAxisData: [],
       maxValue: null
     };
+    this.typeChange = this.typeChange.bind(this);
   }
 
   async componentDidMount() {
+    const {
+      isSmallScreen
+    } = this.props;
+    const selectButton = this.selectButtonHTML();
+    const chartHeight = isSmallScreen ? 450 : 470;
+    this.echartStyle = {
+      height: chartHeight,
+      // minWidth: 900
+    };
     await this.getEchartData();
   }
 
@@ -69,23 +75,25 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevStates) {
+    // 时间维度
     if (prevStates.buttonIndex !== this.state.buttonIndex) {
       clearTimeout(this.getEchartDataTime);
-      this.getEchartData(true);
+      this.getEchartData();
     }
+    // 沙雕，为CPU等资源类型
     if (prevProps.menuIndex !== this.props.menuIndex) {
       clearTimeout(this.getEchartDataTime);
-      this.getEchartData(false);
+      this.getEchartData();
     }
   }
 
-  async getEchartData(bool) {
-    const { intervalTime, menuIndex, menuName, buttonIndex } = this.state;
+  async getEchartData() {
+    const {intervalTime, menuIndex, menuName, buttonIndex} = this.state;
     this.setState({
-      loading: bool
+      loading: true
     });
-    const xAxisData = [];
-    const yAxisData = [];
+    let xAxisData = [];
+    let yAxisData = [];
 
     const data =
       (await get(RESOURCE_TURNOVER, {
@@ -94,23 +102,12 @@ class ResourceCurrencyChart extends PureComponent {
         order: 'desc',
         interval: intervalTime,
         type: menuName[menuIndex]
-      })) || [];
+      })) || {
+          buyRecords: [],
+          sellRecords: []
+      };
 
-    const buyRecords = formateTurnoverList(
-      data.buyRecords,
-      intervalTime,
-      20,
-      'des'
-    );
-    const sellRecords = formateTurnoverList(
-      data.sellRecords,
-      intervalTime,
-      20,
-      'des'
-    );
-
-    console.log({ buyRecords, sellRecords });
-
+    const {buyRecords, sellRecords} = data;
     buyRecords.map((item, index) => {
       if (buttonIndex > 3) {
         xAxisData.push(dayjs(item.date).format('MM-DD'));
@@ -119,38 +116,27 @@ class ResourceCurrencyChart extends PureComponent {
       } else {
         xAxisData.push(dayjs(item.date).format('HH:mm'));
       }
-      if (
-        item.count > sellRecords[index].count ||
-        item.count === sellRecords[index].count
-      ) {
-        const data = {
-          value: (item.count + sellRecords[index].count) / ELF_DECIMAL,
-          itemStyle: {
-            // todo: Use the variable in less instead
-            color: '#05ac90'
-            // width: '10px'
-          }
-        };
-        yAxisData.push(data);
-      } else {
-        const data = {
-          value: (item.count + sellRecords[index].count) / ELF_DECIMAL,
-          itemStyle: {
-            color: '#d34a64'
-            // width: '10px'
-          }
-        };
-        yAxisData.push(data);
-      }
+      yAxisData.push({
+        value: ((item.count + sellRecords[index].count) / ELF_DECIMAL).toFixed(2),
+        itemStyle: {
+          opacity: 0
+          // color: 'green'
+        }
+      });
     });
-    // todo: handle the problem pop last element
-    // xAxisData[xAxisData.length - 1] = 0;
-    xAxisData.pop();
-    yAxisData.pop();
-    console.log({
-      xAxisData,
-      yAxisData
-    });
+
+    const offsetWidth = document.body.offsetWidth;
+    if (offsetWidth < 900 && offsetWidth > 768) {
+      xAxisData = xAxisData.slice(5);
+      yAxisData = yAxisData.slice(5);
+    } else if (offsetWidth < 768) {
+      xAxisData = xAxisData.slice(12);
+      yAxisData = yAxisData.slice(12);
+    } else if (offsetWidth <= 414) {
+      xAxisData = xAxisData.slice(18);
+      yAxisData = yAxisData.slice(18);
+    }
+
     this.setState({
       xAxisData,
       yAxisData,
@@ -167,7 +153,6 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   handleButtonClick(index) {
-    // TODO 切换数据展示时间
     const { intervalTimeList } = this.state;
     this.setState({
       buttonIndex: index,
@@ -176,20 +161,19 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   getOption() {
-    const { xAxisData, yAxisData, intervalTime } = this.state;
-    const maxValue = Math.max.apply(
+    const { xAxisData, yAxisData,  } = this.state;
+    const maxValue = Math.ceil(Math.max.apply(
       Math,
-      yAxisData.map((item, index) => item.value)
-    );
-    const option = {
+      yAxisData.map(item => item.value)
+    ));
+    return {
       grid: {
-        left: '3%',
+        left: '0',
         right: '3%',
-        bottom: '3%',
+        bottom: '0',
         top: '6%',
         containLabel: true,
         show: true,
-        // backgroundColor: '#1b1f6a',
         borderWidth: 0
       },
       tooltip: {
@@ -198,21 +182,6 @@ class ResourceCurrencyChart extends PureComponent {
           type: 'none'
         }
         // todo: consider to add lastAxisValue to the tooltip
-        // formatter: data => {
-        //   console.log({
-        //     data
-        //   });
-        //   const { axisValue } = data[0];
-        //   const lastAxisValue = moment
-        //     .unix(moment(axisValue).unix() - intervalTime)
-        //     .format('MM-DD HH:mm');
-        //   // intervalTime;
-        //   console.log({
-        //     lastAxisValue
-        //   })
-        //   const tipStr = `${lastAxisValue}-${axisValue}`;
-        //   return tipStr;
-        // }
       },
       legend: {
         data: ['Total volume of business', 'Price'],
@@ -224,10 +193,12 @@ class ResourceCurrencyChart extends PureComponent {
         {
           type: 'category',
           data: xAxisData,
+          boundaryGap: false,
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#C7B8CC'
+              // color: '#C7B8CC'
+              color: '#666'
             }
           },
           axisLabel: {
@@ -252,7 +223,6 @@ class ResourceCurrencyChart extends PureComponent {
               }
               return value;
             }
-            // align: 'left'
           },
           axisTick: {
             alignWithLabel: true
@@ -263,7 +233,6 @@ class ResourceCurrencyChart extends PureComponent {
               color: 'rgba(255, 255, 255, 0.3)'
             }
           }
-          // boundaryGap: true
         }
       ],
       yAxis: [
@@ -277,7 +246,7 @@ class ResourceCurrencyChart extends PureComponent {
         },
         {
           type: 'value',
-          name: `Trading volume / ${SYMBOL}`,
+          name: `Volume / ${SYMBOL}`,
           show: true,
           label: {
             normal: {
@@ -288,7 +257,7 @@ class ResourceCurrencyChart extends PureComponent {
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#C7B8CC'
+              color: '#666'
             }
           },
           splitLine: {
@@ -303,108 +272,93 @@ class ResourceCurrencyChart extends PureComponent {
       ],
       markLine: {
         lineStyle: {
-          color: 'red'
+          color: '#666'
         }
       },
       series: [
         {
+          smooth: true,
           name: `Total volume/${SYMBOL} of business`,
-          type: 'bar',
-          zlevel: 2,
+          type: 'line',
           data: yAxisData,
-          barWidth: 40
+          lineStyle: {
+            color: '#666'
+          },
         }
       ]
-      // dataZoom: [
-      //   {
-      //     type: 'slider',
-      //     realtime: true, // 拖动滚动条时是否动态的更新图表数据
-      //     height: 20, // 滚动条高度
-      //     start: 40, // 滚动条开始位置（共100等份）
-      //     end: 65, // 结束位置（共100等份）,
-      //     handleColor: '#ddd', // h滑动图标的颜色
-      //     handleStyle: {
-      //       borderColor: '#cacaca',
-      //       borderWidth: '1',
-      //       shadowBlur: 2,
-      //       background: '#ddd',
-      //       shadowColor: '#ddd'
-      //     },
-      //     fillerColor: new echarts.graphic.LinearGradient(1, 0, 0, 0, [
-      //       {
-      //         // 给颜色设置渐变色 前面4个参数，给第一个设置1，第四个设置0 ，就是水平渐变
-      //         // 给第一个设置0，第四个设置1，就是垂直渐变
-      //         offset: 0,
-      //         color: '#1eb5e5'
-      //       },
-      //       {
-      //         offset: 1,
-      //         color: '#5ccbb1'
-      //       }
-      //     ]),
-      //     backgroundColor: '#ddd' // 两边未选中的滑动条区域的颜色
-      //   },
-      //   {
-      //     type: 'inside',
-      //     show: true,
-      //     xAxisIndex: [0],
-      //     end: 100 - 1500 / 31, // 默认为100
-      //     start: 0
-      //   }
-      // ]
-      // backgroundColor: 'rgba(0, 0, 0, 0.1)'
     };
+  }
 
-    return option;
+  typeChange(activeKey) {
+    const {
+      getMenuClick
+    } = this.props;
+    getMenuClick(+activeKey);
   }
 
   selectButtonHTML() {
     // 'days'
     const buttons = [
-      '5min',
-      '30min',
-      '1hour',
-      '4hours',
-      '1day',
-      '5days',
-      '1week'
+      '5 Min',
+      '30 Min',
+      '1 Hour',
+      '4 Hours',
+      '1 Day',
+      '5 Days',
+      '1 Week'
     ];
     const { buttonIndex } = this.state;
     const buttonsHTML = buttons.map((item, index) => {
       return (
-        <div
-          className={`select-button-style ${
-            index === buttonIndex ? 'active' : ''
-          }`}
+        <Button
+          className="time-button"
+          shape="round"
+          type={index === buttonIndex ? 'primary' : ''}
+          size="small"
           key={index}
           onClick={this.handleButtonClick.bind(this, index)}
         >
           {item}
-        </div>
+        </Button>
       );
     });
     return buttonsHTML;
   }
 
   render() {
-    const { isSmallScreen } = this.props;
-    const { loading } = this.state;
-
+    const {
+      menuList
+    } = this.props;
     const selectButton = this.selectButtonHTML();
-    const chartHeight = isSmallScreen ? 450 : 470;
 
     return (
       <div className='resource-currency-chart'>
-        <div className='select-button'>{selectButton}</div>
-        {/* <Spin size='large' spinning={loading}> */}
-        <ReactEchartsCore
-          echarts={echarts}
-          option={this.getOption()}
-          style={{ height: chartHeight, minWidth: 900 }}
-          notMerge
-          lazyUpdate
-        />
-        {/* </Spin> */}
+        <div className="resource-header">
+          <div className="resource-header-title">
+            <Icon type="area-chart" className="resource-icon" />
+            <span className="resource-title">Resource Money Market</span>
+          </div>
+          <div className="resource-header-title-btn">
+            {selectButton}
+          </div>
+        </div>
+        <div className="resource-sub-container">
+          <Tabs className="resource-type-switch" onChange={this.typeChange}>
+            {menuList.map((v, i) => (
+                <Tabs.TabPane
+                    key={i}
+                    tab={v}
+                />
+            ))}
+          </Tabs>
+          <ReactEchartsCore
+            echarts={echarts}
+            option={this.getOption()}
+            style={this.echartStyle}
+            notMerge={true}
+            lazyUpdate={true}
+          />
+        </div>
       </div>
     );
   }

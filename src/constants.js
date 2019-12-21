@@ -11,7 +11,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { isArray } from 'zrender/lib/core/util';
 
 import Button from './components/Button/Button';
-import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from '../config/config';
+import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID, ADDRESS_INFO } from '../config/config';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 
 dayjs.extend(relativeTime);
@@ -89,7 +89,7 @@ const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
   'Sorry, you can not buy so many resources in one time.';
 const INPUT_NUMBER_TIP = 'Your should input a number';
 const BETWEEN_ZEOR_AND_BALANCE_TIP =
-  'The value must be between 0 and your balance';
+  'Too large value';
 const SELECT_SOMETHING_TIP = 'Please select something to continue :)';
 const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
 const UNKNOWN_ERROR_TIP =
@@ -124,6 +124,8 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Block Height',
     dataIndex: 'block_height',
     key: 'block_height',
+    sorter: (a, b) => b.block_height - a.block_height,
+    defaultSortOrder: 'ascend',
     render: text => <Link to={`/block/${text}`}> {text} </Link>
   },
   {
@@ -165,6 +167,8 @@ const ALL_TXS_LIST_COLUMNS = [
     key: 'block_height ',
     width: 150,
     align: 'center',
+    sorter: (a, b) => b.block_height - a.block_height,
+    defaultSortOrder: 'ascend',
     render: (text, row) => (
       <Link to={`/block/${row.block_height}`} title={row.block_height}>
         {' '}
@@ -181,7 +185,7 @@ const ALL_TXS_LIST_COLUMNS = [
     render: (text, row) => (
       <Link to={`/address/${row.address_from}`} title={row.address_from}>
         {' '}
-        {row.address_from}{' '}
+        {ADDRESS_INFO.PREFIX}_{row.address_from}{' '}_{ADDRESS_INFO.CURRENT_CHAIN_ID}
       </Link>
     )
   },
@@ -199,16 +203,26 @@ const ALL_TXS_LIST_COLUMNS = [
     render: (text, row) => (
       <Link to={`/address/${row.address_to}`} title={row.address_to}>
         {' '}
-        {row.address_to}{' '}
+        {ADDRESS_INFO.PREFIX}_{row.address_to}{' '}_{ADDRESS_INFO.CURRENT_CHAIN_ID}
       </Link>
     )
+  },
+  {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (text, row) => {
+        let amount = '-';
+        let symbol;
+        if (row.quantity && row.decimals) {
+          amount = row.quantity / Math.pow(10, row.decimals);
+        }
+        if (row.symbol) {
+          symbol = `(${row.symbol})`;
+        }
+        return <span>{amount}{symbol}</span>;
+      }
   }
-  // {
-  //     title: 'Quantity',
-  //     dataIndex: 'quantity',
-  //     key: 'quantity',
-  //     render: text => <span>{text}</span>
-  // }
 ];
 
 const ADDRESS_INFO_COLUMN = [
@@ -231,55 +245,49 @@ const ADDRESS_INFO_COLUMN = [
 
 const RESOURCE_DETAILS_COLUMN = [
   {
+    title: 'Tx Id',
+    dataIndex: 'tx_id',
+    key: 'tx_id',
+    align: 'center',
+    ellipsis: true,
+    render: text => (
+        <Link
+            to={`/tx/${text}`}
+        >
+          {text}
+        </Link>
+    )
+  },
+  {
     title: 'Time',
     dataIndex: 'time',
     key: 'time',
     align: 'center',
-    render: (text, row) => (
-      <Link
-        to={`/tx/${row.tx_id}`}
-        title={dayjs(row.time).format('YYYY-MM-DD HH:mm:ss')}
-      >
-        {' '}
-        {dayjs(row.time).format('YYYY-MM-DD HH:mm:ss')}
-      </Link>
-    )
+    render: text => dayjs(text).format('YYYY-MM-DD HH:mm:ss')
   },
   {
-    title: 'Resource type',
-    dataIndex: 'resourceType',
-    key: 'resourceType',
-    align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.type}>
-        {' '}
-        {row.type}
-      </Link>
-    )
+    title: 'Type(Resource)',
+    dataIndex: 'type',
+    key: 'type',
+    align: 'center'
   },
   {
-    title: 'Direction',
-    dataIndex: 'direction',
-    key: 'direction',
+    title: 'Operation',
+    dataIndex: 'method',
+    key: 'method',
     align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.method}>
-        {' '}
-        {row.method === 'Buy' ? (
-          <span className='buy-color'>Buy</span>
-        ) : (
-          <span className='sell-color'>Sell</span>
-        )}
-      </Link>
-    )
+    width: 80,
+    render: text => {
+      return (<span className={`${(text || 'buy').toLocaleLowerCase()}-color`}>{text}</span>)
+    }
   },
   {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
+    title: 'Price(ELF)',
+    dataIndex: 'fee',
+    key: 'fee',
     align: 'center',
-    render: (text, row) => {
-      let price = '-';
+    render: (_, row) => {
+      let price;
       const { resource, method } = row;
       let { elf, fee } = row;
       elf /= ELF_DECIMAL;
@@ -287,74 +295,49 @@ const RESOURCE_DETAILS_COLUMN = [
       price = ((method === 'Buy' ? elf + fee : elf - fee) / resource).toFixed(
         ELF_PRECISION
       );
-      // const fee = Math.ceil(row.fee / 1000);
-      // price = ((row.elf - fee) / row.resource).toFixed(9);
-      return (
-        <Link to={`/tx/${row.tx_id}`} title='price'>
-          {price}
-        </Link>
-      );
+      price = isNaN(price) ? '-' : price;
+      return price;
     }
   },
   {
-    title: 'Number',
+    title: 'Amount(Resource)',
     dataIndex: 'resource',
     key: 'number',
-    align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.resource}>
-        {row.resource}
-      </Link>
-    )
+    align: 'center'
   },
   {
-    title: `${SYMBOL} Number`,
+    title: `Sum(${SYMBOL})`,
     dataIndex: 'elf',
     key: 'elfNumber',
     align: 'center',
     render: (text, row) => {
       const { method } = row;
       let { elf, fee } = row;
-      let actualNumber = null;
+      let actualNumber;
       elf /= ELF_DECIMAL;
       fee /= ELF_DECIMAL;
       actualNumber = (method === 'Buy' ? elf + fee : elf - fee).toFixed(
         ELF_PRECISION
       );
-      return (
-        <Link to={`/tx/${row.tx_id}`} title={actualNumber}>
-          {actualNumber}
-        </Link>
-      );
+      return actualNumber;
     }
   },
   {
-    title: 'Service Charge',
+    title: 'Fee(ELF)',
     dataIndex: 'fee',
     key: 'serviceCharge',
     align: 'center',
     render: (text, row) => {
-      // const fee = Math.ceil(row.fee / 1000);
       let { fee } = row;
       fee /= ELF_DECIMAL;
-      return (
-        <Link to={`/tx/${row.tx_id}`} title={fee}>
-          {thousandsCommaWithDecimal(fee)}
-        </Link>
-      );
+      return thousandsCommaWithDecimal(fee);
     }
   },
   {
     title: 'Tx status',
-    dataIndex: 'txStatus',
-    key: 'txStatus',
-    align: 'center',
-    render: (text, row) => (
-      <Link to={`/tx/${row.tx_id}`} title={row.tx_status}>
-        {' '}
-        {row.tx_status}
-      </Link>
-    )
+    dataIndex: 'tx_status',
+    key: 'tx_status',
+    align: 'center'
   }
 ];
 

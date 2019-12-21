@@ -6,14 +6,17 @@ import {
     Row,
     Col,
     Icon,
-    Table
+    Table,
+    message
 } from 'antd';
 import {
     aelf,
     format,
     get,
-    formatKey
+    formatKey,
 } from '../../utils';
+
+import {isPhoneCheck} from '../../utils/deviceCheck'
 
 import {
     ALL_TXS_LIST_COLUMNS
@@ -31,7 +34,7 @@ export default class BlockDetailPage extends React.Component {
             blockTime: 0,
             txs: [],
             pagination: {
-                pageSize: 5,
+                pageSize: isPhoneCheck() ? 8 : 20,
                 showQuickJumper: true,
                 showTotal: total => `Total ${total} items`
             },
@@ -41,7 +44,7 @@ export default class BlockDetailPage extends React.Component {
 
     async getTxsList(blockhash, page) {
         let getTxsOption = {
-            limit: 5,
+            limit: isPhoneCheck() ? 8 : 20,
             page: page || 0,
             order: 'asc',
             block_hash: blockhash
@@ -55,6 +58,9 @@ export default class BlockDetailPage extends React.Component {
         this.setState({
             txs_loading: true
         });
+
+        const messageHide = message.loading('Loading...', 0);
+
         // 先判断是高度还是hash，再执行后续的命令。
         let result;
         let blockHeight;
@@ -72,7 +78,7 @@ export default class BlockDetailPage extends React.Component {
                     txsList = await this.getTxsList(blockhash);
                 }
             } catch (err) {
-                console.error('err', err);            
+                console.error('err', err);
             }
         }
         else {
@@ -89,6 +95,10 @@ export default class BlockDetailPage extends React.Component {
             ...this.state.pagination,
             total: result && result.Body && result.Body.TransactionsCount || 0
         };
+
+        // Dismiss manually and asynchronously
+        setTimeout(messageHide, 0);
+
         this.setState({
             blockInfo: {
                 blockHeight: +blockHeight || 'Not Found',
@@ -162,6 +172,7 @@ export default class BlockDetailPage extends React.Component {
                     rowKey = 'tx_id'
                     loading={txs_loading}
                     onChange={this.handleTableChange}
+                    scroll={{x: 1024}}
                 />
             </div>
         );
@@ -172,8 +183,10 @@ export default class BlockDetailPage extends React.Component {
         // Because of the 'float'? I do not clear it.
         return (
             <Row key={key + Math.random()}>
-                <Col span={8}>{formatKey(key)}</Col>
-                <Col span={16}><div>{value}</div></Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6} className='title'>{formatKey(key)}</Col>
+                <Col xs={24} sm={24} md={18} lg={18} xl={18}><div>{value}</div></Col>
+              {/*<Col span={6}>{formatKey(key)}</Col>*/}
+              {/*<Col span={18}><div>{value}</div></Col>*/}
             </Row>
         );
     }
@@ -218,11 +231,11 @@ export default class BlockDetailPage extends React.Component {
             <div>
                 <Link to={prevLink}>
                     <Icon type='left' />
-                    pre
+                    {/*pre*/}
                 </Link>
                 <span>&nbsp;&nbsp;&nbsp;</span>
                 <Link to={nextLink}>
-                    next
+                    {/*next*/}
                     <Icon type='right' />
                 </Link>
             </div>
@@ -245,9 +258,9 @@ export default class BlockDetailPage extends React.Component {
         const blockPagination = this.renderBlockPagination();
 
         return (
-            <div className='tx-block-detail-container basic-container'>
-                <div className='tx-block-detail-panle'>
-                    <div>Overview</div>
+            <div className='tx-block-detail-container basic-container basic-container-white'>
+                <div className='tx-block-detail-panel tx-block-detail-panel-simple'>
+                    <div className='title'>Overview</div>
                     <div>{blockPagination}</div>
                 </div>
                 <Row className='tx-block-detail-body'>
@@ -255,7 +268,7 @@ export default class BlockDetailPage extends React.Component {
                 </Row>
                 <div>&nbsp;</div>
                 {moreInfoHtml}
-                <div className='basic-bottom-blank'></div>
+                {/*<div className='basic-bottom-blank'></div>*/}
             </div>
         );
     }

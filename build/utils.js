@@ -7,6 +7,19 @@
  * @Description: file content
  */
 const fs = require('fs');
+const path = require('path');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const glob = require('glob');
+
+const config = require('./config');
+
+const isProdMode = process.env.NODE_ENV === 'production';
+
+const ROOT = path.resolve(__dirname, '..');
+
+const PUBLIC_PATH = isProdMode ? config.outputPath : '/';
+
+const OUTPUT_PATH = path.resolve(__dirname, '..', 'dist/');
 
 const getLessVariables = file => {
   const themeContent = fs.readFileSync(file, 'utf-8');
@@ -29,5 +42,9 @@ const getLessVariables = file => {
 };
 
 module.exports = {
+  ROOT,
+  PUBLIC_PATH,
+  OUTPUT_PATH,
+  isProdMode,
   getLessVariables
 };

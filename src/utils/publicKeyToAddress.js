@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-10-19 17:09:00
  * @Description: file content
  */
-import * as AElf from 'aelf-sdk';
+import AElf from 'aelf-sdk';
 
 const publicKeyToAddress = publicKey => {
   const { getAddressFromPubKey, ellipticEc } = AElf.wallet;

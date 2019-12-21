@@ -1,14 +1,20 @@
 .modal {
-  width: 70%;
   margin: 0 auto;
-
   .service-charge {
     text-align: right;
+  }
+  .modal-form-item {
+    .ant-col:first-child {
+      text-align: left;
+    }
+    .ant-col:last-child {
+      text-align: right;
+    }
   }
 
   .service-charge {
     font-size: 12px;
-    color: #fff;
+    color: @textContext;
   }
 
   .modal-button {
@@ -33,7 +39,7 @@
 
   .modal-tip {
     font-size: 12px;
-    color: #fff;
+    color: @textContext;
     width: 80%;
     margin: 10px auto;
   }

@@ -1,7 +1,7 @@
 /**
  * @file NightElfCheck
  * @author zhouminghui
-*/
+ */
 
 let nightElfInstance = null;
 export default class NightElfCheck {
@@ -9,7 +9,7 @@ export default class NightElfCheck {
         let resovleTemp = null;
         this.check = new Promise((resolve, reject) => {
             if (window.NightElf) {
-                console.log('There is nightelf')
+                console.log('There is nightelf');
                 resolve(true);
             }
             setTimeout(() => {
@@ -17,7 +17,7 @@ export default class NightElfCheck {
                     error: 200001,
                     message: 'timeout'
                 });
-            }, 10000);
+            }, 4000);
             resovleTemp = resolve;
         });
         document.addEventListener('NightElf', result => {

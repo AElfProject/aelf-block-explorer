@@ -62,7 +62,7 @@ class RealTimeTransactions extends PureComponent {
   getTableHeadHTML() {
     return (
       <Row className='table-head' type='flex' align='middle'>
-        <Col span={5} offset={7}>
+        <Col span={6} offset={6}>
           Average price({SYMBOL})
         </Col>
         <Col span={6}>Number</Col>
@@ -128,7 +128,7 @@ class RealTimeTransactions extends PureComponent {
               <Link to={`/tx/${item.tx_id}`}>{date}</Link>
             </Col>
             <Col span={3} className='sell'>
-              sell
+              Sell
             </Col>
             <Col span={5}>
               {((elf - fee) / resource).toFixed(ELF_PRECISION)}
@@ -172,7 +172,7 @@ class RealTimeTransactions extends PureComponent {
               <Link to={`/tx/${item.tx_id}`}>{date}</Link>
             </Col>
             <Col span={3} className='sell'>
-              buy
+              Buy
             </Col>
             <Col span={5}>
               {((elf + fee) / item.resource).toFixed(ELF_PRECISION)}
@@ -187,23 +187,18 @@ class RealTimeTransactions extends PureComponent {
   }
 
   render() {
-    const tabaleHead = this.getTableHeadHTML();
+    const tableHead = this.getTableHeadHTML();
     const sellInfo = this.getSellInfoHTML();
     const buyInfo = this.getBuyInfoHTML();
     return (
       <div className='real-time-transactions'>
-        <div className='real-time-transactions-head'>Real time transaction</div>
+        <Row>
+            <Col className="real-time-transactions-head">Real Time Transactions</Col>
+        </Row>
+        <Divider className="resource-buy-divider" />
         <div className='real-time-transactions-body'>
-          {tabaleHead}
+          {tableHead}
           {sellInfo}
-          <Divider
-            style={{
-              width: '94%',
-              margin: '8px auto',
-              // background: lessVariables.cardSplitColor
-              background: 'rgba(255, 255, 255, 0.19)'
-            }}
-          />
           {buyInfo}
         </div>
       </div>

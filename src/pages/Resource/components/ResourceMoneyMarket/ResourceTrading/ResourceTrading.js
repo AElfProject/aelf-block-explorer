@@ -5,7 +5,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { Row, Col, Modal } from 'antd';
+import { Row, Col, Modal, Divider } from 'antd';
 import { connect } from 'react-redux';
 
 import ResourceBuy from './ResourceBuy/ResourceBuy';
@@ -165,11 +165,24 @@ class ResourceTrading extends PureComponent {
             <p className='mobile-mask-text'>View more on the PC</p>
           </div>
         ) : null}
-
-        <div className='resource-trading-head'>Transaction</div>
         <div className='resource-trading-body'>
           <Row>
-            <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+            <Col
+                className="trading-title-buy"
+                xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
+            >
+              Buy
+            </Col>
+            <Col
+                className="trading-title-sell"
+                xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
+            >
+              Sell
+            </Col>
+          </Row>
+          <Divider className="resource-buy-divider" />
+          <Row>
+            <Col xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
               <ResourceBuy
                 menuIndex={menuIndex}
                 currentWallet={currentWallet}
@@ -186,7 +199,7 @@ class ResourceTrading extends PureComponent {
                 handleModifyTradingState={this.handleModifyTradingState}
               />
             </Col>
-            <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+            <Col offset={1} xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
               <ResourceSell
                 menuIndex={menuIndex}
                 currentWallet={currentWallet}
@@ -213,7 +226,7 @@ class ResourceTrading extends PureComponent {
           centered
           maskClosable
           onCancel={this.handleCancel}
-          width={820}
+          width={600}
         >
           <ResourceBuyModal
             currentWallet={currentWallet}
@@ -245,7 +258,7 @@ class ResourceTrading extends PureComponent {
           centered
           maskClosable
           onCancel={this.handleCancel}
-          width={820}
+          width={600}
         >
           <ResourceSellModal
             currentWallet={currentWallet}
