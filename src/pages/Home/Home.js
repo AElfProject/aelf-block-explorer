@@ -332,8 +332,8 @@ export default class HomePage extends Component {
     renderBlocksAndTxsList() {
         const {blocks, transactions} = this.state;
 
-        const blocksReversed = blocks.reverse();
-        const blocksHTML = blocksReversed.map(item => {
+        // const blocksReversed = blocks.reverse();
+        const blocksHTML = blocks.map(item => {
             return this.blockRenderItem(item);
         });
 
