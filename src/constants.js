@@ -211,7 +211,14 @@ const ALL_TXS_LIST_COLUMNS = [
         let amount = '-';
         let symbol;
         if (row.quantity && row.decimals) {
-          amount = row.quantity / Math.pow(10, row.decimals);
+          // 1e-7
+          if (row.quantity <= 99) {
+            amount = '0.000000' + row.quantity;
+          } else if (row.quantity <= 9) {
+            amount = '0.0000000' + row.quantity;
+          } else {
+            amount = row.quantity / Math.pow(10, row.decimals);
+          }
         }
         if (row.symbol) {
           symbol = `(${row.symbol})`;

@@ -101,7 +101,7 @@ export default class BlockDetailPage extends React.Component {
 
         this.setState({
             blockInfo: {
-                blockHeight: +blockHeight || 'Not Found',
+                // blockHeight: +blockHeight || 'Not Found',
                 blockHash: result && result.BlockHash,
                 txsCount: result && result.Body && result.Body.TransactionsCount || 'Not Found',
                 ...(result && result.Header || {})

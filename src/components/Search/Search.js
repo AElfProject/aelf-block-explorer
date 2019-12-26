@@ -40,7 +40,8 @@ export default class Search extends PureComponent {
     SEARCHRULES = {
         address(value) {
             const url = `/address/${value}`;
-            window.open(url);
+            // window.open(url);
+            window.location.pathname = url;
             message.info('open new window: Address Detail');
         },
         async transaction(value) {
@@ -53,18 +54,21 @@ export default class Search extends PureComponent {
             const blockInfo = await get('/block/transactions', getTxsOption);
             const isBlock = blockInfo.transactions && blockInfo.transactions.length;
             if (isBlock) {
-                window.open(`/block/${value}`);
+                // window.open(`/block/${value}`);
+                window.location.pathname = `/block/${value}`;
                 message.info('open new window: Block Detail');
             }
             else {
-                window.open(`/tx/${value}`);
+                // window.open(`/tx/${value}`);
+                window.location.pathname = `/tx/${value}`;
                 message.info('open new window: Transaction Detail');
             }
         },
         blockHeight(value) {
             let number = parseInt(value, 10);
             if (number == value) {
-                window.open(`/block/${value}`);
+                // window.open(`/block/${value}`);
+                window.location.pathname = `/block/${value}`;
                 return false;
             }
             return true;
