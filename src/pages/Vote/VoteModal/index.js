@@ -242,15 +242,17 @@ class VoteModal extends Component {
             // FIXME: handle the other case
             render: (
               <span className="form-item-value">
-                {centerEllipsis(nodeName)}
+                {/*{centerEllipsis(nodeName)}*/}
+                {nodeName}
               </span>
             )
           },
           {
-            label: 'Node Add',
+            label: 'Node Address',
             render: (
               <span className="form-item-value">
-                {centerEllipsis(nodeAddress)}
+                {/*{centerEllipsis(nodeAddress)}*/}
+                {nodeAddress}
               </span>
             )
           },
@@ -461,15 +463,17 @@ class VoteModal extends Component {
             label: 'Node Name',
             render: (
               <span className="form-item-value">
-                {centerEllipsis(nodeName)}
+                {/*{centerEllipsis(nodeName)}*/}
+                {nodeName}
               </span>
             )
           },
           {
-            label: 'Node Add',
+            label: 'Node Address',
             render: (
               <span className="form-item-value">
-                {centerEllipsis(nodeAddress)}
+                {/*{centerEllipsis(nodeAddress)}*/}
+                {nodeAddress}
               </span>
             )
           },
@@ -517,6 +521,7 @@ class VoteModal extends Component {
               </div>
             ),
             validator: {
+              initialValue: switchVoteSelectedRowKeys.length > 0 ? switchVoteSelectedRowKeys[0] : '',
               rules: [
                 {
                   required: true,
@@ -741,6 +746,7 @@ class VoteModal extends Component {
                 key={form.type}
               >
                 <Form
+                  className="vote-modal-form"
                   {...formItemLayout}
                   onSubmit={this.handleSubmit}
                   // todo: why is the validateMessages don't work?
@@ -755,10 +761,6 @@ class VoteModal extends Component {
                           key={item.label}
                           className={item.extra ? 'form-item-with-extra' : ''}
                         >
-                          {/* {item.extra && (
-                            <div className="form-item-extra">{item.extra}</div>
-                          )} */}
-                          {/* todo: Optimize the judge */}
                           {item.validator
                             ? getFieldDecorator(
                                 item.validator.fieldDecoratorid,
@@ -780,18 +782,6 @@ class VoteModal extends Component {
                       </>
                     );
                   })}
-                  {/* <Switch
-                    style={{ marginTop: 30 }}
-                    checkedChildren='lock for about 2 min'
-                    unCheckedChildren='lock according to the time left'
-                    onChange={() => {
-                      const { isLockTimeForTest } = this.props;
-                      changeVoteState({
-                        isLockTimeForTest: !isLockTimeForTest
-                      });
-                    }}
-                    checked={isLockTimeForTest}
-                  /> */}
                 </Form>
               </TabPane>
             );
@@ -804,27 +794,6 @@ class VoteModal extends Component {
 }
 
 export default Form.create({
-  // name: 'global_state',
-  // onFieldsChange(props, changedFields) {
-  //   console.log({
-  //     changedFields
-  //   });
-  //   if (changedFields.voteAmountInput) {
-  //     changedFields.voteAmountInput.value = +changedFields.voteAmountInput
-  //       .value;
-  //   }
-  //   props.changeVoteState(changedFields);
-  // },
-  // mapPropsToFields(props) {
-  //   console.log({
-  //     propss
-  //   });
-  //   // todo: make the lockTime to be a moment object
-  //   return {
-  //     lockTime: Form.createFormField(props.lockTime),
-  //     voteAmountInput: Form.createFormField(props.voteAmountInput)
-  //   };
-  // },
   onValuesChange(_, values) {
     console.log('onValuesChange', values);
   }

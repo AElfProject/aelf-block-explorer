@@ -63,7 +63,6 @@ class Resource extends Component {
         result.multiToken,
         result.wallet,
         (error, result) => {
-          console.log('multiToken', result);
           this.setState({
             tokenContract: result
           });
@@ -73,7 +72,6 @@ class Resource extends Component {
         result.tokenConverter,
         result.wallet,
         (error, result) => {
-          console.log('tokenConverter', result);
           this.setState({
             tokenConverterContract: result
           });
@@ -82,7 +80,6 @@ class Resource extends Component {
     });
     NightElfCheck.getInstance()
       .check.then(item => {
-        console.log('item', item);
         if (item) {
           nightElf = new window.NightElf.AElf({
             httpProvider: [

@@ -16,7 +16,6 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
-import { schemeIds } from '@pages/Vote/constants';
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -310,7 +309,7 @@ export default class MyWalletCard extends PureComponent {
               type="wallet"
               theme="filled"
               className="card-header-icon"
-            ></Icon>
+            />
             My Wallet
           </h2>
           <Button
@@ -323,7 +322,7 @@ export default class MyWalletCard extends PureComponent {
         <div className="my-wallet-card-body-wallet-title">
           <span className="my-wallet-card-body-wallet-title-key">Name: </span>
           <span className="primary-color">{currentWallet.name}</span>
-          <span className="my-wallet-card-body-wallet-title-blank"></span>
+          <span className="my-wallet-card-body-wallet-title-blank"/>
           <span className="my-wallet-card-body-wallet-title-key">
             Address:{' '}
           </span>

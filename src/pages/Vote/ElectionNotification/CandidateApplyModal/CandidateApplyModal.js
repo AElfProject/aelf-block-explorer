@@ -37,8 +37,8 @@ function generateCandidateApplyForm() {
       {
         label: 'Mortgage Add',
         render: (
-          <span className="list-item-value">
-            {centerEllipsis(currentWallet.address)}
+          <span className="list-item-value text-ellipsis">
+            {currentWallet.address}
           </span>
         )
       },

@@ -126,7 +126,6 @@ class ResourceTrading extends PureComponent {
   }
 
   handleModifyTradingState(obj, callback) {
-    console.log('obj', obj);
     this.setState(obj, callback);
   }
 

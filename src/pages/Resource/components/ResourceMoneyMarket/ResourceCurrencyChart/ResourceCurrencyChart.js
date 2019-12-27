@@ -111,7 +111,7 @@ class ResourceCurrencyChart extends PureComponent {
     buyRecords.map((item, index) => {
       if (buttonIndex > 3) {
         xAxisData.push(dayjs(item.date).format('MM-DD'));
-      } else if (isBeforeToday(item.date)) {
+      } else if (isBeforeToday(buyRecords[0].date)) {
         xAxisData.push(dayjs(item.date).format('MM-DD HH:mm'));
       } else {
         xAxisData.push(dayjs(item.date).format('HH:mm'));

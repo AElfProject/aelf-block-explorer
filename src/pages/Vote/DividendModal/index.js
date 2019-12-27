@@ -9,7 +9,8 @@
 import React, { PureComponent } from 'react';
 import { Checkbox, Row, Col, Modal, Button } from 'antd';
 
-import { schemeIds } from '@pages/Vote/constants';
+import { schemeIds } from '@config/config';
+import { formatKey } from '../../../utils';
 import './index.less';
 
 export default class DividendModal extends PureComponent {
@@ -52,7 +53,6 @@ export default class DividendModal extends PureComponent {
       dividends,
       handleClaimDividendClick
     } = this.props;
-    const { checkAll, indeterminate, checkedList } = this.state;
 
     return (
       <Modal
@@ -73,76 +73,30 @@ export default class DividendModal extends PureComponent {
         keyboard
         footer={null}
       >
-        {/* <div
-          style={{
-            borderBottom: '1px solid #E9E9E9',
-            textAlign: 'right',
-            marginBottom: 20,
-            paddingBottom: 10
-          }}
-        >
-          <Checkbox
-            indeterminate={indeterminate}
-            onChange={this.onCheckAllChange}
-            checked={checkAll}
-          >
-            Check all
-          </Checkbox>
-        </div>
-        <Checkbox.Group
-          style={{ width: '80%' }}
-          onChange={this.onChange}
-          value={checkedList}
-          // todo: fix
-          // options={dividends.amounts.map(
-          //   item => `${item.type}:    ${(+item.amount).toFixed(2)}`
-          // )}
-        >
-          <Row>
-            {dividends.amounts.map(item => {
-              console.log('item', item);
-              return (
-                <Col span={12} key={item.type}>
-                  <Checkbox
-                    value={`${item.type}${item.amount.toFixed(2)}`}
-                    disabled={item.amount > 0 ? false : true}
-                  >
-                    {item.type}
-                  </Checkbox>
-                  ;
-                </Col>
-              );
-            })}
-          </Row>
-        </Checkbox.Group> */}
-        <Row style={{ width: '80%', margin: '0 auto' }}>
-          {dividends.amounts.map(item => {
-            console.log('item', item);
-            return (
-              <Col className="claim-profit-item" span={12} key={item.type}>
-                <Col span={12} className="text-left">
-                  <span className="profit-item-key">{item.type}: </span>
-                  <span className="profit-item-value">
-                    {item.amount.toFixed(2)}
-                  </span>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    disabled={item.amount > 0 ? false : true}
-                    type="primary"
-                    shape="round"
-                    onClick={() => {
-                      handleClaimDividendClick(item.schemeId);
-                    }}
-                    // style={{ width: 200 }}s
-                  >
-                    Claim Profit
-                  </Button>
-                </Col>
+        {dividends.amounts.map(item => {
+          return (
+            <Row key={item.type} className="claim-profit-item">
+              <Col span={12} className="text-left">
+                <span className="profit-item-key">{formatKey(item.type)}: </span>
+                <span className="profit-item-value">
+                  {item.amount.toFixed(2)}
+                </span>
               </Col>
-            );
-          })}
-        </Row>
+              <Col span={12} className="text-right">
+                <Button
+                  disabled={item.amount <= 0}
+                  type="primary"
+                  shape="round"
+                  onClick={() => {
+                    handleClaimDividendClick(item.schemeId);
+                  }}
+                >
+                  Claim Profit
+                </Button>
+              </Col>
+            </Row>
+          );
+        })}
       </Modal>
     );
   }

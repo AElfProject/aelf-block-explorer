@@ -9,7 +9,7 @@
 import moment from 'moment';
 
 // todo: instead the code in page MyVote
-const getFormatedLockTime = vote => {
+export const getFormatedLockTime = vote => {
   // debugger
   console.log('vote', vote);
   const start = moment.unix(vote.voteTimestamp.seconds);
@@ -18,4 +18,4 @@ const getFormatedLockTime = vote => {
   return formatedLockTime;
 };
 
-export { getFormatedLockTime };
+

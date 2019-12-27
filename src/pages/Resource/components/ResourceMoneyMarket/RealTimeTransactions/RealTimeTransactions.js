@@ -21,10 +21,6 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import { get } from '../../../../../utils';
 import { RESOURCE_REALTIME_RECORDS } from '../../../../../constants';
 import './RealTimeTransactions.less';
-// import lessVariables from '@src/assets/less/_variables.less';
-// console.log({
-//   lessVariables
-// })
 
 const fetchLimit = 20;
 const displayLimit = 5;

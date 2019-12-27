@@ -18,7 +18,7 @@ const ADDRESS_INFO = {
 // ChainId: tDVY, Symbol: EDC (AElf developer support chain C)
 // ChainId: tDVZ, Symbol: EDD (AElf developer support chain D)
 const CHAINS_LINK = {
-  AELF: 'http://explorer-test.aelf.io',
+  AELF: 'https://explorer-test.aelf.io',
   tDVV: 'https://explorer-test-side01.aelf.io',
   tDVW: 'https://explorer-test-side02.aelf.io',
   tDVX: 'https://explorer-test-side03.aelf.io',
