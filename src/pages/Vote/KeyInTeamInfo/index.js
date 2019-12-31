@@ -1,11 +1,3 @@
-/*
- * @Author: Alfred Yang
- * @Github: https://github.com/cat-walk
- * @Date: 2019-09-16 17:33:33
- * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 19:06:59
- * @Description: file content
- */
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
@@ -16,12 +8,9 @@ import {
   Icon,
   Result,
   message,
-  Modal,
   Spin
 } from 'antd';
 import queryString from 'query-string';
-
-// import PicUpload from './PicUpload';
 import { APPNAME } from '@config/config';
 import { post, get } from '@src/utils';
 import { rand16Num } from '@utils/utils';
@@ -31,7 +20,6 @@ import { urlRegExp } from '@pages/Vote/constants';
 import { addUrlPrefix, removeUrlPrefix } from '@utils/formater';
 import './index.less';
 
-// const reg = /^[.-\w]+$/;
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -72,32 +60,31 @@ function generateTeamInfoKeyInForm(data) {
               message: 'Only support english alpha, number and symbol - . _'
             }
           ],
-          validateTrigger: ['onChange', 'onBlur'],
-          fieldDecoratorid: 'name',
-          initialValue: data.name
+          validateTrigger: ['onChange'],
+          fieldDecoratorId: 'name',
+          initialValue: data.name || ''
         },
         placeholder: 'Input your node name:'
       },
       {
         label: 'Node Avatar',
         validator: {
-          fieldDecoratorid: 'avatar',
+          fieldDecoratorId: 'avatar',
           rules: [
             {
-              // todo: PR to antd
               pattern: urlRegExp,
               message: 'The input is not valid url!'
             }
           ],
           validateTrigger: ['onBlur'],
-          initialValue: data.avatar
+          initialValue: data.avatar || ''
         },
         render: <Input addonBefore="https://" placeholder="Input avatar url:" />
       },
       {
         label: 'Location',
         validator: {
-          fieldDecoratorid: 'location',
+          fieldDecoratorId: 'location',
           initialValue: data.location
         },
         placeholder: 'Input your location:'
@@ -105,7 +92,7 @@ function generateTeamInfoKeyInForm(data) {
       {
         label: 'Official Website',
         validator: {
-          fieldDecoratorid: 'officialWebsite',
+          fieldDecoratorId: 'officialWebsite',
           rules: [
             {
               pattern: urlRegExp,
@@ -113,7 +100,7 @@ function generateTeamInfoKeyInForm(data) {
             }
           ],
           validateTrigger: ['onBlur'],
-          initialValue: data.officialWebsite
+          initialValue: data.officialWebsite || ''
         },
         render: (
           <Input addonBefore="https://" placeholder="Input your website:" />
@@ -128,8 +115,8 @@ function generateTeamInfoKeyInForm(data) {
               message: 'The input is not valid E-mail!'
             }
           ],
-          fieldDecoratorid: 'mail',
-          initialValue: data.mail,
+          fieldDecoratorId: 'mail',
+          initialValue: data.mail || '',
           validateTrigger: ['onBlur']
         },
         placeholder: 'Input your email:'
@@ -137,13 +124,12 @@ function generateTeamInfoKeyInForm(data) {
       {
         label: 'Intro',
         validator: {
-          fieldDecoratorid: 'intro',
-          initialValue: data.intro
+          fieldDecoratorId: 'intro',
+          initialValue: data.intro || ''
         },
         render: (
           <TextArea
             placeholder="Intro your team here:"
-            autosize={{ minRows: 3, maxRows: 6 }}
           />
         )
       }
@@ -156,13 +142,20 @@ const clsPrefix = 'candidate-apply-team-info-key-in';
 class KeyInTeamInfo extends PureComponent {
   constructor(props) {
     super(props);
+    this.socialKeys = [
+      'Github',
+      'Facebook',
+      'Telegram',
+      'Twitter',
+      'Steemit'
+    ];
     this.state = {
       isLoading: true,
-      // todo: What if I put the state hasAuth in the upper component Vote? Will it better?
-      // todo: If the pattern of verifying authoriztion are all the same, consider to use HOC.
-      hasAuth: false, // todo: Is it necessary to verify the authorization in the page?
+      hasAuth: false,
       teamInfoKeyInForm: generateTeamInfoKeyInForm({}),
-      teamInfo: null
+      teamInfo: {
+        socials: []
+      }
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -170,9 +163,6 @@ class KeyInTeamInfo extends PureComponent {
 
     this.teamPubkey = queryString.parse(window.location.search).pubkey;
   }
-
-  // todo: do the same thing when cdm and cdu, how to optimize?
-  // cdm: jump from Vote; cdu: enter from url
 
   componentDidMount() {
     const { currentWallet } = this.props;
@@ -190,7 +180,7 @@ class KeyInTeamInfo extends PureComponent {
   componentDidUpdate(prevProps) {
     const { currentWallet } = this.props;
 
-    if (prevProps.currentWallet !== currentWallet) {
+    if (currentWallet && currentWallet.address && (!prevProps.currentWallet.address || prevProps.currentWallet.address !== currentWallet.address)) {
       this.setState(
         {
           hasAuth: currentWallet.pubkey === this.teamPubkey
@@ -213,50 +203,24 @@ class KeyInTeamInfo extends PureComponent {
   }
 
   getSocialFormItems() {
-    const { getFieldValue, getFieldDecorator } = this.props.form;
-    const { teamInfo } = this.state;
+    const {
+      teamInfo
+    } = this.state;
+    const { getFieldDecorator } = this.props.form;
 
-    const keys = getFieldValue('keys');
-
-    const formItems = keys.map((k, index) => {
+    return this.socialKeys.map(socialKey => {
+      let initialValue = teamInfo.socials.filter(({type}) => type === socialKey);
+      initialValue = initialValue.length === 0 ? '' : initialValue[0].url;
       return (
         <Form.Item
           {...TeamInfoFormItemLayout}
-          label={getFieldDecorator(`types[${k}]`, {
-            // todo: Optimize
-            initialValue:
-              (teamInfo &&
-                teamInfo.socials &&
-                teamInfo.socials[k] &&
-                teamInfo.socials[k].type) ||
-              socialDefaultValue
-          })(
-            <Select
-              style={{ width: '60%' }}
-              // onChange={value => {
-              //   this.onSocialTypeChange(k, value);
-              // }}
-            >
-              <Option value="Facebook">Facebook</Option>
-              <Option value="Telegram">Telegram</Option>
-              <Option value="Twitter">Twitter</Option>
-              <Option value="Steemit">Steemit</Option>
-              <Option value="Github">Github</Option>
-            </Select>
-          )}
+          label={socialKey}
           required={false}
-          key={k}
+          key={socialKey}
         >
-          {// todo: How to use the decorator id like socials[${k}].url?
-          getFieldDecorator(`socials[${k}]`, {
-            // todo: Optimize
-            initialValue:
-              (teamInfo &&
-                teamInfo.socials &&
-                teamInfo.socials[k] &&
-                teamInfo.socials[k].url) ||
-              null,
-            validateTrigger: ['onBlur'],
+          {getFieldDecorator(socialKey, {
+            initialValue,
+            validateTrigger: ['onChange'],
             rules: [
               {
                 pattern: urlRegExp,
@@ -267,36 +231,16 @@ class KeyInTeamInfo extends PureComponent {
             <Input
               addonBefore="https://"
               placeholder="input your social network website"
-              style={
-                keys.length === 1
-                  ? { width: '100%', marginRight: 8 }
-                  : { width: '95%', marginRight: 8 }
-              }
             />
           )}
-          {keys.length > 1 ? (
-            <Icon
-              className="dynamic-delete-button"
-              type="minus-circle-o"
-              onClick={() => this.remove(k)}
-            />
-          ) : null}
         </Form.Item>
       );
     });
-    return formItems;
   }
 
   getRealContent() {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { hasAuth, teamInfoKeyInForm, isLoading, teamInfo } = this.state;
-
-    const keys = getFieldValue('keys');
-    getFieldDecorator('keys', {
-      initialValue: teamInfo
-        ? teamInfo.socials.map((item, index) => index)
-        : [0]
-    });
+    const { getFieldDecorator } = this.props.form;
+    const { hasAuth, teamInfoKeyInForm, isLoading } = this.state;
 
     const socialFormItems = this.getSocialFormItems();
 
@@ -309,7 +253,7 @@ class KeyInTeamInfo extends PureComponent {
             {hasAuth ? (
               // eslint-disable-next-line react/jsx-fragments
               <React.Fragment>
-                <h3 className={`${clsPrefix}-title`}>Keyin Team Info</h3>
+                <h3 className={`${clsPrefix}-title`}>Edit Team Info</h3>
                 <Form
                   className={`${clsPrefix}-form`}
                   {...TeamInfoFormItemLayout}
@@ -319,10 +263,9 @@ class KeyInTeamInfo extends PureComponent {
                     teamInfoKeyInForm.formItems.map(item => {
                       return (
                         <Form.Item label={item.label} key={item.label}>
-                          {/* todo: Optimize the judge */}
                           {item.validator ? (
                             getFieldDecorator(
-                              item.validator.fieldDecoratorid,
+                              item.validator.fieldDecoratorId,
                               item.validator
                             )(item.render || <Input />)
                           ) : (
@@ -332,17 +275,6 @@ class KeyInTeamInfo extends PureComponent {
                       );
                     })}
                   {socialFormItems}
-                  {keys.length < 5 ? (
-                    <Form.Item {...formItemLayoutWithOutLabel}>
-                      <Button
-                        type="primary"
-                        onClick={this.add}
-                        style={{ width: '90%', float: 'right' }}
-                      >
-                        <Icon type="plus" /> Add Social Network
-                      </Button>
-                    </Form.Item>
-                  ) : null}
                 </Form>
                 <div className={`${clsPrefix}-footer`}>
                   <Button
@@ -355,10 +287,6 @@ class KeyInTeamInfo extends PureComponent {
                 </div>
               </React.Fragment>
             ) : (
-              // <p className={`${clsPrefix}-no-auth`}>
-              //   Sorry, only the node that is current term's node can edit the team
-              //   info.
-              // </p>
               <Result
                 status="403"
                 title={NO_AUTHORIZATION_ERROR_TIP}
@@ -375,39 +303,6 @@ class KeyInTeamInfo extends PureComponent {
     );
   }
 
-  remove = k => {
-    const { form } = this.props;
-    // can use data-binding to get
-    const keys = form.getFieldValue('keys');
-    // We need at least one passenger
-    if (keys.length === 1) {
-      return;
-    }
-
-    // todo: can I remove it?
-    // can use data-binding to set
-    form.setFieldsValue({
-      keys: keys.filter(key => key !== k)
-    });
-  };
-
-  add = () => {
-    const { form } = this.props;
-    // can use data-binding to get
-    const keys = form.getFieldValue('keys');
-    // Avoid key repeating
-    const nextKeys = keys.concat(keys[keys.length - 1] + 1);
-    // can use data-binding to set
-    // important! notify form to detect changes
-    form.setFieldsValue({
-      keys: nextKeys
-    });
-  };
-
-  formatResData(data) {
-    data.avatar;
-  }
-
   fetchCandidateInfo() {
     const { currentWallet } = this.props;
 
@@ -415,11 +310,10 @@ class KeyInTeamInfo extends PureComponent {
       publicKey: currentWallet.pubkey
     })
       .then(res => {
-        console.log('res', res);
         this.setState({
           isLoading: false
         });
-        if (res.code !== 0) return;
+        if (+res.code !== 0) return;
         const values = res.data;
         this.processUrl(values, removeUrlPrefix);
         this.setState({
@@ -428,11 +322,13 @@ class KeyInTeamInfo extends PureComponent {
         });
       })
       .catch(err => {
+        this.setState({
+          isLoading: false
+        });
         console.error('err', err);
       });
   }
 
-  // todo: optimize
   processUrl(values, processor) {
     ['avatar', 'officialWebsite', 'socials'].forEach(item => {
       const value = values[item];
@@ -447,41 +343,25 @@ class KeyInTeamInfo extends PureComponent {
     });
   }
 
-  onSocialTypeChange(k, value) {
-    const socials = this.props.form.getFieldValue('socials');
-    socials[k].type = value;
-    console.log({
-      socials
-    });
-    this.props.form.setFieldsValue(socials);
-  }
-
   handleSubmit(e) {
     e.preventDefault();
-    const { nightElf, checkExtensionLockStatus } = this.props;
+    const { nightElf, checkExtensionLockStatus, form } = this.props;
 
     const currentWallet = getCurrentWallet();
-    // todo: unify the name of public key. e.g. publicKey & pubkey & pubKey
     const publicKey = `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`;
     const randomNum = rand16Num(32);
-    this.props.form.validateFields((err, values) => {
+    form.validateFields((err, values) => {
       if (!err) {
-        // values.socials = null;
-        values.socials = values.socials
-          // todo: Maybe the comment below are wrong
-          // Do map before filter
-          .map((item, index) => {
-            return {
-              type: values.types[index],
-              url: item
-            };
-          })
-          .filter(
-            item =>
-              item.url !== undefined && item.url !== null && item.url !== ''
-          );
-        delete values.keys; // remove unneed element
-        delete values.types; // remove unneed element
+        values.socials = this.socialKeys.map(socialKey => {
+          const value = values[socialKey];
+          delete values[socialKey];
+          return {
+            type: socialKey,
+            url: value
+          };
+        }).filter(({type, url}) => {
+          return url !== undefined && url !== null && url !== '';
+        });
         this.processUrl(values, addUrlPrefix);
 
         checkExtensionLockStatus().then(async () => {
@@ -498,13 +378,12 @@ class KeyInTeamInfo extends PureComponent {
             signature,
             ...values
           }).then(res => {
-            if (res.code === 0)
+            if (+res.code === 0) {
               this.props.history.push({
                 pathname: '/vote/team',
                 search: `pubkey=${publicKey}`
               });
-            else {
-              console.error(res);
+            } else {
               message.error(res.msg);
             }
           });
@@ -514,7 +393,6 @@ class KeyInTeamInfo extends PureComponent {
   }
 
   handleBack() {
-    // todo: if the user enter the page by input url, will it get wrong?
     this.props.history.goBack();
   }
 
@@ -523,8 +401,6 @@ class KeyInTeamInfo extends PureComponent {
 
     const unlockPluginText = this.getUnlockPluginText();
     const realContent = this.getRealContent();
-
-    // todo: Skeleton is invisible in current background
     return (
       <React.Fragment>
         {isPluginLock ? unlockPluginText : realContent}

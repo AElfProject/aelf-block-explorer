@@ -148,15 +148,14 @@ class NodeTable extends PureComponent {
         title: 'Node Name',
         dataIndex: 'name',
         key: 'nodeName',
-        width: 250,
+        width: 200,
+        ellipsis: true,
         // todo: ellipsis useless
         // ellipsis: true,
         render: (text, record) => (
           <Tooltip title={text}>
             <Link
               to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}
-              // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-              // style={{ width: 270 }}
             >
               {text}
             </Link>
@@ -183,7 +182,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Produce Blocks',
         dataIndex: 'producedBlocks',
-        // width: 150,
+        width: 150,
         key: 'producedBlocks',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.producedBlocks - b.producedBlocks
@@ -315,7 +314,6 @@ class NodeTable extends PureComponent {
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
   fetchNodes() {
     const { electionContract, consensusContract } = this.props;
-    console.log('InTable', electionContract);
     const currentWallet = getCurrentWallet();
 
     Promise.all([
@@ -325,9 +323,9 @@ class NodeTable extends PureComponent {
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
-      currentWallet.pubKey.x
+      currentWallet.pubkey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: currentWallet.pubKey
+            value: currentWallet.pubkey
           })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract)
@@ -385,9 +383,7 @@ class NodeTable extends PureComponent {
       item.candidateInformation.formattedAddress = `${ADDRESS_INFO.PREFIX}_${item.candidateInformation.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       if (teamInfo === undefined) {
         // todo: use address instead after api modified
-        item.candidateInformation.name = centerEllipsis(
-          item.candidateInformation.formattedAddress
-        );
+        item.candidateInformation.name = item.candidateInformation.formattedAddress;
       } else {
         item.candidateInformation.name = teamInfo.name;
       }

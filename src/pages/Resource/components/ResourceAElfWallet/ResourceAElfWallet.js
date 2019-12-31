@@ -4,15 +4,13 @@
  */
 
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {
   Row,
   Col,
   Spin,
   Button,
-  Icon,
-  Divider
+  Icon
 } from 'antd';
 import {ADDRESS_INFO} from '../../../../../config/config';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
@@ -35,7 +33,7 @@ export default class ResourceAElfWallet extends PureComponent {
       STO: '-',
       loading: false
     };
-    this.onRefresh = this.onRefresh.bind(this);
+    this.refreshWalletInfo = this.refreshWalletInfo.bind(this);
   }
 
   componentDidMount() {
@@ -45,21 +43,12 @@ export default class ResourceAElfWallet extends PureComponent {
   // TODO: 组件要尽量无状态，这是个反模式
   // 数据都从父组件传递进来。
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const preIsNotNull = prevProps.currentWallet !== null;
     let canBeRefresh = false;
-    if (preIsNotNull) {
-      if (prevProps.currentWallet.address !== this.props.currentWallet.address) {
-        canBeRefresh = true;
-      }
-    }
-    else if (this.props.currentWallet && this.props.currentWallet.address) {
-      canBeRefresh = true;
-    }
-    if (this.props.tokenContract) {
-      canBeRefresh = true;
-    }
-
-    if (canBeRefresh) {
+    const {
+      currentWallet,
+      tokenContract
+    } = this.props;
+    if (currentWallet && (!prevProps.currentWallet || prevProps.currentWallet.address !== currentWallet.address) && tokenContract) {
       this.refreshWalletInfo();
     }
   }
@@ -70,6 +59,9 @@ export default class ResourceAElfWallet extends PureComponent {
       currentWallet
     } = this.props;
     if (tokenContract && currentWallet) {
+      this.setState({
+        loading: true
+      });
       Promise.all([
         this.getCurrentWalletBalance(),
         this.getCurrentWalletResource()
@@ -130,28 +122,11 @@ export default class ResourceAElfWallet extends PureComponent {
     });
   };
 
-  onRefresh() {
-    this.setState({
-      loading: true
-    });
-    Promise.all([
-      this.getCurrentWalletBalance(),
-      this.getCurrentWalletResource()
-    ]).then(() => {
-      this.setState({
-        loading: false
-      })
-    }).catch(() => {
-      this.setState({
-        loading: false
-      })
-    });
-  }
-
   render() {
     const {
       title,
       currentWallet,
+      tokenContract
     } = this.props;
     const {
       balance,
@@ -186,7 +161,8 @@ export default class ResourceAElfWallet extends PureComponent {
               </span>
               <Button
                   className='resource-wallet-address-update update-btn'
-                  onClick={this.onRefresh}
+                  disabled={!(currentWallet && currentWallet.address && tokenContract)}
+                  onClick={this.refreshWalletInfo}
               >
                 <Icon type='sync' spin={loading} />
               </Button>

@@ -184,9 +184,6 @@ export default class ResourceBuy extends Component {
 
   getSlideMarks() {
     const { region, account } = this.state;
-    console.log({
-      region
-    });
     if (region < RESOURCE_OPERATE_LIMIT) return { 0: '' };
 
     const regionLine = [
@@ -206,10 +203,7 @@ export default class ResourceBuy extends Component {
   // todo: to be more friendly, verify the input after click buy/sell?
   onChangeResourceValue(input) {
     const { handleModifyTradingState, buyNum } = this.props;
-    console.log({
-      buyNum,
-      input
-    });
+
     this.setState({
       validate: {
         validateStatus: null,
@@ -270,7 +264,6 @@ export default class ResourceBuy extends Component {
       //   });
       //   return;
       // }
-      console.log('value', value);
       value = +value;
       getEstimatedValueELF(
         menuName,
@@ -291,11 +284,6 @@ export default class ResourceBuy extends Component {
           // buySliderValue = buyElfValue >= balance ? balance : buyElfValue;
           // ---- End: Handle the case input's cost larger than the elf's balance ----
 
-          console.log({
-            amountToPay,
-            buyFee,
-            amountToPayPlusFee
-          });
           if (amountToPayPlusFee > account.balance) {
             this.setState({
               validate: {
@@ -341,7 +329,6 @@ export default class ResourceBuy extends Component {
 
   onChangeSlide(e) {
     const { handleModifyTradingState } = this.props;
-    console.log('change slide', e);
     if (e === 0) {
       // todo: seems useless
       handleModifyTradingState({
@@ -351,16 +338,10 @@ export default class ResourceBuy extends Component {
       });
       return;
     }
-    console.log({
-      e
-    });
     // todo: the judge code as follows are temp method to handle the max slide
     // if (e === account.balance) {
     //   e /= 1.000138857990899;
     // }
-    console.log({
-      e
-    });
     handleModifyTradingState({
       buySliderValue: e
     });
@@ -377,7 +358,6 @@ export default class ResourceBuy extends Component {
       const { handleModifyTradingState } = this.props;
 
       const buyFee = getFees(e);
-      console.log('buyFee', buyFee);
       handleModifyTradingState({
         buyInputLoading: true,
         buyElfValue: e,
@@ -401,10 +381,6 @@ export default class ResourceBuy extends Component {
     const { menuName, tokenConverterContract, tokenContract } = this.state;
 
     if (!tokenConverterContract || !tokenContract) return Promise.resolve(0);
-    console.log({
-      elfAmount,
-      menuName
-    });
     return getEstimatedValueRes(
       menuName,
       elfAmount,
@@ -428,11 +404,6 @@ export default class ResourceBuy extends Component {
 
     this.setState({
       buyBtnLoading: true
-    });
-    console.log({
-      buyNum,
-      buyElfValue,
-      account
     });
     // todo: also verify the input here? fix the error message here appeared in the case didn't verify by the way(such as input -1)
 
@@ -513,9 +484,6 @@ export default class ResourceBuy extends Component {
     const wallet = {
       address: currentWallet.address
     };
-    console.log({
-      buyNum
-    });
     contractChange(nightElf, result, currentWallet, appName).then(result => {
       if (buyNum && !result) {
         nightElf.chain.contractAt(
@@ -543,7 +511,6 @@ export default class ResourceBuy extends Component {
     // todo: handle the error case's loading
     if (contract) {
       if (result) {
-        console.log('Approve', contract);
         handleModifyTradingState(
           {
             buyVisible: true
@@ -571,10 +538,6 @@ export default class ResourceBuy extends Component {
       region = 0;
       disabled = true;
     }
-    console.log('In slider', {
-      buyNum,
-      balance
-    });
     return (
       // todo: why is the tooltip didn't work?
       <Tooltip
@@ -614,9 +577,6 @@ export default class ResourceBuy extends Component {
     this.prepareParamsForEstimatedResource(account.balance / (1 + FEE_RATE))
       .then(res => {
         const inputMax = +res;
-        console.log({
-          inputMax
-        });
         this.setState({
           inputMax
         });
@@ -641,11 +601,6 @@ export default class ResourceBuy extends Component {
       inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
     ).toFixed(GENERAL_PRECISION);
     const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
-    console.log("In buy's render", {
-      buyElfValue,
-      inputMax,
-      buyNum
-    });
 
     return (
       <div className='trading-box trading-buy'>

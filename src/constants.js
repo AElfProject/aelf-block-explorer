@@ -8,9 +8,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { isArray } from 'zrender/lib/core/util';
 
-import Button from './components/Button/Button';
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID, ADDRESS_INFO } from '../config/config';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 

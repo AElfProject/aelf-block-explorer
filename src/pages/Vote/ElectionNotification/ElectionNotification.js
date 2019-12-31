@@ -104,8 +104,6 @@ class ElectionNotification extends PureComponent {
       shouldRefreshElectionNotifiStatis,
       changeVoteState
     } = this.props;
-    const { statisData } = this.state;
-    // console.log('statisData', statisData);
     // todo: decouple, it's too couple here
     if (
       electionContract !== null &&
@@ -187,7 +185,7 @@ class ElectionNotification extends PureComponent {
             },
             {
               method: 'GetCurrentMiningReward',
-              processor: value => value,
+              processor: value => isNaN(value) ? 0 : value,
               statisDataKey: 'currentMiningReward'
             }
             // { method: 'GetCandidates', processor: value => value.length }
@@ -334,7 +332,6 @@ class ElectionNotification extends PureComponent {
     } = this.state;
 
     const { electionContract } = this.props;
-    // console.log('electionNotifiStatisData', electionNotifiStatisData);
 
     return (
       <section>
@@ -344,13 +341,13 @@ class ElectionNotification extends PureComponent {
           style={{ marginBottom: 20 }}
           tooltip={ELECTION_NOTIFI_DATA_TIP}
         />
-        <div className="election-blank"></div>
+        <div className="election-blank" />
         <ElectionRuleCard
           isCandidate={isCandidate}
           currentWallet={currentWallet}
           displayApplyModal={this.displayApplyModal}
         />
-        <div className="election-blank"></div>
+        <div className="election-blank" />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -363,7 +360,7 @@ class ElectionNotification extends PureComponent {
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
         />
-        <div className="election-blank"></div>
+        <div className="election-blank" />
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}
@@ -376,7 +373,7 @@ class ElectionNotification extends PureComponent {
           onOk={this.handleApplyModalOk}
           onCancel={this.handleApplyModalCancel}
           currentWallet={currentWallet}
-        ></CandidateApplyModal>
+        />
       </section>
     );
   }

@@ -1126,10 +1126,10 @@ add-dom-event-listener@^1.1.0:
   dependencies:
     object-assign "4.x"
 
-aelf-sdk@3.2.23:
-  version "3.2.23"
-  resolved "https://registry.yarnpkg.com/aelf-sdk/-/aelf-sdk-3.2.23.tgz#f4d02fb3ed8b87b91906949440548a8ce4ca1fb6"
-  integrity sha512-DKrmBtxixrmkb2+omd8xeupeciAm4fLvgrtwbUtPzwV89892nOVeR0Gby9FFDNOHSICQCAZViG3AEN+AVe/uKg==
+aelf-sdk@3.2.24:
+  version "3.2.24"
+  resolved "https://registry.yarnpkg.com/aelf-sdk/-/aelf-sdk-3.2.24.tgz#aed5683ab376e9676f00b4748149d25072d91e54"
+  integrity sha512-2M3UzsW6+WE6KwShWka+GB25RjyW+CDjpZb+bTVwHtkgvh1EruUhRmPdrIDJmqfEHBgI1dW6WmARN14kMT6z3Q==
   dependencies:
     "@aelfqueen/protobufjs" "^6.8.9"
     "@babel/runtime" "^7.4.5"
@@ -7706,6 +7706,11 @@ react-dom@^16.5.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.18.0"
+
+react-if@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/react-if/-/react-if-3.4.3.tgz#bab45478dd0374b1c5fe44aa972a2fa921416a57"
+  integrity sha512-DddMrbjAA4lkVhhYJgoeKC9+dj950I9hx4KClhJXySTL3GsQ7hxl9eWkcqS2i/qWvfPiQheJOwTYQ+Wv2BNdMA==
 
 react-is@^16.7.0, react-is@^16.8.1, react-is@^16.9.0:
   version "16.12.0"

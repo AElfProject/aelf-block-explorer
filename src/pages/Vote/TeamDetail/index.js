@@ -1,17 +1,8 @@
-/*
- * @Author: Alfred Yang
- * @Github: https://github.com/cat-walk
- * @Date: 2019-09-17 15:40:06
- * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-10 02:22:19
- * @Description: file content
- */
-
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { If, Then, Else } from 'react-if';
 import {
-  Statistic,
   Row,
   Col,
   Button,
@@ -27,7 +18,6 @@ import StatisticalData from '@components/StatisticalData/';
 import { getTeamDesc, fetchElectorVoteWithRecords } from '@api/vote';
 import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import {
-  NODE_DEFAULT_NAME,
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
@@ -44,7 +34,6 @@ const { Paragraph } = Typography;
 
 const clsPrefix = 'team-detail';
 
-// todo: compitable for the case where user hasn't submit the team info yet.
 class TeamDetail extends PureComponent {
   constructor(props) {
     super(props);
@@ -59,13 +48,13 @@ class TeamDetail extends PureComponent {
       votedRate: '-',
       producedBlocks: '-',
       userRedeemableVoteAmountForOneCandidate: 0,
-      hasAuth: false
+      hasAuth: false,
+      isCandidate: true
     };
 
     this.teamPubkey = queryString.parse(window.location.search).pubkey;
   }
 
-  // todo: optimize the contract's storage
   componentDidMount() {
     const { consensusContract, electionContract, currentWallet } = this.props;
 
@@ -115,7 +104,7 @@ class TeamDetail extends PureComponent {
         }
         this.setState({ data: res.data });
       })
-      .catch(err => message.err(err));
+      .catch(err => message.error(err));
   }
 
   fetchDataFromElectionContract() {
@@ -138,15 +127,23 @@ class TeamDetail extends PureComponent {
   }
 
   processAllCandidateInfo(allCandidateInfo) {
-    console.log('allCandidateInfo', allCandidateInfo);
-    console.log('this.teamPubkey', this.teamPubkey);
-
     const candidateVotesArr = allCandidateInfo
       .map(item => item.obtainedVotesAmount)
       .sort((a, b) => b - a);
     const currentCandidate = allCandidateInfo.find(
       item => item.candidateInformation.pubkey === this.teamPubkey
     );
+
+    const candidateAddress = publicKeyToAddress(this.teamPubkey);
+    const formattedAddress = `${ADDRESS_INFO.PREFIX}_${candidateAddress}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+
+    if (!currentCandidate) {
+      this.setState({
+        isCandidate: false,
+        formattedAddress
+      });
+      return;
+    }
 
     const totalVoteAmount = candidateVotesArr.reduce(
       (total, current) => total + +current,
@@ -164,9 +161,6 @@ class TeamDetail extends PureComponent {
         : ((100 * totalVotes) / totalVoteAmount).toFixed(2);
     const { producedBlocks } = currentCandidateInfo;
 
-    const candidateAddress = publicKeyToAddress(this.teamPubkey);
-    const formattedAddress = `${ADDRESS_INFO.PREFIX}_${candidateAddress}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
-
     this.setState({
       rank,
       terms,
@@ -176,9 +170,6 @@ class TeamDetail extends PureComponent {
       candidateAddress,
       formattedAddress
     });
-
-    console.log('candidateVotesArr', candidateVotesArr);
-    console.log('currentCandidate', currentCandidate);
   }
 
   fetchTheUsersActiveVoteRecords() {
@@ -212,7 +203,6 @@ class TeamDetail extends PureComponent {
     });
   }
 
-  // todo: confirm the method works well
   justifyIsBP() {
     const { consensusContract } = this.props;
 
@@ -229,11 +219,10 @@ class TeamDetail extends PureComponent {
       });
   }
 
-  getStatisData() {
+  getStaticData() {
     const { rank, terms, totalVotes, votedRate, producedBlocks } = this.state;
 
-    // todo: Consider to modify the data structure with easier one
-    const statisData = {
+    return {
       rank: {
         title: 'Rank',
         num: rank
@@ -255,18 +244,17 @@ class TeamDetail extends PureComponent {
         num: producedBlocks
       }
     };
-    return statisData;
   }
 
   renderTopTeamInfo() {
     const { isSmallScreen } = this.props;
     const {
-      candidateAddress,
       formattedAddress,
       isBP,
       userRedeemableVoteAmountForOneCandidate,
       hasAuth,
-      data
+      data,
+      isCandidate
     } = this.state;
 
     const avatarSize = isSmallScreen ? 50 : 92;
@@ -312,17 +300,14 @@ class TeamDetail extends PureComponent {
               >
                 <h5 className={`${clsPrefix}-node-name ellipsis`}>
                   {data.name ? data.name : formattedAddress}
-                  <Tag color="#f50">{isBP ? 'BP' : 'Candidate'}</Tag>
+                  <Tag color="#f50">{isBP ? 'BP' : (isCandidate ? 'Candidate' : 'Quited')}</Tag>
                 </h5>
-                <span className={`${clsPrefix}-team-info-location`}>
+                <Paragraph ellipsis={{rows: 1}}>
                   Location: {data.location || '-'}
-                </span>
-                <span className={`${clsPrefix}-team-info-address`}>
-                  Address:{' '}
-                  <Paragraph copyable={{ text: formattedAddress }}>
-                    {formattedAddress.slice(0, 20)}...
-                  </Paragraph>
-                </span>
+                </Paragraph>
+                <Paragraph copyable={{ text: formattedAddress }} ellipsis={{rows: 1}}>
+                  Address: {formattedAddress}
+                </Paragraph>
                 {hasAuth ? (
                   <Button type="primary" shape="round" className="edit-btn">
                     <Link
@@ -349,9 +334,9 @@ class TeamDetail extends PureComponent {
           >
             <Button
               className="table-btn vote-btn"
-              // size="large"
               type="primary"
               shape="round"
+              disabled={!isCandidate}
               data-role="vote"
               data-shoulddetectlock
               data-votetype={FROM_WALLET}
@@ -363,7 +348,6 @@ class TeamDetail extends PureComponent {
             </Button>
             <Button
               className="table-btn redeem-btn"
-              // size="large"
               type="primary"
               shape="round"
               data-role="redeem"
@@ -371,9 +355,7 @@ class TeamDetail extends PureComponent {
               data-nodeaddress={formattedAddress}
               data-targetPublicKey={this.teamPubkey}
               data-nodename={data.name}
-              disabled={
-                userRedeemableVoteAmountForOneCandidate > 0 ? false : true
-              }
+              disabled={userRedeemableVoteAmountForOneCandidate <= 0}
             >
               Redeem
             </Button>
@@ -386,44 +368,55 @@ class TeamDetail extends PureComponent {
   render() {
     const { data } = this.state;
 
-    // todo: The component StatisData is PureComponent so I have to create a new heap space to place the object
-    // todo: Consider to make the component StatisData non-PureComponent
-    const statisData = { ...this.getStatisData() };
+    const staticsData = { ...this.getStaticData() };
     const topTeamInfo = this.renderTopTeamInfo();
 
-    // todo: Is it safe if the user keyin a url that is not safe?
-    // todo: handle the error case of node-name
-    // FIXME: hide the edit button for the non-owner
     return (
       <section className={`${clsPrefix}`}>
         {topTeamInfo}
-        <StatisticalData data={statisData} inline></StatisticalData>
+        <StatisticalData data={staticsData} inline />
         <section className={`${clsPrefix}-intro card-container`}>
           <h5 className="card-header">
-            <Icon type="edit" className="card-header-icon"></Icon>
-            Intro
+            <Icon type="edit" className="card-header-icon" />
+            Introduction
           </h5>
           <div className="card-content">
-            {data.intro || "The team didn't fill the intro."}
+            <If condition={!!data.intro}>
+              <Then>
+                <p>{data.intro}</p>
+              </Then>
+              <Else>
+                <div className="vote-team-detail-empty">The team didn't fill the introduction.</div>
+              </Else>
+            </If>
           </div>
         </section>
         <section className={`${clsPrefix}-social-network card-container`}>
           <h5 className="card-header">
-            <Icon type="team" className="card-header-icon"></Icon>
+            <Icon type="team" className="card-header-icon" />
             Social Network
           </h5>
           <div className="card-content">
-            {data.socials && data.socials.length ? (
-              <ul>
-                {data.socials.map(item => (
-                  <li>
-                    {item.type}: <a href={item.url}>{item.url}</a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              "The team didn't fill the social contacts."
-            )}
+            <If condition={data.socials && data.socials.length > 0}>
+              <Then>
+                <div className="vote-team-detail-social-network">
+                  {
+                    (data.socials || []).map(item => (
+                        <div className="vote-team-detail-social-network-item">
+                          <span className="vote-team-detail-social-network-item-title">{item.type}</span>
+                          <span className="vote-team-detail-social-network-item-url">
+                            :&nbsp;
+                            <a href={item.url} target="_blank" rel="noreferrer noopener">{item.url}</a>
+                          </span>
+                        </div>
+                    ))
+                  }
+                </div>
+              </Then>
+              <Else>
+                <span className="vote-team-detail-empty">The team didn't fill the social contacts.</span>
+              </Else>
+            </If>
           </div>
         </section>
       </section>

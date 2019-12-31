@@ -65,9 +65,6 @@ export default class ResourceSellModal extends PureComponent {
 
   requestSell(result) {
     const { menuName, sellNum } = this.state;
-    console.log('result', result);
-    console.log('sellNum', sellNum);
-    console.log('menuName', menuName);
     const payload = {
       symbol: menuName,
       amount: +(sellNum * ELF_DECIMAL)
@@ -91,10 +88,8 @@ export default class ResourceSellModal extends PureComponent {
       setTimeout(() => {
         aelf.chain.getTxResult(transactionId, (error, result) => {
           if (!result) {
-            console.log('error', error);
             return;
           }
-          console.log('result', result);
           getStateJudgment(result.Status, transactionId);
           this.props.onRefresh();
           this.setState({
@@ -115,11 +110,6 @@ export default class ResourceSellModal extends PureComponent {
       sellNum
     } = this.props;
     const { menuName, currentWallet, loading } = this.state;
-    console.log({
-      sellEstimateValueLoading,
-      SellELFValue,
-      sellFee
-    });
 
     return (
       <div className='modal'>
@@ -127,7 +117,13 @@ export default class ResourceSellModal extends PureComponent {
           <Col span={8}>
             Address
           </Col>
-          <Col span={16}>{centerEllipsis(`ELF_${currentWallet.address}_${CHAIN_ID}`)}</Col>
+          <Col
+              span={16}
+              className="text-ellipse"
+              title={`ELF_${currentWallet.address}_${CHAIN_ID}`}
+          >
+            {`ELF_${currentWallet.address}_${CHAIN_ID}`}
+          </Col>
         </Row>
         <Row className='modal-form-item'>
           <Col span={8}>

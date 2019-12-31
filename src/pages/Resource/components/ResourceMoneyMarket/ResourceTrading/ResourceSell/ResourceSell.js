@@ -175,10 +175,6 @@ class ResourceSell extends Component {
     const { account, menuIndex } = this.state;
     const { region } = this;
 
-    console.log({
-      region
-    });
-
     const menuName = getMenuName(menuIndex);
     // if (region < 4) {
     //     const regionLine = [0, 25, 50, 75, 100];
@@ -202,12 +198,6 @@ class ResourceSell extends Component {
     const menuName = getMenuName(menuIndex);
     const disabled = false;
     const balance = account[menuName];
-    console.log({ account, menuIndex, menuName, balance, region });
-    // if (region < 4) {
-    //     region = 25;
-    //     balance = 100;
-    //     disabled = true;
-    // }
     return (
       <Slider
         marks={this.getSlideMarks()}
@@ -225,11 +215,6 @@ class ResourceSell extends Component {
   // todo: to be more friendly, verify the input after click buy/sell?
   onChangeResourceValue(input) {
     const { handleModifyTradingState, sellNum } = this.props;
-    console.log({
-      sellNum,
-      input
-    });
-    console.log("hey I'm here");
     // todo: give a friendly notify when verify the max and min
     // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
     // todo: use antd's Form validate instead
@@ -258,9 +243,6 @@ class ResourceSell extends Component {
     // todo: Is it neccessary to make the loading code write in the same place? And if the answer is yes, how to make it?
     // todo: It seems that it will cause some problem?
     const nextSellNum = Number.isNaN(+input) ? input : +input;
-    console.log({
-      nextSellNum
-    });
     handleModifyTradingState({
       sellEstimateValueLoading: true,
       sellNum: nextSellNum
@@ -278,11 +260,6 @@ class ResourceSell extends Component {
     // eslint-disable-next-line react/destructuring-assignment
     // this.props.form.validateFields('inputSellNum', { force: true });
     // this.props.form.validateFields((err, values) => {
-    //   console.log({
-    //     err,
-    //     values
-    //   });
-    // });
     this.debounce(input);
   }
 
@@ -303,7 +280,6 @@ class ResourceSell extends Component {
         });
         return;
       }
-      console.log(`I'm here`);
       getEstimatedValueRes(
         menuName,
         value,
@@ -311,9 +287,6 @@ class ResourceSell extends Component {
         tokenContract
       )
         .then(result => {
-          console.log({
-            result: typeof result
-          });
           // todo: handle the case BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP
           if (true) {
             // todo: the code of rounding off maybe wrong so I comment it.
@@ -321,12 +294,6 @@ class ResourceSell extends Component {
             const amountToReceive = result;
             const fee = getFees(amountToReceive);
             const amountToReceiveMinusFee = amountToReceive - fee;
-            console.log({
-              amountToReceive,
-              fee,
-              amountToReceiveMinusFee,
-              result
-            });
             if (amountToReceiveMinusFee > 0) {
               handleModifyTradingState({
                 sellEstimateValueLoading: false,
@@ -390,10 +357,6 @@ class ResourceSell extends Component {
       operateNumToSmall
     } = this.state;
 
-    console.log({
-      operateNumToSmall
-    });
-
     this.setState({
       sellBtnLoading: true
     });
@@ -445,7 +408,6 @@ class ResourceSell extends Component {
       return;
     }
 
-    console.log(nightElf);
     nightElf.checkPermission(
       {
         appName,
@@ -537,11 +499,7 @@ class ResourceSell extends Component {
     // const { getFieldDecorator } = this.props.form;
 
     this.inputMax = account[menuName];
-    console.log('In sell render', {
-      sellEstimateValueLoading,
-      sellNum,
-      inputMax: this.inputMax
-    });
+
     this.getRegion(menuIndex);
     const slideHTML = this.getSlideMarksHTML();
     return (
@@ -612,32 +570,4 @@ class ResourceSell extends Component {
   }
 }
 
-// todo: we can also use antd's validateStatus instead of Form.create and getFieldDecorator
-// export default Form.create({
-//   onFieldsChange(props, changedFields) {
-//     const { value } = changedFields.inputSellNum;
-//     console.log({
-//       value,
-//       changedFields
-//     });
-//     if (value !== null && value !== undefined && !Number.isNaN(+value)) {
-//       props.handleModifyTradingState({
-//         sellNum: value
-//       });
-//     }
-//   },
-//   mapPropsToFields(props) {
-//     console.log({
-//       props
-//     });
-//     // return {
-//     //   inputSellNum: Form.createFormField({
-//     //     inputSellNum: props.sellNum
-//     //   })
-//     // };
-//     return {
-//       inputSellNum: Form.createFormField(props.sellNum)
-//     };
-//   }
-// })(ResourceSell);
 export default ResourceSell;

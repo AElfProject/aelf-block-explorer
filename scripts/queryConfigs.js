@@ -16,7 +16,8 @@ const result = {
 
 async function getConfig() {
     const {
-        CONTRACTS
+        CONTRACTS,
+        schemeIds
     } = config;
     const {
         ChainId,
@@ -34,6 +35,26 @@ async function getConfig() {
             } = await contract.GetNativeTokenInfo.call();
             result.SYMBOL = symbol;
         }
+    }
+    if (result.electionContractAddr) {
+        const profit = await aelf.chain.contractAt(result.profitContractAddr, wallet);
+        const electionSchemeIds = (await profit.GetManagingSchemeIds.call({
+            manager: result.electionContractAddr
+        })).schemeIds;
+        const treasurySchemaIds = (await profit.GetManagingSchemeIds.call({
+            manager: result.dividends
+        })).schemeIds;
+        const schemes = [
+            treasurySchemaIds[1],
+            electionSchemeIds[0],
+            treasurySchemaIds[3],
+            treasurySchemaIds[2],
+            treasurySchemaIds[4]
+        ].map((v, i) => ({
+            type: schemeIds[i].type,
+            schemeId: v
+        }));
+        result.schemeIds = schemes;
     }
     console.log(result);
     fs.writeFileSync(path.resolve('./config/config.json'), `${JSON.stringify(result, null, 2)}\n`);

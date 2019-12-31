@@ -13,6 +13,7 @@
   padding: 50px;
   .card-container {
     padding: 20px 0;
+    margin-bottom: 0;
     .card-header {
       color: #000;
       font-weight: bold;
@@ -20,16 +21,14 @@
     .card-content {
       background: @bgBlankGrey;
       color: @cusBlack;
-      min-height: 136px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      min-height: 120px;
+      padding: 28px 30px;
     }
   }
   .statistical-data-container {
     background: #fff;
     border-bottom: 1px solid @borderColor;
-    padding: 20px 30px;
+    padding: 20px 0;
   }
   .@{clsPrefix}-header {
     border-bottom: 1px solid @borderColor;
@@ -48,9 +47,6 @@
           .ant-tag {
             margin-left: 5px;
           }
-        }
-        .edit-btn {
-          margin-left: 20px;
         }
         &-location {
           margin-right: 100px;
@@ -95,6 +91,20 @@
       text-indent: 2em;
     }
   }
+  .vote-team-detail-social-network {
+    &-item {
+      &-title {
+        display: inline-block;
+        min-width: 72px;
+      }
+    }
+  }
+  .vote-team-detail-empty {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .card-header {
@@ -105,7 +115,6 @@
   font-size: 18px;
 }
 
-// todo: Optimzie the way writting the css
 @media (max-width: @smallScreenWidth) {
   .@{clsPrefix} {
     padding: 20px;

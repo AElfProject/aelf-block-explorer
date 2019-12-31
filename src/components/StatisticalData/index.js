@@ -65,7 +65,7 @@ export default class StatisticalData extends PureComponent {
   }
 
   renderList(arr) {
-    return arr.map(item => {
+    return arr.map((item, index) => {
       let number = item.num;
       if (item.id === 3) {
         number = (number / 100000000).toFixed(2);
@@ -73,17 +73,16 @@ export default class StatisticalData extends PureComponent {
 
       return item.isCountdown ? (
         <Countdown
-          key={Math.random()}
+          key={index}
           title={item.title}
           value={item.num || 0}
           format="D day HH : mm : ss "
           onFinish={() => {
-            console.log('finished');
             this.handleFinish(item.id);
           }}
         />
       ) : (
-        <Statistic key={Math.random()} title={item.title} value={number} />
+        <Statistic key={index} title={item.title} value={isNaN(parseInt(number, 10)) ? 0 : number} />
       );
     });
   }

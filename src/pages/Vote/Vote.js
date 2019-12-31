@@ -9,7 +9,6 @@
 import React, { Component } from 'react';
 import { Tabs, Modal, Form, Input, Button, Radio, message, Menu } from 'antd';
 import { Switch, Route, Link, withRouter, Redirect } from 'react-router-dom';
-import { toJS, reaction } from 'mobx';
 import { Provider } from 'mobx-react';
 import moment from 'moment';
 
@@ -24,7 +23,8 @@ import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 import config, {
   DEFAUTRPCSERVER as DEFAUT_RPC_SERVER,
   APPNAME,
-  ADDRESS_INFO
+  ADDRESS_INFO,
+  schemeIds
 } from '@config/config';
 import { aelf } from '@src/utils';
 // import voteStore from '@store/vote';
@@ -49,7 +49,6 @@ import RedeemAnVoteModal from './RedeemAnVoteModal';
 import * as constants from './constants';
 import {
   contractsNeedToLoad,
-  schemeIds,
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
@@ -805,9 +804,7 @@ class VoteContainer extends Component {
     return electionContract.GetCandidateInformation.call({
       value: pubkey
     })
-      .then(res => {
-        return Promise.resolve(res.isCurrentCandidate);
-      })
+      .then(res => res.isCurrentCandidate)
       .catch(err => {
         console.error('GetCandidateInformation', err);
       });
@@ -1193,13 +1190,6 @@ class VoteContainer extends Component {
     voteIdsToRedeem = votesToRedeem.map(item => item.voteId.value);
 
     this.redeemSomeVote(voteIdsToRedeem);
-
-    console.log({
-      votesToRedeem,
-      withdrawnableVoteRecords,
-      voteFromExpiredVoteAmount,
-      sortedRedeemableVoteRecords
-    });
   }
 
   // todo: global node address are public key actually

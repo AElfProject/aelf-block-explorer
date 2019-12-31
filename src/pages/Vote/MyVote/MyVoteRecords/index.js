@@ -34,6 +34,7 @@ function genMyVoteRecordsCols() {
       dataIndex: 'name',
       key: 'nodeName',
       width: 250,
+      ellipsis: true,
       ...this.getColumnSearchProps('name'),
       render: (text, record) => (
         <Tooltip title={text}>
@@ -42,9 +43,8 @@ function genMyVoteRecordsCols() {
               pathname: '/vote/team',
               search: `pubkey=${record.candidate}`
             }}
-            // style={{ width: 300 }}
           >
-            {centerEllipsis(text)}
+            {text}
           </Link>
         </Tooltip>
       )
@@ -189,24 +189,14 @@ class MyVoteRecords extends Component {
         setTimeout(() => this.searchInput.select());
       }
     }
-    // render: text => (
-    //   <Highlighter
-    //     highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-    //     searchWords={[this.state.searchText]}
-    //     autoEscape
-    //     textToHighlight={text.toString()}
-    //   />
-    // )
   });
 
   handleSearch = (selectedKeys, confirm) => {
     confirm();
-    // this.setState({ searchText: selectedKeys[0] });
   };
 
   handleReset = clearFilters => {
     clearFilters();
-    // this.setState({ searchText: '' });
   };
 
   render() {
@@ -229,7 +219,6 @@ class MyVoteRecords extends Component {
         <Table
           columns={myVoteRecordsCols}
           dataSource={data}
-          // onChange={handleTableChange}
           // loading={loading}
           pagination={pagination}
           rowKey={record => record.voteId.value}

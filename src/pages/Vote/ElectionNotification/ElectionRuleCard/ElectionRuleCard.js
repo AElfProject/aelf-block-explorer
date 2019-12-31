@@ -6,6 +6,19 @@ import './ElectionRuleCard.style.less';
 
 function ElectionRuleCard(props) {
   const { isCandidate, displayApplyModal, currentWallet } = props;
+
+  const onClick = () => {
+      if (isCandidate) {
+          const { history } = props;
+          history.push({
+              pathname: '/vote/apply/keyin',
+              search: `pubkey=${currentWallet && currentWallet.pubkey}`
+          });
+      } else {
+          displayApplyModal();
+      }
+  };
+
   return (
     <section className="election-rule-card">
       <h2 className="election-header-title">
@@ -13,7 +26,7 @@ function ElectionRuleCard(props) {
           type="file-text"
           theme="filled"
           className="card-header-icon"
-        ></Icon>
+        />
         Node Election
       </h2>
       <div className="election-container">
@@ -32,17 +45,7 @@ function ElectionRuleCard(props) {
           <Button
             type="primary"
             className="apply-to-be-a-node-btn"
-            onClick={() => {
-              if (isCandidate) {
-                const { history } = props;
-                history.push({
-                  pathname: '/vote/apply/keyin',
-                  search: `pubkey=${currentWallet && currentWallet.pubkey}`
-                });
-              } else {
-                displayApplyModal();
-              }
-            }}
+            onClick={onClick}
           >
             {isCandidate
               ? 'Modify team information'

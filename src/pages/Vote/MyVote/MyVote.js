@@ -8,9 +8,7 @@ import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import {
-  NODE_DEFAULT_NAME,
-  RANK_NOT_EXISTED_SYMBOL,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
+  RANK_NOT_EXISTED_SYMBOL
 } from '@src/pages/Vote/constants';
 import { ADDRESS_INFO } from '@config/config';
 import { MY_VOTE_DATA_TIP } from '@src/constants';

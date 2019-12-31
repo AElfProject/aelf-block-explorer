@@ -142,7 +142,13 @@ export default class ResourceBuyModal extends PureComponent {
           <Col span={8}>
             Address
           </Col>
-          <Col span={16}>{centerEllipsis(`ELF_${currentWallet.address}_${CHAIN_ID}`)}</Col>
+          <Col
+              className="text-ellipse"
+              span={16}
+              title={`ELF_${currentWallet.address}_${CHAIN_ID}`}
+          >
+            {`ELF_${currentWallet.address}_${CHAIN_ID}`}
+          </Col>
         </Row>
         <Row className='modal-form-item'>
           <Col span={8}>
