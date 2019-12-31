@@ -43,6 +43,7 @@ export default class TxsDetailPage extends React.Component {
 
   renderCol(key, value) {
     if (typeof value === 'object') {
+      // return this.renderCols(value);
       value = JSON.stringify(value);
     }
     return (
@@ -64,8 +65,7 @@ export default class TxsDetailPage extends React.Component {
     );
   }
 
-  renderCols() {
-    const { result = {} } = this.state;
+  renderCols(result = {}) {
     const blackList = ['tx_trc', 'return'];
     return Object.keys(result).filter(v => blackList.indexOf(v) < 0).map(key => {
       const item = result[key];
@@ -79,13 +79,8 @@ export default class TxsDetailPage extends React.Component {
   }
 
   render() {
-    const { error } = this.state;
-    let colsHtml;
-    if (error) {
-      colsHtml = this.renderCol('error', error);
-    } else {
-      colsHtml = this.renderCols();
-    }
+    const { error, result } = this.state;
+    const colsHtml = this.renderCols(error || result);
 
     return (
       <div className='tx-block-detail-container basic-container basic-container-white'>
