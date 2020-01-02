@@ -16,6 +16,7 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
+import NightElfCheck from "../../../../utils/NightElfCheck";
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -38,6 +39,7 @@ export default class MyWalletCard extends PureComponent {
     // this.handleClaimDividendClick = this.handleClaimDividendClick.bind(this);
     // this.updateWallet = this.updateWallet.bind(this);
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
+    this.extensionLogout = this.extensionLogout.bind(this);
 
     this.hasRun = false;
   }
@@ -249,6 +251,24 @@ export default class MyWalletCard extends PureComponent {
     });
   }
 
+  extensionLogout() {
+    const nightElf = NightElfCheck.getAelfInstanceByExtension();
+    const currentWallet = getCurrentWallet();
+    nightElf.logout({
+      appName: APPNAME,
+      address: currentWallet.address
+    }, (error, result) => {
+      localStorage.removeItem('currentWallet');
+      this.handleUpdateWalletClick();
+      // TODO: more refactor actions for login and logout
+      message.success('Logout successful, refresh after 3s.', 3, () => {
+        window.location.reload();
+      });
+    }).catch(error => {
+      message.error('logout failed');
+    });
+  }
+
   render() {
     const { handleDividendClick, dividends } = this.props;
     const {
@@ -312,8 +332,16 @@ export default class MyWalletCard extends PureComponent {
             />
             My Wallet
           </h2>
+          { currentWallet && currentWallet.name && <Button
+            className="my-wallet-card-header-sync-btn update-btn"
+            disabled={!(currentWallet && currentWallet.address)}
+            onClick={this.extensionLogout}
+          >
+            change wallet<Icon type="logout"/>
+          </Button>}
           <Button
             className="my-wallet-card-header-sync-btn update-btn"
+            disabled={!(currentWallet && currentWallet.address)}
             onClick={this.handleUpdateWalletClick}
           >
             <Icon type="sync" spin={loading} />

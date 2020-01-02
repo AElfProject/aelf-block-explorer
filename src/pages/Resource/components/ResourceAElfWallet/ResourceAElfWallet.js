@@ -10,12 +10,14 @@ import {
   Col,
   Spin,
   Button,
-  Icon
+  Icon, message
 } from 'antd';
 import {ADDRESS_INFO} from '../../../../../config/config';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
+import { APPNAME } from '@config/config';
 import './ResourceAElfWallet.less';
+import NightElfCheck from "../../../../utils/NightElfCheck";
 
 export default class ResourceAElfWallet extends PureComponent {
 
@@ -34,6 +36,7 @@ export default class ResourceAElfWallet extends PureComponent {
       loading: false
     };
     this.refreshWalletInfo = this.refreshWalletInfo.bind(this);
+    this.extensionLogout = this.extensionLogout.bind(this);
   }
 
   componentDidMount() {
@@ -75,6 +78,26 @@ export default class ResourceAElfWallet extends PureComponent {
         })
       });
     }
+  }
+
+  extensionLogout() {
+    const nightElf = NightElfCheck.getAelfInstanceByExtension();
+    const {
+      currentWallet,
+    } = this.props;
+    nightElf.logout({
+      appName: APPNAME,
+      address: currentWallet.address
+    }, (error, result) => {
+      localStorage.removeItem('currentWallet');
+      this.refreshWalletInfo();
+      // TODO: more refactor actions for login and logout; repeated code, MyWalletCard.js
+      message.success('Logout successful, refresh after 3s.', 3, () => {
+        window.location.reload();
+      });
+    }).catch(error => {
+      message.error('logout failed');
+    });
   }
 
   getCurrentWalletBalance = async () => {
@@ -159,13 +182,24 @@ export default class ResourceAElfWallet extends PureComponent {
                   Transaction Details
                 </Link> }
               </span>
-              <Button
-                  className='resource-wallet-address-update update-btn'
+
+              <div>
+                <Button
+                    className='resource-wallet-address-update update-btn'
+                    disabled={!(currentWallet && currentWallet.address && tokenContract)}
+                    onClick={this.refreshWalletInfo}
+                >
+                  <Icon type='sync' spin={loading} />
+                </Button>
+
+                { currentWallet && currentWallet.name && <Button
+                  className="resource-wallet-address-update update-btn"
                   disabled={!(currentWallet && currentWallet.address && tokenContract)}
-                  onClick={this.refreshWalletInfo}
-              >
-                <Icon type='sync' spin={loading} />
-              </Button>
+                  onClick={this.extensionLogout}
+                >
+                  change wallet<Icon type="logout"/>
+                </Button>}
+              </div>
             </div>
 
             <div className='resource-wallet-info'>

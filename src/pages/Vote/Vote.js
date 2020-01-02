@@ -390,26 +390,11 @@ class VoteContainer extends Component {
   }
 
   getExtensionKeypairList() {
-    const httpProvider = DEFAUT_RPC_SERVER;
-
     NightElfCheck.getInstance()
       .check.then(item => {
         if (item) {
-          const nightElf = new window.NightElf.AElf({
-            httpProvider: [
-              httpProvider,
-              null,
-              null,
-              null,
-              [
-                {
-                  name: 'Accept',
-                  value: 'text/plain;v=1.0'
-                }
-              ]
-            ],
-            APPNAME // TODO: 这个需要content.js 主动获取
-          });
+          const nightElf = NightElfCheck.getAelfInstanceByExtension();
+
           if (nightElf) {
             this.setState({
               nightElf
@@ -1304,7 +1289,7 @@ class VoteContainer extends Component {
           if (profitItem.error) {
             amount = 0;
           } else {
-            amount = +profitItem.value;
+            amount = isNaN(+profitItem.value) ? 0 : +profitItem.value;
           }
           // todo: remove the judge when need
           amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;

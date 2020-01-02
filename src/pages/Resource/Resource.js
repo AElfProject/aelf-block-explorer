@@ -47,7 +47,6 @@ class Resource extends Component {
   }
 
   componentDidMount() {
-    let httpProvider = DEFAUTRPCSERVER;
     getContractAddress().then(result => {
       this.setState({
         contracts: result
@@ -81,21 +80,8 @@ class Resource extends Component {
     NightElfCheck.getInstance()
       .check.then(item => {
         if (item) {
-          nightElf = new window.NightElf.AElf({
-            httpProvider: [
-              httpProvider,
-              null,
-              null,
-              null,
-              [
-                {
-                  name: 'Accept',
-                  value: 'text/plain;v=1.0'
-                }
-              ]
-            ],
-            appName // TODO: 这个需要content.js 主动获取
-          });
+          const nightElf = NightElfCheck.getAelfInstanceByExtension();
+
           if (nightElf) {
             this.setState({
               nightElf
