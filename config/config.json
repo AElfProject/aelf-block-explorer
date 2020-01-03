@@ -13,23 +13,23 @@
   },
   "schemeIds": [
     {
-      "type": "CitizenWelfare",
-      "schemeId": "f2e70e09c94616f91f6b084d9a2c025d2cb27aea1860cf3f467b496c647b163f"
+      "type": "Citizen Welfare",
+      "schemeId": "2623eb0b2decec194c25388195e92592402fe66bdc3657ceadaf58d92860186a"
     },
     {
-      "type": "BackupSubsidy",
+      "type": "Backup Subsidy",
       "schemeId": "208d098067699730d220f1997d48c8b8d8881bb8507abfad1b07d9af8ba94bb0"
     },
     {
-      "type": "VotesWeight",
+      "type": "Votes Weight Reward",
       "schemeId": "9a7f406cf485dd91439c848dea23b5c03029aee63cd8077710ca05865f73ed99"
     },
     {
-      "type": "MinerBasic",
+      "type": "Miner Basic Reward",
       "schemeId": "58c0ee2b5eab330cafa5df680399a6374c7e86bbbcabeda0b70eb0a98a4f788a"
     },
     {
-      "type": "ReElection",
+      "type": "Re-Election Reward",
       "schemeId": "291c0cc8fd51e02c02cb95c235f8d41a14793f8e8bf4810e3e44aaf89e7c3389"
     }
   ],

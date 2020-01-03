@@ -81,7 +81,7 @@ const BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP =
 const TRANSACT_LARGE_THAN_ZERO_TIP =
   'You should transact an amount large than 0.';
 const ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP =
-  'Only support positive float and interger.';
+  'Only support positive float and integer.';
 const CHECK_BALANCE_TIP = 'Please Check your balance Then.';
 const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
   'Sorry, you can not buy so many resources in one time.';
@@ -103,7 +103,7 @@ const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = 'You already been candidate:)';
 const NOT_CURRENT_CANDIDATE_TIP =
   'Sorry, the node is not current candidate:) \n Please refresh the page then choose another node to vote.';
 const THE_REASON_TO_BECOME_A_NON_CANDIDATE =
-  'It may be result from: \n 1. The node has quitted election during the time. \n 2. The node became an evil node then was kicked out of the candidates.';
+  'It may be result from: \n 1. The node has quited election during the time. \n 2. The node became an evil node then was kicked out of the candidates.';
 const FEE_TIP = 'A fee of 2 elf will be deducted from the operation :)';
 const ELECTION_NOTIFI_DATA_TIP =
   'The election term is 7 days, there is no interval between terms; the number of nodes is the total number of current BP and candidate nodes; the number of votes is the sum of the votes amount since the election started; the bonus pool includes a block bonus of the BP node + 80% of the gas fee + 80% of the side chain income.';

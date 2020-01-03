@@ -6,11 +6,11 @@
  * @LastEditTime: 2019-12-07 21:22:37
  * @Description: file content
  */
-import React, { PureComponent } from 'react';
-import { Checkbox, Row, Col, Modal, Button } from 'antd';
+import React, { PureComponent, Fragment } from 'react';
+import { If, Then, Else } from 'react-if';
+import { Spin, Row, Col, Modal, Button } from 'antd';
 
 import { schemeIds } from '@config/config';
-import { formatKey } from '../../../utils';
 import './index.less';
 
 export default class DividendModal extends PureComponent {
@@ -51,7 +51,8 @@ export default class DividendModal extends PureComponent {
       dividendModalVisible,
       changeModalVisible,
       dividends,
-      handleClaimDividendClick
+      handleClaimDividendClick,
+      loading
     } = this.props;
 
     return (
@@ -73,30 +74,39 @@ export default class DividendModal extends PureComponent {
         keyboard
         footer={null}
       >
-        {dividends.amounts.map(item => {
-          return (
-            <Row key={item.type} className="claim-profit-item">
-              <Col span={12} className="text-left">
-                <span className="profit-item-key">{formatKey(item.type)}: </span>
-                <span className="profit-item-value">
+        <If condition={!!loading}>
+          <Then>
+            <Spin spinning={loading} />
+          </Then>
+          <Else>
+            <Fragment>
+              {dividends.amounts.map(item => {
+                return (
+                    <Row key={item.type} className="claim-profit-item">
+                      <Col span={12} className="text-left">
+                        <span className="profit-item-key">{item.type}: </span>
+                        <span className="profit-item-value">
                   {item.amount.toFixed(2)}
                 </span>
-              </Col>
-              <Col span={12} className="text-right">
-                <Button
-                  disabled={item.amount <= 0}
-                  type="primary"
-                  shape="round"
-                  onClick={() => {
-                    handleClaimDividendClick(item.schemeId);
-                  }}
-                >
-                  Claim Profit
-                </Button>
-              </Col>
-            </Row>
-          );
-        })}
+                      </Col>
+                      <Col span={12} className="text-right">
+                        <Button
+                            disabled={item.amount <= 0}
+                            type="primary"
+                            shape="round"
+                            onClick={() => {
+                              handleClaimDividendClick(item.schemeId);
+                            }}
+                        >
+                          Claim Profit
+                        </Button>
+                      </Col>
+                    </Row>
+                );
+              })}
+            </Fragment>
+          </Else>
+        </If>
       </Modal>
     );
   }

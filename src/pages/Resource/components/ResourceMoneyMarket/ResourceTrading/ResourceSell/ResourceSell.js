@@ -235,7 +235,7 @@ class ResourceSell extends Component {
         sellNum: null
       });
       if (input !== '' && +input !== 0) {
-        message.error('Only support positive float or interger.');
+        message.error('Only support positive float or integer.');
       }
       return;
     }
@@ -361,19 +361,11 @@ class ResourceSell extends Component {
       sellBtnLoading: true
     });
     const menuName = getMenuName(menuIndex);
-    // let reg = /^[1-9]\d*$/;
-    // if (!reg.test(value)) {
-    // message.error('The value must be numeric and greater than 0');
-    // return;
-    // }
-    // todo: extract the repeating code
+
     if (!regPos.test(sellNum) || sellNum === 0) {
-      // if (sellNum !== '' && sellNum !== 0) {
-      // todo: the case of balance insufficient will enter here, so I put the balance message here, after rewrite the verify code please seperate the message notification code.
       message.error(
         `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`
       );
-      // }
       this.setState({
         sellBtnLoading: false
       });

@@ -243,7 +243,10 @@ class VoteContainer extends Component {
       dividendModalVisible: false,
       dividends: {
         total: 0,
-        amounts: []
+        amounts: schemeIds.map(v => ({
+          ...v,
+          amount: 0
+        }))
       },
       // todo: remove useless state
       totalVoteAmountForOneCandidate: 0,
@@ -267,7 +270,8 @@ class VoteContainer extends Component {
       },
       redeemOneVoteModalVisible: false,
       isLockTimeForTest: false,
-      isPluginLock: false
+      isPluginLock: false,
+      dividendLoading: false
     };
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
@@ -1272,7 +1276,7 @@ class VoteContainer extends Component {
     // It will reduce the setState's call times to one
     const { profitContractFromExt } = this.state;
 
-    Promise.all(
+    return Promise.all(
       schemeIds.map(item => {
         return profitContractFromExt.GetProfitAmount.call({
           symbol: SYMBOL,
@@ -1281,7 +1285,6 @@ class VoteContainer extends Component {
       })
     )
       .then(resArr => {
-        console.log('GetAllProfitAmount', resArr);
         let total = 0;
         const dividendAmounts = schemeIds.map((item, index) => {
           let amount = null;
@@ -1317,11 +1320,20 @@ class VoteContainer extends Component {
 
   handleDividendClick() {
     this.checkExtensionLockStatus()
-      .then(() => {
-        this.fetchProfitAmount();
+      .then(async () => {
         this.setState({
-          dividendModalVisible: true
+          dividendModalVisible: true,
+          dividendLoading: true
         });
+        try {
+          await this.fetchProfitAmount();
+        } catch (e) {
+          message.error('Error happened when getting claim amount');
+        } finally {
+          this.setState({
+            dividendLoading: false
+          });
+        }
       })
       .catch(err => {
         console.error('checkExtensionLockStatus', err);
@@ -1421,7 +1433,6 @@ class VoteContainer extends Component {
       profitContractFromExt,
 
       balance,
-      formatedBalance,
       nodeAddress,
       nodeName,
       currentWallet,
@@ -1449,7 +1460,8 @@ class VoteContainer extends Component {
       shouldRefreshElectionNotifiStatis,
       shouldJudgeIsCurrentCandidate,
       isPluginLock,
-      isLockTimeForTest
+      isLockTimeForTest,
+      dividendLoading
     } = this.state;
 
     const secondaryLevelNav = this.renderSecondaryLevelNav();
@@ -1650,69 +1662,11 @@ class VoteContainer extends Component {
 
             <DividendModal
               dividendModalVisible={dividendModalVisible}
+              loading={dividendLoading}
               changeModalVisible={this.changeModalVisible}
               dividends={dividends}
               handleClaimDividendClick={this.handleClaimDividendClick}
             />
-
-            {/* ===== Test Btn ===== */}
-            {/* <button
-            // onClick={async () => {
-            //   voteStore.setPluginLockModalVisible(
-            //     !voteStore.pluginLockModalVisible
-            //   );
-            //   console.log(
-            //     'pluginLockModalVisible',
-            //     voteStore.pluginLockModalVisible
-            //   );
-            //   reaction(
-            //     () => voteStore.pluginLockModalVisible,
-            //     pluginLockModalVisible =>
-            //       this.setState({ pluginLockModalVisible })
-            //   );
-            // }}
-            onClick={() =>
-              this.changeModalVisible('pluginLockModalVisible', true)
-            }
-          >
-            pluginLockModalVisible
-          </button>
-          <button
-            onClick={() =>
-              this.setState({
-                pluginLockModalVisible: true
-              })
-            }
-          >
-            show plugin lock modal
-          </button>
-
-          <button
-            onClick={() => {
-              const voteConfirmForm = generateVoteConfirmForm.call(this, {
-                need: ['voteAmount', 'lockTime']
-              });
-              this.setState({
-                voteConfirmForm,
-                voteConfirmModalVisible: true
-              });
-            }}
-          >
-            show vote confirm modal
-          </button>
-
-          <button
-            onClick={() => {
-              const voteRedeemForm = generateVoteRedeemForm({});
-              this.setState({
-                voteRedeemForm,
-                voteRedeemModalVisible: true
-              });
-            }}
-          >
-            show vote redeem modal
-          </button> */}
-            {/* ===== Test Btn ===== */}
           </section>
         </div>
       </Provider>

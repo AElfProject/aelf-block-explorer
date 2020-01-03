@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import { message } from 'antd';
+import {Input, message} from 'antd';
 import { connect } from 'react-redux';
 
 import { aelf } from '../../utils';
@@ -22,7 +22,6 @@ import { isPhoneCheck } from '../../utils/deviceCheck';
 import './Resource.less';
 
 const appName = APPNAME;
-let nightElf;
 class Resource extends Component {
   constructor(props) {
     super(props);
@@ -42,6 +41,7 @@ class Resource extends Component {
       loading: false,
       nightElf: null
     };
+    this.walletRef = null;
     this.getResource = this.getResource.bind(this);
     this.getCurrentBalance = this.getCurrentBalance.bind(this);
   }
@@ -178,6 +178,9 @@ class Resource extends Component {
   }
 
   onRefresh() {
+    setTimeout(() => {
+      this.walletRef.refreshWalletInfo();
+    }, 2000);
     this.setState({
       loading: true
     });
@@ -209,6 +212,9 @@ class Resource extends Component {
       return (
         <ResourceAElfWallet
           title='AELF Wallet'
+          ref={wallet => {
+            this.walletRef = wallet;
+          }}
           tokenContract={tokenContract}
           tokenConverterContract={tokenConverterContract}
           currentWallet={currentWallet}
@@ -221,19 +227,18 @@ class Resource extends Component {
 
   render() {
     const {
-      showDownloadPlugins,
-      currentWallet,
-      contracts,
-      tokenContract,
-      tokenConverterContract
-    } = this.state;
-    const {
       currentBalance,
       currentCpu,
       currentRam,
       currentNet,
       currentSto,
-      appName
+      appName,
+      showDownloadPlugins,
+      currentWallet,
+      contracts,
+      tokenContract,
+      tokenConverterContract,
+      nightElf
     } = this.state;
     let account = {
       balance: currentBalance,
@@ -244,7 +249,7 @@ class Resource extends Component {
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {
-      downloadPlugins = [this.getDownloadPluginsHTML(), <div className='resource-blank'></div>];
+      downloadPlugins = [this.getDownloadPluginsHTML(), <div className='resource-blank' />];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
     const isPhone = isPhoneCheck();
@@ -263,6 +268,7 @@ class Resource extends Component {
             onRefresh={this.onRefresh.bind(this)}
             endRefresh={this.endRefresh.bind(this)}
             nightElf={nightElf}
+            walletRef={this.walletRef}
             appName={appName}
           />
         </div>

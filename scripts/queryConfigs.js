@@ -45,7 +45,7 @@ async function getConfig() {
             manager: result.dividends
         })).schemeIds;
         const schemes = [
-            treasurySchemaIds[1],
+            electionSchemeIds[1],
             electionSchemeIds[0],
             treasurySchemaIds[3],
             treasurySchemaIds[2],

@@ -397,7 +397,7 @@ class TeamDetail extends PureComponent {
             Social Network
           </h5>
           <div className="card-content">
-            <If condition={data.socials && data.socials.length > 0}>
+            <If condition={!!(data.socials && data.socials.length > 0)}>
               <Then>
                 <div className="vote-team-detail-social-network">
                   {

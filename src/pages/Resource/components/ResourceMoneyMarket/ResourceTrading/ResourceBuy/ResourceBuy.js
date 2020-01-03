@@ -224,7 +224,7 @@ export default class ResourceBuy extends Component {
         buyEstimateValueLoading: false
       });
       if (input !== '' && input !== 0) {
-        message.error('Only support positive float or interger.');
+        message.error('Only support positive float or integer.');
       }
       return;
     }
@@ -405,16 +405,12 @@ export default class ResourceBuy extends Component {
     this.setState({
       buyBtnLoading: true
     });
-    // todo: also verify the input here? fix the error message here appeared in the case didn't verify by the way(such as input -1)
 
-    // todo: extract the repeating code
     if (!regPos.test(buyNum) || buyNum === 0) {
-      // if (buyNum !== '' && buyNum !== 0) {
-      // todo: the case of balance insufficient will enter here, so I put the balance message here, after rewrite the verify code please seperate the message notification code.
+
       message.error(
         `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`
       );
-      // }
       this.setState({
         buyBtnLoading: false
       });

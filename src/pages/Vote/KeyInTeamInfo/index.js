@@ -332,9 +332,9 @@ class KeyInTeamInfo extends PureComponent {
   processUrl(values, processor) {
     ['avatar', 'officialWebsite', 'socials'].forEach(item => {
       const value = values[item];
-      if (value === undefined || value === null) return;
+      if (value === undefined || value === null || value === '') return;
       if (Array.isArray(value)) {
-        values[item] = value.map(subItem => {
+        values[item] = value.filter(v => !!v).map(subItem => {
           return { type: subItem.type, url: processor(subItem.url) };
         });
       } else {
@@ -352,9 +352,12 @@ class KeyInTeamInfo extends PureComponent {
     const randomNum = rand16Num(32);
     form.validateFields((err, values) => {
       if (!err) {
-        values.socials = this.socialKeys.map(socialKey => {
-          const value = values[socialKey];
-          delete values[socialKey];
+        const submitValues = {
+          ...values
+        };
+        submitValues.socials = this.socialKeys.map(socialKey => {
+          const value = submitValues[socialKey];
+          delete submitValues[socialKey];
           return {
             type: socialKey,
             url: value
@@ -362,7 +365,7 @@ class KeyInTeamInfo extends PureComponent {
         }).filter(({type, url}) => {
           return url !== undefined && url !== null && url !== '';
         });
-        this.processUrl(values, addUrlPrefix);
+        this.processUrl(submitValues, addUrlPrefix);
 
         checkExtensionLockStatus().then(async () => {
           const { signature } = await nightElf.getSignature({
@@ -376,7 +379,7 @@ class KeyInTeamInfo extends PureComponent {
             address: currentWallet.address,
             random: randomNum,
             signature,
-            ...values
+            ...submitValues
           }).then(res => {
             if (+res.code === 0) {
               this.props.history.push({

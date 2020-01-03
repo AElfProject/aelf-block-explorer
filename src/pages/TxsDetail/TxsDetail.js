@@ -58,7 +58,7 @@ export default class TxsDetailPage extends React.Component {
           style={{ height: 'auto', wordBreak: 'break-all' }}
           xs={24} sm={24} md={18} lg={18} xl={18}
         >
-          <div>{value}</div>
+          <div className="text-ellipsis">{value}</div>
         </Col>
         {/* <Divider dashed style={{ marginTop: 10 }} /> */}
       </Row>
