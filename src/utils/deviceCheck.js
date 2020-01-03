@@ -3,15 +3,23 @@
  * @author
  */
 
+let isPhoneChecked = false;
+let phoneCheckResult = null;
 export const isPhoneCheck = () => {
+  console.log('isPhoneCheck: ', isPhoneChecked, phoneCheckResult);
   //判断是否手机端访问
-  const userAgentInfo = navigator.userAgent.toLowerCase();
-  const agents = ['android', 'iphone',
-    'symbianos', 'windows phone',
-    'ipad', 'ipod'];
-  return agents.find(agent => {
-    return userAgentInfo.includes(agent);
-  });
+  if (!isPhoneChecked) {
+    const userAgentInfo = navigator.userAgent.toLowerCase();
+    const agents = ['android', 'iphone',
+      'symbianos', 'windows phone',
+      'ipad', 'ipod'];
+    isPhoneChecked = true;
+    phoneCheckResult = agents.find(agent => {
+      return userAgentInfo.includes(agent);
+    });
+    return phoneCheckResult;
+  }
+  return phoneCheckResult;
 };
 
 export const isAndroid = () => {

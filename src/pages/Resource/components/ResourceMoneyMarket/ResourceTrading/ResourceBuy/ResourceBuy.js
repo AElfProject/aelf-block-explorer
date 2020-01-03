@@ -29,6 +29,7 @@ import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
 import contractChange from '../../../../../../utils/contractChange';
+import getLogin from '../../../../../../utils/getLogin';
 import './ResourceBuy.less';
 import {
   SYMBOL,
@@ -47,6 +48,7 @@ import {
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import { regPos } from '@utils/regExps';
+import NightElfCheck from "../../../../../../utils/NightElfCheck";
 
 const ELF_TO_RESOURCE_PARAM = 0.00000001;
 const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
@@ -92,6 +94,8 @@ export default class ResourceBuy extends Component {
     };
 
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
+    this.getBuyModalShow = this.getBuyModalShow.bind(this);
+    this.NightELFCheckAndShowBuyModal = this.NightELFCheckAndShowBuyModal.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -390,6 +394,22 @@ export default class ResourceBuy extends Component {
     );
   }
 
+  NightELFCheckAndShowBuyModal() {
+    NightElfCheck.getInstance().check.then(ready => {
+      const nightElf = NightElfCheck.getAelfInstanceByExtension();
+      getLogin(nightElf, {}, result => {
+        console.log('NightELFCheckAndShowBuyModal: ', result);
+        if (result.error) {
+          message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
+        } else {
+          this.getBuyModalShow();
+        }
+      });
+    }).catch(() => {
+      message.warn('Please download and install NightELF browser extension.');
+    });
+  }
+
   getBuyModalShow() {
     const { buyElfValue, buyNum } = this.props;
     const {
@@ -658,7 +678,7 @@ export default class ResourceBuy extends Component {
           </div>
           <Button
             className='trading-button buy-btn'
-            onClick={this.getBuyModalShow.bind(this)}
+            onClick={this.NightELFCheckAndShowBuyModal}
             loading={buyEstimateValueLoading || buyBtnLoading}
             disabled={validate.validateStatus === status.ERROR}
           >

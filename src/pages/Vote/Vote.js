@@ -868,7 +868,7 @@ class VoteContainer extends Component {
             resolve();
           });
       }).catch(() => {
-        message.warn('Please download and install NightElf browser extension.');
+        message.warn('Please download and install NightELF browser extension.');
       });
     });
   }

@@ -7,12 +7,8 @@ import config from '../../config/config';
 
 // todo: there are three place that has the same payload in contractChange, getLogin, setNewPermission, can I optimize it?
 export default function getLogin(nightElf, payload, callback) {
-    const {
-        appName
-    } = payload;
-    console.log('payload', payload);
     nightElf.login({
-        appName,
+        appName: config.APPNAME,
         payload: {
             method: 'LOGIN',
             contracts: [{

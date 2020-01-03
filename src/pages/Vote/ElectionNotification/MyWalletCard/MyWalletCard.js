@@ -89,7 +89,7 @@ export default class MyWalletCard extends PureComponent {
         }
       });
     }).catch(() => {
-      message.warn('Please download and install NightElf');
+      message.warn('Please download and install NightELF browser extension.');
     });
 
   }

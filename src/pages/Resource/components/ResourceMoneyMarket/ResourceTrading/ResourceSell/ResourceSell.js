@@ -44,6 +44,8 @@ import {
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import { regPos } from '@utils/regExps';
+import NightElfCheck from "../../../../../../utils/NightElfCheck";
+import getLogin from "../../../../../../utils/getLogin";
 
 // const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
 const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
@@ -82,6 +84,8 @@ class ResourceSell extends Component {
     };
 
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
+    this.getSellModalShow = this.getSellModalShow.bind(this);
+    this.NightELFCheckAndShowSellModal = this.NightELFCheckAndShowSellModal.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -344,6 +348,21 @@ class ResourceSell extends Component {
     this.onChangeResourceValue(e);
   }
 
+  NightELFCheckAndShowSellModal() {
+    NightElfCheck.getInstance().check.then(ready => {
+      const nightElf = NightElfCheck.getAelfInstanceByExtension();
+      getLogin(nightElf, {}, result => {
+        if (result.error) {
+          message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
+        } else {
+          this.getSellModalShow();
+        }
+      });
+    }).catch(() => {
+      message.warn('Please download and install NightELF browser extension.');
+    });
+  }
+
   getSellModalShow() {
     const { sellNum } = this.props;
     const {
@@ -550,7 +569,7 @@ class ResourceSell extends Component {
           </div>
           <Button
             className='trading-button sell-btn'
-            onClick={this.getSellModalShow.bind(this)}
+            onClick={this.NightELFCheckAndShowSellModal}
             loading={sellBtnLoading}
             disabled={validate.validateStatus === status.ERROR}
           >
