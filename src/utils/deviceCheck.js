@@ -6,7 +6,6 @@
 let isPhoneChecked = false;
 let phoneCheckResult = null;
 export const isPhoneCheck = () => {
-  console.log('isPhoneCheck: ', isPhoneChecked, phoneCheckResult);
   //判断是否手机端访问
   if (!isPhoneChecked) {
     const userAgentInfo = navigator.userAgent.toLowerCase();

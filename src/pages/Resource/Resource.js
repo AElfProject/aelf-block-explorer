@@ -6,11 +6,11 @@
  */
 
 import React, { Component } from 'react';
-import {Input, message} from 'antd';
+import { message } from 'antd';
 import { connect } from 'react-redux';
 
 import { aelf } from '../../utils';
-import { DEFAUTRPCSERVER, APPNAME } from '../../../config/config';
+import { APPNAME, resourceTokens } from '../../../config/config';
 import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ResourceAElfWallet from './components/ResourceAElfWallet/ResourceAElfWallet';
 import NightElfCheck from '../../utils/NightElfCheck';
@@ -34,10 +34,7 @@ class Resource extends Component {
       showDownloadPlugins: false,
       showWallet: false,
       currentBalance: 0,
-      currentCpu: 0,
-      currentRam: 0,
-      currentNet: 0,
-      currentSto: 0,
+      resourceTokens: resourceTokens.map(v => ({...v, balance: 0})),
       loading: false,
       nightElf: null
     };
@@ -194,58 +191,50 @@ class Resource extends Component {
 
   getResource(resource) {
     this.setState({
-      currentCpu: resource.CPU,
-      currentRam: resource.RAM,
-      currentNet: resource.NET,
-      currentSto: resource.STO,
+      resourceTokens: resource.map(v => ({...v}))
     });
   }
 
   resourceAElfWalletHtml() {
     const {
-      showWallet,
       tokenContract,
       tokenConverterContract,
-      currentWallet
+      currentWallet,
+      resourceTokens,
+      currentBalance
     } = this.state;
-    // if (showWallet) {
-      return (
+    return (
         <ResourceAElfWallet
-          title='AELF Wallet'
-          ref={wallet => {
-            this.walletRef = wallet;
-          }}
-          tokenContract={tokenContract}
-          tokenConverterContract={tokenConverterContract}
-          currentWallet={currentWallet}
-          getCurrentBalance={this.getCurrentBalance}
-          getResource={this.getResource}
+            title='AELF Wallet'
+            ref={wallet => {
+              this.walletRef = wallet;
+            }}
+            tokenContract={tokenContract}
+            tokenConverterContract={tokenConverterContract}
+            currentWallet={currentWallet}
+            getCurrentBalance={this.getCurrentBalance}
+            getResource={this.getResource}
+            resourceTokens={resourceTokens}
+            balance={currentBalance}
         />
-      );
-    // }
+    );
   }
 
   render() {
     const {
       currentBalance,
-      currentCpu,
-      currentRam,
-      currentNet,
-      currentSto,
       appName,
       showDownloadPlugins,
       currentWallet,
       contracts,
       tokenContract,
       tokenConverterContract,
-      nightElf
+      nightElf,
+      resourceTokens
     } = this.state;
     let account = {
       balance: currentBalance,
-      CPU: currentCpu,
-      RAM: currentRam,
-      NET: currentNet,
-      STO: currentSto
+      resourceTokens
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {

@@ -20,29 +20,18 @@ class ResourceTrading extends PureComponent {
     super(props);
     this.state = {
       currentWallet: this.props.currentWallet || null,
-      menuIndex: this.props.menuIndex,
       contracts: this.props.contracts,
       buyVisible: false,
       sellVisible: false,
-
       tokenConverterContract: null,
       tokenContract: null,
       ELFValue: 0,
       SellELFValue: 0,
       maskClosable: true,
       nightElf: this.props.nightElf,
-      account: {
-        balance: 0,
-        CPU: 0,
-        RAM: 0,
-        NET: 0,
-        STO: 0
-      },
-
       buyNum: null,
       buyFee: 0,
       buyElfValue: 0,
-      buySliderValue: 0,
       buyInputLoading: false,
       buyEstimateValueLoading: false,
       sellNum: null,
@@ -66,12 +55,6 @@ class ResourceTrading extends PureComponent {
       };
     }
 
-    if (props.menuIndex !== state.menuIndex) {
-      return {
-        menuIndex: props.menuIndex
-      };
-    }
-
     if (props.contracts !== state.contracts) {
       return {
         contracts: props.contracts
@@ -90,20 +73,12 @@ class ResourceTrading extends PureComponent {
       };
     }
 
-    if (props.account !== state.account) {
-      return {
-        account: props.account
-      };
-    }
-
     return null;
   }
 
   handleSellModalShow(value, ELFValue) {
     this.setState({
       sellVisible: true
-      // sellNum: value,
-      // ELFValue
     });
   }
 
@@ -132,24 +107,23 @@ class ResourceTrading extends PureComponent {
 
   render() {
     const {
-      menuIndex,
+      isSmallScreen,
+      account,
+      currentResourceType,
+      currentResourceIndex
+    } = this.props;
+    const {
       sellVisible,
       buyVisible,
       currentWallet,
       contracts,
       tokenContract,
       tokenConverterContract,
-      menuName,
-      ELFValue,
       SellELFValue,
       buyElfValue,
-      account,
-      maskClosable,
       nightElf,
-
       buyNum,
       buyFee,
-      buySliderValue,
       buyInputLoading,
       buyEstimateValueLoading,
       sellNum,
@@ -183,7 +157,8 @@ class ResourceTrading extends PureComponent {
           <Row>
             <Col xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
               <ResourceBuy
-                menuIndex={menuIndex}
+                currentResourceType={currentResourceType}
+                currentResourceIndex={currentResourceIndex}
                 currentWallet={currentWallet}
                 contracts={contracts}
                 tokenConverterContract={tokenConverterContract}
@@ -192,7 +167,6 @@ class ResourceTrading extends PureComponent {
                 nightElf={nightElf}
                 buyNum={buyNum}
                 buyElfValue={buyElfValue}
-                buySliderValue={buySliderValue}
                 buyInputLoading={buyInputLoading}
                 buyEstimateValueLoading={buyEstimateValueLoading}
                 handleModifyTradingState={this.handleModifyTradingState}
@@ -200,7 +174,8 @@ class ResourceTrading extends PureComponent {
             </Col>
             <Col offset={1} xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
               <ResourceSell
-                menuIndex={menuIndex}
+                currentResourceType={currentResourceType}
+                currentResourceIndex={currentResourceIndex}
                 currentWallet={currentWallet}
                 handleSellModalShow={this.handleSellModalShow.bind(this)}
                 contracts={contracts}
@@ -228,9 +203,9 @@ class ResourceTrading extends PureComponent {
           width={600}
         >
           <ResourceBuyModal
+            currentResourceType={currentResourceType}
             currentWallet={currentWallet}
-            menuIndex={menuIndex}
-            menuName={menuName}
+            currentResourceIndex={currentResourceIndex}
             tokenConverterContract={tokenConverterContract}
             tokenContract={tokenContract}
             handleCancel={this.handleCancel}
@@ -260,12 +235,12 @@ class ResourceTrading extends PureComponent {
           width={600}
         >
           <ResourceSellModal
+            currentResourceType={currentResourceType}
             currentWallet={currentWallet}
-            menuIndex={menuIndex}
+            currentResourceIndex={currentResourceIndex}
             tokenConverterContract={tokenConverterContract}
             tokenContract={tokenContract}
             sellNum={sellNum}
-            menuName={menuName}
             handleCancel={this.handleCancel}
             onRefresh={this.props.onRefresh}
             maskClosable={this.modalMaskClosable.bind(this)}

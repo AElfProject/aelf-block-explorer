@@ -5,41 +5,31 @@
  */
 
 import React, { Component } from 'react';
+import debounce from 'lodash.debounce';
 import {
-  Row,
-  Col,
   Input,
   InputNumber,
   Slider,
   message,
-  Modal,
   Spin,
   Form,
   Button
 } from 'antd';
 import contractChange from '../../../../../../utils/contractChange';
 import {
-  feeReceiverContract,
-  tokenConverter,
   multiToken
 } from '../../../../../../../config/config';
-import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getFees from '../../../../../../utils/getFees';
 import './ResourceSell.less';
 import {
   SYMBOL,
-  ELF_DECIMAL,
-  TEMP_RESOURCE_DECIMAL,
-  GENERAL_PRECISION,
-  BALANCE_LESS_THAN_OPERATE_LIMIT_TIP,
   OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP,
   BUY_OR_SELL_MORE_THAN_ASSETS_TIP,
   BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP,
   TRANSACT_LARGE_THAN_ZERO_TIP,
   ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP,
   CHECK_BALANCE_TIP,
-  INPUT_NUMBER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
@@ -54,24 +44,14 @@ const status = { ERROR: 'error' };
 class ResourceSell extends Component {
   constructor(props) {
     super(props);
-    this.debounceTimer;
+    this.region = 0;
     this.state = {
-      menuName: null,
       appName: this.props.appName,
-      menuIndex: this.props.menuIndex,
       contracts: null,
       ELFValue: 0,
-      // region: 0,
       purchaseQuantity: 0,
       getSlideMarks: null,
       noCanInput: true,
-      account: {
-        balance: 0,
-        CPU: 0,
-        RAM: 0,
-        NET: 0,
-        STO: 0
-      },
       toSell: false,
 
       operateNumToSmall: false,
@@ -84,26 +64,16 @@ class ResourceSell extends Component {
     };
 
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
+    this.onChangeSlide = this.onChangeSlide.bind(this);
     this.getSellModalShow = this.getSellModalShow.bind(this);
     this.NightELFCheckAndShowSellModal = this.NightELFCheckAndShowSellModal.bind(this);
+    this.getElfValue = debounce(this.getElfValue, 500);
   }
 
   static getDerivedStateFromProps(props, state) {
     if (props.currentWallet !== state.currentWallet) {
       return {
         currentWallet: props.currentWallet
-      };
-    }
-
-    if (props.account !== state.account) {
-      return {
-        account: props.account
-      };
-    }
-
-    if (props.menuIndex !== state.menuIndex) {
-      return {
-        menuIndex: props.menuIndex
       };
     }
 
@@ -134,31 +104,18 @@ class ResourceSell extends Component {
     return null;
   }
 
-  componentDidMount() {
-    this.setState({
-      menuName: getMenuName(this.state.menuIndex)
-    });
-  }
-
   componentDidUpdate(prevProps) {
     const { handleModifyTradingState } = this.props;
 
-    if (prevProps.menuIndex !== this.props.menuIndex) {
+    if (prevProps.currentResourceType !== this.props.currentResourceType) {
       this.setState({
-        menuName: getMenuName(this.props.menuIndex),
         purchaseQuantity: 0,
         ELFValue: 0
       });
       handleModifyTradingState({
         sellNum: null
       });
-      // this.getRegion(this.state.menuIndex);
     }
-
-    // if (prevProps.account !== this.props.account) {
-    //     this.getRegion(this.state.menuIndex);
-    // }
-
     if (
       prevProps.tokenConverterContract !== this.props.tokenConverterContract
     ) {
@@ -168,27 +125,17 @@ class ResourceSell extends Component {
     }
   }
 
-  getRegion(index) {
-    const { account } = this.state;
-    const menuName = getMenuName(index);
-    let value = account[menuName];
-    this.region = value / 4;
+  getRegion() {
+    const { account, currentResourceIndex } = this.props;
+    const balance = account.resourceTokens[currentResourceIndex].balance;
+    this.region = balance / 4;
   }
 
   getSlideMarks() {
-    const { account, menuIndex } = this.state;
+    const { account, currentResourceIndex } = this.props;
     const { region } = this;
-
-    const menuName = getMenuName(menuIndex);
-    // if (region < 4) {
-    //     const regionLine = [0, 25, 50, 75, 100];
-    //     let marks = {};
-    //     regionLine.map(item => {
-    //         marks[item] = '';
-    //     });
-    //     return marks;
-    // }
-    const regionLine = [0, region, region * 2, region * 3, account[menuName]];
+    const balance = account.resourceTokens[currentResourceIndex].balance;
+    const regionLine = [0, region, region * 2, region * 3, balance];
     const marks = {};
     regionLine.forEach(item => {
       marks[item] = '';
@@ -197,11 +144,10 @@ class ResourceSell extends Component {
   }
 
   getSlideMarksHTML() {
-    const { account, menuIndex, purchaseQuantity } = this.state;
-    const { region } = this;
-    const menuName = getMenuName(menuIndex);
+    const { account, currentResourceIndex } = this.props;
+    const { purchaseQuantity, region } = this.state;
     const disabled = false;
-    const balance = account[menuName];
+    const balance = account.resourceTokens[currentResourceIndex].balance;
     return (
       <Slider
         marks={this.getSlideMarks()}
@@ -209,28 +155,23 @@ class ResourceSell extends Component {
         disabled={disabled}
         min={0}
         value={purchaseQuantity}
-        onChange={e => this.onChangeSlide(e)}
+        onChange={this.onChangeSlide}
         max={balance}
         tooltipVisible={false}
       />
     );
   }
 
-  // todo: to be more friendly, verify the input after click buy/sell?
   onChangeResourceValue(input) {
     const { handleModifyTradingState, sellNum } = this.props;
-    // todo: give a friendly notify when verify the max and min
-    // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
-    // todo: use antd's Form validate instead
     this.setState({
+      purchaseQuantity: isNaN(+input) ? 0 : +input,
       validate: {
         validateStatus: null,
         help: ''
       }
     });
-    // the symbol '+' used to handle the case of 0.===0 && 1.===1
     if (+sellNum === +input) return;
-    // todo: use a util function to instead the regExp in page Resource
     if (!regPos.test(input) || +input === 0) {
       this.setState({
         ELFValue: 0
@@ -243,15 +184,11 @@ class ResourceSell extends Component {
       }
       return;
     }
-    // todo: use async instead
-    // todo: Is it neccessary to make the loading code write in the same place? And if the answer is yes, how to make it?
-    // todo: It seems that it will cause some problem?
     const nextSellNum = Number.isNaN(+input) ? input : +input;
     handleModifyTradingState({
       sellEstimateValueLoading: true,
       sellNum: nextSellNum
     });
-    // todo: use antd's Form validate instead
     if (nextSellNum > this.inputMax) {
       this.setState({
         validate: {
@@ -260,36 +197,27 @@ class ResourceSell extends Component {
         }
       });
     }
-    // todo: how to validate all?
-    // eslint-disable-next-line react/destructuring-assignment
-    // this.props.form.validateFields('inputSellNum', { force: true });
-    // this.props.form.validateFields((err, values) => {
-    this.debounce(input);
+    this.getElfValue(input);
   }
 
-  // todo: throttle
-  // todo: why is the debounce useless?
-  debounce(value) {
-    clearTimeout(this.debounceTimer);
-    this.debounceTimer = setTimeout(() => {
-      const { handleModifyTradingState } = this.props;
-      const { menuName, tokenConverterContract, tokenContract } = this.state;
-      // todo: maybe the judge code is useless
-      if (value === '') {
-        this.setState({
-          ELFValue: 0
-        });
-        handleModifyTradingState({
-          sellNum: ''
-        });
-        return;
-      }
-      getEstimatedValueRes(
-        menuName,
+  getElfValue(value) {
+    const { handleModifyTradingState, currentResourceType } = this.props;
+    const { tokenConverterContract, tokenContract } = this.state;
+    if (value === '') {
+      this.setState({
+        ELFValue: 0
+      });
+      handleModifyTradingState({
+        sellNum: ''
+      });
+      return;
+    }
+    getEstimatedValueRes(
+        currentResourceType,
         value,
         tokenConverterContract,
         tokenContract
-      )
+    )
         .then(result => {
           // todo: handle the case BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP
           if (true) {
@@ -312,7 +240,7 @@ class ResourceSell extends Component {
               });
             } else {
               message.warning(
-                OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP
+                  OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP
               );
               this.setState({
                 operateNumToSmall: true
@@ -336,8 +264,6 @@ class ResourceSell extends Component {
         .catch(err => {
           console.error('err', err);
         });
-    }, 500);
-    return this.debounceTimer;
   }
 
   onChangeSlide(e) {
@@ -364,12 +290,10 @@ class ResourceSell extends Component {
   }
 
   getSellModalShow() {
-    const { sellNum } = this.props;
+    const { sellNum, currentResourceIndex, account } = this.props;
     const {
-      account,
       currentWallet,
       contracts,
-      menuIndex,
       toSell,
       appName,
       nightElf,
@@ -379,7 +303,6 @@ class ResourceSell extends Component {
     this.setState({
       sellBtnLoading: true
     });
-    const menuName = getMenuName(menuIndex);
 
     if (!regPos.test(sellNum) || sellNum === 0) {
       message.error(
@@ -404,7 +327,7 @@ class ResourceSell extends Component {
       });
       return;
     }
-    if (sellNum > account[menuName]) {
+    if (sellNum > account.resourceTokens[currentResourceIndex].balance) {
       message.warning(BUY_OR_SELL_MORE_THAN_ASSETS_TIP);
       this.setState({
         sellBtnLoading: false
@@ -496,22 +419,17 @@ class ResourceSell extends Component {
   }
 
   render() {
-    const { sellEstimateValueLoading, sellNum } = this.props;
+    const { sellEstimateValueLoading, sellNum, currentResourceIndex, currentResourceType, account } = this.props;
     const {
       purchaseQuantity,
-      menuIndex,
-      menuName,
-      account,
       ELFValue,
       validate,
       sellBtnLoading
     } = this.state;
-    // eslint-disable-next-line react/destructuring-assignment
-    // const { getFieldDecorator } = this.props.form;
 
-    this.inputMax = account[menuName];
+    this.inputMax = account.resourceTokens[currentResourceIndex].balance;
 
-    this.getRegion(menuIndex);
+    this.getRegion();
     const slideHTML = this.getSlideMarksHTML();
     return (
       <div className='trading-box trading-sell'>
@@ -528,10 +446,9 @@ class ResourceSell extends Component {
                   style={{ padding: 3 }}
               >
                 <InputNumber
-                    // addonAfter={`x100,000 ${menuName}`}
                     value={sellNum}
                     onChange={this.onChangeResourceValue}
-                    placeholder={`Enter ${menuName} amount`}
+                    placeholder={`Enter ${currentResourceType} amount`}
                     // todo: use parser to set the max decimal to 8, e.g. using parseFloat
                     parser={value => value.replace(/\$\s?|(,*)/g, '')}
                     formatter={value =>
@@ -539,9 +456,7 @@ class ResourceSell extends Component {
                     }
                     min={0}
                     max={this.inputMax}
-                    // precision={GENERAL_PRECISION}
                 />
-                {/* )} */}
               </Form.Item>
             </div>
             <div className='ELF-value'>
@@ -555,8 +470,8 @@ class ResourceSell extends Component {
               </span>
               <Input
                   className="resource-action-input"
-                  value={thousandsCommaWithDecimal(account[menuName])}
-                  addonAfter={menuName}
+                  value={thousandsCommaWithDecimal(this.inputMax)}
+                  addonAfter={currentResourceType}
                   disabled={true}
               />
             </div>
@@ -564,13 +479,13 @@ class ResourceSell extends Component {
           <div className='trading-slide'>
             {slideHTML}
             <div className='ElF-value'>
-              {thousandsCommaWithDecimal(purchaseQuantity)} {menuName}
+              {thousandsCommaWithDecimal(purchaseQuantity)} {currentResourceType}
             </div>
           </div>
           <Button
             className='trading-button sell-btn'
             onClick={this.NightELFCheckAndShowSellModal}
-            loading={sellBtnLoading}
+            loading={sellBtnLoading || sellEstimateValueLoading}
             disabled={validate.validateStatus === status.ERROR}
           >
             Sell

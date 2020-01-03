@@ -15,7 +15,7 @@ import {
 import {ADDRESS_INFO} from '../../../../../config/config';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
-import { APPNAME } from '@config/config';
+import { APPNAME, resourceTokens } from '@config/config';
 import './ResourceAElfWallet.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 
@@ -23,16 +23,11 @@ export default class ResourceAElfWallet extends PureComponent {
 
   constructor(props) {
     super(props);
+    this.defaultWallet = {
+      name: '-',
+      address: '-'
+    };
     this.state = {
-      defaultWallet: {
-        name: '-',
-        address: '-'
-      },
-      balance: '-',
-      RAM: '-',
-      CPU: '-',
-      NET: '-',
-      STO: '-',
       loading: false
     };
     this.refreshWalletInfo = this.refreshWalletInfo.bind(this);
@@ -46,7 +41,6 @@ export default class ResourceAElfWallet extends PureComponent {
   // TODO: 组件要尽量无状态，这是个反模式
   // 数据都从父组件传递进来。
   componentDidUpdate(prevProps, prevState, snapshot) {
-    let canBeRefresh = false;
     const {
       currentWallet,
       tokenContract
@@ -112,9 +106,6 @@ export default class ResourceAElfWallet extends PureComponent {
     };
     const result = await tokenContract.GetBalance.call(payload);
     const balance = parseInt(result.balance || 0, 10) / ELF_DECIMAL;
-    this.setState({
-      balance
-    });
     getCurrentBalance(balance);
   };
 
@@ -126,43 +117,44 @@ export default class ResourceAElfWallet extends PureComponent {
       getResource
     } = this.props;
     const owner = currentWallet.address || currentWallet;
-    const symbols = ['RAM', 'CPU', 'NET', 'STO'];
-    return Promise.all(symbols.map(symbol => {
+    return Promise.all(resourceTokens.map(({symbol}) => {
       return tokenContract.GetBalance.call({
         symbol,
         owner
       });
     })).then(results => {
-      const newState = results.reduce((acc, v) => {
+      const newResourceTokenInfos = results.map((v, i)  => {
         const balance = parseInt(v.balance || 0, 10) / ELF_DECIMAL;
         return {
-          ...acc,
-          [v.symbol]: balance
-        }
-      }, {});
-      this.setState(newState);
-      getResource(newState);
+          ...resourceTokens[i],
+          balance
+        };
+      });
+      getResource(newResourceTokenInfos);
     });
   };
+
+  hasLogin() {
+    const {
+      currentWallet
+    } = this.props;
+    return currentWallet && currentWallet.address;
+  }
 
   render() {
     const {
       title,
       currentWallet,
-      tokenContract
+      tokenContract,
+      resourceTokens,
+      balance
     } = this.props;
     const {
-      balance,
-      RAM,
-      CPU,
-      NET,
-      STO,
-      loading,
-      defaultWallet,
+      loading
     } = this.state;
 
     const propsTile = title || '-';
-    const wallet = (currentWallet && currentWallet.address) ?  currentWallet : defaultWallet;
+    const wallet = this.hasLogin() ?  currentWallet : this.defaultWallet;
 
     return (
       <div className='resource-wallet resource-block'>
@@ -206,40 +198,20 @@ export default class ResourceAElfWallet extends PureComponent {
               <Row type="flex" align="middle">
                 <Col span={24}>
                   <span className="resource-wallet-info-name balance">Balance:</span>
-                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(balance)} ELF</span>
+                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(this.hasLogin() ? balance : '-')} ELF</span>
                 </Col>
-                <Col
-                    lg={12}
-                    xs={24}
-                    sm={12}
-                >
-                  <span className="resource-wallet-info-name">RAM Quantity:</span>
-                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(RAM)}</span>
-                </Col>
-                <Col
-                    lg={12}
-                    xs={24}
-                    sm={12}
-                >
-                  <span className="resource-wallet-info-name">NET Quantity:</span>
-                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(NET)}</span>
-                </Col>
-                <Col
-                    lg={12}
-                    xs={24}
-                    sm={12}
-                >
-                  <span className="resource-wallet-info-name">CPU Quantity:</span>
-                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(CPU)}</span>
-                </Col>
-                <Col
-                    lg={12}
-                    xs={24}
-                    sm={12}
-                >
-                  <span className="resource-wallet-info-name">STO Quantity:</span>
-                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(STO)}</span>
-                </Col>
+                {resourceTokens.map(v => {
+                  return (
+                      <Col
+                          lg={12}
+                          xs={24}
+                          sm={12}
+                      >
+                        <span className="resource-wallet-info-name">{v.symbol} Quantity:</span>
+                        <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(this.hasLogin() ? v.balance : '-')}</span>
+                      </Col>
+                  );
+                })}
               </Row>
             </div>
           </div>

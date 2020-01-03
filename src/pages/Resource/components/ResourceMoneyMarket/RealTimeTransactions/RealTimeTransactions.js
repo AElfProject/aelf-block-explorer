@@ -5,7 +5,6 @@
 
 import React, { PureComponent } from 'react';
 import { Row, Col, Divider } from 'antd';
-import dayjs from 'dayjs';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
@@ -29,23 +28,12 @@ class RealTimeTransactions extends PureComponent {
     super(props);
     this.getResourceRealtimeRecordsTimer = null;
     this.state = {
-      menuIndex: this.props.menuIndex,
-      menuName: ['Ram', 'Cpu', 'Net', 'Sto'],
       recordsData: null
     };
   }
 
   componentDidMount() {
     this.getResourceRealtimeRecords();
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.menuIndex !== state.menuIndex) {
-      return {
-        menuIndex: props.menuIndex
-      };
-    }
-    return null;
   }
 
   componentDidUpdate(prevProps) {
@@ -68,8 +56,9 @@ class RealTimeTransactions extends PureComponent {
   }
 
   async getResourceRealtimeRecords() {
-    const { menuIndex, menuName } = this.state;
-    const type = menuName[menuIndex];
+    const {
+      type
+    } = this.props;
     const data = await get(RESOURCE_REALTIME_RECORDS, {
       limit: fetchLimit,
       type
@@ -111,9 +100,8 @@ class RealTimeTransactions extends PureComponent {
     let data = null;
     if (recordsData) {
       data = recordsData.soldRecords || [];
-      const recordsDataHtml = data.map((item, index) => {
+      return data.map((item, index) => {
         const date = this.formatDate(item.time);
-        // const fee = Math.ceil(item.fee / 1000);
         const { resource } = item;
         let { elf, fee } = item;
         elf /= ELF_DECIMAL;
@@ -134,7 +122,6 @@ class RealTimeTransactions extends PureComponent {
           </Row>
         );
       });
-      return recordsDataHtml;
     }
   }
 
@@ -153,15 +140,11 @@ class RealTimeTransactions extends PureComponent {
     let data = null;
     if (recordsData) {
       data = recordsData.buyRecords || [];
-      // console.log('data', data);
-      const recordsDataHtml = data.map((item, index) => {
+      return data.map((item, index) => {
         const date = this.formatDate(item.time);
         let { elf, fee } = item;
         elf /= ELF_DECIMAL;
         fee /= ELF_DECIMAL;
-        // const fee = Math.ceil(item.fee / 1000);
-        // const fee = item.fee / 1000;
-        // console.log('fee', fee);
         return (
           <Row className='table-buy' type='flex' align='middle' key={index}>
             <Col span={4}>
@@ -178,7 +161,6 @@ class RealTimeTransactions extends PureComponent {
           </Row>
         );
       });
-      return recordsDataHtml;
     }
   }
 

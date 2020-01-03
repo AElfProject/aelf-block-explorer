@@ -13,7 +13,6 @@ import BlockDetailPage from './pages/BlockDetail/BlockDetail';
 import AddressPage from './pages/Address/Address';
 import TxsPage from './pages/Txs/Txs';
 import TxsDetailPage from './pages/TxsDetail/TxsDetail';
-import ApplicationPage from './pages/Application/Applications';
 import VotePage from './pages/Vote/Vote';
 import OldVotePage from './pages/VoteOld/Vote';
 import Resource from './pages/Resource/Resource';
@@ -31,7 +30,6 @@ export default () => [
     <Route path='/txs' exact component={TxsPage} key='transcations' />,
     <Route path='/txs/block' component={TxsPage} key='txsblock' />,
     <Route path='/tx/:id' component={TxsDetailPage} key='txsdetail' />,
-    <Route path='/apps' component={ApplicationPage} key='apps' />,
     <Route path='/vote' component={VotePage} key='vote' />,
     <Route path='/voteold' component={OldVotePage} key='voteOld' />,
     <Route path='/resource' component={Resource} key='resource' />,

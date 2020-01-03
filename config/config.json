@@ -40,5 +40,19 @@
   "dividends": "WnV9Gv3gioSh3Vgaw8SSB96nV8fWUNxuVozCf6Y14e7RXyGaM",
   "consensusDPoS": "RnQLF2SnJL9HLzBPtpzuPkDeLK34b9su7gtZ5TzVFvKP26DHw",
   "tokenConverter": "SkMGjviAAs9bnYvv6cKcafbhf6tbRGQGK93WgKvZoCoS5amMK",
-  "feeReceiverContract": "25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB"
+  "feeReceiverContract": "25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB",
+  "resourceTokens": [
+    {
+      "symbol": "RAM"
+    },
+    {
+      "symbol": "STO"
+    },
+    {
+      "symbol": "CPU"
+    },
+    {
+      "symbol": "NET"
+    }
+  ]
 }

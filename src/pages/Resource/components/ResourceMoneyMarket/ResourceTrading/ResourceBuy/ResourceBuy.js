@@ -5,26 +5,20 @@
  */
 
 import React, { Component } from 'react';
+import debounce from 'lodash.debounce';
 import {
-  Row,
-  Col,
   Input,
   InputNumber,
   Slider,
   message,
-  Modal,
   Spin,
   Button,
   Tooltip,
   Form
 } from 'antd';
-// import _ from 'lodash';
 import {
-  feeReceiverContract,
-  tokenConverter,
   multiToken
 } from '../../../../../../../config/config';
-import getMenuName from '../../../../../../utils/getMenuName';
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
@@ -33,7 +27,6 @@ import getLogin from '../../../../../../utils/getLogin';
 import './ResourceBuy.less';
 import {
   SYMBOL,
-  ELF_DECIMAL,
   GENERAL_PRECISION,
   RESOURCE_OPERATE_LIMIT,
   BALANCE_LESS_THAN_OPERATE_LIMIT_TIP,
@@ -50,35 +43,19 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import { regPos } from '@utils/regExps';
 import NightElfCheck from "../../../../../../utils/NightElfCheck";
 
-const ELF_TO_RESOURCE_PARAM = 0.00000001;
 const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
-// const processSliderMax = balance => {
-//   return +(balance / 1.00001 - 0.01).toFixed(GENERAL_PRECISION);
-// };
 const status = { ERROR: 'error' };
 
 export default class ResourceBuy extends Component {
   constructor(props) {
     super(props);
-    // todo: extract the throttle code
-    this.inputThrottleTimer = null;
-    this.sliderThrottleTimer = null;
     this.state = {
-      menuName: null,
       appName: this.props.appName,
-      menuIndex: this.props.menuIndex,
       contracts: null,
       region: 0,
       getSlideMarks: null,
       noCanInput: true,
       nightElf: null,
-      account: {
-        balance: 0,
-        CPU: 0,
-        RAM: 0,
-        NET: 0,
-        STO: 0
-      },
       toBuy: true,
 
       // todo: use an individual variable for slider as it's stuck using the father component's state elfValue
@@ -90,30 +67,21 @@ export default class ResourceBuy extends Component {
         validateStatus: null,
         help: ''
       },
+      inputValue: 0,
       buyBtnLoading: false
     };
-
+    this.getEstimatedElf = debounce(this.getEstimatedElf, 500);
+    this.getEstimatedInput = debounce(this.getEstimatedInput, 500);
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
     this.getBuyModalShow = this.getBuyModalShow.bind(this);
     this.NightELFCheckAndShowBuyModal = this.NightELFCheckAndShowBuyModal.bind(this);
+    this.onChangeSlide = this.onChangeSlide.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
     if (props.currentWallet !== state.currentWallet) {
       return {
         currentWallet: props.currentWallet
-      };
-    }
-
-    if (props.account !== state.account) {
-      return {
-        account: props.account
-      };
-    }
-
-    if (props.menuIndex !== state.menuIndex) {
-      return {
-        menuIndex: props.menuIndex
       };
     }
 
@@ -144,21 +112,10 @@ export default class ResourceBuy extends Component {
     return null;
   }
 
-  componentDidMount() {
-    this.setState({
-      menuName: getMenuName(this.state.menuIndex)
-    });
-  }
-
   componentDidUpdate(prevProps) {
     const { handleModifyTradingState, account } = this.props;
-    const { menuName } = this.state;
 
-    if (prevProps.menuIndex !== this.props.menuIndex) {
-      this.setState({
-        menuName: getMenuName(this.props.menuIndex)
-      });
-      // todo: seems useless
+    if (prevProps.currentResourceType !== this.props.currentResourceType) {
       handleModifyTradingState({ buyNum: null, buyElfValue: 0 });
     }
 
@@ -180,14 +137,15 @@ export default class ResourceBuy extends Component {
   }
 
   getRegion() {
-    const { account } = this.state;
+    const { account } = this.props;
     this.setState({
       region: account.balance / 4
     });
   }
 
   getSlideMarks() {
-    const { region, account } = this.state;
+    const { account } = this.props;
+    const { region } = this.state;
     if (region < RESOURCE_OPERATE_LIMIT) return { 0: '' };
 
     const regionLine = [
@@ -221,7 +179,6 @@ export default class ResourceBuy extends Component {
     // the symbol '+' used to handle the case of 0.===0 && 1.===1
     if (+buyNum === input) return;
     if (!regPos.test(input) || input === 0) {
-      clearTimeout(this.inputThrottleTimer);
       handleModifyTradingState({
         buyElfValue: 0,
         buyNum: null,
@@ -245,148 +202,127 @@ export default class ResourceBuy extends Component {
     );
   }
 
-  // todo: throttle
-  // todo: why is the throttle useless?
   getEstimatedElf(value) {
-    let interval = 0;
-    if (this.inputThrottleTimer) {
-      interval = 500;
-      clearTimeout(this.inputThrottleTimer);
-    }
-    this.inputThrottleTimer = setTimeout(() => {
-      const { handleModifyTradingState } = this.props;
-      const {
-        menuName,
-        tokenConverterContract,
-        tokenContract,
-        account
-      } = this.state;
-      // todo: maybe the judge code is useless
-      // if (value === '') {
-      //   this.setState({
-      //     value: ''
-      //   });
-      //   return;
-      // }
-      value = +value;
-      getEstimatedValueELF(
-        menuName,
+    const { handleModifyTradingState, account, currentResourceType } = this.props;
+    const {
+      tokenConverterContract,
+      tokenContract
+    } = this.state;
+    value = +value;
+    getEstimatedValueELF(
+        currentResourceType,
         value,
         tokenConverterContract,
         tokenContract
-      ).then(result => {
-        let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
-        let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
-        if (regPos.test(result) || regNeg.test(result)) {
-          // todo: the code of rounding off maybe wrong so I comment it.
-          const amountToPay = result;
-          const buyFee = getFees(amountToPay);
+    ).then(result => {
+      let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+      let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+      if (regPos.test(result) || regNeg.test(result)) {
+        // todo: the code of rounding off maybe wrong so I comment it.
+        const amountToPay = result;
+        const buyFee = getFees(amountToPay);
 
-          // todo: figure out the case need to add the fees.
-          const amountToPayPlusFee = amountToPay + buyFee;
-          // ---- Start: Handle the case input's cost larger than the elf's balance ----
-          // buySliderValue = buyElfValue >= balance ? balance : buyElfValue;
-          // ---- End: Handle the case input's cost larger than the elf's balance ----
+        // todo: figure out the case need to add the fees.
+        const amountToPayPlusFee = amountToPay + buyFee;
+        // ---- Start: Handle the case input's cost larger than the elf's balance ----
+        // buySliderValue = buyElfValue >= balance ? balance : buyElfValue;
+        // ---- End: Handle the case input's cost larger than the elf's balance ----
 
-          if (amountToPayPlusFee > account.balance) {
-            this.setState({
-              validate: {
-                validateStatus: status.ERROR,
-                help: BETWEEN_ZEOR_AND_BALANCE_TIP
-              }
-            });
-          }
-          if (amountToPayPlusFee > 0) {
-            this.setState({
-              toBuy: true,
-              operateNumToSmall: false
-            });
-            handleModifyTradingState({
-              buyElfValue: amountToPayPlusFee,
-              buyFee,
-              buyEstimateValueLoading: false
-            });
-          } else {
-            message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
-            this.setState({
-              operateNumToSmall: true
-            });
-            handleModifyTradingState({
-              // buyNum: null,
-              buyElfValue: 0,
-              buyFee: 0,
-              buyEstimateValueLoading: false
-            });
-          }
-        } else {
+        if (amountToPayPlusFee > account.balance) {
           this.setState({
-            toBuy: false
+            validate: {
+              validateStatus: status.ERROR,
+              help: BETWEEN_ZEOR_AND_BALANCE_TIP
+            }
           });
-
+        }
+        if (amountToPayPlusFee > 0) {
+          this.setState({
+            toBuy: true,
+            operateNumToSmall: false,
+            inputValue: amountToPayPlusFee,
+          });
           handleModifyTradingState({
+            buyElfValue: amountToPayPlusFee,
+            buyFee,
+            buyEstimateValueLoading: false
+          });
+        } else {
+          message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
+          this.setState({
+            operateNumToSmall: true
+          });
+          handleModifyTradingState({
+            // buyNum: null,
+            buyElfValue: 0,
+            buyFee: 0,
             buyEstimateValueLoading: false
           });
         }
-      });
-    }, interval);
+      } else {
+        this.setState({
+          toBuy: false
+        });
+
+        handleModifyTradingState({
+          buyEstimateValueLoading: false
+        });
+      }
+    });
   }
 
   onChangeSlide(e) {
     const { handleModifyTradingState } = this.props;
+    this.setState({
+      inputValue: e
+    });
     if (e === 0) {
       // todo: seems useless
       handleModifyTradingState({
         buyNum: null,
-        buyElfValue: 0,
-        buySliderValue: 0
+        buyElfValue: 0
       });
       return;
     }
-    // todo: the judge code as follows are temp method to handle the max slide
-    // if (e === account.balance) {
-    //   e /= 1.000138857990899;
-    // }
     handleModifyTradingState({
-      buySliderValue: e
-    });
-    this.getEstimatedInput(e);
+      buyInputLoading: true
+    }, () => this.getEstimatedInput(e));
   }
 
   getEstimatedInput(e) {
-    let interval = 0;
-    if (this.sliderThrottleTimer) {
-      interval = 500;
-      clearTimeout(this.sliderThrottleTimer);
-    }
-    this.sliderThrottleTimer = setTimeout(() => {
-      const { handleModifyTradingState } = this.props;
+    const { handleModifyTradingState } = this.props;
 
-      const buyFee = getFees(e);
-      handleModifyTradingState({
-        buyInputLoading: true,
-        buyElfValue: e,
-        buyFee
-      });
-
-      // elfCont -= getFees(elfCont);
-      this.prepareParamsForEstimatedResource(e / (1 + FEE_RATE)).then(
+    const buyFee = getFees(e);
+    handleModifyTradingState({
+      buyInputLoading: true,
+      buyElfValue: e,
+      buyFee
+    });
+    this.prepareParamsForEstimatedResource(e / (1 + FEE_RATE)).then(
         result => {
+          handleModifyTradingState({
+            buyInputLoading: false
+          });
           let value = 0;
           if (Math.ceil(result) > 0) {
             value = Math.abs(result).toFixed(GENERAL_PRECISION);
-            handleModifyTradingState({ buyInputLoading: false, buyNum: value });
+            handleModifyTradingState({ buyNum: value });
           }
         }
-      );
-    }, interval);
+    ).catch(() => {
+      handleModifyTradingState({
+        buyInputLoading: false
+      });
+    });
   }
 
   prepareParamsForEstimatedResource(elfAmount) {
-    const { menuName, tokenConverterContract, tokenContract } = this.state;
+    const { currentResourceType } = this.props;
+    const { tokenConverterContract, tokenContract } = this.state;
 
     if (!tokenConverterContract || !tokenContract) return Promise.resolve(0);
     return getEstimatedValueRes(
-      menuName,
+      currentResourceType,
       elfAmount,
       tokenConverterContract,
       tokenContract,
@@ -411,9 +347,8 @@ export default class ResourceBuy extends Component {
   }
 
   getBuyModalShow() {
-    const { buyElfValue, buyNum } = this.props;
+    const { buyElfValue, buyNum, account } = this.props;
     const {
-      account,
       currentWallet,
       contracts,
       toBuy,
@@ -468,7 +403,7 @@ export default class ResourceBuy extends Component {
     nightElf.checkPermission(
       {
         appName,
-        type: 'addresss',
+        type: 'address',
         address: currentWallet.address
       },
       (error, result) => {
@@ -542,8 +477,8 @@ export default class ResourceBuy extends Component {
   }
 
   getSlideMarksHTML() {
-    const { buyNum, buyElfValue, buySliderValue } = this.props;
-    let { region, account } = this.state;
+    const { account } = this.props;
+    let { region, inputValue } = this.state;
     let disabled = false;
     const balance = account.balance.toFixed(GENERAL_PRECISION);
     // balance less than RESOURCE_OPERATE_LIMIT is temp not allowed to use slider
@@ -551,23 +486,19 @@ export default class ResourceBuy extends Component {
       disabled = true;
     }
     if (region < RESOURCE_OPERATE_LIMIT) {
-      region = 0;
       disabled = true;
     }
     return (
-      // todo: why is the tooltip didn't work?
       <Tooltip
         title={BALANCE_LESS_THAN_OPERATE_LIMIT_TIP}
-        // placement='topLeft'
       >
         <Slider
           marks={this.getSlideMarks()}
-          step={region}
-          // dots
+          dots={false}
           disabled={disabled}
           min={0}
-          value={buySliderValue}
-          onChange={e => this.onChangeSlide(e)}
+          value={inputValue}
+          onChange={this.onChangeSlide}
           // todo: the max is set in this way for avoid the elf paid larger than elf's balance
           max={
             +(
@@ -575,8 +506,6 @@ export default class ResourceBuy extends Component {
               A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
             ).toFixed(GENERAL_PRECISION)
           }
-          // tooltipVisible={false}
-          // todo: optimize the tooltip
           tipFormatter={
             disabled ? () => BALANCE_LESS_THAN_OPERATE_LIMIT_TIP : null
           }
@@ -586,7 +515,7 @@ export default class ResourceBuy extends Component {
   }
 
   getInputMaxValue() {
-    const { account } = this.state;
+    const { account } = this.props;
 
     // Add the ELF_TO_RESOURCE_PARAM to avoid the case elf is insufficient to pay
     // todo: the input max may be has problem in some case
@@ -606,11 +535,12 @@ export default class ResourceBuy extends Component {
     const {
       buyNum,
       buyElfValue,
-      buySliderValue,
       buyInputLoading,
-      buyEstimateValueLoading
+      buyEstimateValueLoading,
+      account,
+      currentResourceType
     } = this.props;
-    const { menuName, account, inputMax, buyBtnLoading, validate } = this.state;
+    const { inputMax, buyBtnLoading, validate, inputValue } = this.state;
     const sliderHTML = this.getSlideMarksHTML();
     // todo: memoize?
     const rawBuyNumMax = +(
@@ -635,11 +565,9 @@ export default class ResourceBuy extends Component {
                     help={validate.help}
                 >
                   <InputNumber
-                      // addonAfter={`x100,000 ${menuName}`}
-                      // todo: get the step according to the user's balance
                       value={buyNum}
                       onChange={this.onChangeResourceValue}
-                      placeholder={`Enter ${menuName} amount`}
+                      placeholder={`Enter ${currentResourceType} amount`}
                       // todo: use parser to set the max decimal to 8, e.g. using parseFloat
                       // parser={value => value.replace(/[^.\d]+/g, '')}
                       parser={value => value.replace(/\$\s?|(,*)/g, '')}
@@ -673,7 +601,7 @@ export default class ResourceBuy extends Component {
           <div className='trading-slide'>
             {sliderHTML}
             <div className='ElF-value'>
-              {thousandsCommaWithDecimal(buySliderValue)} {SYMBOL}
+              {thousandsCommaWithDecimal(inputValue)} {SYMBOL}
             </div>
           </div>
           <Button

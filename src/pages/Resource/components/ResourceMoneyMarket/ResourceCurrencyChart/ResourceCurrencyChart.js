@@ -14,7 +14,6 @@ import {isBeforeToday} from '@utils/timeUtils';
 import {ELF_DECIMAL, SYMBOL} from '@src/constants';
 import dayjs from 'dayjs';
 import {get} from '../../../../../utils';
-import formateTurnoverList from '../../../../../utils/formateTurnoverList';
 import {RESOURCE_CURRENCY_CHART_FETCH_INTERVAL, RESOURCE_TURNOVER} from '../../../../../constants';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/chart/line';
@@ -26,10 +25,9 @@ import './ResourceCurrencyChart.less';
 class ResourceCurrencyChart extends PureComponent {
   constructor(props) {
     super(props);
-    this.getEchartDataTime;
+    this.getEchartDataTime = null;
     this.state = {
       loading: false,
-      menuIndex: this.props.menuIndex,
       buttonIndex: 0,
       intervalTimeList: [
         1000 * 60 * 5,
@@ -40,10 +38,7 @@ class ResourceCurrencyChart extends PureComponent {
         1000 * 60 * 60 * 24 * 5,
         1000 * 60 * 60 * 24 * 7
       ],
-      menuName: ['RAM', 'CPU', 'NET', 'STO'],
       intervalTime: 300000,
-      buyResource: null,
-      sellResource: null,
       xAxisData: [],
       yAxisData: [],
       maxValue: null
@@ -55,23 +50,11 @@ class ResourceCurrencyChart extends PureComponent {
     const {
       isSmallScreen
     } = this.props;
-    const selectButton = this.selectButtonHTML();
     const chartHeight = isSmallScreen ? 450 : 470;
     this.echartStyle = {
-      height: chartHeight,
-      // minWidth: 900
+      height: chartHeight
     };
     await this.getEchartData();
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.menuIndex !== state.menuIndex) {
-      return {
-        menuIndex: props.menuIndex
-      };
-    }
-
-    return null;
   }
 
   componentDidUpdate(prevProps, prevStates) {
@@ -81,14 +64,18 @@ class ResourceCurrencyChart extends PureComponent {
       this.getEchartData();
     }
     // 沙雕，为CPU等资源类型
-    if (prevProps.menuIndex !== this.props.menuIndex) {
+    if (prevProps.currentResourceIndex !== this.props.currentResourceIndex) {
       clearTimeout(this.getEchartDataTime);
       this.getEchartData();
     }
   }
 
   async getEchartData() {
-    const {intervalTime, menuIndex, menuName, buttonIndex} = this.state;
+    const {
+      currentResourceIndex,
+      currentResourceType
+    } = this.props;
+    const {intervalTime, buttonIndex} = this.state;
     this.setState({
       loading: true
     });
@@ -101,7 +88,7 @@ class ResourceCurrencyChart extends PureComponent {
         page: 0,
         order: 'desc',
         interval: intervalTime,
-        type: menuName[menuIndex]
+        type: currentResourceType
       })) || {
           buyRecords: [],
           sellRecords: []
@@ -327,7 +314,8 @@ class ResourceCurrencyChart extends PureComponent {
 
   render() {
     const {
-      menuList
+      list,
+      currentIndex
     } = this.props;
     const selectButton = this.selectButtonHTML();
 
@@ -344,9 +332,9 @@ class ResourceCurrencyChart extends PureComponent {
         </div>
         <div className="resource-sub-container">
           <Tabs className="resource-type-switch" onChange={this.typeChange}>
-            {menuList.map((v, i) => (
+            {list.map(v => (
                 <Tabs.TabPane
-                    key={i}
+                    key={v}
                     tab={v}
                 />
             ))}

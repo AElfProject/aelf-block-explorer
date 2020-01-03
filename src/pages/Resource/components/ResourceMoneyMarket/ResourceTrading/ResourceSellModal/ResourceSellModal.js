@@ -10,7 +10,6 @@ import {
   CHAIN_ID
 } from '@config/config';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
-import getMenuName from '../../../../../../utils/getMenuName';
 import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 
@@ -18,12 +17,10 @@ export default class ResourceSellModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      menuIndex: this.props.menuIndex,
       currentWallet: this.props.currentWallet,
       sellNum: this.props.sellNum,
       tokenConverterContract: this.props.tokenConverterContract,
       tokenContract: this.props.tokenContract,
-      menuName: getMenuName(this.props.menuIndex),
       loading: false,
       ELFValue: null,
       nightElf: this.props.nightElf,
@@ -64,9 +61,10 @@ export default class ResourceSellModal extends PureComponent {
   }
 
   requestSell(result) {
-    const { menuName, sellNum } = this.state;
+    const { currentResourceType } = this.props;
+    const { sellNum } = this.state;
     const payload = {
-      symbol: menuName,
+      symbol: currentResourceType,
       amount: +(sellNum * ELF_DECIMAL)
     };
     result.Sell(payload, (error, result) => {
@@ -107,9 +105,10 @@ export default class ResourceSellModal extends PureComponent {
       sellFee,
       SellELFValue,
       sellEstimateValueLoading,
-      sellNum
+      sellNum,
+      currentResourceType
     } = this.props;
-    const { menuName, currentWallet, loading } = this.state;
+    const { currentWallet, loading } = this.state;
 
     return (
       <div className='modal'>
@@ -127,7 +126,7 @@ export default class ResourceSellModal extends PureComponent {
         </Row>
         <Row className='modal-form-item'>
           <Col span={8}>
-            Sell {menuName} Quantity
+            Sell {currentResourceType} Quantity
           </Col>
           <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
         </Row>

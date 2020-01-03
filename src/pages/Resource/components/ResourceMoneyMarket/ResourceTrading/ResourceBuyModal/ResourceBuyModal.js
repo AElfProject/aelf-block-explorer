@@ -6,7 +6,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Spin, message, Button } from 'antd';
 import { aelf } from '../../../../../../utils';
-import getMenuName from '../../../../../../utils/getMenuName';
 import getStateJudgment from '../../../../../../utils/getStateJudgment';
 import {
   CHAIN_ID
@@ -17,7 +16,7 @@ import {
   BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
   FAILED_MESSAGE_DISPLAY_TIME
 } from '@src/constants';
-import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
+import { thousandsCommaWithDecimal } from '@utils/formater';
 import { regBuyTooManyResource } from '@utils/regExps';
 import './ResourceBuyModal.less';
 
@@ -25,11 +24,9 @@ export default class ResourceBuyModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      menuIndex: this.props.menuIndex,
       currentWallet: this.props.currentWallet || null,
       tokenConverterContract: this.props.tokenConverterContract,
       tokenContract: this.props.tokenContract,
-      menuName: getMenuName(this.props.menuIndex),
       loading: false,
       nightElf: this.props.nightElf,
       contracts: this.props.contracts
@@ -57,10 +54,9 @@ export default class ResourceBuyModal extends PureComponent {
   }
 
   requestBuy(result) {
-    const { buyNum, handleModifyTradingState } = this.props;
-    const { menuName } = this.state;
+    const { buyNum, handleModifyTradingState, currentResourceType } = this.props;
     const payload = {
-      symbol: menuName,
+      symbol: currentResourceType,
       amount: buyNum * ELF_DECIMAL
     };
     result.Buy(payload, (error, result) => {
@@ -132,9 +128,10 @@ export default class ResourceBuyModal extends PureComponent {
       buyNum,
       buyFee,
       buyInputLoading,
-      buyEstimateValueLoading
+      buyEstimateValueLoading,
+      currentResourceType
     } = this.props;
-    const { menuName, currentWallet, loading } = this.state;
+    const { currentWallet, loading } = this.state;
 
     return (
       <div className='modal'>
@@ -152,7 +149,7 @@ export default class ResourceBuyModal extends PureComponent {
         </Row>
         <Row className='modal-form-item'>
           <Col span={8}>
-            Buy {menuName} Quantity
+            Buy {currentResourceType} Quantity
           </Col>
           <Col span={16}>
             <Spin spinning={buyInputLoading}>

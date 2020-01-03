@@ -5,7 +5,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { Row, Col, Spin, Icon } from 'antd';
+import { Row, Col, Spin } from 'antd';
 import ResourceCurrencyChart from './ResourceCurrencyChart/ResourceCurrencyChart';
 import ResourceTrading from './ResourceTrading/ResourceTrading';
 import RealTimeTransactions from './RealTimeTransactions/RealTimeTransactions';
@@ -15,10 +15,9 @@ import './ResourceMoneyMarket.less';
 export default class ResourceMoneyMarket extends PureComponent {
   constructor(props) {
     super(props);
-    this.menuNames = ['RAM', 'CPU', 'NET', 'STO'];
     // 这个组件作为一个集合可以用作组件之间数据交互
     this.state = {
-      menuIndex: 0,
+      currentResourceSymbol: props.account.resourceTokens[0].symbol,
       currentWallet: null,
       contracts: null,
       tokenContract: null,
@@ -26,26 +25,19 @@ export default class ResourceMoneyMarket extends PureComponent {
       loading: false,
       echartsLoading: false,
       realTimeTransactionLoading: false,
-      nightElf: this.props.nightElf,
-      account: {
-        balance: 0,
-        CPU: 0,
-        RAM: 0,
-        NET: 0,
-        STO: 0
-      }
+      nightElf: this.props.nightElf
     };
     this.getMenuClick = this.getMenuClick.bind(this);
     this.getEchartsLoading = this.getEchartsLoading.bind(this);
   }
 
-  getMenuClick(index) {
+  getMenuClick(symbol) {
     // TODO 切换所有模块数据源  写一个状态判断用来判断当前是哪一个数据
-    if (this.state.menuIndex === index) {
+    if (this.state.currentResourceSymbol === symbol) {
       return;
     }
     this.setState({
-      menuIndex: index,
+      currentResourceSymbol: symbol,
       loading: true,
       realTimeTransactionLoading: true,
       echartsLoading: true
@@ -95,29 +87,33 @@ export default class ResourceMoneyMarket extends PureComponent {
       };
     }
 
-    if (props.account !== state.account) {
-      return {
-        account: props.account
-      };
-    }
-
     return null;
   }
 
   render() {
     const {
-      menuIndex,
+      currentResourceSymbol,
       currentWallet,
       contracts,
       tokenConverterContract,
-      tokenContract,
-      account
+      tokenContract
     } = this.state;
     const { realTimeTransactionLoading, echartsLoading, nightElf } = this.state;
+    const {
+      account,
+      onRefresh,
+      endRefresh,
+      appName
+    } = this.props;
     let loading = true;
     if (!realTimeTransactionLoading && !echartsLoading) {
       loading = false;
     }
+    const {
+      resourceTokens
+    } = account;
+    const menuList = resourceTokens.map(v => v.symbol);
+    const currentIndex = resourceTokens.findIndex(v => v.symbol === currentResourceSymbol);
 
     const isPhone = isPhoneCheck();
     return (
@@ -125,29 +121,31 @@ export default class ResourceMoneyMarket extends PureComponent {
         <Spin size='large' spinning={loading}>
           <div className='resource-body'>
             <ResourceCurrencyChart
-                menuList={this.menuNames}
-                menuIndex={menuIndex}
+                list={menuList}
+                currentResourceType={currentResourceSymbol}
+                currentResourceIndex={currentIndex}
                 getMenuClick={this.getMenuClick}
                 getEchartsLoading={this.getEchartsLoading}
             />
             <Row className="resource-sub-container">
               {!isPhone && <Col xxl={14} xl={24} lg={24}>
                 <ResourceTrading
-                  menuIndex={menuIndex}
+                  currentResourceType={currentResourceSymbol}
+                  currentResourceIndex={currentIndex}
                   currentWallet={currentWallet}
                   contracts={contracts}
                   tokenConverterContract={tokenConverterContract}
                   tokenContract={tokenContract}
                   account={account}
-                  onRefresh={this.props.onRefresh}
-                  endRefresh={this.props.endRefresh}
+                  onRefresh={onRefresh}
+                  endRefresh={endRefresh}
                   nightElf={nightElf}
-                  appName={this.props.appName}
+                  appName={appName}
                 />
               </Col>}
               <Col xxl={{ span: 9, offset: 1 }} xl={24} lg={24}>
                 <RealTimeTransactions
-                  menuIndex={menuIndex}
+                  type={currentResourceSymbol}
                   getRealTimeTransactionLoading={this.getRealTimeTransactionLoading.bind(this)}
                 />
               </Col>

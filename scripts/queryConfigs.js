@@ -33,7 +33,13 @@ async function getConfig() {
             const {
                 symbol
             } = await contract.GetNativeTokenInfo.call();
+            let resourceTokens = await contract.GetResourceTokenInfo.call();
+            resourceTokens = Array.isArray(resourceTokens.value) ? resourceTokens.value.map(({symbol, decimals}) => ({
+                symbol,
+                decimals
+            })) : [];
             result.SYMBOL = symbol;
+            result.resourceTokens = resourceTokens;
         }
     }
     if (result.electionContractAddr) {
