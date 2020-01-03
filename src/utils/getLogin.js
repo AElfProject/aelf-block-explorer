@@ -6,7 +6,12 @@ import { CHAIN_ID } from '@src/constants';
 import config from '../../config/config';
 
 // todo: there are three place that has the same payload in contractChange, getLogin, setNewPermission, can I optimize it?
+let getLoginLock = false;
 export default function getLogin(nightElf, payload, callback) {
+    if(getLoginLock) {
+        return;
+    }
+    getLoginLock = true;
     nightElf.login({
         appName: config.APPNAME,
         payload: {
@@ -50,6 +55,7 @@ export default function getLogin(nightElf, payload, callback) {
             }]
         }
     }, (error, result) => {
+        getLoginLock = false;
         if (result) {
             callback(result);
         }

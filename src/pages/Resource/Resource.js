@@ -146,7 +146,11 @@ class Resource extends Component {
           this.setState({
             showWallet: false
           });
-          message.error(result.errorMessage.message, 3);
+          if (result.error === 200010) {
+            message.warn('Please Login.');
+          } else {
+            message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
+          }
         }
       });
     } else {

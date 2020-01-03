@@ -18,6 +18,7 @@ import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME, ADDRESS_INFO } from '@config/config';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
+import {isPhoneCheck} from "../../../../utils/deviceCheck";
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -40,6 +41,8 @@ export default class MyWalletCard extends PureComponent {
         }
       }
     };
+
+    this.isPhone = isPhoneCheck();
 
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
@@ -70,6 +73,11 @@ export default class MyWalletCard extends PureComponent {
   }
 
   getCurrentWallet() {
+    if (this.isPhone) {
+      // message.info('View more on PC');
+      return null;
+    }
+
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {appName: APPNAME}, result => {
@@ -154,6 +162,10 @@ export default class MyWalletCard extends PureComponent {
   }
 
   fetchWalletBalance() {
+    if (this.isPhone) {
+      message.info('View more on PC');
+      return null;
+    }
     const { multiTokenContract } = this.props;
     const {currentWallet} = this.state;
 
@@ -314,8 +326,13 @@ export default class MyWalletCard extends PureComponent {
       }
     ];
 
+    if (this.isPhone) {
+      // return <div>View More On The PC</div>;
+      return null;
+    }
+    // <section className="my-wallet-card has-mask-on-mobile">
     return (
-      <section className="my-wallet-card has-mask-on-mobile">
+      <section className="my-wallet-card">
         <div className="my-wallet-card-header">
           <h2 className="my-wallet-card-header-title">
             <Icon

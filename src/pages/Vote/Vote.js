@@ -16,6 +16,7 @@ import './index.less';
 import NightElfCheck from '@utils/NightElfCheck';
 import checkPermissionRepeat from '@utils/checkPermissionRepeat';
 import getLogin from '@utils/getLogin';
+import {isPhoneCheck} from '@utils/deviceCheck';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getContractAddress from '@utils/getContractAddress';
 import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
@@ -273,6 +274,8 @@ class VoteContainer extends Component {
       isPluginLock: false,
       dividendLoading: false
     };
+
+    this.isPhone = isPhoneCheck();
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -537,7 +540,11 @@ class VoteContainer extends Component {
             message.success('Login success!!', 3);
           }
         } else {
-          message.error(result.errorMessage.message, 3);
+          if (result.error === 200010) {
+            message.warn('Please Login.');
+          } else {
+            message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
+          }
         }
       });
     });
@@ -835,6 +842,11 @@ class VoteContainer extends Component {
   }
 
   checkExtensionLockStatus() {
+    if (this.isPhone) {
+      message.info('View more on PC');
+      return null;
+    }
+
     const { nightElf } = this.state;
     const currentWallet = getCurrentWallet();
 

@@ -39,6 +39,8 @@ class ResourceTrading extends PureComponent {
       sellEstimateValueLoading: false
     };
 
+    this.isPhone = isPhoneCheck();
+
     this.handleModifyTradingState = this.handleModifyTradingState.bind(this);
   }
 
@@ -133,7 +135,7 @@ class ResourceTrading extends PureComponent {
 
     return (
       <div className='resource-trading'>
-        {isPhoneCheck() ? (
+        {this.isPhone ? (
           <div className='mobile-mask'>
             <p className='mobile-mask-text'>View more on the PC</p>
           </div>

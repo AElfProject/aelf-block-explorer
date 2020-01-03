@@ -274,12 +274,17 @@ class ResourceSell extends Component {
     this.onChangeResourceValue(e);
   }
 
+  // TODO: in ResourceBuy, there are same codes.
   NightELFCheckAndShowSellModal() {
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {}, result => {
         if (result.error) {
-          message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
+          if (result.error === 200010) {
+            message.warn('Please Login.');
+          } else {
+            message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
+          }
         } else {
           this.getSellModalShow();
         }

@@ -5,7 +5,8 @@
 const config = require('./config.json');
 
 // the block chain URL this explorer is serving
-const BUILD_ENDPOINT = 'http://13.231.179.27:8000';
+
+const BUILD_ENDPOINT = 'http://192.168.197.14:8000';
 const MAINCHAINID = 'AELF';
 const ADDRESS_INFO = {
   PREFIX: 'ELF',
