@@ -12,6 +12,7 @@ import ResourceBuy from './ResourceBuy/ResourceBuy';
 import ResourceSell from './ResourceSell/ResourceSell';
 import ResourceBuyModal from './ResourceBuyModal/ResourceBuyModal';
 import ResourceSellModal from './ResourceSellModal/ResourceSellModal';
+import {isPhoneCheck} from '../../../../../utils/deviceCheck';
 import './ResourceTrading.less';
 
 class ResourceTrading extends PureComponent {
@@ -130,7 +131,6 @@ class ResourceTrading extends PureComponent {
   }
 
   render() {
-    const { isSmallScreen } = this.props;
     const {
       menuIndex,
       sellVisible,
@@ -159,7 +159,7 @@ class ResourceTrading extends PureComponent {
 
     return (
       <div className='resource-trading'>
-        {isSmallScreen ? (
+        {isPhoneCheck() ? (
           <div className='mobile-mask'>
             <p className='mobile-mask-text'>View more on the PC</p>
           </div>

@@ -15,8 +15,9 @@ import './MyWalletCard.less';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
-import { APPNAME } from '@config/config';
+import { APPNAME, ADDRESS_INFO } from '@config/config';
 import NightElfCheck from "../../../../utils/NightElfCheck";
+import getLogin from "../../../../utils/getLogin";
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -24,20 +25,22 @@ export default class MyWalletCard extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      unbindAccountModalVisible: false,
       balance: '-',
       withdrawnVotedVotesAmount: '-',
       activeVotedVotesAmount: '-',
       totalAssets: '-',
       loading: false,
-      lastestUnlockTime: null // todo: rename the variable
+      lastestUnlockTime: null, // todo: rename the variable
+      currentWallet: {
+        address: null,
+        name: null,
+        pubKey: {
+          x: null,
+          y: null
+        }
+      }
     };
 
-    this.showModal = this.showModal.bind(this);
-    this.handleOk = this.handleOk.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
-    // this.handleClaimDividendClick = this.handleClaimDividendClick.bind(this);
-    // this.updateWallet = this.updateWallet.bind(this);
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
 
@@ -62,6 +65,33 @@ export default class MyWalletCard extends PureComponent {
         shouldRefreshMyWallet: true
       });
     }
+
+    this.getCurrentWallet();
+  }
+
+  getCurrentWallet() {
+    NightElfCheck.getInstance().check.then(ready => {
+      const nightElf = NightElfCheck.getAelfInstanceByExtension();
+      getLogin(nightElf, {appName: APPNAME}, result => {
+        console.log('getCurrentWallet: ', result);
+        if (result.error) {
+          // message.warn(result.message || result.errorMessage.message);
+        } else {
+          const wallet =  JSON.parse(result.detail);
+          this.setState({
+            currentWallet: {
+              formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
+              address: wallet.address,
+              name: wallet.name,
+              pubKey: '04' + wallet.publicKey.x + wallet.publicKey.y
+            }
+          });
+        }
+      });
+    }).catch(() => {
+      message.warn('Please download and install NightElf');
+    });
+
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
@@ -104,10 +134,6 @@ export default class MyWalletCard extends PureComponent {
       this.computedTotalAssets();
     }
 
-    // if (profitContract !== prevProps.profitContract) {
-    //   this.fetchProfitAmount();
-    // }
-
     if (shouldRefreshMyWallet) {
       changeVoteState(
         {
@@ -129,9 +155,11 @@ export default class MyWalletCard extends PureComponent {
 
   fetchWalletBalance() {
     const { multiTokenContract } = this.props;
-    console.log('SYMBOL', SYMBOL);
-    const currentWallet = getCurrentWallet();
-    console.log('currentWallet', currentWallet);
+    const {currentWallet} = this.state;
+
+    if (!currentWallet || !currentWallet.address) {
+      return false;
+    }
     return multiTokenContract.GetBalance.call({
       symbol: SYMBOL,
       owner: currentWallet.address
@@ -146,7 +174,12 @@ export default class MyWalletCard extends PureComponent {
 
   fetchElectorVoteInfo() {
     const { electionContract } = this.props;
-    const currentWallet = getCurrentWallet();
+
+    const {currentWallet} = this.state;
+
+    if (!currentWallet || !currentWallet.address) {
+      return false;
+    }
 
     return electionContract.GetElectorVoteWithRecords.call({
       value: currentWallet.pubKey
@@ -193,44 +226,6 @@ export default class MyWalletCard extends PureComponent {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  handleOk() {
-    const currentWallet = getCurrentWallet();
-
-    window.NightElf.api({
-      appName: APPNAME,
-      method: 'REMOVE_KEYPAIR',
-      chainId: 'AELF',
-      payload: {
-        address: currentWallet.address
-      }
-    }).then(result => {
-      console.log('>>>>>>>>>>>>>>>>>>>', result);
-    });
-    // this.setState({
-    //   unbindAccountModalVisible: false
-    // });
-  }
-
-  handleCancel() {
-    this.setState({
-      unbindAccountModalVisible: false
-    });
-  }
-
-  showModal() {
-    this.setState({
-      unbindAccountModalVisible: true
-    });
-  }
-
-  // handleClaimDividendClick() {
-  //   Modal.success({
-  //     title: 'You has succeed in getting dividens.',
-  //     centered: true
-  //   });
-  // }
-
   updateWallet() {
     return Promise.all([this.fetchWalletBalance(), this.fetchElectorVoteInfo()])
       .then(() => {
@@ -253,7 +248,7 @@ export default class MyWalletCard extends PureComponent {
 
   extensionLogout() {
     const nightElf = NightElfCheck.getAelfInstanceByExtension();
-    const currentWallet = getCurrentWallet();
+    const {currentWallet} = this.state;
     nightElf.logout({
       appName: APPNAME,
       address: currentWallet.address
@@ -272,13 +267,13 @@ export default class MyWalletCard extends PureComponent {
   render() {
     const { handleDividendClick, dividends } = this.props;
     const {
-      unbindAccountModalVisible,
       balance,
       withdrawnVotedVotesAmount,
       activeVotedVotesAmount,
       totalAssets,
       loading,
-      lastestUnlockTime
+      lastestUnlockTime,
+      currentWallet
     } = this.state;
 
     const walletItems = [
@@ -318,8 +313,6 @@ export default class MyWalletCard extends PureComponent {
         value: thousandsCommaWithDecimal(lastestUnlockTime)
       }
     ];
-
-    const currentWallet = getCurrentWallet();
 
     return (
       <section className="my-wallet-card has-mask-on-mobile">
@@ -379,21 +372,6 @@ export default class MyWalletCard extends PureComponent {
             </ul>
           </div>
         </Spin>
-
-        <Modal
-          className="unbind-account-modal"
-          title="Unbind Account"
-          visible={unbindAccountModalVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          okText="Authorize"
-          centered
-          maskClosable
-          keyboard
-          okButtonProps={{ 'data-shoulddetectlock': true }}
-        >
-          <p style={{ marginTop: 10 }}>请求NightELF插件授权解除绑定</p>
-        </Modal>
       </section>
     );
   }

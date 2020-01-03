@@ -841,31 +841,35 @@ class VoteContainer extends Component {
     return new Promise((resolve, reject) => {
       // Calling getChainStatus to make the extension connect the chain
       // todo: There are some same code.
-      nightElf
-        .checkPermission({
-          appName: APPNAME,
-          type: 'addresss',
-          address: currentWallet.address
-        })
-        .then(checkPermissionResult => {
-          // When plugin is lock
-          if (checkPermissionResult.error !== 0) {
-            const { errorMessage } = checkPermissionResult;
-            message.warning(errorMessage.message, 3);
-            this.hasGetContractsFromExt = false; // Need to get contracts from ext again once plugin is locked.
-            throw new Error(errorMessage.message);
-          }
-          if (!this.hasGetContractsFromExt) {
-            // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
-            nightElf.chain.getChainStatus().then(() => {
-              this.loginPlugin(checkPermissionResult).then(() => {
-                resolve();
+      NightElfCheck.getInstance().check.then(ready => {
+        nightElf
+          .checkPermission({
+            appName: APPNAME,
+            type: 'addresss',
+            address: currentWallet.address
+          })
+          .then(checkPermissionResult => {
+            // When plugin is lock
+            if (checkPermissionResult.error !== 0) {
+              const { errorMessage } = checkPermissionResult;
+              message.warning(errorMessage.message, 3);
+              this.hasGetContractsFromExt = false; // Need to get contracts from ext again once plugin is locked.
+              throw new Error(errorMessage.message);
+            }
+            if (!this.hasGetContractsFromExt) {
+              // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
+              nightElf.chain.getChainStatus().then(() => {
+                this.loginPlugin(checkPermissionResult).then(() => {
+                  resolve();
+                });
               });
-            });
-            return;
-          }
-          resolve();
-        });
+              return;
+            }
+            resolve();
+          });
+      }).catch(() => {
+        message.warn('Please download and install NightElf browser extension.');
+      });
     });
   }
 
