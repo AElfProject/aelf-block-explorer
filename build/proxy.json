@@ -1,6 +1,6 @@
 [
   {
-    "target": "http://3.112.73.152:7250",
+    "target": "http://127.0.0.1:7250",
     "context": [
       "/api",
       "/chain"
@@ -19,7 +19,7 @@
     "secure": false
   },
   {
-    "target": "ws://3.112.73.152:7101",
+    "target": "ws://127.0.0.1:7101",
     "context": [
       "/socket"
     ],
