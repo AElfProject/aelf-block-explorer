@@ -38,7 +38,7 @@ Default Port: 3000
 
 It means you need run aelf-block-api & AElf at first.
 
-In nwb.config.js and explore.\*.conf, http://127.0.0.1:7250 is a [aelf-web-proxy](https://github.com/AElfProject/aelf-web-proxy).
+In nwb.config.js and explore.\*.conf, http://127.0.0.1:7250 is a [aelf-web-proxy](https://github.com/AElfProject/aelf-web-proxy).
 
 ### RPC conf
 
