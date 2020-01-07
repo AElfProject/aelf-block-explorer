@@ -69,6 +69,7 @@ function genMyVoteRecordsCols() {
     },
     {
       title: 'Unlock Time',
+      ellipsis: true,
       dataIndex: 'formatedUnlockTime',
       key: 'formatedUnlockTime'
     },

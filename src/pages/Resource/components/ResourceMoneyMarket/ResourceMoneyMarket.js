@@ -29,6 +29,7 @@ export default class ResourceMoneyMarket extends PureComponent {
     };
     this.getMenuClick = this.getMenuClick.bind(this);
     this.getEchartsLoading = this.getEchartsLoading.bind(this);
+    this.getRealTimeTransactionLoading = this.getRealTimeTransactionLoading.bind(this);
   }
 
   getMenuClick(symbol) {
@@ -146,7 +147,7 @@ export default class ResourceMoneyMarket extends PureComponent {
               <Col xxl={{ span: 9, offset: 1 }} xl={24} lg={24}>
                 <RealTimeTransactions
                   type={currentResourceSymbol}
-                  getRealTimeTransactionLoading={this.getRealTimeTransactionLoading.bind(this)}
+                  getRealTimeTransactionLoading={this.getRealTimeTransactionLoading}
                 />
               </Col>
             </Row>

@@ -111,13 +111,13 @@ export default class ResourceSellModal extends PureComponent {
     const { currentWallet, loading } = this.state;
 
     return (
-      <div className='modal'>
+      <div className='modal resource-modal'>
         <Row className='modal-form-item'>
-          <Col span={8}>
+          <Col span={6}>
             Address
           </Col>
           <Col
-              span={16}
+              span={18}
               className="text-ellipse"
               title={`ELF_${currentWallet.address}_${CHAIN_ID}`}
           >
@@ -125,16 +125,16 @@ export default class ResourceSellModal extends PureComponent {
           </Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8}>
+          <Col span={6}>
             Sell {currentResourceType} Quantity
           </Col>
-          <Col span={16}>{thousandsCommaWithDecimal(sellNum)}</Col>
+          <Col span={18}>{thousandsCommaWithDecimal(sellNum)}</Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8}>
+          <Col span={6}>
             Sell {SYMBOL}
           </Col>
-          <Col span={16}>
+          <Col span={18}>
             <Spin spinning={sellEstimateValueLoading}>
               {thousandsCommaWithDecimal(SellELFValue)}
             </Spin>

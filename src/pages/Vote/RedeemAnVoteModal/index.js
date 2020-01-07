@@ -16,13 +16,12 @@ const formItemLayout = {
 
 export class RedeemAnVoteModal extends PureComponent {
   generateVoteAnRedeemForm() {
-    const { voteToRedeem, currentWallet } = this.props;
+    const { voteToRedeem } = this.props;
 
     return {
       formItems: [
         {
           label: 'Node Name',
-          // todo: use classname isteads of the inline-css
           render: (
             <span className='form-item-value'>{voteToRedeem.nodeName}</span>
           )
@@ -37,14 +36,6 @@ export class RedeemAnVoteModal extends PureComponent {
           label: 'Redeem Amount',
           render: <span className='form-item-value'>{voteToRedeem.amount}</span>
         }
-        // {
-        //   label: 'Redeem To',
-        //   render: (
-        //     <span className='form-item-value'>
-        //       {currentWallet && currentWallet.name}
-        //     </span>
-        //   )
-        // }
       ]
     };
   }
@@ -56,9 +47,6 @@ export class RedeemAnVoteModal extends PureComponent {
       handleRedeemOneVoteConfirm
     } = this.props;
     const voteAnRedeemForm = this.generateVoteAnRedeemForm();
-    console.log({
-      redeemOneVoteModalVisible
-    });
     return (
       <Modal
         className='vote-redeem-modal'

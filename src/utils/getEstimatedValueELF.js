@@ -17,7 +17,7 @@ import GetAmountToPayFromReturn from './GetAmountToPayFromReturn';
  * @param {string} tType
  */
 
-import getResoruceConverter from './getResoruceConverter';
+import getResourceConverter from './getResourceConverter';
 
 export default function getEstimatedValueELF(
   type,
@@ -27,27 +27,21 @@ export default function getEstimatedValueELF(
 ) {
   return new Promise((resolve, reject) => {
     // todo: consider the frequency or time to get the data as it will spend many time
-    getResoruceConverter(type, tokenConverterContract, tokenContract).then(
+    getResourceConverter(type, tokenConverterContract, tokenContract).then(
       result => {
         if (result) {
-          console.log(result.resourceBalance.toNumber());
           if (result.resourceBalance.toNumber() >= Math.abs(pidRes)) {
             const resCont = Math.abs(pidRes) || 0;
             const elfPayout = GetAmountToPayFromReturn(
               result.elfBalance.plus(result.virtualBalance),
               result.tokenWeight,
               result.resourceBalance,
-              result.resoruceWeight,
+              result.resourceWeight,
               resCont
             );
-            console.log({
-              elfPayout,
-              pidRes,
-              resCont
-            });
             resolve(elfPayout);
           } else {
-            resolve('There are not so many resources.');
+            reject('There are not so many resources.');
           }
         }
       }

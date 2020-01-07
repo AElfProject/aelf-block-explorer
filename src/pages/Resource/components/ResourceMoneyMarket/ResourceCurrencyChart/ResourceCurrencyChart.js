@@ -280,7 +280,7 @@ class ResourceCurrencyChart extends PureComponent {
     const {
       getMenuClick
     } = this.props;
-    getMenuClick(+activeKey);
+    getMenuClick(activeKey);
   }
 
   selectButtonHTML() {

@@ -9,13 +9,12 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Button, Modal, message, Tooltip, Icon } from 'antd';
 
-import { NEED_PLUGIN_AUTHORIZE_TIP, LOWER_SYMBOL } from '@src/constants';
+import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from '@src/constants';
 import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE
 } from '@pages/Vote/constants';
 import getCurrentWallet from '@utils/getCurrentWallet';
-import { centerEllipsis } from '@utils/formater';
 import './CandidateApplyModal.style.less';
 
 const modalFormItemLayout = {
@@ -29,9 +28,8 @@ const modalFormItemLayout = {
   }
 };
 
-const currentWallet = getCurrentWallet();
-
 function generateCandidateApplyForm() {
+  const currentWallet = getCurrentWallet();
   return {
     formItems: [
       {
@@ -46,9 +44,9 @@ function generateCandidateApplyForm() {
         label: 'Mortgage Amount',
         render: (
           <span className="list-item-value">
-            {ELECTION_MORTGAGE_NUM_STR} {LOWER_SYMBOL} &nbsp;&nbsp;&nbsp;
+            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL} &nbsp;&nbsp;&nbsp;
             <Tooltip
-              title={`The ${LOWER_SYMBOL} cannot be redeemed during the time being a BP
+              title={`The ${SYMBOL} cannot be redeemed during the time being a BP
               node`}
             >
               <Icon type="exclamation-circle" />
@@ -71,16 +69,10 @@ function generateCandidateApplyForm() {
   };
 }
 
-const candidateApplyForm = generateCandidateApplyForm({});
-
 export default class CandidateApplyModal extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { onOk, onCancel, visible } = this.props;
-
+    const candidateApplyForm = generateCandidateApplyForm();
     return (
       <Modal
         className="apply-node-modal"
@@ -99,18 +91,6 @@ export default class CandidateApplyModal extends PureComponent {
             candidateApplyForm.formItems.map(item => {
               return (
                 <Form.Item label={item.label} key={item.label}>
-                  {/* {getFieldDecorator('email', {
-          rules: [
-            {
-              type: 'email',
-              message: 'The input is not valid E-mail!'
-            },
-            {
-              required: true,
-              message: 'Please input your E-mail!'
-            }
-          ]
-        })(<Input />)} */}
                   {item.render ? item.render : <Input />}
                 </Form.Item>
               );

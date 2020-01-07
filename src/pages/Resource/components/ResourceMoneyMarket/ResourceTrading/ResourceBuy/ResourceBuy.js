@@ -268,6 +268,8 @@ export default class ResourceBuy extends Component {
           buyEstimateValueLoading: false
         });
       }
+    }).catch(e => {
+      message.error(e.message || e.msg || 'Error happened');
     });
   }
 
@@ -607,7 +609,7 @@ export default class ResourceBuy extends Component {
           <Button
             className='trading-button buy-btn'
             onClick={this.NightELFCheckAndShowBuyModal}
-            loading={buyEstimateValueLoading || buyBtnLoading}
+            loading={buyEstimateValueLoading || buyBtnLoading || buyInputLoading}
             disabled={validate.validateStatus === status.ERROR}
           >
             Buy

@@ -20,13 +20,8 @@ export default function GetReturnFromPaid(fromConnectorBalance, fromConnectorWei
         // if both weights are the same, the formula can be reduce
         return (bt.times(a).div(bf.add(a))).toNumber();
     }
-
-    // For non-integer or very large exponents pow(x, y) is calculated using
-    // x^y = exp(y*ln(x))
     const x = bf.div(bf.add(a));
     const y = wf.div(wt);
     return new Decimal(1).minus(Decimal.exp(y * Decimal.ln(x))).times(bt).toNumber();
-    // console.log(Math.pow(x, y) - 1);
-    // return (Math.pow(x, y) - 1) * bf;
 }
 

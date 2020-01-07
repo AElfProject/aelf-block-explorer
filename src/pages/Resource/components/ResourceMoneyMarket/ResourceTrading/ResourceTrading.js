@@ -202,7 +202,7 @@ class ResourceTrading extends PureComponent {
           centered
           maskClosable
           onCancel={this.handleCancel}
-          width={600}
+          width={700}
         >
           <ResourceBuyModal
             currentResourceType={currentResourceType}
@@ -234,7 +234,7 @@ class ResourceTrading extends PureComponent {
           centered
           maskClosable
           onCancel={this.handleCancel}
-          width={600}
+          width={700}
         >
           <ResourceSellModal
             currentResourceType={currentResourceType}

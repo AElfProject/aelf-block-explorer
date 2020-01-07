@@ -134,34 +134,34 @@ export default class ResourceBuyModal extends PureComponent {
     const { currentWallet, loading } = this.state;
 
     return (
-      <div className='modal'>
+      <div className='modal resource-modal'>
         <Row className='modal-form-item'>
-          <Col span={8}>
+          <Col span={6}>
             Address
           </Col>
           <Col
               className="text-ellipse"
-              span={16}
+              span={18}
               title={`ELF_${currentWallet.address}_${CHAIN_ID}`}
           >
             {`ELF_${currentWallet.address}_${CHAIN_ID}`}
           </Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8}>
+          <Col span={6}>
             Buy {currentResourceType} Quantity
           </Col>
-          <Col span={16}>
+          <Col span={18}>
             <Spin spinning={buyInputLoading}>
               {thousandsCommaWithDecimal(buyNum)}
             </Spin>
           </Col>
         </Row>
         <Row className='modal-form-item'>
-          <Col span={8}>
+          <Col span={6}>
             {SYMBOL}
           </Col>
-          <Col span={16}>
+          <Col span={18}>
             <Spin spinning={buyEstimateValueLoading}>
               {thousandsCommaWithDecimal(buyElfValue)}
             </Spin>

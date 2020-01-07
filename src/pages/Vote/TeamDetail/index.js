@@ -34,6 +34,8 @@ const { Paragraph } = Typography;
 
 const clsPrefix = 'team-detail';
 
+const ellipsis = {rows: 1};
+
 class TeamDetail extends PureComponent {
   constructor(props) {
     super(props);
@@ -257,15 +259,12 @@ class TeamDetail extends PureComponent {
       isCandidate
     } = this.state;
 
-    const avatarSize = isSmallScreen ? 50 : 92;
+    const avatarSize = isSmallScreen ? 50 : 150;
 
     return (
       <section className={`${clsPrefix}-header card-container`}>
         <Row>
           <Col
-            xxl={82}
-            xl={18}
-            lg={18}
             md={18}
             sm={24}
             xs={24}
@@ -273,12 +272,9 @@ class TeamDetail extends PureComponent {
           >
             <Row className={`${clsPrefix}-team-avatar-info`}>
               <Col
-                xxl={82}
-                xl={4}
-                lg={18}
-                md={18}
-                sm={4}
-                xs={4}
+                md={6}
+                sm={6}
+                xs={6}
                 className="team-avatar-container"
               >
                 {data.avatar ? (
@@ -291,12 +287,9 @@ class TeamDetail extends PureComponent {
               </Col>
               <Col
                 className={`${clsPrefix}-team-info`}
-                xxl={82}
-                xl={20}
-                lg={18}
                 md={18}
-                sm={20}
-                xs={20}
+                sm={18}
+                xs={18}
               >
                 <h5 className={`${clsPrefix}-node-name ellipsis`}>
                   {data.name ? data.name : formattedAddress}
@@ -305,9 +298,25 @@ class TeamDetail extends PureComponent {
                 <Paragraph ellipsis={{rows: 1}}>
                   Location: {data.location || '-'}
                 </Paragraph>
-                <Paragraph copyable={{ text: formattedAddress }} ellipsis={{rows: 1}}>
+                <Paragraph copyable={{ text: formattedAddress }} ellipsis={ellipsis}>
                   Address: {formattedAddress}
                 </Paragraph>
+                <If condition={!!data.officialWebsite}>
+                  <Then>
+                    <Paragraph ellipsis={ellipsis}>
+                      Official Website:&nbsp;
+                      <a href={data.officialWebsite} target="_blank" rel="noreferrer noopener">{data.officialWebsite}</a>
+                    </Paragraph>
+                  </Then>
+                </If>
+                <If condition={!!data.mail}>
+                  <Then>
+                    <Paragraph ellipsis={ellipsis}>
+                      Email:&nbsp;
+                      <a href={`mailto:${data.mail}`} target="_blank" rel="noreferrer noopener">{data.mail}</a>
+                    </Paragraph>
+                  </Then>
+                </If>
                 {hasAuth ? (
                   <Button type="primary" shape="round" className="edit-btn">
                     <Link
@@ -324,11 +333,7 @@ class TeamDetail extends PureComponent {
             </Row>
           </Col>
           <Col
-            xxl={6}
-            xl={6}
-            lg={6}
             md={6}
-            sm={0}
             xs={0}
             className="card-container-right"
           >

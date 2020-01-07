@@ -217,53 +217,41 @@ class ResourceSell extends Component {
         value,
         tokenConverterContract,
         tokenContract
-    )
-        .then(result => {
-          // todo: handle the case BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP
-          if (true) {
-            // todo: the code of rounding off maybe wrong so I comment it.
-            // let ELFValue = Math.abs(Math.ceil(result));
-            const amountToReceive = result;
-            const fee = getFees(amountToReceive);
-            const amountToReceiveMinusFee = amountToReceive - fee;
-            if (amountToReceiveMinusFee > 0) {
-              handleModifyTradingState({
-                sellEstimateValueLoading: false,
-                sellFee: fee,
-                SellELFValue: amountToReceiveMinusFee
-              });
-              this.setState({
-                // todo: what is the role of the state ELFValue
-                ELFValue: amountToReceiveMinusFee,
-                toSell: true,
-                operateNumToSmall: false
-              });
-            } else {
-              message.warning(
-                  OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP
-              );
-              this.setState({
-                operateNumToSmall: true
-              });
-              handleModifyTradingState({
-                // buyNum: null,
-                SellELFValue: 0,
-                sellFee: 0,
-                sellEstimateValueLoading: false
-              });
-            }
-          } else {
-            this.setState({
-              toSell: false
-            });
-            handleModifyTradingState({
-              sellEstimateValueLoading: false
-            });
-          }
-        })
-        .catch(err => {
-          console.error('err', err);
+    ).then(result => {
+      // todo: handle the case BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP
+      const amountToReceive = result;
+      const fee = getFees(amountToReceive);
+      const amountToReceiveMinusFee = amountToReceive - fee;
+      if (amountToReceiveMinusFee > 0) {
+        handleModifyTradingState({
+          sellEstimateValueLoading: false,
+          sellFee: fee,
+          SellELFValue: amountToReceiveMinusFee
         });
+        this.setState({
+          ELFValue: amountToReceiveMinusFee,
+          toSell: true,
+          operateNumToSmall: false
+        });
+      } else {
+        message.warning(
+            OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP
+        );
+        this.setState({
+          operateNumToSmall: true
+        });
+        handleModifyTradingState({
+          // buyNum: null,
+          SellELFValue: 0,
+          sellFee: 0,
+          sellEstimateValueLoading: false
+        });
+      }
+    })
+    .catch(err => {
+      message.error(err.message || err.msg || 'Error happened');
+      console.error('err', err);
+    });
   }
 
   onChangeSlide(e) {

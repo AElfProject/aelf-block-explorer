@@ -6,13 +6,13 @@
 
 import {Decimal} from 'decimal.js';
 
-export default function getResoruceWeight(tokenConverterContract, type) {
+export default function getResourceWeight(tokenConverterContract, type) {
     return new Promise((resolve, reject) => {
         tokenConverterContract.GetConnector.call({symbol: type}, (error, result) => {
-            const resoruceWeight = {
-                resoruceWeight: new Decimal(result.weight) || 0
+            const resourceWeight = {
+                resourceWeight: new Decimal(result.weight) || 0
             };
-            resolve(resoruceWeight);
+            resolve(resourceWeight);
         });
     });
 }

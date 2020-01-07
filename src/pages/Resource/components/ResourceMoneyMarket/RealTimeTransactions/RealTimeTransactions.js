@@ -37,7 +37,7 @@ class RealTimeTransactions extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.menuIndex !== this.props.menuIndex) {
+    if (prevProps.type !== this.props.type) {
       clearTimeout(this.getResourceRealtimeRecordsTimer);
       this.getResourceRealtimeRecords();
     }

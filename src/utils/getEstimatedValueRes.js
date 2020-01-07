@@ -9,8 +9,7 @@
  */
 
 import GetReturnFromPaid from './GetReturnFromPaid';
-import getResoruceConverter from './getResoruceConverter';
-import { ELF_PRECISION } from '@src/constants';
+import getResourceConverter from './getResourceConverter';
 
 /**
  * Bancor  Numeric Acquisition of Formula Requirements
@@ -28,43 +27,29 @@ export default function getEstimatedValueRes(
   tokenContract,
   switchMode
 ) {
-  return new Promise((resolve, reject) => {
-    getResoruceConverter(type, tokenConverterContract, tokenContract).then(
+  return getResourceConverter(type, tokenConverterContract, tokenContract).then(
       result => {
         if (result) {
-          // todo: divide price
-          // todo: maybe has problem, use 0.0005 to avoid the elf's balance is insufficient, instead with rpc later
-          // paidElf -= 3;
-          // paidElf = paidElf / (1 + 0.005 + 0.0005) || 0;
           let elfPayout = null;
-          console.log({
-            switchMode
-          });
           if (switchMode) {
             elfPayout = GetReturnFromPaid(
-              result.elfBalance.plus(result.virtualBalance),
-              result.tokenWeight,
-              result.resourceBalance,
-              result.resoruceWeight,
-              sellResource
+                result.elfBalance.plus(result.virtualBalance),
+                result.tokenWeight,
+                result.resourceBalance,
+                result.resourceWeight,
+                sellResource
             );
           } else {
             elfPayout = GetReturnFromPaid(
-              result.resourceBalance,
-              result.resoruceWeight,
-              result.elfBalance.plus(result.virtualBalance),
-              result.tokenWeight,
-              sellResource
+                result.resourceBalance,
+                result.resourceWeight,
+                result.elfBalance.plus(result.virtualBalance),
+                result.tokenWeight,
+                sellResource
             );
           }
-          console.log('getResoruceConverter', {
-            result,
-            elfPayout,
-            sellResource
-          });
-          resolve(elfPayout);
+          return elfPayout;
         }
       }
-    );
-  });
+  );
 }

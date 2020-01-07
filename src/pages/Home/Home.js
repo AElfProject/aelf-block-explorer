@@ -258,14 +258,10 @@ export default class HomePage extends Component {
     blockRenderItem = item => {
         const blockHeight = item.block_height;
         const title = (
-            <span>
-                <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
-            </span>
+            <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
         );
         const desc = (
-            <span className="infoList-desc">
-                <Link to={`/txs/block?${item.block_hash}`}>{item.tx_count}</Link>
-            </span>
+            <Link to={`/txs/block?${item.block_hash}`}>{item.tx_count}</Link>
         );
 
         return (
@@ -275,9 +271,9 @@ export default class HomePage extends Component {
                 className="blocks-list-container"
                 key={item.block_hash}
             >
-                <Col span={4}>{title}</Col>
-                <Col span={4}>{desc}</Col>
-                <Col span={16}>{format(item.time)}</Col>
+                <Col className="text-ellipse" span={4}>{title}</Col>
+                <Col className="text-ellipse" span={4}>{desc}</Col>
+                <Col className="text-ellipse" span={16}>{format(item.time)}</Col>
             </Row>
         );
 
@@ -294,19 +290,15 @@ export default class HomePage extends Component {
         let txIDShow = tx_id.slice(0, cutNum) + '...';
 
         const title = (
-            <span>
-                <Link to={`/tx/${tx_id}`}>
-                    {txIDShow}
-                </Link>
-            </span>
+            <Link to={`/tx/${tx_id}`}>
+                {txIDShow}
+            </Link>
         );
 
         const from = (
-            <span className="infoList-desc">
-                <Link to={`/address/${item.address_from}`}>
-                    {ADDRESS_INFO.PREFIX + '_' + item.address_from.slice(0, cutNum)}...
-                </Link>
-            </span>
+            <Link to={`/address/${item.address_from}`}>
+                {ADDRESS_INFO.PREFIX + '_' + item.address_from.slice(0, cutNum)}...
+            </Link>
         );
 
         const to = (
@@ -322,9 +314,9 @@ export default class HomePage extends Component {
                 className="blocks-list-container"
                 key={tx_id}
             >
-                <Col span={6}>{title}</Col>
-                <Col span={9}>{from}</Col>
-                <Col span={9}>{to}</Col>
+                <Col className="text-ellipse" span={6}>{title}</Col>
+                <Col className="text-ellipse" span={9}>{from}</Col>
+                <Col className="text-ellipse" span={9}>{to}</Col>
             </Row>
         );
     };

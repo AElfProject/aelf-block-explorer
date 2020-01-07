@@ -88,23 +88,23 @@ const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
 const INPUT_NUMBER_TIP = 'Your should input a number';
 const BETWEEN_ZEOR_AND_BALANCE_TIP =
   'Too large value';
-const SELECT_SOMETHING_TIP = 'Please select something to continue :)';
+const SELECT_SOMETHING_TIP = 'Please select something to continue';
 const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
 const UNKNOWN_ERROR_TIP =
   'Sorry, it seems that we encountered an unknown error.';
 const NO_AUTHORIZATION_ERROR_TIP =
   "Sorry, you temporarily don't has the authorization to the page.";
-const INPUT_SOMETHING_TIP = 'Sorry, you should input something:)';
-const INTEGER_TIP = 'It can only be integer:)';
+const INPUT_SOMETHING_TIP = 'Sorry, you should input something';
+const INTEGER_TIP = 'It can only be integer';
 const UNLOCK_PLUGIN_TIP =
-  'Your plugin has beed locked, please unlock and refresh the page:)';
-const GET_TIP = 'It can only be integer:)';
-const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = 'You already been candidate:)';
+  'Your plugin has beed locked, please unlock and refresh the page';
+const GET_TIP = 'It can only be integer';
+const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = 'You already been candidate';
 const NOT_CURRENT_CANDIDATE_TIP =
-  'Sorry, the node is not current candidate:) \n Please refresh the page then choose another node to vote.';
+  'Sorry, the node is not current candidate \n Please refresh the page then choose another node to vote.';
 const THE_REASON_TO_BECOME_A_NON_CANDIDATE =
   'It may be result from: \n 1. The node has quited election during the time. \n 2. The node became an evil node then was kicked out of the candidates.';
-const FEE_TIP = 'A fee of 2 elf will be deducted from the operation :)';
+const FEE_TIP = 'A fee of 2 ELF will be deducted from the operation';
 const ELECTION_NOTIFI_DATA_TIP =
   'The election term is 7 days, there is no interval between terms; the number of nodes is the total number of current BP and candidate nodes; the number of votes is the sum of the votes amount since the election started; the bonus pool includes a block bonus of the BP node + 80% of the gas fee + 80% of the side chain income.';
 const MY_VOTE_DATA_TIP =
