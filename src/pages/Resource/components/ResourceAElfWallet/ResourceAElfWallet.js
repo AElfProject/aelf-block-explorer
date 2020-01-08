@@ -172,18 +172,18 @@ export default class ResourceAElfWallet extends PureComponent {
             <span className="resource-title">{propsTile}</span>
           </div>
           <div className="resource-sub-container">
-            <div className="resource-wallet-address">
-              <span className='resource-wallet-address-name'>
+            <Row className="resource-wallet-address">
+              <Col className="resource-wallet-address-name">
                 {wallet.name}
                 &nbsp;&nbsp;&nbsp;
                 {ADDRESS_INFO.PREFIX + '_' + wallet.address + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </Col>
+
+              <Col className="resource-wallet-operation-container">
                 { wallet.address !== '-' && <Link to={`/resourceDetail/${wallet.address}`}>
                   Transaction Details
                 </Link> }
-              </span>
-
-              <div>
                 <Button
                     className='resource-wallet-address-update update-btn'
                     disabled={!(currentWallet && currentWallet.address && tokenContract)}
@@ -199,8 +199,8 @@ export default class ResourceAElfWallet extends PureComponent {
                 >
                   Change Wallet<Icon type="logout"/>
                 </Button>}
-              </div>
-            </div>
+              </Col>
+            </Row>
 
             <div className='resource-wallet-info'>
               <Row type="flex" align="middle">

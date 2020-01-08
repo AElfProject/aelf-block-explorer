@@ -1,32 +1,58 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2020-01-08 11:25:16
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2020-01-08 15:44:44
+ * @Description: file content
+ */
 import React, { memo } from 'react';
 import { withRouter } from 'react-router';
 import { Button, Icon } from 'antd';
 
 import './ElectionRuleCard.style.less';
+import { isPhoneCheck } from '@utils/deviceCheck';
 
 function ElectionRuleCard(props) {
   const { isCandidate, displayApplyModal, currentWallet } = props;
 
   const onClick = () => {
-      if (isCandidate) {
-          const { history } = props;
-          history.push({
-              pathname: '/vote/apply/keyin',
-              search: `pubkey=${currentWallet && currentWallet.pubkey}`
-          });
-      } else {
-          displayApplyModal();
-      }
+    if (isCandidate) {
+      const { history } = props;
+      history.push({
+        pathname: '/vote/apply/keyin',
+        search: `pubkey=${currentWallet && currentWallet.pubkey}`,
+      });
+    } else {
+      displayApplyModal();
+    }
   };
+
+  const renderBtn = () => {
+    const isPhone = isPhoneCheck();
+    let btnHtml = null;
+    if (!isPhone)
+      btnHtml = (
+        <div className="btn-group">
+          <Button
+            type="primary"
+            className="apply-to-be-a-node-btn"
+            onClick={onClick}
+          >
+            {isCandidate
+              ? 'Modify team information'
+              : 'Become a candidate node'}
+          </Button>
+        </div>
+      );
+    return btnHtml;
+  };
+  const btnHtml = renderBtn();
 
   return (
     <section className="election-rule-card">
       <h2 className="election-header-title">
-        <Icon
-          type="file-text"
-          theme="filled"
-          className="card-header-icon"
-        />
+        <Icon type="file-text" theme="filled" className="card-header-icon" />
         Node Election
       </h2>
       <div className="election-container">
@@ -41,17 +67,7 @@ function ElectionRuleCard(props) {
             View the node election plan >
           </a> */}
         </p>
-        <div className="btn-group">
-          <Button
-            type="primary"
-            className="apply-to-be-a-node-btn"
-            onClick={onClick}
-          >
-            {isCandidate
-              ? 'Modify team information'
-              : 'Become a candidate node'}
-          </Button>
-        </div>
+        {btnHtml}
       </div>
     </section>
   );
