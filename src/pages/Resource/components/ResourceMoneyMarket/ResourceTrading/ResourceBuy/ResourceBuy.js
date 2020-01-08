@@ -40,6 +40,7 @@ import {
   FEE_RATE
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
+import { getMagneticValue } from '@utils/styleUtils';
 import { regPos } from '@utils/regExps';
 import NightElfCheck from "../../../../../../utils/NightElfCheck";
 
@@ -148,7 +149,7 @@ export default class ResourceBuy extends Component {
     const { region } = this.state;
     if (region < RESOURCE_OPERATE_LIMIT) return { 0: '' };
 
-    const regionLine = [
+    this.regionLine = [
       0,
       region,
       region * 2,
@@ -156,7 +157,7 @@ export default class ResourceBuy extends Component {
       account.balance.toFixed(GENERAL_PRECISION)
     ];
     let marks = {};
-    regionLine.map(item => {
+    this.regionLine.map(item => {
       marks[item] = '';
     });
     return marks;
@@ -275,6 +276,8 @@ export default class ResourceBuy extends Component {
 
   onChangeSlide(e) {
     const { handleModifyTradingState } = this.props;
+
+    e = getMagneticValue(e, this.regionLine);
     this.setState({
       inputValue: e
     });
@@ -497,6 +500,7 @@ export default class ResourceBuy extends Component {
         <Slider
           marks={this.getSlideMarks()}
           dots={false}
+          step={0.01}
           disabled={disabled}
           min={0}
           value={inputValue}
