@@ -18,6 +18,7 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import { APPNAME, resourceTokens } from '@config/config';
 import './ResourceAElfWallet.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
+import getLogin from "../../../../utils/getLogin";
 
 export default class ResourceAElfWallet extends PureComponent {
 
@@ -76,22 +77,29 @@ export default class ResourceAElfWallet extends PureComponent {
 
   extensionLogout() {
     const nightElf = NightElfCheck.getAelfInstanceByExtension();
-    const {
-      currentWallet,
-    } = this.props;
-    nightElf.logout({
-      appName: APPNAME,
-      address: currentWallet.address
-    }, (error, result) => {
-      localStorage.removeItem('currentWallet');
-      this.refreshWalletInfo();
-      // TODO: more refactor actions for login and logout; repeated code, MyWalletCard.js
-      message.success('Logout successful, refresh after 3s.', 3, () => {
-        window.location.reload();
-      });
-    }).catch(error => {
-      message.error('logout failed');
-    });
+    getLogin(nightElf, {file: 'MyVote.js'}, result => {
+      console.log('extensionLogout getLogin: ', result);
+      if (result.error && result.error === 200005) {
+        message.warn(result.message || result.errorMessage.message);
+      } else {
+        const {
+          currentWallet,
+        } = this.props;
+        nightElf.logout({
+          appName: APPNAME,
+          address: currentWallet.address
+        }, (error, result) => {
+          localStorage.removeItem('currentWallet');
+          this.refreshWalletInfo();
+          // TODO: more refactor actions for login and logout
+          message.success('Logout successful, refresh after 3s.', 3, () => {
+            window.location.reload();
+          });
+        }).catch(error => {
+          message.error('logout failed');
+        });
+      }
+    }, false);
   }
 
   getCurrentWalletBalance = async () => {
@@ -189,7 +197,7 @@ export default class ResourceAElfWallet extends PureComponent {
                   disabled={!(currentWallet && currentWallet.address && tokenContract)}
                   onClick={this.extensionLogout}
                 >
-                  change wallet<Icon type="logout"/>
+                  Change Wallet<Icon type="logout"/>
                 </Button>}
               </div>
             </div>
