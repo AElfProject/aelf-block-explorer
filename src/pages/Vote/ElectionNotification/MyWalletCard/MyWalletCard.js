@@ -262,20 +262,27 @@ export default class MyWalletCard extends PureComponent {
 
   extensionLogout() {
     const nightElf = NightElfCheck.getAelfInstanceByExtension();
-    const {currentWallet} = this.state;
-    nightElf.logout({
-      appName: APPNAME,
-      address: currentWallet.address
-    }, (error, result) => {
-      localStorage.removeItem('currentWallet');
-      this.handleUpdateWalletClick();
-      // TODO: more refactor actions for login and logout
-      message.success('Logout successful, refresh after 3s.', 3, () => {
-        window.location.reload();
-      });
-    }).catch(error => {
-      message.error('logout failed');
-    });
+    getLogin(nightElf, {file: 'MyVote.js'}, result => {
+      console.log('extensionLogout getLogin: ', result);
+      if (result.error && result.error === 200005) {
+        message.warn(result.message || result.errorMessage.message);
+      } else {
+        const {currentWallet} = this.state;
+        nightElf.logout({
+          appName: APPNAME,
+          address: currentWallet.address
+        }, (error, result) => {
+          localStorage.removeItem('currentWallet');
+          this.handleUpdateWalletClick();
+          // TODO: more refactor actions for login and logout
+          message.success('Logout successful, refresh after 3s.', 3, () => {
+            window.location.reload();
+          });
+        }).catch(error => {
+          message.error('logout failed');
+        });
+      }
+    }, false);
   }
 
   render() {
@@ -349,7 +356,7 @@ export default class MyWalletCard extends PureComponent {
             disabled={!(currentWallet && currentWallet.address)}
             onClick={this.extensionLogout}
           >
-            change wallet<Icon type="logout"/>
+            Change Wallet<Icon type="logout"/>
           </Button>}
           <Button
             className="my-wallet-card-header-sync-btn update-btn"
