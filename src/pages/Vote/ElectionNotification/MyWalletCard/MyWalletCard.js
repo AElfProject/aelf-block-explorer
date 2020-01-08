@@ -94,12 +94,14 @@ export default class MyWalletCard extends PureComponent {
               pubKey: '04' + wallet.publicKey.x + wallet.publicKey.y
             }
           });
+          setTimeout(() => {
+            this.handleUpdateWalletClick();
+          });
         }
       });
     }).catch(() => {
       message.warn('Please download and install NightELF browser extension.');
     });
-
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu

@@ -5,27 +5,40 @@ import StatisticalData from '@components/StatisticalData/';
 import { myVoteStatisData } from '../constants';
 import MyVoteRecord from './MyVoteRecords';
 import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
-import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import {
   RANK_NOT_EXISTED_SYMBOL
 } from '@src/pages/Vote/constants';
 import { ADDRESS_INFO } from '@config/config';
 import { MY_VOTE_DATA_TIP } from '@src/constants';
+import NightElfCheck from "../../../utils/NightElfCheck";
+import getLogin from "../../../utils/getLogin";
+import {message} from "antd";
+import {isPhoneCheck} from "../../../utils/deviceCheck";
 
 export default class MyVote extends Component {
   constructor(props) {
     super(props);
     this.state = {
       statisData: myVoteStatisData,
-      tableData: []
+      tableData: [],
+      currentWallet: {
+        address: null,
+        name: null,
+        pubKey: {
+          x: null,
+          y: null
+        }
+      }
     };
+
+    this.isPhone = isPhoneCheck();
 
     this.hasRun = false;
   }
 
   componentDidMount() {
-    this.fetchTableDataAndStatisData();
+    this.getCurrentWallet();
   }
 
   // todo: update the vote info after switch to this tab
@@ -34,12 +47,53 @@ export default class MyVote extends Component {
       this.fetchTableDataAndStatisData();
     }
   }
+  getCurrentWallet() {
+    if (this.isPhone) {
+      return null;
+    }
 
-  fetchTableDataAndStatisData() {
+    NightElfCheck.getInstance().check.then(ready => {
+      const nightElf = NightElfCheck.getAelfInstanceByExtension();
+      getLogin(nightElf, {file: 'MyVote.js'}, result => {
+        if (result.error) {
+          // message.warn(result.message || result.errorMessage.message);
+        } else {
+          const wallet =  JSON.parse(result.detail);
+          const currentWallet = {
+            formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
+            address: wallet.address,
+            name: wallet.name,
+            pubKey: '04' + wallet.publicKey.x + wallet.publicKey.y
+          };
+          this.setState({
+            currentWallet
+          });
+          setTimeout(() => {
+            this.fetchTableDataAndStatisData(currentWallet);
+          });
+        }
+      }, false);
+    }).catch(error => {
+      // message.warn('Please download and install NightELF browser extension.');
+    });
+  }
+
+
+  fetchTableDataAndStatisData(currentWalletTemp) {
     const { electionContract } = this.props;
     if (!electionContract) return;
     this.hasRun = true;
-    const currentWallet = getCurrentWallet();
+    // const currentWallet = getCurrentWallet();
+    // console.log('fetchTableDataAndStatisData: ', currentWallet);
+
+    // const {currentWallet} = this.state;
+    const currentWallet = currentWalletTemp || this.state.currentWallet;
+
+    console.log('fetchTableDataAndStatisData: ', currentWallet);
+    if (!currentWallet || !currentWallet.address) {
+      this.hasRun = false;
+      return false;
+    }
 
     // todo: is it ok to get the same data twice in different tabs
     // todo: add error handle

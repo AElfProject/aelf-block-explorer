@@ -34,7 +34,7 @@ class BrowserHeader extends PureComponent {
           ? '/home'
           : getPathnameFirstSlash(location.pathname)
     };
-
+    this.isPhone = isPhoneCheck();
     this.handleResize = this.handleResize.bind(this);
   }
 
@@ -262,23 +262,22 @@ class BrowserHeader extends PureComponent {
   }
 
   render() {
-    const { isSmallScreen } = this.props;
 
-    const menuMode = isSmallScreen ? 'inline' : 'horizontal';
-    const mobileMoreHTML = isSmallScreen ? this.renderMobileMore() : '';
+    const menuMode = this.isPhone ? 'inline' : 'horizontal';
+    const mobileMoreHTML = this.isPhone ? this.renderMobileMore() : '';
 
     let menuHtml;
-    if (isSmallScreen) {
+    if (this.isPhone) {
       menuHtml = this.renderMenu(menuMode, this.state.showMobileMenu);
     } else {
       menuHtml = this.renderMenu(menuMode);
     }
 
-    const isPhone = isPhoneCheck();
+    const headerClass = this.isPhone ? 'header-container header-container-mobile' : 'header-container';
 
     return (
       <div className='header-fixed-container'>
-        <div className='header-container'>
+        <div className={headerClass}>
           <Link to='/' key='logo'>
             <Svg
               icon='aelf_logo_purple'
@@ -291,7 +290,7 @@ class BrowserHeader extends PureComponent {
           <nav className='header-navbar'>
             {menuHtml}
             {this.state.showSearch && <Search />}
-            {!isPhone && <ChainSelect />}
+            {!this.isPhone && <ChainSelect />}
           </nav>
         </div>
       </div>
