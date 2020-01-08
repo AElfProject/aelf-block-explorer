@@ -7,8 +7,9 @@ import config from '../../config/config';
 
 // todo: there are three place that has the same payload in contractChange, getLogin, setNewPermission, can I optimize it?
 let getLoginLock = false;
-export default function getLogin(nightElf, payload, callback) {
-    if(getLoginLock) {
+// TODO: 整个获取都要重写, 后续试试 文件id + callbackArray = [f,f,f]
+export default function getLogin(nightElf, payload, callback, useLock = true) {
+    if(getLoginLock && useLock) {
         return;
     }
     getLoginLock = true;

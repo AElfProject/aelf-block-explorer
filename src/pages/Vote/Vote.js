@@ -508,7 +508,7 @@ class VoteContainer extends Component {
   }
 
   loginPlugin(checkPermissionResult) {
-    const { nightElf } = this.state;
+    const nightElf = NightElfCheck.getAelfInstanceByExtension();
     const getLoginPayload = {
       appName: APPNAME
     };
@@ -562,7 +562,7 @@ class VoteContainer extends Component {
   }
 
   fetchContractFromExt() {
-    const { nightElf } = this.state;
+    const nightElf = NightElfCheck.getAelfInstanceByExtension();
     const { contractsNeedToLoadFromExt } = constants;
 
     const currentWallet = getCurrentWallet();
@@ -846,14 +846,13 @@ class VoteContainer extends Component {
       message.info('View more on PC');
       return null;
     }
-
-    const { nightElf } = this.state;
     const currentWallet = getCurrentWallet();
 
     return new Promise((resolve, reject) => {
       // Calling getChainStatus to make the extension connect the chain
       // todo: There are some same code.
       NightElfCheck.getInstance().check.then(ready => {
+        const nightElf = NightElfCheck.getAelfInstanceByExtension();
         nightElf
           .checkPermission({
             appName: APPNAME,
@@ -879,7 +878,7 @@ class VoteContainer extends Component {
             }
             resolve();
           });
-      }).catch(() => {
+      }).catch(error => {
         message.warn('Please download and install NightELF browser extension.');
       });
     });
