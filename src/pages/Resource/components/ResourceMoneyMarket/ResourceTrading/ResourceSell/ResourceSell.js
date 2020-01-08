@@ -34,6 +34,7 @@ import {
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import { regPos } from '@utils/regExps';
+import { getMagneticValue } from '@utils/styleUtils';
 import NightElfCheck from "../../../../../../utils/NightElfCheck";
 import getLogin from "../../../../../../utils/getLogin";
 
@@ -135,9 +136,9 @@ class ResourceSell extends Component {
     const { account, currentResourceIndex } = this.props;
     const { region } = this;
     const balance = account.resourceTokens[currentResourceIndex].balance;
-    const regionLine = [0, region, region * 2, region * 3, balance];
+    this.regionLine = [0, region, region * 2, region * 3, balance];
     const marks = {};
-    regionLine.forEach(item => {
+    this.regionLine.forEach(item => {
       marks[item] = '';
     });
     return marks;
@@ -255,6 +256,8 @@ class ResourceSell extends Component {
   }
 
   onChangeSlide(e) {
+    e = getMagneticValue(e, this.regionLine);
+
     this.setState({
       purchaseQuantity: +e
     });
