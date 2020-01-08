@@ -497,6 +497,7 @@ export default class ResourceBuy extends Component {
         <Slider
           marks={this.getSlideMarks()}
           dots={false}
+          step={0.01}
           disabled={disabled}
           min={0}
           value={inputValue}

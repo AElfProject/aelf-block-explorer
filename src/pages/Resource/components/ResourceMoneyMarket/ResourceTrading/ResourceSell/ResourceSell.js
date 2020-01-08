@@ -151,7 +151,7 @@ class ResourceSell extends Component {
     return (
       <Slider
         marks={this.getSlideMarks()}
-        step={region}
+        step={0.01}
         disabled={disabled}
         min={0}
         value={purchaseQuantity}
