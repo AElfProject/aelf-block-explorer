@@ -17,10 +17,11 @@
   }
   &-address {
     display: flex;
-    flex-flow: row nowrap;
     justify-content: space-between;
+    flex-wrap: wrap;
     &-name {
       font-weight: bold;
+      flex-grow: 1;
     }
     &-update {
       color: @bgMain;
@@ -28,6 +29,9 @@
     &-update:hover, &-update:active, &-update:focus {
       color: @hoverColor;
     }
+  }
+  &-operation-container{
+    flex-grow: 1;
   }
   &-info {
     .ant-row-flex {
