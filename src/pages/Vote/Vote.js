@@ -1412,7 +1412,7 @@ class VoteContainer extends Component {
           >
             Election Notification
           </Menu.Item>
-          {isSmallScreen ? null : (
+          {this.isPhone ? null : (
             <Menu.Item
               key={routePaths.myVote}
               onClick={() => {
