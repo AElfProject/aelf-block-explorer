@@ -177,19 +177,19 @@ export default class ResourceAElfWallet extends PureComponent {
                 {wallet.name}
                 &nbsp;&nbsp;&nbsp;
                 {ADDRESS_INFO.PREFIX + '_' + wallet.address + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              </Col>
-
-              <Col className="resource-wallet-operation-container">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 { wallet.address !== '-' && <Link to={`/resourceDetail/${wallet.address}`}>
                   Transaction Details
                 </Link> }
+              </Col>
+
+              <Col className="resource-wallet-operation-container">
                 <Button
                     className='resource-wallet-address-update update-btn'
                     disabled={!(currentWallet && currentWallet.address && tokenContract)}
                     onClick={this.refreshWalletInfo}
                 >
-                  <Icon type='sync' spin={loading} />
+                  Refresh<Icon type='sync' spin={loading} />
                 </Button>
 
                 { currentWallet && currentWallet.name && <Button

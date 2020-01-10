@@ -363,7 +363,7 @@ export default class MyWalletCard extends PureComponent {
             disabled={!(currentWallet && currentWallet.address)}
             onClick={this.handleUpdateWalletClick}
           >
-            <Icon type="sync" spin={loading} />
+            Refresh<Icon type="sync" spin={loading} />
           </Button>
         </div>
         <div className="my-wallet-card-body-wallet-title">

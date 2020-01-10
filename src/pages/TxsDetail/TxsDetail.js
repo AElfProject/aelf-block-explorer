@@ -4,11 +4,13 @@
  */
 
 import React from 'react';
-import { Row, Col, Divider } from 'antd';
-import { isEmpty, map } from 'lodash';
+import { Row, Col, Tag, Input } from 'antd';
+import { isEmpty } from 'lodash';
 import { aelf, formatKey } from '../../utils';
 
 import './txsdetail.styles.less';
+
+const {TextArea} = Input;
 
 export default class TxsDetailPage extends React.Component {
   constructor(props) {
@@ -41,11 +43,54 @@ export default class TxsDetailPage extends React.Component {
     this.fetchTxInfo(params.id);
   }
 
+  renderStatus(value) {
+    switch (value) {
+      case 'MINED':
+        return <Tag color="green">{value}</Tag>;
+        break;
+      case 'FAILED':
+        return <Tag color="red">{value}</Tag>;
+        break;
+      case 'PENDING':
+        return <Tag color="orange">{value}</Tag>;
+        break;
+      default:
+        return <Tag>{value}</Tag>;
+        break;
+    }
+  }
+
+  renderCodeLikeParams(value, rows = 8) {
+    let jsonFormatted = value;
+    try {
+      jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
+    } catch(e) {
+      // do nothing
+    }
+
+    return <TextArea rows={rows} value={jsonFormatted} disabled/>
+  }
+
   renderCol(key, value) {
     if (typeof value === 'object') {
       // return this.renderCols(value);
       value = JSON.stringify(value);
     }
+    console.log('txDetail key: ', key);
+    let valueHTML = value;
+
+    switch (key) {
+      case 'Status':
+        valueHTML = this.renderStatus(value);
+        break;
+      case 'Transaction_Params':
+        valueHTML = this.renderCodeLikeParams(value);
+        break;
+      case 'Bloom':
+        valueHTML = this.renderCodeLikeParams(value, 1);
+        break;
+    }
+
     return (
       <Row className='tx-detail-row' key={key}>
         <Col
@@ -58,7 +103,7 @@ export default class TxsDetailPage extends React.Component {
           style={{ height: 'auto', wordBreak: 'break-all' }}
           xs={24} sm={24} md={18} lg={18} xl={18}
         >
-          <div className="text-ellipsis">{value}</div>
+          <div className="text-ellipsis">{valueHTML}</div>
         </Col>
         {/* <Divider dashed style={{ marginTop: 10 }} /> */}
       </Row>

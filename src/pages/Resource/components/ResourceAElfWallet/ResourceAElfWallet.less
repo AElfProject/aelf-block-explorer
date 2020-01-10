@@ -22,9 +22,13 @@
     &-name {
       font-weight: bold;
       flex-grow: 1;
+      line-height: 32px;
     }
     &-update {
       color: @bgMain;
+      &:last-child {
+        padding-right: 0;
+      }
     }
     &-update:hover, &-update:active, &-update:focus {
       color: @hoverColor;
@@ -32,6 +36,8 @@
   }
   &-operation-container{
     flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
   }
   &-info {
     .ant-row-flex {
