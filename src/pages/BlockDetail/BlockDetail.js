@@ -178,13 +178,41 @@ export default class BlockDetailPage extends React.Component {
         );
     }
 
+    renderCodeLikeParams(value, rows = 8) {
+        let jsonFormatted = value;
+        try {
+            jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
+        } catch(e) {
+            // do nothing
+        }
+
+        return <textarea
+          rows={rows}
+          value={jsonFormatted}
+          className='tx-block-code-like-content'
+          disabled>
+        </textarea>
+    }
+
     renderCol(key, value) {
         // If you want double click & select, you need the extra <div>.
         // Because of the 'float'? I do not clear it.
+
+        let valueHTML = value;
+
+        switch (key) {
+            case 'Extra':
+                valueHTML = this.renderCodeLikeParams(value, 4);
+                break;
+            case 'Bloom':
+                valueHTML = this.renderCodeLikeParams(value, 1);
+                break;
+        }
+
         return (
             <Row key={key + Math.random()}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6} className='title'>{formatKey(key)}</Col>
-                <Col xs={24} sm={24} md={18} lg={18} xl={18}><div>{value}</div></Col>
+                <Col xs={24} sm={24} md={18} lg={18} xl={18}><div>{valueHTML}</div></Col>
               {/*<Col span={6}>{formatKey(key)}</Col>*/}
               {/*<Col span={18}><div>{value}</div></Col>*/}
             </Row>

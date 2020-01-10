@@ -68,7 +68,12 @@ export default class TxsDetailPage extends React.Component {
       // do nothing
     }
 
-    return <TextArea rows={rows} value={jsonFormatted} disabled/>
+    return <textarea
+      rows={rows}
+      value={jsonFormatted}
+      className='tx-block-code-like-content'
+      disabled>
+    </textarea>
   }
 
   renderCol(key, value) {
