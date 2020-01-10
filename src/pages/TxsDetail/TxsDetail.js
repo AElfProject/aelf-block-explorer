@@ -114,7 +114,7 @@ export default class TxsDetailPage extends React.Component {
         break;
       case 'BlockNumber':
         const confirmedBlocks = LastIrreversibleBlockHeight - value;
-        const isIB = confirmedBlocks > 0;
+        const isIB = confirmedBlocks >= 0;
 
         valueHTML = (<>
           {value} {isIB

@@ -220,7 +220,7 @@ export default class BlockDetailPage extends React.Component {
                 break;
             case 'Height':
                 const confirmedBlocks = LastIrreversibleBlockHeight - value;
-                const isIB = confirmedBlocks > 0;
+                const isIB = confirmedBlocks >= 0;
 
                 valueHTML = (<>
                     {value} {isIB
