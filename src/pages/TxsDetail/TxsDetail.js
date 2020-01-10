@@ -18,6 +18,7 @@ export default class TxsDetailPage extends React.Component {
     this.state = {
       txsId: props.match.params.id || '',
       status: 'Pending',
+      chainStatus: {},
       blockHeight: -1,
       from: '',
       to: '',
@@ -30,12 +31,24 @@ export default class TxsDetailPage extends React.Component {
     if (isEmpty(txsId)) {
       return;
     }
-    aelf.chain.getTxResult(txsId, (error, result) => {
+
+    Promise.all([
+      aelf.chain.getChainStatus(),
+      aelf.chain.getTxResult(txsId)
+    ]).then(result => {
       this.setState({
-        result,
+        chainStatus: result[0],
+        result: result[1],
+        error: null
+      });
+
+    }).catch(error => {
+      this.setState({
+        result: {},
         error
       });
     });
+
   };
 
   componentDidMount() {
@@ -44,6 +57,7 @@ export default class TxsDetailPage extends React.Component {
   }
 
   renderStatus(value) {
+    const {LastIrreversibleBlockHeight} = this.state.chainStatus;
     switch (value) {
       case 'MINED':
         return <Tag color="green">{value}</Tag>;
@@ -83,6 +97,7 @@ export default class TxsDetailPage extends React.Component {
     }
     // console.log('txDetail key: ', key);
     let valueHTML = value;
+    const {LastIrreversibleBlockHeight} = this.state.chainStatus;
 
     switch (key) {
       case 'Status':
@@ -96,6 +111,16 @@ export default class TxsDetailPage extends React.Component {
         break;
       case 'Bloom':
         valueHTML = this.renderCodeLikeParams(value, 1);
+        break;
+      case 'BlockNumber':
+        const confirmedBlocks = LastIrreversibleBlockHeight - value;
+        const isIB = confirmedBlocks > 0;
+
+        valueHTML = (<>
+          {value} {isIB
+            ? <Tag>{confirmedBlocks} Block Confirmations </Tag>
+            : (<Tag color='red'>Unconfirmed</Tag>)}
+          </>);
         break;
     }
 

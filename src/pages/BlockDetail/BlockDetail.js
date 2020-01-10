@@ -7,7 +7,7 @@ import {
     Col,
     Icon,
     Table,
-    message
+    message, Tag
 } from 'antd';
 import {
     aelf,
@@ -32,6 +32,7 @@ export default class BlockDetailPage extends React.Component {
             txsCount: 0,
             blockHash: '',
             blockTime: 0,
+            chainStatus: {},
             txs: [],
             pagination: {
                 pageSize: isPhoneCheck() ? 8 : 20,
@@ -53,8 +54,17 @@ export default class BlockDetailPage extends React.Component {
         return await get('/block/transactions', getTxsOption);
     }
 
+    getChainStatus() {
+        aelf.chain.getChainStatus().then(result => {
+            this.setState({
+                chainStatus: result
+            });
+        });
+    }
+
     // fetchBlockInfo = blockHeight => {
     fetchBlockInfo = async (input) => {
+        this.getChainStatus();
         this.setState({
             txs_loading: true
         });
@@ -199,6 +209,7 @@ export default class BlockDetailPage extends React.Component {
         // Because of the 'float'? I do not clear it.
 
         let valueHTML = value;
+        const {LastIrreversibleBlockHeight} = this.state.chainStatus;
 
         switch (key) {
             case 'Extra':
@@ -206,6 +217,16 @@ export default class BlockDetailPage extends React.Component {
                 break;
             case 'Bloom':
                 valueHTML = this.renderCodeLikeParams(value, 1);
+                break;
+            case 'Height':
+                const confirmedBlocks = LastIrreversibleBlockHeight - value;
+                const isIB = confirmedBlocks > 0;
+
+                valueHTML = (<>
+                    {value} {isIB
+                  ? <Tag>{confirmedBlocks} Block Confirmations </Tag>
+                  : (<Tag color='red'>Unconfirmed</Tag>)}
+                </>);
                 break;
         }
 
