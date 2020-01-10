@@ -57,6 +57,9 @@ export default class MyVote extends Component {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {file: 'MyVote.js'}, result => {
         if (result.error) {
+          this.setState({
+            spinningLoading: false
+          });
           // message.warn(result.message || result.errorMessage.message);
         } else {
           const wallet =  JSON.parse(result.detail);
@@ -75,10 +78,12 @@ export default class MyVote extends Component {
         }
       }, false);
     }).catch(error => {
+      this.setState({
+        spinningLoading: false
+      });
       // message.warn('Please download and install NightELF browser extension.');
     });
   }
-
 
   fetchTableDataAndStatisData(currentWalletTemp) {
     const { electionContract } = this.props;

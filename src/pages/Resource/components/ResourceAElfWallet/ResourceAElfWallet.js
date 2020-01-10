@@ -77,6 +77,10 @@ export default class ResourceAElfWallet extends PureComponent {
           loading: false
         })
       });
+    } else {
+      this.setState({
+        loading: false
+      })
     }
   }
 
