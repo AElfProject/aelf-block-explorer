@@ -13,7 +13,7 @@ import { ADDRESS_INFO } from '@config/config';
 import { MY_VOTE_DATA_TIP } from '@src/constants';
 import NightElfCheck from "../../../utils/NightElfCheck";
 import getLogin from "../../../utils/getLogin";
-import {message} from "antd";
+import {message, Spin} from "antd";
 import {isPhoneCheck} from "../../../utils/deviceCheck";
 
 export default class MyVote extends Component {
@@ -22,6 +22,7 @@ export default class MyVote extends Component {
     this.state = {
       statisData: myVoteStatisData,
       tableData: [],
+      spinningLoading: true,
       currentWallet: {
         address: null,
         name: null,
@@ -217,7 +218,8 @@ export default class MyVote extends Component {
     // todo: withdrawn's timestamp
 
     this.setState({
-      tableData
+      tableData,
+      spinningLoading: false
     });
   }
 
@@ -227,17 +229,20 @@ export default class MyVote extends Component {
     // todo: Is it required?
     statisData = { ...statisData };
     this.setState({
-      statisData
+      statisData,
+      spinningLoading: false
     });
   }
 
   render() {
-    const { statisData, tableData } = this.state;
+    const { statisData, spinningLoading, tableData } = this.state;
 
     return (
       <section>
-        <StatisticalData data={statisData} tooltip={MY_VOTE_DATA_TIP} />
-        <MyVoteRecord data={tableData} />
+        <Spin spinning={spinningLoading}>
+          <StatisticalData data={statisData} tooltip={MY_VOTE_DATA_TIP} />
+          <MyVoteRecord data={tableData} />
+        </Spin>
       </section>
     );
   }

@@ -76,7 +76,7 @@ export default class TxsDetailPage extends React.Component {
       // return this.renderCols(value);
       value = JSON.stringify(value);
     }
-    console.log('txDetail key: ', key);
+    // console.log('txDetail key: ', key);
     let valueHTML = value;
 
     switch (key) {

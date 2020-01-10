@@ -29,7 +29,7 @@ export default class ResourceAElfWallet extends PureComponent {
       address: '-'
     };
     this.state = {
-      loading: false
+      loading: true
     };
     this.refreshWalletInfo = this.refreshWalletInfo.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
@@ -46,7 +46,12 @@ export default class ResourceAElfWallet extends PureComponent {
       currentWallet,
       tokenContract
     } = this.props;
-    if (currentWallet && (!prevProps.currentWallet || prevProps.currentWallet.address !== currentWallet.address) && tokenContract) {
+    // console.log('refreshWalletInfo update: ', tokenContract, currentWallet, prevProps.currentWallet, prevProps.tokenContract);
+
+    if (currentWallet && tokenContract && !prevProps.tokenContract) {
+      this.refreshWalletInfo();
+    } else if (currentWallet && tokenContract
+      && (!prevProps.currentWallet || prevProps.currentWallet.address !== currentWallet.address)) {
       this.refreshWalletInfo();
     }
   }
