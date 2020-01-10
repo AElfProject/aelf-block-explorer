@@ -88,8 +88,11 @@ export default class TxsDetailPage extends React.Component {
       case 'Status':
         valueHTML = this.renderStatus(value);
         break;
+      case 'Logs':
+        valueHTML = this.renderCodeLikeParams(value, 8);
+        break;
       case 'Transaction_Params':
-        valueHTML = this.renderCodeLikeParams(value);
+        valueHTML = this.renderCodeLikeParams(value, 6);
         break;
       case 'Bloom':
         valueHTML = this.renderCodeLikeParams(value, 1);
