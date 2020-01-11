@@ -32,16 +32,11 @@ export default class TxsDetailPage extends React.Component {
       return;
     }
 
-    Promise.all([
-      aelf.chain.getChainStatus(),
-      aelf.chain.getTxResult(txsId)
-    ]).then(result => {
+    aelf.chain.getTxResult(txsId).then(result => {
       this.setState({
-        chainStatus: result[0],
-        result: result[1],
+        result,
         error: null
       });
-
     }).catch(error => {
       this.setState({
         result: {},
@@ -49,6 +44,11 @@ export default class TxsDetailPage extends React.Component {
       });
     });
 
+    aelf.chain.getChainStatus().then(chainStatus => {
+      this.setState({
+        chainStatus,
+      });
+    });
   };
 
   componentDidMount() {
@@ -57,7 +57,6 @@ export default class TxsDetailPage extends React.Component {
   }
 
   renderStatus(value) {
-    const {LastIrreversibleBlockHeight} = this.state.chainStatus;
     switch (value) {
       case 'MINED':
         return <Tag color="green">{value}</Tag>;
@@ -115,6 +114,10 @@ export default class TxsDetailPage extends React.Component {
         valueHTML = this.renderCodeLikeParams(value, 1);
         break;
       case 'BlockNumber':
+        if (!LastIrreversibleBlockHeight) {
+          return valueHTML;
+        }
+        // console.log('LastIrreversibleBlockHeight: ', LastIrreversibleBlockHeight, value, this.state.chainStatus);
         const confirmedBlocks = LastIrreversibleBlockHeight - value;
         const isIB = confirmedBlocks >= 0;
 

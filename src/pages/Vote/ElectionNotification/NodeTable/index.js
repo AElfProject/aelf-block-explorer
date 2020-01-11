@@ -64,11 +64,15 @@ class NodeTable extends PureComponent {
 
   // todo: how to combine cdm & cdu
   componentDidMount() {
-    this.fetchData();
+    setTimeout(() => {
+      this.fetchData();
+    }, 100);
   }
 
   componentDidUpdate() {
-    this.fetchData();
+    setTimeout(() => {
+      this.fetchData();
+    }, 100);
   }
 
   getColumnSearchProps = dataIndex => ({

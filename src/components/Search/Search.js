@@ -42,7 +42,7 @@ export default class Search extends PureComponent {
             const url = `/address/${value}`;
             // window.open(url);
             window.location.pathname = url;
-            message.info('open new window: Address Detail');
+            // message.info('open new window: Address Detail');
         },
         async transaction(value) {
             let getTxsOption = {
@@ -56,12 +56,12 @@ export default class Search extends PureComponent {
             if (isBlock) {
                 // window.open(`/block/${value}`);
                 window.location.pathname = `/block/${value}`;
-                message.info('open new window: Block Detail');
+                // message.info('open new window: Block Detail');
             }
             else {
                 // window.open(`/tx/${value}`);
                 window.location.pathname = `/tx/${value}`;
-                message.info('open new window: Transaction Detail');
+                // message.info('open new window: Transaction Detail');
             }
         },
         blockHeight(value) {
