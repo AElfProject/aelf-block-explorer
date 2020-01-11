@@ -104,7 +104,9 @@ export default class TxsDetailPage extends React.Component {
         valueHTML = this.renderStatus(value);
         break;
       case 'Logs':
-        valueHTML = this.renderCodeLikeParams(value, 8);
+        if (value !== 'null' && value) {
+          valueHTML = this.renderCodeLikeParams(value, 8);
+        }
         break;
       case 'Transaction_Params':
         valueHTML = this.renderCodeLikeParams(value, 6);
