@@ -244,7 +244,6 @@ class ElectionNotification extends PureComponent {
       electionContractFromExt
         .AnnounceElection()
         .then(res => {
-          // todo: handle gloabally, like the way api using
           if (res.error) {
             message.error(res.errorMessage.message);
             return;
@@ -256,36 +255,24 @@ class ElectionNotification extends PureComponent {
           const transactionId = res.result
             ? res.result.TransactionId
             : res.TransactionId;
-          // todo: optimize the settimeout
-          setTimeout(() => {
-            console.log('transactionId', transactionId);
-            // todo: Extract the code getTxResult in the project
-            aelf.chain.getTxResult(transactionId, (error, result) => {
+          setTimeout(async () => {
+            try {
+              const result = await aelf.chain.getTxResult(transactionId);
               this.setState({
                 applyModalVisible: false
               });
-              if (error) {
-                message.error(
-                  `${error.Status}: ${error.Error}`,
-                  LONG_NOTIFI_TIME
-                );
-                message.error(
-                  `Transaction Id: ${transactionId}`,
-                  LONG_NOTIFI_TIME
-                );
-                return;
-              }
               const { Status: status } = result;
               getStateJudgment(status, transactionId);
-
-              // todo: handle the other status case
               if (status === txStatusInUpperCase.mined) {
                 this.props.history.push(
-                  `/vote/apply/keyin?pubkey=${currentWallet &&
+                    `/vote/apply/keyin?pubkey=${currentWallet &&
                     currentWallet.pubkey}`
                 );
               }
-            });
+            } catch (e) {
+              console.log(e);
+              message.error('message');
+            }
           }, 4000);
         })
         .catch(err => {

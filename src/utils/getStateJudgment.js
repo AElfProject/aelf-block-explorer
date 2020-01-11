@@ -6,11 +6,10 @@
 import { Message } from 'antd';
 
 export default function getStateJudgment(status, hash) {
-  switch (status) {
-    // todo: confirm the notexisted and failed
-    case 'NOT_EXISTED':
+  switch ((status || '').toUpperCase()) {
+    case 'NOTEXISTED':
       Message.error(
-        'The transaction is no existed. Please query the transaction ID',
+        'The transaction is no existed. Please make sure you have enough balance or query the transaction ID',
         10
       );
       Message.error('Transaction ID: ' + hash, 10);
