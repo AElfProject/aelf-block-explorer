@@ -38,6 +38,8 @@ import {
 } from '@src/pages/Vote/constants';
 import { ADDRESS_INFO } from '@config/config';
 import './index.less';
+import NightElfCheck from "../../../../utils/NightElfCheck";
+import getLogin from "../../../../utils/getLogin";
 
 const { Search } = Input;
 const clsPrefix = 'node-table';
@@ -54,6 +56,7 @@ class NodeTable extends PureComponent {
     super(props);
     this.state = {
       nodeList: [],
+      currentWallet: {},
       totalVotesAmount: null,
       // searchText: '',
       isLoading: false
@@ -64,15 +67,49 @@ class NodeTable extends PureComponent {
 
   // todo: how to combine cdm & cdu
   componentDidMount() {
-    setTimeout(() => {
-      this.fetchData();
-    }, 100);
+    this.getCurrentWallet();
   }
 
-  componentDidUpdate() {
-    setTimeout(() => {
-      this.fetchData();
-    }, 100);
+  componentDidUpdate(prevProps, prevState) {
+    // console.log('getCurrentWallet prevProps prevState: ', prevProps, prevState);
+    if (!prevProps.electionContract && this.props.electionContract) {
+      this.getCurrentWallet();
+    }
+  }
+
+  getCurrentWallet() {
+    if (this.isPhone) {
+      // message.info('View more on PC');
+      this.setState({
+        currentWallet: null
+      });
+      return null;
+    }
+
+    NightElfCheck.getInstance().check.then(ready => {
+      const nightElf = NightElfCheck.getAelfInstanceByExtension();
+      getLogin(nightElf, {}, result => {
+        if (result.error) {
+          // message.warn(result.message || result.errorMessage.message);
+        } else {
+          const wallet =  JSON.parse(result.detail);
+          const currentWallet = {
+            formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
+              address: wallet.address,
+              name: wallet.name,
+              pubKey: '04' + wallet.publicKey.x + wallet.publicKey.y
+          }
+          this.setState({
+            currentWallet
+          });
+          // console.log('getCurrentWallet currentWallet: ', currentWallet);
+          this.fetchData(currentWallet);
+        }
+      }, false);
+    }).catch(error => {
+      // console.log('getCurrentWallet.getInsta', error);
+      // message.warn('Please download and install NightELF browser extension.');
+    });
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -279,7 +316,7 @@ class NodeTable extends PureComponent {
     // this.setState({ searchText: '' });
   };
 
-  fetchData() {
+  fetchData(currentWallet) {
     const {
       electionContract,
       consensusContract,
@@ -307,7 +344,7 @@ class NodeTable extends PureComponent {
           // Need await to ensure the totalVotesCount take its seat.
           // todo: fetchTheTotalVotesAmount after contract changed
           // await this.fetchTotalVotesAmount();
-          this.fetchNodes();
+          this.fetchNodes(currentWallet);
         }
       );
       this.hasRun = true;
@@ -316,9 +353,9 @@ class NodeTable extends PureComponent {
 
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
-  fetchNodes() {
+  fetchNodes(currentWalletInput) {
     const { electionContract, consensusContract } = this.props;
-    const currentWallet = getCurrentWallet();
+    const currentWallet = currentWalletInput || this.state.currentWallet;
 
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
@@ -327,9 +364,9 @@ class NodeTable extends PureComponent {
         // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
-      currentWallet.pubkey
+      currentWallet.pubKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: currentWallet.pubkey
+            value: currentWallet.pubKey
           })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract)
