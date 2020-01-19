@@ -272,10 +272,11 @@ export default class MyWalletCard extends PureComponent {
           appName: APPNAME,
           address: currentWallet.address
         }, (error, result) => {
-          localStorage.removeItem('currentWallet');
-          this.handleUpdateWalletClick();
+          // localStorage.removeItem('currentWallet');
+          // this.handleUpdateWalletClick();
           // TODO: more refactor actions for login and logout
           message.success('Logout successful, refresh after 3s.', 3, () => {
+            localStorage.removeItem('currentWallet');
             window.location.reload();
           });
         }).catch(error => {
