@@ -331,7 +331,7 @@ export default class MyWalletCard extends PureComponent {
         value: thousandsCommaWithDecimal(withdrawnVotedVotesAmount, false)
       },
       {
-        type: 'Earlyest vote expired time',
+        type: 'Earliest vote expired time',
         value: thousandsCommaWithDecimal(lastestUnlockTime)
       }
     ];
