@@ -212,15 +212,11 @@ class ElectionNotification extends PureComponent {
           item.contract[subItem.method]
             .call()
             .then(res => {
-              if (res === null) {
-                message.error(`${subItem.method} failed.`);
-                return;
-              }
               // console.log(subItem.method, res);
               this.processStatisData(
                 subItem.statisDataKey,
                 key,
-                subItem.processor(res.value)
+                subItem.processor((res || {value: 0}).value)
               );
             })
             .catch(err => {
