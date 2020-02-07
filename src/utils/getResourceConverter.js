@@ -14,7 +14,7 @@ export default function getResourceConverter(type, tokenConverterContract, token
         getResourceWeight(tokenConverterContract, type),
         getTokenWeight(tokenConverterContract),
         getResourceBalance(tokenContract, type),
-        getTokenBalance(tokenContract)
+        getTokenBalance(tokenConverterContract, type)
     ]).then(result => {
         return result.reduce((acc, v) => ({...v, ...acc}), {})
     });

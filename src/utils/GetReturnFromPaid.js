@@ -12,9 +12,11 @@ import {Decimal} from 'decimal.js';
 export default function GetReturnFromPaid(fromConnectorBalance, fromConnectorWeight, toConnectorBalance, toConnectorWeight, paidAmount) {
     console.log('bf:', fromConnectorBalance, 'wf:', fromConnectorWeight, 'bt', toConnectorBalance, 'wt:', toConnectorWeight, 'a:', paidAmount);
     const bf = fromConnectorBalance;
-    const wf = fromConnectorWeight;
+    const wf = new Decimal(0.005);
+    // const wf = fromConnectorWeight;
     const bt = toConnectorBalance;
-    const wt = toConnectorWeight;
+    const wt = new Decimal(0.005);
+    // const wt = toConnectorWeight;
     const a = paidAmount;
     if (wf.toNumber() === wt.toNumber()) {
         // if both weights are the same, the formula can be reduce

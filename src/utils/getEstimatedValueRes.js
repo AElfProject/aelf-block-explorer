@@ -33,7 +33,7 @@ export default function getEstimatedValueRes(
           let elfPayout = null;
           if (switchMode) {
             elfPayout = GetReturnFromPaid(
-                result.elfBalance.plus(result.virtualBalance),
+                result.elfBalance,
                 result.tokenWeight,
                 result.resourceBalance,
                 result.resourceWeight,
@@ -43,7 +43,7 @@ export default function getEstimatedValueRes(
             elfPayout = GetReturnFromPaid(
                 result.resourceBalance,
                 result.resourceWeight,
-                result.elfBalance.plus(result.virtualBalance),
+                result.elfBalance,
                 result.tokenWeight,
                 sellResource
             );

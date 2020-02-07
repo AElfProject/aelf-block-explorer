@@ -30,14 +30,15 @@ export default function getEstimatedValueELF(
     getResourceConverter(type, tokenConverterContract, tokenContract).then(
       result => {
         if (result) {
-          if (result.resourceBalance.toNumber() >= Math.abs(pidRes)) {
+          if (result.resourceBalance.dividedBy(10e8).toNumber() >= Math.abs(pidRes)) {
             const resCont = Math.abs(pidRes) || 0;
             const elfPayout = GetAmountToPayFromReturn(
-              result.elfBalance.plus(result.virtualBalance),
+              result.elfBalance,
               result.tokenWeight,
               result.resourceBalance,
               result.resourceWeight,
-              resCont
+              resCont,
+                // (new Decimal(resCont)).mul(10e8)
             );
             resolve(elfPayout);
           } else {

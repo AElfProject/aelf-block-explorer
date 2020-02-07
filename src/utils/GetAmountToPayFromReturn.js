@@ -9,11 +9,18 @@ import {Decimal} from 'decimal.js';
 // Calculate the valuation according to the calculating formula
 
 export default function GetAmountToPayFromReturn(fromConnectorBalance, fromConnectorWeight, toConnectorBalance, toConnectorWeight, amountToReceive) {
-    console.log('bf:', fromConnectorBalance, 'wf:', fromConnectorWeight, 'bt', toConnectorBalance, 'wt:', toConnectorWeight, 'a:', amountToReceive);
+    console.log(
+        'bf:', fromConnectorBalance.toString(),
+        'wf:', fromConnectorWeight.toString(),
+        'bt', toConnectorBalance.toString(),
+        'wt:', toConnectorWeight.toString(),
+        'a:', amountToReceive.toString());
     const bf = fromConnectorBalance;
-    const wf = fromConnectorWeight;
+    // const wf = fromConnectorWeight;
+    const wf = new Decimal(0.005);
     const bt = toConnectorBalance;
-    const wt = toConnectorWeight;
+    // const wt = toConnectorWeight;
+    const wt = new Decimal(0.005);
     const a = amountToReceive;
 
     if (wf.toNumber() === wt.toNumber()) {
