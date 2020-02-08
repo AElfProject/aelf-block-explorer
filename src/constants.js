@@ -30,6 +30,7 @@ const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
 const RESOURCE_TURNOVER = '/resource/turnover';
 const RESOURCE_RECORDS = '/resource/records';
 const SOCKET_URL = '/socket';
+const BASIC_INFO = '/chain-info';
 
 const LOWER_SYMBOL = SYMBOL.toLocaleLowerCase();
 const PAGE_SIZE = 25;
@@ -365,6 +366,7 @@ export {
   RESOURCE_RECORDS,
   RESOURCE_DETAILS_COLUMN,
   SOCKET_URL,
+  BASIC_INFO,
   IE_ADVICE,
   INPUT_STARTS_WITH_MINUS_TIP,
   INPUT_ZERO_TIP,

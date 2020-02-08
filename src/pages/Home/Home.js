@@ -24,7 +24,8 @@ import {
     PAGE_SIZE,
     ALL_BLOCKS_API_URL,
     ALL_TXS_API_URL,
-    SOCKET_URL
+    SOCKET_URL,
+    BASIC_INFO
 } from '../../constants';
 import {ADDRESS_INFO} from '../../../config/config';
 
@@ -83,7 +84,26 @@ export default class HomePage extends Component {
             totalTransactions
         });
 
+        this.initBasicInfo();
         this.initSocket();
+    }
+
+    async initBasicInfo() {
+        const result = await get(BASIC_INFO);
+
+        const {
+            height = 0,
+            totalTxs,
+            unconfirmedBlockHeight = 0,
+            accountNumber = 0
+        } = result;
+
+        this.blockHeight = height;
+        this.unconfirmedBlockHeight = unconfirmedBlockHeight;
+        this.setState({
+            totalTransactions: totalTxs,
+            totalAccounts: accountNumber
+        });
     }
 
     initSocket() {
@@ -101,12 +121,16 @@ export default class HomePage extends Component {
             }
         });
 
-        this.socket.on('getOnFirst', data => {
-            this.handleSocketData(data, true);
-            this.socket.on('getBlocksList', data => {
+        let isFirst = true;
+        this.socket.on('getBlocksList', data => {
+            if (isFirst) {
+                this.handleSocketData(data, true);
+                isFirst = false;
+            } else {
                 this.handleSocketData(data);
-            });
+            }
         });
+
         this.socket.emit('getBlocksList');
     }
 
