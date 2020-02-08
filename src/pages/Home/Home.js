@@ -70,22 +70,28 @@ export default class HomePage extends Component {
     async componentDidMount() {
         // it's simplest that it do not need block_scan_api to get full chain data.
         // but it need a some sugar.
+        this.initTxs();
+        this.initBlock();
+        this.initBasicInfo();
+        this.initSocket();
+    }
+
+    async initBlock () {
         const blocksResult = await this.fetch(ALL_BLOCKS_API_URL);
-
         const blocks = blocksResult.blocks;
+        this.setState({
+            blocks
+        });
+    }
 
+    async initTxs () {
         const TXSResult = await this.fetch(ALL_TXS_API_URL);
         const transactions = TXSResult.transactions;
         const totalTransactions = TXSResult.total;
-
         this.setState({
-            blocks,
             transactions,
             totalTransactions
         });
-
-        this.initBasicInfo();
-        this.initSocket();
     }
 
     async initBasicInfo() {
