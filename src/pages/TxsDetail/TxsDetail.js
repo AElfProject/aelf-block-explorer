@@ -7,6 +7,7 @@ import React from 'react';
 import { Row, Col, Tag, Input } from 'antd';
 import { isEmpty } from 'lodash';
 import { aelf, formatKey } from '../../utils';
+import addressFormat from '../../utils/addressFormat';
 
 import './txsdetail.styles.less';
 
@@ -109,6 +110,12 @@ export default class TxsDetailPage extends React.Component {
         break;
       case 'Transaction_Params':
         valueHTML = this.renderCodeLikeParams(value, 6);
+        break;
+      case 'Transaction_From':
+        valueHTML = addressFormat(value);
+        break;
+      case 'Transaction_To':
+        valueHTML = addressFormat(value);
         break;
       case 'Bloom':
         valueHTML = this.renderCodeLikeParams(value, 1);
