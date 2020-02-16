@@ -9,7 +9,7 @@ import React, {
 import {
     Select
 } from 'antd';
-import {ADDRESS_INFO, CHAINS_LINK} from '../../../config/config';
+import {ADDRESS_INFO, CHAINS_LINK, CHAINS_LINK_NAMES} from '../../../config/config';
 
 import './ChainSelect.styles.less';
 
@@ -26,7 +26,7 @@ export default class ChainSelect extends Component {
               key={item + Math.random()}
               value={item}
             >
-                {item}
+                {CHAINS_LINK_NAMES[item].replace('chain', '')}
             </Option>;
         });
         return chainIdHTML;
