@@ -41,6 +41,10 @@ export default class BlockDetailPage extends React.Component {
             },
             txs_loading: true
         };
+
+        this.retryBlockInfoLimit = 2;
+        this.retryBlockInfoCount = 0;
+        this.retryBlockInfoInterval = 1000;
     }
 
     async getTxsList(blockhash, page) {
@@ -123,6 +127,15 @@ export default class BlockDetailPage extends React.Component {
             txs: txsList && txsList.transactions || [],
             pagination
         });
+        if (!txsList || !txsList.transactions || !txsList.transactions.length) {
+            if (this.retryBlockInfoCount >= this.retryBlockInfoLimit) {
+                return;
+            }
+            this.retryBlockInfoCount++;
+            setTimeout(() => {
+                this.fetchBlockInfo(input);
+            }, this.retryBlockInfoInterval);
+        }
     };
 
     componentDidMount() {

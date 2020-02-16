@@ -123,12 +123,22 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Block Height',
     dataIndex: 'block_height',
     key: 'block_height',
+    width: 150,
     render: text => <Link to={`/block/${text}`}> {text} </Link>
+  },
+  {
+    title: 'Block Hash',
+    dataIndex: 'block_hash',
+    key: 'block_hash',
+    width: 500,
+    ellipsis: true,
+    render: (text, row) => <Link to={`/block/${row.block_height}`}> {text} </Link>
   },
   {
     title: 'Age',
     dataIndex: 'time',
     key: 'time',
+    width: 150,
     render: time => <span> {dayjs(time).format('YYYY/MM/DD HH:mm:ss')} </span>
     //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   },
@@ -136,6 +146,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Number of Txs ',
     dataIndex: 'tx_count ',
     key: 'tx_count ',
+    width: 150,
     render: (text, row) =>
       !isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
         <Link to={`/txs/block?${row.block_hash}`}> {row.tx_count} </Link>
