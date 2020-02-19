@@ -284,7 +284,7 @@ class BrowserHeader extends PureComponent {
             {/*  icon='aelf_logo_purple'*/}
             {/*  className='aelf-logo-container'*/}
             {/*/>*/}
-            <img alt="航天智慧" src="https://aelf.io/gridcn/hangtianzhihui.png" style={{height: 90%}} />
+            <img alt="航天智慧" src="https://aelf.io/gridcn/hangtianzhihui.png" style={{height: "90%"}} />
           </Link>
 
           {mobileMoreHTML}
