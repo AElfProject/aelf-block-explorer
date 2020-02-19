@@ -137,7 +137,7 @@ class BrowserHeader extends PureComponent {
     return <SubMenu
       title={
         <span className='submenu-title-wrapper'>
-                  EXPLORERS
+                  浏览器
             </span>
       }
       className='aelf-submenu-container'
@@ -153,7 +153,8 @@ class BrowserHeader extends PureComponent {
 
     let voteHTML = '';
     let resourceHTML = '';
-    if (chain_id === config.MAINCHAINID) {
+    // if (chain_id === config.MAINCHAINID) {
+    if (0) {
       voteHTML = (
         <Menu.Item key='/vote'>
           {/* <Icon type='appstore' /> */}
@@ -184,32 +185,32 @@ class BrowserHeader extends PureComponent {
       >
         <Menu.Item key='/home'>
           {/* <Icon type='home' /> */}
-          <Link to='/'>HOME</Link>
+          <Link to='/'>首页</Link>
         </Menu.Item>
         <SubMenu
           title={
             <span className='submenu-title-wrapper'>
               {/* <Icon type='gold' /> */}
-              BLOCKCHAIN
+              区块链
             </span>
           }
           className='aelf-submenu-container'
         >
-          <MenuItemGroup title='Block'>
+          <MenuItemGroup title='区块'>
             <Menu.Item key='/blocks'>
               {/* <Icon type='gold' /> */}
-              <Link to='/blocks'>View Blocks</Link>
+              <Link to='/blocks'>查看区块</Link>
             </Menu.Item>
           </MenuItemGroup>
-          <MenuItemGroup title='Transaction'>
+          <MenuItemGroup title='交易'>
             <Menu.Item key='/txs'>
               {/* <Icon type='pay-circle' /> */}
-              <Link to='/txs'>View Transactions</Link>
+              <Link to='/txs'>查看交易</Link>
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
         <Menu.Item key='/contract'>
-          <Link to='/contract'>CONTRACT</Link>
+          <Link to='/contract'>合约</Link>
         </Menu.Item>
         {/* <Menu.Item key='/wallet'>
           <a
@@ -235,7 +236,7 @@ class BrowserHeader extends PureComponent {
             target='_blank'
             rel='noopener noreferrer'
           >
-            ABOUT
+            关于
           </a>
         </Menu.Item>
         {isPhone && this.renderPhoneMenu()}
@@ -279,10 +280,11 @@ class BrowserHeader extends PureComponent {
       <div className='header-fixed-container'>
         <div className={headerClass}>
           <Link to='/' key='logo'>
-            <Svg
-              icon='aelf_logo_purple'
-              className='aelf-logo-container'
-            />
+            {/*<Svg*/}
+            {/*  icon='aelf_logo_purple'*/}
+            {/*  className='aelf-logo-container'*/}
+            {/*/>*/}
+            <img alt="航天智慧" src="https://aelf.io/gridcn/hangtianzhihui.png" />
           </Link>
 
           {mobileMoreHTML}

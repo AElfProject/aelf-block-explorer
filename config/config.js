@@ -6,11 +6,14 @@ const config = require('./config.json');
 
 // the block chain URL this explorer is serving
 
-const BUILD_ENDPOINT = 'http://192.168.197.14:8000';
+// const BUILD_ENDPOINT = 'http://192.168.197.14:8000';
+const BUILD_ENDPOINT = 'http://13.231.179.27:8000';
 const MAINCHAINID = 'AELF';
 const ADDRESS_INFO = {
-  PREFIX: 'ELF',
-  CURRENT_CHAIN_ID: 'AELF'
+  // PREFIX: 'ELF',
+  // CURRENT_CHAIN_ID: 'AELF'
+  PREFIX: 'CASIC',
+  CURRENT_CHAIN_ID: 'MAIN'
 };
 // ChainId: AELF, Symbol: ELF，resource token
 // ChainId: tDVV, Symbol: EPC (AElf public chain)
@@ -27,12 +30,12 @@ const CHAINS_LINK = {
   tDVZ: 'https://explorer-test-side05.aelf.io'
 };
 const CHAINS_LINK_NAMES = {
-  AELF: 'Main chain AELF',
-  tDVV: 'Side chain tDVV',
-  tDVW: 'Side chain tDVW',
-  tDVX: 'Side chain tDVX',
-  tDVY: 'Side chain tDVY',
-  tDVZ: 'Side chain tDVZ'
+  AELF: 'Main',
+  tDVV: 'Side 1',
+  tDVW: 'Side 2',
+  tDVX: 'Side 3',
+  tDVY: 'Side 4',
+  tDVZ: 'Side 5'
 };
 const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
 const APPNAME = 'explorer.aelf.io';

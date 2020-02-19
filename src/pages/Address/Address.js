@@ -112,7 +112,7 @@ export default class AddressPage extends React.Component {
         <h3 className='address-context'>{ADDRESS_INFO.PREFIX + '_' + address + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID}</h3>
         <h3 className='transaction-counts'>
           {(this.state.pagination.total && this.state.pagination.total.toLocaleString()) || '-'}{' '}
-          Transactions
+          交易
         </h3>
         <Table
           columns={ALL_TXS_LIST_COLUMNS}

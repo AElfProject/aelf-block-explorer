@@ -120,14 +120,14 @@ const RPCSERVER = DEFAUTRPCSERVER;
 // TODO: Why is this undefined?
 const BLOCKS_LIST_COLUMNS = [
   {
-    title: 'Block Height',
+    title: '区块高度',
     dataIndex: 'block_height',
     key: 'block_height',
     width: 150,
     render: text => <Link to={`/block/${text}`}> {text} </Link>
   },
   {
-    title: 'Block Hash',
+    title: '区块哈希',
     dataIndex: 'block_hash',
     key: 'block_hash',
     width: 500,
@@ -135,7 +135,7 @@ const BLOCKS_LIST_COLUMNS = [
     render: (text, row) => <Link to={`/block/${row.block_height}`}> {text} </Link>
   },
   {
-    title: 'Age',
+    title: '产生时间',
     dataIndex: 'time',
     key: 'time',
     width: 150,
@@ -143,7 +143,7 @@ const BLOCKS_LIST_COLUMNS = [
     //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   },
   {
-    title: 'Number of Txs ',
+    title: '区块交易数',
     dataIndex: 'tx_count ',
     key: 'tx_count ',
     width: 150,
@@ -158,7 +158,7 @@ const BLOCKS_LIST_COLUMNS = [
 
 const ALL_TXS_LIST_COLUMNS = [
   {
-    title: 'Tx Id ',
+    title: '交易ID',
     dataIndex: 'tx_id ',
     key: 'tx_id ',
     width: 400,
@@ -170,7 +170,7 @@ const ALL_TXS_LIST_COLUMNS = [
     )
   },
   {
-    title: 'Block Height ',
+    title: '区块高度',
     dataIndex: 'block_height ',
     key: 'block_height ',
     width: 150,
@@ -183,7 +183,7 @@ const ALL_TXS_LIST_COLUMNS = [
     )
   },
   {
-    title: 'From ',
+    title: '发起',
     dataIndex: 'address_from ',
     key: 'address_from ',
     // width: 300,
@@ -202,7 +202,7 @@ const ALL_TXS_LIST_COLUMNS = [
     render: () => <Icon type="arrow-right" theme="outlined" />
   },
   {
-    title: 'To ',
+    title: '接收 ',
     dataIndex: 'address_to ',
     key: 'address_to ',
     ellipsis: true,
@@ -214,7 +214,7 @@ const ALL_TXS_LIST_COLUMNS = [
     )
   },
   {
-      title: 'Amount',
+      title: '数量',
       dataIndex: 'amount',
       key: 'amount',
       render: (text, row) => {

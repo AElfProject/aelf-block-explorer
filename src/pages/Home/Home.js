@@ -184,19 +184,19 @@ export default class HomePage extends Component {
         // TODO:getBasicInfo data
         // TODO: ensure the data to be type of number at the time getting the data
         const basicInfo = [{
-            title: 'Block Height',
+            title: '区块高度',
             info: +this.blockHeight
         }, {
-            title: 'Unconfirmed Block',
+            title: '待确认交易',
             info: +this.unconfirmedBlockHeight
         }, {
-            title: 'Total Transactions',
+            title: '总交易数',
             info: +this.state.totalTransactions
         }, {
-            title: 'Total Accounts',
+            title: '地址数',
             info: +this.state.totalAccounts || '-'
         }, {
-            title: 'Total Side Chains',
+            title: '侧链数',
             info: 5
         }];
 
@@ -261,7 +261,7 @@ export default class HomePage extends Component {
                     >
                         <Col xs={24} sm={24} md={24} lg={24} className="first-page-sub-container">
                             <div className='home-basic-title-con'>
-                                <span className='TPSChart-title'>Transaction Per Minute</span>
+                                <span className='TPSChart-title'>每分钟交易数</span>
                             </div>
                             <ContainerRichard>
                                 <TPSChart/>
@@ -391,10 +391,10 @@ export default class HomePage extends Component {
                 <Col xs={24} sm={24} md={12} className="container-list">
                     <div className="panel-heading">
                         <h2 className="panel-title">
-                            Latest Blocks
+                            最新区块
                         </h2>
                         <Link to="/blocks" className="pannel-btn">
-                            View all
+                            查看更多
                         </Link>
                     </div>
                     <div>
@@ -404,9 +404,9 @@ export default class HomePage extends Component {
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
                         >
-                            <Col span={4}>Height</Col>
-                            <Col span={4}>TXS</Col>
-                            <Col span={16}>Time</Col>
+                            <Col span={4}>高度</Col>
+                            <Col span={4}>交易数</Col>
+                            <Col span={16}>时间</Col>
                         </Row>
                     </div>
                     <div
@@ -422,10 +422,10 @@ export default class HomePage extends Component {
                 <Col xs={24} sm={24} md={12} className="container-list">
                     <div className="panel-heading">
                         <h2 className="panel-title">
-                            Latest Transactions
+                            最新交易
                         </h2>
                         <Link to="/txs" className="pannel-btn">
-                            View all
+                            查看更多
                         </Link>
                     </div>
                     <div>
@@ -435,9 +435,9 @@ export default class HomePage extends Component {
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
                         >
-                            <Col span={6}>Tx ID</Col>
-                            <Col span={9}>From</Col>
-                            <Col span={9}>To</Col>
+                            <Col span={6}>交易ID</Col>
+                            <Col span={9}>发起</Col>
+                            <Col span={9}>接收</Col>
                             {/*<Col span='6'>Time</Col>*/}
                         </Row>
                     </div>

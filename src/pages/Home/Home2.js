@@ -222,22 +222,22 @@ export default class HomePage extends Component {
     renderBasicInfoBlocks() {
         // TODO:getBasicInfo data
         const basicInfo = [{
-            title: 'Block Height',
+            title: '区块高度',
             info: this.blockHeight
         }, {
-            title: 'Unconfirmed Block',
+            title: '待确认交易',
             info: '-'
         }, {
-            title: 'Total Transactions',
+            title: '总交易数',
             info: this.state.totalTransactions
         }, {
-            title: 'Total Applications',
+            title: '总应用数',
             info: '-'
         }, {
-            title: 'Total Accounts',
+            title: '总地址数',
             info: '-'
         }, {
-            title: 'Total Side Chains',
+            title: '侧链数',
             info: '-'
         }];
 
@@ -296,7 +296,7 @@ export default class HomePage extends Component {
                         <Col xs={24} sm={24} md={24} lg={12}>
                             <div className='home-basic-title-con'>
                                 {/*<span className='TPSChart-title'>TPS Monitor</span>*/}
-                                <span className='TPSChart-title'>Transaction Per Minute</span>
+                                <span className='TPSChart-title'>每分钟交易数</span>
                                 {/*<span className='TPSChart-text'>Realtime：233</span>*/}
                                 {/*<span>Peak：23333</span>*/}
                             </div>

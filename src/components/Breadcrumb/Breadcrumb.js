@@ -15,16 +15,16 @@ const BREADCRUMBNAMEMAP = {
   // "/block": "区块信息",
   // "/tx": "交易信息",
   // "/address": "地址信息"
-  '/blocks': 'Blocks List',
-  '/txs': 'Transactions List',
-  '/txs/block': 'Transactions of Block',
-  '/block': 'Block',
-  '/tx': 'Transaction',
-  '/address': 'Address',
-  '/vote': 'Vote',
-  '/resource': 'Resource',
+  '/blocks': '区块列表',
+  '/txs': '交易列表',
+  '/txs/block': '区块交易',
+  '/block': '区块',
+  '/tx': '交易',
+  '/address': '地址',
+  '/vote': '投票',
+  '/resource': '资源',
   '/resourceDetail': 'Resource Detail List',
-  '/contract': 'Contract',
+  '/contract': '合约',
   'myvote': 'My Vote'
 };
 
@@ -92,7 +92,7 @@ class BrowserBreadcrumb extends Component {
       <Breadcrumb.Item key='/'>
         <Link to='/' onClick={this.handleClick}>
           {' '}
-          Home{' '}
+          首页{' '}
         </Link>
       </Breadcrumb.Item>
     );
@@ -181,9 +181,9 @@ class BrowserBreadcrumb extends Component {
       blocks: (
         <h1 className='breadcrumb-title' style={{ fontSize: 28 }}>
           {' '}
-          Blocks List{' '}
+          区块列表{' '}
           <span className='tip-color' style={{ fontSize: 16 }}>
-            ( Only confirmed blocks )
+            {/*( Only confirmed blocks )*/}
           </span>
         </h1>
       ),
@@ -199,7 +199,7 @@ class BrowserBreadcrumb extends Component {
       ),
       resourceDetail: (
         <span className='breadcrumb-title breadcrumb-small-title'>
-          Transaction Details
+          交易详情
         </span>
       )
     };

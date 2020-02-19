@@ -94,21 +94,8 @@ const BrowserFooter = props => {
 
   return (
     <section {...props} className='footer'>
-      <div
-        className='footer-container basic-container'
-      >
-        <div
-          className="footer-logo"
-        >
-          <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
-          <p>Decentralized Cloud Computing Blockchain Network</p>
-        </div>
-        <div
-          className='footer-links-container'
-        >{iconListHTML}</div>
-      </div>
       <p className='copyright-container'>
-        Copyright © {new Date().getFullYear()} ælf
+        Copyright © {new Date().getFullYear()} 航天智慧
       </p>
     </section>
   );
