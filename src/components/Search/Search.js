@@ -127,7 +127,7 @@ export default class Search extends PureComponent {
             <div className="search-container">
                 <Input
                     className="header-search"
-                    placeholder="Address / Tx / Block / Block Height"
+                    placeholder="地址 / 交易ID / 区块Hash / 区块高度"
                     // prefix={<Icon type="search" className="search-icon" />}
                     suffix={suffix}
                     value={content}

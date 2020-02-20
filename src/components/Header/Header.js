@@ -232,7 +232,7 @@ class BrowserHeader extends PureComponent {
         <Menu.Item key='/about'>
           {/* <Icon type='profile' /> */}
           <a
-            href='https://www.aelf.io/'
+            href='http://www.casic.com.cn/'
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -284,7 +284,7 @@ class BrowserHeader extends PureComponent {
             {/*  icon='aelf_logo_purple'*/}
             {/*  className='aelf-logo-container'*/}
             {/*/>*/}
-            <img alt="航天智慧" src="https://aelf.io/gridcn/hangtianzhihui.png" style={{height: "90%"}} />
+            <img alt="航天智慧" src="https://aelf.io/gridcn/hangtianzhihui.png" style={{height: "90%", maxWidth: "180px"}} />
           </Link>
 
           {mobileMoreHTML}
