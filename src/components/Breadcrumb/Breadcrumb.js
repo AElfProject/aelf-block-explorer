@@ -25,6 +25,7 @@ const BREADCRUMBNAMEMAP = {
   '/resource': 'Resource',
   '/resourceDetail': 'Resource Detail List',
   '/contract': 'Contract',
+  '/proposal': 'Proposal',
   'myvote': 'My Vote'
 };
 
@@ -78,7 +79,11 @@ const BREADCRUMBNAMESTATE = {
       name: [
         BREADCRUMBNAMEMAP['/contract']
       ]
-    }
+    },
+    proposal: {
+      url: ['/proposal', false],
+      name: ['Proposal']
+    },
   }
 };
 
@@ -192,6 +197,7 @@ class BrowserBreadcrumb extends Component {
       tx: 'Transaction',
       address: 'Address',
       contract: 'Contract',
+      proposal: 'Proposal',
       resource: (
         <span className='breadcrumb-title breadcrumb-small-title'>
           Resource Trading
@@ -221,10 +227,12 @@ class BrowserBreadcrumb extends Component {
     return title;
   }
 
+  // if you want to hide the Breadcrumb
   checkBreadcrumbShow(pathname) {
     const isMainPage = pathname === '/' ? true : false;
     const isVotePage = pathname.includes('/vote');
-    return !isMainPage && !isVotePage;
+    const isProposalPage = pathname.includes('/proposal');
+    return !isMainPage && !isVotePage && !isProposalPage;
   }
 
   render() {
