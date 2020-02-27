@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import useLocation from 'react-use/lib/useLocation';
 import IFrame from '../../components/IFrame';
+import {rand16Num} from "../../utils/utils";
 
 
 // const DEFAULT_URL = process.env.NODE_ENV === 'production' ? '/viewer/list.html' : 'http://0.0.0.0:8526/list.html';
@@ -37,7 +38,7 @@ const Proposal = () => {
             hash
         } = location;
         if (!hash) {
-            setUrl(DEFAULT_URL);
+            setUrl(`${DEFAULT_URL}?random=${rand16Num(8)}`);
         }
     }, [location]);
 
