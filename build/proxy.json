@@ -1,5 +1,16 @@
 [
   {
+    "target": "http://0.0.0.0:8526",
+    "context": [
+      "/viewer",
+      "/api/viewer",
+      "/api/proposal"
+    ],
+    "headers": {},
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
     "target": "http://127.0.0.1:7250",
     "context": [
       "/api",

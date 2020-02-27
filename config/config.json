@@ -38,21 +38,25 @@
   "profitContractAddr": "jDpXvpfC2qpriNFgZh68nRpJ5juN51ehcJNJwAcr5Z1UhfFTJ",
   "multiToken": "25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB",
   "dividends": "WnV9Gv3gioSh3Vgaw8SSB96nV8fWUNxuVozCf6Y14e7RXyGaM",
-  "consensusDPoS": "RnQLF2SnJL9HLzBPtpzuPkDeLK34b9su7gtZ5TzVFvKP26DHw",
-  "tokenConverter": "SkMGjviAAs9bnYvv6cKcafbhf6tbRGQGK93WgKvZoCoS5amMK",
+  "consensusDPoS": "SkMGjviAAs9bnYvv6cKcafbhf6tbRGQGK93WgKvZoCoS5amMK",
+  "tokenConverter": "sXaWRPhZnXn8r8gDQZu6P7LfwDg1ZcFLFXBfN24GtXLA4QR3u",
   "feeReceiverContract": "25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB",
   "resourceTokens": [
     {
-      "symbol": "RAM"
+      "symbol": "WRITE",
+      "decimals": 8
     },
     {
-      "symbol": "STO"
+      "symbol": "READ",
+      "decimals": 8
     },
     {
-      "symbol": "CPU"
+      "symbol": "STORAGE",
+      "decimals": 8
     },
     {
-      "symbol": "NET"
+      "symbol": "TRAFFIC",
+      "decimals": 8
     }
   ]
 }

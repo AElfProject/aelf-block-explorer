@@ -39,6 +39,7 @@
     "react-router-dom": "^4.3.1",
     "react-smooth-scrollbar": "^8.0.6",
     "react-transition-group": "^2.5.0",
+    "react-use": "~13.23.0",
     "redux": "^4.0.4",
     "smooth-scrollbar": "^8.3.1",
     "socket.io-client": "^2.2.0"
