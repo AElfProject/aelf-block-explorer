@@ -18,7 +18,6 @@ const Viewer = props => {
     const [url, setUrl] = useState(DEFAULT_URL);
 
     function onChange(href) {
-        console.log(href);
         window.history.replaceState(
             window.history.state,
             '',
@@ -34,6 +33,15 @@ const Viewer = props => {
             setUrl(decodeURIComponent(hash).split('#')[1]);
         }
     }, []);
+
+    useEffect(() => {
+        const {
+            hash
+        } = location;
+        if (!hash) {
+            setUrl(DEFAULT_URL);
+        }
+    }, [location]);
 
     return (
         <div
