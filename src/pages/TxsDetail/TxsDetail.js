@@ -6,6 +6,7 @@
 import React from 'react';
 import { Row, Col, Tag, Input } from 'antd';
 import { isEmpty } from 'lodash';
+import AElf from 'aelf-sdk';
 import { aelf, formatKey } from '../../utils';
 import addressFormat from '../../utils/addressFormat';
 
@@ -168,18 +169,30 @@ export default class TxsDetailPage extends React.Component {
     }).reduce((acc, v) => acc.concat(v), []);
   }
 
+  renderFee(result = {}) {
+    const logs = result.Logs;
+    if (logs !== 'null' && logs) {
+      const txFee = AElf.pbUtils.getTransactionFee(logs);
+      const resourceFee = AElf.pbUtils.getResourceFee(logs);
+      if (txFee.length || resourceFee.length) {
+        const txStr = txFee.length ? JSON.stringify(txFee[0]) : '';
+        const resourceStr = resourceFee.length ? JSON.stringify(resourceFee[0]) : '';
+        return this.renderCol('Fee', txStr + resourceStr);
+      }
+    }
+  }
+
   render() {
     const { error, result } = this.state;
     const colsHtml = this.renderCols(error || result);
+    const feeHTML = this.renderFee(error || result);
 
     return (
       <div className='tx-block-detail-container basic-container basic-container-white'>
         <div className='tx-block-detail-panel tx-block-detail-panel-simple'>
           <span className='title'>Overview</span>
         </div>
-        <Row className='tx-block-detail-body'>{colsHtml}</Row>
-
-        {/*<div className='basic-bottom-blank' />*/}
+        <Row className='tx-block-detail-body'>{colsHtml}{feeHTML}</Row>
       </div>
     );
   }
