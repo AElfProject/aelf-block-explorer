@@ -26,11 +26,10 @@ export default function getEstimatedValueELF(
   tokenContract
 ) {
   return new Promise((resolve, reject) => {
-    // todo: consider the frequency or time to get the data as it will spend many time
     getResourceConverter(type, tokenConverterContract, tokenContract).then(
       result => {
         if (result) {
-          if (result.resourceBalance.dividedBy(10e8).toNumber() >= Math.abs(pidRes)) {
+          if (result.resourceBalance.dividedBy(1e8).toNumber() >= Math.abs(pidRes)) {
             const resCont = Math.abs(pidRes) || 0;
             const elfPayout = GetAmountToPayFromReturn(
               result.elfBalance,
@@ -38,7 +37,6 @@ export default function getEstimatedValueELF(
               result.resourceBalance,
               result.resourceWeight,
               resCont,
-                // (new Decimal(resCont)).mul(10e8)
             );
             resolve(elfPayout);
           } else {

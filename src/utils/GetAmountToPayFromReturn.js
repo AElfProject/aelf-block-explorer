@@ -14,13 +14,12 @@ export default function GetAmountToPayFromReturn(fromConnectorBalance, fromConne
         'wf:', fromConnectorWeight.toString(),
         'bt', toConnectorBalance.toString(),
         'wt:', toConnectorWeight.toString(),
-        'a:', amountToReceive.toString());
+        'a:', amountToReceive.toString()
+    );
     const bf = fromConnectorBalance;
-    // const wf = fromConnectorWeight;
-    const wf = new Decimal(0.005);
+    const wf = fromConnectorWeight;
     const bt = toConnectorBalance;
-    // const wt = toConnectorWeight;
-    const wt = new Decimal(0.005);
+    const wt = toConnectorWeight;
     const a = amountToReceive;
 
     if (wf.toNumber() === wt.toNumber()) {
