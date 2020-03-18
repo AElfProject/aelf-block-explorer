@@ -4,15 +4,20 @@
  */
 
 import React from 'react';
-import { Row, Col, Tag, Input } from 'antd';
+import { Row, Col, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import AElf from 'aelf-sdk';
-import { aelf, formatKey } from '../../utils';
+import { aelf, formatKey, getContractNames } from '../../utils';
 import addressFormat from '../../utils/addressFormat';
+import {
+  removeAElfPrefix
+} from '../../utils/utils';
+import {
+  CONTRACT_VIEWER_URL
+} from '../../constants';
 
 import './txsdetail.styles.less';
-
-const {TextArea} = Input;
+import {Link} from "react-router-dom";
 
 export default class TxsDetailPage extends React.Component {
   constructor(props) {
@@ -24,7 +29,8 @@ export default class TxsDetailPage extends React.Component {
       blockHeight: -1,
       from: '',
       to: '',
-      blockHash: ''
+      blockHash: '',
+      contractName: ''
     };
   }
 
@@ -33,11 +39,19 @@ export default class TxsDetailPage extends React.Component {
     if (isEmpty(txsId)) {
       return;
     }
-
     aelf.chain.getTxResult(txsId).then(result => {
       this.setState({
         result,
         error: null
+      });
+      getContractNames().then(names => {
+        let name = names[result.Transaction.To];
+        name = name && name.isSystemContract ? removeAElfPrefix(name.contractName) : name.contractName;
+        this.setState({
+          contractName: name
+        });
+      }).catch(e => {
+        console.log(e);
       });
     }).catch(error => {
       this.setState({
@@ -79,9 +93,7 @@ export default class TxsDetailPage extends React.Component {
     let jsonFormatted = value;
     try {
       jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
-    } catch(e) {
-      // do nothing
-    }
+    } catch(e) {}
 
     return <textarea
       rows={rows}
@@ -99,7 +111,10 @@ export default class TxsDetailPage extends React.Component {
     // console.log('txDetail key: ', key);
     let valueHTML = value;
     const {LastIrreversibleBlockHeight} = this.state.chainStatus;
+    const {
+      contractName,
 
+    } = this.state;
     switch (key) {
       case 'Status':
         valueHTML = this.renderStatus(value);
@@ -116,7 +131,14 @@ export default class TxsDetailPage extends React.Component {
         valueHTML = addressFormat(value);
         break;
       case 'Transaction_To':
-        valueHTML = addressFormat(value);
+        valueHTML = (<Link
+            to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + value)}`}
+            title={addressFormat(value)}
+        >
+          {
+            contractName ? contractName : addressFormat(value)
+          }
+        </Link>);
         break;
       case 'Bloom':
         valueHTML = this.renderCodeLikeParams(value, 1);

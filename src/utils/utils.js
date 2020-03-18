@@ -14,3 +14,10 @@ export const rand16Num = (len = 0) => {
   }
   return result.join('');
 };
+
+export const removeAElfPrefix = name => {
+  if (/^(AElf\.)(.*?)+/.test(name)) {
+    return name.split('.')[name.split('.').length - 1];
+  }
+  return name;
+};

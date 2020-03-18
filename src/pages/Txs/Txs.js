@@ -5,7 +5,8 @@ import {
     Table
 } from "antd";
 import {
-    get
+    get,
+    getContractNames
 } from "../../utils";
 import {
     ALL_TXS_API_URL,
@@ -36,13 +37,12 @@ export default class TxsPage extends Component {
 
     async componentDidMount() {
         const {
-            fetch,
             props
         } = this;
         const {
             location
         } = props;
-        await fetch({
+        await this.fetch({
             page: 0,
             limit: PAGE_SIZE,
             block_hash: (!!location.search && location.search.slice(1)) || undefined
@@ -51,6 +51,16 @@ export default class TxsPage extends Component {
 
     componentWillUnmount() {
         this.setState = () => {};
+    }
+
+    merge(data = {}, contractNames) {
+        const {
+            transactions = []
+        } = data;
+        return (transactions || []).map(item => ({
+            ...item,
+            contractName: contractNames[item.address_to]
+        }));
     }
 
     fetch = async (params = {}) => {
@@ -63,14 +73,14 @@ export default class TxsPage extends Component {
             order: "desc",
             ...params
         });
+        const contractNames = await getContractNames();
 
-        let pagination = { ...this.state.pagination
-        };
+        let pagination = { ...this.state.pagination};
         pagination.total = data.total;
-
+        const transactions = this.merge(data, contractNames);
         this.setState({
             loading: false,
-            data: data && data.transactions.length ? data.transactions : null,
+            data: transactions,
             pagination
         });
     };

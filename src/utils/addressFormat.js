@@ -1,8 +1,8 @@
 /**
  * @file addressFormat
  */
-import {ADDRESS_INFO} from '../../config/config'
+import {SYMBOL, CHAIN_ID} from '../../config/config'
 
 export default function addressFormat(address, prefix, chainId) {
-  return `${prefix || ADDRESS_INFO.PREFIX}_${address}_${chainId || ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+  return `${prefix || SYMBOL}_${address}_${chainId || CHAIN_ID}`;
 };

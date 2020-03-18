@@ -4,6 +4,7 @@
  */
 /* eslint-disable fecs-camelcase */
 import React from 'react';
+import addressFormat from './utils/addressFormat';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import dayjs from 'dayjs';
@@ -11,6 +12,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID, ADDRESS_INFO } from '../config/config';
 import { thousandsCommaWithDecimal } from '@utils/formater';
+import {
+  removeAElfPrefix
+} from './utils/utils';
 
 dayjs.extend(relativeTime);
 
@@ -156,12 +160,14 @@ const BLOCKS_LIST_COLUMNS = [
   }
 ];
 
+export const CONTRACT_VIEWER_URL = '/viewer/viewer.html?address=';
+
 const ALL_TXS_LIST_COLUMNS = [
   {
-    title: 'Tx Id ',
-    dataIndex: 'tx_id ',
-    key: 'tx_id ',
-    width: 400,
+    title: 'Tx Id',
+    dataIndex: 'tx_id',
+    key: 'tx_id',
+    width: 320,
     ellipsis: true,
     render: (text, row) => (
       <Link to={`/tx/${row.tx_id}`} title={row.tx_id}>
@@ -170,9 +176,9 @@ const ALL_TXS_LIST_COLUMNS = [
     )
   },
   {
-    title: 'Block Height ',
-    dataIndex: 'block_height ',
-    key: 'block_height ',
+    title: 'Block Height',
+    dataIndex: 'block_height',
+    key: 'block_height',
     width: 150,
     align: 'center',
     render: (text, row) => (
@@ -184,34 +190,50 @@ const ALL_TXS_LIST_COLUMNS = [
   },
   {
     title: 'From ',
-    dataIndex: 'address_from ',
-    key: 'address_from ',
-    // width: 300,
+    dataIndex: 'address_from',
+    key: 'address_from',
     ellipsis: true,
-    render: (text, row) => (
-      <Link to={`/address/${row.address_from}`} title={row.address_from}>
+    render: text => (
+      <Link to={`/address/${text}`} title={addressFormat(text)}>
         {' '}
-        {ADDRESS_INFO.PREFIX}_{row.address_from}{' '}_{ADDRESS_INFO.CURRENT_CHAIN_ID}
+        {addressFormat(text)}
       </Link>
     )
   },
   {
     title: null,
-    key: 'payIcon ',
+    key: 'payIcon',
     width: 50,
     render: () => <Icon type="arrow-right" theme="outlined" />
   },
   {
-    title: 'To ',
-    dataIndex: 'address_to ',
-    key: 'address_to ',
+    title: 'To',
+    dataIndex: 'address_to',
+    key: 'address_to',
     ellipsis: true,
-    render: (text, row) => (
-      <Link to={`/address/${row.address_to}`} title={row.address_to}>
-        {' '}
-        {ADDRESS_INFO.PREFIX}_{row.address_to}{' '}_{ADDRESS_INFO.CURRENT_CHAIN_ID}
-      </Link>
-    )
+    render: (text, row) => {
+      const {
+        contractName,
+        isSystemContract
+      } = row.contractName;
+      const name = isSystemContract ? removeAElfPrefix(contractName) : contractName;
+      return (
+          <Link
+              to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + text)}`}
+              title={addressFormat(text)}
+          >
+            {
+              name ? name : addressFormat(text)
+            }
+          </Link>
+      )
+    }
+  },
+  {
+      title: 'Method',
+      dataIndex: 'method',
+      key: 'method',
+      ellipsis: true
   },
   {
       title: 'Amount',
