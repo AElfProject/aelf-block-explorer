@@ -14,6 +14,7 @@ import {
     format,
     get,
     formatKey,
+    getContractNames
 } from '../../utils';
 
 import {isPhoneCheck} from '../../utils/deviceCheck'
@@ -66,6 +67,13 @@ export default class BlockDetailPage extends React.Component {
         });
     }
 
+    merge(data = [], contractNames) {
+        return (data || []).map(item => ({
+            ...item,
+            contractName: contractNames[item.address_to]
+        }));
+    }
+
     // fetchBlockInfo = blockHeight => {
     fetchBlockInfo = async (input) => {
         this.getChainStatus();
@@ -78,11 +86,10 @@ export default class BlockDetailPage extends React.Component {
         // 先判断是高度还是hash，再执行后续的命令。
         let result;
         let blockHeight;
-        let txsList;
+        let txsList = {};
         let error;
-        // BlockHeight
-        console.log('input', input, parseInt(input, 10));
 
+        const contractNames = await getContractNames();
         if (parseInt(input, 10) == input) {
             blockHeight = input;
             try {
@@ -104,6 +111,12 @@ export default class BlockDetailPage extends React.Component {
             blockHeight = transactions[0] && transactions[0].block_height;
             result = blockHeight ? await aelf.chain.getBlockByHeight(blockHeight, true) : undefined;
         }
+
+        txsList = {
+            ...txsList,
+            transactions: this.merge(txsList.transactions, contractNames)
+        };
+        console.log(txsList);
 
         const pagination = {
             ...this.state.pagination,
