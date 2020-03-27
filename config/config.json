@@ -9,7 +9,11 @@
     "dividends": "AElf.ContractNames.Treasury",
     "consensusDPoS": "AElf.ContractNames.Consensus",
     "tokenConverter": "AElf.ContractNames.TokenConverter",
-    "feeReceiverContract": "AElf.ContractNames.Token"
+    "feeReceiverContract": "AElf.ContractNames.Token",
+    "parliamentContract": "AElf.ContractNames.Parliament",
+    "associationContract": "AElf.ContractNames.Association",
+    "referendumContract": "AElf.ContractNames.Referendum",
+    "crossChainContract": "AElf.ContractNames.CrossChain"
   },
   "schemeIds": [
     {
@@ -41,6 +45,11 @@
   "consensusDPoS": "SkMGjviAAs9bnYvv6cKcafbhf6tbRGQGK93WgKvZoCoS5amMK",
   "tokenConverter": "sXaWRPhZnXn8r8gDQZu6P7LfwDg1ZcFLFXBfN24GtXLA4QR3u",
   "feeReceiverContract": "25CecrU94dmMdbhC3LWMKxtoaL4Wv8PChGvVJM6PxkHAyvXEhB",
+  "parliamentContract": "R8nWLhsyLsY9Di4ULKQ41ddV8j1HbLikT3RjbLBDPGxnJFCv3",
+  "associationContract": "29RDBXTqwnpWPSPHGatYsQXW2E17YrQUCj7QhcEZDnhPb6ThHW",
+  "referendumContract": "2F5C128Srw5rHCXoSY2C7uT5sAku48mkgiaTTp1Hiprhbb7ED9",
+  "crossChainContract": "x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ",
+  "genesisContract": "2gaQh4uxg6tzyH1ADLoDxvHA14FMpzEiMqsQ6sDG5iHT8cmjp8",
   "resourceTokens": [
     {
       "symbol": "WRITE",
@@ -56,6 +65,22 @@
     },
     {
       "symbol": "TRAFFIC",
+      "decimals": 8
+    },
+    {
+      "symbol": "CPU",
+      "decimals": 8
+    },
+    {
+      "symbol": "RAM",
+      "decimals": 8
+    },
+    {
+      "symbol": "DISK",
+      "decimals": 8
+    },
+    {
+      "symbol": "NET",
       "decimals": 8
     }
   ]
