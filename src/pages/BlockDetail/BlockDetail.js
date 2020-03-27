@@ -56,7 +56,13 @@ export default class BlockDetailPage extends React.Component {
             block_hash: blockhash
         };
 
-        return await get('/block/transactions', getTxsOption);
+        let data =  await get('/block/transactions', getTxsOption);
+        const contractNames = await getContractNames();
+        data = {
+            ...data,
+            transactions: this.merge(data.transactions || [], contractNames)
+        };
+        return data;
     }
 
     getChainStatus() {
@@ -88,8 +94,6 @@ export default class BlockDetailPage extends React.Component {
         let blockHeight;
         let txsList = {};
         let error;
-
-        const contractNames = await getContractNames();
         if (parseInt(input, 10) == input) {
             blockHeight = input;
             try {
@@ -111,12 +115,6 @@ export default class BlockDetailPage extends React.Component {
             blockHeight = transactions[0] && transactions[0].block_height;
             result = blockHeight ? await aelf.chain.getBlockByHeight(blockHeight, true) : undefined;
         }
-
-        txsList = {
-            ...txsList,
-            transactions: this.merge(txsList.transactions, contractNames)
-        };
-        console.log(txsList);
 
         const pagination = {
             ...this.state.pagination,

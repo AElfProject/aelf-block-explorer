@@ -5,7 +5,7 @@
 import React from 'react';
 import {message, Table} from 'antd';
 
-import { get } from '../../utils';
+import { get, getContractNames } from '../../utils';
 import {
   ALL_TXS_LIST_COLUMNS,
   ADDRESS_TXS_API_URL,
@@ -33,6 +33,13 @@ export default class AddressPage extends React.Component {
     };
   }
 
+  merge(data = [], contractNames) {
+    return (data || []).map(item => ({
+      ...item,
+      contractName: contractNames[item.address_to]
+    }));
+  }
+
   fetch = async (params = {}) => {
     this.setState({
       loading: true
@@ -43,17 +50,17 @@ export default class AddressPage extends React.Component {
         order: 'desc',
         ...params
       });
-
+      const contractNames = await getContractNames();
+      const txsList = this.merge(data.transactions || [], contractNames);
       this.setState({
         pagination: {
           ...this.state.pagination,
           total: data.total
         },
-        txs: data.transactions || [],
+        txs: txsList,
         loading: false
       });
     } catch (e) {
-      console.error(e);
       message.error('Network Error');
       this.setState({
         pagination: {
