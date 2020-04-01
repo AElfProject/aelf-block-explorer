@@ -9,6 +9,7 @@ import {
   FEE_TIP
 } from '@src/constants';
 import { centerEllipsis } from '@utils/formater';
+import {ELF_DECIMAL} from "../constants";
 
 const { Search } = Input;
 
@@ -73,7 +74,8 @@ function getColumns() {
       dataIndex: 'amount',
       key: 'voteAmount',
       defaultSortOrder: 'descend',
-      sorter: (a, b) => a.amount - b.amount
+      sorter: (a, b) => a.amount - b.amount,
+      render: value => value / ELF_DECIMAL
     },
     {
       title: 'Lock Time',

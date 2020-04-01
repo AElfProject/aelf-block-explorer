@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 
 import StatisticalData from '@components/StatisticalData/';
-import { myVoteStatisData } from '../constants';
+import {ELF_DECIMAL, myVoteStatisData} from '../constants';
 import MyVoteRecord from './MyVoteRecords';
 import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
@@ -172,11 +172,11 @@ export default class MyVote extends Component {
       myTotalVotesAmount,
       withdrawnableVoteAmount
     });
-    this.processStatisData('myTotalVotesAmount', 'num', myTotalVotesAmount);
+    this.processStatisData('myTotalVotesAmount', 'num', myTotalVotesAmount / ELF_DECIMAL);
     this.processStatisData(
       'withdrawnableVotesAmount',
       'num',
-      withdrawnableVoteAmount
+      withdrawnableVoteAmount / ELF_DECIMAL
     );
     this.processTableData(myVoteRecords, allTeamInfo);
   }
