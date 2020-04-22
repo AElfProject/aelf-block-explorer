@@ -6,6 +6,7 @@
 import React, {Component} from 'react';
 import io from 'socket.io-client';
 import {Link} from 'react-router-dom';
+import { CHAIN_ID } from '@src/constants';
 import {
     Row,
     Col
@@ -18,6 +19,7 @@ import TPSChart from '../../components/TPSChart/TPSChart';
 import SmoothScrollbar from 'smooth-scrollbar';
 import OverscrollPlugin from 'smooth-scrollbar/plugins/overscroll';
 import Scrollbar from 'react-smooth-scrollbar';
+import ChainInfo from "./ChainInfo";
 
 import {get, format, transactionFormat} from '../../utils';
 import {
@@ -42,8 +44,10 @@ export default class HomePage extends Component {
         blocks: [],
         transactions: [],
         totalTransactions: 0,
-        totalAccounts: '-',
-    };
+        localTransactions: 0,
+        totalAccounts: 0,
+        localAccounts: 0
+    }
 
     blockHeight = 0;
     unconfirmedBlockHeight = 0;
@@ -145,7 +149,9 @@ export default class HomePage extends Component {
         height = 0,
         totalTxs,
         unconfirmedBlockHeight = 0,
-        accountNumber = 0
+        accountNumber = 0,
+        allChainTxs,
+        allChainAccount
     }, isFirst) {
         let arr = list;
         if (!isFirst) {
@@ -161,8 +167,10 @@ export default class HomePage extends Component {
         this.setState({
             blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
             transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
-            totalTransactions: totalTxs,
-            totalAccounts: accountNumber
+            totalTransactions: allChainTxs,
+            totalAccounts: allChainAccount,
+            localTransactions: totalTxs,
+            localAccounts: accountNumber,
         });
     }
 
@@ -180,46 +188,6 @@ export default class HomePage extends Component {
         };
     }
 
-    renderBasicInfoBlocks() {
-        // TODO:getBasicInfo data
-        // TODO: ensure the data to be type of number at the time getting the data
-        const basicInfo = [{
-            title: 'Block Height',
-            info: +this.blockHeight
-        }, {
-            title: 'Unconfirmed Block',
-            info: +this.unconfirmedBlockHeight
-        }, {
-            title: 'Total Transactions',
-            info: +this.state.totalTransactions
-        }, {
-            title: 'Total Accounts',
-            info: +this.state.totalAccounts || '-'
-        }, {
-            title: 'Total Side Chains',
-            info: 5
-        }];
-
-        const html = basicInfo.map(item => {
-            return (
-                <Col xs={12} sm={8} md={6}
-                     className='home-basic-info-con'
-                     key={item.title}
-                >
-                    <ContainerRichard type='small'>
-                        <div
-                            className='home-basic-info-content-con'
-                        >
-                            <div className='home-basic-info-title'>{item.title}</div>
-                            <div className='home-basic-info-num'>{item.info && item.info.toLocaleString() || '-'}</div>
-                        </div>
-                    </ContainerRichard>
-                </Col>
-            );
-        });
-        return html;
-    }
-
     renderSearchBanner() {
         if (document.body.offsetWidth <= 768) {
             return '';
@@ -235,9 +203,13 @@ export default class HomePage extends Component {
         const screenHeight = screenWidth < 992 ? 'auto' : height;
         // const screenHeight = screenWidth > 992 ? 'auto' : '100%';
         // const screenHeight = 'auto';
-        const BasicInfoBlocksHTML = this.renderBasicInfoBlocks();
 
-        // TODO: getTPS data
+        const {
+            totalAccounts,
+            localAccounts,
+            totalTransactions,
+            localTransactions
+        } = this.state;
         return (
             <section
                 // className='home-bg-earth'
@@ -247,38 +219,26 @@ export default class HomePage extends Component {
                 }}
             >
                 <div className='basic-container home-basic-information'>
-                    <div className="home-header-blank"></div>
+                    <div className="home-header-blank" />
                     {this.renderSearchBanner()}
-                    <Row
-                        className='flex-column flex-column-reverse-mobile'
-                        type="flex"
-                        justify="space-between"
-                        align="middle"
-                        key="firstpage"
-                        gutter={
-                            { xs: 8, sm: 16, md: 24, lg: 32 }
-                        }
-                    >
-                        <Col xs={24} sm={24} md={24} lg={24} className="first-page-sub-container">
-                            <div className='home-basic-title-con'>
-                                <span className='TPSChart-title'>Transaction Per Minute</span>
-                            </div>
-                            <ContainerRichard>
-                                <TPSChart/>
-                            </ContainerRichard>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} className="first-page-sub-container">
-                            <Row
-                                type="flex"
-                                align="middle"
-                                key="basicinfo-1"
-                                gutter={
-                                    {xs: 4, sm: 8, md: 8, lg: 8}
-                                }
-                            >
-                                {BasicInfoBlocksHTML}
-                            </Row>
-                        </Col>
+                    <Row className="first-page-sub-container">
+                        <div className='home-basic-title-con'>
+                            <span className='TPSChart-title'>Transaction Per Minute</span>
+                        </div>
+                        <ContainerRichard>
+                            <TPSChart/>
+                        </ContainerRichard>
+                    </Row>
+                    <Row className="first-page-sub-container chain-info">
+                        <ChainInfo
+                            chainId={CHAIN_ID}
+                            localAccounts={localAccounts}
+                            localTxs={localTransactions}
+                            totalAccounts={totalAccounts}
+                            totalTxs={totalTransactions}
+                            blockHeight={this.blockHeight}
+                            unconfirmedBlockHeight={this.unconfirmedBlockHeight}
+                        />
                     </Row>
                 </div>
             </section>

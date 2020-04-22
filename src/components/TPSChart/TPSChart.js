@@ -5,6 +5,7 @@ import ReactEchartsCore from "echarts-for-react/lib/core";
 // then import echarts modules those you have used manually.
 import echarts from "echarts/lib/echarts";
 import "echarts/lib/chart/line";
+import 'echarts/lib/component/legend';
 import { CHAIN_ID } from '@src/constants';
 
 import './TPSChart.less';
@@ -42,7 +43,8 @@ export default class TPSChart extends React.Component {
         // const startTime = endTime - 86400000;
         const startTime = endTime - 60 * 60 * 3 * 1000;
         const {
-            list = []
+            all = [],
+            own = []
         } = await get(TPS_LIST_API_URL, {
             start: startTime,
             end: endTime,
@@ -51,8 +53,8 @@ export default class TPSChart extends React.Component {
         });
 
         this.setState({
-            // allList: all || [],
-            ownList: list || []
+            allList: all || [],
+            ownList: own || []
         });
         this.getTpsDataTimer = setTimeout(() => {
             this.getTpsData();
@@ -70,7 +72,7 @@ export default class TPSChart extends React.Component {
         } = this.state;
 
         const xAxisData = [];
-        // const allData = [];
+        const allData = [];
         const ownData = [];
         const length = ownList.length;
         ownList.forEach((item, index) => {
@@ -85,17 +87,17 @@ export default class TPSChart extends React.Component {
             }
 
             xAxisData.push(`${hours}:${minutes}`);
-            // allData.push(allList[index].count);
+            allData.push(allList[index].count);
             ownData.push(item.count);
         });
-        // allData[length - 1] = {
-        //     value: allData[length - 1],
-        //     symbol,
-        //     symbolSize: [30, 30],
-        //     label: {
-        //         show: true
-        //     }
-        // };
+        allData[length - 1] = {
+            value: allData[length - 1],
+            symbol,
+            symbolSize: [30, 30],
+            label: {
+                show: true
+            }
+        };
         ownData[length - 1] = {
             value: ownData[length - 1],
             symbol,
@@ -106,9 +108,13 @@ export default class TPSChart extends React.Component {
         };
 
         return {
-            // legend: {
-            //     data: ['All Chains', CHAIN_ID]
-            // },
+            color: ['rgb(25, 143, 255)', 'rgb(85, 1, 153)'],
+            legend: {
+                show: true,
+                data: [ 'All Chains', CHAIN_ID ],
+                top: 'top',
+                left: 'right',
+            },
             grid: {
                 left: '0%',
                 right: '16px',
@@ -120,7 +126,7 @@ export default class TPSChart extends React.Component {
                 show: true,
                 trigger: 'axis',
                 axisPointer: {
-                    type: 'cross',
+                    type: 'line',
                     label: {
                         backgroundColor: '#6a7985'
                     }
@@ -164,46 +170,38 @@ export default class TPSChart extends React.Component {
                 }
             },
             series: [
-                // {
-                //     name: 'All Chains',
-                //     data: allData,
-                //     smooth: true,
-                //     type: 'line',
-                //     lineStyle: {
-                //         // color: '#DF80FF'
-                //         color: 'rgb(25, 143, 255)'
-                //     },
-                //     itemStyle: {
-                //         opacity: 0
-                //     },
-                //     areaStyle: {
-                //         color: {
-                //             type: 'linear',
-                //             y: 1,
-                //             y2: 0,
-                //             colorStops: [{
-                //                 offset: 1,
-                //                 // color: '#D24CFF' // 0% 处的颜色
-                //                 color: '#FFF' // 0% 处的颜色
-                //             },
-                //                 {
-                //                     offset: 0,
-                //                     // color: 'rgba(51, 177, 255, 0)' // 100% 处的颜色
-                //                     color: 'rgba(255, 255, 255, 0)' // 100% 处的颜色
-                //                 }],
-                //             globalCoord: false // 缺省为 false
-                //         }
-                //     }
-                // },
                 {
-                    // name: CHAIN_ID,
+                    name: 'All Chains',
+                    data: allData,
+                    smooth: true,
+                    type: 'line',
+                    itemStyle: {
+                        opacity: 0
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            y: 1,
+                            y2: 0,
+                            colorStops: [{
+                                offset: 1,
+                                // color: '#D24CFF' // 0% 处的颜色
+                                color: '#FFF' // 0% 处的颜色
+                            },
+                                {
+                                    offset: 0,
+                                    // color: 'rgba(51, 177, 255, 0)' // 100% 处的颜色
+                                    color: 'rgba(255, 255, 255, 0)' // 100% 处的颜色
+                                }],
+                            globalCoord: false // 缺省为 false
+                        }
+                    }
+                },
+                {
+                    name: CHAIN_ID,
                     data: ownData,
                     smooth: true,
                     type: 'line',
-                    lineStyle: {
-                        // color: '#DF80FF'
-                        color: 'rgb(85, 1, 153)'
-                    },
                     itemStyle: {
                         // color: '#D24CFF'
                         // color: '#666'
@@ -230,8 +228,6 @@ export default class TPSChart extends React.Component {
                 }
             ]
         };
-
-        return option;
     }
 
     render() {
