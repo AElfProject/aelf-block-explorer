@@ -12,6 +12,7 @@ import publicKeyToAddress from '@utils/publicKeyToAddress';
 import { centerEllipsis } from '@utils/formater';
 
 import './MyVoteRecords.less';
+import {ELF_DECIMAL} from "../../constants";
 
 const { Search } = Input;
 const clsPrefix = 'my-vote-records';
@@ -60,7 +61,8 @@ function genMyVoteRecordsCols() {
       dataIndex: 'amount',
       key: 'voteAmount',
       width: 100,
-      sorter: (a, b) => a.amount - b.amount
+      sorter: (a, b) => a.amount - b.amount,
+      render: value => value / ELF_DECIMAL
     },
     {
       title: 'Lock Time',

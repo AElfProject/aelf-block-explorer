@@ -1121,7 +1121,7 @@ class VoteContainer extends Component {
       candidatePubkey: targetPublicKey,
       // amount: 100,
       // todo: add decimal or not
-      amount: voteAmountInput,
+      amount: voteAmountInput * ELF_DECIMAL,
       endTimestamp: {
         // Seconds: Math.floor(timeMS / 1000),
         // Nanos: (timeMS % 1000) * 1e6

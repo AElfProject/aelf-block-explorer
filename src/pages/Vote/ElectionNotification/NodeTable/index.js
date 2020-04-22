@@ -40,6 +40,7 @@ import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
+import {ELF_DECIMAL} from "../../constants";
 
 const { Search } = Input;
 const clsPrefix = 'node-table';
@@ -237,7 +238,8 @@ class NodeTable extends PureComponent {
         dataIndex: 'obtainedVotesAmount',
         key: 'obtainedVotesCount',
         defaultSortOrder: 'descend',
-        sorter: (a, b) => a.obtainedVotesAmount - b.obtainedVotesAmount
+        sorter: (a, b) => a.obtainedVotesAmount - b.obtainedVotesAmount,
+        render: value => value / ELF_DECIMAL
       },
       {
         title: 'Voted Rate',
@@ -254,7 +256,8 @@ class NodeTable extends PureComponent {
         key: 'myVotes',
         width: 100,
         dataIndex: 'myTotalVoteAmount',
-        sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount
+        sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount,
+        render: value => (value && value !== '-') ? value / ELF_DECIMAL : '-'
       },
       {
         title: 'Operations',

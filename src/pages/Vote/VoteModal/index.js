@@ -29,6 +29,7 @@ import {
 } from '@src/pages/Vote/constants';
 import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
 import './index.less';
+import {ELF_DECIMAL} from "../constants";
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -115,7 +116,8 @@ function getColumns() {
       title: 'Vote Amount',
       dataIndex: 'amount',
       key: 'voteAmount',
-      sorter: (a, b) => a.amount - b.amount
+      sorter: (a, b) => a.amount - b.amount,
+      render: value => value / ELF_DECIMAL
     },
     {
       title: 'Lock Time',

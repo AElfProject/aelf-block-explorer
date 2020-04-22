@@ -209,8 +209,8 @@ export default class MyWalletCard extends PureComponent {
         const withdrawnVotedVotesAmount =
           allVotedVotesAmount - activeVotedVotesAmount;
         this.setState({
-          activeVotedVotesAmount,
-          withdrawnVotedVotesAmount
+          activeVotedVotesAmount: activeVotedVotesAmount / ELF_DECIMAL,
+          withdrawnVotedVotesAmount: withdrawnVotedVotesAmount / ELF_DECIMAL
         });
       })
       .catch(err => {
@@ -324,11 +324,11 @@ export default class MyWalletCard extends PureComponent {
       },
       {
         type: 'Active votes',
-        value: thousandsCommaWithDecimal(activeVotedVotesAmount, false)
+        value: thousandsCommaWithDecimal(activeVotedVotesAmount)
       },
       {
         type: 'Redeemed votes',
-        value: thousandsCommaWithDecimal(withdrawnVotedVotesAmount, false)
+        value: thousandsCommaWithDecimal(withdrawnVotedVotesAmount)
       },
       {
         type: 'Earliest vote expired time',

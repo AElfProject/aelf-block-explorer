@@ -29,6 +29,7 @@ import {
 } from '@utils/voteUtils';
 import { ADDRESS_INFO } from '@config/config';
 import './index.less';
+import {ELF_DECIMAL} from "../constants";
 
 const { Paragraph } = Typography;
 
@@ -166,7 +167,7 @@ class TeamDetail extends PureComponent {
     this.setState({
       rank,
       terms,
-      totalVotes,
+      totalVotes: totalVotes / ELF_DECIMAL,
       votedRate,
       producedBlocks,
       candidateAddress,

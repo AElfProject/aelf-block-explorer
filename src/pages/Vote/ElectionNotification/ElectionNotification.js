@@ -20,7 +20,8 @@ import {
   ELECTION_NOTIFI_DATA_TIP,
   txStatusInUpperCase,
   UNKNOWN_ERROR_TIP,
-  LONG_NOTIFI_TIME
+  LONG_NOTIFI_TIME,
+  ELF_DECIMAL
 } from '@src/constants';
 import './ElectionNotification.style.less';
 import CandidateApplyModal from './CandidateApplyModal/CandidateApplyModal';
@@ -180,7 +181,7 @@ class ElectionNotification extends PureComponent {
             },
             {
               method: 'GetVotesAmount',
-              processor: value => value,
+              processor: value => value / ELF_DECIMAL,
               statisDataKey: 'currentVotesAmount'
             },
             {
