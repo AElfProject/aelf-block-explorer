@@ -199,7 +199,7 @@ export default class HomePage extends Component {
         const screenWidth = document.body.offsetWidth;
         // const screenHeight = screenWidth > 992 ? document.body.offsetHeight : 'auto';
         // const screenHeight = screenWidth < 992 ? 'auto' : document.body.offsetHeight;
-        const height = document.body.offsetHeight >= 915 ? 915 : 'auto';
+        const height = document.body.offsetHeight >= 1010 ? 1010 : 'auto';
         const screenHeight = screenWidth < 992 ? 'auto' : height;
         // const screenHeight = screenWidth > 992 ? 'auto' : '100%';
         // const screenHeight = 'auto';

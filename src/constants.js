@@ -215,7 +215,7 @@ const ALL_TXS_LIST_COLUMNS = [
       const {
         contractName,
         isSystemContract
-      } = row.contractName;
+      } = row.contractName || {};
       const name = isSystemContract ? removeAElfPrefix(contractName) : contractName;
       return (
           <Link
