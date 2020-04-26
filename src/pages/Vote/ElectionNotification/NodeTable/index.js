@@ -368,7 +368,6 @@ class NodeTable extends PureComponent {
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
         length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
-        // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
       }),
       getAllTeamDesc(),
       currentWallet.pubKey
@@ -405,9 +404,8 @@ class NodeTable extends PureComponent {
   processNodesData(resArr) {
     // const { totalVotesAmount } = this.state;
 
-    // todo: error handle
     let totalActiveVotesAmount = 0;
-    const nodeInfos = resArr[0].value;
+    const nodeInfos = resArr[0] ? resArr[0].value : [];
     const { activeVotingRecords } = resArr[2] || {};
     let teamInfos = null;
     if (resArr[1].code === 0) {

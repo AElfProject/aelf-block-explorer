@@ -125,7 +125,7 @@ export default class MyVote extends Component {
 
   processData(resArr) {
     const electorVotes = resArr[0];
-    const allNodeInfo = resArr[2].value
+    const allNodeInfo = (resArr[2] ? resArr[2].value : [])
       .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
       .map((item, index) => {
         item.rank = index + 1;
