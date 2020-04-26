@@ -170,11 +170,6 @@ class ResourceCurrencyChart extends PureComponent {
         }
         // todo: consider to add lastAxisValue to the tooltip
       },
-      legend: {
-        data: ['Total volume of business', 'Price'],
-        type: 'scroll',
-        orient: 'horizontal'
-      },
       // todo: how to make the xAxis/yAxis offset?
       xAxis: [
         {
