@@ -184,13 +184,13 @@ class BrowserBreadcrumb extends Component {
       // tx: "交易详情",
       // address: "地址",
       blocks: (
-        <h1 className='breadcrumb-title' style={{ fontSize: 28 }}>
+        <div className='breadcrumb-title' style={{ fontSize: 28 }}>
           {' '}
           Blocks List{' '}
           <span className='tip-color' style={{ fontSize: 16 }}>
             ( Only confirmed blocks )
           </span>
-        </h1>
+        </div>
       ),
       block: 'Block',
       txs: 'Transactions',

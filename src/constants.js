@@ -21,7 +21,9 @@ dayjs.extend(relativeTime);
 const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
 
 const ALL_BLOCKS_API_URL = '/all/blocks';
+const ALL_UNCONFIRMED_BLOCKS_API_URL = '/all/unconfirmedBlocks';
 const ALL_TXS_API_URL = '/all/transactions';
+const ALL_UNCONFIRMED_TXS_API_URL = '/all/unconfirmedTransactions';
 const TXS_BLOCK_API_URL = '/block/transactions';
 const ADDRESS_TXS_API_URL = '/address/transactions';
 const ADDRESS_BALANCE_API_URL = '/api/address/balance';
@@ -380,7 +382,9 @@ const RESOURCE_DETAILS_COLUMN = [
 
 export {
   ALL_BLOCKS_API_URL,
+  ALL_UNCONFIRMED_BLOCKS_API_URL,
   ALL_TXS_API_URL,
+  ALL_UNCONFIRMED_TXS_API_URL,
   TXS_BLOCK_API_URL,
   ADDRESS_TXS_API_URL,
   ADDRESS_TOKENS_API_URL,

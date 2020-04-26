@@ -67,11 +67,13 @@ const getContractNames = async () => {
     let res = {};
     try {
         res = await get('/viewer/allContracts');
-    } catch (e) {}
+    } catch (e) {
+        return CONTRACT_NAMES;
+    }
     const {
         code,
         data = {}
-    } = res;
+    } = res || {};
     if (+code === 0) {
         const {
             list = []

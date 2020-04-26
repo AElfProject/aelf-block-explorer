@@ -10,6 +10,7 @@ import {
 } from "../../utils";
 import {
     ALL_TXS_API_URL,
+    ALL_UNCONFIRMED_TXS_API_URL,
     TXS_BLOCK_API_URL,
     PAGE_SIZE,
     ALL_TXS_LIST_COLUMNS
@@ -35,22 +36,18 @@ export default class TxsPage extends Component {
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         const {
             props
         } = this;
         const {
             location
         } = props;
-        await this.fetch({
+        this.fetch({
             page: 0,
             limit: PAGE_SIZE,
             block_hash: (!!location.search && location.search.slice(1)) || undefined
         });
-    }
-
-    componentWillUnmount() {
-        this.setState = () => {};
     }
 
     merge(data = {}, contractNames) {
@@ -68,7 +65,19 @@ export default class TxsPage extends Component {
             loading: true
         });
 
-        const url = !!params.block_hash ? TXS_BLOCK_API_URL : ALL_TXS_API_URL;
+        const {
+            location
+        } = this.props;
+        const {
+            pathname = ''
+        } = location;
+
+        let url;
+        if (!!params.block_hash) {
+            url = TXS_BLOCK_API_URL
+        } else {
+            url = pathname.indexOf && pathname.indexOf('unconfirmed') === -1 ? ALL_TXS_API_URL : ALL_UNCONFIRMED_TXS_API_URL;
+        }
         const data = await get(url, {
             order: "desc",
             ...params

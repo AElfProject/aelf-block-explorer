@@ -4,31 +4,29 @@ import React, {
 import {
     Table
 } from "antd";
-
-// Show how to use mobx-react
-// import {
-//     inject,
-//     observer
-// } from "mobx-react";
-
 import {
     get
 } from "../../utils";
 import {
     ALL_BLOCKS_API_URL,
+    ALL_UNCONFIRMED_BLOCKS_API_URL,
     PAGE_SIZE,
     BLOCKS_LIST_COLUMNS
 } from "../../constants";
 
 import "./blocks.styles.less";
 
-// @inject("appIncrStore")
-// @observer
 export default class BlocksPage extends Component {
     constructor(props) {
         super(props);
+        const {
+            location
+        } = props;
+        const {
+            pathname = ''
+        } = location;
+        this.API_URL = pathname.indexOf('unconfirmed') === -1 ? ALL_BLOCKS_API_URL : ALL_UNCONFIRMED_BLOCKS_API_URL;
         this.state = {
-            // data: props.appIncrStore.blockList.blocks.toJSON(),
             data: [],
             pagination: {
                 showQuickJumper: true,
@@ -43,15 +41,11 @@ export default class BlocksPage extends Component {
         };
     }
 
-    async componentDidMount() {
-        await this.fetch({
+    componentDidMount() {
+        this.fetch({
             page: 0,
             limit: PAGE_SIZE
         });
-    }
-
-    componentWillUnmount() {
-        this.setState = () => {};
     }
 
     fetch = async (params = {}) => {
@@ -60,7 +54,7 @@ export default class BlocksPage extends Component {
             loading: true
         });
 
-        const data = await get(ALL_BLOCKS_API_URL, {
+        const data = await get(this.API_URL, {
             order: "desc",
             ...params
         });
@@ -75,15 +69,16 @@ export default class BlocksPage extends Component {
         });
     };
 
-    handleTableChange = pagination => {
-        const pager = {...this.state.pagination
+    handleTableChange = async pagination => {
+        const pager = {
+            ...this.state.pagination
         };
         pager.current = pagination.current;
         this.setState({
             pagination: pager
         });
 
-        this.fetch({
+        await this.fetch({
             limit: pagination.pageSize,
             page: pagination.current - 1
         });
@@ -95,7 +90,6 @@ export default class BlocksPage extends Component {
             pagination,
             loading
         } = this.state;
-        console.log(data);
         const {
             handleTableChange
         } = this;
@@ -111,7 +105,6 @@ export default class BlocksPage extends Component {
                     onChange={handleTableChange}
                     scroll={{x: 414}}
                 />
-                {/*<div className="basic-bottom-blank"></div>*/}
             </div>
         );
     }
