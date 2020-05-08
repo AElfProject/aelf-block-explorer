@@ -20,10 +20,11 @@ import {
 import {isPhoneCheck} from '../../utils/deviceCheck'
 
 import {
-    ALL_TXS_LIST_COLUMNS
+    ALL_TXS_LIST_COLUMNS, BLOCK_INFO_API_URL, CHAIN_ID, SYMBOL
 } from '../../constants';
 
 import './blockdetail.styles.less';
+import Dividends from "../../components/Dividends";
 
 export default class BlockDetailPage extends React.Component {
     constructor(props) {
@@ -40,6 +41,7 @@ export default class BlockDetailPage extends React.Component {
                 showQuickJumper: true,
                 showTotal: total => `Total ${total} items`
             },
+            parsedResult: {},
             txs_loading: true
         };
 
@@ -97,7 +99,7 @@ export default class BlockDetailPage extends React.Component {
         if (parseInt(input, 10) == input) {
             blockHeight = input;
             try {
-                result = await aelf.chain.getBlockByHeight(input, true);
+                result = await aelf.chain.getBlockByHeight(input, false);
                 const blockhash = result && result.BlockHash;
                 if (blockhash) {
                     txsList = await this.getTxsList(blockhash);
@@ -113,8 +115,16 @@ export default class BlockDetailPage extends React.Component {
             } = txsList;
             error = transactions.length ? '' : 'Not Found';
             blockHeight = transactions[0] && transactions[0].block_height;
-            result = blockHeight ? await aelf.chain.getBlockByHeight(blockHeight, true) : undefined;
+            result = blockHeight ? await aelf.chain.getBlockByHeight(blockHeight, false) : undefined;
         }
+
+        get(BLOCK_INFO_API_URL, {
+           height: blockHeight
+        }).then(res => {
+            this.setState({
+                parsedResult: res
+            });
+        });
 
         const pagination = {
             ...this.state.pagination,
@@ -128,6 +138,7 @@ export default class BlockDetailPage extends React.Component {
             blockInfo: {
                 // blockHeight: +blockHeight || 'Not Found',
                 blockHash: result && result.BlockHash,
+                blockSize: `${(result && result.BlockSize || '0').toLocaleString()} Bytes`,
                 txsCount: result && result.Body && result.Body.TransactionsCount || 'Not Found',
                 ...(result && result.Header || {})
             },
@@ -315,16 +326,39 @@ export default class BlockDetailPage extends React.Component {
         );
     }
 
+    renderExtra() {
+        const {
+            parsedResult
+        } = this.state;
+        if (Object.keys(parsedResult).length > 0) {
+            const {
+                miner,
+                resources,
+                tx_fee,
+                dividends
+            } = parsedResult;
+            return [
+                this.renderCol('Miner', `${SYMBOL}_${miner}_${CHAIN_ID}`),
+                this.renderCol('Transaction Fee', `${tx_fee} ELF`),
+                this.renderCol('Resources Fee', <Dividends dividends={JSON.parse(resources)} />),
+                this.renderCol('Dividends', <Dividends dividends={JSON.parse(dividends)} />)
+            ]
+        }
+        return null;
+    }
+
     render() {
         const error = this.state.error;
 
         let moreInfoHtml;
         let colsHtml;
+        let extra;
         if (error) {
             colsHtml = this.renderCol('error', error);
         }
         else {
             colsHtml = this.renderCols();
+            extra = this.renderExtra();
             moreInfoHtml = this.renderMoreInfo();
         }
 
@@ -338,10 +372,10 @@ export default class BlockDetailPage extends React.Component {
                 </div>
                 <Row className='tx-block-detail-body'>
                     {colsHtml}
+                    {extra}
                 </Row>
                 <div>&nbsp;</div>
                 {moreInfoHtml}
-                {/*<div className='basic-bottom-blank'></div>*/}
             </div>
         );
     }

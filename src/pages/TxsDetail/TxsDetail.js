@@ -7,17 +7,20 @@ import React from 'react';
 import { Row, Col, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import AElf from 'aelf-sdk';
-import { aelf, formatKey, getContractNames } from '../../utils';
+import {aelf, formatKey, get, getContractNames} from '../../utils';
 import addressFormat from '../../utils/addressFormat';
 import {
   removeAElfPrefix
 } from '../../utils/utils';
 import {
-  CONTRACT_VIEWER_URL
+  CONTRACT_VIEWER_URL,
+  TXS_INFO_API_URL
 } from '../../constants';
 
 import './txsdetail.styles.less';
 import {Link} from "react-router-dom";
+import Dividends from "../../components/Dividends";
+import moment from "moment";
 
 export default class TxsDetailPage extends React.Component {
   constructor(props) {
@@ -30,12 +33,12 @@ export default class TxsDetailPage extends React.Component {
       from: '',
       to: '',
       blockHash: '',
-      contractName: ''
+      contractName: '',
+      parsedResult: {}
     };
   }
 
   fetchTxInfo = txsId => {
-    // console.log(aelf.chain.getTxResult(txsId));
     if (isEmpty(txsId)) {
       return;
     }
@@ -64,6 +67,16 @@ export default class TxsDetailPage extends React.Component {
       this.setState({
         chainStatus,
       });
+    });
+
+    get(TXS_INFO_API_URL, {
+      tx_id: txsId
+    }).then(res => {
+      this.setState({
+        parsedResult: res
+      });
+    }).catch(err => {
+      console.error(err);
     });
   };
 
@@ -104,16 +117,14 @@ export default class TxsDetailPage extends React.Component {
   }
 
   renderCol(key, value) {
-    if (typeof value === 'object') {
-      // return this.renderCols(value);
+    if (typeof value === 'object' && !React.isValidElement(value)) {
       value = JSON.stringify(value);
     }
     // console.log('txDetail key: ', key);
     let valueHTML = value;
     const {LastIrreversibleBlockHeight} = this.state.chainStatus;
     const {
-      contractName,
-
+      contractName
     } = this.state;
     switch (key) {
       case 'Status':
@@ -123,6 +134,9 @@ export default class TxsDetailPage extends React.Component {
         if (value !== 'null' && value) {
           valueHTML = this.renderCodeLikeParams(value, 8);
         }
+        break;
+      case 'TransactionSize':
+        valueHTML = `${(value || '0').toLocaleString()} Bytes`;
         break;
       case 'Transaction_Params':
         valueHTML = this.renderCodeLikeParams(value, 6);
@@ -147,7 +161,6 @@ export default class TxsDetailPage extends React.Component {
         if (!LastIrreversibleBlockHeight) {
           return valueHTML;
         }
-        // console.log('LastIrreversibleBlockHeight: ', LastIrreversibleBlockHeight, value, this.state.chainStatus);
         const confirmedBlocks = LastIrreversibleBlockHeight - value;
         const isIB = confirmedBlocks >= 0;
 
@@ -191,30 +204,38 @@ export default class TxsDetailPage extends React.Component {
     }).reduce((acc, v) => acc.concat(v), []);
   }
 
-  renderFee(result = {}) {
-    const logs = result.Logs;
-    if (logs !== 'null' && logs) {
-      const txFee = AElf.pbUtils.getTransactionFee(logs);
-      const resourceFee = AElf.pbUtils.getResourceFee(logs);
-      if (txFee.length || resourceFee.length) {
-        const txStr = txFee.length ? JSON.stringify(txFee[0]) : '';
-        const resourceStr = resourceFee.length ? JSON.stringify(resourceFee[0]) : '';
-        return this.renderCol('Fee', txStr + resourceStr);
-      }
+  renderExtra() {
+    const {
+      parsedResult
+    } = this.state;
+    if (Object.keys(parsedResult).length > 0) {
+      const {
+        time,
+        resources,
+        tx_fee
+      } = parsedResult;
+      return [
+          this.renderCol('Time', moment(time).format('YYYY-MM-DD  HH:mm:ss')),
+          this.renderCol('Transaction Fee', `${tx_fee} ELF`),
+          this.renderCol('Resources Fee', <Dividends dividends={JSON.parse(resources)} />)
+      ]
     }
+    return null;
   }
 
   render() {
     const { error, result } = this.state;
     const colsHtml = this.renderCols(error || result);
-    const feeHTML = this.renderFee(error || result);
 
     return (
       <div className='tx-block-detail-container basic-container basic-container-white'>
         <div className='tx-block-detail-panel tx-block-detail-panel-simple'>
           <span className='title'>Overview</span>
         </div>
-        <Row className='tx-block-detail-body'>{colsHtml}{feeHTML}</Row>
+        <Row className='tx-block-detail-body'>
+          {colsHtml}
+          {this.renderExtra()}
+        </Row>
       </div>
     );
   }

@@ -15,6 +15,7 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import {
   removeAElfPrefix
 } from './utils/utils';
+import Dividends from "./components/Dividends";
 
 dayjs.extend(relativeTime);
 
@@ -25,6 +26,8 @@ const ALL_UNCONFIRMED_BLOCKS_API_URL = '/all/unconfirmedBlocks';
 const ALL_TXS_API_URL = '/all/transactions';
 const ALL_UNCONFIRMED_TXS_API_URL = '/all/unconfirmedTransactions';
 const TXS_BLOCK_API_URL = '/block/transactions';
+export const TXS_INFO_API_URL = '/block/txInfo';
+export const BLOCK_INFO_API_URL = '/block/blockInfo';
 const ADDRESS_TXS_API_URL = '/address/transactions';
 const ADDRESS_BALANCE_API_URL = '/api/address/balance';
 const TPS_LIST_API_URL = '/tps/all';
@@ -136,20 +139,30 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Block Hash',
     dataIndex: 'block_hash',
     key: 'block_hash',
-    width: 500,
+    width: 250,
     ellipsis: true,
-    render: (text, row) => <Link to={`/block/${row.block_height}`}> {text} </Link>
+    render: (text, row) => <Link title={text} to={`/block/${row.block_height}`}> {text} </Link>
   },
   {
-    title: 'Age',
-    dataIndex: 'time',
-    key: 'time',
-    width: 150,
-    render: time => <span> {dayjs(time).format('YYYY/MM/DD HH:mm:ss')} </span>
-    //     return <span> {dayjs().from(dayjs(time), true)} </span>;
+    title: 'Miner',
+    dataIndex: 'miner',
+    key: 'miner',
+    width: 250,
+    ellipsis: true,
+    render(text) {
+      return (<Link title={`${SYMBOL}_${text}_${CHAIN_ID}`} to={`/address/${text}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>);
+    }
   },
   {
-    title: 'Number of Txs ',
+    title: 'New Dividends',
+    dataIndex: 'dividends',
+    key: 'dividends',
+    render(text) {
+      return <Dividends dividends={JSON.parse(text)} />
+    }
+  },
+  {
+    title: 'Txs ',
     dataIndex: 'tx_count ',
     key: 'tx_count ',
     width: 150,
@@ -159,6 +172,14 @@ const BLOCKS_LIST_COLUMNS = [
       ) : (
         row.tx_count
       )
+  },
+  {
+    title: 'Time',
+    dataIndex: 'time',
+    key: 'time',
+    width: 150,
+    render: time => <span> {dayjs(time).format('YYYY/MM/DD HH:mm:ss')} </span>
+    //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   }
 ];
 
@@ -236,6 +257,14 @@ const ALL_TXS_LIST_COLUMNS = [
       dataIndex: 'method',
       key: 'method',
       ellipsis: true
+  },
+  {
+    title: 'Fee',
+    dataIndex: 'tx_fee',
+    key: 'tx_fee',
+    render(text) {
+      return <span>{text}&nbsp;ELF</span>;
+    }
   },
   {
       title: 'Amount',
