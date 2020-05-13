@@ -7,15 +7,12 @@ import useLocation from 'react-use/lib/useLocation';
 import IFrame from '../../components/IFrame';
 import {rand16Num} from "../../utils/utils";
 
-
-// const DEFAULT_URL = process.env.NODE_ENV === 'production' ? '/viewer/list.html' : 'http://0.0.0.0:8526/list.html';
-
 const DEFAULT_URL = '/viewer/proposal.html';
 
 const Proposal = () => {
 
     const location = useLocation();
-    const [url, setUrl] = useState(DEFAULT_URL);
+    const [url, setUrl] = useState('');
 
     function onChange(href) {
         window.history.replaceState(
@@ -29,18 +26,11 @@ const Proposal = () => {
             hash
         } = location;
         if (hash) {
-            setUrl(decodeURIComponent(hash).split('#')[1]);
-        }
-    }, []);
-
-    useEffect(() => {
-        const {
-            hash
-        } = location;
-        if (!hash) {
+            setUrl(decodeURIComponent(hash).substring(1));
+        } else {
             setUrl(`${DEFAULT_URL}?random=${rand16Num(8)}`);
         }
-    }, [location]);
+    }, [location.hash]);
 
     return (
         <div

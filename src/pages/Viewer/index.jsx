@@ -10,15 +10,19 @@ import {
 } from '../../utils/utils';
 import './index.less';
 
+const DEFAULT_URL = '/viewer/address.html#/contract';
 
-// const DEFAULT_URL = process.env.NODE_ENV === 'production' ? '/viewer/list.html' : 'http://0.0.0.0:8526/list.html';
+const Viewer = props => {
+    const {
+        match
+    } = props
+    const {
+        address = ''
+    } = match.params;
 
-const DEFAULT_URL = '/viewer/list.html';
-
-const Viewer = () => {
 
     const location = useLocation();
-    const [url, setUrl] = useState(DEFAULT_URL);
+    const [url, setUrl] = useState('');
 
     function onChange(href) {
         window.history.replaceState(
@@ -32,19 +36,17 @@ const Viewer = () => {
             hash
         } = location;
         if (hash) {
-            console.log(decodeURIComponent(hash));
-            setUrl(decodeURIComponent(hash).split('#')[1]);
+            setUrl(decodeURIComponent(hash).substring(1));
+        } else {
+            let newUrl = `${DEFAULT_URL}?random=${rand16Num(8)}`;
+            if (address) {
+                newUrl = `${DEFAULT_URL}/${address}?address=${address}`;
+            }
+            setUrl(newUrl);
         }
-    }, []);
-
-    useEffect(() => {
-        const {
-            hash
-        } = location;
-        if (!hash) {
-            setUrl(`${DEFAULT_URL}?random=${rand16Num(8)}`);
-        }
-    }, [location]);
+    }, [
+        location.hash
+    ]);
 
     return (
         <div

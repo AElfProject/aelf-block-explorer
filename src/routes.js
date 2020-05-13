@@ -26,7 +26,7 @@ export default () => [
     <Route path='/blocks' exact component={BlocksPage} key='blocks' />,
     <Route path='/unconfirmedBlocks' exact component={BlocksPage} key='unconfirmedBlocks' />,
     <Route path='/block/:id' component={BlockDetailPage} key='blockdetail' />,
-    // <Route path='/address' exact component={AddressPage} key='address' />,
+    <Route path='/address' exact component={AddressPage} key='address-list' />,
     <Route path='/address/:id' component={AddressPage} key='address' />,
     <Route path='/txs' exact component={TxsPage} key='transcations' />,
     <Route path='/unconfirmedTxs' exact component={TxsPage} key='unconfirmedTxs' />,
@@ -35,6 +35,6 @@ export default () => [
     <Route path='/vote' component={VotePage} key='vote' />,
     <Route path='/resource' component={Resource} key='resource' />,
     <Route path='/resourceDetail/:id' component={ResourceDetail} key='resourceDetail' />,
-    <Route path='/contract' component={Viewer} key='contract' />,
+    <Route path='/contract' exact component={Viewer} key='contract' />,
     <Route path='/proposal' component={Proposal} key='proposal' />
 ];
