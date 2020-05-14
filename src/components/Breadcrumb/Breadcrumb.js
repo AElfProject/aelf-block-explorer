@@ -1,13 +1,22 @@
-import React, { Fragment, Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, {Component} from 'react';
+import {Link, withRouter} from 'react-router-dom';
 
-import { Breadcrumb, Icon } from 'antd';
+import {Breadcrumb} from 'antd';
 
 import {ADDRESS_INFO} from '../../../config/config';
 
 import './breadcrumb.styles.less';
 
-const BREADCRUMBNAMEMAP = {
+// if you want to hide the Breadcrumb
+const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contract'];
+const noBreadcrumb = (pathname) => {
+  const isMainPage = pathname === '/';
+  return NO_BREADCRUMB_PAGES.filter(item => {
+    return pathname.includes(item);
+  }).length === 0 && !isMainPage;
+};
+
+const BREADCRUMB_NAME_MAP = {
   // "/blocks": "区块列表",
   // "/txs": "交易列表",
   // "/txs/block": "区块交易",
@@ -16,9 +25,11 @@ const BREADCRUMBNAMEMAP = {
   // "/tx": "交易信息",
   // "/address": "地址信息"
   '/blocks': 'Blocks List',
+  '/unconfirmedBlocks': 'Unconfirmed Blocks List',
   '/txs': 'Transactions List',
   '/txs/block': 'Transactions of Block',
   '/block': 'Block',
+  '/unconfirmedBlock': 'Unconfirmed Block',
   '/tx': 'Transaction',
   '/address': 'Address',
   '/vote': 'Vote',
@@ -31,29 +42,36 @@ const BREADCRUMBNAMEMAP = {
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
-const BREADCRUMBNAMESTATE = {
+const BREADCRUMB_NAMES_TATE = {
   currentState: '',
   states: {
     blocks: {
       url: ['/blocks'],
-      name: [BREADCRUMBNAMEMAP['/blocks']]
+      name: [BREADCRUMB_NAME_MAP['/blocks']]
     },
     block: {
       url: ['/blocks', false],
-      name: [BREADCRUMBNAMEMAP['/blocks'], BREADCRUMBNAMEMAP['/block']]
+      name: [BREADCRUMB_NAME_MAP['/blocks'], BREADCRUMB_NAME_MAP['/block']]
+    },
+    unconfirmedBlocks: {
+      url: ['/unconfirmedBlocks'],
+      name: [BREADCRUMB_NAME_MAP['/unconfirmedBlocks']]
+    },
+    unconfirmedBlock: {
+      url: ['/unconfirmedBlock'],
+      name: [BREADCRUMB_NAME_MAP['/unconfirmedBlock']]
     },
     txs: {
       url: ['/txs', false],
-      name: [BREADCRUMBNAMEMAP['/txs'], BREADCRUMBNAMEMAP['/txs/block']]
+      name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/txs/block']]
     },
     tx: {
       url: ['/txs', false],
-      name: [BREADCRUMBNAMEMAP['/txs'], BREADCRUMBNAMEMAP['/tx']]
+      name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/tx']]
     },
     address: {
-      // url: ['/address', false],
-      url: ['/txs', false], // 暂无地址列表
-      name: [BREADCRUMBNAMEMAP['/txs'], BREADCRUMBNAMEMAP['/address']]
+      url: ['/txs', false],
+      name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/address']]
     },
     apps: {
       url: ['/apps'],
@@ -70,14 +88,14 @@ const BREADCRUMBNAMESTATE = {
     resourceDetail: {
       url: ['/resource', '/resourceDetail'],
       name: [
-        BREADCRUMBNAMEMAP['/resource'],
-        BREADCRUMBNAMEMAP['/resourceDetail']
+        BREADCRUMB_NAME_MAP['/resource'],
+        BREADCRUMB_NAME_MAP['/resourceDetail']
       ]
     },
     contract: {
       url: ['/contract'],
       name: [
-        BREADCRUMBNAMEMAP['/contract']
+        BREADCRUMB_NAME_MAP['/contract']
       ]
     },
     proposal: {
@@ -105,20 +123,19 @@ class BrowserBreadcrumb extends Component {
 
   checkLocation (breadcrumbTitle) {
 
-    console.log('this.props.history: ', this.props.history);
-    console.log('this.props.history: breadcrumbTitle: ', breadcrumbTitle, BREADCRUMBNAMESTATE.currentState);
-    const current = BREADCRUMBNAMESTATE.currentState;
+    const current = BREADCRUMB_NAMES_TATE.currentState;
     const pathname = location.pathname;
 
     // hummm, stupid solution
     const inBlockDetail = current === 'block' && breadcrumbTitle === 'Blocks List';
+    const inUnconfirmedBlock = current === 'unconfirmedBlock' && breadcrumbTitle === 'Unconfirmed Blocks List';
     const inTxList = current === 'txs' && breadcrumbTitle === 'Transactions List' && pathname !== '/txs';
     const inAddress = current === 'address' && breadcrumbTitle === 'Transactions List';
     const inTxDetail = current === 'tx' && breadcrumbTitle === 'Transactions List';
     const inResourceDetail = current === 'resourceDetail' && breadcrumbTitle === 'Resource';
     const inContract = current === 'contract';
 
-    if (inBlockDetail || inTxList || inAddress || inTxDetail || inResourceDetail || inContract) {
+    if (inBlockDetail || inTxList || inAddress || inTxDetail || inResourceDetail || inContract || inUnconfirmedBlock) {
       return false;
     }
 
@@ -127,13 +144,13 @@ class BrowserBreadcrumb extends Component {
 
   // TODO: 如果没有收录，则不展示面包屑。
   getExtraBreadcrumbItems(pathSnippets, reloadUrl) {
-    const extraBreadcrumbItems = pathSnippets.map((item, index) => {
+    return pathSnippets.map((item, index) => {
       if (index === 0) {
-        BREADCRUMBNAMESTATE.currentState = item;
+        BREADCRUMB_NAMES_TATE.currentState = item;
       }
 
       const STATE =
-        BREADCRUMBNAMESTATE.states[BREADCRUMBNAMESTATE.currentState];
+        BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState];
 
       if (!STATE) {
         this.props.history.push('/');
@@ -142,24 +159,16 @@ class BrowserBreadcrumb extends Component {
 
       let breadcrumbTitle = STATE.name[index]
         ? STATE.name[index]
-        : BREADCRUMBNAMEMAP[item];
-      if (breadcrumbTitle === undefined) {
-        breadcrumbTitle = item.replace(/^\S/, s => s.toUpperCase());
-      }
+        : BREADCRUMB_NAME_MAP[item];
+
       const url =
         index === pathSnippets.length - 1
           ? STATE.url[index] || reloadUrl
           : STATE.url[index] ||
-            `/${pathSnippets.slice(0, index + 1).join('/')}`;
+          `/${pathSnippets.slice(0, index + 1).join('/')}`;
 
-      const isCurrentTitle =  this.checkLocation(breadcrumbTitle);
-
-      // TODO: stupid atom-young. NM.
-      if (BREADCRUMBNAMESTATE.currentState === 'contract') {
-        return <Breadcrumb.Item key={url}>
-            <a href={url}> {breadcrumbTitle} </a>
-        </Breadcrumb.Item>;
-      }
+      console.log('breadcrumbTitle: ', breadcrumbTitle);
+      const isCurrentTitle = this.checkLocation(breadcrumbTitle);
 
       return (
         <Breadcrumb.Item key={url}>
@@ -168,21 +177,13 @@ class BrowserBreadcrumb extends Component {
             :
             <Link to={url}> {breadcrumbTitle} </Link>
           }
-
         </Breadcrumb.Item>
       );
     });
-
-    return extraBreadcrumbItems;
   }
 
-  getTitle(pathSnippets) {
+  getBreadcrumbTitle(pathSnippets) {
     const pageNameMap = {
-      // blocks: "区块",
-      // block: "区块",
-      // txs: "交易",
-      // tx: "交易详情",
-      // address: "地址",
       blocks: (
         <div className='breadcrumb-title' style={{ fontSize: 28 }}>
           {' '}
@@ -192,7 +193,9 @@ class BrowserBreadcrumb extends Component {
           </span>
         </div>
       ),
+      unconfirmedBlocks: 'Unconfirmed Blocks List',
       block: 'Block',
+      unconfirmedBlock: 'Unconfirmed Block',
       txs: 'Transactions',
       tx: 'Transaction',
       address: 'Address',
@@ -209,13 +212,12 @@ class BrowserBreadcrumb extends Component {
         </span>
       )
     };
-    console.log(pathSnippets);
 
-    let title = [
+    return [
       pageNameMap[pathSnippets[0]],
       !!pathSnippets[1] ? (
         <span className='breadcrumb-sub-title' key='breadcrumb-sub-title'>
-          { pathSnippets[0] === 'address' || pathSnippets[0] === 'resourceDetail' ?
+          {pathSnippets[0] === 'address' || pathSnippets[0] === 'resourceDetail' ?
             '#' + ADDRESS_INFO.PREFIX + '_' + pathSnippets[1] + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID
             :
             '#' + pathSnippets[1]}
@@ -224,15 +226,6 @@ class BrowserBreadcrumb extends Component {
         ''
       )
     ];
-    return title;
-  }
-
-  // if you want to hide the Breadcrumb
-  checkBreadcrumbShow(pathname) {
-    const isMainPage = pathname === '/' ? true : false;
-    const isVotePage = pathname.includes('/vote');
-    const isProposalPage = pathname.includes('/proposal');
-    return !isMainPage && !isVotePage && !isProposalPage;
   }
 
   render() {
@@ -241,7 +234,7 @@ class BrowserBreadcrumb extends Component {
     } = this.props;
     const pathname = location.pathname;
     const reloadUrl = pathname + location.search;
-    const className = this.checkBreadcrumbShow(pathname) ? 'breadcrumb' : 'breadcrumb hide';
+    const className = noBreadcrumb(pathname) ? 'breadcrumb' : 'breadcrumb hide';
     const pathSnippets = pathname.split('/').filter(i => i);
 
     const firstBreadcrumbItem = this.getFirstBreadcrumbItem();
@@ -255,7 +248,7 @@ class BrowserBreadcrumb extends Component {
     );
 
     // route children limit to 2, so using pathSnippets[1] as condition
-    const title = this.getTitle(pathSnippets);
+    const title = this.getBreadcrumbTitle(pathSnippets);
 
     return (
       <div className={className}>

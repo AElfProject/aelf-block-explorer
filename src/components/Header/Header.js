@@ -198,13 +198,27 @@ class BrowserHeader extends PureComponent {
           <MenuItemGroup title='Block'>
             <Menu.Item key='/blocks'>
               {/* <Icon type='gold' /> */}
-              <Link to='/blocks'>View Blocks</Link>
+              <Link to='/blocks'>Blocks</Link>
+            </Menu.Item>
+            <Menu.Item key='/unconfirmedBlocks'>
+              {/* <Icon type='gold' /> */}
+              <Link to='/unconfirmedBlocks'>Unconfirmed Blocks</Link>
             </Menu.Item>
           </MenuItemGroup>
           <MenuItemGroup title='Transaction'>
             <Menu.Item key='/txs'>
               {/* <Icon type='pay-circle' /> */}
-              <Link to='/txs'>View Transactions</Link>
+              <Link to='/txs'>Transactions</Link>
+            </Menu.Item>
+            <Menu.Item key='/unconfirmedTxs'>
+              {/* <Icon type='pay-circle' /> */}
+              <Link to='/unconfirmedBlocks'>Unconfirmed Transactions</Link>
+            </Menu.Item>
+          </MenuItemGroup>
+          <MenuItemGroup title='Address'>
+            <Menu.Item key='address'>
+              {/* <Icon type='pay-circle' /> */}
+              <Link to='/address'>Address</Link>
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
