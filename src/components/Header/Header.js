@@ -218,33 +218,29 @@ class BrowserHeader extends PureComponent {
           <MenuItemGroup title='Address'>
             <Menu.Item key='address'>
               {/* <Icon type='pay-circle' /> */}
-              <Link to='/address'>Address</Link>
+              <Link to='/address'>Accounts</Link>
+            </Menu.Item>
+            <Menu.Item key='contract'>
+              {/* <Icon type='pay-circle' /> */}
+              <Link to='/contract'>Contracts</Link>
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
-        <Menu.Item key='/contract'>
-          <Link to='/contract'>CONTRACT</Link>
-        </Menu.Item>
-        <Menu.Item key='/proposal'>
-          <Link to='/proposal'>PROPOSAL</Link>
-        </Menu.Item>
-        {/* <Menu.Item key='/wallet'>
-          <a
-            href={config.WALLET_DOMAIN}
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            WALLET
-          </a>
-        </Menu.Item>
-        <Menu.Item key='/apps'>
-          <Link to='/apps'>APP CENTER[Building]</Link>
-        </Menu.Item> */}
-         {voteHTML}
-        {/* <Menu.Item key='/voteold'> */}
-        {/* <Link to='/voteold'>VoteOld</Link> */}
-        {/* </Menu.Item> */}
-         {resourceHTML}
+        <SubMenu
+            title={
+              <span className='submenu-title-wrapper'>
+              {/* <Icon type='gold' /> */}
+                GOVERNANCE
+            </span>
+            }
+            className='aelf-submenu-container'
+        >
+          <Menu.Item key='/proposal'>
+            <Link to='/proposal'>PROPOSAL</Link>
+          </Menu.Item>
+          {voteHTML}
+          {resourceHTML}
+        </SubMenu>
         <Menu.Item key='/about'>
           {/* <Icon type='profile' /> */}
           <a
