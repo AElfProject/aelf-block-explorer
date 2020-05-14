@@ -27,10 +27,12 @@ const BREADCRUMB_NAME_MAP = {
   '/blocks': 'Blocks List',
   '/unconfirmedBlocks': 'Unconfirmed Blocks List',
   '/txs': 'Transactions List',
+  '/unconfirmedTxs': 'Unconfirmed Transactions List',
   '/txs/block': 'Transactions of Block',
   '/block': 'Block',
   '/unconfirmedBlock': 'Unconfirmed Block',
   '/tx': 'Transaction',
+  '/unconfirmedTx': 'Unconfirmed Transaction',
   '/address': 'Address',
   '/vote': 'Vote',
   '/resource': 'Resource',
@@ -65,9 +67,17 @@ const BREADCRUMB_NAMES_TATE = {
       url: ['/txs', false],
       name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/txs/block']]
     },
+    unconfirmedTxs: {
+      url: ['/unconfirmedTxs', false],
+      name: [BREADCRUMB_NAME_MAP['/unconfirmedTxs']]
+    },
     tx: {
       url: ['/txs', false],
       name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/tx']]
+    },
+    unconfirmedTx: {
+      url: ['/txs', false],
+      name: [BREADCRUMB_NAME_MAP['/unconfirmedTxs'], BREADCRUMB_NAME_MAP['/unconfirmedTx']]
     },
     address: {
       url: ['/txs', false],
@@ -132,10 +142,12 @@ class BrowserBreadcrumb extends Component {
     const inTxList = current === 'txs' && breadcrumbTitle === 'Transactions List' && pathname !== '/txs';
     const inAddress = current === 'address' && breadcrumbTitle === 'Transactions List';
     const inTxDetail = current === 'tx' && breadcrumbTitle === 'Transactions List';
+    const inUnconfirmedTxDetail = current === 'unconfirmedTx' && breadcrumbTitle === 'Unconfirmed Transactions List';
     const inResourceDetail = current === 'resourceDetail' && breadcrumbTitle === 'Resource';
     const inContract = current === 'contract';
 
-    if (inBlockDetail || inTxList || inAddress || inTxDetail || inResourceDetail || inContract || inUnconfirmedBlock) {
+    if (inBlockDetail || inTxList || inAddress || inTxDetail || inUnconfirmedTxDetail
+      || inResourceDetail || inContract || inUnconfirmedBlock) {
       return false;
     }
 
@@ -197,7 +209,9 @@ class BrowserBreadcrumb extends Component {
       block: 'Block',
       unconfirmedBlock: 'Unconfirmed Block',
       txs: 'Transactions',
+      unconfirmedTxs: 'Unconfirmed Transactions',
       tx: 'Transaction',
+      unconfirmedTx: 'Unconfirmed Transaction',
       address: 'Address',
       contract: 'Contract',
       proposal: 'Proposal',

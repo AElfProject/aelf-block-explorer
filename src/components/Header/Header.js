@@ -212,7 +212,7 @@ class BrowserHeader extends PureComponent {
             </Menu.Item>
             <Menu.Item key='/unconfirmedTxs'>
               {/* <Icon type='pay-circle' /> */}
-              <Link to='/unconfirmedBlocks'>Unconfirmed Transactions</Link>
+              <Link to='/unconfirmedTxs'>Unconfirmed Transactions</Link>
             </Menu.Item>
           </MenuItemGroup>
           <MenuItemGroup title='Address'>
