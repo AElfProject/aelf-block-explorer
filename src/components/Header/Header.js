@@ -216,11 +216,11 @@ class BrowserHeader extends PureComponent {
             </Menu.Item>
           </MenuItemGroup>
           <MenuItemGroup title='Address'>
-            <Menu.Item key='address'>
+            <Menu.Item key='/address'>
               {/* <Icon type='pay-circle' /> */}
               <Link to='/address'>Accounts</Link>
             </Menu.Item>
-            <Menu.Item key='contract'>
+            <Menu.Item key='/contract'>
               {/* <Icon type='pay-circle' /> */}
               <Link to='/contract'>Contracts</Link>
             </Menu.Item>
