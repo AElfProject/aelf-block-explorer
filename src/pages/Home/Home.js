@@ -11,7 +11,7 @@ import {
     Row,
     Col
 } from 'antd';
-
+import { getContractNames } from "../../utils";
 import SearchBanner from '../../components/SearchBanner/SearchBanner';
 import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
 import TPSChart from '../../components/TPSChart/TPSChart';
@@ -27,15 +27,25 @@ import {
     ALL_BLOCKS_API_URL,
     ALL_TXS_API_URL,
     SOCKET_URL,
-    BASIC_INFO
+    BASIC_INFO,
+    CONTRACT_VIEWER_URL
 } from '../../constants';
 import {ADDRESS_INFO} from '../../../config/config';
 
 import './home.styles.less';
+import {removeAElfPrefix} from "../../utils/utils";
+import addressFormat from "../../utils/addressFormat";
 
 SmoothScrollbar.use(OverscrollPlugin);
 
 const fetchInfoByChainIntervalTime = 500;
+
+
+function getFormattedContractName(contractNames, address) {
+    let name = contractNames[address] || {};
+    name = name && name.isSystemContract ? removeAElfPrefix(name.contractName) : name.contractName;
+    return name || address;
+}
 
 // @inject("appIncrStore")
 // @observer
@@ -46,7 +56,8 @@ export default class HomePage extends Component {
         totalTransactions: 0,
         localTransactions: 0,
         totalAccounts: 0,
-        localAccounts: 0
+        localAccounts: 0,
+        contractNames: {}
     }
 
     blockHeight = 0;
@@ -78,6 +89,13 @@ export default class HomePage extends Component {
         this.initBlock();
         this.initBasicInfo();
         this.initSocket();
+        getContractNames().then(names => {
+            this.setState({
+                contractNames: names
+            });
+        }).catch(e => {
+            console.log(e);
+        });
     }
 
     async initBlock () {
@@ -270,7 +288,7 @@ export default class HomePage extends Component {
     };
 
     txsRenderItem = item => {
-
+        const { contractNames } = this.state;
         let cutNum = 12;
         if (document.body.offsetWidth <= 414) {
           cutNum = 11;
@@ -292,8 +310,13 @@ export default class HomePage extends Component {
         );
 
         const to = (
-            <Link to={`/address/${item.address_to}`}>
-                {ADDRESS_INFO.PREFIX + '_' + item.address_to.slice(0, cutNum)}...
+            <Link
+                to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + item.address_to)}`}
+                title={addressFormat(item.address_to)}
+            >
+                {
+                    getFormattedContractName(contractNames, item.address_to)
+                }
             </Link>
         );
 

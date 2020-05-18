@@ -17,6 +17,25 @@ import {
 } from "../../constants";
 
 import "./txs.styles.less";
+import dayjs from "dayjs";
+
+const ALL_TXS_LIST_COLUMNS_WITH_TIME = [
+    ...ALL_TXS_LIST_COLUMNS,
+    {
+        title: 'Time',
+        dataIndex: 'time',
+        key: 'time',
+        width: 120,
+        align: 'center',
+        render: text => {
+            const time = dayjs(text).format('YYYY-MM-DD HH:mm:ss');
+            return time.split(' ').map(v => (
+                <p>{v}</p>
+            ));
+        }
+    }
+]
+
 
 export default class TxsPage extends Component {
     constructor(props) {
@@ -122,7 +141,7 @@ export default class TxsPage extends Component {
         return (
             <div className="txs-page-container basic-container basic-container-white" key="body">
                 <Table
-                    columns={ALL_TXS_LIST_COLUMNS}
+                    columns={ALL_TXS_LIST_COLUMNS_WITH_TIME}
                     dataSource={data}
                     pagination={pagination}
                     rowKey="tx_id"

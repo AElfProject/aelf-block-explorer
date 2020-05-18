@@ -190,7 +190,7 @@ const ALL_TXS_LIST_COLUMNS = [
     title: 'Tx Id',
     dataIndex: 'tx_id',
     key: 'tx_id',
-    width: 320,
+    width: 300,
     ellipsis: true,
     render: (text, row) => (
       <Link to={`/tx/${row.tx_id}`} title={row.tx_id}>
