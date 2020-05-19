@@ -6,55 +6,105 @@
 
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import { Icon, Tabs, Button, Divider } from 'antd';
+import { Icon, Tabs, Button } from 'antd';
 
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
-import {isBeforeToday} from '@utils/timeUtils';
-import {ELF_DECIMAL, SYMBOL} from '@src/constants';
-import dayjs from 'dayjs';
 import {get} from '../../../../../utils';
 import {RESOURCE_CURRENCY_CHART_FETCH_INTERVAL, RESOURCE_TURNOVER} from '../../../../../constants';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/chart/line';
+import 'echarts/lib/chart/candlestick';
 import 'echarts/lib/component/dataZoom';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/toolbox';
 import './ResourceCurrencyChart.less';
 
+function calculateMA(dayCount, data) {
+  const result = [];
+  const length = data.length;
+  for (let i = 0; i < length; i++) {
+    if (i < dayCount) {
+      result.push('-');
+      continue;
+    }
+    let sum = 0;
+    for (let j = 0; j < dayCount; j++) {
+      const { prices } = data[i - j];
+      sum += prices.length === 0 ? 0 : prices[prices.length - 1];
+    }
+    result.push((sum / dayCount).toFixed(2));
+  }
+  return result;
+}
+
+function resortPrices(prices) {
+  if (prices.length === 0) {
+    return prices;
+  }
+  const open = prices[0];
+  const end = prices[prices.length - 1];
+  const sorted = [...prices].sort((a, b) => a - b);
+  const lowest = sorted[0];
+  const highest = sorted[sorted.length - 1];
+  return [
+      open,
+      end,
+      lowest,
+      highest
+  ];
+}
+
+function handleDataList(list) {
+  const dates = [];
+  const volumes = [];
+  const prices = [];
+  list.forEach(item => {
+    dates.push(echarts.format.formatTime('yyyy-MM-dd hh:mm', item.date));
+    volumes.push(item.volume);
+    prices.push(resortPrices(item.prices));
+  });
+  return {
+    prices,
+    volumes,
+    dates
+  };
+}
+
+const colorList = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
+
+const timeZone = (new Date().getTimezoneOffset()) / 60 * -1;
+
 class ResourceCurrencyChart extends PureComponent {
   constructor(props) {
     super(props);
     this.getEchartDataTime = null;
+    this.intervalTimeList = [
+      1000 * 60 * 5, // 5m
+      1000 * 60 * 30, // 30m
+      1000 * 60 * 60, // 1h
+      1000 * 60 * 60 * 4, // 4h
+      1000 * 60 * 60 * 24, // 1d
+      1000 * 60 * 60 * 24 * 7 // 7d
+    ];
     this.state = {
       loading: false,
       buttonIndex: 0,
-      intervalTimeList: [
-        1000 * 60 * 5,
-        1000 * 60 * 30,
-        1000 * 60 * 60,
-        1000 * 60 * 60 * 4,
-        1000 * 60 * 60 * 24,
-        1000 * 60 * 60 * 24 * 5,
-        1000 * 60 * 60 * 24 * 7
-      ],
-      intervalTime: 300000,
-      xAxisData: [],
-      yAxisData: [],
+      intervalTime: 5 * 60 * 1000, // 5m
+      list: [],
       maxValue: null
     };
     this.typeChange = this.typeChange.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const {
       isSmallScreen
     } = this.props;
-    const chartHeight = isSmallScreen ? 450 : 470;
     this.echartStyle = {
-      height: chartHeight
+      height: 540
     };
-    await this.getEchartData();
+    this.getEchartData();
   }
 
   componentDidUpdate(prevProps, prevStates) {
@@ -63,7 +113,6 @@ class ResourceCurrencyChart extends PureComponent {
       clearTimeout(this.getEchartDataTime);
       this.getEchartData();
     }
-    // 沙雕，为CPU等资源类型
     if (prevProps.currentResourceIndex !== this.props.currentResourceIndex) {
       clearTimeout(this.getEchartDataTime);
       this.getEchartData();
@@ -72,61 +121,22 @@ class ResourceCurrencyChart extends PureComponent {
 
   async getEchartData() {
     const {
-      currentResourceIndex,
       currentResourceType
     } = this.props;
     const {intervalTime, buttonIndex} = this.state;
     this.setState({
       loading: true
     });
-    let xAxisData = [];
-    let yAxisData = [];
 
-    const data =
-      (await get(RESOURCE_TURNOVER, {
-        limit: 20,
-        page: 0,
-        order: 'desc',
-        interval: intervalTime,
-        type: currentResourceType
-      })) || {
-          buyRecords: [],
-          sellRecords: []
-      };
-
-    const {buyRecords, sellRecords} = data;
-    buyRecords.map((item, index) => {
-      if (buttonIndex > 3) {
-        xAxisData.push(dayjs(item.date).format('MM-DD'));
-      } else if (isBeforeToday(buyRecords[0].date)) {
-        xAxisData.push(dayjs(item.date).format('MM-DD HH:mm'));
-      } else {
-        xAxisData.push(dayjs(item.date).format('HH:mm'));
-      }
-      yAxisData.push({
-        value: ((item.count + sellRecords[index].count) / ELF_DECIMAL).toFixed(2),
-        itemStyle: {
-          opacity: 0
-          // color: 'green'
-        }
-      });
+    const list = await get(RESOURCE_TURNOVER, {
+      range: 20,
+      timeZone,
+      interval: intervalTime,
+      type: currentResourceType
     });
 
-    const offsetWidth = document.body.offsetWidth;
-    if (offsetWidth < 900 && offsetWidth > 768) {
-      xAxisData = xAxisData.slice(5);
-      yAxisData = yAxisData.slice(5);
-    } else if (offsetWidth < 768) {
-      xAxisData = xAxisData.slice(12);
-      yAxisData = yAxisData.slice(12);
-    } else if (offsetWidth <= 414) {
-      xAxisData = xAxisData.slice(18);
-      yAxisData = yAxisData.slice(18);
-    }
-
     this.setState({
-      xAxisData,
-      yAxisData,
+      list,
       loading: false
     });
     this.props.getEchartsLoading();
@@ -140,132 +150,186 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   handleButtonClick(index) {
-    const { intervalTimeList } = this.state;
     this.setState({
       buttonIndex: index,
-      intervalTime: intervalTimeList[index]
+      intervalTime: this.intervalTimeList[index]
     });
   }
 
   getOption() {
-    const { xAxisData, yAxisData,  } = this.state;
-    const maxValue = Math.ceil(Math.max.apply(
-      Math,
-      yAxisData.map(item => item.value)
-    ));
+    const { list, buttonIndex } = this.state;
+    const { currentResourceType } = this.props;
+    const {
+      dates,
+      volumes,
+      prices
+    } = handleDataList(list);
+    const ma5 = calculateMA(5, list);
+    const ma10 = calculateMA(10, list);
+    const ma20 = calculateMA(20, list);
+    const ma30 = calculateMA(30, list);
     return {
-      grid: {
-        left: '0',
-        right: '3%',
-        bottom: '0',
-        top: '6%',
-        containLabel: true,
-        show: true,
-        borderWidth: 0
+      animation: false,
+      color: colorList,
+      title: {
+        left: 'center',
+        text: 'Resource Trade'
+      },
+      legend: {
+        top: 30,
+        data: [currentResourceType, 'MA5', 'MA10', 'MA20', 'MA30']
       },
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'none'
+          type: 'line'
         }
-        // todo: consider to add lastAxisValue to the tooltip
       },
-      // todo: how to make the xAxis/yAxis offset?
+      axisPointer: {
+        link: [{
+          xAxisIndex: [0, 1]
+        }]
+      },
+      grid: [{
+        left: 20,
+        right: 20,
+        top: 110,
+        height: 300
+      }, {
+        left: 20,
+        right: 20,
+        height: 60,
+        top: 470
+      }],
       xAxis: [
         {
           type: 'category',
-          data: xAxisData,
+          data: dates,
           boundaryGap: false,
-          axisLine: {
-            show: true,
-            lineStyle: {
-              // color: '#C7B8CC'
-              color: '#666'
-            }
-          },
+          axisLine: {lineStyle: {color: '#777'}},
           axisLabel: {
-            interval: 0,
-            // todo: put the time before date
-            formatter: value => {
-              let ret = ''; // 拼接加\n返回的类目项
-              const maxLength = 6; // 每项显示文字个数
-              const valLength = value.length; // X轴类目项的文字个数
-              const rowN = Math.ceil(valLength / maxLength); // 类目项需要换行的行数
-              if (rowN > 1) {
-                // 如果类目项的文字大于3,
-                for (let i = 0; i < rowN; i++) {
-                  let temp = ''; // 每次截取的字符串
-                  const start = i * maxLength; // 开始截取的位置
-                  const end = start + maxLength; // 结束截取的位置
-                  // 这里也可以加一个是否是最后一行的判断，但是不加也没有影响，那就不加吧
-                  temp = `${value.substring(start, end)}\n`;
-                  ret += temp; // 凭借最终的字符串
-                }
-                return ret;
+            formatter: function (value) {
+              if (buttonIndex >= 4) {
+                return echarts.format.formatTime('MM-dd', value);
+              } else {
+                return echarts.format.formatTime('MM-dd hh:mm', value);
               }
-              return value;
             }
           },
-          axisTick: {
-            alignWithLabel: true
-          },
-          splitLine: {
-            show: false,
-            lineStyle: {
-              color: 'rgba(255, 255, 255, 0.3)'
-            }
+          min: 'dataMin',
+          max: 'dataMax',
+          axisPointer: {
+            show: true
           }
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value',
-          name: '占位不显示',
-          min: 0,
-          max: maxValue,
-          show: false,
-          splitLine: false
         },
         {
-          type: 'value',
-          name: `Volume / ${SYMBOL}`,
-          show: true,
-          label: {
-            normal: {
-              show: true,
-              position: 'top'
-            }
-          },
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: '#666'
-            }
-          },
-          splitLine: {
-            show: false,
-            lineStyle: {
-              color: 'rgba(255, 255, 255, 0.3)'
-            }
-          },
-          min: 0,
-          max: maxValue
+          type: 'category',
+          gridIndex: 1,
+          data: dates,
+          scale: true,
+          boundaryGap : false,
+          splitLine: {show: false},
+          axisLabel: {show: false},
+          axisTick: {show: false},
+          axisLine: { lineStyle: { color: '#777' } },
+          splitNumber: 20,
+          min: 'dataMin',
+          max: 'dataMax'
         }
       ],
-      markLine: {
-        lineStyle: {
-          color: '#666'
+      yAxis: [{
+        scale: true,
+        splitNumber: 2,
+        axisLine: { lineStyle: { color: '#777' } },
+        splitLine: { show: true },
+        axisTick: { show: false },
+        axisLabel: {
+          inside: true,
+          formatter: '{value}\n'
         }
-      },
+      }, {
+        scale: true,
+        gridIndex: 1,
+        splitNumber: 2,
+        axisLabel: {show: false},
+        axisLine: {show: false},
+        axisTick: {show: false},
+        splitLine: {show: false}
+      }],
       series: [
         {
-          smooth: true,
-          name: `Total volume/${SYMBOL} of business`,
-          type: 'line',
-          data: yAxisData,
-          lineStyle: {
-            color: '#666'
+          name: 'Volume',
+          type: 'bar',
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+          itemStyle: {
+            color: '#7fbe9e'
           },
+          emphasis: {
+            itemStyle: {
+              color: '#140'
+            }
+          },
+          data: volumes
+        },
+        {
+          type: 'candlestick',
+          name: currentResourceType,
+          data: prices,
+          itemStyle: {
+            color: '#ef232a',
+            color0: '#14b143',
+            borderColor: '#ef232a',
+            borderColor0: '#14b143'
+          },
+          emphasis: {
+            itemStyle: {
+              color: 'black',
+              color0: '#444',
+              borderColor: 'black',
+              borderColor0: '#444'
+            }
+          }
+        },
+        {
+          name: 'MA5',
+          type: 'line',
+          data: ma5,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 1
+          }
+        },
+        {
+          name: 'MA10',
+          type: 'line',
+          data: ma10,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 1
+          }
+        },
+        {
+          name: 'MA20',
+          type: 'line',
+          data: ma20,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 1
+          }
+        },
+        {
+          name: 'MA30',
+          type: 'line',
+          data: ma30,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 1
+          }
         }
       ]
     };
@@ -279,14 +343,12 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   selectButtonHTML() {
-    // 'days'
     const buttons = [
       '5 Min',
       '30 Min',
       '1 Hour',
       '4 Hours',
       '1 Day',
-      '5 Days',
       '1 Week'
     ];
     const { buttonIndex } = this.state;
@@ -309,8 +371,7 @@ class ResourceCurrencyChart extends PureComponent {
 
   render() {
     const {
-      list,
-      currentIndex
+      list
     } = this.props;
     const selectButton = this.selectButtonHTML();
 
