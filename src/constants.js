@@ -154,7 +154,7 @@ const BLOCKS_LIST_COLUMNS = [
     }
   },
   {
-    title: 'New Dividends',
+    title: 'Dividends',
     dataIndex: 'dividends',
     key: 'dividends',
     render(text) {
@@ -162,7 +162,7 @@ const BLOCKS_LIST_COLUMNS = [
     }
   },
   {
-    title: 'Txs ',
+    title: 'Txs',
     dataIndex: 'tx_count ',
     key: 'tx_count ',
     width: 150,
@@ -259,7 +259,7 @@ const ALL_TXS_LIST_COLUMNS = [
       ellipsis: true
   },
   {
-    title: 'Fee',
+    title: 'Tx Fee',
     dataIndex: 'tx_fee',
     key: 'tx_fee',
     render(text) {

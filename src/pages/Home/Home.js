@@ -388,7 +388,7 @@ export default class HomePage extends Component {
                             key='home-blocksInfo'
                         >
                             <Col span={4}>Height</Col>
-                            <Col span={4}>TXS</Col>
+                            <Col span={4}>Txs</Col>
                             <Col span={16}>Time</Col>
                         </Row>
                     </div>
@@ -418,7 +418,7 @@ export default class HomePage extends Component {
                             className="home-blocksInfo-title"
                             key='home-blocksInfo'
                         >
-                            <Col span={6}>Tx ID</Col>
+                            <Col span={6}>Tx Id</Col>
                             <Col span={9}>From</Col>
                             <Col span={9}>To</Col>
                             {/*<Col span='6'>Time</Col>*/}
