@@ -59,10 +59,12 @@ function handleDataList(list) {
   const dates = [];
   const volumes = [];
   const prices = [];
-  list.forEach(item => {
+  list.forEach((item, index) => {
     dates.push(echarts.format.formatTime('yyyy-MM-dd hh:mm', item.date));
-    volumes.push(item.volume);
-    prices.push(resortPrices(item.prices));
+    const resortedPrices = resortPrices(item.prices);
+    const preResortedPrices = prices[index - 1 || 0] || resortedPrices;
+    volumes.push([index, item.volume, resortedPrices[0] - preResortedPrices[preResortedPrices.length - 1]]);
+    prices.push(resortedPrices);
   });
   return {
     prices,
@@ -290,11 +292,8 @@ class ResourceCurrencyChart extends PureComponent {
           xAxisIndex: 1,
           yAxisIndex: 1,
           itemStyle: {
-            color: '#7fbe9e'
-          },
-          emphasis: {
-            itemStyle: {
-              color: '#140'
+            color: function (params) {
+              return params.data[2] >= 0 ? '#14b143' : '#ef232a';
             }
           },
           data: volumes
@@ -304,18 +303,10 @@ class ResourceCurrencyChart extends PureComponent {
           name: currentResourceType,
           data: prices,
           itemStyle: {
-            color: '#ef232a',
-            color0: '#14b143',
-            borderColor: '#ef232a',
-            borderColor0: '#14b143'
-          },
-          emphasis: {
-            itemStyle: {
-              color: 'black',
-              color0: '#444',
-              borderColor: 'black',
-              borderColor0: '#444'
-            }
+            color: '#14b143',
+            color0: '#ef232a',
+            borderColor: '#14b143',
+            borderColor0: '#ef232a'
           }
         },
         ...series
