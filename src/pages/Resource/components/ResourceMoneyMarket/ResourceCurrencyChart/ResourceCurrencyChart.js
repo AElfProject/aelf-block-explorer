@@ -31,7 +31,7 @@ function calculateMA(dayCount, data) {
     let sum = 0;
     for (let j = 0; j < dayCount; j++) {
       const { prices } = data[i - j];
-      sum += prices.length === 0 ? 0 : prices[prices.length - 1];
+      sum += prices.length === 0 ? 0 : +prices[prices.length - 1];
     }
     result.push((sum / dayCount).toFixed(2));
   }
@@ -71,6 +71,30 @@ function handleDataList(list) {
   };
 }
 
+function getMAData(list) {
+  const maList = [5, 10, 20, 30];
+  const filteredMa = maList.filter(v => v <= list.length);
+  const legend = filteredMa.map(v => `MA${v}`);
+  const series = filteredMa.map((v, i) => {
+    const name = legend[i];
+    const ma = calculateMA(v, list);
+    return {
+      name,
+      type: 'line',
+      data: ma,
+      smooth: true,
+      showSymbol: false,
+      lineStyle: {
+        width: 1
+      }
+    };
+  });
+  return {
+    legend,
+    series
+  };
+}
+
 const colorList = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
 
 const timeZone = (new Date().getTimezoneOffset()) / 60 * -1;
@@ -98,9 +122,6 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      isSmallScreen
-    } = this.props;
     this.echartStyle = {
       height: 540
     };
@@ -129,7 +150,7 @@ class ResourceCurrencyChart extends PureComponent {
     });
 
     const list = await get(RESOURCE_TURNOVER, {
-      range: 20,
+      range: 40,
       timeZone,
       interval: intervalTime,
       type: currentResourceType
@@ -164,10 +185,10 @@ class ResourceCurrencyChart extends PureComponent {
       volumes,
       prices
     } = handleDataList(list);
-    const ma5 = calculateMA(5, list);
-    const ma10 = calculateMA(10, list);
-    const ma20 = calculateMA(20, list);
-    const ma30 = calculateMA(30, list);
+    const {
+      legend,
+      series
+    } = getMAData(list);
     return {
       animation: false,
       color: colorList,
@@ -177,7 +198,7 @@ class ResourceCurrencyChart extends PureComponent {
       },
       legend: {
         top: 30,
-        data: [currentResourceType, 'MA5', 'MA10', 'MA20', 'MA30']
+        data: [currentResourceType, ...legend]
       },
       tooltip: {
         trigger: 'axis',
@@ -243,6 +264,12 @@ class ResourceCurrencyChart extends PureComponent {
         axisLine: { lineStyle: { color: '#777' } },
         splitLine: { show: true },
         axisTick: { show: false },
+        min: function (value) {
+          return Math.min(value.min, 0);
+        },
+        max: function (value) {
+          return value.max * 1.2;
+        },
         axisLabel: {
           inside: true,
           formatter: '{value}\n'
@@ -291,46 +318,7 @@ class ResourceCurrencyChart extends PureComponent {
             }
           }
         },
-        {
-          name: 'MA5',
-          type: 'line',
-          data: ma5,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 1
-          }
-        },
-        {
-          name: 'MA10',
-          type: 'line',
-          data: ma10,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 1
-          }
-        },
-        {
-          name: 'MA20',
-          type: 'line',
-          data: ma20,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 1
-          }
-        },
-        {
-          name: 'MA30',
-          type: 'line',
-          data: ma30,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 1
-          }
-        }
+        ...series
       ]
     };
   }
