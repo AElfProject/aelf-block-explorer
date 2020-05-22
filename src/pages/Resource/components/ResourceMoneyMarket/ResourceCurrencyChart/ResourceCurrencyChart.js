@@ -55,10 +55,10 @@ function resortPrices(prices) {
   ];
 }
 
-function handleDataList(list) {
-  const dates = [];
-  const volumes = [];
-  const prices = [];
+function handleDataList(list, interval, length) {
+  let dates = [];
+  let volumes = [];
+  let prices = [];
   list.forEach((item, index) => {
     dates.push(echarts.format.formatTime('yyyy-MM-dd hh:mm', item.date));
     const resortedPrices = resortPrices(item.prices);
@@ -66,6 +66,27 @@ function handleDataList(list) {
     volumes.push([index, item.volume, resortedPrices[0] - preResortedPrices[preResortedPrices.length - 1]]);
     prices.push(resortedPrices);
   });
+  if (dates.length < length) {
+    let lastEnd = dates[dates.length - 1];
+    lastEnd = new Date(lastEnd).valueOf();
+    const emptyList = Array.from(new Array(length - dates.length)).map(() => 1);
+    dates = [
+      ...dates,
+      ...emptyList
+          .fill(1)
+          .map((_, i) =>  echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', interval * i + lastEnd))
+    ];
+    volumes = [
+        ...volumes,
+        ...emptyList
+            .map((_, i) => [ i + volumes.length, '-', 0])
+    ];
+    prices = [
+      ...prices,
+      ...emptyList
+          .map(() => [])
+    ];
+  }
   return {
     prices,
     volumes,
@@ -100,6 +121,8 @@ function getMAData(list) {
 const colorList = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
 
 const timeZone = (new Date().getTimezoneOffset()) / 60 * -1;
+
+const QUERY_RANGE = 40;
 
 class ResourceCurrencyChart extends PureComponent {
   constructor(props) {
@@ -152,7 +175,7 @@ class ResourceCurrencyChart extends PureComponent {
     });
 
     const list = await get(RESOURCE_TURNOVER, {
-      range: 40,
+      range: QUERY_RANGE,
       timeZone,
       interval: intervalTime,
       type: currentResourceType
@@ -186,7 +209,7 @@ class ResourceCurrencyChart extends PureComponent {
       dates,
       volumes,
       prices
-    } = handleDataList(list);
+    } = handleDataList(list, this.intervalTimeList[buttonIndex], QUERY_RANGE);
     const {
       legend,
       series
@@ -235,7 +258,7 @@ class ResourceCurrencyChart extends PureComponent {
               if (buttonIndex >= 4) {
                 return echarts.format.formatTime('MM-dd', value);
               } else {
-                return echarts.format.formatTime('MM-dd hh:mm', value);
+                return echarts.format.formatTime('MM-dd\nhh:mm', value);
               }
             }
           },
@@ -270,7 +293,7 @@ class ResourceCurrencyChart extends PureComponent {
           return Math.min(value.min, 0);
         },
         max: function (value) {
-          return value.max * 1.2;
+          return (value.max * 1.2).toFixed(3);
         },
         axisLabel: {
           inside: true,
@@ -293,7 +316,7 @@ class ResourceCurrencyChart extends PureComponent {
           yAxisIndex: 1,
           itemStyle: {
             color: function (params) {
-              return params.data[2] >= 0 ? '#14b143' : '#ef232a';
+              return params.data[2] >= 0 ? '#05ac90' : '#d34a64';
             }
           },
           data: volumes
@@ -303,10 +326,10 @@ class ResourceCurrencyChart extends PureComponent {
           name: currentResourceType,
           data: prices,
           itemStyle: {
-            color: '#14b143',
-            color0: '#ef232a',
-            borderColor: '#14b143',
-            borderColor0: '#ef232a'
+            color: '#05ac90',
+            color0: '#d34a64',
+            borderColor: '#05ac90',
+            borderColor0: '#d34a64'
           }
         },
         ...series

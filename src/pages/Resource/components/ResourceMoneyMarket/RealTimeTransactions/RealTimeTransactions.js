@@ -115,7 +115,7 @@ class RealTimeTransactions extends PureComponent {
               Sell
             </Col>
             <Col span={5}>
-              {((elf - fee) / resource).toFixed(ELF_PRECISION)}
+              {(elf / resource).toFixed(ELF_PRECISION)}
             </Col>
             <Col span={6}>{thousandsCommaWithDecimal(resource)}</Col>
             <Col span={6}>{thousandsCommaWithDecimal(elf - fee)}</Col>
@@ -154,7 +154,7 @@ class RealTimeTransactions extends PureComponent {
               Buy
             </Col>
             <Col span={5}>
-              {((elf + fee) / item.resource).toFixed(ELF_PRECISION)}
+              {(elf / item.resource).toFixed(ELF_PRECISION)}
             </Col>
             <Col span={6}>{thousandsCommaWithDecimal(item.resource)}</Col>
             <Col span={6}>{thousandsCommaWithDecimal(elf + fee)}</Col>
