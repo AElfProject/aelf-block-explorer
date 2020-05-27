@@ -31,6 +31,12 @@ function nightELFLogin() {
             method: 'LOGIN',
             contracts: [{
                 chainId: CHAIN_ID,
+                contractAddress: config.genesisContract,
+                contractName: 'Genesis',
+                description: 'contract Genesis',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
                 contractAddress: config.multiToken,
                 contractName: 'Token',
                 description: 'contract Token',
