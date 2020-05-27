@@ -6,11 +6,11 @@
 import React from 'react';
 import { Row, Col, Tag } from 'antd';
 import { isEmpty } from 'lodash';
-import AElf from 'aelf-sdk';
 import {aelf, formatKey, get, getContractNames} from '../../utils';
 import addressFormat from '../../utils/addressFormat';
 import {
-  removeAElfPrefix
+  removeAElfPrefix,
+  getFee
 } from '../../utils/utils';
 import {
   CONTRACT_VIEWER_URL,
@@ -21,6 +21,22 @@ import './txsdetail.styles.less';
 import {Link} from "react-router-dom";
 import Dividends from "../../components/Dividends";
 import moment from "moment";
+
+async function getInfoBackUp(transaction) {
+  const {
+    BlockNumber
+  } = transaction;
+  const block = await aelf.chain.getBlockByHeight(BlockNumber, false);
+  const {
+    Header: {
+      Time
+    }
+  } = block;
+  return {
+    ...getFee(transaction),
+    time: Time
+  };
+}
 
 export default class TxsDetailPage extends React.Component {
   constructor(props) {
@@ -47,6 +63,25 @@ export default class TxsDetailPage extends React.Component {
         result,
         error: null
       });
+      get(TXS_INFO_API_URL, {
+        tx_id: txsId
+      }).then(res => {
+        if (Object.keys(res).length === 0) {
+          getInfoBackUp(result).then(backup => {
+            this.setState({
+              time: backup.time,
+              resources: backup.resources,
+              tx_fee: backup.elf
+            })
+          })
+        } else {
+          this.setState({
+            parsedResult: res
+          });
+        }
+      }).catch(err => {
+        console.error(err);
+      });
       getContractNames().then(names => {
         let name = names[result.Transaction.To];
         name = name && name.isSystemContract ? removeAElfPrefix(name.contractName) : name.contractName;
@@ -67,16 +102,6 @@ export default class TxsDetailPage extends React.Component {
       this.setState({
         chainStatus,
       });
-    });
-
-    get(TXS_INFO_API_URL, {
-      tx_id: txsId
-    }).then(res => {
-      this.setState({
-        parsedResult: res
-      });
-    }).catch(err => {
-      console.error(err);
     });
   };
 

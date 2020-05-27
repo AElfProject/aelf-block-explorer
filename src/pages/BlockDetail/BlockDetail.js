@@ -68,10 +68,11 @@ export default class BlockDetailPage extends React.Component {
     }
 
     getChainStatus() {
-        aelf.chain.getChainStatus().then(result => {
+        return aelf.chain.getChainStatus().then(result => {
             this.setState({
                 chainStatus: result
             });
+            return result;
         });
     }
 
@@ -84,11 +85,13 @@ export default class BlockDetailPage extends React.Component {
 
     // fetchBlockInfo = blockHeight => {
     fetchBlockInfo = async (input) => {
-        this.getChainStatus();
         this.setState({
             txs_loading: true
         });
-
+        const chainStatus = await this.getChainStatus();
+        const {
+            BestChainHeight = 0
+        } = chainStatus;
         const messageHide = message.loading('Loading...', 0);
 
         // 先判断是高度还是hash，再执行后续的命令。
@@ -105,6 +108,9 @@ export default class BlockDetailPage extends React.Component {
                     txsList = await this.getTxsList(blockhash);
                 }
             } catch (err) {
+                if (blockHeight > BestChainHeight) {
+                    message.error(`${blockHeight} is larger than current chain best height ${BestChainHeight}`);
+                }
                 console.error('err', err);
             }
         }
@@ -149,7 +155,7 @@ export default class BlockDetailPage extends React.Component {
             txs: txsList && txsList.transactions || [],
             pagination
         });
-        if (!txsList || !txsList.transactions || !txsList.transactions.length) {
+        if ((!txsList || !txsList.transactions || !txsList.transactions.length) && blockHeight <= BestChainHeight + 6) {
             if (this.retryBlockInfoCount >= this.retryBlockInfoLimit) {
                 return;
             }
@@ -313,7 +319,7 @@ export default class BlockDetailPage extends React.Component {
 
         return (
             <div>
-                <Link to={prevLink}>
+                <Link to={prevLink} disabled={+blockHeight === 1}>
                     <Icon type='left' />
                     {/*pre*/}
                 </Link>

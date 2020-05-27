@@ -1,11 +1,10 @@
-/*
- * @Author: Alfred Yang
- * @Github: https://github.com/cat-walk
- * @Date: 2019-10-26 19:17:12
- * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-10-26 19:17:45
- * @Description: file content
- */
+import AElf from "aelf-sdk";
+import config from '../../config/config';
+
+const resourceDecimals = config.resourceTokens.reduce((acc, v) => ({
+  ...acc,
+  [v.symbol]: v.decimals
+}), {})
 
 export const rand16Num = (len = 0) => {
   const result = [];
@@ -21,3 +20,18 @@ export const removeAElfPrefix = name => {
   }
   return name;
 };
+
+export function getFee(transaction) {
+  const elfFee = AElf.pbUtils.getTransactionFee(transaction.Logs || []);
+  const resourceFees = AElf.pbUtils.getResourceFee(transaction.Logs || []);
+  return {
+    elf: elfFee.length === 0 ? 0 : (+elfFee[0].amount / 1e8),
+    resources: resourceFees.map(v => ({
+      ...v,
+      amount: (+v.amount / +`1e${resourceDecimals[v.symbol] || 8}`)
+    })).reduce((acc, v) => ({
+      ...acc,
+      [v.symbol]: v.amount
+    }), {})
+  };
+}

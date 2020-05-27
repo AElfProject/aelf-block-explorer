@@ -139,7 +139,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Block Hash',
     dataIndex: 'block_hash',
     key: 'block_hash',
-    width: 250,
+    width: 280,
     ellipsis: true,
     render: (text, row) => <Link title={text} to={`/block/${row.block_height}`}> {text} </Link>
   },
@@ -147,7 +147,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Miner',
     dataIndex: 'miner',
     key: 'miner',
-    width: 250,
+    width: 280,
     ellipsis: true,
     render(text) {
       return (<Link title={`${SYMBOL}_${text}_${CHAIN_ID}`} to={`/address/${text}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>);
@@ -157,6 +157,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Dividends',
     dataIndex: 'dividends',
     key: 'dividends',
+    width: 120,
     render(text) {
       return <Dividends dividends={JSON.parse(text)} />
     }
@@ -165,7 +166,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Txs',
     dataIndex: 'tx_count ',
     key: 'tx_count ',
-    width: 150,
+    width: 60,
     render: (text, row) =>
       !isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
         <Link to={`/txs/block?${row.block_hash}`}> {row.tx_count} </Link>
@@ -177,7 +178,6 @@ const BLOCKS_LIST_COLUMNS = [
     title: 'Time',
     dataIndex: 'time',
     key: 'time',
-    width: 150,
     render: time => <span> {dayjs(time).format('YYYY/MM/DD HH:mm:ss')} </span>
     //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   }

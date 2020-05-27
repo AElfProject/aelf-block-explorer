@@ -144,11 +144,7 @@ export default class TPSChart extends React.Component {
                     }
                 },
                 splitLine: {
-                    show: true,
-                    lineStyle: {
-                        // color: 'rgba(255, 255, 255, 0.3)'
-                        color: 'rgba(0, 0, 0, 0.1)'
-                    }
+                    show: true
                 }
             },
             yAxis: {
@@ -179,22 +175,7 @@ export default class TPSChart extends React.Component {
                         opacity: 0
                     },
                     areaStyle: {
-                        color: {
-                            type: 'linear',
-                            y: 1,
-                            y2: 0,
-                            colorStops: [{
-                                offset: 1,
-                                // color: '#D24CFF' // 0% 处的颜色
-                                color: '#FFF' // 0% 处的颜色
-                            },
-                                {
-                                    offset: 0,
-                                    // color: 'rgba(51, 177, 255, 0)' // 100% 处的颜色
-                                    color: 'rgba(255, 255, 255, 0)' // 100% 处的颜色
-                                }],
-                            globalCoord: false // 缺省为 false
-                        }
+                        color: 'rgba(255, 255, 255, 0.1)'
                     }
                 },
                 {
@@ -208,22 +189,7 @@ export default class TPSChart extends React.Component {
                         opacity: 0
                     },
                     areaStyle: {
-                        color: {
-                            type: 'linear',
-                            y: 1,
-                            y2: 0,
-                            colorStops: [{
-                                offset: 1,
-                                // color: '#D24CFF' // 0% 处的颜色
-                                color: '#FFF' // 0% 处的颜色
-                            },
-                                {
-                                    offset: 0,
-                                    // color: 'rgba(51, 177, 255, 0)' // 100% 处的颜色
-                                    color: 'rgba(255, 255, 255, 0)' // 100% 处的颜色
-                                }],
-                            globalCoord: false // 缺省为 false
-                        }
+                        color: 'rgba(255, 255, 255, 0.1)'
                     }
                 }
             ]
