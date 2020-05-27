@@ -31,6 +31,12 @@ function nightELFLogin() {
             method: 'LOGIN',
             contracts: [{
                 chainId: CHAIN_ID,
+                contractAddress: config.genesisContract,
+                contractName: 'Genesis',
+                description: 'contract Genesis',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
                 contractAddress: config.multiToken,
                 contractName: 'Token',
                 description: 'contract Token',
@@ -64,6 +70,30 @@ function nightELFLogin() {
                 contractAddress: config.profitContractAddr,
                 contractName: 'Profit',
                 description: 'contract Profit',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract Parliament',
+                contractAddress: config.parliamentContract,
+                contractName: 'Parliament',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract Association',
+                contractAddress: config.associationContract,
+                contractName: 'Association',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract Referendum',
+                contractAddress: config.referendumContract,
+                contractName: 'Referendum',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract CrossChain',
+                contractAddress: config.crossChainContract,
+                contractName: 'CrossChain',
                 github: ''
             }]
         }
