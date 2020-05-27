@@ -65,6 +65,30 @@ function nightELFLogin() {
                 contractName: 'Profit',
                 description: 'contract Profit',
                 github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract Parliament',
+                contractAddress: config.parliamentContract,
+                contractName: 'Parliament',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract Association',
+                contractAddress: config.associationContract,
+                contractName: 'Association',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract Referendum',
+                contractAddress: config.referendumContract,
+                contractName: 'Referendum',
+                github: ''
+            }, {
+                chainId: CHAIN_ID,
+                description: 'contract CrossChain',
+                contractAddress: config.crossChainContract,
+                contractName: 'CrossChain',
+                github: ''
             }]
         }
     }, (error, result) => {
