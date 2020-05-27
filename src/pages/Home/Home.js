@@ -57,7 +57,8 @@ export default class HomePage extends Component {
         localTransactions: 0,
         totalAccounts: 0,
         localAccounts: 0,
-        contractNames: {}
+        contractNames: {},
+        dividends: {}
     }
 
     blockHeight = 0;
@@ -169,7 +170,8 @@ export default class HomePage extends Component {
         unconfirmedBlockHeight = 0,
         accountNumber = 0,
         allChainTxs,
-        allChainAccount
+        allChainAccount,
+        dividends
     }, isFirst) {
         let arr = list;
         if (!isFirst) {
@@ -189,6 +191,7 @@ export default class HomePage extends Component {
             totalAccounts: allChainAccount,
             localTransactions: totalTxs,
             localAccounts: accountNumber,
+            dividends
         });
     }
 
@@ -226,7 +229,8 @@ export default class HomePage extends Component {
             totalAccounts,
             localAccounts,
             totalTransactions,
-            localTransactions
+            localTransactions,
+            dividends
         } = this.state;
         return (
             <section
@@ -256,6 +260,7 @@ export default class HomePage extends Component {
                             totalTxs={totalTransactions}
                             blockHeight={this.blockHeight}
                             unconfirmedBlockHeight={this.unconfirmedBlockHeight}
+                            dividends={dividends}
                         />
                     </Row>
                 </div>

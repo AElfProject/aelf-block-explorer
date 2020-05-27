@@ -135,7 +135,8 @@ ChainInfo.propTypes = {
   totalTxs: PropTypes.number.isRequired,
   localTxs: PropTypes.number.isRequired,
   totalAccounts: PropTypes.number.isRequired,
-  localAccounts: PropTypes.number.isRequired
+  localAccounts: PropTypes.number.isRequired,
+  dividends: PropTypes.object.isRequired
 };
 
 ChainInfo.defaultProps = {
