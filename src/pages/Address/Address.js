@@ -2,7 +2,7 @@
  * @file contract viewer
  * @author atom-yang
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import IFrame from '../../components/IFrame';
 import {rand16Num} from "../../utils/utils";
 import useLocation from "react-use/lib/useLocation";
@@ -17,13 +17,15 @@ const Address = props => {
   const {
     id: address = ''
   } = match.params;
+  const ll = useRef(location);
+  ll.current = location;
   const [url, setUrl] = useState(`${DEFAULT_URL}${address ? `/${address}` : ''}`);
-
   function onChange(href) {
+    console.log(ll.current);
     window.history.replaceState(
         window.history.state,
         '',
-        `${location.origin}${location.pathname}?#${encodeURIComponent(href)}`);
+        `${ll.current.origin}${ll.current.pathname}?#${encodeURIComponent(href)}`);
   }
 
   useEffect(() => {

@@ -6,6 +6,9 @@ import React, {
     PureComponent
 } from 'react';
 import {
+    withRouter
+} from "react-router-dom";
+import {
     Input,
     Icon,
     message
@@ -18,7 +21,7 @@ import {
 import './search.styles.less';
 import { INPUT_STARTS_WITH_MINUS_TIP, INPUT_ZERO_TIP } from '@src/constants';
 
-export default class Search extends PureComponent {
+class Search extends PureComponent {
 
     state = {
         content: ''
@@ -38,13 +41,10 @@ export default class Search extends PureComponent {
     };
 
     SEARCHRULES = {
-        address(value) {
-            const url = `/address/${value}`;
-            // window.open(url);
-            window.location.pathname = url;
-            // message.info('open new window: Address Detail');
+        address(value, history) {
+            history.push(`/address/${value}`);
         },
-        async transaction(value) {
+        async transaction(value, history) {
             let getTxsOption = {
                 limit: 1,
                 page: 0,
@@ -54,22 +54,16 @@ export default class Search extends PureComponent {
             const blockInfo = await get('/block/transactions', getTxsOption);
             const isBlock = blockInfo.transactions && blockInfo.transactions.length;
             if (isBlock) {
-                // window.open(`/block/${value}`);
-                window.location.pathname = `/block/${value}`;
-                // message.info('open new window: Block Detail');
+                history.push(`/block/${value}`);
             }
             else {
-                // window.open(`/tx/${value}`);
-                window.location.pathname = `/tx/${value}`;
-                // message.info('open new window: Transaction Detail');
+                history.push(`/tx/${value}`);
             }
         },
-        blockHeight(value) {
+        blockHeight(value, history) {
             let number = parseInt(value, 10);
             if (number == value) {
-                // window.open(`/block/${value}`);
-                window.location.pathname = `/block/${value}`;
-                return false;
+                history.push(`/block/${value}`);
             }
             return true;
         }
@@ -108,13 +102,13 @@ export default class Search extends PureComponent {
         }
 
         if (isAddress.includes(length)) {
-            this.SEARCHRULES.address(value);
+            this.SEARCHRULES.address(value, this.props.history);
         }
         else if (isTxid.includes(length)) {
-            this.SEARCHRULES.transaction(value);
+            this.SEARCHRULES.transaction(value, this.props.history);
         }
         else {
-            this.SEARCHRULES.blockHeight(value) && message.error('Wrong Search Input', 6);
+            this.SEARCHRULES.blockHeight(value, this.props.history) && message.error('Wrong Search Input', 6);
         }
     };
 
@@ -147,3 +141,5 @@ export default class Search extends PureComponent {
         );
     }
 }
+
+export default withRouter(Search);

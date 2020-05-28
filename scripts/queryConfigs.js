@@ -63,6 +63,7 @@ async function getConfig() {
         }));
         result.schemeIds = schemes;
     }
+    result.genesisContract = GenesisContractAddress;
     console.log(result);
     fs.writeFileSync(path.resolve('./config/config.json'), `${JSON.stringify(result, null, 2)}\n`);
 }
