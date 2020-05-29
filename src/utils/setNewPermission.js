@@ -1,7 +1,7 @@
 /**
  * @file setNewPermission.js
  * @author zhouminghui
-*/
+ */
 import { CHAIN_ID } from '@src/constants';
 import {message} from 'antd';
 import contracts from "./contracts";

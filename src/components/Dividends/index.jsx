@@ -17,7 +17,8 @@ import {
 
 const Dividends = props => {
     const {
-        dividends
+        dividends,
+        ...rest
     } = props;
     const keys = Object.keys(dividends);
     const defaultKey = dividends.ELF !== undefined ? 'ELF' : keys[0] || 'ELF';
@@ -37,6 +38,7 @@ const Dividends = props => {
                             }
                         </Menu>
                     )}
+                    {...rest}
                 >
                     <Button>
                         {dividends[defaultKey] || 0}&nbsp;{defaultKey}
@@ -45,7 +47,7 @@ const Dividends = props => {
                 </Dropdown>
             </Then>
             <Else>
-                <div>
+                <div {...rest}>
                     {dividends[defaultKey] || 0}&nbsp;{defaultKey}
                 </div>
             </Else>

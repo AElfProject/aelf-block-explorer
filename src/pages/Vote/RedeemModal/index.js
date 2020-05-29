@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Input, Button, Table, Icon, message } from 'antd';
-// import Highlighter from 'react-highlight-words';
+import { Modal, Form, Input, Button, Table } from 'antd';
 
 import {
   SYMBOL,
@@ -8,10 +7,7 @@ import {
   NEED_PLUGIN_AUTHORIZE_TIP,
   FEE_TIP
 } from '@src/constants';
-import { centerEllipsis } from '@utils/formater';
 import {ELF_DECIMAL} from "../constants";
-
-const { Search } = Input;
 
 const formItemLayout = {
   labelCol: {
@@ -32,43 +28,7 @@ const pagination = {
 };
 
 function getColumns() {
-  // const { checkedGroup } = this.state;
-  const { changeVoteState } = this.props;
-
   return [
-    // {
-    //   title: 'Rank',
-    //   dataIndex: 'rank',
-    //   key: 'rank'
-    // },
-    // todo: It seems that node name has already displayed in the Modal
-    // {
-    //   title: 'Node Name',
-    //   dataIndex: 'name',
-    //   key: 'nodeName',
-    //   ...this.getColumnSearchProps('name'),
-    //   render: (text, record) => (
-    //     // todo: consider to extract the component as a independent component
-    //     <Tooltip title={text}>
-    //       <Link
-    //         to={{
-    //           pathname: '/vote/team',
-    //           search: `pubkey=${record.candidate}`
-    //         }}
-    //         className='node-name-in-table'
-    //         // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-    //         style={{ width: 150 }}
-    //         onClick={() => {
-    //           changeVoteState({
-    //             voteModalVisible: false
-    //           });
-    //         }}
-    //       >
-    //         {text}
-    //       </Link>
-    //     </Tooltip>
-    //   )
-    // },
     {
       title: 'Vote Amount',
       dataIndex: 'amount',
@@ -89,31 +49,12 @@ function getColumns() {
       key: 'voteTime',
       sorter: (a, b) => a.voteTimestamp.seconds - b.voteTimestamp.seconds
     }
-    // {
-    //   key: 'operations',
-    //   render: (text, record, index) => (
-    //     <div className='operation-group'>
-    //       <Checkbox
-    //         type='primary'
-    //         checked={checkedGroup[index]}
-    //         onChange={checked => {
-    //           console.log('click checkbox');
-    //           this.handleCheckboxChange(checked, index);
-    //         }}
-    //       />
-    //     </div>
-    //   )
-    // }
   ];
 }
 
 class RedeemModal extends PureComponent {
-  constructor() {
-    super();
-    this.state = {
-      // searchText: ''
-    };
-
+  constructor(props) {
+    super(props);
     this.handleOk = this.handleOk.bind(this);
   }
 
@@ -168,24 +109,14 @@ class RedeemModal extends PureComponent {
         setTimeout(() => this.searchInput.select());
       }
     }
-    // render: text => (
-    //   <Highlighter
-    //     highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-    //     searchWords={[this.state.searchText]}
-    //     autoEscape
-    //     textToHighlight={text.toString()}
-    //   />
-    // )
   });
 
   handleSearch = (selectedKeys, confirm) => {
     confirm();
-    // this.setState({ searchText: selectedKeys[0] });
   };
 
   handleReset = clearFilters => {
     clearFilters();
-    // this.setState({ searchText: '' });
   };
 
   generateVoteRedeemForm() {
@@ -195,8 +126,6 @@ class RedeemModal extends PureComponent {
       redeemableVoteRecordsForOneCandidate,
       activeVoteRecordsForOneCandidate,
       currentWallet,
-      // redeemVoteSelectedRowKeys,
-      handleRedeemVoteSelectedRowChange
     } = this.props;
     const { getFieldValue, setFieldsValue } = this.props.form;
 
@@ -217,7 +146,6 @@ class RedeemModal extends PureComponent {
     const columns = getColumns.call(this);
     const rowSelection = {
       selectedRowKeys: redeemVoteSelectedRowKeys,
-      // onChange: handleRedeemVoteSelectedRowChange,
       onChange: value => {
         setFieldsValue({
           redeemVoteSelectedRowKeys: value
@@ -231,16 +159,15 @@ class RedeemModal extends PureComponent {
       formItems: [
         {
           label: 'Node Name',
-          // todo: use iterator optimize
           render: (
-            <span className="form-item-value">{centerEllipsis(nodeName)}</span>
+            <span className="form-item-value text-ellipsis">{nodeName}</span>
           )
         },
         {
           label: 'Node Add',
           render: (
-            <span className="form-item-value">
-              {centerEllipsis(nodeAddress)}
+            <span className="form-item-value text-ellipsis">
+              {nodeAddress}
             </span>
           )
         },
@@ -264,11 +191,6 @@ class RedeemModal extends PureComponent {
           label: 'Select Vote',
           render: (
             <div>
-              {/* <Search
-                placeholder='Input Node Name'
-                onSearch={value => console.log(value)}
-                style={{ width: 200 }}
-              /> */}
               <Table
                 dataSource={redeemableVoteRecordsForOneCandidate}
                 columns={columns}
@@ -286,22 +208,8 @@ class RedeemModal extends PureComponent {
               }
             ],
             fieldDecoratorid: 'redeemVoteSelectedRowKeys'
-            // validateTrigger: ['onBlur']
           }
         },
-        // {
-        //   label: '赎回数量',
-        //   render: (
-        //     <div>
-        //       <Input
-        //         suffix={SYMBOL}
-        //         placeholder='Enter vote amount'
-        //         style={{ marginRight: 20 }}
-        //       />
-        //       <Button type='primary'>Redeem All</Button>
-        //     </div>
-        //   )
-        // },
         {
           label: 'Redeem To',
           render: (
@@ -352,7 +260,6 @@ class RedeemModal extends PureComponent {
             voteRedeemForm.formItems.map(item => {
               return (
                 <Form.Item label={item.label} key={item.label}>
-                  {/* todo: Optimize the judge */}
                   {item.validator
                     ? getFieldDecorator(
                         item.validator.fieldDecoratorid,

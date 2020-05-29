@@ -1,7 +1,7 @@
 /**
  * @file contractChange.js
  * @author zhouminghui
-*/
+ */
 
 import {message} from 'antd';
 import contracts from "./contracts";
