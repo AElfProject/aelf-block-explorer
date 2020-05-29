@@ -224,7 +224,7 @@ class MyVoteRecords extends Component {
           dataSource={data}
           // loading={loading}
           pagination={pagination}
-          rowKey={record => record.voteId.value}
+          rowKey={record => record.voteId}
           scroll={{ x: 1024 }}
         />
       </section>

@@ -658,7 +658,7 @@ class VoteContainer extends Component {
         record.name = teamInfo.name;
       }
       // Antd's Table's datasource needs key
-      record.key = record.voteId.value;
+      record.key = record.voteId;
 
       // todo: unify lock time & vote time's handler
       // todo: fix the lock time
@@ -809,7 +809,7 @@ class VoteContainer extends Component {
 
     // todo: get the contract from extension in cdm or other suitable time
     // todo: error handle
-    this.redeemSomeVote([voteToRedeem.voteId.value]);
+    this.redeemSomeVote([voteToRedeem.voteId]);
     // todo: use async instead
     setTimeout(() => {
       this.setState({
@@ -919,16 +919,13 @@ class VoteContainer extends Component {
 
   redeemSomeVote(votesToRedeem) {
     const { electionContractFromExt, redeemableVoteRecordsForOneCandidate } = this.state;
-    console.log('redeemableVoteRecordsForOneCandidate', redeemableVoteRecordsForOneCandidate);
     // no batch redeem
     const [item] = votesToRedeem;
     if (!item) {
       message.error('No selected vote');
     } else {
-      const vote = redeemableVoteRecordsForOneCandidate[item];
-      console.log('vote info', vote);
       electionContractFromExt
-          .Withdraw(vote.voteId)
+          .Withdraw(item)
           .then(res => {
             const {
               error,
@@ -1072,9 +1069,6 @@ class VoteContainer extends Component {
 
   handleVoteConfirmOk() {
     const { voteType } = this.state;
-
-    // todo: get the contract from extension in cdm or other suitable time
-    // todo: error handle
     switch (voteType) {
       case FROM_WALLET:
         this.handleVoteFromWallet();
@@ -1121,22 +1115,26 @@ class VoteContainer extends Component {
     electionContractFromExt
       .Vote(payload)
       .then(res => {
-        if (res) {
+        const {
+          error,
+          errorMessage
+        } = res;
+        if (+error === 0) {
           this.checkTransactionResult(res).then(() => {
-            // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
+            // Close tow modal as there are two situation, one open a modal and anothor open two modals.
             // Consider to do the samething after checkTransactionResult in the same page.
             this.setState(
-              {
-                voteConfirmModalVisible: false,
-                voteModalVisible: false
-              },
-              () => {
-                this.refreshPageElectionNotifi();
-              }
+                {
+                  voteConfirmModalVisible: false,
+                  voteModalVisible: false
+                },
+                () => {
+                  this.refreshPageElectionNotifi();
+                }
             );
           });
         } else {
-          message.error(res.errorMessage.message, 3);
+          message.error(errorMessage.message);
           this.setState({
             isLockTimeForTest: false
           });
@@ -1179,7 +1177,7 @@ class VoteContainer extends Component {
         break;
       }
     }
-    voteIdsToRedeem = votesToRedeem.map(item => item.voteId.value);
+    voteIdsToRedeem = votesToRedeem.map(item => item.voteId);
 
     this.redeemSomeVote(voteIdsToRedeem);
   }
@@ -1190,48 +1188,37 @@ class VoteContainer extends Component {
     // todo: limit max change num or handle the concurreny problem
     const { switchVoteSelectedRowKeys } = this.state;
     const payload = {
-      voteId: { value: switchVoteSelectedRowKeys[0] },
+      voteId: switchVoteSelectedRowKeys[0],
       candidatePubkey: targetPublicKey
     };
     electionContractFromExt
       .ChangeVotingOption(payload)
       .then(res => {
-        console.log('ChangeVotingOption', res);
-        return this.checkTransactionResult(res).then(() => {
-          // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
-          // Consider to do the samething after checkTransactionResult in the same page.
-          this.setState(
-            {
-              voteConfirmModalVisible: false,
-              voteModalVisible: false
-            },
-            () => {
-              this.refreshPageElectionNotifi();
-            }
-          );
-        });
+        const {
+          error,
+          errorMessage
+        } = res;
+        if (+error === 0) {
+          this.checkTransactionResult(res).then(() => {
+            // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
+            // Consider to do the samething after checkTransactionResult in the same page.
+            this.setState(
+                {
+                  voteConfirmModalVisible: false,
+                  voteModalVisible: false
+                },
+                () => {
+                  this.refreshPageElectionNotifi();
+                }
+            );
+          });
+        } else {
+          message.error(errorMessage.message);
+        }
       })
       .catch(err => {
         console.error('ChangeVotingOption', err);
       });
-
-    // todo: use to switch many votes, but encountered bug
-    // switchVoteSelectedRowKeys.forEach(voteId => {
-    //   const payload = {
-    //     voteId: { value: voteId },
-    //     candidatePubkey
-    //   };
-    //   electionContractFromExt
-    //     .ChangeVotingOption(payload)
-    //     .then(res => {
-    //       console.log('ChangeVotingOption', res);
-    //       this.checkTransactionResult(res);
-    //       this.changeModalVisible('voteConfirmModalVisible', false);
-    //     })
-    //     .catch(err => {
-    //       console.error('ChangeVotingOption', err);
-    //     });
-    // });
   }
 
   // todo: use this method instead repeat code

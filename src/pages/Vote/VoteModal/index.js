@@ -27,17 +27,16 @@ import {
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES
 } from '@src/pages/Vote/constants';
-import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
+import { thousandsCommaWithDecimal } from '@utils/formater';
 import './index.less';
 import {ELF_DECIMAL} from "../constants";
 
 const { TabPane } = Tabs;
-const { Search } = Input;
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 }
+    sm: { span: 6 }
   },
   wrapperCol: {
     xs: { span: 24 },
@@ -77,11 +76,10 @@ function disabledDate(current) {
   // Can not select days before today and today
   return current
       && (current < moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day')
-      || current > moment().add(3, 'y').endOf('day'));
+      || current > moment().add(1080, 'd').endOf('day'));
 }
 
 function getColumns() {
-  // const { checkedGroup } = this.state;
   const { changeVoteState } = this.props;
 
   return [
@@ -140,14 +138,8 @@ class VoteModal extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      tableVisible: false
-    };
-
     this.handleAllIn = this.handleAllIn.bind(this);
     this.handleOk = this.handleOk.bind(this);
-    // this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
-    // this.onSelectChange = this.onSelectChange.bind(this);
   }
 
   getFormItems() {
@@ -185,9 +177,6 @@ class VoteModal extends Component {
       selectedRowKeys: switchVoteSelectedRowKeys,
       onChange: (...params) => {
         handleSwithVoteSelectedRowChange(...params);
-        this.setState({
-          tableVisible: false
-        });
       },
       hideDefaultSelections: true,
       type: 'radio'
@@ -223,14 +212,6 @@ class VoteModal extends Component {
               </span>
             )
           },
-          // {
-          //   label: 'Wallet',
-          //   render: (
-          //     <span className='form-item-value ellipsis'>
-          //       {currentWalletName}
-          //     </span>
-          //   )
-          // },
           {
             label: 'Vote Amount',
             render: (
@@ -249,10 +230,6 @@ class VoteModal extends Component {
                 // value={voteAmountInput}
                 // onChange={handleVoteAmountChange}
               />
-              //   <Button type='primary' onClick={this.handleAllIn}>
-              //     All In
-              //   </Button>
-              // </div>
             ),
             validator: {
               rules: [
@@ -322,7 +299,6 @@ class VoteModal extends Component {
             label: 'Node Name',
             render: (
               <span className="form-item-value">
-                {/*{centerEllipsis(nodeName)}*/}
                 {nodeName}
               </span>
             )
@@ -331,7 +307,6 @@ class VoteModal extends Component {
             label: 'Node Address',
             render: (
               <span className="form-item-value">
-                {/*{centerEllipsis(nodeAddress)}*/}
                 {nodeAddress}
               </span>
             )
@@ -339,45 +314,13 @@ class VoteModal extends Component {
           {
             label: 'Select Vote',
             render: (
-              <div>
-                {/* <Search
-                  placeholder='Input Node Name'
-                  onSearch={value => console.log(value)}
-                  style={{ width: 200 }}
-                /> */}
-                <Input
-                  value={switchVoteAmount}
-                  placeholder="Please select vote"
-                  onClick={() => {
-                    this.setState({
-                      tableVisible: true
-                    });
-                  }}
+                <Table
+                    size="middle"
+                    dataSource={switchableVoteRecords}
+                    columns={columns}
+                    rowSelection={switchVoteRowSelection}
+                    pagination={switchVotePagination}
                 />
-
-                {this.state.tableVisible ? (
-                  <>
-                    <div className="table-container">
-                      <Table
-                        // className=''
-                        size="middle"
-                        dataSource={switchableVoteRecords}
-                        columns={columns}
-                        rowSelection={switchVoteRowSelection}
-                        pagination={switchVotePagination}
-                      />
-                    </div>
-                    <div
-                      className="modal-mask"
-                      onClick={e => {
-                        this.setState({
-                          tableVisible: false
-                        });
-                      }}
-                    />
-                  </>
-                ) : null}
-              </div>
             ),
             validator: {
               initialValue: switchVoteSelectedRowKeys.length > 0 ? switchVoteSelectedRowKeys[0] : '',
@@ -450,7 +393,6 @@ class VoteModal extends Component {
     const { callback, changeVoteState, form } = this.props;
     const { voteType } = this.props;
     const formItemsNeedToValidate = formItemsNeedToValidateMap[voteType];
-    console.log('voteType', voteType);
 
     form.validateFields(formItemsNeedToValidate, (err, values) => {
       if (err) {
@@ -460,7 +402,6 @@ class VoteModal extends Component {
         // The switch/case is for the future's product require changing.
         switch (voteType) {
           case FROM_WALLET:
-            // todo: Change the method's name
             callback();
             break;
           case FROM_EXPIRED_VOTES:
@@ -557,7 +498,6 @@ class VoteModal extends Component {
     } = this.props;
     const { getFieldDecorator } = this.props.form;
     const formItems = this.getFormItems();
-    console.log('voteType', voteType);
 
     return (
       <Modal
