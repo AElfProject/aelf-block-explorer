@@ -30,6 +30,7 @@ import config, {
 import { aelf } from '@src/utils';
 // import voteStore from '@store/vote';
 import contractsStore from '@store/contracts';
+import Decimal from 'decimal.js';
 import {
   SYMBOL,
   ELF_DECIMAL,
@@ -59,6 +60,7 @@ import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import { getAllTeamDesc } from '@api/vote';
 import { getFormatedLockTime } from './utils';
+import getAllTokens from "../../utils/getAllTokens";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -157,33 +159,12 @@ function generateVoteConfirmForm({
       {
         label: '转投数量',
         type: 'voteFromExpiredVoteAmount',
-        // render: (
-        //   <div>
-        //     <Input
-        //       suffix={SYMBOL}
-        //       placeholder='Enter vote amount'
-        //       style={{ marginRight: 20 }}
-        //     />
-        //     <Button type='primary'>All In</Button>
-        //   </div>
-        // )
         render: (
           <span className="form-item-value">
             {voteFromExpiredVoteAmount} {SYMBOL}
           </span>
         )
       }
-      // {
-      //   label: '预估投票收益',
-      //   render: (
-      //     <div>
-      //       <Input />
-      //       <span className='tip-color' style={{ marginLeft: 10 }}>
-      //         投票收益=(锁定期*票数/总票数)*分红池奖励*20%
-      //       </span>
-      //     </div>
-      //   )
-      // }
     ]
   };
 
@@ -481,9 +462,6 @@ class VoteContainer extends Component {
   }
 
   handleRedeemVoteSelectedRowChange(selectedRowKeys, selectedRows) {
-    console.log('selectedRows', selectedRows);
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-
     this.setState({
       redeemVoteSelectedRowKeys: selectedRowKeys
     });
@@ -814,7 +792,6 @@ class VoteContainer extends Component {
       voteid
     } = ele.dataset;
     const voteId = JSON.parse(voteid);
-    console.log('<<<<', voteId);
 
     this.setState({
       voteToRedeem: {
@@ -935,38 +912,49 @@ class VoteContainer extends Component {
   }
 
   handleRedeemConfirm() {
-    // todo: should nightElf place in state?
     const { redeemVoteSelectedRowKeys } = this.state;
 
     this.redeemSomeVote(redeemVoteSelectedRowKeys);
   }
 
-  async redeemSomeVote(votesToRedeem) {
-    const { electionContractFromExt } = this.state;
-    // todo: I run it as serial mode as the extension can only open one prompt in one time and the contract didn't support withdrawn many votes with a method
-    // todo: After modify the contract don't forget to modify the code as follows
-    votesToRedeem.forEach(async item => {
-      const payload = { value: item };
-      await electionContractFromExt
-        .Withdraw(payload)
-        .then(res => {
-          this.checkTransactionResult(res, 'voteRedeemModalVisible')
-            .then(() => {
-              // todo: only do the refresh in page election
-              this.refreshPageElectionNotifi();
-            })
-            .catch(err => {
-              console.error('checkTransactionResult', {
-                err
+  redeemSomeVote(votesToRedeem) {
+    const { electionContractFromExt, redeemableVoteRecordsForOneCandidate } = this.state;
+    console.log('redeemableVoteRecordsForOneCandidate', redeemableVoteRecordsForOneCandidate);
+    // no batch redeem
+    const [item] = votesToRedeem;
+    if (!item) {
+      message.error('No selected vote');
+    } else {
+      const vote = redeemableVoteRecordsForOneCandidate[item];
+      console.log('vote info', vote);
+      electionContractFromExt
+          .Withdraw(vote.voteId)
+          .then(res => {
+            const {
+              error,
+              errorMessage
+            } = res;
+            if (+error === 0) {
+              this.checkTransactionResult(res, 'voteRedeemModalVisible')
+                  .then(() => {
+                    this.refreshPageElectionNotifi();
+                  })
+                  .catch(err => {
+                    console.error('checkTransactionResult', {
+                      err
+                    });
+                  });
+              this.setState({
+                redeemVoteSelectedRowKeys: []
               });
-            });
-        })
-        .catch(err => console.error(err));
-    });
-    // todo: use Promise's finally instead
-    this.setState({
-      redeemVoteSelectedRowKeys: []
-    });
+            } else {
+              message.error(errorMessage.message);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+    }
   }
 
   fetchUserVoteRecords() {
@@ -1289,32 +1277,45 @@ class VoteContainer extends Component {
   fetchProfitAmount() {
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
-    const { profitContractFromExt } = this.state;
-
+    const { profitContractFromExt, currentWallet } = this.state;
     return Promise.all(
-      schemeIds.map(item => {
-        return profitContractFromExt.GetProfitAmount.call({
-          symbol: SYMBOL,
+      [ getAllTokens(), ...schemeIds.map(item => {
+        return profitContractFromExt.GetProfitsMap.call({
+          beneficiary: currentWallet.address,
           schemeId: item.schemeId
         });
-      })
+      })]
     )
       .then(resArr => {
+        const [tokens, ...list] = resArr;
+        const decimals = tokens.reduce((acc, v) => ({
+          [v.symbol]: v.decimals
+        }), {});
         let total = 0;
         const dividendAmounts = schemeIds.map((item, index) => {
-          let amount = null;
-          const profitItem = resArr[index];
-          if (profitItem.error) {
-            amount = 0;
-          } else {
-            amount = isNaN(+profitItem.value) ? 0 : +profitItem.value;
-          }
-          // todo: remove the judge when need
-          amount = amount === undefined ? 0 : +amount / ELF_DECIMAL;
-          total += amount;
+          const profit = list[index];
+          const {
+            result = {}
+          } = profit;
+          let {
+            value
+          } = result || {};
+          value = !value ? {
+            ELF: 0
+          } : value;
+          value = Object
+              .keys(value)
+              .reduce((acc, key) =>{
+                return {
+                  ...acc,
+                  [key]: new Decimal(value[key] || 0)
+                      .dividedBy(`1e${decimals[key] || 8}`).toNumber()
+                };
+              }, {});
+          total += value.ELF || 0;
           return {
             type: item.type,
-            amount,
+            amounts: value,
             schemeId: item.schemeId
           };
         });
@@ -1325,8 +1326,6 @@ class VoteContainer extends Component {
         this.setState({
           dividends
         });
-        // todo: maybe wrong
-        console.log("In state' dividends", dividends);
       })
       .catch(err => {
         console.error('GetAllProfitAmount', err);
@@ -1355,28 +1354,16 @@ class VoteContainer extends Component {
       });
   }
 
-  handleDividendChange(key, value) {
-    const { dividends } = this.state;
-    dividends.amounts[key] = value;
-    dividends.total = dividends.amounts.reduce((total, current) => {
-      return total + +current;
-    }, 0);
-    this.setState({
-      dividends
-    });
-  }
-
   handleClaimDividendClick(schemeId) {
-    const { profitContractFromExt } = this.state;
+    const { profitContractFromExt, currentWallet } = this.state;
     this.checkExtensionLockStatus()
       .then(() => {
         profitContractFromExt
           .ClaimProfits({
             schemeId,
-            symbol: SYMBOL
+            beneficiary: currentWallet.address
           })
           .then(res => {
-            console.log('handleClaimDividendClick', res);
             this.checkTransactionResult(res, 'dividendModalVisible').then(
               () => {
                 this.setState({
@@ -1625,18 +1612,6 @@ class VoteContainer extends Component {
                   voteConfirmForm.formItems.map(item => {
                     return (
                       <Form.Item label={item.label} key={item.label}>
-                        {/* {getFieldDecorator('email', {
-                rules: [
-                  {
-                    type: 'email',
-                    message: 'The input is not valid E-mail!'
-                  },
-                  {
-                    required: true,
-                    message: 'Please input your E-mail!'
-                  }
-                ]
-              })(<Input />)} */}
                         {item.render ? item.render : <Input />}
                       </Form.Item>
                     );
