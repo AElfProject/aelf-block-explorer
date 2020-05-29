@@ -195,7 +195,7 @@ class RedeemModal extends PureComponent {
                 dataSource={redeemableVoteRecordsForOneCandidate}
                 columns={columns}
                 pagination={pagination}
-                rowKey={record => record.voteId.value}
+                rowKey={record => record.voteId}
                 rowSelection={rowSelection}
               />
             </div>
