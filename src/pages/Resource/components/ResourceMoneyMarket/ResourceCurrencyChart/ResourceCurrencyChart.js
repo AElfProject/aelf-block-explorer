@@ -237,12 +237,12 @@ class ResourceCurrencyChart extends PureComponent {
         }]
       },
       grid: [{
-        left: 20,
+        left: 40,
         right: 20,
         top: 110,
         height: 300
       }, {
-        left: 20,
+        left: 40,
         right: 20,
         height: 60,
         top: 470
@@ -251,7 +251,7 @@ class ResourceCurrencyChart extends PureComponent {
         {
           type: 'category',
           data: dates,
-          boundaryGap: false,
+          boundaryGap: true,
           axisLine: {lineStyle: {color: '#777'}},
           axisLabel: {
             formatter: function (value) {
@@ -261,6 +261,10 @@ class ResourceCurrencyChart extends PureComponent {
                 return echarts.format.formatTime('MM-dd\nhh:mm', value);
               }
             }
+          },
+          axisTick: {
+            show: true,
+            alignWithLabel: true
           },
           min: 'dataMin',
           max: 'dataMax',
@@ -273,10 +277,13 @@ class ResourceCurrencyChart extends PureComponent {
           gridIndex: 1,
           data: dates,
           scale: true,
-          boundaryGap : false,
+          boundaryGap : true,
           splitLine: {show: false},
           axisLabel: {show: false},
-          axisTick: {show: false},
+          axisTick: {
+            show: false,
+            alignWithLabel: true
+          },
           axisLine: { lineStyle: { color: '#777' } },
           splitNumber: 20,
           min: 'dataMin',
@@ -296,7 +303,7 @@ class ResourceCurrencyChart extends PureComponent {
           return (value.max * 1.2).toFixed(3);
         },
         axisLabel: {
-          inside: true,
+          inside: false,
           formatter: '{value}\n'
         }
       }, {

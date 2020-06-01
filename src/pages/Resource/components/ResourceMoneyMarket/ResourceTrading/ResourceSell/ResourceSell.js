@@ -145,15 +145,15 @@ class ResourceSell extends Component {
   }
 
   getSlideMarksHTML() {
-    const { account, currentResourceIndex } = this.props;
-    const { purchaseQuantity, region } = this.state;
+    const { account, currentResourceIndex, sellEstimateValueLoading } = this.props;
+    const { purchaseQuantity, sellBtnLoading } = this.state;
     const disabled = false;
     const balance = account.resourceTokens[currentResourceIndex].balance;
     return (
       <Slider
         marks={this.getSlideMarks()}
         step={0.01}
-        disabled={disabled}
+        disabled={disabled || sellEstimateValueLoading || sellBtnLoading}
         min={0}
         value={purchaseQuantity}
         onChange={this.onChangeSlide}

@@ -482,8 +482,12 @@ export default class ResourceBuy extends Component {
   }
 
   getSlideMarksHTML() {
-    const { account } = this.props;
-    let { region, inputValue } = this.state;
+    const {
+      buyInputLoading,
+      buyEstimateValueLoading,
+      account
+    } = this.props;
+    let { buyBtnLoading, region, inputValue } = this.state;
     let disabled = false;
     const balance = account.balance.toFixed(GENERAL_PRECISION);
     // balance less than RESOURCE_OPERATE_LIMIT is temp not allowed to use slider
@@ -501,7 +505,7 @@ export default class ResourceBuy extends Component {
           marks={this.getSlideMarks()}
           dots={false}
           step={0.01}
-          disabled={disabled}
+          disabled={disabled || buyBtnLoading || buyEstimateValueLoading || buyInputLoading}
           min={0}
           value={inputValue}
           onChange={this.onChangeSlide}
