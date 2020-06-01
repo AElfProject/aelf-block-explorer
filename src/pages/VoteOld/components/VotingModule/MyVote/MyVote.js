@@ -7,7 +7,7 @@ import React, {PureComponent} from 'react';
 import Button from '../../../../../components/Button/Button';
 import {Table, message} from 'antd';
 import dayjs from 'dayjs';
-import getPublicKey from '../../../../../utils/getPublicKey';
+import {getPublicKey} from '../../../../../utils/getPublicKey';
 import contractChange from '../../../../../utils/contractChange';
 import './MyVote.less';
 

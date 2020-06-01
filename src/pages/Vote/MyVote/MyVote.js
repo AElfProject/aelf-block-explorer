@@ -15,6 +15,7 @@ import NightElfCheck from "../../../utils/NightElfCheck";
 import getLogin from "../../../utils/getLogin";
 import {message, Spin} from "antd";
 import {isPhoneCheck} from "../../../utils/deviceCheck";
+import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
 
 export default class MyVote extends Component {
   constructor(props) {
@@ -67,7 +68,7 @@ export default class MyVote extends Component {
             formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
             address: wallet.address,
             name: wallet.name,
-            pubKey: '04' + wallet.publicKey.x + wallet.publicKey.y
+            pubKey: getPublicKeyFromObject(wallet.publicKey)
           };
           this.setState({
             currentWallet

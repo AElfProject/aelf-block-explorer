@@ -6,7 +6,7 @@
 import React, {PureComponent} from 'react';
 import {Table} from 'antd';
 import './VotingRecord.less';
-import getPublicKey from '../../../../../utils/getPublicKey';
+import {getPublicKey} from '../../../../../utils/getPublicKey';
 import dayjs from 'dayjs';
 
 let page = 0;

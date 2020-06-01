@@ -19,6 +19,7 @@ import { APPNAME, ADDRESS_INFO } from '@config/config';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import {isPhoneCheck} from "../../../../utils/deviceCheck";
+import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -91,7 +92,7 @@ export default class MyWalletCard extends PureComponent {
               formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
               address: wallet.address,
               name: wallet.name,
-              pubKey: '04' + wallet.publicKey.x + wallet.publicKey.y
+              pubKey: getPublicKeyFromObject(wallet.publicKey)
             }
           });
           setTimeout(() => {

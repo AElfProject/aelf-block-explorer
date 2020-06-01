@@ -10,7 +10,7 @@ import contractChange from '../../../../utils/contractChange';
 import Button from '../../../../components/Button/Button';
 import Svg from '../../../../components/Svg/Svg';
 import {aelf} from '../../../../utils';
-import getPublicKey from '../../../../utils/getPublicKey';
+import {getPublicKey} from '../../../../utils/getPublicKey';
 import getStateJudgment from '../../../../utils/getStateJudgment';
 import './AElfWallet.less';
 

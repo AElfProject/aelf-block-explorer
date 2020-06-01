@@ -61,6 +61,7 @@ import publicKeyToAddress from '@utils/publicKeyToAddress';
 import { getAllTeamDesc } from '@api/vote';
 import { getFormatedLockTime } from './utils';
 import getAllTokens from "../../utils/getAllTokens";
+import {getPublicKeyFromObject} from "../../utils/getPublicKey";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -425,7 +426,7 @@ class VoteContainer extends Component {
 
   getNightElfKeypair(wallet) {
     if (wallet) {
-      wallet.pubkey = '04' + wallet.publicKey.x + wallet.publicKey.y;
+      wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
       wallet.formattedAddress = `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
       this.setState({
@@ -604,8 +605,9 @@ class VoteContainer extends Component {
 
     Promise.all([
       electionContract.GetElectorVoteWithRecords.call({
-        value: `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`
-      }),
+        value: currentWallet.publicKey
+      }
+      ),
       getAllTeamDesc()
     ])
       .then(resArr => {

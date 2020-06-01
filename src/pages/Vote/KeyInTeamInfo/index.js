@@ -19,6 +19,7 @@ import getCurrentWallet from '@utils/getCurrentWallet';
 import { urlRegExp } from '@pages/Vote/constants';
 import { addUrlPrefix, removeUrlPrefix } from '@utils/formater';
 import './index.less';
+import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -348,7 +349,7 @@ class KeyInTeamInfo extends PureComponent {
     const { nightElf, checkExtensionLockStatus, form } = this.props;
 
     const currentWallet = getCurrentWallet();
-    const publicKey = `04${currentWallet.publicKey.x}${currentWallet.publicKey.y}`;
+    const publicKey = getPublicKeyFromObject(currentWallet.publicKey);
     const randomNum = rand16Num(32);
     form.validateFields((err, values) => {
       if (!err) {

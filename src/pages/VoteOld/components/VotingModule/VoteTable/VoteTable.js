@@ -7,7 +7,7 @@
 import React, {PureComponent} from 'react';
 import Button from '../../../../../components/Button/Button';
 import {Table, message} from 'antd';
-import getPublicKey from '../../../../../utils/getPublicKey';
+import {getPublicKey} from '../../../../../utils/getPublicKey';
 import {commonPrivateKey, APPNAME} from '../../../../../../config/config';
 import contractChange from '../../../../../utils/contractChange';
 import AElf from 'aelf-sdk';

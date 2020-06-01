@@ -41,6 +41,7 @@ import './index.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import {ELF_DECIMAL} from "../../constants";
+import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
 
 const { Search } = Input;
 const clsPrefix = 'node-table';
@@ -102,7 +103,7 @@ class NodeTable extends PureComponent {
             formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
               address: wallet.address,
               name: wallet.name,
-              pubKey: '04' + wallet.publicKey.x + wallet.publicKey.y
+              pubKey: getPublicKeyFromObject(wallet.publicKey)
           }
           this.setState({
             currentWallet
