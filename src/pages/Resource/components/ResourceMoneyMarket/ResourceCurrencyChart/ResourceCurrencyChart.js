@@ -74,7 +74,7 @@ function handleDataList(list, interval, length) {
       ...dates,
       ...emptyList
           .fill(1)
-          .map((_, i) =>  echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', interval * i + lastEnd))
+          .map((_, i) =>  echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', interval * (i + 1) + lastEnd))
     ];
     volumes = [
         ...volumes,

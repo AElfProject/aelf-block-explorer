@@ -76,7 +76,7 @@ function disabledDate(current) {
   // Can not select days before today and today
   return current
       && (current < moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day')
-      || current > moment().add(1080, 'd').endOf('day'));
+      || current > moment().add(1080, 'd'));
 }
 
 function getColumns() {
