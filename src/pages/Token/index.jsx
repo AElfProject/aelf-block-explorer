@@ -5,9 +5,9 @@
 import React from 'react';
 import IframeViewer from "../../components/IframeViewer";
 
-const DEFAULT_URL = '/viewer/address.html#/contract';
+const DEFAULT_URL = '/viewer/address.html#/token';
 
-const Viewer = props => {
+const Token = props => {
     return (
         <IframeViewer
             {...props}
@@ -16,4 +16,4 @@ const Viewer = props => {
     );
 };
 
-export default Viewer;
+export default Token;

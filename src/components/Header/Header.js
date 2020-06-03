@@ -226,6 +226,10 @@ class BrowserHeader extends PureComponent {
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
+        <Menu.Item key='/token'>
+          {/* <Icon type='home' /> */}
+          <Link to='/token'>TOKEN</Link>
+        </Menu.Item>
         <SubMenu
             title={
               <span className='submenu-title-wrapper'>

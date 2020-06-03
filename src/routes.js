@@ -17,6 +17,7 @@ import VotePage from './pages/Vote/Vote';
 import Resource from './pages/Resource/Resource';
 import ResourceDetail from './pages/ResourceDetail/ResourceDetail';
 import Viewer from './pages/Viewer';
+import Token from './pages/Token';
 import Proposal from './pages/Proposal';
 
 // Notice: we need register the route in Breadcurmb.js.
@@ -36,5 +37,6 @@ export default () => [
     <Route path='/resource' component={Resource} key='resource' />,
     <Route path='/resourceDetail/:id' component={ResourceDetail} key='resourceDetail' />,
     <Route path='/contract' exact component={Viewer} key='contract' />,
+    <Route path='/token' exact component={Token} key='token' />,
     <Route path='/proposal' component={Proposal} key='proposal' />
 ];

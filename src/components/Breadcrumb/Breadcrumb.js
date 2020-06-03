@@ -8,7 +8,7 @@ import {ADDRESS_INFO} from '../../../config/config';
 import './breadcrumb.styles.less';
 
 // if you want to hide the Breadcrumb
-const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contract'];
+const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contract', '/token'];
 const noBreadcrumb = (pathname) => {
   const isMainPage = pathname === '/';
   return NO_BREADCRUMB_PAGES.filter(item => {
@@ -39,6 +39,7 @@ const BREADCRUMB_NAME_MAP = {
   '/resourceDetail': 'Resource Detail List',
   '/contract': 'Contract',
   '/proposal': 'Proposal',
+  '/token': 'Token',
   'myvote': 'My Vote'
 };
 
@@ -112,6 +113,12 @@ const BREADCRUMB_NAMES_TATE = {
       url: ['/proposal', false],
       name: ['Proposal']
     },
+    token: {
+      url: ['/token', false],
+      name: [
+        BREADCRUMB_NAME_MAP['/token']
+      ]
+    }
   }
 };
 

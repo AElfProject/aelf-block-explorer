@@ -183,7 +183,7 @@ const BLOCKS_LIST_COLUMNS = [
   }
 ];
 
-export const CONTRACT_VIEWER_URL = '/viewer/address.html#/contract/info?address=';
+export const CONTRACT_VIEWER_URL = '/viewer/address.html#/contract/';
 
 const ALL_TXS_LIST_COLUMNS = [
   {
