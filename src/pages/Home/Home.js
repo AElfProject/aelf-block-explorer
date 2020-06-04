@@ -9,7 +9,8 @@ import {Link} from 'react-router-dom';
 import { CHAIN_ID } from '@src/constants';
 import {
     Row,
-    Col
+    Col,
+    Divider
 } from 'antd';
 import { getContractNames } from "../../utils";
 import SearchBanner from '../../components/SearchBanner/SearchBanner';
@@ -20,8 +21,9 @@ import SmoothScrollbar from 'smooth-scrollbar';
 import OverscrollPlugin from 'smooth-scrollbar/plugins/overscroll';
 import Scrollbar from 'react-smooth-scrollbar';
 import ChainInfo from "./ChainInfo";
+import HomeItem from "../../components/HomeItem";
 
-import {get, format, transactionFormat} from '../../utils';
+import {get, transactionFormat} from '../../utils';
 import {
     PAGE_SIZE,
     ALL_BLOCKS_API_URL,
@@ -30,7 +32,6 @@ import {
     BASIC_INFO,
     CONTRACT_VIEWER_URL
 } from '../../constants';
-import {ADDRESS_INFO} from '../../../config/config';
 
 import './home.styles.less';
 import {removeAElfPrefix} from "../../utils/utils";
@@ -38,13 +39,11 @@ import addressFormat from "../../utils/addressFormat";
 
 SmoothScrollbar.use(OverscrollPlugin);
 
-const fetchInfoByChainIntervalTime = 500;
-
 
 function getFormattedContractName(contractNames, address) {
     let name = contractNames[address] || {};
     name = name && name.isSystemContract ? removeAElfPrefix(name.contractName) : name.contractName;
-    return name || address;
+    return name || addressFormat(address);
 }
 
 // @inject("appIncrStore")
@@ -205,7 +204,9 @@ export default class HomePage extends Component {
             merkle_root_tx: Header.MerkleTreeRootOfTransactions,
             pre_block_hash: Header.PreviousBlockHash,
             time: Header.Time,
-            tx_count: Body.TransactionsCount
+            tx_count: Body.TransactionsCount,
+            dividends: block.dividend,
+            miner: block.miner
         };
     }
 
@@ -269,74 +270,85 @@ export default class HomePage extends Component {
     }
 
     blockRenderItem = item => {
-        const blockHeight = item.block_height;
-        const title = (
-            <Link to={`/block/${blockHeight}`}>{blockHeight}</Link>
-        );
-        const desc = (
-            <Link to={`/txs/block?${item.block_hash}`}>{item.tx_count}</Link>
-        );
-
+        let {
+            time,
+            dividends,
+            block_height,
+            tx_count,
+            miner
+        } = item;
+        try {
+            dividends = JSON.parse(dividends);
+        } catch (e) {
+            dividends = dividends;
+        }
+        const props = {
+            title: {
+                text: `#${block_height}`,
+                link: `/block/${block_height}`
+            },
+            time,
+            middleLeftTitle: {
+                name: 'Txs',
+                text: tx_count
+            },
+            middleRightTitle: {
+                name: 'Dividend',
+                text: `${dividends.ELF || dividends || 0} ELF`
+            },
+            bottomTitle: {
+                name: 'Miner',
+                text: addressFormat(miner),
+                link: `/address/${miner}`
+            }
+        };
         return (
-            <Row
-                type="flex"
-                align="middle"
-                className="blocks-list-container"
-                key={item.block_hash}
-            >
-                <Col className="text-ellipse" span={4}>{title}</Col>
-                <Col className="text-ellipse" span={4}>{desc}</Col>
-                <Col className="text-ellipse" span={16}>{format(item.time)}</Col>
-            </Row>
+            <>
+                <HomeItem
+                    {...props}
+                />
+                <Divider />
+            </>
         );
-
     };
 
     txsRenderItem = item => {
         const { contractNames } = this.state;
-        let cutNum = 12;
-        if (document.body.offsetWidth <= 414) {
-          cutNum = 11;
-        }
-
-        let tx_id = item.tx_id;
-        let txIDShow = tx_id.slice(0, cutNum) + '...';
-
-        const title = (
-            <Link to={`/tx/${tx_id}`}>
-                {txIDShow}
-            </Link>
-        );
-
-        const from = (
-            <Link to={`/address/${item.address_from}`}>
-                {ADDRESS_INFO.PREFIX + '_' + item.address_from.slice(0, cutNum)}...
-            </Link>
-        );
-
-        const to = (
-            <Link
-                to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + item.address_to)}`}
-                title={addressFormat(item.address_to)}
-            >
-                {
-                    getFormattedContractName(contractNames, item.address_to)
-                }
-            </Link>
-        );
-
+        const {
+            time,
+            address_from,
+            address_to,
+            tx_fee,
+            tx_id
+        } = item;
+        const props = {
+            title: {
+                text: tx_id,
+                link: `/tx/${tx_id}`
+            },
+            time,
+            middleLeftTitle: {
+                name: 'From',
+                text: addressFormat(address_from),
+                link: `/address/${address_from}`
+            },
+            middleRightTitle: {
+                name: 'To',
+                text: getFormattedContractName(contractNames, address_to),
+                link: `/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + address_to)}`
+            },
+            bottomTitle: {
+                name: 'Fee',
+                text: `${tx_fee} ELF`
+            }
+        };
         return (
-            <Row
-                type="flex"
-                align="middle"
-                className="blocks-list-container"
-                key={tx_id}
-            >
-                <Col className="text-ellipse" span={6}>{title}</Col>
-                <Col className="text-ellipse" span={9}>{from}</Col>
-                <Col className="text-ellipse" span={9}>{to}</Col>
-            </Row>
-        );
+            <>
+                <HomeItem
+                    {...props}
+                />
+                <Divider />
+            </>);
     };
 
     renderBlocksAndTxsList() {
@@ -367,9 +379,6 @@ export default class HomePage extends Component {
                 </Col>
             </Row>,
             <Row
-                type="flex"
-                justify="space-between"
-                align="middle"
                 className="content-container"
                 key="infolist"
                 gutter={

@@ -129,7 +129,7 @@ const RPCSERVER = DEFAUTRPCSERVER;
 // TODO: Why is this undefined?
 const BLOCKS_LIST_COLUMNS = [
   {
-    title: 'Block Height',
+    title: 'Height',
     dataIndex: 'block_height',
     key: 'block_height',
     width: 150,
@@ -199,7 +199,7 @@ const ALL_TXS_LIST_COLUMNS = [
     )
   },
   {
-    title: 'Block Height',
+    title: 'Height',
     dataIndex: 'block_height',
     key: 'block_height',
     width: 150,

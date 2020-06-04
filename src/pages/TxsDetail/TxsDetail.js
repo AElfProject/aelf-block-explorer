@@ -21,6 +21,7 @@ import './txsdetail.styles.less';
 import {Link} from "react-router-dom";
 import Dividends from "../../components/Dividends";
 import moment from "moment";
+import Events from "../../components/Events";
 
 async function getInfoBackUp(transaction) {
   const {
@@ -83,10 +84,10 @@ export default class TxsDetailPage extends React.Component {
         console.error(err);
       });
       getContractNames().then(names => {
-        let name = names[result.Transaction.To];
+        let name = names[result.Transaction.To] || {};
         name = name && name.isSystemContract ? removeAElfPrefix(name.contractName) : name.contractName;
         this.setState({
-          contractName: name
+          contractName: name || result.Transaction.To
         });
       }).catch(e => {
         console.log(e);
@@ -141,6 +142,20 @@ export default class TxsDetailPage extends React.Component {
     </textarea>
   }
 
+  renderLogs(logs) {
+    let list;
+    try {
+      list = JSON.parse(logs);
+    } catch (e) {
+      list =  [];
+    }
+    if (Array.isArray(list) && list.length > 0) {
+      return <Events list={list} />;
+    } else {
+      return this.renderCodeLikeParams(list, 1);
+    }
+  }
+
   renderCol(key, value) {
     if (typeof value === 'object' && !React.isValidElement(value)) {
       value = JSON.stringify(value);
@@ -157,7 +172,7 @@ export default class TxsDetailPage extends React.Component {
         break;
       case 'Logs':
         if (value !== 'null' && value) {
-          valueHTML = this.renderCodeLikeParams(value, 8);
+          valueHTML = this.renderLogs(value);
         }
         break;
       case 'TransactionSize':

@@ -38,9 +38,6 @@ const IframeViewer = props => {
             setUrl(decodeURIComponent(hash).substring(1));
         } else {
             let newUrl = `${defaultUrl}?random=${rand16Num(8)}`;
-            if (address) {
-                newUrl = `${defaultUrl}/${address}?address=${address}`;
-            }
             setUrl(newUrl);
         }
     }, [

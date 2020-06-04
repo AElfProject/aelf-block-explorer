@@ -132,7 +132,9 @@ function transactionFormat(result) {
         method: result.Transaction.MethodName,
         params: result.Transaction.Params,
         tx_id: result.TransactionId,
-        tx_status: result.Status
+        tx_status: result.Status,
+        tx_fee: result.fee,
+        time: result.time
     };
     return newTxs;
 }
