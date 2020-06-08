@@ -24,10 +24,10 @@ const BREADCRUMB_NAME_MAP = {
   // "/block": "区块信息",
   // "/tx": "交易信息",
   // "/address": "地址信息"
-  '/blocks': 'Blocks List',
-  '/unconfirmedBlocks': 'Unconfirmed Blocks List',
-  '/txs': 'Transactions List',
-  '/unconfirmedTxs': 'Unconfirmed Transactions List',
+  '/blocks': 'Block List',
+  '/unconfirmedBlocks': 'Unconfirmed Block List',
+  '/txs': 'Transaction List',
+  '/unconfirmedTxs': 'Unconfirmed Transaction List',
   '/txs/block': 'Transactions of Block',
   '/block': 'Block',
   '/unconfirmedBlock': 'Unconfirmed Block',
@@ -144,12 +144,12 @@ class BrowserBreadcrumb extends Component {
     const pathname = location.pathname;
 
     // hummm, stupid solution
-    const inBlockDetail = current === 'block' && breadcrumbTitle === 'Blocks List';
-    const inUnconfirmedBlock = current === 'unconfirmedBlock' && breadcrumbTitle === 'Unconfirmed Blocks List';
-    const inTxList = current === 'txs' && breadcrumbTitle === 'Transactions List' && pathname !== '/txs';
-    const inAddress = current === 'address' && breadcrumbTitle === 'Transactions List';
-    const inTxDetail = current === 'tx' && breadcrumbTitle === 'Transactions List';
-    const inUnconfirmedTxDetail = current === 'unconfirmedTx' && breadcrumbTitle === 'Unconfirmed Transactions List';
+    const inBlockDetail = current === 'block' && breadcrumbTitle === 'Block List';
+    const inUnconfirmedBlock = current === 'unconfirmedBlock' && breadcrumbTitle === 'Unconfirmed Block List';
+    const inTxList = current === 'txs' && breadcrumbTitle === 'Transaction List' && pathname !== '/txs';
+    const inAddress = current === 'address' && breadcrumbTitle === 'Transaction List';
+    const inTxDetail = current === 'tx' && breadcrumbTitle === 'Transaction List';
+    const inUnconfirmedTxDetail = current === 'unconfirmedTx' && breadcrumbTitle === 'Unconfirmed Transaction List';
     const inResourceDetail = current === 'resourceDetail' && breadcrumbTitle === 'Resource';
     const inContract = current === 'contract';
 
@@ -206,17 +206,17 @@ class BrowserBreadcrumb extends Component {
       blocks: (
         <div className='breadcrumb-title' style={{ fontSize: 28 }}>
           {' '}
-          Blocks List{' '}
+          Block List{' '}
           <span className='tip-color' style={{ fontSize: 16 }}>
             ( Only confirmed blocks )
           </span>
         </div>
       ),
-      unconfirmedBlocks: 'Unconfirmed Blocks List',
+      unconfirmedBlocks: 'Unconfirmed Block List',
       block: 'Block',
       unconfirmedBlock: 'Unconfirmed Block',
-      txs: 'Transactions',
-      unconfirmedTxs: 'Unconfirmed Transactions',
+      txs: 'Transaction List',
+      unconfirmedTxs: 'Unconfirmed Transaction List',
       tx: 'Transaction',
       unconfirmedTx: 'Unconfirmed Transaction',
       address: 'Address',

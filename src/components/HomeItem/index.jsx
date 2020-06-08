@@ -81,14 +81,14 @@ const HomeItem = props => {
                 <Item {...middleLeftTitle} />
             </Col>
             <Col sm={24} md={4} />
-            <Col sm={24} md={10} >
+            <Col sm={24} md={10} className="home-item-right" >
                 <Item {...middleRightTitle} />
             </Col>
             <Col sm={24} md={10} className="gap-top-small">
                 <span className="home-item-time">{formatTime(time)}</span>
             </Col>
-            <Col sm={24} md={4} />
-            <Col sm={24} md={10} className="gap-top-small home-item-bottom">
+            <Col sm={24} md={4} className="gap-top-small" />
+            <Col sm={24} md={10} className="gap-top-small home-item-right">
                 <Item {...bottomTitle} />
             </Col>
         </Row>

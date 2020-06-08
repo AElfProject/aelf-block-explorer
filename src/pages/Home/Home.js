@@ -246,7 +246,7 @@ export default class HomePage extends Component {
                     {this.renderSearchBanner()}
                     <Row className="first-page-sub-container">
                         <div className='home-basic-title-con'>
-                            <span className='TPSChart-title'>Transaction Per Minute</span>
+                            <span className='TPSChart-title'>Transactions Per Minute</span>
                         </div>
                         <ContainerRichard>
                             <TPSChart/>
