@@ -34,7 +34,7 @@ async function getInfoBackUp(transaction) {
     }
   } = block;
   return {
-    ...getFee(transaction),
+    ...(await getFee(transaction)),
     time: Time
   };
 }
@@ -64,24 +64,14 @@ export default class TxsDetailPage extends React.Component {
         result,
         error: null
       });
-      get(TXS_INFO_API_URL, {
-        tx_id: txsId
-      }).then(res => {
-        if (Object.keys(res).length === 0) {
-          getInfoBackUp(result).then(backup => {
-            this.setState({
-              time: backup.time,
-              resources: backup.resources,
-              tx_fee: backup.elf
-            })
-          })
-        } else {
-          this.setState({
-            parsedResult: res
-          });
-        }
-      }).catch(err => {
-        console.error(err);
+      getInfoBackUp(result).then(backup => {
+        this.setState({
+          parsedResult: {
+            time: backup.time,
+            resources: backup.resources,
+            tx_fee: backup.fee
+          }
+        });
       });
       getContractNames().then(names => {
         let name = names[result.Transaction.To] || {};
@@ -109,6 +99,13 @@ export default class TxsDetailPage extends React.Component {
   componentDidMount() {
     const { params } = this.props.match;
     this.fetchTxInfo(params.id);
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { params } = this.props.match;
+    if (prevProps.match.params.id !== params.id) {
+      this.fetchTxInfo(params.id);
+    }
   }
 
   renderStatus(value) {
@@ -256,8 +253,8 @@ export default class TxsDetailPage extends React.Component {
       } = parsedResult;
       return [
           this.renderCol('Time', moment(time).format('YYYY-MM-DD  HH:mm:ss')),
-          this.renderCol('Transaction Fee', `${tx_fee} ELF`),
-          this.renderCol('Resources Fee', <Dividends dividends={JSON.parse(resources)} />)
+          this.renderCol('Transaction Fee', <Dividends dividends={tx_fee} />),
+          this.renderCol('Resources Fee', <Dividends defaultSymbol="" dividends={resources} />)
       ]
     }
     return null;

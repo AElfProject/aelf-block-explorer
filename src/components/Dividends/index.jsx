@@ -18,10 +18,11 @@ import {
 const Dividends = props => {
     const {
         dividends,
+        defaultSymbol,
         ...rest
     } = props;
     const keys = Object.keys(dividends);
-    const defaultKey = dividends.ELF !== undefined ? 'ELF' : keys[0] || 'ELF';
+    const defaultKey = defaultSymbol !== undefined ? defaultSymbol : (dividends.ELF !== undefined ? 'ELF' : keys[0] || 'ELF');
     return (
         <If condition={keys.length > 1}>
             <Then>

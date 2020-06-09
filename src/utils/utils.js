@@ -1,6 +1,7 @@
 import AElf from "aelf-sdk";
 import {aelf} from "../utils";
 import config from '../../config/config';
+import Decimal from "decimal.js";
 
 const resourceDecimals = config.resourceTokens.reduce((acc, v) => ({
   ...acc,
@@ -22,14 +23,47 @@ export const removeAElfPrefix = name => {
   return name;
 };
 
-export function getFee(transaction) {
-  const elfFee = AElf.pbUtils.getTransactionFee(transaction.Logs || []);
+const TOKEN_DECIMALS = {
+  ELF: 8
+};
+let tokenContract = null;
+
+export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(config.commonPrivateKey);
+
+export async function getTokenDecimal(symbol) {
+  let decimal;
+  if (!tokenContract) {
+    tokenContract = await aelf.chain.contractAt(config.multiToken, FAKE_WALLET);
+  }
+  if (!TOKEN_DECIMALS[symbol]) {
+    try {
+      const tokenInfo = await tokenContract.GetTokenInfo.call({
+        symbol
+      });
+      decimal = tokenInfo.decimals;
+    } catch (e) {
+      decimal = 8;
+    }
+    TOKEN_DECIMALS[symbol] = decimal;
+  }
+  return TOKEN_DECIMALS[symbol];
+}
+
+export async function getFee(transaction) {
+  const fee = AElf.pbUtils.getTransactionFee(transaction.Logs || []);
   const resourceFees = AElf.pbUtils.getResourceFee(transaction.Logs || []);
+  const decimals = await Promise.all(fee.map(f => getTokenDecimal(f.symbol)));
   return {
-    elf: elfFee.length === 0 ? 0 : (+elfFee[0].amount / 1e8),
+    fee: fee.map((f, i) => ({
+      ...f,
+      amount: new Decimal(f.amount || 0).dividedBy(`1e${decimals[i]}`).toString()
+    })).reduce((acc, v) => ({
+      ...acc,
+      [v.symbol]: v.amount
+    }), {}),
     resources: resourceFees.map(v => ({
       ...v,
-      amount: (+v.amount / +`1e${resourceDecimals[v.symbol] || 8}`)
+      amount: new Decimal(v.amount || 0).dividedBy(`1e${resourceDecimals[v.symbol]}`).toString()
     })).reduce((acc, v) => ({
       ...acc,
       [v.symbol]: v.amount
