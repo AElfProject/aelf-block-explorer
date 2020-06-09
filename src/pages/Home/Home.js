@@ -36,6 +36,7 @@ import {
 import './home.styles.less';
 import {removeAElfPrefix} from "../../utils/utils";
 import addressFormat from "../../utils/addressFormat";
+import Dividends from "../../components/Dividends";
 
 SmoothScrollbar.use(OverscrollPlugin);
 
@@ -184,6 +185,7 @@ export default class HomePage extends Component {
         this.blockHeight = height;
         this.unconfirmedBlockHeight = unconfirmedBlockHeight;
         this.setState({
+
             blocks: ([...blocks, ...this.state.blocks]).slice(0, 25),
             transactions: ([...transactions, ...this.state.transactions]).slice(0, 25),
             totalTransactions: allChainTxs,
@@ -279,9 +281,7 @@ export default class HomePage extends Component {
         } = item;
         try {
             dividends = JSON.parse(dividends);
-        } catch (e) {
-            dividends = dividends;
-        }
+        } catch (e) {}
         const props = {
             title: {
                 text: `#${block_height}`,
@@ -321,6 +321,10 @@ export default class HomePage extends Component {
             tx_fee,
             tx_id
         } = item;
+        let fee = tx_fee;
+        try {
+            fee = JSON.parse(tx_fee);
+        } catch (e) {}
         const props = {
             title: {
                 text: tx_id,
@@ -339,7 +343,7 @@ export default class HomePage extends Component {
             },
             bottomTitle: {
                 name: 'Fee',
-                text: `${tx_fee} ELF`
+                text: <Dividends  className="home-fee" dividends={fee} />
             }
         };
         return (

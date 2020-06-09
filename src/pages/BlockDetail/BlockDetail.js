@@ -337,6 +337,7 @@ export default class BlockDetailPage extends React.Component {
             parsedResult
         } = this.state;
         if (Object.keys(parsedResult).length > 0) {
+            // todo: 从链获取并格式化数据
             const {
                 miner,
                 resources,
@@ -344,9 +345,13 @@ export default class BlockDetailPage extends React.Component {
                 dividends
             } = parsedResult;
             return [
-                this.renderCol('Miner', `${SYMBOL}_${miner}_${CHAIN_ID}`),
-                this.renderCol('Transaction Fee', `${tx_fee} ELF`),
-                this.renderCol('Resources Fee', <Dividends dividends={JSON.parse(resources)} />),
+                this.renderCol('Miner', (
+                    <Link to={`/address/${miner}`}>
+                        {`${SYMBOL}_${miner}_${CHAIN_ID}`}
+                    </Link>
+                )),
+                this.renderCol('Transaction Fee', <Dividends dividends={JSON.parse(tx_fee)} />),
+                this.renderCol('Resources Fee', <Dividends defaultSymbol="" dividends={JSON.parse(resources)} />),
                 this.renderCol('Dividends', <Dividends dividends={JSON.parse(dividends)} />)
             ]
         }

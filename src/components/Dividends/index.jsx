@@ -56,4 +56,4 @@ const Dividends = props => {
     );
 };
 
-export default Dividends;
+export default React.memo(Dividends);

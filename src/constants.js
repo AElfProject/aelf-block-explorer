@@ -263,7 +263,7 @@ const ALL_TXS_LIST_COLUMNS = [
     dataIndex: 'tx_fee',
     key: 'tx_fee',
     render(text) {
-      return <span>{text}&nbsp;ELF</span>;
+      return <Dividends dividends={JSON.parse(text)}/>
     }
   },
   {
