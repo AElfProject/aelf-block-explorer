@@ -21,7 +21,6 @@ const Address = props => {
   ll.current = location;
   const [url, setUrl] = useState(`${DEFAULT_URL}${address ? `/${address}` : ''}`);
   function onChange(href) {
-    console.log(ll.current);
     window.history.replaceState(
         window.history.state,
         '',
@@ -35,7 +34,7 @@ const Address = props => {
     if (hash) {
       setUrl(decodeURIComponent(hash).substring(1));
     } else {
-      setUrl(`${DEFAULT_URL}${address ? `/${address}` : null}?random=${rand16Num(8)}`);
+      setUrl(`${DEFAULT_URL}${address ? `/${address}` : ''}?random=${rand16Num(8)}`);
     }
   }, [
     location.hash

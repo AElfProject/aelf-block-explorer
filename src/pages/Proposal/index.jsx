@@ -7,7 +7,7 @@ import useLocation from 'react-use/lib/useLocation';
 import IFrame from '../../components/IFrame';
 import {rand16Num} from "../../utils/utils";
 
-const DEFAULT_URL = '/viewer/proposal.html';
+const DEFAULT_URL = '/viewer/proposal.html#/proposals';
 
 const Proposal = () => {
 
@@ -25,10 +25,11 @@ const Proposal = () => {
         const {
             hash
         } = location;
+
         if (hash) {
             setUrl(decodeURIComponent(hash).substring(1));
         } else {
-            setUrl(`${DEFAULT_URL}?random=${rand16Num(8)}`);
+            setUrl(`${DEFAULT_URL}`);
         }
     }, [location.hash]);
 

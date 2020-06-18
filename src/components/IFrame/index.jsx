@@ -19,7 +19,6 @@ const IFrame = props => {
                 data,
                 origin
             } = event;
-            console.log(data);
             if (origin === location.origin) {
                 const {
                     type,
