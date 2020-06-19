@@ -1110,7 +1110,7 @@ class VoteContainer extends Component {
         // Seconds: Math.floor(timeMS / 1000),
         // Nanos: (timeMS % 1000) * 1e6
         seconds: lockTime.unix(),
-        nanos: lockTime.milliseconds() * 1000
+        nanos: lockTime.milliseconds() * 1000000
       }
     };
 
