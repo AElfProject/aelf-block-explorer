@@ -294,7 +294,7 @@ export default class HomePage extends Component {
             },
             middleRightTitle: {
                 name: 'Dividend',
-                text: `${dividends.ELF || dividends || 0} ELF`
+                text: `${dividends.ELF || 0} ELF`
             },
             bottomTitle: {
                 name: 'Miner',
