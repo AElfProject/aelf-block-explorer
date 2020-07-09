@@ -8,6 +8,7 @@ import React, {
 import {
     withRouter
 } from "react-router-dom";
+import { removePrefixOrSuffix, isAElfAddress } from '../../utils';
 import {
     Input,
     Icon,
@@ -71,6 +72,7 @@ class Search extends PureComponent {
 
     handleSearch = e => {
         let value = e.target && e.target.value || e.searchValue || '';
+        value = value.trim();
         if (!value.trim()) {
             return;
         }
@@ -83,7 +85,6 @@ class Search extends PureComponent {
         // value = ;
 
         const length = value.length;
-        const isAddress = [49, 50, 51, 52, 53, 47];
         const isTxid = [64];
 
         // address.length === 38/66 && address.match(/^0x/)
@@ -101,8 +102,8 @@ class Search extends PureComponent {
             return;
         }
 
-        if (isAddress.includes(length)) {
-            this.SEARCHRULES.address(value, this.props.history);
+        if (isAElfAddress(value)) {
+            this.SEARCHRULES.address(removePrefixOrSuffix(value), this.props.history);
         }
         else if (isTxid.includes(length)) {
             this.SEARCHRULES.transaction(value, this.props.history);
