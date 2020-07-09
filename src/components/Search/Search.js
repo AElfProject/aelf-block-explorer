@@ -5,6 +5,7 @@
 import React, {
     PureComponent
 } from 'react';
+import AElf from "aelf-sdk";
 import {
     withRouter
 } from "react-router-dom";
