@@ -5,7 +5,6 @@
 import {
     notification
 } from 'antd';
-import { endsWith, startsWith } from 'lodash';
 import {
     create
 } from 'apisauce';
@@ -144,23 +143,6 @@ const transactionInfo = (hash) => {
     return aelf.chain.getTxResult(hash, {sync: true});
 }
 
-const removePrefixOrSuffix = address => {
-    let result = address;
-    if (typeof result !== 'string' || !result) {
-        return '';
-    }
-    if (startsWith(result, 'ELF_')) {
-        [, result] = result.split('ELF_');
-    }
-    if (endsWith(result, `_${config.viewer.chainId}`)) {
-        [result] = result.split(`_${config.viewer.chainId}`);
-    }
-    if (/_/.test(result)) {
-        [result] = result.split('_').sort((a, b) => b.length || 0 - a.length || 0);
-    }
-    return result;
-};
-
 function isAElfAddress(address) {
     if (!address) {
         return false;
@@ -182,6 +164,5 @@ export {
     transactionFormat,
     transactionInfo,
     getContractNames,
-    removePrefixOrSuffix,
     isAElfAddress
 };
