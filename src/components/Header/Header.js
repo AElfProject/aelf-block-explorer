@@ -7,8 +7,6 @@ import React, { PureComponent } from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
-import Svg from '../../components/Svg/Svg';
 import './header.styles.less';
 import { getPathnameFirstSlash } from '@utils/urlUtils';
 import { setIsSmallScreen } from '@actions/common';
@@ -19,6 +17,14 @@ import {isPhoneCheck} from '../../utils/deviceCheck';
 
 const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
+
+const heights = {
+  height: '80%'
+};
+
+const widths = {
+  width: '64px'
+};
 
 class BrowserHeader extends PureComponent {
   constructor() {
@@ -61,7 +67,7 @@ class BrowserHeader extends PureComponent {
       pathname = pathname === '/' ? '/home' : pathname;
       if (this.state.current !== pathname) {
         // white list
-        const whiteList = ['/block', '/address', '/vote', '/voteold'];
+        const whiteList = ['/block', '/address', '/vote'];
         if (whiteList.indexOf(pathname) > -1) {
           pathname = '/blocks';
         }
@@ -151,26 +157,6 @@ class BrowserHeader extends PureComponent {
     const nodeInfo = JSON.parse(localStorage.getItem('currentChain'));
     const { chain_id } = nodeInfo;
 
-    let voteHTML = '';
-    let resourceHTML = '';
-    if (chain_id === config.MAINCHAINID) {
-      voteHTML = (
-        <Menu.Item key='/vote'>
-          {/* <Icon type='appstore' /> */}
-          <Link to='/vote'>VOTE</Link>
-          {/* <Link to='/voteold'>VoteOld</Link> */}
-          {/* <span>APP CENTER [Building]</span> */}
-        </Menu.Item>
-      );
-      resourceHTML = (
-        <Menu.Item key='/resource'>
-          {/* <Icon type='appstore' /> */}
-          <Link to='/resource'>RESOURCE</Link>
-          {/* <span>APP CENTER [Building]</span> */}
-        </Menu.Item>
-      );
-    }
-
     const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
     const isPhone = isPhoneCheck();
 
@@ -226,29 +212,10 @@ class BrowserHeader extends PureComponent {
             </Menu.Item>
           </MenuItemGroup>
         </SubMenu>
-        <Menu.Item key='/token'>
-          {/* <Icon type='home' /> */}
-          <Link to='/token'>TOKEN</Link>
-        </Menu.Item>
-        <SubMenu
-            title={
-              <span className='submenu-title-wrapper'>
-              {/* <Icon type='gold' /> */}
-                GOVERNANCE
-            </span>
-            }
-            className='aelf-submenu-container'
-        >
-          <Menu.Item key='/proposal'>
-            <Link to='/proposal'>PROPOSAL</Link>
-          </Menu.Item>
-          {voteHTML}
-          {resourceHTML}
-        </SubMenu>
         <Menu.Item key='/about'>
           {/* <Icon type='profile' /> */}
           <a
-            href='https://www.aelf.io/'
+            href='https://hoopox.com'
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -295,13 +262,9 @@ class BrowserHeader extends PureComponent {
     return (
       <div className='header-fixed-container'>
         <div className={headerClass}>
-          <Link to='/' key='logo'>
-            <Svg
-              icon='aelf_logo_purple'
-              className='aelf-logo-container'
-            />
+          <Link to='/' key='logo' style={widths}>
+            <img style={heights} src="https://www.hoopox.com/tju.png" />
           </Link>
-
           {mobileMoreHTML}
 
           <nav className='header-navbar'>

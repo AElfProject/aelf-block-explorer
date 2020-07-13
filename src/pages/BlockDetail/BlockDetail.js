@@ -352,7 +352,6 @@ export default class BlockDetailPage extends React.Component {
                 )),
                 this.renderCol('Transaction Fee', <Dividends dividends={JSON.parse(tx_fee)} />),
                 this.renderCol('Resources Fee', <Dividends defaultSymbol="" dividends={JSON.parse(resources)} />),
-                this.renderCol('Dividends', <Dividends dividends={JSON.parse(dividends)} />)
             ]
         }
         return null;

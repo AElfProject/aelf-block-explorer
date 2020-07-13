@@ -4,7 +4,6 @@
 */
 
 import React, {PureComponent} from 'react';
-// import svgList from '../../assets/svgList';
 import svgList from '../../assets/svgs';
 
 export default class Svg extends PureComponent {

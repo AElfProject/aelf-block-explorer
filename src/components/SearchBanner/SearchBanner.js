@@ -17,7 +17,7 @@ export default class SearchBanner extends Component {
                 <div className="search-banner">
                     <h2 className="search-banner-text">AELF Scan</h2>
                     <h3 className="search-banner-text">Everyone contribute to building a harmonious society</h3>
-                    <Search></Search>
+                    <Search />
                 </div>
             </div>
         );

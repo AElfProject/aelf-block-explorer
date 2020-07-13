@@ -90,8 +90,6 @@ function getIconList(props) {
 }
 
 const BrowserFooter = props => {
-  const iconListHTML = getIconList(props);
-
   return (
     <section {...props} className='footer'>
       <div
@@ -100,15 +98,14 @@ const BrowserFooter = props => {
         <div
           className="footer-logo"
         >
-          <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
           <p>Decentralized Cloud Computing Blockchain Network</p>
         </div>
         <div
           className='footer-links-container'
-        >{iconListHTML}</div>
+        />
       </div>
       <p className='copyright-container'>
-        Copyright © {new Date().getFullYear()} ælf
+        Copyright @2020 tju-hoopox
       </p>
     </section>
   );

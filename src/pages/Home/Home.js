@@ -293,8 +293,8 @@ export default class HomePage extends Component {
                 text: tx_count
             },
             middleRightTitle: {
-                name: 'Dividend',
-                text: `${dividends.ELF || 0} ELF`
+                name: '',
+                text: ''
             },
             bottomTitle: {
                 name: 'Miner',

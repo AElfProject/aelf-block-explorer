@@ -75,7 +75,7 @@ const ChainInfo = props => {
 
     return (
         <Row className="home-chain-info" gutter={gutter}>
-            <Col sm={12} md={5}>
+            <Col sm={12} md={8}>
                 <Card  className="gap-bottom" title="Block Height" bordered={false}>
                     <p className="home-chain-info-text text-ellipsis">{blockHeight && blockHeight.toLocaleString()}</p>
                 </Card>
@@ -83,7 +83,7 @@ const ChainInfo = props => {
                     <p className="home-chain-info-text text-ellipsis">{unconfirmedBlockHeight && unconfirmedBlockHeight.toLocaleString()}</p>
                 </Card>
             </Col>
-            <Col sm={12} md={6}>
+            <Col sm={12} md={8}>
                 <Card title="Total Transactions" className="home-chain-info-min-height" bordered={false}>
                     <h4 className="home-chain-info-sub-title">All Chains</h4>
                     <p className="home-chain-info-text text-ellipsis">{totalTxs && totalTxs.toLocaleString()}</p>
@@ -92,36 +92,13 @@ const ChainInfo = props => {
                     <p className="home-chain-info-text text-ellipsis">{localTxs && localTxs.toLocaleString()}</p>
                 </Card>
             </Col>
-            <Col sm={12} md={6}>
+            <Col sm={12} md={8}>
                 <Card title="Total Accounts" className="home-chain-info-min-height" bordered={false}>
                     <h4 className="home-chain-info-sub-title">All Chains</h4>
                     <p className="home-chain-info-text text-ellipsis">{totalAccounts && totalAccounts.toLocaleString()}</p>
                     <Divider />
                     <h4 className="home-chain-info-sub-title">{chainId} Chain</h4>
                     <p className="home-chain-info-text text-ellipsis">{localAccounts && localAccounts.toLocaleString()}</p>
-                </Card>
-            </Col>
-            <Col sm={12} md={7}>
-                <Card
-                    title="Dividends"
-                    className="home-chain-info-min-height"
-                    bordered={false}
-                    extra={dividendsKeys.length > 4 ?
-                        <Arrow
-                        pre={pre}
-                        next={next}
-                        preDisabled={currentArrowPage === 1}
-                        nextDisabled={currentArrowPage === Math.ceil(dividendsKeys.length / 4)}
-                    /> : null}
-                >
-                    <Row gutter={16}>
-                        {dividendsKeys.slice((currentArrowPage - 1) * 4, currentArrowPage * 4).map((key, index) => (
-                            <Col span={12} key={key}>
-                                { index === 2 || index === 3 ? <Divider /> : null}
-                                <DividendItem symbol={key} amount={mergedDividends[key]} />
-                            </Col>
-                        ))}
-                    </Row>
                 </Card>
             </Col>
         </Row>

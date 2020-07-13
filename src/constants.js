@@ -123,10 +123,8 @@ const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
 
-// TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
 
-// TODO: Why is this undefined?
 const BLOCKS_LIST_COLUMNS = [
   {
     title: 'Height',
@@ -154,15 +152,6 @@ const BLOCKS_LIST_COLUMNS = [
     }
   },
   {
-    title: 'Dividends',
-    dataIndex: 'dividends',
-    key: 'dividends',
-    width: 120,
-    render(text) {
-      return <Dividends dividends={JSON.parse(text)} />
-    }
-  },
-  {
     title: 'Txs',
     dataIndex: 'tx_count ',
     key: 'tx_count ',
@@ -179,7 +168,6 @@ const BLOCKS_LIST_COLUMNS = [
     dataIndex: 'time',
     key: 'time',
     render: time => <span> {dayjs(time).format('YYYY/MM/DD HH:mm:ss')} </span>
-    //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   }
 ];
 
@@ -288,24 +276,6 @@ const ALL_TXS_LIST_COLUMNS = [
         }
         return <span>{amount}{symbol}</span>;
       }
-  }
-];
-
-const ADDRESS_INFO_COLUMN = [
-  {
-    title: 'address',
-    dataIndex: 'address',
-    key: 'address'
-  },
-  {
-    title: 'balance',
-    dataIndex: 'balance',
-    key: 'balance'
-  },
-  {
-    title: 'value',
-    dataIndex: 'value',
-    key: 'value'
   }
 ];
 
@@ -426,7 +396,6 @@ export {
   RPCSERVER,
   BLOCKS_LIST_COLUMNS,
   ALL_TXS_LIST_COLUMNS,
-  ADDRESS_INFO_COLUMN,
   RESOURCE_REALTIME_RECORDS,
   RESOURCE_TURNOVER,
   RESOURCE_RECORDS,
