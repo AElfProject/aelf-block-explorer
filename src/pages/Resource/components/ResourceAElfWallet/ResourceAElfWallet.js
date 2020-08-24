@@ -164,7 +164,8 @@ export default class ResourceAElfWallet extends PureComponent {
       currentWallet,
       tokenContract,
       resourceTokens,
-      balance
+      balance,
+      loginAndInsertKeypairs
     } = this.props;
     const {
       loading
@@ -193,6 +194,14 @@ export default class ResourceAElfWallet extends PureComponent {
               </Col>
 
               <Col className="resource-wallet-operation-container">
+
+                {!(currentWallet && currentWallet.address && tokenContract) &&<Button
+                  className='resource-wallet-address-update update-btn'
+                  onClick={() => loginAndInsertKeypairs(false)}
+                >
+                  Login
+                </Button>}
+
                 <Button
                     className='resource-wallet-address-update update-btn'
                     disabled={!(currentWallet && currentWallet.address && tokenContract)}

@@ -47,6 +47,7 @@ export default class MyWalletCard extends PureComponent {
 
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
+    this.getCurrentWallet = this.getCurrentWallet.bind(this);
 
     this.hasRun = false;
   }
@@ -73,7 +74,7 @@ export default class MyWalletCard extends PureComponent {
     this.getCurrentWallet();
   }
 
-  getCurrentWallet() {
+  getCurrentWallet(useLock = true) {
     if (this.isPhone) {
       // message.info('View more on PC');
       return null;
@@ -99,7 +100,7 @@ export default class MyWalletCard extends PureComponent {
             this.handleUpdateWalletClick();
           });
         }
-      });
+      }, useLock);
     }).catch(() => {
       message.warn('Please download and install NightELF browser extension.');
     });
@@ -367,6 +368,12 @@ export default class MyWalletCard extends PureComponent {
           >
             Refresh<Icon type="sync" spin={loading} />
           </Button>
+          {!(currentWallet && currentWallet.address) && <Button
+            className="my-wallet-card-header-sync-btn update-btn"
+            onClick={() => this.getCurrentWallet(false)}
+          >
+            Login
+          </Button>}
         </div>
         <div className="my-wallet-card-body-wallet-title">
           <span className="my-wallet-card-body-wallet-title-key">Name: </span>

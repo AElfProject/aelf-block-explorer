@@ -41,6 +41,7 @@ class Resource extends Component {
     this.walletRef = null;
     this.getResource = this.getResource.bind(this);
     this.getCurrentBalance = this.getCurrentBalance.bind(this);
+    this.loginAndInsertKeypairs = this.loginAndInsertKeypairs.bind(this);
   }
 
   componentDidMount() {
@@ -78,31 +79,13 @@ class Resource extends Component {
       .check.then(item => {
         if (item) {
           const nightElf = NightElfCheck.getAelfInstanceByExtension();
-
           if (nightElf) {
             this.setState({
               nightElf
             });
             nightElf.chain.getChainStatus((error, result) => {
               if (result) {
-                nightElf.checkPermission(
-                  {
-                    appName,
-                    type: 'domain'
-                  },
-                  (error, result) => {
-                    if (result && result.error === 0) {
-                      this.insertKeypairs(result);
-                    } else {
-                      // todo: Centralized manage the code about nightElf's lock status warning
-                      // todo: Use the variable in redux instead, remind the cdm
-                      const isSmallScreen = document.body.offsetWidth < 768;
-                      if (!isSmallScreen) {
-                        message.warning(result.errorMessage.message, 6);
-                      }
-                    }
-                  }
-                );
+                this.loginAndInsertKeypairs(result);
               }
             });
           }
@@ -116,46 +99,29 @@ class Resource extends Component {
       });
   }
 
-  insertKeypairs(result) {
+  loginAndInsertKeypairs(useLock = true) {
     const { nightElf } = this.state;
     const getLoginPayload = {
       appName,
       connectChain: this.connectChain
     };
-    if (result && result.error === 0) {
-      const { permissions } = result;
-      const payload = {
-        appName,
-        connectChain: this.connectChain,
-        result
-      };
-      // localStorage.setItem('currentWallet', null);
-      getLogin(nightElf, getLoginPayload, result => {
-        if (result && result.error === 0) {
-          const wallet = JSON.parse(result.detail);
-          if (permissions.length) {
-            // EXPLAIN: Need to redefine this scope
-            checkPermissionRepeat(nightElf, payload, () => {
-              this.getNightElfKeypair(wallet);
-            });
-          } else {
-            this.getNightElfKeypair(wallet);
-            message.success('Login success!!', 3);
-          }
+    getLogin(nightElf, getLoginPayload, result => {
+      if (result && result.error === 0) {
+        const wallet = JSON.parse(result.detail);
+        this.getNightElfKeypair(wallet);
+        message.success('Login success!!', 3);
+        // }
+      } else {
+        this.setState({
+          showWallet: false
+        });
+        if (result.error === 200010) {
+          message.warn('Please Login.');
         } else {
-          this.setState({
-            showWallet: false
-          });
-          if (result.error === 200010) {
-            message.warn('Please Login.');
-          } else {
-            message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
-          }
+          message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
         }
-      });
-    } else {
-      message.error(result.errorMessage.message, 3);
-    }
+      }
+    }, useLock);
   }
 
   getNightElfKeypair(wallet) {
@@ -220,6 +186,7 @@ class Resource extends Component {
             getResource={this.getResource}
             resourceTokens={resourceTokens}
             balance={currentBalance}
+            loginAndInsertKeypairs={this.loginAndInsertKeypairs}
         />
     );
   }
