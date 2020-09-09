@@ -19,6 +19,7 @@ const Dividends = props => {
     const {
         dividends,
         defaultSymbol,
+        useButton = true,
         ...rest
     } = props;
     const keys = Object.keys(dividends);
@@ -41,10 +42,17 @@ const Dividends = props => {
                     )}
                     {...rest}
                 >
-                    <Button>
-                        {dividends[defaultKey] || 0}&nbsp;{defaultKey}
-                        <Icon type="down" />
-                    </Button>
+                    {useButton ? (
+                        <Button>
+                            {dividends[defaultKey] || 0}&nbsp;{defaultKey}
+                            <Icon type="down" />
+                        </Button>
+                    ) : (
+                        <div>
+                            {dividends[defaultKey] || 0}&nbsp;{defaultKey}
+                            <Icon type="down" />
+                        </div>
+                    )}
                 </Dropdown>
             </Then>
             <Else>

@@ -20,6 +20,7 @@ import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import {isPhoneCheck} from "../../../../utils/deviceCheck";
 import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
+import Dividends from "../../../../components/Dividends";
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -201,7 +202,6 @@ export default class MyWalletCard extends PureComponent {
       value: currentWallet.pubKey
     })
       .then(res => {
-        console.log('fetchElectorVoteInfo', res);
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;
         if (activeVotedVotesAmount) {
@@ -235,8 +235,6 @@ export default class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
-    console.log('balance', balance);
-    console.log('activeVotedVotesAmount', activeVotedVotesAmount);
     this.setState({
       totalAssets: activeVotedVotesAmount + balance
     });
@@ -311,7 +309,7 @@ export default class MyWalletCard extends PureComponent {
       },
       {
         type: 'Claimable profit',
-        value: dividends.total.toFixed(2),
+        value: <Dividends className="wallet-dividends" dividends={dividends.total} />,
         extra: (
           <Button
             type="primary"

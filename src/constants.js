@@ -116,7 +116,7 @@ const THE_REASON_TO_BECOME_A_NON_CANDIDATE =
   'It may be result from: \n 1. The node has quited election during the time. \n 2. The node became an evil node then was kicked out of the candidates.';
 const FEE_TIP = 'A bit fee of ELF will be deducted from the operation';
 const ELECTION_NOTIFI_DATA_TIP =
-  'The election term is 7 days, there is no interval between terms; the number of nodes is the total number of current BP and candidate nodes; the number of votes is the sum of the votes amount since the election started; the bonus pool includes a block bonus of the BP node + 80% of the gas fee + 80% of the side chain income.';
+  'The election term is 7 days, there is no interval between terms; the number of nodes is the total number of current production nodes and candidate nodes; the number of votes is the sum of the votes amount since the election started; the reward pool includes a block reward of the production nodes, 90% of the transaction fee and 50% of the resource tokens transaction fee.';
 const MY_VOTE_DATA_TIP =
   'The Total Votes is the votes amount you voted, and the Redeemable Votes is the number of votes that has expired.';
 const GET_NULL = "Cannot read property 'error' of null";

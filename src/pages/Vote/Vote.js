@@ -225,10 +225,10 @@ class VoteContainer extends Component {
       voteFromExpiredSelectedRowKeys: [],
       dividendModalVisible: false,
       dividends: {
-        total: 0,
+        total: {},
         amounts: schemeIds.map(v => ({
           ...v,
-          amount: 0
+          amount: {}
         }))
       },
       // todo: remove useless state
@@ -1266,7 +1266,11 @@ class VoteContainer extends Component {
   fetchProfitAmount() {
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
-    const { profitContractFromExt, currentWallet } = this.state;
+    const {
+      profitContractFromExt,
+      dividendContract,
+      currentWallet
+    } = this.state;
     return Promise.all(
       [ getAllTokens(), ...schemeIds.map(item => {
         return profitContractFromExt.GetProfitsMap.call({
@@ -1280,14 +1284,14 @@ class VoteContainer extends Component {
         const decimals = tokens.reduce((acc, v) => ({
           [v.symbol]: v.decimals
         }), {});
-        let total = 0;
+        let total = {};
         const dividendAmounts = schemeIds.map((item, index) => {
           const profit = list[index];
           const {
             result = {}
           } = profit;
           let {
-            value
+            value = {}
           } = result || {};
           value = !value ? {
             ELF: 0
@@ -1301,7 +1305,15 @@ class VoteContainer extends Component {
                       .dividedBy(`1e${decimals[key] || 8}`).toNumber()
                 };
               }, {});
-          total += value.ELF || 0;
+          total = {
+            ...total,
+            ...Object.keys(value).reduce((acc, key) => {
+              return {
+                ...acc,
+                [key]: (total[key] || 0) + value[key]
+              };
+            }, {})
+          };
           return {
             type: item.type,
             amounts: value,
