@@ -1045,29 +1045,8 @@ class VoteContainer extends Component {
       {
         lockTime: value
       }
-      // () => {
-      //   if (value === null) return;
-      //   dividendContract.GetWelfareRewardAmountSample.call({
-      //     value: [25920000, 51840000, 77760000]
-      //   })
-      //     .then(res => {
-      //       console.log('GetWelfareRewardAmountSample', res);
-      //     })
-      //     .catch(err => {
-      //       console.error('GetWelfareRewardAmountSample', err);
-      //     });
-      // }
     );
   }
-
-  // togglePluginLockModal(flag) {
-  //   console.log('<<<<', flag);
-  //   voteStore.setPluginLockModalVisible(flag);
-  //   reaction(
-  //     () => voteStore.pluginLockModalVisible,
-  //     pluginLockModalVisible => this.setState({ pluginLockModalVisible })
-  //   );
-  // }
 
   handleVoteConfirmOk() {
     const { voteType } = this.state;

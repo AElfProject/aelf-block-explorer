@@ -155,6 +155,7 @@ class ElectionNotification extends PureComponent {
     const {
       electionContract,
       consensusContract,
+      dividendContract,
       shouldRefreshElectionNotifiStatis,
       changeVoteState
     } = this.props;
@@ -162,6 +163,7 @@ class ElectionNotification extends PureComponent {
     if (
       electionContract !== null &&
       consensusContract !== null &&
+      dividendContract !== null &&
       !this.hasRun
     ) {
       // this.fetchTotalVotesAmount();
@@ -276,6 +278,7 @@ class ElectionNotification extends PureComponent {
         ...acc,
         [statisDataKey]: {
           ...(statisData[statisDataKey] || {}),
+          ...(acc[statisDataKey] || {}),
           ...left
         }
       };

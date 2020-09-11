@@ -104,7 +104,7 @@ const UNKNOWN_ERROR_TIP =
   'Sorry, it seems that we encountered an unknown error.';
 const NO_AUTHORIZATION_ERROR_TIP =
   "Sorry, you temporarily don't has the authorization to the page.";
-const INPUT_SOMETHING_TIP = 'Sorry, you should input something';
+const INPUT_SOMETHING_TIP = 'Sorry, you shouTXSSTATUSld input something';
 const INTEGER_TIP = 'It can only be integer';
 const UNLOCK_PLUGIN_TIP =
   'Your plugin has beed locked, please unlock and refresh the page';
@@ -396,7 +396,7 @@ const RESOURCE_DETAILS_COLUMN = [
     render: (text, row) => {
       let { fee } = row;
       fee /= ELF_DECIMAL;
-      return thousandsCommaWithDecimal(fee);
+      return (fee || 0).toFixed(ELF_PRECISION);
     }
   },
   {
