@@ -254,7 +254,7 @@ export default class TxsDetailPage extends React.Component {
       return [
           this.renderCol('Time', moment(time).format('YYYY-MM-DD  HH:mm:ss')),
           this.renderCol('Transaction Fee', <Dividends dividends={tx_fee} />),
-          this.renderCol('Resources Fee', <Dividends defaultSymbol="" dividends={resources} />)
+          this.renderCol('Resources Fee', <Dividends dividends={resources} />)
       ]
     }
     return null;
