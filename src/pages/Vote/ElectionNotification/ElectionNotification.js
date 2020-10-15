@@ -60,7 +60,7 @@ async function getDividend(treasury, consensus) {
     miner
   ] = await Promise.all([
     treasury.GetUndistributedDividends.call(),
-    consensus.GetCurrentWelfareReward.call()
+    consensus.GetCurrentTermMiningReward.call()
   ]);
   let dividends = {
     ELF: 0
