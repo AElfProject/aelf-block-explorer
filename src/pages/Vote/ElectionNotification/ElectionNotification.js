@@ -339,7 +339,7 @@ class ElectionNotification extends PureComponent {
               }
             } catch (e) {
               console.log(e);
-              message.error('message');
+              message.error(e.message || e.Error || 'Network error');
             }
           }, 4000);
         })
