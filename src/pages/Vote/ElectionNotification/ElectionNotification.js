@@ -299,7 +299,7 @@ class ElectionNotification extends PureComponent {
     });
   }
 
-  handleApplyModalOk() {
+  handleApplyModalOk(admin) {
     const {
       currentWallet,
       electionContractFromExt,
@@ -310,7 +310,7 @@ class ElectionNotification extends PureComponent {
     // todo: error handle
     checkExtensionLockStatus().then(() => {
       electionContractFromExt
-        .AnnounceElection()
+        .AnnounceElection(admin)
         .then(res => {
           if (res.error) {
             message.error(res.errorMessage.message);

@@ -7,6 +7,7 @@
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
+import AElf from 'aelf-sdk';
 import { Form, Input, Button, Modal, message, Tooltip, Icon } from 'antd';
 
 import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from '@src/constants';
@@ -69,9 +70,41 @@ function generateCandidateApplyForm() {
   };
 }
 
-export default class CandidateApplyModal extends PureComponent {
+function validateAddress(rule, value, callback) {
+  if (value && value.length > 0) {
+    try {
+      AElf.utils.decodeAddressRep(value.trim());
+      callback()
+    } catch (e) {
+      callback(new Error(`${value} is not a valid address`));
+    }
+  } else {
+    callback(new Error('Please input your admin address'));
+  }
+}
+
+class CandidateApplyModal extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.handleOk = this.handleOk.bind(this);
+  }
+
+
+  handleOk() {
+    const { onOk, form } = this.props;
+    console.log('handle ok');
+    form.validateFields((err, values) => {
+      if (!err) {
+        onOk(values.admin.trim());
+      }
+    });
+  }
+
   render() {
-    const { onOk, onCancel, visible } = this.props;
+    const { onOk, onCancel, visible, form } = this.props;
+    const {
+      getFieldDecorator
+    } = form;
     const candidateApplyForm = generateCandidateApplyForm();
     return (
       <Modal
@@ -79,7 +112,7 @@ export default class CandidateApplyModal extends PureComponent {
         title="Apply Node"
         visible={visible}
         okText="Apply Now"
-        onOk={onOk}
+        onOk={this.handleOk}
         onCancel={onCancel}
         centered
         maskClosable
@@ -95,6 +128,28 @@ export default class CandidateApplyModal extends PureComponent {
                 </Form.Item>
               );
             })}
+          <Form.Item label="Candidate Admin:" className="candidate-admin">
+            {getFieldDecorator('admin', {
+              rules: [
+                  {
+                    required: true,
+                    type: 'string',
+                    validator: validateAddress,
+                    message: 'Please input your admin address!'
+                  }
+              ],
+            })(
+                <Input
+                    placeholder="Please input admin address"
+                />
+            )}
+            <Tooltip
+                className="candidate-admin-tip"
+                title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
+            >
+              <Icon type="exclamation-circle" />
+            </Tooltip>
+          </Form.Item>
         </Form>
         <p className="tip-color" style={{ marginTop: 10 }}>
           {NEED_PLUGIN_AUTHORIZE_TIP}
@@ -103,3 +158,5 @@ export default class CandidateApplyModal extends PureComponent {
     );
   }
 }
+
+export default Form.create()(CandidateApplyModal);
