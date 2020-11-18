@@ -7,7 +7,7 @@
     "prebuild": "node scripts/queryConfigs.js",
     "prestart": "node scripts/queryConfigs.js",
     "start": "npm run clean && cross-env NODE_ENV=development && webpack-dev-server --progress --colors --display-chunks --watch --config ./build/webpack.dev.js",
-    "build": "npm run clean && cross-env NODE_ENV=production webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
+    "build": "cross-env NODE_ENV=production webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
     "analyze": "npm run clean && cross-env NODE_ENV=production webpack --config ./build/webpack.analyze.js",
     "clean": "rimraf dist/*",
     "commit": "git-cz"
