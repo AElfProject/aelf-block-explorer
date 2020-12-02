@@ -10,7 +10,7 @@ import { Icon } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID, ADDRESS_INFO } from '../config/config';
+import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from '../config/config';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import {
   removeAElfPrefix
@@ -462,10 +462,10 @@ export {
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,
-  SYMBOL, // todo: get native token info
+  SYMBOL,
   LOWER_SYMBOL,
-  CHAIN_ID, // todo: get chain status
-  ELF_DECIMAL, // todo: similar to  get native token info
+  CHAIN_ID,
+  ELF_DECIMAL,
   TEMP_RESOURCE_DECIMAL,
   ELF_PRECISION,
   GENERAL_PRECISION,

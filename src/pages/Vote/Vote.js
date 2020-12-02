@@ -24,7 +24,6 @@ import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 import config, {
   DEFAUTRPCSERVER as DEFAUT_RPC_SERVER,
   APPNAME,
-  ADDRESS_INFO,
   schemeIds
 } from '@config/config';
 import { aelf } from '@src/utils';
@@ -62,6 +61,7 @@ import { getAllTeamDesc } from '@api/vote';
 import { getFormatedLockTime } from './utils';
 import getAllTokens from "../../utils/getAllTokens";
 import {getPublicKeyFromObject} from "../../utils/getPublicKey";
+import addressFormat from "../../utils/addressFormat";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -427,7 +427,7 @@ class VoteContainer extends Component {
   getNightElfKeypair(wallet) {
     if (wallet) {
       wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
-      wallet.formattedAddress = `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+      wallet.formattedAddress = addressFormat(wallet.address);
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
       this.setState({
         currentWallet: wallet,
@@ -655,7 +655,7 @@ class VoteContainer extends Component {
       );
       if (teamInfo === undefined) {
         record.address = publicKeyToAddress(record.candidate);
-        record.name = `${ADDRESS_INFO.PREFIX}_${record.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+        record.name = addressFormat(record.address);
       } else {
         record.name = teamInfo.name;
       }

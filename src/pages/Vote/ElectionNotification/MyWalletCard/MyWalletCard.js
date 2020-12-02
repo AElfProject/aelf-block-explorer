@@ -15,12 +15,13 @@ import './MyWalletCard.less';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
-import { APPNAME, ADDRESS_INFO } from '@config/config';
+import { APPNAME } from '@config/config';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import {isPhoneCheck} from "../../../../utils/deviceCheck";
 import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
 import Dividends from "../../../../components/Dividends";
+import addressFormat from "../../../../utils/addressFormat";
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -91,7 +92,7 @@ export default class MyWalletCard extends PureComponent {
           const wallet =  JSON.parse(result.detail);
           this.setState({
             currentWallet: {
-              formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
+              formattedAddress:  addressFormat(wallet.address),
               address: wallet.address,
               name: wallet.name,
               pubKey: getPublicKeyFromObject(wallet.publicKey)

@@ -3,9 +3,8 @@ import {Link, withRouter} from 'react-router-dom';
 
 import {Breadcrumb} from 'antd';
 
-import {ADDRESS_INFO} from '../../../config/config';
-
 import './breadcrumb.styles.less';
+import addressFormat from "../../utils/addressFormat";
 
 // if you want to hide the Breadcrumb
 const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contract', '/token'];
@@ -239,7 +238,7 @@ class BrowserBreadcrumb extends Component {
       !!pathSnippets[1] ? (
         <span className='breadcrumb-sub-title' key='breadcrumb-sub-title'>
           {pathSnippets[0] === 'address' || pathSnippets[0] === 'resourceDetail' ?
-            '#' + ADDRESS_INFO.PREFIX + '_' + pathSnippets[1] + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID
+            '#' + addressFormat(pathSnippets[1])
             :
             '#' + pathSnippets[1]}
         </span>

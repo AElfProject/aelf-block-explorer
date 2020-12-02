@@ -3,11 +3,13 @@ global.location = {};
 const AElf = require('aelf-sdk');
 const fs = require('fs');
 const path = require('path');
+const dotenv = require('dotenv');
 const config = require('../config/config.json');
 const mergedConfig = require('../config/config.js');
 
-const endpoint = mergedConfig.BUILD_ENDPOINT;
-const aelf = new AElf(new AElf.providers.HttpProvider(endpoint));
+dotenv.config('../.env');
+
+const aelf = new AElf(new AElf.providers.HttpProvider(process.env.CHAIN_ENDPOINT));
 const wallet = AElf.wallet.getWalletByPrivateKey(mergedConfig.commonPrivateKey);
 
 const result = {

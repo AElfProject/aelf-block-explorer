@@ -36,12 +36,12 @@ import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
-import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import {ELF_DECIMAL} from "../../constants";
 import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
+import addressFormat from "../../../../utils/addressFormat";
 
 const { Search } = Input;
 const clsPrefix = 'node-table';
@@ -100,7 +100,7 @@ class NodeTable extends PureComponent {
         } else {
           const wallet =  JSON.parse(result.detail);
           const currentWallet = {
-            formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
+            formattedAddress:  addressFormat(wallet.address),
               address: wallet.address,
               name: wallet.name,
               pubKey: getPublicKeyFromObject(wallet.publicKey)
@@ -427,7 +427,7 @@ class NodeTable extends PureComponent {
       item.candidateInformation.address = publicKeyToAddress(
         item.candidateInformation.pubkey
       );
-      item.candidateInformation.formattedAddress = `${ADDRESS_INFO.PREFIX}_${item.candidateInformation.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+      item.candidateInformation.formattedAddress = addressFormat(item.candidateInformation.address);
       if (teamInfo === undefined) {
         // todo: use address instead after api modified
         item.candidateInformation.name = item.candidateInformation.formattedAddress;
