@@ -1,8 +1,7 @@
 [
   {
-    "target": "http://0.0.0.0:8526",
+    "target": "http://192.168.197.42:7740",
     "context": [
-      "/viewer",
       "/api/viewer",
       "/api/proposal"
     ],
@@ -11,11 +10,22 @@
     "secure": false
   },
   {
-    "target": "http://127.0.0.1:7250",
+    "target": "http://192.168.197.42:7101",
     "context": [
-      "/api",
+      "/api"
+    ],
+    "headers": {},
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "target": "http://192.168.199.109:8002",
+    "context": [
       "/chain"
     ],
+    "pathRewrite": {
+      "^/chain": ""
+    },
     "headers": {},
     "changeOrigin": true,
     "secure": false
@@ -30,7 +40,7 @@
     "secure": false
   },
   {
-    "target": "ws://127.0.0.1:7101",
+    "target": "ws://192.168.197.42:7101",
     "context": [
       "/socket"
     ],
