@@ -147,7 +147,7 @@ export default class TxsDetailPage extends React.Component {
       list =  [];
     }
     if (Array.isArray(list) && list.length > 0) {
-      return <Events list={list} />;
+      return <Events list={list} key={this.props.match.params.id} />;
     } else {
       return this.renderCodeLikeParams(list, 1);
     }
