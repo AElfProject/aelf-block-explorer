@@ -14,7 +14,8 @@ export default function getLogin(nightElf, payload, callback, useLock = true) {
         nightElf, payload, callback, useLock
     });
     setTimeout(() => {
-        nightELFLogin(useLock);
+        // nightELFLogin(useLock);
+        nightELFLogin(true);
     }, 0);
 }
 
