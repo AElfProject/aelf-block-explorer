@@ -55,13 +55,17 @@ const electionNotifiStatisData = {
 };
 
 async function getDividend(treasury, consensus) {
-  const [
-    undistributed,
-    miner
-  ] = await Promise.all([
-    treasury.GetUndistributedDividends.call(),
-    consensus.GetCurrentTermMiningReward.call()
-  ]);
+  let undistributed = {
+    value: {
+      ELF: 0
+    }
+  };
+  const miner = await consensus.GetCurrentTermMiningReward.call();
+  try {
+    undistributed = await treasury.GetUndistributedDividends.call();
+  } catch (e) {
+    console.log('call contract method failed');
+  }
   let dividends = {
     ELF: 0
   };
