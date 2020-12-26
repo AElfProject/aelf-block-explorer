@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Icon, Button, Row, Col } from 'antd';
+import Logo from '../../assets/images/logo.png';
 
 import { BitcoinIcon, RedditIcon, SendIcon } from '../custom.icons';
 
@@ -100,7 +101,7 @@ const BrowserFooter = props => {
         <div
           className="footer-logo"
         >
-          <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
+          <img alt="aelf" src={Logo} />
           <p>Decentralized Cloud Computing Blockchain Network</p>
         </div>
         <div
