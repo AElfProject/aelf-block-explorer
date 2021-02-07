@@ -1136,10 +1136,10 @@ add-dom-event-listener@^1.1.0:
   dependencies:
     object-assign "4.x"
 
-aelf-sdk@^3.2.34:
-  version "3.2.34"
-  resolved "https://registry.yarnpkg.com/aelf-sdk/-/aelf-sdk-3.2.34.tgz#842c9d58ff6d5e5663654af5d0331d93683d8c16"
-  integrity sha512-4PhuPw9kZHZvlQFiGVEZjrLLnb4ImxidZTBv/bgyogeWCZNpRvs2jXv/hhrIE0jx/BMHmGQuW7enIBK7P533zg==
+aelf-sdk@^3.2.36:
+  version "3.2.36"
+  resolved "https://registry.yarnpkg.com/aelf-sdk/-/aelf-sdk-3.2.36.tgz#16d7b7e60a09e6e14b2dda4822385e6555919af3"
+  integrity sha512-qrTVVp5WjzZO7DDFYIfMZw4IVR8yDivJU4iK+aRg1qj0GiYt3vlKJZ/8c2SwhzhjfwuR3MCQrKGTr7VZ2xKkTA==
   dependencies:
     "@aelfqueen/protobufjs" "^6.8.9"
     "@babel/runtime" "^7.4.5"
@@ -3089,6 +3089,11 @@ dot-prop@^4.1.1:
   integrity sha512-tUMXrxlExSW6U2EXiiKGSBVdYgtV8qlHL+C10TsW4PURY/ic+eaysnSkwB4kA/mBlCyy/IKDJ+Lc3wbWeaXtuQ==
   dependencies:
     is-obj "^1.0.0"
+
+dotenv@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
+  integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
 draft-js@^0.10.0, draft-js@~0.10.0:
   version "0.10.5"

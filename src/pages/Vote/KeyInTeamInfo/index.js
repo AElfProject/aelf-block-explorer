@@ -221,7 +221,7 @@ class KeyInTeamInfo extends PureComponent {
         >
           {getFieldDecorator(socialKey, {
             initialValue,
-            validateTrigger: ['onChange'],
+            validateTrigger: ['onBlur'],
             rules: [
               {
                 pattern: urlRegExp,

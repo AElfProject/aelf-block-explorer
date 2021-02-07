@@ -111,7 +111,7 @@ class Search extends PureComponent {
             this.SEARCHRULES.transaction(value, this.props.history);
         }
         else {
-            this.SEARCHRULES.blockHeight(value, this.props.history) && message.error('Wrong Search Input', 6);
+            this.SEARCHRULES.blockHeight(value, this.props.history) || message.error('Wrong Search Input', 6);
         }
     };
 

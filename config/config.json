@@ -18,23 +18,23 @@
   "schemeIds": [
     {
       "type": "Citizen Welfare",
-      "schemeId": "c8bc4641368cf6ae7df37518f5ec5ba04389e89877721abdc49f5718863be8be"
+      "schemeId": "32effe6aad9d6e529e884fc7cbca47bfb90c6236dab6e6c2e942e7483090d41b"
     },
     {
       "type": "Backup Subsidy",
-      "schemeId": "bbd0a6bb79c0c4fdba8547581e8f7c2c40b4017884cb0b05f791bd6fba3779ae"
+      "schemeId": "97c31794f133f3ca7e9c3b08e797398a245c220f7d00878c3ab1e3ef91af965c"
     },
     {
       "type": "Votes Weight Reward",
-      "schemeId": "08a0360ac9ebeaba8403234f1ff4a0308e3c2d9d002b1bbf9d41c8038c8fa11e"
+      "schemeId": "976eafd3bbd8dddbaefb3513ace018a1adb5dc3a84fa82022787823c26887383"
     },
     {
       "type": "Miner Basic Reward",
-      "schemeId": "73665422b75326aa17097bd9d3bf3482db1272c9f4eed8ecbfdcd70c1d8da2c3"
+      "schemeId": "6da0ba4043fdf0dd966e2fa35402f58c1eb04f7cd718152e93f4559f230f1554"
     },
     {
       "type": "Re-Election Reward",
-      "schemeId": "fc9fe6170a374fc854f23d4020f9a7a0a421db4f030fc9155097e37dcd3b2bd5"
+      "schemeId": "f0d6ae7bd14592ef88c2448f8e80441f9dba1382614a27a3a186d165531ef510"
     }
   ],
   "voteContractAddr": "2aoPatvMevjmhwsU1S9pkH2vnkNAuaiUaiU6JDroKNKe3fBQns",

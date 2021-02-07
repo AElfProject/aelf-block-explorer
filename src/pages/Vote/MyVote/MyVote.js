@@ -9,13 +9,13 @@ import publicKeyToAddress from '@utils/publicKeyToAddress';
 import {
   RANK_NOT_EXISTED_SYMBOL
 } from '@src/pages/Vote/constants';
-import { ADDRESS_INFO } from '@config/config';
 import { MY_VOTE_DATA_TIP } from '@src/constants';
 import NightElfCheck from "../../../utils/NightElfCheck";
 import getLogin from "../../../utils/getLogin";
 import {message, Spin} from "antd";
 import {isPhoneCheck} from "../../../utils/deviceCheck";
 import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
+import addressFormat from "../../../utils/addressFormat";
 
 export default class MyVote extends Component {
   constructor(props) {
@@ -65,7 +65,7 @@ export default class MyVote extends Component {
         } else {
           const wallet =  JSON.parse(result.detail);
           const currentWallet = {
-            formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
+            formattedAddress:  addressFormat(wallet.address),
             address: wallet.address,
             name: wallet.name,
             pubKey: getPublicKeyFromObject(wallet.publicKey)
@@ -193,7 +193,7 @@ export default class MyVote extends Component {
       console.log('teamInfo', teamInfo);
       if (teamInfo === undefined) {
         record.address = publicKeyToAddress(record.candidate);
-        record.name = `${ADDRESS_INFO.PREFIX}_${record.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+        record.name = addressFormat(record.address);
       } else {
         record.name = teamInfo.name;
       }

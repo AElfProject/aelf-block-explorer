@@ -49,7 +49,7 @@ export default class ResourceDetail extends PureComponent {
     let records = data.records || [];
     records.map((item, index) => {
       item.key = index + page;
-      item.resource = +item.resource / ELF_DECIMAL;
+      item.resource = (+item.resource / ELF_DECIMAL).toFixed(8);
     });
     pagination.total = data.total;
     this.setState({

@@ -12,7 +12,7 @@ import { getPathnameFirstSlash } from '@utils/urlUtils';
 import { setIsSmallScreen } from '@actions/common';
 import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
-import config, {CHAINS_LINK, CHAINS_LINK_NAMES, ADDRESS_INFO} from '../../../config/config';
+import config, {CHAINS_LINK, CHAINS_LINK_NAMES, CHAIN_ID} from '../../../config/config';
 import {isPhoneCheck} from '../../utils/deviceCheck';
 
 const { SubMenu } = Menu;
@@ -133,7 +133,7 @@ class BrowserHeader extends PureComponent {
   renderPhoneMenu() {
     const chainIdHTML = Object.keys(CHAINS_LINK).map(item => {
       let classSelected = '';
-      if (ADDRESS_INFO.CURRENT_CHAIN_ID === item) {
+      if (CHAIN_ID === item) {
         classSelected = 'header-chain-selected';
       }
       return  <Menu.Item key={item}>

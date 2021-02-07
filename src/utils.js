@@ -43,8 +43,8 @@ const header = [{
     value: 'text/plain;v=1.0'
 }]
 const aelf = new AElf(new AElf.providers.HttpProvider(
-    RPCSERVER //,
-    // timeout,
+    RPCSERVER,
+    60000
     // user,
     // password,
     // header

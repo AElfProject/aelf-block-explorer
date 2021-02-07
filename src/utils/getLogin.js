@@ -14,17 +14,22 @@ export default function getLogin(nightElf, payload, callback, useLock = true) {
         nightElf, payload, callback, useLock
     });
     setTimeout(() => {
-        nightELFLogin();
+        // nightELFLogin(useLock);
+        nightELFLogin(true);
     }, 0);
 }
 
-function nightELFLogin() {
-    if (getLoginQueue.length <= 0 || getLoginLock) {
+function nightELFLogin(useLock) {
+    if ((getLoginQueue.length <= 0 || getLoginLock) && useLock) {
+        return;
+    }
+    if (!getLoginQueue.length) {
         return;
     }
     getLoginLock = true;
     const param = getLoginQueue.shift();
-    const {nightElf, payload, callback, useLock} = param;
+    // const {nightElf, payload, callback, useLock} = param;
+    const {nightElf, callback} = param;
     nightElf.login({
         appName: config.APPNAME,
         payload: {

@@ -27,9 +27,9 @@ import {
   filterUserVoteRecordsForOneCandidate,
   computeUserRedeemableVoteAmountForOneCandidate
 } from '@utils/voteUtils';
-import { ADDRESS_INFO } from '@config/config';
 import './index.less';
 import {ELF_DECIMAL} from "../constants";
+import addressFormat from "../../../utils/addressFormat";
 
 const { Paragraph } = Typography;
 
@@ -138,7 +138,7 @@ class TeamDetail extends PureComponent {
     );
 
     const candidateAddress = publicKeyToAddress(this.teamPubkey);
-    const formattedAddress = `${ADDRESS_INFO.PREFIX}_${candidateAddress}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+    const formattedAddress = addressFormat(candidateAddress);
 
     if (!currentCandidate) {
       this.setState({

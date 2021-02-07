@@ -7,13 +7,13 @@
     "prebuild": "node scripts/queryConfigs.js",
     "prestart": "node scripts/queryConfigs.js",
     "start": "npm run clean && cross-env NODE_ENV=development && webpack-dev-server --progress --colors --display-chunks --watch --config ./build/webpack.dev.js",
-    "build": "npm run clean && cross-env NODE_ENV=production webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
+    "build": "cross-env NODE_ENV=production webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
     "analyze": "npm run clean && cross-env NODE_ENV=production webpack --config ./build/webpack.analyze.js",
     "clean": "rimraf dist/*",
     "commit": "git-cz"
   },
   "dependencies": {
-    "aelf-sdk": "^3.2.34",
+    "aelf-sdk": "^3.2.36",
     "antd": "^3.24.2",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",
@@ -60,6 +60,7 @@
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
     "cssnano": "^4.1.10",
+    "dotenv": "^8.2.0",
     "eslint": "6.1.0",
     "eslint-config-airbnb": "18.0.1",
     "eslint-config-prettier": "^6.5.0",

@@ -67,10 +67,9 @@ export default class StatisticalData extends PureComponent {
   renderList(arr) {
     return arr.map((item, index) => {
       let number = item.num;
-      if (item.id === 3) {
-        number = (number / 100000000).toFixed(2);
+      if (item.isRender) {
+        return item.num;
       }
-
       return item.isCountdown ? (
         <Countdown
           key={index}
@@ -82,7 +81,11 @@ export default class StatisticalData extends PureComponent {
           }}
         />
       ) : (
-        <Statistic key={index} title={item.title} value={isNaN(parseInt(number, 10)) ? 0 : number} />
+        <Statistic
+            key={index}
+            title={item.title}
+            value={isNaN(parseInt(number, 10)) ? 0 : number}
+        />
       );
     });
   }

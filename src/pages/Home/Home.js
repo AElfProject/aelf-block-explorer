@@ -398,18 +398,6 @@ export default class HomePage extends Component {
                             View all
                         </Link>
                     </div>
-                    <div>
-                        <Row
-                            type="flex"
-                            align="middle"
-                            className="home-blocksInfo-title"
-                            key='home-blocksInfo'
-                        >
-                            <Col span={4}>Height</Col>
-                            <Col span={4}>Txs</Col>
-                            <Col span={16}>Time</Col>
-                        </Row>
-                    </div>
                     <div
                         className='home-blocksInfo-list-con'
                     >
@@ -428,19 +416,6 @@ export default class HomePage extends Component {
                         <Link to="/txs" className="pannel-btn">
                             View all
                         </Link>
-                    </div>
-                    <div>
-                        <Row
-                            type="flex"
-                            align="middle"
-                            className="home-blocksInfo-title"
-                            key='home-blocksInfo'
-                        >
-                            <Col span={6}>Tx Id</Col>
-                            <Col span={9}>From</Col>
-                            <Col span={9}>To</Col>
-                            {/*<Col span='6'>Time</Col>*/}
-                        </Row>
                     </div>
                     <div
                         className='home-blocksInfo-list-con'

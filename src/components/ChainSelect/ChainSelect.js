@@ -9,9 +9,10 @@ import React, {
 import {
     Select
 } from 'antd';
-import {ADDRESS_INFO, CHAINS_LINK, CHAINS_LINK_NAMES} from '../../../config/config';
+import {CHAINS_LINK, CHAINS_LINK_NAMES} from '../../../config/config';
 
 import './ChainSelect.styles.less';
+import {CHAIN_ID} from "../../constants";
 
 const Option = Select.Option;
 export default class ChainSelect extends Component {
@@ -33,7 +34,7 @@ export default class ChainSelect extends Component {
     }
 
     render() {
-        const defaultValue = ADDRESS_INFO.CURRENT_CHAIN_ID;
+        const defaultValue = CHAIN_ID;
         const optionsHTML = this.renderOptions();
 
         return (

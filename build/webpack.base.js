@@ -5,6 +5,7 @@
 
 /* eslint-env node */
 const path = require('path');
+const dotenv = require('dotenv');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -17,6 +18,8 @@ const {
   isProdMode,
   getLessVariables
 } = require('./utils');
+
+dotenv.config('../.env');
 
 const copies = [];
 
@@ -117,7 +120,8 @@ const baseConfig = {
     new CopyWebpackPlugin(copies),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      'process.env.LOCALE': JSON.stringify(process.env.LOCALE || 'zh')
+      'process.env.LOCALE': JSON.stringify(process.env.LOCALE || 'zh'),
+      'process.env.CHAIN_ENDPOINT': JSON.stringify(process.env.CHAIN_ENDPOINT)
     })
   ]
 };

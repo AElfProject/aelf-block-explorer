@@ -48,8 +48,8 @@ async function getNodesInfo() {
   const nodesInfo = await get(nodesInfoProvider);
   console.log('nodesInfo', nodesInfo);
 
-  if (nodesInfo.error === 0 && nodesInfo.result && nodesInfo.result.list) {
-    const nodesInfoList = nodesInfo.result.list;
+  if (nodesInfo && nodesInfo.list) {
+    const nodesInfoList = nodesInfo.list;
     localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
 
     // todo: MAIN_CHAIN_ID CHAIN_ID

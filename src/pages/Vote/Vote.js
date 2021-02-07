@@ -24,7 +24,6 @@ import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 import config, {
   DEFAUTRPCSERVER as DEFAUT_RPC_SERVER,
   APPNAME,
-  ADDRESS_INFO,
   schemeIds
 } from '@config/config';
 import { aelf } from '@src/utils';
@@ -62,6 +61,7 @@ import { getAllTeamDesc } from '@api/vote';
 import { getFormatedLockTime } from './utils';
 import getAllTokens from "../../utils/getAllTokens";
 import {getPublicKeyFromObject} from "../../utils/getPublicKey";
+import addressFormat from "../../utils/addressFormat";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -225,10 +225,10 @@ class VoteContainer extends Component {
       voteFromExpiredSelectedRowKeys: [],
       dividendModalVisible: false,
       dividends: {
-        total: 0,
+        total: {},
         amounts: schemeIds.map(v => ({
           ...v,
-          amount: 0
+          amount: {}
         }))
       },
       // todo: remove useless state
@@ -427,7 +427,7 @@ class VoteContainer extends Component {
   getNightElfKeypair(wallet) {
     if (wallet) {
       wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
-      wallet.formattedAddress = `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+      wallet.formattedAddress = addressFormat(wallet.address);
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
       this.setState({
         currentWallet: wallet,
@@ -655,7 +655,7 @@ class VoteContainer extends Component {
       );
       if (teamInfo === undefined) {
         record.address = publicKeyToAddress(record.candidate);
-        record.name = `${ADDRESS_INFO.PREFIX}_${record.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`;
+        record.name = addressFormat(record.address);
       } else {
         record.name = teamInfo.name;
       }
@@ -1045,29 +1045,8 @@ class VoteContainer extends Component {
       {
         lockTime: value
       }
-      // () => {
-      //   if (value === null) return;
-      //   dividendContract.GetWelfareRewardAmountSample.call({
-      //     value: [25920000, 51840000, 77760000]
-      //   })
-      //     .then(res => {
-      //       console.log('GetWelfareRewardAmountSample', res);
-      //     })
-      //     .catch(err => {
-      //       console.error('GetWelfareRewardAmountSample', err);
-      //     });
-      // }
     );
   }
-
-  // togglePluginLockModal(flag) {
-  //   console.log('<<<<', flag);
-  //   voteStore.setPluginLockModalVisible(flag);
-  //   reaction(
-  //     () => voteStore.pluginLockModalVisible,
-  //     pluginLockModalVisible => this.setState({ pluginLockModalVisible })
-  //   );
-  // }
 
   handleVoteConfirmOk() {
     const { voteType } = this.state;
@@ -1266,7 +1245,11 @@ class VoteContainer extends Component {
   fetchProfitAmount() {
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
-    const { profitContractFromExt, currentWallet } = this.state;
+    const {
+      profitContractFromExt,
+      dividendContract,
+      currentWallet
+    } = this.state;
     return Promise.all(
       [ getAllTokens(), ...schemeIds.map(item => {
         return profitContractFromExt.GetProfitsMap.call({
@@ -1280,14 +1263,14 @@ class VoteContainer extends Component {
         const decimals = tokens.reduce((acc, v) => ({
           [v.symbol]: v.decimals
         }), {});
-        let total = 0;
+        let total = {};
         const dividendAmounts = schemeIds.map((item, index) => {
           const profit = list[index];
           const {
             result = {}
           } = profit;
           let {
-            value
+            value = {}
           } = result || {};
           value = !value ? {
             ELF: 0
@@ -1301,7 +1284,15 @@ class VoteContainer extends Component {
                       .dividedBy(`1e${decimals[key] || 8}`).toNumber()
                 };
               }, {});
-          total += value.ELF || 0;
+          total = {
+            ...total,
+            ...Object.keys(value).reduce((acc, key) => {
+              return {
+                ...acc,
+                [key]: (total[key] || 0) + value[key]
+              };
+            }, {})
+          };
           return {
             type: item.type,
             amounts: value,

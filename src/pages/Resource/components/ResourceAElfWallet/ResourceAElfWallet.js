@@ -12,13 +12,13 @@ import {
   Button,
   Icon, message
 } from 'antd';
-import {ADDRESS_INFO} from '../../../../../config/config';
 import { SYMBOL, ELF_DECIMAL } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import { APPNAME, resourceTokens } from '@config/config';
 import './ResourceAElfWallet.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
+import addressFormat from "../../../../utils/addressFormat";
 
 export default class ResourceAElfWallet extends PureComponent {
 
@@ -164,7 +164,8 @@ export default class ResourceAElfWallet extends PureComponent {
       currentWallet,
       tokenContract,
       resourceTokens,
-      balance
+      balance,
+      loginAndInsertKeypairs
     } = this.props;
     const {
       loading
@@ -185,7 +186,7 @@ export default class ResourceAElfWallet extends PureComponent {
               <Col className="resource-wallet-address-name">
                 {wallet.name}
                 &nbsp;&nbsp;&nbsp;
-                {ADDRESS_INFO.PREFIX + '_' + wallet.address + '_' + ADDRESS_INFO.CURRENT_CHAIN_ID}
+                {addressFormat(wallet.address)}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 { wallet.address !== '-' && <Link to={`/resourceDetail/${wallet.address}`}>
                   Transaction Details
@@ -193,6 +194,14 @@ export default class ResourceAElfWallet extends PureComponent {
               </Col>
 
               <Col className="resource-wallet-operation-container">
+
+                {!(currentWallet && currentWallet.address && tokenContract) &&<Button
+                  className='resource-wallet-address-update update-btn'
+                  onClick={() => loginAndInsertKeypairs(false)}
+                >
+                  Login
+                </Button>}
+
                 <Button
                     className='resource-wallet-address-update update-btn'
                     disabled={!(currentWallet && currentWallet.address && tokenContract)}

@@ -15,11 +15,13 @@ import './MyWalletCard.less';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
-import { APPNAME, ADDRESS_INFO } from '@config/config';
+import { APPNAME } from '@config/config';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import {isPhoneCheck} from "../../../../utils/deviceCheck";
 import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
+import Dividends from "../../../../components/Dividends";
+import addressFormat from "../../../../utils/addressFormat";
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -47,6 +49,7 @@ export default class MyWalletCard extends PureComponent {
 
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
+    this.getCurrentWallet = this.getCurrentWallet.bind(this);
 
     this.hasRun = false;
   }
@@ -73,7 +76,7 @@ export default class MyWalletCard extends PureComponent {
     this.getCurrentWallet();
   }
 
-  getCurrentWallet() {
+  getCurrentWallet(useLock = true) {
     if (this.isPhone) {
       // message.info('View more on PC');
       return null;
@@ -89,7 +92,7 @@ export default class MyWalletCard extends PureComponent {
           const wallet =  JSON.parse(result.detail);
           this.setState({
             currentWallet: {
-              formattedAddress:  `${ADDRESS_INFO.PREFIX}_${wallet.address}_${ADDRESS_INFO.CURRENT_CHAIN_ID}`,
+              formattedAddress:  addressFormat(wallet.address),
               address: wallet.address,
               name: wallet.name,
               pubKey: getPublicKeyFromObject(wallet.publicKey)
@@ -99,7 +102,7 @@ export default class MyWalletCard extends PureComponent {
             this.handleUpdateWalletClick();
           });
         }
-      });
+      }, useLock);
     }).catch(() => {
       message.warn('Please download and install NightELF browser extension.');
     });
@@ -200,7 +203,6 @@ export default class MyWalletCard extends PureComponent {
       value: currentWallet.pubKey
     })
       .then(res => {
-        console.log('fetchElectorVoteInfo', res);
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;
         if (activeVotedVotesAmount) {
@@ -234,8 +236,6 @@ export default class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
-    console.log('balance', balance);
-    console.log('activeVotedVotesAmount', activeVotedVotesAmount);
     this.setState({
       totalAssets: activeVotedVotesAmount + balance
     });
@@ -310,7 +310,7 @@ export default class MyWalletCard extends PureComponent {
       },
       {
         type: 'Claimable profit',
-        value: dividends.total.toFixed(2),
+        value: <Dividends className="wallet-dividends" dividends={dividends.total} />,
         extra: (
           <Button
             type="primary"
@@ -367,6 +367,12 @@ export default class MyWalletCard extends PureComponent {
           >
             Refresh<Icon type="sync" spin={loading} />
           </Button>
+          {!(currentWallet && currentWallet.address) && <Button
+            className="my-wallet-card-header-sync-btn update-btn"
+            onClick={() => this.getCurrentWallet(false)}
+          >
+            Login
+          </Button>}
         </div>
         <div className="my-wallet-card-body-wallet-title">
           <span className="my-wallet-card-body-wallet-title-key">Name: </span>

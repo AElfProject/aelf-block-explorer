@@ -66,21 +66,11 @@ class RealTimeTransactions extends PureComponent {
     // todo: move the logic to backend
     // todo: repeating code
     data.buyRecords = data.buyRecords
-      .filter(item => item.tx_status === TXSSTATUS.Mined)
       .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
-      .slice(0, displayLimit)
-      .map(item => {
-        item.resource = +item.resource / ELF_DECIMAL;
-        return item;
-      });
+      .slice(0, displayLimit);
     data.soldRecords = data.soldRecords
-      .filter(item => item.tx_status === TXSSTATUS.Mined)
       .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
-      .slice(0, displayLimit)
-      .map(item => {
-        item.resource = +item.resource / ELF_DECIMAL;
-        return item;
-      });
+      .slice(0, displayLimit);
     // console.log('data', data);
     this.setState({
       recordsData: data || []
@@ -102,8 +92,12 @@ class RealTimeTransactions extends PureComponent {
       data = recordsData.soldRecords || [];
       return data.map((item, index) => {
         const date = this.formatDate(item.time);
-        const { resource } = item;
-        let { elf, fee } = item;
+        let {
+            resource = 0,
+            elf = 0,
+            fee = 0
+        } = item;
+        resource /= ELF_DECIMAL;
         elf /= ELF_DECIMAL;
         fee /= ELF_DECIMAL;
         return (
@@ -142,9 +136,14 @@ class RealTimeTransactions extends PureComponent {
       data = recordsData.buyRecords || [];
       return data.map((item, index) => {
         const date = this.formatDate(item.time);
-        let { elf, fee } = item;
-        elf /= ELF_DECIMAL;
-        fee /= ELF_DECIMAL;
+          let {
+              resource = 0,
+              elf = 0,
+              fee = 0
+          } = item;
+          resource /= ELF_DECIMAL;
+          elf /= ELF_DECIMAL;
+          fee /= ELF_DECIMAL;
         return (
           <Row className='table-buy' type='flex' align='middle' key={index}>
             <Col span={4}>
@@ -154,9 +153,9 @@ class RealTimeTransactions extends PureComponent {
               Buy
             </Col>
             <Col span={5}>
-              {(elf / item.resource).toFixed(ELF_PRECISION)}
+              {(elf / resource).toFixed(ELF_PRECISION)}
             </Col>
-            <Col span={6}>{thousandsCommaWithDecimal(item.resource)}</Col>
+            <Col span={6}>{thousandsCommaWithDecimal(resource)}</Col>
             <Col span={6}>{thousandsCommaWithDecimal(elf + fee)}</Col>
           </Row>
         );
