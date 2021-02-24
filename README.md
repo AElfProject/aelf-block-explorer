@@ -20,7 +20,7 @@ $ yarn
 
 1. Modify the proxy config in `build/proxy.json`
     * there are several proxy configs, if you have started related projects such as `aelf-block-api` in local environment, this file doesn't need any changes
-2. Change the chain node URL in `config/config.js`
+2. Change the chain node URL in `.env` and side chain URLs in `config/config.js`
     * change the value of `BUILD_ENDPOINT` in file to the chain node URL you have
 3. Run the npm script `start`
     ```shell script
