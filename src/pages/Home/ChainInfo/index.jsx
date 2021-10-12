@@ -32,7 +32,7 @@ function DividendItem(props) {
     } = props;
     return (
         <>
-            <h4 className="home-chain-info-sub-title">{symbol}</h4>
+            {/*<h4 className="home-chain-info-sub-title">{symbol}</h4>*/}
             <p className="home-chain-info-text text-ellipsis" title={amount && amount.toLocaleString()}>
                 {amount && amount.toLocaleString()}
             </p>
@@ -104,24 +104,47 @@ const ChainInfo = props => {
             <Col sm={12} md={7}>
                 <Card
                     title="Dividends"
-                    className="home-chain-info-min-height"
+                    // className="home-chain-info-min-height gap-bottom"
+                    className="gap-bottom"
                     bordered={false}
-                    extra={dividendsKeys.length > 4 ?
+                    extra={dividendsKeys.length > 2 ?
                         <Arrow
                         pre={pre}
                         next={next}
                         preDisabled={currentArrowPage === 1}
-                        nextDisabled={currentArrowPage === Math.ceil(dividendsKeys.length / 4)}
+                        nextDisabled={currentArrowPage === Math.ceil(dividendsKeys.length / 2)}
                     /> : null}
                 >
                     <Row gutter={16}>
-                        {dividendsKeys.slice((currentArrowPage - 1) * 4, currentArrowPage * 4).map((key, index) => (
+                        {dividendsKeys.slice((currentArrowPage - 1) * 2, currentArrowPage * 2).map((key, index) => (
                             <Col span={12} key={key}>
-                                { index === 2 || index === 3 ? <Divider /> : null}
+                                {/*{ index === 2 || index === 3 ? <Divider /> : null}*/}
+                                { index === 2 ? <Divider /> : null}
                                 <DividendItem symbol={key} amount={mergedDividends[key]} />
                             </Col>
                         ))}
                     </Row>
+                </Card>
+                <Card
+                  title="Citizen Welfare"
+                  bordered={false}
+                  extra={dividendsKeys.length > 2 ?
+                    <Arrow
+                      pre={pre}
+                      next={next}
+                      preDisabled={currentArrowPage === 1}
+                      nextDisabled={currentArrowPage === Math.ceil(dividendsKeys.length / 2)}
+                    /> : null}
+                >
+                  <Row gutter={16}>
+                    {dividendsKeys.slice((currentArrowPage - 1) * 2, currentArrowPage * 2).map((key, index) => (
+                      <Col span={12} key={key}>
+                        {/*{ index === 2 || index === 3 ? <Divider /> : null}*/}
+                        { index === 2 ? <Divider /> : null}
+                        <DividendItem symbol={key} amount={mergedDividends[key]} />
+                      </Col>
+                    ))}
+                  </Row>
                 </Card>
             </Col>
         </Row>

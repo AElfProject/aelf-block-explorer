@@ -605,7 +605,7 @@ class VoteContainer extends Component {
 
     Promise.all([
       electionContract.GetElectorVoteWithRecords.call({
-        value: currentWallet.publicKey
+        value: currentWallet.pubKey
       }
       ),
       getAllTeamDesc()
