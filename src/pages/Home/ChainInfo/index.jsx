@@ -141,7 +141,7 @@ const ChainInfo = props => {
                       <Col span={12} key={key}>
                         {/*{ index === 2 || index === 3 ? <Divider /> : null}*/}
                         { index === 2 ? <Divider /> : null}
-                        <DividendItem symbol={key} amount={mergedDividends[key]} />
+                        <DividendItem symbol={key} amount={mergedDividends[key] * 0.75} />
                       </Col>
                     ))}
                   </Row>
