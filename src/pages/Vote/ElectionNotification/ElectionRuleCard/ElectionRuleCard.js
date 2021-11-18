@@ -35,9 +35,9 @@ function ElectionRuleCard(props) {
       btnHtml = (
         <div className="btn-group">
           <Button
-            disabled="true"
-            // type="primary"
-            // className="apply-to-be-a-node-btn"
+            // disabled="true"
+            type="primary"
+            className="apply-to-be-a-node-btn"
             onClick={onClick}
           >
             {isCandidate
