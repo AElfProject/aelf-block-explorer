@@ -140,6 +140,11 @@ class VoteModal extends Component {
 
     this.handleAllIn = this.handleAllIn.bind(this);
     this.handleOk = this.handleOk.bind(this);
+
+    this.state = {
+      currentTab: 'fromWallet', // fromActiveVotes
+      formattedLockTime: null,
+    };
   }
 
   getFormItems() {
@@ -177,6 +182,9 @@ class VoteModal extends Component {
       selectedRowKeys: switchVoteSelectedRowKeys,
       onChange: (...params) => {
         handleSwithVoteSelectedRowChange(...params);
+        this.setState({
+          formattedLockTime: params[1][0].formatedLockTime
+        });
       },
       hideDefaultSelections: true,
       type: 'radio'
@@ -499,6 +507,19 @@ class VoteModal extends Component {
     const { getFieldDecorator } = this.props.form;
     const formItems = this.getFormItems();
 
+    const {
+      formattedLockTime
+    } = this.state;
+    let tipHTML = <p className="tip-color">{FEE_TIP}</p>;
+    if (voteType !== 'fromWallet') {
+      tipHTML = <>
+        <p className="tip-color">
+          <div>Once the transfer is confirmed, your lock-up time will be reset. Another {formattedLockTime ? formattedLockTime : 'days'} will be counted from today.</div>
+          <div>The transfer will cost 0.4301 ELF as the transaction fee.</div>
+        </p>
+      </>
+    }
+
     return (
       <Modal
         className="vote-modal"
@@ -586,7 +607,7 @@ class VoteModal extends Component {
             );
           })}
         </Tabs>
-        <p className="tip-color">{FEE_TIP}</p>
+        {tipHTML}
       </Modal>
     );
   }
