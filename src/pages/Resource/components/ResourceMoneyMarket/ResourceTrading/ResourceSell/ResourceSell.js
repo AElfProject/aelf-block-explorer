@@ -338,80 +338,33 @@ class ResourceSell extends Component {
       return;
     }
 
-    nightElf.checkPermission(
-      {
-        appName,
-        type: 'address',
-        address: currentWallet.address
-      },
-      (error, result) => {
-        if (result && result.error === 0) {
-          result.permissions.map(item => {
-            const multiTokenObj = item.contracts.filter(data => {
-              return data.contractAddress === multiToken;
-            });
-            this.checkPermissionsModify(
-              result,
-              contracts,
-              currentWallet,
-              appName
-            );
-          });
-        } else {
-          message.warning(result.errorMessage.message, 3);
-          this.setState({
-            sellBtnLoading: false
-          });
-        }
-      }
-    );
-  }
-
-  // todo: there are same code in ResourceBuy
-  checkPermissionsModify(result, contracts, currentWallet, appName) {
-    const { sellNum } = this.props;
-    const { nightElf } = this.state;
     const wallet = {
       address: currentWallet.address
     };
-    contractChange(nightElf, result, currentWallet, appName).then(result => {
-      if (sellNum && !result) {
-        nightElf.chain.contractAt(
-          contracts.multiToken,
-          wallet,
-          (err, contract) => {
-            if (contract) {
-              this.getApprove(contract);
-            }
-          }
-        );
-      } else {
-        message.info('Contract renewal completed...', 3);
-        this.setState({
-          sellBtnLoading: false
-        });
+    nightElf.chain.contractAt(contracts.multiToken, wallet).then(contract => {
+      if (contract) {
+        this.getApprove(contract);
       }
     });
   }
 
   getApprove(result, time = 0) {
     const { handleModifyTradingState } = this.props;
-    const contract = result || null;
-    // todo: handle the error case's loading
-    if (contract) {
-      if (result) {
-        handleModifyTradingState(
-          {
-            sellVisible: true
-          },
-          () => {
-            this.setState({
-              sellBtnLoading: false
-            });
-          }
-        );
-      }
+    // console.log('getApprove sell result: ', result);
+    if (!result) {
+      return;
     }
+    // todo: handle the error case's loading
+    handleModifyTradingState(
+      {
+        sellVisible: true
+      },
+      () => {
+        this.setState({
+          sellBtnLoading: false
+        });
+      }
+    );
   }
 
   render() {

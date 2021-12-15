@@ -49,15 +49,15 @@ export default class ResourceSellModal extends PureComponent {
     this.setState({
       loading: true
     });
-    nightElf.chain.contractAt(
-      contracts.tokenConverter,
-      wallet,
-      (err, result) => {
-        if (result) {
-          this.requestSell(result);
-        }
+    nightElf.chain.contractAt(contracts.tokenConverter, wallet).then(result => {
+
+      // console.log('contractAt(contracts.tokenConverter: ', wallet);
+      if (result) {
+        this.requestSell(result);
       }
-    );
+    }).catch(error => {
+      console.log('Sell contracts.tokenConverter init', error);
+    });
   }
 
   requestSell(result) {
@@ -67,7 +67,7 @@ export default class ResourceSellModal extends PureComponent {
       symbol: currentResourceType,
       amount: +(sellNum * ELF_DECIMAL)
     };
-    result.Sell(payload, (error, result) => {
+    result.Sell(payload).then(result => {
       if (result.error) {
         this.setState({
           loading: false
@@ -97,6 +97,12 @@ export default class ResourceSellModal extends PureComponent {
           this.props.unMaskClosable();
         });
       }, 4000);
+    }).catch(error => {
+      this.setState({
+        loading: false
+      });
+      message.fail('Sell failed, please try again');
+      console.log('result.Sell error', error);
     });
   }
 

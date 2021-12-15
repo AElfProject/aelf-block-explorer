@@ -135,9 +135,9 @@ class ResourceTrading extends PureComponent {
 
     return (
       <div className='resource-trading'>
-        {this.isPhone ? (
+        {!nightElf ? (
           <div className='mobile-mask'>
-            <p className='mobile-mask-text'>View more on the PC</p>
+            <p className='mobile-mask-text'>Can not find wallet extension</p>
           </div>
         ) : null}
         <div className='resource-trading-body'>
@@ -174,7 +174,7 @@ class ResourceTrading extends PureComponent {
                 handleModifyTradingState={this.handleModifyTradingState}
               />
             </Col>
-            <Col offset={1} xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
+            <Col offset={isPhoneCheck() ? 0 : 1} xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
               <ResourceSell
                 currentResourceType={currentResourceType}
                 currentResourceIndex={currentResourceIndex}

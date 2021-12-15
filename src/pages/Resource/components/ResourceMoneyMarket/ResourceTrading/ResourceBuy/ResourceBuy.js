@@ -405,59 +405,16 @@ export default class ResourceBuy extends Component {
       return;
     }
 
-    nightElf.checkPermission(
-      {
-        appName,
-        type: 'address',
-        address: currentWallet.address
-      },
-      (error, result) => {
-        if (result && result.error === 0) {
-          result.permissions.map(item => {
-            const multiTokenObj = item.contracts.filter(data => {
-              return data.contractAddress === multiToken;
-            });
-            this.checkPermissionsModify(
-              result,
-              contracts,
-              currentWallet,
-              appName
-            );
-          });
-        } else {
-          message.warning(result.errorMessage.message, 3);
-          this.setState({
-            buyBtnLoading: false
-          });
-        }
-      }
-    );
-  }
-
-  checkPermissionsModify(result, contracts, currentWallet, appName) {
-    const { buyNum } = this.props;
-    const { nightElf } = this.state;
     const wallet = {
       address: currentWallet.address
     };
-    contractChange(nightElf, result, currentWallet, appName).then(result => {
-      if (buyNum && !result) {
-        nightElf.chain.contractAt(
-          contracts.multiToken,
-          wallet,
-          (err, contract) => {
-            if (contract) {
-              this.getApprove(contract);
-            }
-          }
-        );
-      } else {
-        message.info('Contract renewal completed...', 3);
-        this.setState({
-          buyBtnLoading: false
-        });
-      }
-    });
+
+    nightElf.chain.contractAt(contracts.multiToken, wallet)
+      .then(contract => {
+        if (contract) {
+          this.getApprove(contract);
+        }
+      });
   }
 
   // todo: remove the useless code

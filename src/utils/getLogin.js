@@ -5,18 +5,23 @@
 import contracts from "./contracts";
 import config from '../../config/config';
 
+import isMobile from 'ismobilejs';
+const isPhone = isMobile(window.navigator).phone;
+
 // todo: there are three place that has the same payload in contractChange, getLogin, setNewPermission, can I optimize it?
 let getLoginLock = false;
 let getLoginQueue = [];
-
+let getLoginTimer = null;
 export default function getLogin(nightElf, payload, callback, useLock = true) {
     getLoginQueue.push({
         nightElf, payload, callback, useLock
     });
-    setTimeout(() => {
-        // nightELFLogin(useLock);
+    if (getLoginTimer) {
+        clearTimeout(getLoginTimer);
+    }
+    getLoginTimer = setTimeout(() => {
         nightELFLogin(true);
-    }, 0);
+    }, 200);
 }
 
 function nightELFLogin(useLock) {
@@ -27,6 +32,14 @@ function nightELFLogin(useLock) {
         return;
     }
     getLoginLock = true;
+
+    // 钱包APP，取消登录没有返回信息，先简单处理一下
+    if (isPhone) {
+        setTimeout(() => {
+            getLoginLock = false;
+        }, 1000);
+    }
+
     const param = getLoginQueue.shift();
     // const {nightElf, payload, callback, useLock} = param;
     const {nightElf, callback} = param;
@@ -48,3 +61,53 @@ function nightELFLogin(useLock) {
         nightELFLogin();
     });
 }
+
+//
+// let getLoginBridgeQueue = [];
+// let getLoginBridgeLock = false;
+// let getLoginBridgeTimer = null;
+// function getLoginBridge(nightElf, payload, callback, useLock = true) {
+//     getLoginBridgeQueue.push({
+//         nightElf, payload, callback, useLock
+//     });
+//     if (getLoginBridgeTimer) {
+//         clearTimeout(getLoginBridgeTimer);
+//     }
+//     getLoginBridgeTimer = setTimeout(() => {
+//         nightELFLoginBridge(true);
+//     }, 200);
+// }
+//
+// function nightELFLoginBridge(useLock) {
+//     if ((getLoginBridgeQueue.length <= 0 || getLoginBridgeLock) && useLock) {
+//         return;
+//     }
+//     if (!getLoginBridgeQueue.length) {
+//         return;
+//     }
+//     getLoginBridgeLock = true;
+//
+//     // 钱包APP，取消登录没有返回信息，先简单处理一下
+//     setTimeout(() => {
+//         getLoginBridgeLock = false;
+//     }, 1000);
+//
+//     const param = getLoginBridgeQueue.shift();
+//     const {nightElf, callback} = param;
+//     nightElf.login({
+//         appName: config.APPNAME,
+//         payload: {
+//             method: 'LOGIN',
+//             contracts
+//         }
+//     }, (error, result) => {
+//         if (result) {
+//             callback(result);
+//             if (result.error === 200010) {
+//                 getLoginBridgeQueue = [];
+//             }
+//         }
+//         getLoginBridgeLock = false;
+//         nightELFLoginBridge();
+//     });
+// }

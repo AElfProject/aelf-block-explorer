@@ -42,15 +42,12 @@ export default class ResourceBuyModal extends PureComponent {
     this.setState({
       loading: true
     });
-    nightElf.chain.contractAt(
-      contracts.tokenConverter,
-      wallet,
-      (err, result) => {
-        if (result) {
-          this.requestBuy(result);
-        }
+    nightElf.chain.contractAt(contracts.tokenConverter, wallet).then(result => {
+      // console.log('contracts.tokenConverter: ', result);
+      if (result) {
+        this.requestBuy(result);
       }
-    );
+    });
   }
 
   requestBuy(result) {
@@ -59,7 +56,8 @@ export default class ResourceBuyModal extends PureComponent {
       symbol: currentResourceType,
       amount: buyNum * ELF_DECIMAL
     };
-    result.Buy(payload, (error, result) => {
+    result.Buy(payload).then(result => {
+      // console.log('result.Buy result', result);
       if (result.error && result.error !== 0) {
         message.error(result.errorMessage.message, 3);
         this.props.handleCancel();
@@ -119,6 +117,8 @@ export default class ResourceBuyModal extends PureComponent {
             );
           });
       }, 4000);
+    }).catch(error => {
+      console.log('result.Buy error', error);
     });
   }
 

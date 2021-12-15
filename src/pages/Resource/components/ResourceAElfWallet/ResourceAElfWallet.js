@@ -19,6 +19,7 @@ import './ResourceAElfWallet.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import addressFormat from "../../../../utils/addressFormat";
+import {isPhoneCheck} from "../../../../utils/deviceCheck";
 
 export default class ResourceAElfWallet extends PureComponent {
 
@@ -29,7 +30,8 @@ export default class ResourceAElfWallet extends PureComponent {
       address: '-'
     };
     this.state = {
-      loading: true
+      loading: true,
+      isPhone: isPhoneCheck(),
     };
     this.refreshWalletInfo = this.refreshWalletInfo.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
@@ -168,7 +170,8 @@ export default class ResourceAElfWallet extends PureComponent {
       loginAndInsertKeypairs
     } = this.props;
     const {
-      loading
+      loading,
+      isPhone
     } = this.state;
 
     const propsTile = title || '-';
@@ -183,15 +186,25 @@ export default class ResourceAElfWallet extends PureComponent {
           </div>
           <div className="resource-sub-container">
             <Row className="resource-wallet-address">
-              <Col className="resource-wallet-address-name">
-                {wallet.name}
-                &nbsp;&nbsp;&nbsp;
-                {addressFormat(wallet.address)}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                { wallet.address !== '-' && <Link to={`/resourceDetail/${wallet.address}`}>
-                  Transaction Details
-                </Link> }
-              </Col>
+              {isPhone
+                ? <Col className="resource-wallet-address-name">
+                    <div>Name: {wallet.name}</div>
+                    <div>Address: {addressFormat(wallet.address)}</div>
+                    <div>{wallet.address !== '-' && <Link to={`/resourceDetail/${wallet.address}`}>
+                        Transaction Details
+                      </Link> }
+                    </div>
+                  </Col>
+                : <Col className="resource-wallet-address-name">
+                    {wallet.name}
+                    &nbsp;&nbsp;&nbsp;
+                    {addressFormat(wallet.address)}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    { wallet.address !== '-' && <Link to={`/resourceDetail/${wallet.address}`}>
+                      Transaction Details
+                    </Link> }
+                  </Col>
+              }
 
               <Col className="resource-wallet-operation-container">
 
@@ -210,7 +223,7 @@ export default class ResourceAElfWallet extends PureComponent {
                   Refresh<Icon type='sync' spin={loading} />
                 </Button>
 
-                { currentWallet && currentWallet.name && <Button
+                { !isPhone && currentWallet && currentWallet.name && <Button
                   className="resource-wallet-address-update update-btn"
                   disabled={!(currentWallet && currentWallet.address && tokenContract)}
                   onClick={this.extensionLogout}

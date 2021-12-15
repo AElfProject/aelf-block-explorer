@@ -116,7 +116,6 @@ export default class ResourceMoneyMarket extends PureComponent {
     const menuList = resourceTokens.map(v => v.symbol);
     const currentIndex = resourceTokens.findIndex(v => v.symbol === currentResourceSymbol);
 
-    const isPhone = isPhoneCheck();
     return (
       <div className='resource-market-body resource-block'>
         <Spin size='large' spinning={loading}>
@@ -129,7 +128,7 @@ export default class ResourceMoneyMarket extends PureComponent {
                 getEchartsLoading={this.getEchartsLoading}
             />
             <Row className="resource-sub-container">
-              {!isPhone && <Col xxl={14} xl={24} lg={24}>
+              {nightElf && <Col xxl={14} xl={24} lg={24}>
                 <ResourceTrading
                   currentResourceType={currentResourceSymbol}
                   currentResourceIndex={currentIndex}
