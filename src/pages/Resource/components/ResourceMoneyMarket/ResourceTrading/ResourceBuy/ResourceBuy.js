@@ -22,7 +22,6 @@ import {
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
-import contractChange from '../../../../../../utils/contractChange';
 import getLogin from '../../../../../../utils/getLogin';
 import './ResourceBuy.less';
 import {

@@ -24,7 +24,6 @@ import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
 import ResourceAElfWallet from './components/ResourceAElfWallet/ResourceAElfWallet';
 import NightElfCheck from '../../utils/NightElfCheck';
 import getContractAddress from '../../utils/getContractAddress.js';
-import checkPermissionRepeat from '../../utils/checkPermissionRepeat';
 import ResourceMoneyMarket from './components/ResourceMoneyMarket/ResourceMoneyMarket';
 import getLogin from '../../utils/getLogin';
 import { isPhoneCheck } from '../../utils/deviceCheck';

@@ -15,7 +15,6 @@ import {
   Form,
   Button
 } from 'antd';
-import contractChange from '../../../../../../utils/contractChange';
 import {
   multiToken
 } from '../../../../../../../config/config';
