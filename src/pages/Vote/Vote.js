@@ -238,6 +238,7 @@ class VoteContainer extends Component {
       redeemVoteSelectedRowKeys: [],
 
       targetPublicKey: null,
+      nodeTableRefreshTime: new Date().getTime(),
       shouldRefreshNodeTable: false,
       shouldRefreshMyWallet: false,
       shouldRefreshElectionNotifiStatis: false,
@@ -874,7 +875,7 @@ class VoteContainer extends Component {
               error,
               errorMessage
             } = res;
-            if (+error === 0) {
+            if (+error === 0 || !error) {
               this.checkTransactionResult(res, 'voteRedeemModalVisible')
                   .then(() => {
                     this.refreshPageElectionNotifi();
@@ -1041,7 +1042,7 @@ class VoteContainer extends Component {
           error,
           errorMessage
         } = res;
-        if (+error === 0) {
+        if (+error === 0 || !error) {
           this.checkTransactionResult(res).then(() => {
             // Close tow modal as there are two situation, one open a modal and anothor open two modals.
             // Consider to do the samething after checkTransactionResult in the same page.
@@ -1072,6 +1073,7 @@ class VoteContainer extends Component {
 
   refreshPageElectionNotifi() {
     this.setState({
+      nodeTableRefreshTime: new Date().getTime(),
       shouldRefreshNodeTable: true,
       shouldRefreshMyWallet: true,
       shouldRefreshElectionNotifiStatis: true,
@@ -1120,7 +1122,7 @@ class VoteContainer extends Component {
           error,
           errorMessage
         } = res;
-        if (+error === 0) {
+        if (+error === 0 || !error) {
           this.checkTransactionResult(res).then(() => {
             // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
             // Consider to do the samething after checkTransactionResult in the same page.
@@ -1207,9 +1209,8 @@ class VoteContainer extends Component {
         let total = {};
         const dividendAmounts = schemeIds.map((item, index) => {
           const profit = list[index];
-          const {
-            result = {}
-          } = profit;
+          const result = profit ? profit.result || profit : {};
+
           let {
             value = {}
           } = result || {};
@@ -1375,6 +1376,7 @@ class VoteContainer extends Component {
       activeVoteRecordsForOneCandidate,
       dividends,
       shouldRefreshNodeTable,
+      nodeTableRefreshTime,
       shouldRefreshMyWallet,
       voteToRedeem,
       redeemOneVoteModalVisible,
@@ -1423,13 +1425,13 @@ class VoteContainer extends Component {
                     dividends={dividends}
                     electionContractFromExt={electionContractFromExt}
                     shouldRefreshNodeTable={shouldRefreshNodeTable}
+                    nodeTableRefreshTime={nodeTableRefreshTime}
                     shouldRefreshMyWallet={shouldRefreshMyWallet}
                     changeVoteState={this.changeVoteState}
                     checkExtensionLockStatus={this.checkExtensionLockStatus}
                     shouldRefreshElectionNotifiStatis={
                       shouldRefreshElectionNotifiStatis
                     }
-                    refreshPageElectionNotifi={this.refreshPageElectionNotifi}
                     currentWallet={currentWallet}
                   />
                 )}

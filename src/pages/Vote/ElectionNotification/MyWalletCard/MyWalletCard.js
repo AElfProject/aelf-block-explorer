@@ -127,7 +127,7 @@ export default class MyWalletCard extends PureComponent {
       this.fetchWalletBalance();
     }
 
-    if (electionContract !== prevProps.electionContract) {
+    if (electionContract !== prevProps.electionContract && electionContract) {
       this.fetchElectorVoteInfo();
     }
 
@@ -185,7 +185,7 @@ export default class MyWalletCard extends PureComponent {
 
     const {currentWallet} = this.state;
 
-    if (!currentWallet || !currentWallet.address) {
+    if (!currentWallet || !currentWallet.address || !electionContract) {
       return false;
     }
 

@@ -80,6 +80,9 @@ class NodeTable extends PureComponent {
       && (this.props.electionContract && this.props.consensusContract)) {
       this.fetchNodes({});
     }
+    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+      this.fetchNodes({});
+    }
   }
 
   getCurrentWallet() {

@@ -13,6 +13,7 @@ import config, {
 } from '@config/config';
 
 import AElfBridge from 'aelf-bridge';
+import {getPublicKeyFromObject} from "../getPublicKey";
 
 const HTTP_PROVIDER = DEFAUTRPCSERVER;
 let aelfBridgeInstance = null;
@@ -79,12 +80,11 @@ export default class AelfBridgeCheck {
     aelfInstanceByBridge.login = async (param, callback) => {
       if (!accountInfo) {
         const result = await aelfInstanceByBridge.account();
-        const account = result.accounts[0];
-        account.pubkey = account.publicKey;
-        account.publicKey = {
-          x: account.pubkey.slice(2, 66),
-          y: account.pubkey.slice(66, 130),
-        };
+        const account = JSON.parse(JSON.stringify(result.accounts[0]));
+
+        const pubKeyTemp = JSON.parse(account.publicKey);
+        account.pubkey = getPublicKeyFromObject(pubKeyTemp);
+        account.publicKey = pubKeyTemp;
         accountInfo = {
           detail: JSON.stringify(account)
         };
