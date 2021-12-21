@@ -77,11 +77,16 @@ export default class AelfBridgeCheck {
 
     // support async/await & callback
     aelfInstanceByBridge.login = async (param, callback) => {
-
       if (!accountInfo) {
-        const account = await aelfInstanceByBridge.account();
+        const result = await aelfInstanceByBridge.account();
+        const account = result.accounts[0];
+        account.pubkey = account.publicKey;
+        account.publicKey = {
+          x: account.pubkey.slice(2, 66),
+          y: account.pubkey.slice(66, 130),
+        };
         accountInfo = {
-          detail: JSON.stringify(account.accounts[0])
+          detail: JSON.stringify(account)
         };
       }
 

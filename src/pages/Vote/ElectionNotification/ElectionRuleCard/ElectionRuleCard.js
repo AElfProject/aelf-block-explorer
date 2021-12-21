@@ -29,24 +29,38 @@ function ElectionRuleCard(props) {
   };
 
   const renderBtn = () => {
-    const isPhone = isPhoneCheck();
-    let btnHtml = null;
-    if (!isPhone)
-      btnHtml = (
-        <div className="btn-group">
-          <Button
-            // disabled="true"
-            type="primary"
-            className="apply-to-be-a-node-btn"
-            onClick={onClick}
-          >
-            {isCandidate
-              ? 'Modify team information'
-              : 'Become a candidate node'}
-          </Button>
-        </div>
-      );
-    return btnHtml;
+    // const isPhone = isPhoneCheck();
+    // let btnHtml = null;
+    // if (!isPhone)
+    //   btnHtml = (
+    //     <div className="btn-group">
+    //       <Button
+    //         // disabled="true"
+    //         type="primary"
+    //         className="apply-to-be-a-node-btn"
+    //         onClick={onClick}
+    //       >
+    //         {isCandidate
+    //           ? 'Modify team information'
+    //           : 'Become a candidate node'}
+    //       </Button>
+    //     </div>
+    //   );
+    // return btnHtml;
+    return (
+      <div className="btn-group">
+        <Button
+          // disabled="true"
+          type="primary"
+          className="apply-to-be-a-node-btn"
+          onClick={onClick}
+        >
+          {isCandidate
+            ? 'Modify team information'
+            : 'Become a candidate node'}
+        </Button>
+      </div>
+    );
   };
   const btnHtml = renderBtn();
 

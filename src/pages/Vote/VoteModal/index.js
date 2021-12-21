@@ -328,6 +328,7 @@ class VoteModal extends Component {
                     columns={columns}
                     rowSelection={switchVoteRowSelection}
                     pagination={switchVotePagination}
+                    scroll={{ x: 798 }}
                 />
             ),
             validator: {

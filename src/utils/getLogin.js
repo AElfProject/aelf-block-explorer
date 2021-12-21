@@ -8,7 +8,7 @@ import config from '../../config/config';
 import isMobile from 'ismobilejs';
 const isPhone = isMobile(window.navigator).phone;
 
-// todo: there are three place that has the same payload in contractChange, getLogin, setNewPermission, can I optimize it?
+// todo: there are three place that has the same payload in contractChange, getLogin, can I optimize it?
 let getLoginLock = false;
 let getLoginQueue = [];
 let getLoginTimer = null;

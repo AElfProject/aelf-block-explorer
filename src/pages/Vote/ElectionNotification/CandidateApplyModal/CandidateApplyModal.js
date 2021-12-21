@@ -17,6 +17,7 @@ import {
 } from '@pages/Vote/constants';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import './CandidateApplyModal.style.less';
+import addressFormat from "../../../../utils/addressFormat";
 
 const modalFormItemLayout = {
   labelCol: {
@@ -37,7 +38,7 @@ function generateCandidateApplyForm() {
         label: 'Mortgage Add',
         render: (
           <span className="list-item-value text-ellipsis">
-            {currentWallet.address}
+            {addressFormat(currentWallet.address)}
           </span>
         )
       },

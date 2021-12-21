@@ -9,6 +9,7 @@ import isMobile from 'ismobilejs';
 const isPhone = isMobile(window.navigator).phone;
 
 const NightElfCheck = isPhone ? AelfBridgeCheck : NightElfCheckTemp;
+// const NightElfCheck = NightElfCheckTemp;
 export default NightElfCheck;
 export const getViewResult = (key, result) => {
     if (!result) {

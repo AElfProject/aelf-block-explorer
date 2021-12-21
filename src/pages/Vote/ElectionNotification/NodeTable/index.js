@@ -73,7 +73,6 @@ class NodeTable extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // console.log('getCurrentWallet prevProps prevState: ', prevProps, prevState);
     if (!prevProps.electionContract && this.props.electionContract) {
       this.getCurrentWallet();
     }
@@ -84,14 +83,6 @@ class NodeTable extends PureComponent {
   }
 
   getCurrentWallet() {
-    if (this.isPhone) {
-      // message.info('View more on PC');
-      this.setState({
-        currentWallet: null
-      });
-      return null;
-    }
-
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {}, result => {
@@ -108,7 +99,7 @@ class NodeTable extends PureComponent {
           this.setState({
             currentWallet
           });
-          // console.log('getCurrentWallet currentWallet: ', currentWallet);
+          console.log('getCurrentWallet currentWallet: ', currentWallet);
           this.fetchData(currentWallet);
         }
       }, false);
@@ -180,8 +171,6 @@ class NodeTable extends PureComponent {
   });
 
   getCols() {
-    const { isSmallScreen } = this.props;
-
     const nodeListCols = [
       {
         title: 'Rank',
@@ -237,6 +226,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Obtain Votes',
         dataIndex: 'obtainedVotesAmount',
+        width: 200,
         key: 'obtainedVotesCount',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.obtainedVotesAmount - b.obtainedVotesAmount,
@@ -245,6 +235,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Voted Rate',
         key: 'votedRate',
+        width: 100,
         dataIndex: 'votedRate',
         defaultSortOrder: 'descend',
         render: value =>
@@ -291,7 +282,7 @@ class NodeTable extends PureComponent {
               data-targetPublicKey={record.pubkey}
               data-nodename={record.name}
               disabled={
-                record.myRedeemableVoteAmountForOneCandidate > 0 ? false : true
+                !(record.myRedeemableVoteAmountForOneCandidate !== '-' && record.myRedeemableVoteAmountForOneCandidate > 0)
               }
             >
               Redeem
@@ -303,9 +294,9 @@ class NodeTable extends PureComponent {
 
     // todo: Realize it using css
     // Hide operations on mobile
-    if (isSmallScreen) {
-      nodeListCols.pop();
-    }
+    // if (isSmallScreen) {
+    //   nodeListCols.pop();
+    // }
 
     nodeListCols.forEach(item => {
       item.align = 'center';
@@ -363,7 +354,8 @@ class NodeTable extends PureComponent {
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
   fetchNodes(currentWalletInput) {
     const { electionContract, consensusContract } = this.props;
-    const currentWallet = currentWalletInput || this.state.currentWallet;
+    const currentWallet = Object.keys(currentWalletInput).length && currentWalletInput
+      || this.state.currentWallet;
 
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
@@ -381,6 +373,8 @@ class NodeTable extends PureComponent {
       .then(resArr => {
         // process data
         const processedNodesData = this.processNodesData(resArr);
+        // console.log('processedNodesData currentWallet', resArr, processedNodesData, currentWallet.pubKey,
+        //   this.state.currentWallet, currentWalletInput);
         this.setState(
           {
             nodeList: processedNodesData
