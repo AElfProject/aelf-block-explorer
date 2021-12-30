@@ -13,3 +13,14 @@ export function getPublicKeyFromObject(publicKey) {
         return '';
     }
 }
+
+export function getObjectPublicKeyFromString(publicKey) {
+    try {
+        return {
+            x: publicKey.slice(2, 66),
+            y: publicKey.slice(66, 130)
+        };
+    } catch (e) {
+        return '';
+    }
+}

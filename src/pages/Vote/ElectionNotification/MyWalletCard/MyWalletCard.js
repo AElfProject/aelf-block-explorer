@@ -107,6 +107,9 @@ export default class MyWalletCard extends PureComponent {
     // const { checkExtensionLockStatus } = this.props;
     // checkExtensionLockStatus().then(() => {
     this.fetchData(prevProps);
+    if (this.props.currentWallet && !prevProps.currentWallet) {
+      this.getCurrentWallet();
+    }
     // });
   }
 

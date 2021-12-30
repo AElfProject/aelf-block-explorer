@@ -419,6 +419,7 @@ class ElectionNotification extends PureComponent {
           shouldRefreshMyWallet={shouldRefreshMyWallet}
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
+          currentWallet={currentWallet}
         />
         <div className="election-blank" />
         <NodeTable

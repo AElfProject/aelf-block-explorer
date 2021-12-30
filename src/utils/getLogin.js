@@ -34,11 +34,10 @@ function nightELFLogin(useLock) {
     getLoginLock = true;
 
     // 钱包APP，取消登录没有返回信息，先简单处理一下
-    if (isPhone) {
-        setTimeout(() => {
-            getLoginLock = false;
-        }, 1000);
-    }
+    // 浏览器插件，直接插掉，也没有返回信息
+    setTimeout(() => {
+        getLoginLock = false;
+    }, isPhone ? 1000 : 1500);
 
     const param = getLoginQueue.shift();
     // const {nightElf, payload, callback, useLock} = param;

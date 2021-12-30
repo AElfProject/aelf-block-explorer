@@ -406,7 +406,7 @@ class VoteContainer extends Component {
         this.setState({
           isPluginLock: false
         });
-        this.loginPlugin();
+        // this.loginPlugin();
       }).catch(error => {
         console.log('nightElf.chain.getChainStatus:error', error);
       });

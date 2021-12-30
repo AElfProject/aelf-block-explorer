@@ -50,10 +50,6 @@ export default class MyVote extends Component {
     }
   }
   getCurrentWallet() {
-    if (this.isPhone) {
-      return null;
-    }
-
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {file: 'MyVote.js'}, result => {
@@ -90,13 +86,8 @@ export default class MyVote extends Component {
     const { electionContract } = this.props;
     if (!electionContract) return;
     this.hasRun = true;
-    // const currentWallet = getCurrentWallet();
-    // console.log('fetchTableDataAndStatisData: ', currentWallet);
-
-    // const {currentWallet} = this.state;
     const currentWallet = currentWalletTemp || this.state.currentWallet;
-
-    console.log('fetchTableDataAndStatisData: ', currentWallet);
+    // console.log('fetchTableDataAndStatisData: ', currentWallet);
     if (!currentWallet || !currentWallet.address) {
       this.hasRun = false;
       return false;
