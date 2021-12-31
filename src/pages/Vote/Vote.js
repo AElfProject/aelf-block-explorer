@@ -258,6 +258,8 @@ class VoteContainer extends Component {
     };
 
     this.isPhone = isPhoneCheck();
+    this.loginMessageLock = false;
+    this.loginPlugin = this.loginPlugin.bind(this);
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -480,7 +482,13 @@ class VoteContainer extends Component {
           this.onExtensionAndWalletReady().then(() => {
             resolve();
           });
-          message.success('Login success!!', 3);
+          if (!this.loginMessageLock) {
+            this.loginMessageLock = true;
+            message.success('Login success!!', 3, () => {
+              this.loginMessageLock = false;
+            });
+          }
+
           // }
         } else {
           if (result.error === 200010) {
