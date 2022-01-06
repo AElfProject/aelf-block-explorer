@@ -31,7 +31,6 @@ class ContractStore {
 
   @action
   setContract(name, contract) {
-    console.log('contract', contract);
     this[name] = contract;
   }
 }

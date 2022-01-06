@@ -13,7 +13,6 @@ import { MY_VOTE_DATA_TIP } from '@src/constants';
 import NightElfCheck from "../../../utils/NightElfCheck";
 import getLogin from "../../../utils/getLogin";
 import {message, Spin} from "antd";
-import {isPhoneCheck} from "../../../utils/deviceCheck";
 import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
 import addressFormat from "../../../utils/addressFormat";
 
@@ -33,8 +32,6 @@ export default class MyVote extends Component {
         }
       }
     };
-
-    this.isPhone = isPhoneCheck();
 
     this.hasRun = false;
   }

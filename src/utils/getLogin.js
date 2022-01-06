@@ -37,7 +37,7 @@ function nightELFLogin(useLock) {
     // 浏览器插件，直接插掉，也没有返回信息
     setTimeout(() => {
         getLoginLock = false;
-    }, isPhone ? 1000 : 1500);
+    }, isPhone ? 5000 : 1500);
 
     const param = getLoginQueue.shift();
     // const {nightElf, payload, callback, useLock} = param;
