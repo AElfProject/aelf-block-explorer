@@ -532,6 +532,7 @@ export default class ResourceBuy extends Component {
     const rawBuyNumMax = +(
       inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
     ).toFixed(GENERAL_PRECISION);
+    // const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
     const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
 
     // console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum);
@@ -561,6 +562,7 @@ export default class ResourceBuy extends Component {
                       formatter={value =>
                           `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                       }
+                      disabled={rawBuyNumMax <= 0}
                       min={0}
                       max={processedBuyNumMax}
                       // precision={8}

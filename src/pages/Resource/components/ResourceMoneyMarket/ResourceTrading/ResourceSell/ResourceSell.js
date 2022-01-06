@@ -407,6 +407,7 @@ class ResourceSell extends Component {
                     formatter={value =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
+                    disabled={!this.inputMax}
                     min={0}
                     max={this.inputMax}
                 />
