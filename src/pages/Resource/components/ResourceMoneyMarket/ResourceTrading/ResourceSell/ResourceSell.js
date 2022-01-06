@@ -383,7 +383,7 @@ class ResourceSell extends Component {
     this.getRegion();
     const slideHTML = this.getSlideMarksHTML();
 
-    console.log('sell num', ELFValue, sellNum);
+    // console.log('sell num', ELFValue, sellNum);
     return (
       <div className='trading-box trading-sell'>
         <div className='trading'>

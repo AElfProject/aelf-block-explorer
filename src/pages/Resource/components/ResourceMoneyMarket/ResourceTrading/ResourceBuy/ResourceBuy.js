@@ -534,6 +534,7 @@ export default class ResourceBuy extends Component {
     ).toFixed(GENERAL_PRECISION);
     const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
 
+    // console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum);
     return (
       <div className='trading-box trading-buy'>
         <div className='trading'>
@@ -569,7 +570,7 @@ export default class ResourceBuy extends Component {
             </div>
             <div className='ELF-value'>
               <Spin spinning={buyEstimateValueLoading}>
-                ≈ {inputValue ? thousandsCommaWithDecimal(buyElfValue) : '0.00'} {SYMBOL}
+                ≈ {inputValue && buyNum  ? thousandsCommaWithDecimal(buyElfValue) : '0.00'} {SYMBOL}
               </Spin>
             </div>
             <div className="resource-action-block">
@@ -594,7 +595,7 @@ export default class ResourceBuy extends Component {
           <div className='trading-slide'>
             {sliderHTML}
             <div className='ElF-value'>
-              {buyElfValue && inputValue ? thousandsCommaWithDecimal(inputValue) : '0.00'} {SYMBOL}
+              {buyElfValue && inputValue && buyNum ? thousandsCommaWithDecimal(inputValue) : '0.00'} {SYMBOL}
             </div>
           </div>
           <Button
