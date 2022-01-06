@@ -36,6 +36,7 @@ import { regPos } from '@utils/regExps';
 import { getMagneticValue } from '@utils/styleUtils';
 import NightElfCheck from "../../../../../../utils/NightElfCheck";
 import getLogin from "../../../../../../utils/getLogin";
+import {isPhoneCheck} from "../../../../../../utils/deviceCheck";
 
 // const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
 const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
@@ -144,7 +145,7 @@ class ResourceSell extends Component {
   }
 
   getSlideMarksHTML() {
-    const { account, currentResourceIndex, sellEstimateValueLoading } = this.props;
+    const { account, currentResourceIndex, sellEstimateValueLoading, sellNum } = this.props;
     const { purchaseQuantity, sellBtnLoading } = this.state;
     const disabled = false;
     const balance = account.resourceTokens[currentResourceIndex].balance;
@@ -154,7 +155,7 @@ class ResourceSell extends Component {
         step={0.01}
         disabled={disabled || sellEstimateValueLoading || sellBtnLoading}
         min={0}
-        value={purchaseQuantity}
+        value={sellNum ? purchaseQuantity : 0}
         onChange={this.onChangeSlide}
         max={balance}
         tooltipVisible={false}
@@ -269,6 +270,8 @@ class ResourceSell extends Component {
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {}, result => {
+
+        this.props.loginAndInsertKeypairs(true, false);
         if (result.error) {
           if (result.error === 200010) {
             message.warn('Please Login.');
@@ -416,12 +419,19 @@ class ResourceSell extends Component {
               <span className="resource-action-title">
                 Available:
               </span>
-              <Input
-                  className="resource-action-input"
-                  value={thousandsCommaWithDecimal(this.inputMax)}
-                  addonAfter={currentResourceType}
-                  disabled={true}
-              />
+              {
+                isPhoneCheck()
+                  ? <div className="resource-action-input">
+                    {this.inputMax ? thousandsCommaWithDecimal(this.inputMax) : '-'} {SYMBOL}
+                  </div>
+                  : <Input
+                    className="resource-action-input"
+                    value={thousandsCommaWithDecimal(this.inputMax)}
+                    placeholder={thousandsCommaWithDecimal(this.inputMax)}
+                    addonAfter={currentResourceType}
+                    disabled={true}
+                  />
+              }
             </div>
           </div>
           <div className='trading-slide'>

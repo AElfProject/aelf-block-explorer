@@ -59,26 +59,32 @@ class RealTimeTransactions extends PureComponent {
     const {
       type
     } = this.props;
-    const data = await get(RESOURCE_REALTIME_RECORDS, {
-      limit: fetchLimit,
-      type
-    });
-    // todo: move the logic to backend
-    // todo: repeating code
-    data.buyRecords = data.buyRecords
-      .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
-      .slice(0, displayLimit);
-    data.soldRecords = data.soldRecords
-      .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
-      .slice(0, displayLimit);
-    // console.log('data', data);
-    this.setState({
-      recordsData: data || []
-    });
-    this.props.getRealTimeTransactionLoading();
-    this.getResourceRealtimeRecordsTimer = setTimeout(() => {
-      this.getResourceRealtimeRecords();
-    }, REAL_TIME_FETCH_INTERVAL);
+    try {
+      const data = await get(RESOURCE_REALTIME_RECORDS, {
+        limit: fetchLimit,
+        type
+      });
+      // todo: move the logic to backend
+      // todo: repeating code
+      data.buyRecords = data.buyRecords
+        .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
+        .slice(0, displayLimit);
+      data.soldRecords = data.soldRecords
+        .sort((a, b) => moment(b.time).unix() - moment(a.time).unix())
+        .slice(0, displayLimit);
+      // console.log('data', data);
+      this.setState({
+        recordsData: data || []
+      });
+      this.props.getRealTimeTransactionLoading();
+      this.getResourceRealtimeRecordsTimer = setTimeout(() => {
+        this.getResourceRealtimeRecords();
+      }, REAL_TIME_FETCH_INTERVAL);
+    } catch(error) {
+      this.getResourceRealtimeRecordsTimer = setTimeout(() => {
+        this.getResourceRealtimeRecords();
+      }, REAL_TIME_FETCH_INTERVAL);
+    }
   }
 
   componentWillUnmount() {

@@ -42,6 +42,7 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import { getMagneticValue } from '@utils/styleUtils';
 import { regPos } from '@utils/regExps';
 import NightElfCheck from "../../../../../../utils/NightElfCheck";
+import {isPhoneCheck} from "../../../../../../utils/deviceCheck";
 
 const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
 const status = { ERROR: 'error' };
@@ -70,6 +71,9 @@ export default class ResourceBuy extends Component {
       inputValue: 0,
       buyBtnLoading: false
     };
+
+    this.onChangeSlideZeroCheck = false;
+
     this.getEstimatedElf = debounce(this.getEstimatedElf, 500);
     this.getEstimatedInput = debounce(this.getEstimatedInput, 500);
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
@@ -284,10 +288,13 @@ export default class ResourceBuy extends Component {
       // todo: seems useless
       handleModifyTradingState({
         buyNum: null,
-        buyElfValue: 0
+        buyElfValue: 0,
+        buyInputLoading: false
       });
+      this.onChangeSlideZeroCheck = true;
       return;
     }
+    this.onChangeSlideZeroCheck = false;
     handleModifyTradingState({
       buyInputLoading: true
     }, () => this.getEstimatedInput(e));
@@ -307,6 +314,13 @@ export default class ResourceBuy extends Component {
           handleModifyTradingState({
             buyInputLoading: false
           });
+          if (this.onChangeSlideZeroCheck) {
+            handleModifyTradingState({
+              buyFee: 0
+            });
+            return;
+          }
+
           let value = 0;
           if (Math.ceil(result) > 0) {
             value = Math.abs(result).toFixed(GENERAL_PRECISION);
@@ -339,6 +353,7 @@ export default class ResourceBuy extends Component {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {}, result => {
         console.log('NightELFCheckAndShowBuyModal: ', result);
+        this.props.loginAndInsertKeypairs(true, false);
         if (result.error) {
           message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
         } else {
@@ -441,7 +456,8 @@ export default class ResourceBuy extends Component {
     const {
       buyInputLoading,
       buyEstimateValueLoading,
-      account
+      account,
+      buyNum
     } = this.props;
     let { buyBtnLoading, region, inputValue } = this.state;
     let disabled = false;
@@ -463,7 +479,7 @@ export default class ResourceBuy extends Component {
           step={0.01}
           disabled={disabled || buyBtnLoading || buyEstimateValueLoading || buyInputLoading}
           min={0}
-          value={inputValue}
+          value={buyNum ? inputValue : 0}
           onChange={this.onChangeSlide}
           // todo: the max is set in this way for avoid the elf paid larger than elf's balance
           max={
@@ -556,12 +572,19 @@ export default class ResourceBuy extends Component {
               <span className="resource-action-title">
                 Available:
               </span>
-              <Input
-                  className="resource-action-input"
-                  value={thousandsCommaWithDecimal(account.balance)}
-                  addonAfter={SYMBOL}
-                  disabled={true}
-              />
+              {
+                isPhoneCheck()
+                  ? <div className="resource-action-input">
+                    {account.balance ? thousandsCommaWithDecimal(account.balance) : '-'} {SYMBOL}
+                  </div>
+                  : <Input
+                    className="resource-action-input"
+                    value={thousandsCommaWithDecimal(account.balance)}
+                    placeholder={thousandsCommaWithDecimal(account.balance)}
+                    addonAfter={SYMBOL}
+                    disabled={true}
+                  />
+              }
             </div>
           </div>
           <div className='trading-slide'>

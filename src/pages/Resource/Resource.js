@@ -96,10 +96,12 @@ class Resource extends Component {
           this.setState({
             nightElf
           });
-          nightElf.chain.getChainStatus((error, result) => {
+          nightElf.chain.getChainStatus().then(result => {
             if (result) {
               this.loginAndInsertKeypairs(result);
             }
+          }).catch(error => {
+            console.log('error: ', error);
           });
         }
       })
@@ -111,7 +113,7 @@ class Resource extends Component {
       });
   }
 
-  loginAndInsertKeypairs(useLock = true) {
+  loginAndInsertKeypairs(useLock = true, toastMessage = true) {
     // console.log('loginAndInsertKeypairs: 3 ', new Date().getTime(), this.state.nightElf);
     const { nightElf } = this.state;
     const getLoginPayload = {
@@ -124,7 +126,7 @@ class Resource extends Component {
       if (result && result.error === 0) {
         const wallet = JSON.parse(result.detail);
         this.getNightElfKeypair(wallet);
-        message.success('Login success!!', 3);
+        toastMessage && message.success('Login success!!', 3);
         // }
       } else {
         this.setState({
@@ -235,6 +237,7 @@ class Resource extends Component {
         {nightElf && resourceAElfWalletHtml}
         <div className='resource-money-market'>
           <ResourceMoneyMarket
+            loginAndInsertKeypairs={this.loginAndInsertKeypairs}
             currentWallet={currentWallet}
             contracts={contracts}
             tokenContract={tokenContract}

@@ -61,7 +61,7 @@ export default class ResourceSellModal extends PureComponent {
   }
 
   requestSell(result) {
-    const { currentResourceType } = this.props;
+    const { currentResourceType, handleModifyTradingState } = this.props;
     const { sellNum } = this.state;
     const payload = {
       symbol: currentResourceType,
@@ -92,6 +92,12 @@ export default class ResourceSellModal extends PureComponent {
           this.props.onRefresh();
           this.setState({
             loading: false
+          });
+          handleModifyTradingState({
+            sellNum: null,
+            // buyFee: 0,
+            // buyElfValue: 0,
+            // buySliderValue: 0
           });
           this.props.handleCancel();
           this.props.unMaskClosable();

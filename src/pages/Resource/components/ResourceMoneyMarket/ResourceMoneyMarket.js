@@ -9,7 +9,6 @@ import { Row, Col, Spin } from 'antd';
 import ResourceCurrencyChart from './ResourceCurrencyChart/ResourceCurrencyChart';
 import ResourceTrading from './ResourceTrading/ResourceTrading';
 import RealTimeTransactions from './RealTimeTransactions/RealTimeTransactions';
-import { isPhoneCheck } from '../../../../utils/deviceCheck';
 import './ResourceMoneyMarket.less';
 
 export default class ResourceMoneyMarket extends PureComponent {
@@ -104,7 +103,8 @@ export default class ResourceMoneyMarket extends PureComponent {
       account,
       onRefresh,
       endRefresh,
-      appName
+      appName,
+      loginAndInsertKeypairs
     } = this.props;
     let loading = true;
     if (!realTimeTransactionLoading && !echartsLoading) {
@@ -130,6 +130,7 @@ export default class ResourceMoneyMarket extends PureComponent {
             <Row className="resource-sub-container">
               {nightElf && <Col xxl={14} xl={24} lg={24}>
                 <ResourceTrading
+                  loginAndInsertKeypairs={loginAndInsertKeypairs}
                   currentResourceType={currentResourceSymbol}
                   currentResourceIndex={currentIndex}
                   currentWallet={currentWallet}
