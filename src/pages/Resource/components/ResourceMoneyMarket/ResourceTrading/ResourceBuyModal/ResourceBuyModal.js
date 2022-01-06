@@ -118,6 +118,9 @@ export default class ResourceBuyModal extends PureComponent {
           });
       }, 4000);
     }).catch(error => {
+      this.setState({
+        loading: false
+      });
       console.log('result.Buy error', error);
     });
   }

@@ -104,13 +104,10 @@ export default class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    // const { checkExtensionLockStatus } = this.props;
-    // checkExtensionLockStatus().then(() => {
     this.fetchData(prevProps);
     if (this.props.currentWallet && !prevProps.currentWallet) {
       this.getCurrentWallet();
     }
-    // });
   }
 
   fetchData(prevProps) {
@@ -266,8 +263,6 @@ export default class MyWalletCard extends PureComponent {
           appName: APPNAME,
           address: currentWallet.address
         }, (error, result) => {
-          // localStorage.removeItem('currentWallet');
-          // this.handleUpdateWalletClick();
           // TODO: more refactor actions for login and logout
           message.success('Logout successful, refresh after 3s.', 3, () => {
             localStorage.removeItem('currentWallet');

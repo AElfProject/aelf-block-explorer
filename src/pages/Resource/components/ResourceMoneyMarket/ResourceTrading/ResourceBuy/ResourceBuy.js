@@ -457,7 +457,8 @@ export default class ResourceBuy extends Component {
       buyInputLoading,
       buyEstimateValueLoading,
       account,
-      buyNum
+      buyNum,
+      buyElfValue
     } = this.props;
     let { buyBtnLoading, region, inputValue } = this.state;
     let disabled = false;
@@ -469,6 +470,8 @@ export default class ResourceBuy extends Component {
     if (region < RESOURCE_OPERATE_LIMIT) {
       disabled = true;
     }
+
+    // console.log('buy num:', buyNum, inputValue, buyElfValue);
     return (
       <Tooltip
         title={BALANCE_LESS_THAN_OPERATE_LIMIT_TIP}
@@ -479,7 +482,8 @@ export default class ResourceBuy extends Component {
           step={0.01}
           disabled={disabled || buyBtnLoading || buyEstimateValueLoading || buyInputLoading}
           min={0}
-          value={buyNum ? inputValue : 0}
+          // value={buyNum ? inputValue : 0}
+          value={inputValue}
           onChange={this.onChangeSlide}
           // todo: the max is set in this way for avoid the elf paid larger than elf's balance
           max={
@@ -565,7 +569,7 @@ export default class ResourceBuy extends Component {
             </div>
             <div className='ELF-value'>
               <Spin spinning={buyEstimateValueLoading}>
-                ≈ {thousandsCommaWithDecimal(buyElfValue)} {SYMBOL}
+                ≈ {inputValue ? thousandsCommaWithDecimal(buyElfValue) : '0.00'} {SYMBOL}
               </Spin>
             </div>
             <div className="resource-action-block">
@@ -590,7 +594,7 @@ export default class ResourceBuy extends Component {
           <div className='trading-slide'>
             {sliderHTML}
             <div className='ElF-value'>
-              {thousandsCommaWithDecimal(inputValue)} {SYMBOL}
+              {buyElfValue && inputValue ? thousandsCommaWithDecimal(inputValue) : '0.00'} {SYMBOL}
             </div>
           </div>
           <Button

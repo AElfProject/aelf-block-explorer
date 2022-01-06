@@ -382,6 +382,8 @@ class ResourceSell extends Component {
 
     this.getRegion();
     const slideHTML = this.getSlideMarksHTML();
+
+    console.log('sell num', ELFValue, sellNum);
     return (
       <div className='trading-box trading-sell'>
         <div className='trading'>
@@ -412,7 +414,7 @@ class ResourceSell extends Component {
             </div>
             <div className='ELF-value'>
               <Spin spinning={sellEstimateValueLoading}>
-                ≈ {thousandsCommaWithDecimal(ELFValue)} {SYMBOL}
+                ≈ {sellNum && ELFValue ? thousandsCommaWithDecimal(ELFValue) : '0.00'} {SYMBOL}
               </Spin>
             </div>
             <div className="resource-action-block">
@@ -422,7 +424,7 @@ class ResourceSell extends Component {
               {
                 isPhoneCheck()
                   ? <div className="resource-action-input">
-                    {this.inputMax ? thousandsCommaWithDecimal(this.inputMax) : '-'} {SYMBOL}
+                    {this.inputMax ? thousandsCommaWithDecimal(this.inputMax) : '-'} {currentResourceType}
                   </div>
                   : <Input
                     className="resource-action-input"
@@ -437,7 +439,7 @@ class ResourceSell extends Component {
           <div className='trading-slide'>
             {slideHTML}
             <div className='ElF-value'>
-              {thousandsCommaWithDecimal(purchaseQuantity)} {currentResourceType}
+              {sellNum && purchaseQuantity ? thousandsCommaWithDecimal(purchaseQuantity) : '0.00'} {currentResourceType}
             </div>
           </div>
           <Button
