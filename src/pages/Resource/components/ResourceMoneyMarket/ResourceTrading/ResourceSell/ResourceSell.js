@@ -164,7 +164,11 @@ class ResourceSell extends Component {
   }
 
   onChangeResourceValue(input) {
-    const { handleModifyTradingState, sellNum } = this.props;
+    // console.log('onChangeResourceValue,', !input.target && input, input.target && input.target.value);
+    input = input.target && input.target.value ? input.target.value : input;
+
+    const { handleModifyTradingState, sellNum, account, currentResourceIndex } = this.props;
+    this.inputMax = account.resourceTokens[currentResourceIndex].balance;
     this.setState({
       purchaseQuantity: isNaN(+input) ? 0 : +input,
       validate: {
@@ -172,7 +176,16 @@ class ResourceSell extends Component {
         help: ''
       }
     });
-    if (+sellNum === +input) return;
+
+    input = +input
+    input = input > this.inputMax ? this.inputMax : input;
+
+    if (+sellNum === +input) {
+      handleModifyTradingState({
+        sellNum: input
+      });
+      return;
+    }
     if (!regPos.test(input) || +input === 0) {
       this.setState({
         ELFValue: 0
@@ -383,7 +396,7 @@ class ResourceSell extends Component {
     this.getRegion();
     const slideHTML = this.getSlideMarksHTML();
 
-    // console.log('sell num', ELFValue, sellNum);
+    // console.log('sell num', ELFValue, sellNum, this.inputMax);
     return (
       <div className='trading-box trading-sell'>
         <div className='trading'>
@@ -398,7 +411,7 @@ class ResourceSell extends Component {
                   help={validate.help}
                   style={{ padding: 3 }}
               >
-                <InputNumber
+                {!isPhoneCheck() ? <InputNumber
                     value={sellNum}
                     onChange={this.onChangeResourceValue}
                     placeholder={`Enter ${currentResourceType} amount`}
@@ -410,7 +423,15 @@ class ResourceSell extends Component {
                     disabled={!this.inputMax}
                     min={0}
                     max={this.inputMax}
-                />
+                /> : <input
+                  className="mobile-trading-input"
+                  placeholder={`Enter ${currentResourceType} amount`}
+                  value={sellNum}
+                  onChange={this.onChangeResourceValue}
+                  disabled={!this.inputMax}
+                  min={0}
+                  max={this.inputMax}
+                />}
               </Form.Item>
             </div>
             <div className='ELF-value'>
@@ -420,7 +441,7 @@ class ResourceSell extends Component {
             </div>
             <div className="resource-action-block">
               <span className="resource-action-title">
-                Available:
+                Available: {sellNum}
               </span>
               {
                 isPhoneCheck()

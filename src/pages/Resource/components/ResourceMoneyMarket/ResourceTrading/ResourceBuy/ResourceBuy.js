@@ -169,6 +169,10 @@ export default class ResourceBuy extends Component {
   // todo: to be more friendly, verify the input after click buy/sell?
   onChangeResourceValue(input) {
     const { handleModifyTradingState, buyNum } = this.props;
+    const { inputMax } = this.state;
+    const {
+      rawBuyNumMax,
+    } = getMax(inputMax);
 
     this.setState({
       validate: {
@@ -176,12 +180,20 @@ export default class ResourceBuy extends Component {
         help: ''
       }
     });
+
+    input = input.target && input.target.value ? input.target.value : input;
     input = +input;
+    input = input > rawBuyNumMax ? rawBuyNumMax : input;
     // todo: give a friendly notify when verify the max and min
     // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
     // todo: why is the input like -- still setState successfully?
     // the symbol '+' used to handle the case of 0.===0 && 1.===1
-    if (+buyNum === input) return;
+    if (+buyNum === input) {
+      handleModifyTradingState({
+        buyNum: input,
+      });
+      return;
+    }
     if (!regPos.test(input) || input === 0) {
       handleModifyTradingState({
         buyElfValue: 0,
@@ -273,6 +285,7 @@ export default class ResourceBuy extends Component {
         });
       }
     }).catch(e => {
+      console.log('Error happened: ', e);
       message.error(e.message || e.msg || 'Error happened');
     });
   }
@@ -528,14 +541,12 @@ export default class ResourceBuy extends Component {
     } = this.props;
     const { inputMax, buyBtnLoading, validate, inputValue } = this.state;
     const sliderHTML = this.getSlideMarksHTML();
-    // todo: memoize?
-    const rawBuyNumMax = +(
-      inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
-    ).toFixed(GENERAL_PRECISION);
-    // const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
-    const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
+    const {
+      rawBuyNumMax,
+      processedBuyNumMax
+    } = getMax(inputMax);
 
-    // console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum);
+    // console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum, rawBuyNumMax);
     return (
       <div className='trading-box trading-buy'>
         <div className='trading'>
@@ -552,7 +563,7 @@ export default class ResourceBuy extends Component {
                     validateStatus={validate.validateStatus}
                     help={validate.help}
                 >
-                  <InputNumber
+                  {!isPhoneCheck() ? <InputNumber
                       value={buyNum}
                       onChange={this.onChangeResourceValue}
                       placeholder={`Enter ${currentResourceType} amount`}
@@ -566,7 +577,15 @@ export default class ResourceBuy extends Component {
                       min={0}
                       max={processedBuyNumMax}
                       // precision={8}
-                  />
+                  /> : <input
+                  className="mobile-trading-input"
+                  placeholder={`Enter ${currentResourceType} amount`}
+                  value={buyNum}
+                  onChange={this.onChangeResourceValue}
+                  disabled={rawBuyNumMax <= 0}
+                  min={0}
+                  max={processedBuyNumMax}
+                />}
                 </Form.Item>
               </Spin>
             </div>
@@ -611,5 +630,18 @@ export default class ResourceBuy extends Component {
         </div>
       </div>
     );
+  }
+}
+
+function getMax (inputMax)  {
+  const rawBuyNumMax = +(
+    inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+  ).toFixed(GENERAL_PRECISION);
+  // const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
+  const processedBuyNumMax = rawBuyNumMax > 0 ? Number.parseInt(rawBuyNumMax, 10) : null;
+
+  return {
+    rawBuyNumMax,
+    processedBuyNumMax
   }
 }

@@ -55,7 +55,7 @@ function resortPrices(prices) {
   ];
 }
 
-function handleDataList(list, interval, length) {
+function handleDataList(list = [], interval, length) {
   let dates = [];
   let volumes = [];
   let prices = [];
