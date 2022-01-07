@@ -483,11 +483,11 @@ class VoteContainer extends Component {
           });
           if (!this.loginMessageLock) {
             this.loginMessageLock = true;
-            message.success('Login success!!', 3, () => {
-              this.loginMessageLock = false;
-            });
+            message.success('Login success!!', 3);
+            // message.success('Login success!!', 3, () => {
+            //   this.loginMessageLock = false;
+            // });
           }
-
           // }
         } else {
           if (result.error === 200010) {
