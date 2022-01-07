@@ -164,8 +164,8 @@ class ResourceSell extends Component {
   }
 
   onChangeResourceValue(input) {
-    // console.log('onChangeResourceValue,', !input.target && input, input.target && input.target.value);
-    input = input.target && input.target.value ? input.target.value : input;
+    input = input.target && (input.target.value || +input.target.value === 0)
+      ? input.target.value : input;
 
     const { handleModifyTradingState, sellNum, account, currentResourceIndex } = this.props;
     this.inputMax = account.resourceTokens[currentResourceIndex].balance;
@@ -426,7 +426,8 @@ class ResourceSell extends Component {
                 /> : <input
                   className="mobile-trading-input"
                   placeholder={`Enter ${currentResourceType} amount`}
-                  value={sellNum}
+                  value={sellNum || ''}
+                  type="number"
                   onChange={this.onChangeResourceValue}
                   disabled={!this.inputMax}
                   min={0}
@@ -441,7 +442,7 @@ class ResourceSell extends Component {
             </div>
             <div className="resource-action-block">
               <span className="resource-action-title">
-                Available: {sellNum}
+                Available:
               </span>
               {
                 isPhoneCheck()

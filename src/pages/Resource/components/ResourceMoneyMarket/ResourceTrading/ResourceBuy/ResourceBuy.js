@@ -181,7 +181,8 @@ export default class ResourceBuy extends Component {
       }
     });
 
-    input = input.target && input.target.value ? input.target.value : input;
+    input = input.target && (input.target.value || +input.target.value === 0)
+      ? input.target.value : input;
     input = +input;
     input = input > rawBuyNumMax ? rawBuyNumMax : input;
     // todo: give a friendly notify when verify the max and min
@@ -546,7 +547,7 @@ export default class ResourceBuy extends Component {
       processedBuyNumMax
     } = getMax(inputMax);
 
-    // console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum, rawBuyNumMax);
+    console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum, rawBuyNumMax);
     return (
       <div className='trading-box trading-buy'>
         <div className='trading'>
@@ -580,7 +581,8 @@ export default class ResourceBuy extends Component {
                   /> : <input
                   className="mobile-trading-input"
                   placeholder={`Enter ${currentResourceType} amount`}
-                  value={buyNum}
+                  type="number"
+                  value={buyNum || ''}
                   onChange={this.onChangeResourceValue}
                   disabled={rawBuyNumMax <= 0}
                   min={0}
