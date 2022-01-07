@@ -496,8 +496,8 @@ export default class ResourceBuy extends Component {
           step={0.01}
           disabled={disabled || buyBtnLoading || buyEstimateValueLoading || buyInputLoading}
           min={0}
-          // value={buyNum ? inputValue : 0}
-          value={inputValue}
+          value={buyNum || buyElfValue ? inputValue : 0}
+          // value={inputValue}
           onChange={this.onChangeSlide}
           // todo: the max is set in this way for avoid the elf paid larger than elf's balance
           max={
