@@ -721,7 +721,7 @@ class VoteContainer extends Component {
                     ),
                     onOk: () => {
                       // Use reload rather than refreshing the component as the voting button is on different pages. If we use refresh we need to confirm which part to refresh that will spent some developing time.
-                      // window.location.reload();
+                      window.location.reload();
                     },
                     centered: true,
                     okText: 'Refresh'
