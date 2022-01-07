@@ -22,7 +22,6 @@ import {
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
-import contractChange from '../../../../../../utils/contractChange';
 import getLogin from '../../../../../../utils/getLogin';
 import './ResourceBuy.less';
 import {
@@ -43,6 +42,7 @@ import { thousandsCommaWithDecimal } from '@utils/formater';
 import { getMagneticValue } from '@utils/styleUtils';
 import { regPos } from '@utils/regExps';
 import NightElfCheck from "../../../../../../utils/NightElfCheck";
+import {isPhoneCheck} from "../../../../../../utils/deviceCheck";
 
 const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
 const status = { ERROR: 'error' };
@@ -71,6 +71,9 @@ export default class ResourceBuy extends Component {
       inputValue: 0,
       buyBtnLoading: false
     };
+
+    this.onChangeSlideZeroCheck = false;
+
     this.getEstimatedElf = debounce(this.getEstimatedElf, 500);
     this.getEstimatedInput = debounce(this.getEstimatedInput, 500);
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
@@ -166,6 +169,10 @@ export default class ResourceBuy extends Component {
   // todo: to be more friendly, verify the input after click buy/sell?
   onChangeResourceValue(input) {
     const { handleModifyTradingState, buyNum } = this.props;
+    const { inputMax } = this.state;
+    const {
+      rawBuyNumMax,
+    } = getMax(inputMax);
 
     this.setState({
       validate: {
@@ -173,12 +180,21 @@ export default class ResourceBuy extends Component {
         help: ''
       }
     });
+
+    input = input.target && (input.target.value || +input.target.value === 0)
+      ? input.target.value : input;
     input = +input;
+    input = input > rawBuyNumMax ? rawBuyNumMax : input;
     // todo: give a friendly notify when verify the max and min
     // todo: used to handle the case such as 0.5, when you input 0.5 then blur it will verify again, it should be insteaded by reducing th useless verify later
     // todo: why is the input like -- still setState successfully?
     // the symbol '+' used to handle the case of 0.===0 && 1.===1
-    if (+buyNum === input) return;
+    if (+buyNum === input) {
+      handleModifyTradingState({
+        buyNum: input,
+      });
+      return;
+    }
     if (!regPos.test(input) || input === 0) {
       handleModifyTradingState({
         buyElfValue: 0,
@@ -270,6 +286,7 @@ export default class ResourceBuy extends Component {
         });
       }
     }).catch(e => {
+      console.log('Error happened: ', e);
       message.error(e.message || e.msg || 'Error happened');
     });
   }
@@ -285,10 +302,13 @@ export default class ResourceBuy extends Component {
       // todo: seems useless
       handleModifyTradingState({
         buyNum: null,
-        buyElfValue: 0
+        buyElfValue: 0,
+        buyInputLoading: false
       });
+      this.onChangeSlideZeroCheck = true;
       return;
     }
+    this.onChangeSlideZeroCheck = false;
     handleModifyTradingState({
       buyInputLoading: true
     }, () => this.getEstimatedInput(e));
@@ -308,6 +328,13 @@ export default class ResourceBuy extends Component {
           handleModifyTradingState({
             buyInputLoading: false
           });
+          if (this.onChangeSlideZeroCheck) {
+            handleModifyTradingState({
+              buyFee: 0
+            });
+            return;
+          }
+
           let value = 0;
           if (Math.ceil(result) > 0) {
             value = Math.abs(result).toFixed(GENERAL_PRECISION);
@@ -340,6 +367,7 @@ export default class ResourceBuy extends Component {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {}, result => {
         console.log('NightELFCheckAndShowBuyModal: ', result);
+        this.props.loginAndInsertKeypairs(true, false);
         if (result.error) {
           message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
         } else {
@@ -405,59 +433,16 @@ export default class ResourceBuy extends Component {
       return;
     }
 
-    nightElf.checkPermission(
-      {
-        appName,
-        type: 'address',
-        address: currentWallet.address
-      },
-      (error, result) => {
-        if (result && result.error === 0) {
-          result.permissions.map(item => {
-            const multiTokenObj = item.contracts.filter(data => {
-              return data.contractAddress === multiToken;
-            });
-            this.checkPermissionsModify(
-              result,
-              contracts,
-              currentWallet,
-              appName
-            );
-          });
-        } else {
-          message.warning(result.errorMessage.message, 3);
-          this.setState({
-            buyBtnLoading: false
-          });
-        }
-      }
-    );
-  }
-
-  checkPermissionsModify(result, contracts, currentWallet, appName) {
-    const { buyNum } = this.props;
-    const { nightElf } = this.state;
     const wallet = {
       address: currentWallet.address
     };
-    contractChange(nightElf, result, currentWallet, appName).then(result => {
-      if (buyNum && !result) {
-        nightElf.chain.contractAt(
-          contracts.multiToken,
-          wallet,
-          (err, contract) => {
-            if (contract) {
-              this.getApprove(contract);
-            }
-          }
-        );
-      } else {
-        message.info('Contract renewal completed...', 3);
-        this.setState({
-          buyBtnLoading: false
-        });
-      }
-    });
+
+    nightElf.chain.contractAt(contracts.multiToken, wallet)
+      .then(contract => {
+        if (contract) {
+          this.getApprove(contract);
+        }
+      });
   }
 
   // todo: remove the useless code
@@ -485,7 +470,9 @@ export default class ResourceBuy extends Component {
     const {
       buyInputLoading,
       buyEstimateValueLoading,
-      account
+      account,
+      buyNum,
+      buyElfValue
     } = this.props;
     let { buyBtnLoading, region, inputValue } = this.state;
     let disabled = false;
@@ -497,6 +484,8 @@ export default class ResourceBuy extends Component {
     if (region < RESOURCE_OPERATE_LIMIT) {
       disabled = true;
     }
+
+    // console.log('buy num:', buyNum, inputValue, buyElfValue);
     return (
       <Tooltip
         title={BALANCE_LESS_THAN_OPERATE_LIMIT_TIP}
@@ -507,7 +496,8 @@ export default class ResourceBuy extends Component {
           step={0.01}
           disabled={disabled || buyBtnLoading || buyEstimateValueLoading || buyInputLoading}
           min={0}
-          value={inputValue}
+          value={buyNum || buyElfValue ? inputValue : 0}
+          // value={inputValue}
           onChange={this.onChangeSlide}
           // todo: the max is set in this way for avoid the elf paid larger than elf's balance
           max={
@@ -552,12 +542,12 @@ export default class ResourceBuy extends Component {
     } = this.props;
     const { inputMax, buyBtnLoading, validate, inputValue } = this.state;
     const sliderHTML = this.getSlideMarksHTML();
-    // todo: memoize?
-    const rawBuyNumMax = +(
-      inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
-    ).toFixed(GENERAL_PRECISION);
-    const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
+    const {
+      rawBuyNumMax,
+      processedBuyNumMax
+    } = getMax(inputMax);
 
+    console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum, rawBuyNumMax);
     return (
       <div className='trading-box trading-buy'>
         <div className='trading'>
@@ -574,7 +564,7 @@ export default class ResourceBuy extends Component {
                     validateStatus={validate.validateStatus}
                     help={validate.help}
                 >
-                  <InputNumber
+                  {!isPhoneCheck() ? <InputNumber
                       value={buyNum}
                       onChange={this.onChangeResourceValue}
                       placeholder={`Enter ${currentResourceType} amount`}
@@ -584,34 +574,51 @@ export default class ResourceBuy extends Component {
                       formatter={value =>
                           `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                       }
+                      disabled={rawBuyNumMax <= 0}
                       min={0}
                       max={processedBuyNumMax}
                       // precision={8}
-                  />
+                  /> : <input
+                  className="mobile-trading-input"
+                  placeholder={`Enter ${currentResourceType} amount`}
+                  type="number"
+                  value={buyNum || ''}
+                  onChange={this.onChangeResourceValue}
+                  disabled={rawBuyNumMax <= 0}
+                  min={0}
+                  max={processedBuyNumMax}
+                />}
                 </Form.Item>
               </Spin>
             </div>
             <div className='ELF-value'>
               <Spin spinning={buyEstimateValueLoading}>
-                ≈ {thousandsCommaWithDecimal(buyElfValue)} {SYMBOL}
+                ≈ {inputValue && buyNum  ? thousandsCommaWithDecimal(buyElfValue) : '0.00'} {SYMBOL}
               </Spin>
             </div>
             <div className="resource-action-block">
               <span className="resource-action-title">
                 Available:
               </span>
-              <Input
-                  className="resource-action-input"
-                  value={thousandsCommaWithDecimal(account.balance)}
-                  addonAfter={SYMBOL}
-                  disabled={true}
-              />
+              {
+                isPhoneCheck()
+                  ? <div className="resource-action-input">
+                    {account.balance ? thousandsCommaWithDecimal(account.balance) : '-'} {SYMBOL}
+                  </div>
+                  : <Input
+                    className="resource-action-input"
+                    value={thousandsCommaWithDecimal(account.balance)}
+                    placeholder={thousandsCommaWithDecimal(account.balance)}
+                    addonAfter={SYMBOL}
+                    disabled={true}
+                  />
+              }
             </div>
           </div>
           <div className='trading-slide'>
             {sliderHTML}
             <div className='ElF-value'>
-              {thousandsCommaWithDecimal(inputValue)} {SYMBOL}
+              {buyElfValue && inputValue && buyNum ? thousandsCommaWithDecimal(inputValue) : '0.00'} {SYMBOL}
             </div>
           </div>
           <Button
@@ -625,5 +632,18 @@ export default class ResourceBuy extends Component {
         </div>
       </div>
     );
+  }
+}
+
+function getMax (inputMax)  {
+  const rawBuyNumMax = +(
+    inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+  ).toFixed(GENERAL_PRECISION);
+  // const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
+  const processedBuyNumMax = rawBuyNumMax > 0 ? Number.parseInt(rawBuyNumMax, 10) : null;
+
+  return {
+    rawBuyNumMax,
+    processedBuyNumMax
   }
 }

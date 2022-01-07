@@ -55,7 +55,7 @@ function resortPrices(prices) {
   ];
 }
 
-function handleDataList(list, interval, length) {
+function handleDataList(list = [], interval, length) {
   let dates = [];
   let volumes = [];
   let prices = [];
@@ -174,21 +174,30 @@ class ResourceCurrencyChart extends PureComponent {
       loading: true
     });
 
-    const list = await get(RESOURCE_TURNOVER, {
-      range: QUERY_RANGE,
-      timeZone,
-      interval: intervalTime,
-      type: currentResourceType
-    });
+    try {
+      const list = await get(RESOURCE_TURNOVER, {
+        range: QUERY_RANGE,
+        timeZone,
+        interval: intervalTime,
+        type: currentResourceType
+      });
 
-    this.setState({
-      list,
-      loading: false
-    });
-    this.props.getEchartsLoading();
-    this.getEchartDataTime = setTimeout(() => {
-      this.getEchartData();
-    }, RESOURCE_CURRENCY_CHART_FETCH_INTERVAL);
+      this.setState({
+        list,
+        loading: false
+      });
+      this.props.getEchartsLoading();
+      this.getEchartDataTime = setTimeout(() => {
+        this.getEchartData();
+      }, RESOURCE_CURRENCY_CHART_FETCH_INTERVAL);
+    } catch {
+      this.setState({
+        loading: false
+      });
+      this.getEchartDataTime = setTimeout(() => {
+        this.getEchartData();
+      }, RESOURCE_CURRENCY_CHART_FETCH_INTERVAL);
+    }
   }
 
   componentWillUnmount() {

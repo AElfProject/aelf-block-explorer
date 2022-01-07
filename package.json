@@ -13,14 +13,17 @@
     "commit": "git-cz"
   },
   "dependencies": {
+    "aelf-bridge": "^0.0.9",
     "aelf-sdk": "^3.2.36",
-    "antd": "^3.24.2",
+    "antd": "^3.26.19",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",
+    "bignumber.js": "^9.0.2",
     "dayjs": "^1.7.5",
     "decimal.js": "^10.1.1",
     "echarts": "^4.2.0-rc.1",
     "echarts-for-react": "^2.0.14",
+    "ismobilejs": "^1.1.1",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.11",
     "lodash.debounce": "^4.0.8",
@@ -42,7 +45,8 @@
     "react-use": "~13.23.0",
     "redux": "^4.0.4",
     "smooth-scrollbar": "^8.3.1",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.2.0",
+    "vconsole": "^3.9.5"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",

@@ -15,7 +15,6 @@ import {
   Form,
   Button
 } from 'antd';
-import contractChange from '../../../../../../utils/contractChange';
 import {
   multiToken
 } from '../../../../../../../config/config';
@@ -37,6 +36,7 @@ import { regPos } from '@utils/regExps';
 import { getMagneticValue } from '@utils/styleUtils';
 import NightElfCheck from "../../../../../../utils/NightElfCheck";
 import getLogin from "../../../../../../utils/getLogin";
+import {isPhoneCheck} from "../../../../../../utils/deviceCheck";
 
 // const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
 const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
@@ -145,7 +145,7 @@ class ResourceSell extends Component {
   }
 
   getSlideMarksHTML() {
-    const { account, currentResourceIndex, sellEstimateValueLoading } = this.props;
+    const { account, currentResourceIndex, sellEstimateValueLoading, sellNum } = this.props;
     const { purchaseQuantity, sellBtnLoading } = this.state;
     const disabled = false;
     const balance = account.resourceTokens[currentResourceIndex].balance;
@@ -155,7 +155,7 @@ class ResourceSell extends Component {
         step={0.01}
         disabled={disabled || sellEstimateValueLoading || sellBtnLoading}
         min={0}
-        value={purchaseQuantity}
+        value={sellNum ? purchaseQuantity : 0}
         onChange={this.onChangeSlide}
         max={balance}
         tooltipVisible={false}
@@ -164,7 +164,11 @@ class ResourceSell extends Component {
   }
 
   onChangeResourceValue(input) {
-    const { handleModifyTradingState, sellNum } = this.props;
+    input = input.target && (input.target.value || +input.target.value === 0)
+      ? input.target.value : input;
+
+    const { handleModifyTradingState, sellNum, account, currentResourceIndex } = this.props;
+    this.inputMax = account.resourceTokens[currentResourceIndex].balance;
     this.setState({
       purchaseQuantity: isNaN(+input) ? 0 : +input,
       validate: {
@@ -172,7 +176,16 @@ class ResourceSell extends Component {
         help: ''
       }
     });
-    if (+sellNum === +input) return;
+
+    input = +input
+    input = input > this.inputMax ? this.inputMax : input;
+
+    if (+sellNum === +input) {
+      handleModifyTradingState({
+        sellNum: input
+      });
+      return;
+    }
     if (!regPos.test(input) || +input === 0) {
       this.setState({
         ELFValue: 0
@@ -270,6 +283,8 @@ class ResourceSell extends Component {
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {}, result => {
+
+        this.props.loginAndInsertKeypairs(true, false);
         if (result.error) {
           if (result.error === 200010) {
             message.warn('Please Login.');
@@ -338,80 +353,33 @@ class ResourceSell extends Component {
       return;
     }
 
-    nightElf.checkPermission(
-      {
-        appName,
-        type: 'address',
-        address: currentWallet.address
-      },
-      (error, result) => {
-        if (result && result.error === 0) {
-          result.permissions.map(item => {
-            const multiTokenObj = item.contracts.filter(data => {
-              return data.contractAddress === multiToken;
-            });
-            this.checkPermissionsModify(
-              result,
-              contracts,
-              currentWallet,
-              appName
-            );
-          });
-        } else {
-          message.warning(result.errorMessage.message, 3);
-          this.setState({
-            sellBtnLoading: false
-          });
-        }
-      }
-    );
-  }
-
-  // todo: there are same code in ResourceBuy
-  checkPermissionsModify(result, contracts, currentWallet, appName) {
-    const { sellNum } = this.props;
-    const { nightElf } = this.state;
     const wallet = {
       address: currentWallet.address
     };
-    contractChange(nightElf, result, currentWallet, appName).then(result => {
-      if (sellNum && !result) {
-        nightElf.chain.contractAt(
-          contracts.multiToken,
-          wallet,
-          (err, contract) => {
-            if (contract) {
-              this.getApprove(contract);
-            }
-          }
-        );
-      } else {
-        message.info('Contract renewal completed...', 3);
-        this.setState({
-          sellBtnLoading: false
-        });
+    nightElf.chain.contractAt(contracts.multiToken, wallet).then(contract => {
+      if (contract) {
+        this.getApprove(contract);
       }
     });
   }
 
   getApprove(result, time = 0) {
     const { handleModifyTradingState } = this.props;
-    const contract = result || null;
-    // todo: handle the error case's loading
-    if (contract) {
-      if (result) {
-        handleModifyTradingState(
-          {
-            sellVisible: true
-          },
-          () => {
-            this.setState({
-              sellBtnLoading: false
-            });
-          }
-        );
-      }
+    // console.log('getApprove sell result: ', result);
+    if (!result) {
+      return;
     }
+    // todo: handle the error case's loading
+    handleModifyTradingState(
+      {
+        sellVisible: true
+      },
+      () => {
+        this.setState({
+          sellBtnLoading: false
+        });
+      }
+    );
   }
 
   render() {
@@ -427,6 +395,8 @@ class ResourceSell extends Component {
 
     this.getRegion();
     const slideHTML = this.getSlideMarksHTML();
+
+    // console.log('sell num', ELFValue, sellNum, this.inputMax);
     return (
       <div className='trading-box trading-sell'>
         <div className='trading'>
@@ -441,7 +411,7 @@ class ResourceSell extends Component {
                   help={validate.help}
                   style={{ padding: 3 }}
               >
-                <InputNumber
+                {!isPhoneCheck() ? <InputNumber
                     value={sellNum}
                     onChange={this.onChangeResourceValue}
                     placeholder={`Enter ${currentResourceType} amount`}
@@ -450,32 +420,49 @@ class ResourceSell extends Component {
                     formatter={value =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
+                    disabled={!this.inputMax}
                     min={0}
                     max={this.inputMax}
-                />
+                /> : <input
+                  className="mobile-trading-input"
+                  placeholder={`Enter ${currentResourceType} amount`}
+                  value={sellNum || ''}
+                  type="number"
+                  onChange={this.onChangeResourceValue}
+                  disabled={!this.inputMax}
+                  min={0}
+                  max={this.inputMax}
+                />}
               </Form.Item>
             </div>
             <div className='ELF-value'>
               <Spin spinning={sellEstimateValueLoading}>
-                ≈ {thousandsCommaWithDecimal(ELFValue)} {SYMBOL}
+                ≈ {sellNum && ELFValue ? thousandsCommaWithDecimal(ELFValue) : '0.00'} {SYMBOL}
               </Spin>
             </div>
             <div className="resource-action-block">
               <span className="resource-action-title">
                 Available:
               </span>
-              <Input
-                  className="resource-action-input"
-                  value={thousandsCommaWithDecimal(this.inputMax)}
-                  addonAfter={currentResourceType}
-                  disabled={true}
-              />
+              {
+                isPhoneCheck()
+                  ? <div className="resource-action-input">
+                    {this.inputMax ? thousandsCommaWithDecimal(this.inputMax) : '-'} {currentResourceType}
+                  </div>
+                  : <Input
+                    className="resource-action-input"
+                    value={thousandsCommaWithDecimal(this.inputMax)}
+                    placeholder={thousandsCommaWithDecimal(this.inputMax)}
+                    addonAfter={currentResourceType}
+                    disabled={true}
+                  />
+              }
             </div>
           </div>
           <div className='trading-slide'>
             {slideHTML}
             <div className='ElF-value'>
-              {thousandsCommaWithDecimal(purchaseQuantity)} {currentResourceType}
+              {sellNum && purchaseQuantity ? thousandsCommaWithDecimal(purchaseQuantity) : '0.00'} {currentResourceType}
             </div>
           </div>
           <Button

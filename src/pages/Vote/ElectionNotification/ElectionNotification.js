@@ -377,6 +377,7 @@ class ElectionNotification extends PureComponent {
       dividends,
       electionContractFromExt,
       shouldRefreshNodeTable,
+      nodeTableRefreshTime,
       changeVoteState,
       shouldRefreshMyWallet,
       checkExtensionLockStatus,
@@ -418,6 +419,7 @@ class ElectionNotification extends PureComponent {
           shouldRefreshMyWallet={shouldRefreshMyWallet}
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
+          currentWallet={currentWallet}
         />
         <div className="election-blank" />
         <NodeTable
@@ -425,6 +427,7 @@ class ElectionNotification extends PureComponent {
           consensusContract={consensusContract}
           nightElf={nightElf}
           shouldRefreshNodeTable={shouldRefreshNodeTable}
+          nodeTableRefreshTime={nodeTableRefreshTime}
           changeVoteState={changeVoteState}
         />
         <CandidateApplyModal

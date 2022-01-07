@@ -13,7 +13,6 @@ import { MY_VOTE_DATA_TIP } from '@src/constants';
 import NightElfCheck from "../../../utils/NightElfCheck";
 import getLogin from "../../../utils/getLogin";
 import {message, Spin} from "antd";
-import {isPhoneCheck} from "../../../utils/deviceCheck";
 import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
 import addressFormat from "../../../utils/addressFormat";
 
@@ -34,8 +33,6 @@ export default class MyVote extends Component {
       }
     };
 
-    this.isPhone = isPhoneCheck();
-
     this.hasRun = false;
   }
 
@@ -50,10 +47,6 @@ export default class MyVote extends Component {
     }
   }
   getCurrentWallet() {
-    if (this.isPhone) {
-      return null;
-    }
-
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
       getLogin(nightElf, {file: 'MyVote.js'}, result => {
@@ -90,13 +83,8 @@ export default class MyVote extends Component {
     const { electionContract } = this.props;
     if (!electionContract) return;
     this.hasRun = true;
-    // const currentWallet = getCurrentWallet();
-    // console.log('fetchTableDataAndStatisData: ', currentWallet);
-
-    // const {currentWallet} = this.state;
     const currentWallet = currentWalletTemp || this.state.currentWallet;
-
-    console.log('fetchTableDataAndStatisData: ', currentWallet);
+    // console.log('fetchTableDataAndStatisData: ', currentWallet);
     if (!currentWallet || !currentWallet.address) {
       this.hasRun = false;
       return false;

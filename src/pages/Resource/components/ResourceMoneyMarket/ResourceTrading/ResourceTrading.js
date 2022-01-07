@@ -112,7 +112,8 @@ class ResourceTrading extends PureComponent {
       isSmallScreen,
       account,
       currentResourceType,
-      currentResourceIndex
+      currentResourceIndex,
+      loginAndInsertKeypairs
     } = this.props;
     const {
       sellVisible,
@@ -135,30 +136,36 @@ class ResourceTrading extends PureComponent {
 
     return (
       <div className='resource-trading'>
-        {this.isPhone ? (
+        {!nightElf ? (
           <div className='mobile-mask'>
-            <p className='mobile-mask-text'>View more on the PC</p>
+            <p className='mobile-mask-text'>Can not find wallet extension</p>
           </div>
         ) : null}
         <div className='resource-trading-body'>
-          <Row>
-            <Col
-                className="trading-title-buy"
-                xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
-            >
-              Buy
-            </Col>
-            <Col
-                className="trading-title-sell"
-                xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
-            >
-              Sell
-            </Col>
-          </Row>
+          {
+            isPhoneCheck()
+              ? null
+              : <Row>
+                  <Col
+                      className="trading-title-buy"
+                      xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
+                  >
+                    Buy
+                  </Col>
+                  <Col
+                      className="trading-title-sell"
+                      xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
+                  >
+                    Sell
+                  </Col>
+                </Row>
+          }
           <Divider className="resource-buy-divider" />
           <Row>
             <Col xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
+              {isPhoneCheck() && <div className="trading-title-buy">Buy</div>}
               <ResourceBuy
+                loginAndInsertKeypairs={loginAndInsertKeypairs}
                 currentResourceType={currentResourceType}
                 currentResourceIndex={currentResourceIndex}
                 currentWallet={currentWallet}
@@ -174,8 +181,10 @@ class ResourceTrading extends PureComponent {
                 handleModifyTradingState={this.handleModifyTradingState}
               />
             </Col>
-            <Col offset={1} xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
+            <Col offset={isPhoneCheck() ? 0 : 1} xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
+              {isPhoneCheck() && <div className="trading-title-sell">Sell</div>}
               <ResourceSell
+                loginAndInsertKeypairs={loginAndInsertKeypairs}
                 currentResourceType={currentResourceType}
                 currentResourceIndex={currentResourceIndex}
                 currentWallet={currentWallet}
@@ -253,6 +262,7 @@ class ResourceTrading extends PureComponent {
             SellELFValue={SellELFValue}
             sellFee={sellFee}
             sellEstimateValueLoading={sellEstimateValueLoading}
+            handleModifyTradingState={this.handleModifyTradingState}
           />
         </Modal>
       </div>

@@ -9,7 +9,6 @@ import { Row, Col, Spin } from 'antd';
 import ResourceCurrencyChart from './ResourceCurrencyChart/ResourceCurrencyChart';
 import ResourceTrading from './ResourceTrading/ResourceTrading';
 import RealTimeTransactions from './RealTimeTransactions/RealTimeTransactions';
-import { isPhoneCheck } from '../../../../utils/deviceCheck';
 import './ResourceMoneyMarket.less';
 
 export default class ResourceMoneyMarket extends PureComponent {
@@ -104,7 +103,8 @@ export default class ResourceMoneyMarket extends PureComponent {
       account,
       onRefresh,
       endRefresh,
-      appName
+      appName,
+      loginAndInsertKeypairs
     } = this.props;
     let loading = true;
     if (!realTimeTransactionLoading && !echartsLoading) {
@@ -116,7 +116,6 @@ export default class ResourceMoneyMarket extends PureComponent {
     const menuList = resourceTokens.map(v => v.symbol);
     const currentIndex = resourceTokens.findIndex(v => v.symbol === currentResourceSymbol);
 
-    const isPhone = isPhoneCheck();
     return (
       <div className='resource-market-body resource-block'>
         <Spin size='large' spinning={loading}>
@@ -129,8 +128,9 @@ export default class ResourceMoneyMarket extends PureComponent {
                 getEchartsLoading={this.getEchartsLoading}
             />
             <Row className="resource-sub-container">
-              {!isPhone && <Col xxl={14} xl={24} lg={24}>
+              {nightElf && <Col xxl={14} xl={24} lg={24}>
                 <ResourceTrading
+                  loginAndInsertKeypairs={loginAndInsertKeypairs}
                   currentResourceType={currentResourceSymbol}
                   currentResourceIndex={currentIndex}
                   currentWallet={currentWallet}

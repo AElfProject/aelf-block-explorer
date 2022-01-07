@@ -11,9 +11,7 @@ import { Button, Icon, Modal, message, Spin } from 'antd';
 import moment from 'moment';
 
 import './MyWalletCard.less';
-// import { inject, observer } from 'mobx-react';
 import { thousandsCommaWithDecimal } from '@utils/formater';
-import getCurrentWallet from '@utils/getCurrentWallet';
 import { ELF_DECIMAL, SYMBOL } from '@src/constants';
 import { APPNAME } from '@config/config';
 import NightElfCheck from "../../../../utils/NightElfCheck";
@@ -77,10 +75,6 @@ export default class MyWalletCard extends PureComponent {
   }
 
   getCurrentWallet(useLock = true) {
-    if (this.isPhone) {
-      // message.info('View more on PC');
-      return null;
-    }
 
     NightElfCheck.getInstance().check.then(ready => {
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
@@ -110,10 +104,10 @@ export default class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    // const { checkExtensionLockStatus } = this.props;
-    // checkExtensionLockStatus().then(() => {
     this.fetchData(prevProps);
-    // });
+    if (this.props.currentWallet && !prevProps.currentWallet) {
+      this.getCurrentWallet();
+    }
   }
 
   fetchData(prevProps) {
@@ -133,7 +127,7 @@ export default class MyWalletCard extends PureComponent {
       this.fetchWalletBalance();
     }
 
-    if (electionContract !== prevProps.electionContract) {
+    if (electionContract !== prevProps.electionContract && electionContract) {
       this.fetchElectorVoteInfo();
     }
 
@@ -168,10 +162,6 @@ export default class MyWalletCard extends PureComponent {
   }
 
   fetchWalletBalance() {
-    if (this.isPhone) {
-      message.info('View more on PC');
-      return null;
-    }
     const { multiTokenContract } = this.props;
     const {currentWallet} = this.state;
 
@@ -195,7 +185,7 @@ export default class MyWalletCard extends PureComponent {
 
     const {currentWallet} = this.state;
 
-    if (!currentWallet || !currentWallet.address) {
+    if (!currentWallet || !currentWallet.address || !electionContract) {
       return false;
     }
 
@@ -273,8 +263,6 @@ export default class MyWalletCard extends PureComponent {
           appName: APPNAME,
           address: currentWallet.address
         }, (error, result) => {
-          // localStorage.removeItem('currentWallet');
-          // this.handleUpdateWalletClick();
           // TODO: more refactor actions for login and logout
           message.success('Logout successful, refresh after 3s.', 3, () => {
             localStorage.removeItem('currentWallet');
@@ -337,11 +325,6 @@ export default class MyWalletCard extends PureComponent {
       }
     ];
 
-    if (this.isPhone) {
-      // return <div>View More On The PC</div>;
-      return null;
-    }
-    // <section className="my-wallet-card has-mask-on-mobile">
     return (
       <section className="my-wallet-card">
         <div className="my-wallet-card-header">
@@ -353,7 +336,7 @@ export default class MyWalletCard extends PureComponent {
             />
             My Wallet
           </h2>
-          { currentWallet && currentWallet.name && <Button
+          { !this.isPhone && currentWallet && currentWallet.name && <Button
             className="my-wallet-card-header-sync-btn update-btn"
             disabled={!(currentWallet && currentWallet.address)}
             onClick={this.extensionLogout}
@@ -375,28 +358,40 @@ export default class MyWalletCard extends PureComponent {
           </Button>}
         </div>
         <div className="my-wallet-card-body-wallet-title">
-          <span className="my-wallet-card-body-wallet-title-key">Name: </span>
-          <span className="primary-color">{currentWallet.name}</span>
-          <span className="my-wallet-card-body-wallet-title-blank"/>
-          <span className="my-wallet-card-body-wallet-title-key">
+          {isPhoneCheck() ? <>
+              <div>
+                <span className="my-wallet-card-body-wallet-title-key">Name: </span>
+                <span className="primary-color">{currentWallet.name}</span>
+              </div>
+              <div>
+                <span className="my-wallet-card-body-wallet-title-key">
+                  Address:{' '}
+                </span>
+                <span className="primary-color">
+                {currentWallet.formattedAddress}
+                </span>
+              </div>
+            </>
+            : <>
+              <span className="my-wallet-card-body-wallet-title-key">Name: </span>
+              <span className="primary-color">{currentWallet.name}</span>
+              <span className="my-wallet-card-body-wallet-title-blank"/>
+              <span className="my-wallet-card-body-wallet-title-key">
             Address:{' '}
           </span>
-          <span className="primary-color">
+              <span className="primary-color">
             {currentWallet.formattedAddress}
           </span>
-          {/*<h3 className='my-wallet-card-body-wallet-title-name'>*/}
-          {/*{currentWallet.name}*/}
-          {/*</h3>*/}
-          {/* <Button shape='round' onClick={this.showModal}>
-              解除绑定
-            </Button> */}
+            </>
+          }
+
         </div>
         <Spin spinning={loading}>
           <div className="my-wallet-card-body">
             <ul className="my-wallet-card-body-wallet-content">
-              {walletItems.map(item => {
+              {walletItems.map((item,  index) => {
                 return (
-                  <li>
+                  <li key={index}>
                     <span className="item-type">{item.type}:</span>
                     <span className="item-value">{item.value}</span>
                     <span className="item-extra">{item.extra}</span>

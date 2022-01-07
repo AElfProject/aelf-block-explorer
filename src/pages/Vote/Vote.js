@@ -14,7 +14,6 @@ import moment from 'moment';
 
 import './index.less';
 import NightElfCheck from '@utils/NightElfCheck';
-import checkPermissionRepeat from '@utils/checkPermissionRepeat';
 import getLogin from '@utils/getLogin';
 import {isPhoneCheck} from '@utils/deviceCheck';
 import { thousandsCommaWithDecimal } from '@utils/formater';
@@ -239,6 +238,7 @@ class VoteContainer extends Component {
       redeemVoteSelectedRowKeys: [],
 
       targetPublicKey: null,
+      nodeTableRefreshTime: new Date().getTime(),
       shouldRefreshNodeTable: false,
       shouldRefreshMyWallet: false,
       shouldRefreshElectionNotifiStatis: false,
@@ -258,6 +258,8 @@ class VoteContainer extends Component {
     };
 
     this.isPhone = isPhoneCheck();
+    this.loginMessageLock = false;
+    this.loginPlugin = this.loginPlugin.bind(this);
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -285,11 +287,6 @@ class VoteContainer extends Component {
     this.handleRedeemOneVoteConfirm = this.handleRedeemOneVoteConfirm.bind(
       this
     );
-    // this.refreshPageElectionNotifi = this.refreshPageElectionNotifi.bind(this);
-
-    this.formGroup = null;
-    // this.profitContractFromExt = null;
-    // this.electionContractFromExt = null;
     this.hasGetContractsFromExt = false;
   }
 
@@ -379,61 +376,61 @@ class VoteContainer extends Component {
   }
 
   getExtensionKeypairList() {
-    NightElfCheck.getInstance()
-      .check.then(item => {
-        if (item) {
-          const nightElf = NightElfCheck.getAelfInstanceByExtension();
+    NightElfCheck.getInstance().check.then(item => {
+      if (!item) {
+        return;
+      }
+      const nightElf = NightElfCheck.getAelfInstanceByExtension();
+      if(!nightElf) {
+        return;
+      }
 
-          if (nightElf) {
-            this.setState({
-              nightElf
-            });
-            // We can not do the work using extension here as the wallet maybe not stored in local yet.
-            nightElf.chain.getChainStatus((error, result) => {
-              if (result) {
-                if (result.error === 200005) {
-                  message.warning(result.errorMessage.message, 3);
-                  this.setState({
-                    isPluginLock: true
-                  });
-                  return;
-                }
-                this.setState({
-                  isPluginLock: false
-                });
-                nightElf.checkPermission(
-                  {
-                    APPNAME,
-                    type: 'domain'
-                  },
-                  (error, result) => {
-                    if (result) {
-                      this.insertKeypairs(result);
-                    }
-                  }
-                );
-              }
-            });
-          }
-        }
-      })
-      .catch(error => {
-        this.setState({
-          showDownloadPlugin: true
-        });
+      this.setState({
+        nightElf
       });
+      // We can not do the work using extension here as the wallet maybe not stored in local yet.
+      nightElf.chain.getChainStatus().then((result) => {
+        console.log('nightElf.chain.getChainStatus: ', result);
+        if (!result) {
+          return;
+        }
+        if (result.error === 200005) {
+          message.warning(result.errorMessage.message, 3);
+          this.setState({
+            isPluginLock: true
+          });
+          return;
+        }
+        this.setState({
+          isPluginLock: false
+        });
+
+        this.setState({
+          isPluginLock: false
+        });
+      }).catch(error => {
+        console.log('nightElf.chain.getChainStatus:error', error);
+      });
+
+    }).catch(error => {
+      this.setState({
+        showDownloadPlugin: true
+      });
+    });
   }
 
   getNightElfKeypair(wallet) {
-    if (wallet) {
-      wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
-      wallet.formattedAddress = addressFormat(wallet.address);
-      localStorage.setItem('currentWallet', JSON.stringify(wallet));
-      this.setState({
-        currentWallet: wallet,
-        showWallet: true
-      });
+    console.log('getNightElfKeypair: ', wallet);
+    if (!wallet) {
+      return;
     }
+    wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
+    wallet.formattedAddress = addressFormat(wallet.address);
+    localStorage.setItem('currentWallet', JSON.stringify(wallet));
+    this.setState({
+      currentWallet: wallet,
+      showWallet: true
+    });
   }
 
   handleSwithVoteSelectedRowChange(selectedRowKeys, selectedRows) {
@@ -468,25 +465,7 @@ class VoteContainer extends Component {
     });
   }
 
-  insertKeypairs(checkPermissionResult) {
-    if (checkPermissionResult && checkPermissionResult.error === 0) {
-      this.setState({
-        isPluginLock: false
-      });
-      this.loginPlugin(checkPermissionResult);
-      return;
-    }
-    // todo: There are some same codes
-    if (checkPermissionResult.error === 200005) {
-      message.warning(checkPermissionResult.errorMessage.message, 3);
-      this.setState({
-        isPluginLock: true
-      });
-      // return Promise.reject('Plugin lock!');
-    }
-  }
-
-  loginPlugin(checkPermissionResult) {
+  loginPlugin() {
     const nightElf = NightElfCheck.getAelfInstanceByExtension();
     const getLoginPayload = {
       appName: APPNAME
@@ -497,27 +476,19 @@ class VoteContainer extends Component {
         if (result && result.error === 0) {
           console.log('result', result);
           const wallet = JSON.parse(result.detail);
-          if (checkPermissionResult.permissions.length) {
-            // EXPLAIN: Need to redefine this scope
-            const payload = {
-              appName: APPNAME,
-              result: checkPermissionResult
-            };
-            checkPermissionRepeat(nightElf, payload, () => {
-              this.getNightElfKeypair(wallet);
-              // todo: Extract
-              this.onExtensionAndWalletReady().then(() => {
-                resolve();
-              });
+          this.getNightElfKeypair(wallet);
+          // todo: Extract
+          this.onExtensionAndWalletReady().then(() => {
+            resolve();
+          });
+          if (!this.loginMessageLock) {
+            this.loginMessageLock = true;
+            message.success('Login success!!', 3, () => {
+              this.loginMessageLock = false;
             });
-          } else {
-            this.getNightElfKeypair(wallet);
-            // todo: Extract
-            this.onExtensionAndWalletReady().then(() => {
-              resolve();
-            });
-            message.success('Login success!!', 3);
           }
+
+          // }
         } else {
           if (result.error === 200010) {
             message.warn('Please Login.');
@@ -821,42 +792,20 @@ class VoteContainer extends Component {
   }
 
   checkExtensionLockStatus() {
-    if (this.isPhone) {
-      message.info('View more on PC');
-      return null;
-    }
-    const currentWallet = getCurrentWallet();
-
     return new Promise((resolve, reject) => {
-      // Calling getChainStatus to make the extension connect the chain
-      // todo: There are some same code.
-      NightElfCheck.getInstance().check.then(ready => {
+      NightElfCheck.getInstance().check.then(() => {
         const nightElf = NightElfCheck.getAelfInstanceByExtension();
-        nightElf
-          .checkPermission({
-            appName: APPNAME,
-            type: 'addresss',
-            address: currentWallet.address
-          })
-          .then(checkPermissionResult => {
-            // When plugin is lock
-            if (checkPermissionResult.error !== 0) {
-              const { errorMessage } = checkPermissionResult;
-              message.warning(errorMessage.message, 3);
-              this.hasGetContractsFromExt = false; // Need to get contracts from ext again once plugin is locked.
-              throw new Error(errorMessage.message);
-            }
-            if (!this.hasGetContractsFromExt) {
-              // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
-              nightElf.chain.getChainStatus().then(() => {
-                this.loginPlugin(checkPermissionResult).then(() => {
-                  resolve();
-                });
-              });
-              return;
-            }
+        console.log('checkExtensionLockStatus: ', this.hasGetContractsFromExt);
+        if (this.hasGetContractsFromExt) {
+          resolve();
+        }
+
+        // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
+        nightElf.chain.getChainStatus().then(() => {
+          this.loginPlugin().then(() => {
             resolve();
           });
+        });
       }).catch(error => {
         message.warn('Please download and install NightELF browser extension.');
       });
@@ -933,7 +882,7 @@ class VoteContainer extends Component {
               error,
               errorMessage
             } = res;
-            if (+error === 0) {
+            if (+error === 0 || !error) {
               this.checkTransactionResult(res, 'voteRedeemModalVisible')
                   .then(() => {
                     this.refreshPageElectionNotifi();
@@ -1100,7 +1049,7 @@ class VoteContainer extends Component {
           error,
           errorMessage
         } = res;
-        if (+error === 0) {
+        if (+error === 0 || !error) {
           this.checkTransactionResult(res).then(() => {
             // Close tow modal as there are two situation, one open a modal and anothor open two modals.
             // Consider to do the samething after checkTransactionResult in the same page.
@@ -1131,6 +1080,7 @@ class VoteContainer extends Component {
 
   refreshPageElectionNotifi() {
     this.setState({
+      nodeTableRefreshTime: new Date().getTime(),
       shouldRefreshNodeTable: true,
       shouldRefreshMyWallet: true,
       shouldRefreshElectionNotifiStatis: true,
@@ -1179,7 +1129,7 @@ class VoteContainer extends Component {
           error,
           errorMessage
         } = res;
-        if (+error === 0) {
+        if (+error === 0 || !error) {
           this.checkTransactionResult(res).then(() => {
             // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
             // Consider to do the samething after checkTransactionResult in the same page.
@@ -1266,9 +1216,8 @@ class VoteContainer extends Component {
         let total = {};
         const dividendAmounts = schemeIds.map((item, index) => {
           const profit = list[index];
-          const {
-            result = {}
-          } = profit;
+          const result = profit ? profit.result || profit : {};
+
           let {
             value = {}
           } = result || {};
@@ -1379,16 +1328,14 @@ class VoteContainer extends Component {
           >
             Election Notification
           </Menu.Item>
-          {this.isPhone ? null : (
-            <Menu.Item
-              key={routePaths.myVote}
-              onClick={() => {
-                this.props.history.push(routePaths.myVote);
-              }}
-            >
-              My Vote
-            </Menu.Item>
-          )}
+          <Menu.Item
+            key={routePaths.myVote}
+            onClick={() => {
+              this.props.history.push(routePaths.myVote);
+            }}
+          >
+            My Vote
+          </Menu.Item>
         </Menu>
       </section>
     );
@@ -1436,6 +1383,7 @@ class VoteContainer extends Component {
       activeVoteRecordsForOneCandidate,
       dividends,
       shouldRefreshNodeTable,
+      nodeTableRefreshTime,
       shouldRefreshMyWallet,
       voteToRedeem,
       redeemOneVoteModalVisible,
@@ -1484,13 +1432,13 @@ class VoteContainer extends Component {
                     dividends={dividends}
                     electionContractFromExt={electionContractFromExt}
                     shouldRefreshNodeTable={shouldRefreshNodeTable}
+                    nodeTableRefreshTime={nodeTableRefreshTime}
                     shouldRefreshMyWallet={shouldRefreshMyWallet}
                     changeVoteState={this.changeVoteState}
                     checkExtensionLockStatus={this.checkExtensionLockStatus}
                     shouldRefreshElectionNotifiStatis={
                       shouldRefreshElectionNotifiStatis
                     }
-                    refreshPageElectionNotifi={this.refreshPageElectionNotifi}
                     currentWallet={currentWallet}
                   />
                 )}
