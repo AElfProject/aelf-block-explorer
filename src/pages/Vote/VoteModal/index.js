@@ -11,7 +11,10 @@ import {
   Icon,
   Tooltip
 } from 'antd';
+import DatePickerReact from "react-datepicker";
 import moment from 'moment';
+
+import "react-datepicker/dist/react-datepicker.css";
 
 import {
   SYMBOL,
@@ -30,6 +33,7 @@ import {
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import './index.less';
 import {ELF_DECIMAL} from "../constants";
+import {isIPhone} from "../../../utils/deviceCheck";
 
 const { TabPane } = Tabs;
 
@@ -140,10 +144,12 @@ class VoteModal extends Component {
 
     this.handleAllIn = this.handleAllIn.bind(this);
     this.handleOk = this.handleOk.bind(this);
+    this.getFormItems = this.getFormItems.bind(this);
 
     this.state = {
       currentTab: 'fromWallet', // fromActiveVotes
       formattedLockTime: null,
+      datePickerTime: null
     };
   }
 
@@ -168,6 +174,10 @@ class VoteModal extends Component {
       handleVoteFromExpiredSelectedRowChange,
       changeVoteState
     } = this.props;
+
+    const {
+      datePickerTime
+    } = this.state;
 
     const columns = getColumns.call(this);
 
@@ -271,15 +281,44 @@ class VoteModal extends Component {
           {
             label: 'Lock Time',
             render: (
-              <DatePicker
-                className="date-picker-in-modal"
-                disabledDate={disabledDate}
-                onChange={value => {
-                  this.props.form.setFieldsValue({
-                    lockTime: value
-                  });
-                }}
-              />
+              <>
+                {isIPhone() ? <DatePickerReact
+                  dateFormat="yyyy-MM-dd"
+                  minDate={new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))}
+                  maxDate={new Date(moment().add(1080, "d"))}
+                  showYearDropdown
+                  selected={datePickerTime}
+                  onChange={(date) => {
+                    console.log('setFieldsValue', date);
+                    this.setState({
+                      datePickerTime: date
+                    });
+                    this.props.form.setFieldsValue({
+                      lockTime: moment(date)
+                    });
+                  }}
+                  className="react-datepicker-custom-container"
+                  dayClassName={() => "day-class"}
+                  includeDateIntervals={[
+                    {
+                      start: new Date(moment().add(SHORTEST_LOCK_TIME, "d")),
+                      end: new Date(moment().add(1080, "d"))
+                    }
+                  ]}
+                  placeholderText="Select date"
+                /> : <DatePicker
+                  className="date-picker-in-modal"
+                  disabledDate={disabledDate}
+                  onChange={value => {
+                    this.setState({
+                      datePickerTime: new Date(value)
+                    });
+                    this.props.form.setFieldsValue({
+                      lockTime: value
+                    });
+                  }}
+                />}
+              </>
             ),
             tip:
               'Withdraw and transfer are not supported during the locking period',

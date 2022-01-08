@@ -21,6 +21,22 @@ export const isPhoneCheck = () => {
   return phoneCheckResult;
 };
 
+let isIPhoneChecked = false;
+let iPhoneCheckResult = null;
+export const isIPhone = () => {
+  //判断是否手机端访问
+  if (!isIPhoneChecked) {
+    const userAgentInfo = navigator.userAgent.toLowerCase();
+    const agents = ['iphone', 'ipad', 'ipod'];
+    isIPhoneChecked = true;
+    iPhoneCheckResult = agents.find(agent => {
+      return userAgentInfo.includes(agent);
+    });
+    return iPhoneCheckResult;
+  }
+  return iPhoneCheckResult;
+};
+
 export const isAndroid = () => {
   // TODO:
 };

@@ -35,6 +35,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^5.0.0",
     "react": "^16.5.1",
+    "react-datepicker": "^4.5.0",
     "react-dom": "^16.5.1",
     "react-if": "^3.4.3",
     "react-redux": "^7.1.1",
