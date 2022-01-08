@@ -273,7 +273,7 @@ class VoteModal extends Component {
               validateFirst: true // todo: How to set it to default?
             },
             // todo: extra should compatible with ReactElement and string
-            tip: `Usable Balance: ${thousandsCommaWithDecimal(
+            tip: isIPhone() ? null : `Usable Balance: ${thousandsCommaWithDecimal(
               balance,
               false
             )} ${SYMBOL}`
@@ -281,8 +281,10 @@ class VoteModal extends Component {
           {
             label: 'Lock Time',
             render: (
-              <>
-                {isIPhone() ? <DatePickerReact
+              <span style={{
+                position: 'relative'
+              }}>
+                {!isIPhone() ? <DatePickerReact
                   dateFormat="yyyy-MM-dd"
                   minDate={new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))}
                   maxDate={new Date(moment().add(1080, "d"))}
@@ -297,7 +299,7 @@ class VoteModal extends Component {
                       lockTime: moment(date)
                     });
                   }}
-                  className="react-datepicker-custom-container"
+                  className="react-datepicker-custom-container date-picker-in-modal"
                   dayClassName={() => "day-class"}
                   includeDateIntervals={[
                     {
@@ -318,10 +320,9 @@ class VoteModal extends Component {
                     });
                   }}
                 />}
-              </>
+              </span>
             ),
-            tip:
-              'Withdraw and transfer are not supported during the locking period',
+            tip: isIPhone() ? null : 'Withdraw and transfer are not supported during the locking period',
             validator: {
               rules: [
                 {
