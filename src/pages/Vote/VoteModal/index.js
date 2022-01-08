@@ -284,7 +284,7 @@ class VoteModal extends Component {
               <span style={{
                 position: 'relative'
               }}>
-                {!isIPhone() ? <DatePickerReact
+                {isIPhone() ? <DatePickerReact
                   dateFormat="yyyy-MM-dd"
                   minDate={new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))}
                   maxDate={new Date(moment().add(1080, "d"))}
