@@ -21,6 +21,7 @@ import {
 import moment from 'moment';
 // import Highlighter from 'react-highlight-words';
 import { connect } from 'react-redux';
+import io from 'socket.io-client';
 
 import {
   getAllTeamDesc,
@@ -40,6 +41,7 @@ import './index.less';
 import NightElfCheck from "../../../../utils/NightElfCheck";
 import getLogin from "../../../../utils/getLogin";
 import {ELF_DECIMAL} from "../../constants";
+import {SOCKET_URL_NEW} from "../../../../constants";
 import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
 import addressFormat from "../../../../utils/addressFormat";
 
@@ -61,8 +63,12 @@ class NodeTable extends PureComponent {
       currentWallet: {},
       totalVotesAmount: null,
       // searchText: '',
-      isLoading: false
+      isLoading: false,
+      producedBlocks: null,
     };
+    this.socket = io({
+      path: SOCKET_URL_NEW,
+    });
 
     this.hasRun = false;
   }
@@ -70,6 +76,11 @@ class NodeTable extends PureComponent {
   // todo: how to combine cdm & cdu
   componentDidMount() {
     this.getCurrentWallet();
+    this.wsProducedBlocks();
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -83,6 +94,26 @@ class NodeTable extends PureComponent {
     if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
       this.fetchNodes({});
     }
+  }
+
+  wsProducedBlocks() {
+    this.socket.on("produced_blocks", (data) => {
+      this.setState({
+        producedBlocks: data
+      });
+
+      const {nodeList} = this.state;
+      if (!nodeList || !nodeList.length) {
+        return;
+      }
+      const newNodeList = nodeList.map(item => {
+        item.producedBlocks = data[item.pubkey]
+        return item;
+      });
+      this.setState({
+        nodeList: newNodeList
+      });
+    });
   }
 
   getCurrentWallet() {
@@ -376,7 +407,7 @@ class NodeTable extends PureComponent {
       .then(resArr => {
         // process data
         const processedNodesData = this.processNodesData(resArr);
-        // console.log('processedNodesData currentWallet', resArr, processedNodesData, currentWallet.pubKey,
+        // console.log('processedNodesData currentWallet', resArr, processedNodesData, currentWallet.pubKey);
         //   this.state.currentWallet, currentWalletInput);
         this.setState(
           {
@@ -400,7 +431,7 @@ class NodeTable extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   processNodesData(resArr) {
-    // const { totalVotesAmount } = this.state;
+    const { producedBlocks } = this.state;
 
     let totalActiveVotesAmount = 0;
     const nodeInfos = resArr[0] ? resArr[0].value : [];
@@ -466,6 +497,12 @@ class NodeTable extends PureComponent {
       item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
       item.candidateInformation.myRedeemableVoteAmountForOneCandidate =
         myRedeemableVoteAmountForOneCandidate || '-';
+
+      if (producedBlocks) {
+        item.candidateInformation.producedBlocks = producedBlocks[item.candidateInformation.pubkey]
+      } else {
+        item.candidateInformation.producedBlocks = 0;
+      }
     });
 
     return nodeInfos
