@@ -149,6 +149,7 @@ export default class BlockDetailPage extends React.Component {
                 ...(result && result.Header || {})
             },
             error: error,
+            blockHash: result && result.BlockHash,
             blockHeight: +blockHeight,
             // txs
             txs_loading: false,
@@ -177,11 +178,13 @@ export default class BlockDetailPage extends React.Component {
         const {
             params
         } = this.props.match;
+
         const {
             blockHeight,
-            txs_loading
+            txs_loading,
+            blockHash
         } = this.state;
-        if (blockHeight != params.id && parseInt(params.id) == params.id && !txs_loading) {
+        if (blockHeight !== params.id && blockHash !== params.id && !txs_loading) {
             this.fetchBlockInfo(params.id);
         }
     }
