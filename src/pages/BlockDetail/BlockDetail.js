@@ -184,7 +184,7 @@ export default class BlockDetailPage extends React.Component {
             txs_loading,
             blockHash
         } = this.state;
-        if (blockHeight !== params.id && blockHash !== params.id && !txs_loading) {
+        if (blockHeight !== +params.id && blockHash !== params.id && !txs_loading) {
             this.fetchBlockInfo(params.id);
         }
     }
