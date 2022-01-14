@@ -244,7 +244,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Terms',
         dataIndex: 'terms',
-        width: 90,
+        width: 80,
         key: 'terms',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.terms - b.terms
@@ -252,7 +252,7 @@ class NodeTable extends PureComponent {
       {
         title: 'Produce Blocks',
         dataIndex: 'producedBlocks',
-        width: 150,
+        width: 140,
         key: 'producedBlocks',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.producedBlocks - b.producedBlocks
@@ -260,16 +260,16 @@ class NodeTable extends PureComponent {
       {
         title: 'Obtain Votes',
         dataIndex: 'obtainedVotesAmount',
-        width: 200,
+        width: 160,
         key: 'obtainedVotesCount',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.obtainedVotesAmount - b.obtainedVotesAmount,
-        render: value => value / ELF_DECIMAL
+        render: value => Number.parseFloat((value / ELF_DECIMAL).toFixed(2)).toLocaleString()
       },
       {
         title: 'Voted Rate',
         key: 'votedRate',
-        width: 100,
+        width: 108,
         dataIndex: 'votedRate',
         defaultSortOrder: 'descend',
         render: value =>
