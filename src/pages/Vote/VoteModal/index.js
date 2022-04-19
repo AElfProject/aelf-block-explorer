@@ -338,7 +338,7 @@ class VoteModal extends Component {
           }
         ]
       },
-      {
+      /* {
         type: FROM_ACTIVE_VOTES,
         label: 'From Not Expired Votes',
         index: 2,
@@ -412,7 +412,7 @@ class VoteModal extends Component {
           //   }
           // }
         ]
-      }
+      } */
     ];
   }
 
