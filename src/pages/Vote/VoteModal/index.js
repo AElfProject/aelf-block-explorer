@@ -439,12 +439,20 @@ class VoteModal extends Component {
 
   // todo: the method seems useless
   handleOk() {
-    const { callback, changeVoteState, form } = this.props;
+    const { callback, changeVoteState, form, setVoteConfirmLoading } = this.props;
     const { voteType } = this.props;
     const formItemsNeedToValidate = formItemsNeedToValidateMap[voteType];
 
+    setVoteConfirmLoading(true);
+
+    setTimeout(() => {
+      // For old wallet app. We can not receive close event
+      setVoteConfirmLoading(false);
+    }, 30 * 1000);
+
     form.validateFields(formItemsNeedToValidate, (err, values) => {
       if (err) {
+        setVoteConfirmLoading(false);
         return;
       }
       changeVoteState(values, () => {
@@ -542,6 +550,7 @@ class VoteModal extends Component {
       voteModalVisible,
       handleVoteTypeChange,
       voteType,
+      voteConfirmLoading,
       isLockTimeForTest,
       changeVoteState
     } = this.props;
@@ -568,7 +577,7 @@ class VoteModal extends Component {
         visible={voteModalVisible}
         onOk={this.handleOk}
         okText="OK"
-        // confirmLoading={confirmLoading}
+        confirmLoading={voteConfirmLoading}
         width={980}
         // okText='Next'
         centered

@@ -253,8 +253,11 @@ class VoteContainer extends Component {
       },
       redeemOneVoteModalVisible: false,
       isLockTimeForTest: false,
+      voteConfirmLoading: false, // with setVoteConfirmLoading
+      redeemConfirmLoading: false, // with setVoteConfirmLoading
       isPluginLock: false,
-      dividendLoading: false
+      dividendLoading: false,
+      claimLoading: false,
     };
 
     this.isPhone = isPhoneCheck();
@@ -288,6 +291,9 @@ class VoteContainer extends Component {
       this
     );
     this.hasGetContractsFromExt = false;
+    this.setVoteConfirmLoading = this.setVoteConfirmLoading.bind(this);
+    this.setRedeemConfirmLoading = this.setRedeemConfirmLoading.bind(this);
+    this.setClaimLoading = this.setClaimLoading.bind(this);
   }
 
   async componentDidMount() {
@@ -331,6 +337,22 @@ class VoteContainer extends Component {
     if (electionContract && currentWallet && shouldJudgeIsCurrentCandidate) {
       this.judgeCurrentUserIsCandidate();
     }
+  }
+
+  setVoteConfirmLoading(isLoading) {
+    this.setState({
+      voteConfirmLoading: isLoading
+    });
+  }
+  setRedeemConfirmLoading(isLoading) {
+    this.setState({
+      redeemConfirmLoading: isLoading
+    });
+  }
+  setClaimLoading(isLoading) {
+    this.setState({
+      claimLoading: isLoading
+    });
   }
 
   getWalletBalance() {
@@ -874,6 +896,8 @@ class VoteContainer extends Component {
     const [item] = votesToRedeem;
     if (!item) {
       message.error('No selected vote');
+      this.setVoteConfirmLoading(false);
+      this.setRedeemConfirmLoading(false);
     } else {
       electionContractFromExt
           .Withdraw(item)
@@ -896,10 +920,14 @@ class VoteContainer extends Component {
                 redeemVoteSelectedRowKeys: []
               });
             } else {
+              this.setVoteConfirmLoading(false);
+              this.setRedeemConfirmLoading(false);
               message.error(errorMessage.message);
             }
           })
           .catch(err => {
+            this.setVoteConfirmLoading(false);
+            this.setRedeemConfirmLoading(false);
             console.error(err);
           });
     }
@@ -1056,7 +1084,8 @@ class VoteContainer extends Component {
             this.setState(
                 {
                   voteConfirmModalVisible: false,
-                  voteModalVisible: false
+                  voteModalVisible: false,
+                  voteConfirmLoading: false,
                 },
                 () => {
                   this.refreshPageElectionNotifi();
@@ -1066,14 +1095,16 @@ class VoteContainer extends Component {
         } else {
           message.error(errorMessage.message);
           this.setState({
-            isLockTimeForTest: false
+            isLockTimeForTest: false,
+            voteConfirmLoading: false,
           });
         }
       })
       .catch(err => {
         console.error(err);
         this.setState({
-          isLockTimeForTest: false
+          isLockTimeForTest: false,
+          voteConfirmLoading: false,
         });
       });
   }
@@ -1084,7 +1115,9 @@ class VoteContainer extends Component {
       shouldRefreshNodeTable: true,
       shouldRefreshMyWallet: true,
       shouldRefreshElectionNotifiStatis: true,
-      isLockTimeForTest: false
+      isLockTimeForTest: false,
+      voteConfirmLoading: false,
+      redeemConfirmLoading: false,
     });
   }
 
@@ -1136,7 +1169,8 @@ class VoteContainer extends Component {
             this.setState(
                 {
                   voteConfirmModalVisible: false,
-                  voteModalVisible: false
+                  voteModalVisible: false,
+                  voteConfirmLoading: false,
                 },
                 () => {
                   this.refreshPageElectionNotifi();
@@ -1145,10 +1179,12 @@ class VoteContainer extends Component {
           });
         } else {
           message.error(errorMessage.message);
+          this.setVoteConfirmLoading(false);
         }
       })
       .catch(err => {
         console.error('ChangeVotingOption', err);
+        this.setVoteConfirmLoading(false);
       });
   }
 
@@ -1293,19 +1329,38 @@ class VoteContainer extends Component {
             beneficiary: currentWallet.address
           })
           .then(res => {
-            this.checkTransactionResult(res, 'dividendModalVisible').then(
-              () => {
-                this.setState({
-                  shouldRefreshMyWallet: true
-                });
-              }
-            );
+            const {
+              error,
+              errorMessage
+            } = res;
+            if (+error === 0 || !error) {
+              this.checkTransactionResult(res, 'dividendModalVisible').then(
+                () => {
+                  this.setState({
+                    shouldRefreshMyWallet: true,
+                    claimLoading: false
+                  });
+                }
+              ).catch(err => {
+                this.setClaimLoading(false);
+                message.error(err.Error || err.message);
+                console.error('handleClaimDividendClick', err);
+              });
+            } else {
+              message.error(errorMessage.message);
+              this.setState({
+                isLockTimeForTest: false,
+                claimLoading: false,
+              });
+            }
           })
           .catch(err => {
+            this.setClaimLoading(false);
             console.error('handleClaimDividendClick', err);
           });
       })
       .catch(err => {
+        this.setClaimLoading(false);
         console.error('checkExtensionLockStatus', err);
       });
   }
@@ -1391,7 +1446,10 @@ class VoteContainer extends Component {
       shouldJudgeIsCurrentCandidate,
       isPluginLock,
       isLockTimeForTest,
-      dividendLoading
+      dividendLoading,
+      voteConfirmLoading,
+      redeemConfirmLoading,
+      claimLoading,
     } = this.state;
 
     const secondaryLevelNav = this.renderSecondaryLevelNav();
@@ -1485,6 +1543,8 @@ class VoteContainer extends Component {
               currentWalletName={currentWalletName}
               balance={balance}
               callback={this.handleVoteConfirmOk}
+              setVoteConfirmLoading={this.setVoteConfirmLoading}
+              voteConfirmLoading={voteConfirmLoading}
               onCancel={this.handleCancel.bind(this, 'voteModalVisible')}
               handleSwitchVoteAmountChange={this.handleSwitchVoteAmountChange}
               handleLockTimeChange={this.handleLockTimeChange}
@@ -1554,6 +1614,8 @@ class VoteContainer extends Component {
               nodeAddress={nodeAddress}
               nodeName={nodeName}
               voteRedeemModalVisible={voteRedeemModalVisible}
+              setRedeemConfirmLoading={this.setRedeemConfirmLoading}
+              redeemConfirmLoading={redeemConfirmLoading}
               handleRedeemConfirm={this.handleRedeemConfirm}
               handleCancel={this.handleCancel}
               redeemableVoteRecordsForOneCandidate={
@@ -1584,6 +1646,8 @@ class VoteContainer extends Component {
               changeModalVisible={this.changeModalVisible}
               dividends={dividends}
               handleClaimDividendClick={this.handleClaimDividendClick}
+              setClaimLoading={this.setClaimLoading}
+              claimLoading={claimLoading}
             />
           </section>
         </div>
