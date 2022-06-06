@@ -230,7 +230,7 @@ class RedeemModal extends PureComponent {
     setTimeout(() => {
       // For old wallet app. We can not receive close event
       setRedeemConfirmLoading(false);
-    }, 30 * 1000);
+    }, 60 * 1000);
 
     form.validateFields((err, values) => {
       if (err) {

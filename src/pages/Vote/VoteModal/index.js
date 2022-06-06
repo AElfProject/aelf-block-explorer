@@ -448,7 +448,7 @@ class VoteModal extends Component {
     setTimeout(() => {
       // For old wallet app. We can not receive close event
       setVoteConfirmLoading(false);
-    }, 30 * 1000);
+    }, 60 * 1000);
 
     form.validateFields(formItemsNeedToValidate, (err, values) => {
       if (err) {
