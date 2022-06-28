@@ -294,6 +294,7 @@ class VoteContainer extends Component {
     this.setVoteConfirmLoading = this.setVoteConfirmLoading.bind(this);
     this.setRedeemConfirmLoading = this.setRedeemConfirmLoading.bind(this);
     this.setClaimLoading = this.setClaimLoading.bind(this);
+    this.judgeCurrentUserIsCandidate = this.judgeCurrentUserIsCandidate.bind(this);
   }
 
   async componentDidMount() {
@@ -1486,6 +1487,7 @@ class VoteContainer extends Component {
                     consensusContract={consensusContract}
                     nightElf={nightElf}
                     isCandidate={isCandidate}
+                    judgeCurrentUserIsCandidate={this.judgeCurrentUserIsCandidate}
                     handleDividendClick={this.handleDividendClick}
                     dividends={dividends}
                     electionContractFromExt={electionContractFromExt}

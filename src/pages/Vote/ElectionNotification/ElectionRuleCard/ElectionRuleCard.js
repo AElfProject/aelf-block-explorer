@@ -12,9 +12,10 @@ import { Button, Icon } from 'antd';
 
 import './ElectionRuleCard.style.less';
 import { isPhoneCheck } from '@utils/deviceCheck';
+import Svg from "../../../../components/Svg/Svg";
 
 function ElectionRuleCard(props) {
-  const { isCandidate, displayApplyModal, currentWallet } = props;
+  const { isCandidate, displayApplyModal, currentWallet, quitElection } = props;
 
   const onClick = () => {
     if (isCandidate) {
@@ -59,6 +60,14 @@ function ElectionRuleCard(props) {
             ? 'Modify team information'
             : 'Become a candidate node'}
         </Button>
+        {isCandidate &&
+          <div className="quit-button" onClick={quitElection}>
+            Quit <Svg
+            icon="quit"
+            className="quit-logo"
+          />
+          </div>
+        }
       </div>
     );
   };

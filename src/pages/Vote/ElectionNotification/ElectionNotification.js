@@ -131,6 +131,7 @@ class ElectionNotification extends PureComponent {
     this.handleApplyModalOk = this.handleApplyModalOk.bind(this);
     this.handleApplyModalCancel = this.handleApplyModalCancel.bind(this);
     this.displayApplyModal = this.displayApplyModal.bind(this);
+    this.quitElection = this.quitElection.bind(this);
   }
 
   async componentDidMount() {
@@ -303,6 +304,49 @@ class ElectionNotification extends PureComponent {
     });
   }
 
+  quitElection() {
+    const {
+      currentWallet,
+      electionContractFromExt,
+      checkExtensionLockStatus,
+      judgeCurrentUserIsCandidate
+    } = this.props;
+
+    checkExtensionLockStatus().then(() => {
+      electionContractFromExt
+        .QuitElection({
+          value: currentWallet.pubkey
+        })
+        .then(res => {
+          if (res.error) {
+            message.error(res.errorMessage.message);
+            return;
+          }
+          if (!res) {
+            message.error(UNKNOWN_ERROR_TIP);
+            return;
+          }
+          const transactionId = res.result
+            ? res.result.TransactionId
+            : res.TransactionId;
+          setTimeout(async () => {
+            try {
+              const result = await aelf.chain.getTxResult(transactionId);
+              const { Status: status } = result;
+              getStateJudgment(status, transactionId);
+              judgeCurrentUserIsCandidate();
+            } catch (e) {
+              console.log(e);
+              message.error(e.message || e.Error || 'Network error');
+            }
+          }, 4000);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+  }
+
   handleApplyModalOk(admin) {
     const {
       currentWallet,
@@ -405,6 +449,7 @@ class ElectionNotification extends PureComponent {
         <ElectionRuleCard
           isCandidate={isCandidate}
           currentWallet={currentWallet}
+          quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
         <div className="election-blank" />
