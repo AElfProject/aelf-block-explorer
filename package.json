@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "aelf-bridge": "^0.0.9",
-    "aelf-sdk": "^3.2.36",
+    "aelf-sdk": "^3.2.40",
     "antd": "^3.26.19",
     "apisauce": "^0.16.0",
     "axios": "^0.18.0",

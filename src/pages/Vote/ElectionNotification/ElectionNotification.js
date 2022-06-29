@@ -351,7 +351,8 @@ class ElectionNotification extends PureComponent {
     const {
       currentWallet,
       electionContractFromExt,
-      checkExtensionLockStatus
+      checkExtensionLockStatus,
+      judgeCurrentUserIsCandidate
     } = this.props;
 
     // todo: there are the same code in Vote.js
@@ -379,6 +380,7 @@ class ElectionNotification extends PureComponent {
               });
               const { Status: status } = result;
               getStateJudgment(status, transactionId);
+              judgeCurrentUserIsCandidate();
               if (status === txStatusInUpperCase.mined) {
                 this.props.history.push(
                     `/vote/apply/keyin?pubkey=${currentWallet &&
