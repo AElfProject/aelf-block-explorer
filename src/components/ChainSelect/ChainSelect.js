@@ -9,25 +9,49 @@ import React, {
 import {
     Select
 } from 'antd';
-import {CHAINS_LINK, CHAINS_LINK_NAMES} from '../../../config/config';
-
+import CHAIN_STATE  from '../../../config/configCMS.json';
 import './ChainSelect.styles.less';
 import {CHAIN_ID} from "../../constants";
+import { getCMSDelayRequest } from '../../utils/getCMS';
+
+const CHAINS_LIST = CHAIN_STATE.chain || [];
 
 const Option = Select.Option;
 export default class ChainSelect extends Component {
 
+    constructor() {
+        super();
+        this.state = {
+            chainList: CHAINS_LIST
+        }
+
+    }
+
+    async fetch() {
+        // fetch
+        const data = await getCMSDelayRequest();
+        if(data && data.chain) this.setState({
+            chainList: data.chain
+        });
+    }
+
+    componentDidMount() {
+        this.fetch();
+    }
+
     changeChain(chainId) {
-        window.location = CHAINS_LINK[chainId];
+        const chainInfo = this.state.chainList.find(item=> item.chainId === chainId);
+        if(chainInfo.chainsLink) window.location = chainInfo.chainsLink;
     }
 
     renderOptions() {
-        const chainIdHTML = Object.keys(CHAINS_LINK).map(item => {
+        const chainIdHTML = this.state.chainList.map(item => {
             return <Option
-              key={item + Math.random()}
-              value={item}
+                className='common-select-option-wrapper chain-select-option'
+                key={item.chainsLink + Math.random()}
+                value={item.chainId || ''}
             >
-                {CHAINS_LINK_NAMES[item].replace('chain', '')}
+                {item.chainsLinkName.replace('chain', '')}
             </Option>;
         });
         return chainIdHTML;
@@ -40,7 +64,7 @@ export default class ChainSelect extends Component {
         return (
           <div className="chain-select-container">
               <Select
-                className="chain-select"
+                className="chain-select common-select-wrapper"
                 defaultValue={defaultValue}
                 onChange={this.changeChain}>
                   {optionsHTML}
