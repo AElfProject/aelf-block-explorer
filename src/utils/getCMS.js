@@ -6,7 +6,7 @@ export const sleep = (time) => {
   return new Promise((resolve) => {
     const ids = setTimeout(() => {
       clearTimeout(ids);
-      resolve('sleep');
+      resolve("sleep");
     }, time);
   });
 };
@@ -17,14 +17,15 @@ export async function getCMSDelayRequest(delay = 5000) {
     await sleep(delay);
     const res = await axios({
       method: "get",
-      url: "/cms/api/chain-states",
+      url: "/cms/chain-list-by-networks",
       params: {
-        populate: "chain",
-        "filters[netWorkType][$eq]": NETWORK_TYPE,
+        // populate: "chain",
+        // "filters[netWorkType][$eq]": NETWORK_TYPE,
+        netWorkType: NETWORK_TYPE,
       },
     });
-    if (res.data && res.data.data.length) {
-      return res.data.data[0].attributes;
+    if (res.data && res.data.length) {
+      return res.data[0] || {};
     } else {
       return {};
     }

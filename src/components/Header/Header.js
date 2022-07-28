@@ -19,6 +19,7 @@ import {isPhoneCheck} from '../../utils/deviceCheck';
 import HeaderTop from './HeaderTop';
 import IconFont from '../IconFont';
 import NetSelect from '../NetSelect/NetSelect';
+import { getCMSDelayRequest } from '../../utils/getCMS';
 
 const networkList = [
   {
@@ -33,7 +34,7 @@ const networkList = [
   },
 ];
 
-const CHAINS_LIST = CHAIN_STATE.chain || [];
+const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -53,6 +54,7 @@ class BrowserHeader extends PureComponent {
     this.state = {
       showSearch: this.getSearchStatus(),
       showMobileMenu: false,
+      chainList: CHAINS_LIST,
       current:
         location.pathname === '/'
           ? '/home'
@@ -102,9 +104,18 @@ class BrowserHeader extends PureComponent {
   componentDidMount() {
     this.setSeleted();
     this.handleResize();
+    this.fetchChainList();
 
     window.addEventListener('scroll', this.handleScroll.bind(this));
     window.addEventListener('resize', this.handleResize);
+  }
+
+  // fetch chain list by network
+  async fetchChainList() {
+    const data = await getCMSDelayRequest();
+    if(data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at) this.setState({
+        chainList: data.chainItem
+    })
   }
 
   componentWillUnmount() {
@@ -149,7 +160,7 @@ class BrowserHeader extends PureComponent {
   };
 
   renderPhoneMenu() {
-    const chainIdHTML = CHAINS_LIST.map(item => {
+    const chainIdHTML = this.state.chainList.map(item => {
       let classSelected = '';
       if (CHAIN_ID === item.chainId) {
         classSelected = 'header-chain-selected';
@@ -356,7 +367,7 @@ class BrowserHeader extends PureComponent {
           <nav className='header-navbar'>
             {menuHtml}
             {this.isPhone && this.state.showSearch && <Search />}
-            {!this.isPhone && <ChainSelect />}
+            {!this.isPhone && <ChainSelect chainList={this.state.chainList}/>}
           </nav>
         </div>
         </div>
