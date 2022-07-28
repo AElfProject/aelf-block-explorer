@@ -77,7 +77,7 @@ async function getCMS() {
     try {
         const res = await axios({
             method: "get",
-            url: "https://test-cms.aelf.io/chain-list-by-networks",
+            url: "https://test-cms.aelf.io/cms/chain-list-by-networks",
             params: {
                 // populate: "chain",
                 // "filters[netWorkType][$eq]": mergedConfig.NETWORK_TYPE,
