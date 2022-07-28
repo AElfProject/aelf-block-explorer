@@ -8,6 +8,8 @@ const config = require('./config.json');
 
 const BUILD_ENDPOINT = process.env.CHAIN_ENDPOINT;
 const MAINCHAINID = 'AELF';
+// MAIN TESTNET
+const NETWORK_TYPE = 'TESTNET';
 // ChainId: AELF
 // ChainId: tDVV(AElf public chain)
 const CHAINS_LINK = {
@@ -25,6 +27,7 @@ module.exports = {
   DEFAUTRPCSERVER,
   commonPrivateKey,
   MAINCHAINID,
+  NETWORK_TYPE,
   APPNAME,
   CHAINS_LINK,
   CHAINS_LINK_NAMES,

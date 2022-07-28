@@ -1,0 +1,102 @@
+@import "../../assets/less/_variables.less";
+
+.header-container-top {
+  background-color: transparent;
+  transition: all 200ms;
+  height: @header-top-height;
+  border-bottom: 1px solid @border-color2;
+  .header-top-content {
+    display: flex;
+    .search-container .search-icon-container {
+      background-color: @headerbgColor2;
+    }
+    .ant-input:focus {
+      box-shadow: none;
+    }
+  }
+  .net-change-menu {
+    color: @textContext1;
+    background-color: transparent;
+    margin-right: -20px;
+    .ant-menu-submenu-selected .ant-menu-submenu-title .submenu-title-wrapper {
+      border-bottom: 0;
+      color: @textContext1;
+    }
+    .ant-menu-item,
+    .ant-menu-submenu {
+      line-height: @line-height1;
+    }
+    .ant-menu-item-active,
+    .ant-menu-submenu-active {
+      border-bottom: 0;
+      color: @hoverColor1;
+      > a {
+        color: @hoverColor1;
+      }
+      > a:hover {
+        color: @hoverColor1;
+      }
+    }
+  }
+
+  .ant-menu-submenu-title {
+    .submenu-arrow {
+      color: @textContext2;
+    }
+  }
+
+  .ant-menu-horizontal > .ant-menu-item > a {
+    color: @textContext1;
+  }
+
+  .aelf-logo-container {
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    // line-height: @header-top-height;
+    color: @textContextWhite;
+    & > svg {
+      width: 116px;
+      height: 32px;
+    }
+  }
+}
+
+.header-container-main-top {
+  background-color: @headerbgColor1;
+  border-bottom: none;
+  .net-change-menu,
+  .ant-menu-submenu-title:hover,
+  .net-change-menu
+    .ant-menu-submenu-selected
+    .ant-menu-submenu-title
+    .submenu-title-wrapper,
+  .ant-menu-horizontal > .ant-menu-item > a,
+  .ant-menu-submenu:hover {
+    color: @textContextWhite;
+  }
+
+  .net-change-menu .ant-menu-item-selected,
+  .ant-menu-item-active,
+  .ant-menu-submenu-active,
+  .ant-menu-submenu-selected {
+    border-bottom: 0;
+    color: @textContextWhite;
+    > a {
+      color: @textContextWhite;
+    }
+    > a:hover {
+      color: @hoverColor1;
+    }
+  }
+  .ant-menu-submenu-title {
+    .submenu-arrow {
+      color: @textContextWhite;
+    }
+  }
+  .aelf-logo-container {
+    & > svg {
+      width: 96px;
+    }
+  }
+}
