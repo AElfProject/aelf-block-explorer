@@ -328,6 +328,7 @@
 .header-drawer-menu-wrapper {
   .ant-drawer-body {
     padding: 16px !important;
+    overflow-x: hidden;
   }
   .net-select-wrapper {
     padding-left: 16px;
@@ -352,27 +353,15 @@
     }
     .ant-menu-inline .ant-menu-submenu .ant-menu-inline {
       // .ant-menu-item-selected {}
+      width: 130%;
       margin-left: -32px;
       padding-left: 0;
       .ant-menu-item {
         overflow: unset;
         padding-left: 72px !important;
         background-color: @bgMenuItem!important;
-        &::after {
-          border-right: none;
-          width: 48px;
-          content: '';
-          margin-right: -48px;
-          background-color: @bgMenuItem!important;
-          display: inline-block;
-          transform: scaleY(1);
-          opacity: 1;
-        }
         &.ant-menu-item-selected {
           background-color: @headerbgColor4 !important;
-          &::after {
-            background-color: @headerbgColor4 !important;
-          }
         }
         &>a {
           color: @textContext2;
@@ -457,18 +446,11 @@
         color: @textContext3;
       }
     }
-  }
   .ant-menu-inline .ant-menu-submenu .ant-menu-inline {
     .ant-menu-item {
       background-color: @headerbgColor3 !important;
-      &::after {
-        background-color: @headerbgColor3 !important;
-      }
       &.ant-menu-item-selected {
         background-color: @headerbgColor2 !important;
-        &::after {
-          background-color: @headerbgColor2!important;
-        }
       }
       &>a {
         color: @textContextWhite;
@@ -480,6 +462,7 @@
         color: @textContextWhite !important;
       }
     }
+  }
   }
 }
 
