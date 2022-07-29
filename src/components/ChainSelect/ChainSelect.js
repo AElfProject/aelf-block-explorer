@@ -46,7 +46,7 @@ export default class ChainSelect extends Component {
               <Select
                 className="chain-select common-select-wrapper"
                 defaultValue={defaultValue}
-                onChange={this.changeChain}>
+                onChange={(v)=>this.changeChain(v)}>
                   {optionsHTML}
               </Select>
           </div>
