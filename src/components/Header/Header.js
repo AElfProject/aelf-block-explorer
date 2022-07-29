@@ -112,7 +112,7 @@ class BrowserHeader extends PureComponent {
 
   // fetch chain list by network
   async fetchChainList() {
-    const data = await getCMSDelayRequest();
+    const data = await getCMSDelayRequest(0);
     if(data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at) this.setState({
         chainList: data.chainItem
     })
@@ -170,16 +170,14 @@ class BrowserHeader extends PureComponent {
       </Menu.Item>;
     });
     return <SubMenu
-      popupClassName='common-header-submenu'
-      title={
-        <span className='submenu-title-wrapper'>
-                  EXPLORERS
-            </span>
-      }
-      className='aelf-submenu-container'
-    >
-      {chainIdHTML}
-    </SubMenu>;
+          popupClassName='common-header-submenu'
+          title={
+            <span className='submenu-title-wrapper'>EXPLORERS</span>
+          }
+          className='aelf-submenu-container'
+        >
+          {chainIdHTML}
+        </SubMenu>;
   }
 
 
@@ -295,6 +293,15 @@ class BrowserHeader extends PureComponent {
           {resourceHTML}
         </SubMenu>
         {isPhone && this.renderPhoneMenu()}
+        {isPhone && <Menu.Item key="/about">
+          <a
+            href="https://www.aelf.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            About
+          </a>
+        </Menu.Item>}
       </Menu>
     );
   }

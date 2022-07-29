@@ -42,7 +42,7 @@ export default function HeaderTop({
           >
             <SubMenu
               key={"/Explorers"}
-              popupClassName="common-header-submenu"
+              popupClassName="common-header-submenu explorers-popup"
               title={
                 <span className="submenu-title-wrapper">
                   Explorers
@@ -64,7 +64,7 @@ export default function HeaderTop({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Abount
+                About
               </a>
             </MenuItem>
           </Menu>
