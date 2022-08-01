@@ -64,6 +64,25 @@
 
 .explorers-popup {
   z-index: 1100;
+  .ant-menu-item-selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ant-menu-item-selected::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    opacity: 1;
+    transform: none;
+    background: url('../../assets/images/correct.png') no-repeat;
+    background-size: 16px 16px;
+    display: inline-block;
+    top: auto;
+    bottom: auto;
+    right: auto;
+    position: relative;
+  }
 }
 
 .header-container-main-top {
