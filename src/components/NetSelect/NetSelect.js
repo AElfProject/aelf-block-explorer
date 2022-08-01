@@ -1,31 +1,31 @@
 import { Select } from "antd";
 import React, { useCallback } from "react";
 import "./NetSelect.style.less";
-import { NETWORK_TYPE } from "../../../config/config";
+import { CHAIN_ID } from "../../../config/config";
 import IconFont from "../IconFont";
 
 const { Option } = Select;
 
-export default function NetSelect({ networkList }) {
+export default function NetSelect({ chainList }) {
   const selectChange = useCallback((val) => {
-    const network = networkList.find((item) => item.netWorkType === val);
-    if (network) window.location = network.url;
+    const chainInfo = chainList.find(item=> item.chainId === val);
+    if(chainInfo.chainsLink) window.location = chainInfo.chainsLink;
   }, []);
   return (
     <div className="net-select-wrapper">
       <Select
         className="common-select-wrapper net-select-container"
-        defaultValue={NETWORK_TYPE}
+        defaultValue={CHAIN_ID}
         onChange={selectChange}
         closeIcon={<IconFont type="Down" />}
       >
-        {networkList.map((item) => (
+        {chainList.map((item) => (
           <Option
             className="common-select-option-wrapper net-select-option"
-            key={item.url}
-            value={item.netWorkType}
+            key={item.chainId}
+            value={item.chainId}
           >
-            {item.title}
+            {item.chainsLinkName.replace('chain', '')}
           </Option>
         ))}
       </Select>

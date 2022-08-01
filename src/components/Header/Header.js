@@ -160,23 +160,23 @@ class BrowserHeader extends PureComponent {
   };
 
   renderPhoneMenu() {
-    const chainIdHTML = this.state.chainList.map(item => {
+    const networkHTML = networkList.map(item => {
       let classSelected = '';
-      if (CHAIN_ID === item.chainId) {
+      if (NETWORK_TYPE === item.netWorkType) {
         classSelected = 'header-chain-selected';
       }
-      return  <Menu.Item key={item.chainId}>
-        <a href={item.chainsLink} className={classSelected}>{item.chainsLinkName}</a>
+      return  <Menu.Item key={item.netWorkType}>
+        <a href={item.url} className={classSelected}>{item.title}</a>
       </Menu.Item>;
     });
     return <SubMenu
           popupClassName='common-header-submenu'
           title={
-            <span className='submenu-title-wrapper'>EXPLORERS</span>
+            <span className='submenu-title-wrapper'>Explorers</span>
           }
           className='aelf-submenu-container'
         >
-          {chainIdHTML}
+          {networkHTML}
         </SubMenu>;
   }
 
@@ -191,7 +191,7 @@ class BrowserHeader extends PureComponent {
       voteHTML = (
         <Menu.Item key='/vote'>
           {/* <Icon type='appstore' /> */}
-          <Link to='/vote'>VOTE</Link>
+          <Link to='/vote'>Vote</Link>
           {/* <Link to='/voteold'>VoteOld</Link> */}
           {/* <span>APP CENTER [Building]</span> */}
         </Menu.Item>
@@ -199,7 +199,7 @@ class BrowserHeader extends PureComponent {
       resourceHTML = (
         <Menu.Item key='/resource'>
           {/* <Icon type='appstore' /> */}
-          <Link to='/resource'>RESOURCE</Link>
+          <Link to='/resource'>Resource</Link>
           {/* <span>APP CENTER [Building]</span> */}
         </Menu.Item>
       );
@@ -219,7 +219,7 @@ class BrowserHeader extends PureComponent {
       >
         <Menu.Item key='/home'>
           {/* <Icon type='home' /> */}
-          <Link to='/'>HOME</Link>
+          <Link to='/'>Home</Link>
         </Menu.Item>
         <SubMenu
           key="BLOCKCHAIN"
@@ -228,7 +228,7 @@ class BrowserHeader extends PureComponent {
             <>
               <span className='submenu-title-wrapper'>
                 {/* <Icon type='gold' /> */}
-                BLOCKCHAIN
+                Blockchain
               </span>
               {!isPhone && <IconFont className="submenu-arrow" type="Down" />}
             </>
@@ -269,7 +269,7 @@ class BrowserHeader extends PureComponent {
         </SubMenu>
         <Menu.Item key='/token'>
           {/* <Icon type='home' /> */}
-          <Link to='/token'>TOKEN</Link>
+          <Link to='/token'>Token</Link>
         </Menu.Item>
         <SubMenu
           key='GOVERNANCE'
@@ -278,7 +278,7 @@ class BrowserHeader extends PureComponent {
               <>
                 <span className='submenu-title-wrapper'>
                   {/* <Icon type='gold' /> */}
-                  GOVERNANCE
+                  Governance
                 </span>
                 {!isPhone && <IconFont className="submenu-arrow" type="Down" />}
               </>
@@ -287,7 +287,7 @@ class BrowserHeader extends PureComponent {
             className='aelf-submenu-container'
         >
           <Menu.Item key='/proposal'>
-            <Link to='/proposal'>PROPOSAL</Link>
+            <Link to='/proposal'>Proposal</Link>
           </Menu.Item>
           {voteHTML}
           {resourceHTML}
@@ -344,7 +344,7 @@ class BrowserHeader extends PureComponent {
           />
         }
         >
-          <NetSelect networkList={networkList}/>
+          <NetSelect chainList={this.state.chainList}/>
         {this.renderMenu(menuMode, showMenu)}
       </Drawer>
     )
