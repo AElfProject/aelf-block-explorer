@@ -4,6 +4,7 @@ import IconFont from "../IconFont";
 import "./HeaderTop.styles.less";
 import { NETWORK_TYPE } from "../../../config/config";
 import Search from "../Search/Search";
+import Svg from "../Svg/Svg";
 
 const { SubMenu, Item: MenuItem } = Menu;
 
@@ -28,10 +29,7 @@ export default function HeaderTop({
       }
     >
       <div className={headerClass}>
-        <IconFont
-          type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
-          className="aelf-logo-container"
-        />
+        <Svg icon={NETWORK_TYPE === "MAIN" ? "main_logo" : "test_logo"}  className="aelf-logo-container"/>
         <div className="header-top-content">
           {showSearch && <Search />}
           <Menu
@@ -42,6 +40,7 @@ export default function HeaderTop({
           >
             <SubMenu
               key={"/Explorers"}
+              popupOffset={[0, -7]}
               popupClassName="common-header-submenu explorers-popup"
               title={
                 <span className="submenu-title-wrapper">

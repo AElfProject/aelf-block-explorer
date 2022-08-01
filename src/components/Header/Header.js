@@ -224,6 +224,7 @@ class BrowserHeader extends PureComponent {
         <SubMenu
           key="BLOCKCHAIN"
           popupClassName='common-header-submenu'
+          popupOffset={[0, -7]}
           title={
             <>
               <span className='submenu-title-wrapper'>
@@ -236,7 +237,7 @@ class BrowserHeader extends PureComponent {
           }
           className='aelf-submenu-container'
         >
-          <SubMenu key='Block' title='Block'>
+          <SubMenu key='Block' title='Block'  popupOffset={[0, -4]}>
             <Menu.Item key='/blocks'>
               {/* <Icon type='gold' /> */}
               <Link to='/blocks'>Blocks</Link>
@@ -273,6 +274,7 @@ class BrowserHeader extends PureComponent {
         </Menu.Item>
         <SubMenu
           key='GOVERNANCE'
+          popupOffset={[0, -7]}
           popupClassName='common-header-submenu'
             title={
               <>
@@ -334,14 +336,18 @@ class BrowserHeader extends PureComponent {
         visible={showMenu}
         placement='right'
         width={'80%'}
+        closable={false}
         className={`header-drawer-menu-wrapper ${NETWORK_TYPE === "MAIN" ? 'header-main-drawer-menu-wrapper' : ''}`}
         onClose={()=>this.toggleMenu()}
         getContainer={false}
         title={
-          <IconFont
-            type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
-            className="aelf-logo-container"
-          />
+          <>
+            <IconFont
+              type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
+              className="aelf-logo-container"
+            />
+            <IconFont type='ErrorClose' className='close-icon' onClick={()=>this.toggleMenu()}/>
+          </>
         }
         >
           <NetSelect chainList={this.state.chainList}/>

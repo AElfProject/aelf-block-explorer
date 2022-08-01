@@ -107,9 +107,15 @@
   &.ant-select-dropdown-menu-item-selected {
     font-weight: 400;
     color: @hoverColor1;
+    background-color: #fff;
+    
   }
-  &.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+  &.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
     background-color: @hoverBg;
+  }
+  &.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled, .ant-select-dropdown-menu-item-selected){
+    background-color: @hoverBg;
+    color: @hoverColor1;
     font-weight: 400;
   }
 }
