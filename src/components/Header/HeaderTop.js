@@ -34,7 +34,7 @@ export default function HeaderTop({
           {showSearch && <Search />}
           <Menu
             className="net-change-menu"
-            defaultSelectedKeys={[NETWORK_TYPE]}
+            selectedKeys={[NETWORK_TYPE]}
             mode={menuMode}
             onClick={menuClick}
           >
