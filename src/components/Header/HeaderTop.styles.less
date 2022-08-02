@@ -9,9 +9,9 @@
     display: flex;
     .search-container .search-icon-container {
       background-color: @headerbgColor2;
-    }
-    .ant-input:focus {
-      box-shadow: none;
+      &:hover {
+        background-color: @bgHover;
+      }
     }
   }
   .net-change-menu {
@@ -20,7 +20,6 @@
     margin-right: -20px;
     .ant-menu-submenu-selected .ant-menu-submenu-title .submenu-title-wrapper {
       border-bottom: 0;
-      color: @textContext1;
     }
     .ant-menu-item,
     .ant-menu-submenu {
@@ -37,12 +36,6 @@
       > a:hover {
         color: @hoverColor1;
       }
-    }
-  }
-
-  .ant-menu-submenu-title {
-    .submenu-arrow {
-      color: @textContext2;
     }
   }
 

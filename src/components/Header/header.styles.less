@@ -73,7 +73,10 @@
       color: @textContext;
     }
 
-    .ant-menu-item-selected,.ant-menu-item-active,.ant-menu-submenu-active,.ant-menu-submenu-selected {
+    .ant-menu-item-selected,
+    .ant-menu-item-active,
+    .ant-menu-submenu-active,
+    .ant-menu-submenu-selected {
       border-bottom: none;
       color: @hoverColor1;
       > a {
@@ -84,12 +87,12 @@
         color: @hoverColor1;
       }
     }
-    .ant-menu-item-active,.ant-menu-submenu-active {
+    .ant-menu-item-active,
+    .ant-menu-submenu-active {
       .submenu-arrow {
         transform: rotateX(180deg);
       }
     }
-
 
     .ant-menu-submenu-title:hover {
       color: @hoverColor1;
@@ -112,9 +115,6 @@
     .search-container .search-icon-container {
       background-color: @headerbgColor2;
     }
-    .ant-input:focus {
-      box-shadow: none;
-    }
   }
 
   .ant-menu-item,
@@ -132,7 +132,9 @@
   //.ant-menu-item-active {
   //  border-bottom: 2px solid @hoverColor1;
   //}
-  .ant-menu-item, .ant-menu-submenu-title, .ant-menu-submenu-inline {
+  .ant-menu-item,
+  .ant-menu-submenu-title,
+  .ant-menu-submenu-inline {
     transition: none;
   }
   .ant-menu-submenu {
@@ -186,76 +188,11 @@
     background-color: rgba(255, 255, 255, 0.3) !important;
   }
 
-  .header-chain-selected{
-     color: @textContext3 !important;
-   }
+  .header-chain-selected {
+    color: @textContext3 !important;
+  }
 }
 
-
- //@media screen and (max-width: 768px) {
- //  .header-container {
- //    .header-navbar {
- //      position: fixed;
- //      width: 100%;
- //      left: -8px;
- //      top: 64px;
- //      display: flex;
- //      flex-direction: column;
- //    }
- //
- //    .header-navbar {
- //      margin-left: 8px;
- //      width: 100%;
- //    }
- //
- //    .ant-menu-item {
- //      line-height: 1.5;
- //      padding: 8px 16px;
- //      background: @bgBlankWhite;
- //      margin: 0 !important;
- //    }
- //
- //    .ant-menu-submenu {
- //      background: @bgBlankWhite;
- //    }
- //
- //    .ant-menu-inline .ant-menu-submenu-title {
- //      margin: 0;
- //    }
- //
- //    .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
- //      background: rgba(255, 255, 255, 0.3);
- //    }
- //
- //    .ant-menu .ant-menu-submenu-selected {
- //      background: @bgBlankWhite;
- //    }
- //
- //    .header-navbar-mobile-more {
- //      display: block;
- //      color: @hoverColor1;
- //      font-size: 24px;
- //      height: 64px;
- //      line-height: 56px;
- //    }
- //
- //    .search-container {
- //      background: @bgBlankWhite;
- //      box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
- //      padding: 16px;
- //    }
- //
- //    .aelf-submenu-container {
- //      .ant-menu {
- //        background: @bgBlankWhite;
- //      }
- //    }
- //  }
- //}
-
-
-// @media screen and (max-width: 768px) {
-// .header-container {
 .header-container-mobile {
   .header-navbar {
     position: fixed;
@@ -264,6 +201,11 @@
     top: 56px;
     display: flex;
     flex-direction: column;
+  }
+
+  .divider-mobile {
+    border-color: @border-color2;
+    margin: 8px 0;
   }
 
   .header-navbar {
@@ -280,7 +222,7 @@
   .aelf-logo-container {
     font-size: 24px;
     & > svg {
-      width: 96px;
+      width: 72px;
       height: 24px;
     }
   }
@@ -330,7 +272,7 @@
   }
   .search-container {
     background: @bgBlankWhite;
-    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 16px;
   }
 
@@ -358,17 +300,25 @@
     padding-left: 16px;
     padding-right: 16px;
   }
-  .ant-drawer-body>.ant-menu-inline>.ant-menu-submenu-selected .submenu-title-wrapper {
+  .ant-drawer-body
+    > .ant-menu-inline
+    > .ant-menu-submenu-selected
+    .submenu-title-wrapper {
     font-weight: 500;
   }
-  .ant-drawer-body>.ant-menu-inline>.ant-menu-submenu>.ant-menu-submenu-title, .ant-drawer-body>.ant-menu-inline>.ant-menu-item {
+  .ant-drawer-body
+    > .ant-menu-inline
+    > .ant-menu-submenu
+    > .ant-menu-submenu-title,
+  .ant-drawer-body > .ant-menu-inline > .ant-menu-item {
     padding: 16px !important;
     line-height: 24px;
     height: 56px;
   }
   .ant-menu-inline {
     border-right: none;
-    .ant-menu-item .anticon, .ant-menu-submenu-title .anticon {
+    .ant-menu-item .anticon,
+    .ant-menu-submenu-title .anticon {
       font-size: 12px;
     }
     .ant-menu-item:after {
@@ -391,18 +341,19 @@
         &.ant-menu-item-selected {
           background-color: @headerbgColor4 !important;
         }
-        &>a {
+        & > a {
           color: @textContext2;
         }
       }
     }
-    &>.ant-menu-submenu>.ant-menu-submenu-title, &>.ant-menu-item {
+    & > .ant-menu-submenu > .ant-menu-submenu-title,
+    & > .ant-menu-item {
       padding: 16px !important;
       line-height: 24px;
       height: 44px;
       font-weight: 400;
     }
-    &>.ant-menu-submenu {
+    & > .ant-menu-submenu {
       .ant-menu-item {
         height: 40px;
         line-height: 22px;
@@ -410,7 +361,7 @@
         padding-bottom: 11px !important;
       }
     }
-    &>.ant-menu-submenu-open>.ant-menu-submenu-title {
+    & > .ant-menu-submenu-open > .ant-menu-submenu-title {
       .submenu-right-arrow {
         transform: rotate(180deg);
       }
@@ -446,11 +397,16 @@
       color: #fff;
     }
   }
-  .ant-drawer-content,.ant-drawer-header {
+  .divider-mobile {
+    border-color: @bgBlankWhite;
+  }
+  .ant-drawer-content,
+  .ant-drawer-header {
     background-color: @headerbgColor1;
   }
 
-  .ant-menu-submenu-title:hover, .ant-drawer-close {
+  .ant-menu-submenu-title:hover,
+  .ant-drawer-close {
     color: @textContextWhite;
   }
   .ant-select-selection {
@@ -463,55 +419,62 @@
     background: none;
   }
   .common-select-wrapper {
-    &.ant-select-open, &.ant-select-focused {
+    &.ant-select-open,
+    &.ant-select-focused {
       .ant-select-selection {
+        border-color: @borderWhite;
+        &:focus {
           border-color: @borderWhite;
-          &:focus {
-              border-color: @borderWhite;
-          }
+        }
       }
     }
   }
-  .common-select-wrapper .ant-select-selection-selected-value, .net-select-container .ant-select-arrow {
+  .common-select-wrapper .ant-select-selection-selected-value,
+  .net-select-container .ant-select-arrow {
     color: @textContextWhite;
   }
 
-  .ant-menu,.ant-menu .ant-menu-submenu,.ant-menu-item, .ant-menu-submenu-selected,.ant-menu-submenu-title {
+  .ant-menu,
+  .ant-menu .ant-menu-submenu,
+  .ant-menu-item,
+  .ant-menu-submenu-selected,
+  .ant-menu-submenu-title {
     background-color: @headerbgColor1;
     color: @textContextWhite;
-    &>a {
+    & > a {
       color: @textContextWhite;
     }
   }
 
   .ant-menu-inline {
     .ant-menu-submenu-selected {
-      &>.ant-menu-submenu-title {
+      & > .ant-menu-submenu-title {
         color: @textContext3;
       }
     }
-  .ant-menu-inline .ant-menu-submenu .ant-menu-inline {
-    .ant-menu-item {
-      background-color: @headerbgColor3 !important;
-      &.ant-menu-item-selected {
+    .ant-menu-inline .ant-menu-submenu .ant-menu-inline {
+      .ant-menu-item {
+        background-color: @headerbgColor3 !important;
+        &.ant-menu-item-selected {
+          background-color: @headerbgColor2 !important;
+        }
+        & > a {
+          color: @textContextWhite;
+        }
+      }
+      .ant-menu-item-selected {
         background-color: @headerbgColor2 !important;
-      }
-      &>a {
-        color: @textContextWhite;
-      }
-    }
-    .ant-menu-item-selected {
-      background-color: @headerbgColor2 !important;
-      &>a {
-        color: @textContextWhite !important;
+        & > a {
+          color: @textContextWhite !important;
+        }
       }
     }
-  }
   }
 }
 
 @media screen and (max-width: 1160px) {
-  .header-container,.header-navbar {
+  .header-container,
+  .header-navbar {
     max-width: 894px;
   }
 }
@@ -520,10 +483,12 @@
   .header-fixed-container {
     height: @header-top-height;
   }
-  .header-container,.header-navbar {
+  .header-container,
+  .header-navbar {
     max-width: 100%;
   }
-  .header-fixed-container,.ant-drawer-header {
+  .header-fixed-container,
+  .ant-drawer-header {
     .aelf-logo-container {
       font-size: 32px;
       & > svg {

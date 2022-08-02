@@ -3,8 +3,8 @@
  * @author huangzongzhe
  */
 /* eslint-disable fecs-camelcase */
-import React, { PureComponent } from 'react';
-import { Menu, Icon, Drawer } from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { Menu, Icon, Drawer, Divider } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -294,6 +294,7 @@ class BrowserHeader extends PureComponent {
           {voteHTML}
           {resourceHTML}
         </SubMenu>
+        {isPhone && <Divider className='divider-mobile'/>}
         {isPhone && this.renderPhoneMenu()}
         {isPhone && <Menu.Item key="/about">
           <a

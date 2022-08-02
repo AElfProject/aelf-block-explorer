@@ -56,7 +56,13 @@
 }
 
 .common-header-submenu {
+  .ant-menu {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
   .ant-menu-item, .ant-menu-submenu-title {
+    margin: 0;
     a:hover, &:hover {
       color: @hoverColor1 !important;
       width: 100%;
@@ -64,6 +70,10 @@
     &:hover {
       background-color: @hoverBg;
     }
+  }
+  .ant-menu-item, .ant-menu-submenu>.ant-menu-submenu-title {
+    height: 44px;
+    line-height: 44px;
   }
   .ant-menu-item-selected,.ant-menu-item-active,.ant-menu-submenu-active,.ant-menu-submenu-selected {
     color: @hoverColor1 !important;
