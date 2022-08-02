@@ -334,6 +334,9 @@
       width: 130%;
       margin-left: -32px;
       padding-left: 0;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      background-color: #2d3f68;
       .ant-menu-item {
         overflow: unset;
         padding-left: 72px !important;
@@ -399,6 +402,7 @@
   }
   .divider-mobile {
     border-color: @bgBlankWhite;
+    opacity: 0.1;
   }
   .ant-drawer-content,
   .ant-drawer-header {
@@ -416,7 +420,7 @@
     border-color: @borderWhite;
   }
   .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-    background: none;
+    background: none !important;
   }
   .common-select-wrapper {
     &.ant-select-open,

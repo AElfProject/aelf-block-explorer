@@ -92,23 +92,17 @@
   .ant-menu-horizontal > .ant-menu-item > a {
     color: @textContextWhite;
   }
-
-  .net-change-menu .ant-menu-item-selected,
-  .ant-menu-item-active,
-  .ant-menu-submenu-active,
-  .ant-menu-submenu-selected {
-    border-bottom: 0;
-    color: @textContextWhite;
-    > a {
-      color: @textContextWhite;
-    }
-    > a:hover {
+  .net-change-menu  {
+    .ant-menu-item-active .ant-menu-submenu-title .submenu-title-wrapper,
+    .ant-menu-submenu-active .ant-menu-submenu-title .submenu-title-wrapper {
+      border-bottom: 0;
       color: @hoverColor1;
-    }
-  }
-  .ant-menu-submenu-title {
-    .submenu-arrow {
-      color: @textContextWhite;
+      > a {
+        color: @hoverColor1;
+      }
+      > a:hover {
+        color: @hoverColor1;
+      }
     }
   }
   .aelf-logo-container {
