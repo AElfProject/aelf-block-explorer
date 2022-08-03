@@ -370,12 +370,13 @@ class BrowserHeader extends PureComponent {
     }
 
     const headerClass = this.isPhone ? 'header-container header-container-mobile' : 'header-container';
+    const networkClass = this.isPhone ?  (NETWORK_TYPE === 'MAIN' ? ' header-main-container-mobile' : '') : (NETWORK_TYPE === 'MAIN' ? ' header-main-container' : '');
 
     return (
       <div className='header-fixed-container'>
         <div>
         {!this.isPhone && <HeaderTop showSearch={this.state.showSearch} headerClass={headerClass} menuMode={menuMode} networkList={networkList} />}
-        <div className={headerClass}>
+        <div className={headerClass + networkClass}>
           {mobileMoreHTML}
 
           <nav className='header-navbar'>
