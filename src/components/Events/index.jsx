@@ -12,7 +12,7 @@ const Events = props => {
     } = props;
     return (
         <div className="event-list">
-            {list.map(item => (<EventItem {...item} />))}
+            {list.map((item, index) => (<EventItem key={index} {...item} />))}
         </div>
     );
 };

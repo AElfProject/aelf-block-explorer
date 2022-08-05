@@ -5,18 +5,9 @@
  * TODO: Vote && Resource To migrate out of Application
  */
 
-import React, { Component } from 'react';
-import { message } from 'antd';
-import { connect } from 'react-redux';
-
-import AElfBridge from 'aelf-bridge';
-import config, {
-  DEFAUTRPCSERVER,
-} from '@config/config';
-const HTTP_PROVIDER = DEFAUTRPCSERVER;
-const bridgeInstance = new AElfBridge({
-  endpoint: HTTP_PROVIDER
-});
+import React, { Component } from "react";
+import { message } from "antd";
+import { connect } from "react-redux";
 
 import { aelf } from '../../utils';
 import { APPNAME, resourceTokens } from '../../../config/config';
@@ -47,9 +38,6 @@ class Resource extends Component {
       nightElf: null
     };
     this.walletRef = null;
-    this.getResource = this.getResource.bind(this);
-    this.getCurrentBalance = this.getCurrentBalance.bind(this);
-    this.loginAndInsertKeypairs = this.loginAndInsertKeypairs.bind(this);
   }
 
   componentDidMount() {
@@ -64,57 +52,55 @@ class Resource extends Component {
         );
         return;
       }
-      aelf.chain.contractAt(
-        result.multiToken,
-        result.wallet,
-        (error, result) => {
-          this.setState({
-            tokenContract: result
-          });
-        }
-      );
-      aelf.chain.contractAt(
-        result.tokenConverter,
-        result.wallet,
-        (error, result) => {
-          this.setState({
-            tokenConverterContract: result
-          });
-        }
-      );
+      this.getContract(result)
     });
 
     NightElfCheck.getInstance()
-      .check.then(item => {
-        // console.log('NightElfCheck.getInstance():', item);
-        if (!item) {
-          return;
-        }
-        const nightElf = NightElfCheck.getAelfInstanceByExtension();
-        // console.log('NightElfCheck.getInstance(): nightElf', nightElf);
-        if (nightElf) {
-          this.setState({
-            nightElf
-          });
-          nightElf.chain.getChainStatus().then(result => {
-            if (result) {
-              this.loginAndInsertKeypairs(result);
-            }
-          }).catch(error => {
-            console.log('error: ', error);
-          });
+      .check.then((item) => {
+        if (item) {
+          const nightElf = NightElfCheck.getAelfInstanceByExtension();
+          if (nightElf) {
+            this.setState({
+              nightElf,
+            });
+            nightElf.chain
+              .getChainStatus()
+              .then((result) => {
+                // TODO log in when it returns true
+                // this.loginAndInsertKeypairs(result);
+              })
+          }
         }
       })
-      .catch(error => {
-        // console.log('NightElfCheck : error', error);
+      .catch((error) => {
         this.setState({
-          showDownloadPlugins: true
+          showDownloadPlugins: true,
         });
       });
   }
 
-  loginAndInsertKeypairs(useLock = true, toastMessage = true) {
-    // console.log('loginAndInsertKeypairs: 3 ', new Date().getTime(), this.state.nightElf);
+  getContract(result) {
+    aelf.chain.contractAt(
+      result.multiToken,
+      result.wallet,
+      (error, result) => {
+        this.setState({
+          tokenContract: result
+        });
+      }
+    );
+    aelf.chain.contractAt(
+      result.tokenConverter,
+      result.wallet,
+      (error, result) => {
+        this.setState({
+          tokenConverterContract: result
+        });
+      }
+    );
+  }
+
+  loginAndInsertKeyPairs = (useLock = true, toastMessage = true) => {
     const { nightElf } = this.state;
     const getLoginPayload = {
       appName,
@@ -122,26 +108,29 @@ class Resource extends Component {
     };
 
     getLogin(nightElf, getLoginPayload, result => {
-      // console.log('getLogin result 31: ', result);
       if (result && result.error === 0) {
         const wallet = JSON.parse(result.detail);
-        this.getNightElfKeypair(wallet);
+        this.getNightElfKeyPair(wallet);
         toastMessage && message.success('Login success!!', 3);
-        // }
       } else {
-        this.setState({
-          showWallet: false
-        });
-        if (result.error === 200010) {
-          message.warn('Please Login.');
-        } else {
-          message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.')
-        }
+        this.loginFailed()
       }
     }, useLock);
   }
 
-  getNightElfKeypair(wallet) {
+  loginFailed(result) {
+    this.setState({
+      showWallet: false
+    });
+    const warningStr =
+      ((result && result.error === 200010)
+        ? "Please Login."
+        : result && result.errorMessage.message) ||
+      "Please check your NightELF browser extension.";
+    message.warn(warningStr);
+  }
+
+  getNightElfKeyPair(wallet) {
     if (wallet) {
       localStorage.setItem('currentWallet', JSON.stringify(wallet));
       this.setState({
@@ -151,7 +140,7 @@ class Resource extends Component {
     }
   }
 
-  getCurrentBalance(value) {
+  getCurrentBalance = (value) => {
     this.setState({
       currentBalance: value
     });
@@ -176,7 +165,7 @@ class Resource extends Component {
     });
   }
 
-  getResource(resource) {
+  getResource = (resource) => {
     this.setState({
       resourceTokens: resource.map(v => ({...v}))
     });
@@ -191,20 +180,20 @@ class Resource extends Component {
       currentBalance
     } = this.state;
     return (
-        <ResourceAElfWallet
-            title='AELF Wallet'
-            ref={wallet => {
-              this.walletRef = wallet;
-            }}
-            tokenContract={tokenContract}
-            tokenConverterContract={tokenConverterContract}
-            currentWallet={currentWallet}
-            getCurrentBalance={this.getCurrentBalance}
-            getResource={this.getResource}
-            resourceTokens={resourceTokens}
-            balance={currentBalance}
-            loginAndInsertKeypairs={this.loginAndInsertKeypairs}
-        />
+      <ResourceAElfWallet
+        title="AELF Wallet"
+        ref={(wallet) => {
+          this.walletRef = wallet;
+        }}
+        tokenContract={tokenContract}
+        tokenConverterContract={tokenConverterContract}
+        currentWallet={currentWallet}
+        getCurrentBalance={this.getCurrentBalance}
+        getResource={this.getResource}
+        resourceTokens={resourceTokens}
+        balance={currentBalance}
+        loginAndInsertKeyPairs={this.loginAndInsertKeyPairs}
+      />
     );
   }
 
@@ -237,7 +226,7 @@ class Resource extends Component {
         {nightElf && resourceAElfWalletHtml}
         <div className='resource-money-market'>
           <ResourceMoneyMarket
-            loginAndInsertKeypairs={this.loginAndInsertKeypairs}
+            loginAndInsertKeypairs={this.loginAndInsertKeyPairs}
             currentWallet={currentWallet}
             contracts={contracts}
             tokenContract={tokenContract}

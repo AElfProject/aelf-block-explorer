@@ -10,12 +10,9 @@ import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Table,
-  message,
   Button,
   Input,
   Icon,
-  Spin,
-  Progress,
   Tooltip
 } from 'antd';
 import moment from 'moment';
@@ -31,21 +28,15 @@ import {
 import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
-import { centerEllipsis } from '@utils/formater';
 import {
-  NODE_DEFAULT_NAME,
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
 import './index.less';
-import NightElfCheck from "../../../../utils/NightElfCheck";
-import getLogin from "../../../../utils/getLogin";
 import {ELF_DECIMAL} from "../../constants";
 import {SOCKET_URL_NEW} from "../../../../constants";
-import {getPublicKeyFromObject} from "../../../../utils/getPublicKey";
 import addressFormat from "../../../../utils/addressFormat";
 
-const { Search } = Input;
 const clsPrefix = 'node-table';
 
 const pagination = {
@@ -62,7 +53,6 @@ class NodeTable extends PureComponent {
       nodeList: [],
       currentWallet: {},
       totalVotesAmount: null,
-      // searchText: '',
       isLoading: false,
       producedBlocks: null,
     };
@@ -75,7 +65,6 @@ class NodeTable extends PureComponent {
 
   // todo: how to combine cdm & cdu
   componentDidMount() {
-    this.getCurrentWallet();
     this.wsProducedBlocks();
   }
 
@@ -84,9 +73,6 @@ class NodeTable extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!prevProps.electionContract && this.props.electionContract) {
-      this.getCurrentWallet();
-    }
     if ((!prevProps.electionContract || !prevProps.consensusContract)
       && (this.props.electionContract && this.props.consensusContract)) {
       this.fetchNodes({});
@@ -113,33 +99,6 @@ class NodeTable extends PureComponent {
       this.setState({
         nodeList: newNodeList
       });
-    });
-  }
-
-  getCurrentWallet() {
-    NightElfCheck.getInstance().check.then(ready => {
-      const nightElf = NightElfCheck.getAelfInstanceByExtension();
-      getLogin(nightElf, {}, result => {
-        if (result.error) {
-          // message.warn(result.message || result.errorMessage.message);
-        } else {
-          const wallet =  JSON.parse(result.detail);
-          const currentWallet = {
-            formattedAddress:  addressFormat(wallet.address),
-              address: wallet.address,
-              name: wallet.name,
-              pubKey: getPublicKeyFromObject(wallet.publicKey)
-          }
-          this.setState({
-            currentWallet
-          });
-          console.log('getCurrentWallet currentWallet: ', currentWallet);
-          this.fetchData(currentWallet);
-        }
-      }, false);
-    }).catch(error => {
-      // console.log('getCurrentWallet.getInsta', error);
-      // message.warn('Please download and install NightELF browser extension.');
     });
   }
 
@@ -298,7 +257,7 @@ class NodeTable extends PureComponent {
               type="primary"
               style={{ marginRight: 14 }}
               data-nodeaddress={record.formattedAddress}
-              data-targetPublicKey={record.pubkey}
+              data-targetpublickey={record.pubkey}
               data-role="vote"
               data-nodename={record.name}
               data-shoulddetectlock
@@ -313,7 +272,7 @@ class NodeTable extends PureComponent {
               data-role="redeem"
               data-shoulddetectlock
               data-nodeaddress={record.formattedAddress}
-              data-targetPublicKey={record.pubkey}
+              data-targetpublickey={record.pubkey}
               data-nodename={record.name}
               disabled={
                 !(record.myRedeemableVoteAmountForOneCandidate !== '-' && record.myRedeemableVoteAmountForOneCandidate > 0)
@@ -450,7 +409,6 @@ class NodeTable extends PureComponent {
       const teamInfo = teamInfos.find(
         team => team.public_key === item.candidateInformation.pubkey
       );
-      console.log('teamInfo', teamInfo);
       // get address from pubkey
       item.candidateInformation.address = publicKeyToAddress(
         item.candidateInformation.pubkey
