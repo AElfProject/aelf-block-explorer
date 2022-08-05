@@ -44,6 +44,12 @@ export default class MyVote extends Component {
 
   // todo: update the vote info after switch to this tab
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.currentWallet && !prevProps.currentWallet) {
+      this.getCurrentWallet();
+    }
+    if(prevProps.currentWallet && prevProps.currentWallet.address !== this.props.currentWallet.address) {
+      this.getCurrentWallet();
+    }
     if (!this.hasRun) {
       this.fetchTableDataAndStatistData();
     }

@@ -132,7 +132,7 @@ class Resource extends Component {
 
   getNightElfKeyPair(wallet) {
     if (wallet) {
-      localStorage.setItem('currentWallet', JSON.stringify(wallet));
+      localStorage.setItem('currentWallet', JSON.stringify({...wallet, timestamp: new Date().valueOf()}));
       this.setState({
         currentWallet: wallet,
         showWallet: true

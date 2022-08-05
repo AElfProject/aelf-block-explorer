@@ -320,6 +320,19 @@ class VoteContainer extends Component {
       // message.error(e);
       console.error(e);
     }
+
+    let wallet = JSON.parse(localStorage.getItem('currentWallet'))
+    if(wallet && (new Date().valueOf() - Number(wallet.timestamp)) <= 15 * 60 * 1000) {
+      this.setState({
+        currentWallet: wallet
+      })
+    } else {
+      localStorage.removeItem('currentWallet')
+      this.setState({
+        currentWallet: null
+      })
+    }
+    
     this.getExtensionKeypairList();
   }
 
@@ -449,7 +462,7 @@ class VoteContainer extends Component {
     }
     wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
     wallet.formattedAddress = addressFormat(wallet.address);
-    localStorage.setItem('currentWallet', JSON.stringify(wallet));
+    localStorage.setItem('currentWallet', JSON.stringify({...wallet, timestamp: new Date().valueOf()}));
     this.setState({
       currentWallet: wallet,
       showWallet: true
@@ -822,6 +835,8 @@ class VoteContainer extends Component {
         if (this.hasGetContractsFromExt) {
           resolve();
         }
+
+        localStorage.setItem('currentWallet', JSON.stringify({ ...this.state.currentWallet, timestamp: new Date().valueOf() }))
 
         // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
         nightElf.chain.getChainStatus().then(() => {
