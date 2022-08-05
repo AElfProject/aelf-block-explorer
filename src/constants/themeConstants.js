@@ -7,4 +7,4 @@
  * @Description: file content
  */
 // todo: Use the variable in less instead
-export const PRIMARY_COLOR = '#5C28A9';
+export const PRIMARY_COLOR = '#266CD3';
