@@ -129,36 +129,28 @@ export default class ResourceAElfWallet extends PureComponent {
   };
 
   // 获取资源币数量
-  getCurrentWalletResource = () => {
+  getCurrentWalletResource = async () => {
     const {
       tokenContract,
       currentWallet,
       getResource
     } = this.props;
     const owner = currentWallet.address || currentWallet;
-    return Promise.all(resourceTokens.map(({symbol}) => {
+    const results = await Promise.all(resourceTokens.map(({ symbol }) => {
       return tokenContract.GetBalance.call({
         symbol,
         owner
       });
-    })).then(results => {
-      const newResourceTokenInfos = results.map((v, i)  => {
-        const balance = parseInt(v.balance || 0, 10) / ELF_DECIMAL;
-        return {
-          ...resourceTokens[i],
-          balance
-        };
-      });
-      getResource(newResourceTokenInfos);
+    }));
+    const newResourceTokenInfos = results.map((v, i) => {
+      const balance = parseInt(v.balance || 0, 10) / ELF_DECIMAL;
+      return {
+        ...resourceTokens[i],
+        balance
+      };
     });
+    getResource(newResourceTokenInfos);
   };
-
-  hasLogin() {
-    const {
-      currentWallet
-    } = this.props;
-    return currentWallet && currentWallet.address;
-  }
 
   render() {
     const {
@@ -167,15 +159,17 @@ export default class ResourceAElfWallet extends PureComponent {
       tokenContract,
       resourceTokens,
       balance,
-      loginAndInsertKeypairs
+      loginAndInsertKeyPairs
     } = this.props;
     const {
       loading,
       isPhone
     } = this.state;
-
+    
+    const hasLogin = currentWallet && currentWallet.address
+    
     const propsTile = title || '-';
-    const wallet = this.hasLogin() ?  currentWallet : this.defaultWallet;
+    const wallet = hasLogin ?  currentWallet : this.defaultWallet;
 
     return (
       <div className='resource-wallet resource-block'>
@@ -210,7 +204,7 @@ export default class ResourceAElfWallet extends PureComponent {
 
                 {!(currentWallet && currentWallet.address && tokenContract) &&<Button
                   className='resource-wallet-address-update update-btn'
-                  onClick={() => loginAndInsertKeypairs(false)}
+                  onClick={() => loginAndInsertKeyPairs(false)}
                 >
                   Login
                 </Button>}
@@ -228,7 +222,7 @@ export default class ResourceAElfWallet extends PureComponent {
                   disabled={!(currentWallet && currentWallet.address && tokenContract)}
                   onClick={this.extensionLogout}
                 >
-                  Change Wallet<Icon type="logout"/>
+                  Logout<Icon type="logout"/>
                 </Button>}
               </Col>
             </Row>
@@ -237,17 +231,18 @@ export default class ResourceAElfWallet extends PureComponent {
               <Row type="flex" align="middle">
                 <Col span={24}>
                   <span className="resource-wallet-info-name balance">Balance:</span>
-                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(this.hasLogin() ? balance : '-')} ELF</span>
+                  <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(hasLogin ? balance : '-')} ELF</span>
                 </Col>
-                {resourceTokens.map(v => {
+                {resourceTokens.map((v, index) => {
                   return (
                       <Col
                           lg={12}
                           xs={24}
                           sm={12}
+                          key={index}
                       >
                         <span className="resource-wallet-info-name">{v.symbol} Quantity:</span>
-                        <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(this.hasLogin() ? v.balance : '-')}</span>
+                        <span className="resource-wallet-info-value">{thousandsCommaWithDecimal(hasLogin ? v.balance : '-')}</span>
                       </Col>
                   );
                 })}

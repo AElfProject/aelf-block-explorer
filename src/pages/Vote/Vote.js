@@ -1531,6 +1531,8 @@ class VoteContainer extends Component {
                   <MyVote
                     electionContract={electionContract}
                     handleVoteTypeChange={this.handleVoteTypeChange}
+                    currentWallet={currentWallet}
+                    checkExtensionLockStatus={this.checkExtensionLockStatus}
                   />
                 )}
               />

@@ -65,7 +65,7 @@ const EventItem = props => {
 EventItem.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     Indexed: PropTypes.array,
-    NoIndexed: PropTypes.string.isRequired,
+    // NoIndexed: PropTypes.string.isRequired,
     Address: PropTypes.string.isRequired,
     Name: PropTypes.string.isRequired
 };
