@@ -17,7 +17,7 @@
     "aelf-sdk": "^3.2.40",
     "antd": "^3.26.19",
     "apisauce": "^0.16.0",
-    "axios": "^0.18.0",
+    "axios": "^0.27.2",
     "bignumber.js": "^9.0.2",
     "dayjs": "^1.7.5",
     "decimal.js": "^10.1.1",

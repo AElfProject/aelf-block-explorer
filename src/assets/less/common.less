@@ -1,3 +1,4 @@
+@import './_variables.less';
 /*
  * @Author: Alfred Yang
  * @Github: https://github.com/cat-walk
@@ -52,4 +53,82 @@
 .text-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.common-header-submenu {
+  .ant-menu {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .ant-menu-item:not(:last-child)  {
+    margin: 0;
+  }
+  .ant-menu-item, .ant-menu-submenu-title {
+    margin: 0;
+    a:hover, &:hover {
+      color: @hoverColor1 !important;
+      width: 100%;
+    }
+    &:hover {
+      background-color: @hoverBg;
+    }
+  }
+  .ant-menu-item, .ant-menu-submenu>.ant-menu-submenu-title {
+    height: 44px;
+    line-height: 44px;
+  }
+  .ant-menu-item-selected,.ant-menu-item-active,.ant-menu-submenu-active,.ant-menu-submenu-selected {
+    color: @hoverColor1 !important;
+    background-color: @hoverBg;
+    &:hover {
+      background-color: @hoverBg;
+      color: @hoverColor1 !important;
+    }
+  }
+  .ant-menu-submenu-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .submenu-right-arrow {
+      transform: rotate(-90deg);
+      font-size: 12px;
+    }
+  }
+}
+
+.common-select-wrapper {
+  .ant-select-selection-selected-value {
+    color: @textContext3;
+    font-size: 14px;
+  }
+  .ant-select-selection:hover {
+      border-color: @border-color1;
+  }
+  &.ant-select-open, &.ant-select-focused {
+      .ant-select-selection {
+          border-color: @border-color1;
+          box-shadow: none;
+          &:focus {
+              border-color: @border-color1;
+          }
+      }
+  }
+}
+
+.common-select-option-wrapper {
+  &.ant-select-dropdown-menu-item-selected {
+    font-weight: 400;
+    color: @hoverColor1;
+    background-color: #fff;
+    
+  }
+  &.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: @hoverBg;
+  }
+  &.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled, .ant-select-dropdown-menu-item-selected){
+    background-color: @hoverBg;
+    color: @hoverColor1;
+    font-weight: 400;
+  }
 }
