@@ -22,7 +22,6 @@ export default class MyVote extends Component {
       statistData: myVoteStatistData,
       tableData: [],
       spinningLoading: true,
-      isLogging: false,
       currentWallet: {
         address: null,
         name: null,
@@ -47,7 +46,7 @@ export default class MyVote extends Component {
     if (this.props.currentWallet && !prevProps.currentWallet) {
       this.getCurrentWallet();
     }
-    if(prevProps.currentWallet && prevProps.currentWallet.address !== this.props.currentWallet.address) {
+    if (prevProps.currentWallet && prevProps.currentWallet.address !== this.props.currentWallet.address) {
       this.getCurrentWallet();
     }
     if (!this.hasRun) {
@@ -64,7 +63,6 @@ export default class MyVote extends Component {
           (result) => {
             if (result.error) {
               this.setState({
-                isLogging: false,
                 spinningLoading: false,
               });
               // message.warn(result.message || result.errorMessage.message);
@@ -252,11 +250,9 @@ export default class MyVote extends Component {
       spinningLoading,
       tableData,
       currentWallet,
-      isLogging,
     } = this.state;
 
     const onLogin = () => {
-      this.setState({ isLogging: true });
       this.getCurrentWallet();
     };
 
@@ -270,7 +266,7 @@ export default class MyVote extends Component {
         ) : (
           <div className="not-logged-section">
             <p>It seems like you are not logged in.</p>
-            <Button loading={isLogging} onClick={onLogin} type="primary">
+            <Button onClick={onLogin} type="primary">
               Login
             </Button>
           </div>

@@ -322,7 +322,7 @@ class VoteContainer extends Component {
     }
 
     let wallet = JSON.parse(localStorage.getItem('currentWallet'))
-    if(wallet && (new Date().valueOf() - Number(wallet.timestamp)) <= 15 * 60 * 1000) {
+    if (wallet && (new Date().valueOf() - Number(wallet.timestamp)) < 15 * 60 * 1000) {
       this.setState({
         currentWallet: wallet
       })
@@ -526,6 +526,7 @@ class VoteContainer extends Component {
           }
           // }
         } else {
+          localStorage.removeItem('currentWallet')
           if (result.error === 200010) {
             message.warn('Please Login.');
           } else {

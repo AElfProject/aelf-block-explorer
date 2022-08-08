@@ -85,6 +85,7 @@ export default class MyWalletCard extends PureComponent {
           (result) => {
             console.log("getCurrentWallet: ", result);
             if (result.error) {
+              localStorage.removeItem('currentWallet');
               // message.warn(result.message || result.errorMessage.message);
             } else {
               const wallet = JSON.parse(result.detail);
