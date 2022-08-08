@@ -33,7 +33,7 @@ class Resource extends Component {
       showDownloadPlugins: false,
       showWallet: false,
       currentBalance: 0,
-      resourceTokens: resourceTokens.map(v => ({...v, balance: 0})),
+      resourceTokens: resourceTokens.map(v => ({ ...v, balance: 0 })),
       loading: false,
       nightElf: null
     };
@@ -67,7 +67,10 @@ class Resource extends Component {
               .getChainStatus()
               .then((result) => {
                 // TODO log in when it returns true
-                // this.loginAndInsertKeypairs(result);
+                const currentWallet = localStorage.getItem('currentWallet')
+                if (currentWallet) {
+                  this.loginAndInsertKeyPairs(result);
+                }
               })
           }
         }
@@ -132,7 +135,7 @@ class Resource extends Component {
 
   getNightElfKeyPair(wallet) {
     if (wallet) {
-      localStorage.setItem('currentWallet', JSON.stringify({...wallet, timestamp: new Date().valueOf()}));
+      localStorage.setItem('currentWallet', JSON.stringify({ ...wallet, timestamp: new Date().valueOf() }));
       this.setState({
         currentWallet: wallet,
         showWallet: true
@@ -167,7 +170,7 @@ class Resource extends Component {
 
   getResource = (resource) => {
     this.setState({
-      resourceTokens: resource.map(v => ({...v}))
+      resourceTokens: resource.map(v => ({ ...v }))
     });
   }
 
