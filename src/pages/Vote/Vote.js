@@ -15,7 +15,7 @@ import moment from 'moment';
 import './index.less';
 import NightElfCheck from '@utils/NightElfCheck';
 import getLogin from '@utils/getLogin';
-import {isPhoneCheck} from '@utils/deviceCheck';
+import { isPhoneCheck } from '@utils/deviceCheck';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import getContractAddress from '@utils/getContractAddress';
 import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
@@ -59,7 +59,7 @@ import publicKeyToAddress from '@utils/publicKeyToAddress';
 import { getAllTeamDesc } from '@api/vote';
 import { getFormatedLockTime } from './utils';
 import getAllTokens from "../../utils/getAllTokens";
-import {getPublicKeyFromObject} from "../../utils/getPublicKey";
+import { getPublicKeyFromObject } from "../../utils/getPublicKey";
 import addressFormat from "../../utils/addressFormat";
 
 const voteConfirmFormItemLayout = {
@@ -299,7 +299,9 @@ class VoteContainer extends Component {
 
   async componentDidMount() {
     const { history } = this.props;
+
     // Get contracts
+
     try {
       const result = await getContractAddress();
       if (!result.chainInfo) {
@@ -332,11 +334,12 @@ class VoteContainer extends Component {
         currentWallet: null
       })
     }
-    
-    this.getExtensionKeypairList();
+
+    this.getExtensionKeyPairList();
   }
 
   componentDidUpdate(prevProps, prevState) {
+
     const {
       shouldRefreshMyWallet,
       electionContract,
@@ -411,43 +414,31 @@ class VoteContainer extends Component {
       .catch(err => console.error('err', err));
   }
 
-  getExtensionKeypairList() {
+  getExtensionKeyPairList() {
     NightElfCheck.getInstance().check.then(item => {
       if (!item) {
         return;
       }
       const nightElf = NightElfCheck.getAelfInstanceByExtension();
-      if(!nightElf) {
+      if (!nightElf) {
         return;
+      }
+
+      if (typeof nightElf.getExtensionInfo === 'function') {
+        nightElf.getExtensionInfo().then(info => {
+          if (!info.locked) {
+            this.getChainStatus(nightElf)
+          } else {
+            localStorage.removeItem('currentWallet')
+          }
+        })
+      } else {
+        this.getChainStatus(nightElf)
       }
 
       this.setState({
         nightElf
       });
-      // We can not do the work using extension here as the wallet maybe not stored in local yet.
-      nightElf.chain.getChainStatus().then((result) => {
-        console.log('nightElf.chain.getChainStatus: ', result);
-        if (!result) {
-          return;
-        }
-        if (result.error === 200005) {
-          message.warning(result.errorMessage.message, 3);
-          this.setState({
-            isPluginLock: true
-          });
-          return;
-        }
-        this.setState({
-          isPluginLock: false
-        });
-
-        this.setState({
-          isPluginLock: false
-        });
-      }).catch(error => {
-        console.log('nightElf.chain.getChainStatus:error', error);
-      });
-
     }).catch(error => {
       this.setState({
         showDownloadPlugin: true
@@ -455,14 +446,35 @@ class VoteContainer extends Component {
     });
   }
 
-  getNightElfKeypair(wallet) {
-    console.log('getNightElfKeypair: ', wallet);
+  getChainStatus(nightElf) {
+    nightElf.chain.getChainStatus().then((result) => {
+      console.log('nightElf.chain.getChainStatus: ', result);
+      if (!result) {
+        return;
+      }
+      if (result.error === 200005) {
+        message.warning(result.errorMessage.message, 3);
+        this.setState({
+          isPluginLock: true
+        });
+        return;
+      }
+      this.setState({
+        isPluginLock: false
+      });
+    }).catch(error => {
+      console.log('nightElf.chain.getChainStatus:error', error);
+    });
+  }
+
+  getNightElfKeyPair(wallet) {
+    console.log('getNightElfKeyPair: ', wallet);
     if (!wallet) {
       return;
     }
     wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
     wallet.formattedAddress = addressFormat(wallet.address);
-    localStorage.setItem('currentWallet', JSON.stringify({...wallet, timestamp: new Date().valueOf()}));
+    localStorage.setItem('currentWallet', JSON.stringify({ ...wallet, timestamp: new Date().valueOf() }));
     this.setState({
       currentWallet: wallet,
       showWallet: true
@@ -512,7 +524,7 @@ class VoteContainer extends Component {
         if (result && result.error === 0) {
           console.log('result', result);
           const wallet = JSON.parse(result.detail);
-          this.getNightElfKeypair(wallet);
+          this.getNightElfKeyPair(wallet);
           // todo: Extract
           this.onExtensionAndWalletReady().then(() => {
             resolve();
@@ -641,7 +653,7 @@ class VoteContainer extends Component {
       activeVotedVotesAmount
     } = electorVote;
     const switchableVoteRecords = [];
-    const withdrawnableVoteRecords = [];
+    const withdrawableVoteRecords = [];
     activeVotingRecords.forEach(record => {
       // filter the vote voted to other node
       if (record.candidate === targetPublicKey) return;
@@ -652,11 +664,11 @@ class VoteContainer extends Component {
         return;
       }
       // the vote expired can be withdrawn
-      withdrawnableVoteRecords.push(record);
+      withdrawableVoteRecords.push(record);
       expiredVotesAmount += +record.amount;
     });
 
-    [...switchableVoteRecords, ...withdrawnableVoteRecords].forEach(record => {
+    [...switchableVoteRecords, ...withdrawableVoteRecords].forEach(record => {
       const { voteTimestamp, lockTime } = record;
       const teamInfo = allTeamInfo.find(
         team => team.public_key === record.candidate
@@ -681,7 +693,7 @@ class VoteContainer extends Component {
       expiredVotesAmount,
       activeVotingRecords,
       switchableVoteRecords,
-      withdrawnableVoteRecords
+      withdrawnableVoteRecords: withdrawableVoteRecords
     });
   }
 
@@ -917,36 +929,36 @@ class VoteContainer extends Component {
       this.setRedeemConfirmLoading(false);
     } else {
       electionContractFromExt
-          .Withdraw(item)
-          .then(res => {
-            const {
-              error,
-              errorMessage
-            } = res;
-            if (+error === 0 || !error) {
-              this.checkTransactionResult(res, 'voteRedeemModalVisible')
-                  .then(() => {
-                    this.refreshPageElectionNotifi();
-                  })
-                  .catch(err => {
-                    console.error('checkTransactionResult', {
-                      err
-                    });
-                  });
-              this.setState({
-                redeemVoteSelectedRowKeys: []
+        .Withdraw(item)
+        .then(res => {
+          const {
+            error,
+            errorMessage
+          } = res;
+          if (+error === 0 || !error) {
+            this.checkTransactionResult(res, 'voteRedeemModalVisible')
+              .then(() => {
+                this.refreshPageElectionNotifi();
+              })
+              .catch(err => {
+                console.error('checkTransactionResult', {
+                  err
+                });
               });
-            } else {
-              this.setVoteConfirmLoading(false);
-              this.setRedeemConfirmLoading(false);
-              message.error(errorMessage.message);
-            }
-          })
-          .catch(err => {
+            this.setState({
+              redeemVoteSelectedRowKeys: []
+            });
+          } else {
             this.setVoteConfirmLoading(false);
             this.setRedeemConfirmLoading(false);
-            console.error(err);
-          });
+            message.error(errorMessage.message);
+          }
+        })
+        .catch(err => {
+          this.setVoteConfirmLoading(false);
+          this.setRedeemConfirmLoading(false);
+          console.error(err);
+        });
     }
   }
 
@@ -1099,14 +1111,14 @@ class VoteContainer extends Component {
             // Close tow modal as there are two situation, one open a modal and anothor open two modals.
             // Consider to do the samething after checkTransactionResult in the same page.
             this.setState(
-                {
-                  voteConfirmModalVisible: false,
-                  voteModalVisible: false,
-                  voteConfirmLoading: false,
-                },
-                () => {
-                  this.refreshPageElectionNotifi();
-                }
+              {
+                voteConfirmModalVisible: false,
+                voteModalVisible: false,
+                voteConfirmLoading: false,
+              },
+              () => {
+                this.refreshPageElectionNotifi();
+              }
             );
           });
         } else {
@@ -1184,14 +1196,14 @@ class VoteContainer extends Component {
             // Close tow modal as there are two situcation, one open a modal and anothor open two modals.
             // Consider to do the samething after checkTransactionResult in the same page.
             this.setState(
-                {
-                  voteConfirmModalVisible: false,
-                  voteModalVisible: false,
-                  voteConfirmLoading: false,
-                },
-                () => {
-                  this.refreshPageElectionNotifi();
-                }
+              {
+                voteConfirmModalVisible: false,
+                voteModalVisible: false,
+                voteConfirmLoading: false,
+              },
+              () => {
+                this.refreshPageElectionNotifi();
+              }
             );
           });
         } else {
@@ -1254,7 +1266,7 @@ class VoteContainer extends Component {
       currentWallet
     } = this.state;
     return Promise.all(
-      [ getAllTokens(), ...schemeIds.map(item => {
+      [getAllTokens(), ...schemeIds.map(item => {
         return profitContractFromExt.GetProfitsMap.call({
           beneficiary: currentWallet.address,
           schemeId: item.schemeId
@@ -1278,14 +1290,14 @@ class VoteContainer extends Component {
             ELF: 0
           } : value;
           value = Object
-              .keys(value)
-              .reduce((acc, key) =>{
-                return {
-                  ...acc,
-                  [key]: new Decimal(value[key] || 0)
-                      .dividedBy(`1e${decimals[key] || 8}`).toNumber()
-                };
-              }, {});
+            .keys(value)
+            .reduce((acc, key) => {
+              return {
+                ...acc,
+                [key]: new Decimal(value[key] || 0)
+                  .dividedBy(`1e${decimals[key] || 8}`).toNumber()
+              };
+            }, {});
           total = {
             ...total,
             ...Object.keys(value).reduce((acc, key) => {
