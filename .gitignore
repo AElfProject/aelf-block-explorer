@@ -8,5 +8,4 @@ npm-debug.log*
 explore.conf
 package-lock.json
 .yarn-error.log
-
 .DS_Store
