@@ -7,8 +7,8 @@
  * @Description: pages for vote & election
  */
 import React, { Component } from 'react';
-import { Tabs, Modal, Form, Input, Button, Radio, message, Menu } from 'antd';
-import { Switch, Route, Link, withRouter, Redirect } from 'react-router-dom';
+import { Modal, Form, Input, message, Menu } from 'antd';
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import moment from 'moment';
 
@@ -21,7 +21,6 @@ import getContractAddress from '@utils/getContractAddress';
 import DownloadPlugins from '@components/DownloadPlugins/DownloadPlugins';
 // import NumericInput from '@components/NumericInput';
 import config, {
-  DEFAUTRPCSERVER as DEFAUT_RPC_SERVER,
   APPNAME,
   schemeIds
 } from '@config/config';
@@ -72,110 +71,6 @@ const voteConfirmFormItemLayout = {
     sm: { span: 18 }
   }
 };
-
-// todo: optimize all the generate function
-function generateVoteConfirmForm({
-  currentWalletName,
-  currentWalletBalance,
-  need
-}) {
-  const res = { formItems: [] };
-  const {
-    nodeAddress,
-    nodeName,
-    voteAmountInput,
-    voteFromExpiredVoteAmount,
-    switchVoteAmount,
-    lockTime
-  } = this.state;
-
-  const materials = {
-    // title: '从未过期投票转投',
-    formItems: [
-      {
-        type: 'nodeName',
-        label: '所选节点名称',
-        render: <span className="form-item-value">{nodeName}</span>
-      },
-      {
-        type: 'nodeAddress',
-        label: '地址',
-        render: <span className="form-item-value">{nodeAddress}</span>
-      },
-      {
-        label: '可用票数',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {123} {SYMBOL}
-          </span>
-        )
-      },
-      {
-        label: '投票时间',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {123} {SYMBOL}
-          </span>
-        )
-      },
-      {
-        type: 'voteAmount',
-        label: '投票数量',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {voteAmountInput} {SYMBOL}
-          </span>
-        )
-      },
-      {
-        type: 'lockTime',
-        label: '锁定期',
-        render: (
-          <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-            {lockTime && lockTime.format('YYYY-MM-DD HH:mm:ss')}{' '}
-            <span className="tip-color">锁定期内不支持提币和转账</span>
-          </span>
-        )
-      },
-      {
-        label: '转投数量',
-        type: 'switchVoteAmount',
-        // render: (
-        //   <div>
-        //     <Input
-        //       suffix={SYMBOL}
-        //       placeholder='Enter vote amount'
-        //       style={{ marginRight: 20 }}
-        //     />
-        //     <Button type='primary'>All In</Button>
-        //   </div>
-        // )
-        render: (
-          <span className="form-item-value">
-            {switchVoteAmount} {SYMBOL}
-          </span>
-        )
-      },
-      {
-        label: '转投数量',
-        type: 'voteFromExpiredVoteAmount',
-        render: (
-          <span className="form-item-value">
-            {voteFromExpiredVoteAmount} {SYMBOL}
-          </span>
-        )
-      }
-    ]
-  };
-
-  need.forEach(item => {
-    res.formItems.push(
-      materials.formItems.find(oneType => oneType.type === item)
-    );
-  });
-
-  return res;
-}
 
 class VoteContainer extends Component {
   constructor(props) {
@@ -268,8 +163,6 @@ class VoteContainer extends Component {
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.voteNextCallback = this.voteNextCallback.bind(this);
-    // this.handleAllIn = this.handleAllIn.bind(this);
     this.handleLockTimeChange = this.handleLockTimeChange.bind(this);
     this.handleVoteConfirmOk = this.handleVoteConfirmOk.bind(this);
     this.handleVoteTypeChange = this.handleVoteTypeChange.bind(this);
@@ -298,8 +191,6 @@ class VoteContainer extends Component {
   }
 
   async componentDidMount() {
-    const { history } = this.props;
-
     // Get contracts
 
     try {
@@ -426,6 +317,9 @@ class VoteContainer extends Component {
 
       if (typeof nightElf.getExtensionInfo === 'function') {
         nightElf.getExtensionInfo().then(info => {
+          this.setState({
+            isPluginLock: info.locked
+          });
           if (!info.locked) {
             this.getChainStatus(nightElf)
           } else {
@@ -1001,46 +895,6 @@ class VoteContainer extends Component {
   computeRedeemableVoteRecords(records) {
     return records.filter(
       item => item.unlockTimestamp.seconds < moment().unix()
-    );
-  }
-
-  voteNextCallback() {
-    const { voteType } = this.state;
-    let voteConfirmForm = null;
-
-    // todo: Use voteTypeFormItemsMap instead in proper time
-    switch (voteType) {
-      case FROM_WALLET:
-        voteConfirmForm = generateVoteConfirmForm.call(this, {
-          need: ['voteAmount', 'lockTime']
-        });
-        break;
-      case FROM_EXPIRED_VOTES:
-        voteConfirmForm = generateVoteConfirmForm.call(this, {
-          need: ['voteFromExpiredVoteAmount', 'lockTime']
-        });
-        break;
-      case FROM_ACTIVE_VOTES:
-        voteConfirmForm = generateVoteConfirmForm.call(this, {
-          // todo: add lock time when choose
-          // need: ['lockTime', 'nodeName', 'nodeAddress', 'switchVoteAmount']
-          need: ['nodeName', 'nodeAddress', 'switchVoteAmount']
-        });
-        break;
-      default:
-        break;
-    }
-
-    this.setState(
-      {
-        voteConfirmForm,
-        voteModalVisible: false
-      },
-      () => {
-        this.setState({
-          voteConfirmModalVisible: true
-        });
-      }
     );
   }
 
