@@ -63,15 +63,30 @@ class Resource extends Component {
             this.setState({
               nightElf,
             });
-            nightElf.chain
-              .getChainStatus()
-              .then((result) => {
-                // TODO log in when it returns true
-                const currentWallet = localStorage.getItem('currentWallet')
-                if (currentWallet) {
-                  this.loginAndInsertKeyPairs(result);
+            if (nightElf.getExtensionInfo) {
+              nightElf.getExtensionInfo().then(info => {
+                if (!info.locked) {
+                  nightElf.chain
+                    .getChainStatus()
+                    .then((result) => {
+                      this.loginAndInsertKeyPairs(result);
+                    })
+                } else {
+                  localStorage.removeItem('currentWallet')
                 }
               })
+            } else {
+              let wallet = JSON.parse(localStorage.getItem('currentWallet'))
+              if (wallet && (new Date().valueOf() - Number(wallet.timestamp)) < 15 * 60 * 1000) {
+                nightElf.chain
+                  .getChainStatus()
+                  .then((result) => {
+                    this.loginAndInsertKeyPairs(result);
+                  })
+              } else {
+                localStorage.removeItem('currentWallet')
+              }
+            }
           }
         }
       })
@@ -112,6 +127,7 @@ class Resource extends Component {
 
     getLogin(nightElf, getLoginPayload, result => {
       if (result && result.error === 0) {
+        localStorage.setItem('currentWallet', JSON.stringify({ ...JSON.parse(result.detail), timestamp: new Date().valueOf() }))
         const wallet = JSON.parse(result.detail);
         this.getNightElfKeyPair(wallet);
         toastMessage && message.success('Login success!!', 3);
