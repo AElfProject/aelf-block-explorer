@@ -7,7 +7,6 @@
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from 'react';
-import { withRouter } from 'react-router-dom';
 import Decimal from 'decimal.js';
 import { message } from 'antd';
 import moment from 'moment';
@@ -32,6 +31,7 @@ import {
   getTokenDecimal
 } from '../../../utils/utils';
 import getStateJudgment from '@utils/getStateJudgment';
+import { withRouter } from '../../../routes/utils';
 
 const electionNotifiStatisData = {
   termEndTime: {
@@ -96,14 +96,14 @@ const Display = props => {
     dividends
   } = props;
   return (
-      <div className="ant-statistic vote-statistic">
-        <div className="ant-statistic-title">Current Mining Reward</div>
-        <div className="ant-statistic-content">
-          <span className="ant-statistic-content-value">
-            <Dividends dividends={dividends} useButton={false} />
-          </span>
-        </div>
+    <div className="ant-statistic vote-statistic">
+      <div className="ant-statistic-title">Current Mining Reward</div>
+      <div className="ant-statistic-content">
+        <span className="ant-statistic-content-value">
+          <Dividends dividends={dividends} useButton={false} />
+        </span>
       </div>
+    </div>
   );
 };
 
@@ -265,9 +265,9 @@ class ElectionNotification extends PureComponent {
         const r = await contract[method].call();
         return {
           statisDataKey,
-          [dataKey]: processor((r || {value: 0}).value)
+          [dataKey]: processor((r || { value: 0 }).value)
         };
-      } catch(e) {
+      } catch (e) {
         return {
           statisDataKey,
           [dataKey]: 0
@@ -349,7 +349,7 @@ class ElectionNotification extends PureComponent {
 
   handleApplyModalOk(admin) {
     const {
-      currentWallet,
+      currentWallet = { pubkey: undefined },
       electionContractFromExt,
       checkExtensionLockStatus,
       judgeCurrentUserIsCandidate
@@ -382,10 +382,7 @@ class ElectionNotification extends PureComponent {
               getStateJudgment(status, transactionId);
               judgeCurrentUserIsCandidate();
               if (status === txStatusInUpperCase.mined) {
-                this.props.history.push(
-                    `/vote/apply/keyin?pubkey=${currentWallet &&
-                    currentWallet.pubkey}`
-                );
+                this.props.navigate(`/vote/apply/keyin?pubkey=${currentWallet.pubkey}`);
               }
             } catch (e) {
               console.log(e);

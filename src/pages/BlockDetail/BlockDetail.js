@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Link
+    Link, Route, useParams
 } from 'react-router-dom';
 import {
     Row,
@@ -25,8 +25,9 @@ import {
 
 import './blockdetail.styles.less';
 import Dividends from "../../components/Dividends";
+import { withRouter } from '../../routes/utils.js';
 
-export default class BlockDetailPage extends React.Component {
+class BlockDetailPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -170,14 +171,14 @@ export default class BlockDetailPage extends React.Component {
     componentDidMount() {
         const {
             params
-        } = this.props.match;
+        } = this.props;
         this.fetchBlockInfo(params.id);
     }
 
     componentDidUpdate() {
         const {
             params
-        } = this.props.match;
+        } = this.props;
 
         const {
             blockHeight,
@@ -394,3 +395,5 @@ export default class BlockDetailPage extends React.Component {
         );
     }
 }
+
+export default withRouter(BlockDetailPage)

@@ -17,23 +17,24 @@ const addUrlPrefix = url => `https://${url}`;
 
 const removeUrlPrefix = url => url.replace(/^https:\/\//, '');
 
+function getProcessedValue(value, hasDecimal) {
+  let decimalProcessedValue = value;
+  const isSmallNumber = value < RESOURCE_OPERATE_LIMIT && value > 0;
+  decimalProcessedValue = value.toFixed(isSmallNumber ? ELF_PRECISION : 2);
+
+  let [wholeNum, decimal] = `${decimalProcessedValue}`.split('.');
+  wholeNum = thousandsComma(wholeNum);
+  const processedValue = hasDecimal ? `${wholeNum}.${decimal}` : wholeNum;
+  return processedValue;
+}
+
+
 // todo: consider to write another method to display a precision of 8. (8 contain the integer precision)
-// todo: then use the method metioned above to display the resource and elf
+// todo: then use the method mentioned above to display the resource and elf
 // todo: optimize the function name
 const thousandsCommaWithDecimal = (value, hasDecimal = true) => {
   if (typeof value !== 'number') return value;
-  let decimalProcessedValue = value;
-  if (value < RESOURCE_OPERATE_LIMIT && value > 0) {
-    decimalProcessedValue = value.toFixed(ELF_PRECISION);
-  } else {
-    decimalProcessedValue = value.toFixed(2);
-  }
-
-  const arr = `${decimalProcessedValue}`.split('.');
-  const wholeNum = thousandsComma(arr[0]);
-  const decimal = arr[1];
-  const processedValue = hasDecimal ? `${wholeNum}.${decimal}` : wholeNum;
-  return processedValue;
+  return getProcessedValue(value, hasDecimal);
 };
 
 const centerEllipsis = str => {
@@ -47,3 +48,4 @@ export {
   thousandsCommaWithDecimal,
   centerEllipsis
 };
+

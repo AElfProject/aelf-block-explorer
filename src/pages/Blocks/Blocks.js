@@ -15,8 +15,9 @@ import {
 } from "../../constants";
 
 import "./blocks.styles.less";
+import { withRouter } from "../../routes/utils";
 
-export default class BlocksPage extends Component {
+class BlocksPage extends Component {
     constructor(props) {
         super(props);
         const {
@@ -103,9 +104,11 @@ export default class BlocksPage extends Component {
                     rowKey="block_hash"
                     loading={loading}
                     onChange={handleTableChange}
-                    scroll={{x: 414}}
+                    scroll={{ x: 414 }}
                 />
             </div>
         );
     }
 }
+
+export default withRouter(BlocksPage)

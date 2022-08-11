@@ -18,6 +18,7 @@ import {
 
 import "./txs.styles.less";
 import dayjs from "dayjs";
+import { withRouter } from "../../routes/utils";
 
 const ALL_TXS_LIST_COLUMNS_WITH_TIME = [
     ...ALL_TXS_LIST_COLUMNS,
@@ -37,7 +38,7 @@ const ALL_TXS_LIST_COLUMNS_WITH_TIME = [
 ]
 
 
-export default class TxsPage extends Component {
+class TxsPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -103,7 +104,7 @@ export default class TxsPage extends Component {
         });
         const contractNames = await getContractNames();
 
-        let pagination = { ...this.state.pagination};
+        let pagination = { ...this.state.pagination };
         pagination.total = data.total;
         const transactions = this.merge(data, contractNames);
         this.setState({
@@ -147,10 +148,12 @@ export default class TxsPage extends Component {
                     rowKey="tx_id"
                     loading={loading}
                     onChange={handleTableChange}
-                    scroll={{x: 1024}}
+                    scroll={{ x: 1024 }}
                 />
                 {/*<div className="basic-bottom-blank"></div>*/}
             </div>
         );
     }
 }
+
+export default withRouter(TxsPage)

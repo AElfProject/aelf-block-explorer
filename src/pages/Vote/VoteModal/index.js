@@ -32,8 +32,8 @@ import {
 } from '@src/pages/Vote/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import './index.less';
-import {ELF_DECIMAL} from "../constants";
-import {isIPhone} from "../../../utils/deviceCheck";
+import { ELF_DECIMAL } from "../constants";
+import { isIPhone } from "../../../utils/deviceCheck";
 
 const { TabPane } = Tabs;
 
@@ -79,7 +79,7 @@ const formItemsNeedToValidateMap = {
 function disabledDate(current) {
   // Can not select days before today and today
   return current
-      && (current < moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day')
+    && (current < moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day')
       || current > moment().add(1080, 'd'));
 }
 
@@ -168,7 +168,7 @@ class VoteModal extends Component {
       withdrawnableVoteRecords,
       estimatedProfit,
       switchVoteSelectedRowKeys,
-      handleSwithVoteSelectedRowChange,
+      handleSwitchVoteSelectedRowChange,
       voteFromExpiredVoteAmount,
       voteFromExpiredSelectedRowKeys,
       handleVoteFromExpiredSelectedRowChange,
@@ -191,7 +191,7 @@ class VoteModal extends Component {
     const switchVoteRowSelection = {
       selectedRowKeys: switchVoteSelectedRowKeys,
       onChange: (...params) => {
-        handleSwithVoteSelectedRowChange(...params);
+        handleSwitchVoteSelectedRowChange(...params);
         this.setState({
           formattedLockTime: params[1][0].formatedLockTime
         });
@@ -238,15 +238,15 @@ class VoteModal extends Component {
                 className="vote-input"
                 // suffix={SYMBOL}
                 placeholder="Enter vote amount"
-                // todo: How to make parser/formatter work well with validator?
-                // parser={value => +value.replace(/\$\s?|(,*)/g, '')}
-                // formatter={value =>
-                //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                // }
-                // min={0}
-                // max={Math.floor(balance)}
-                // value={voteAmountInput}
-                // onChange={handleVoteAmountChange}
+              // todo: How to make parser/formatter work well with validator?
+              // parser={value => +value.replace(/\$\s?|(,*)/g, '')}
+              // formatter={value =>
+              //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              // }
+              // min={0}
+              // max={Math.floor(balance)}
+              // value={voteAmountInput}
+              // onChange={handleVoteAmountChange}
               />
             ),
             validator: {
@@ -551,7 +551,6 @@ class VoteModal extends Component {
       handleVoteTypeChange,
       voteType,
       voteConfirmLoading,
-      isLockTimeForTest,
       changeVoteState
     } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -608,7 +607,7 @@ class VoteModal extends Component {
                       checked={voteType === form.type}
                       value={form.type}
                       style={{ marginRight: 10 }}
-                      onChange={() => {}}
+                      onChange={() => { }}
                     />
                     <label htmlFor={form.label}>{form.label}</label>
                   </span>
@@ -619,8 +618,8 @@ class VoteModal extends Component {
                   className="vote-modal-form"
                   {...formItemLayout}
                   onSubmit={this.handleSubmit}
-                  // todo: why is the validateMessages don't work?
-                  // validateMessages={validateMessages}
+                // todo: why is the validateMessages don't work?
+                // validateMessages={validateMessages}
                 >
                   {form.formItems.map(item => {
                     // todo: there are repeat code in form
@@ -633,9 +632,9 @@ class VoteModal extends Component {
                         >
                           {item.validator
                             ? getFieldDecorator(
-                                item.validator.fieldDecoratorid,
-                                item.validator
-                              )(item.render || <Input />)
+                              item.validator.fieldDecoratorid,
+                              item.validator
+                            )(item.render || <Input />)
                             : item.render}
                           {item.tip ? (
                             <Tooltip title={item.tip}>
@@ -643,8 +642,8 @@ class VoteModal extends Component {
                                 className="right-icon"
                                 theme="filled"
                                 type="info-circle"
-                                // width={16}
-                                // height={16}
+                              // width={16}
+                              // height={16}
                               />
                             </Tooltip>
                           ) : null}

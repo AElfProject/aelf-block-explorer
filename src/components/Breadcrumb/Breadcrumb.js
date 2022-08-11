@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import {Breadcrumb} from 'antd';
 
 import './breadcrumb.styles.less';
 import addressFormat from "../../utils/addressFormat";
+import { withRouter } from '../../routes/utils';
 
 // if you want to hide the Breadcrumb
 const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contract', '/token'];
@@ -171,7 +172,7 @@ class BrowserBreadcrumb extends Component {
         BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState];
 
       if (!STATE) {
-        this.props.history.push('/');
+        this.props.navigate('/');
         return;
       }
 

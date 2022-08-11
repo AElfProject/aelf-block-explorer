@@ -6,9 +6,6 @@ import React, {
     PureComponent
 } from 'react';
 import AElf from "aelf-sdk";
-import {
-    withRouter
-} from "react-router-dom";
 import { isAElfAddress } from '../../utils';
 import {
     Input,
@@ -22,6 +19,7 @@ import {
 
 import './search.styles.less';
 import { INPUT_STARTS_WITH_MINUS_TIP, INPUT_ZERO_TIP } from '@src/constants';
+import { withRouter } from '../../routes/utils';
 
 class Search extends PureComponent {
 
@@ -43,10 +41,10 @@ class Search extends PureComponent {
     };
 
     SEARCHRULES = {
-        address(value, history) {
-            history.push(`/address/${value}`);
+        address(value, navigate) {
+            navigate(`/address/${value}`);
         },
-        async transaction(value, history) {
+        async transaction(value, navigate) {
             let getTxsOption = {
                 limit: 1,
                 page: 0,
@@ -56,16 +54,16 @@ class Search extends PureComponent {
             const blockInfo = await get('/block/transactions', getTxsOption);
             const isBlock = blockInfo.transactions && blockInfo.transactions.length;
             if (isBlock) {
-                history.push(`/block/${value}`);
+                navigate(`/block/${value}`);
             }
             else {
-                history.push(`/tx/${value}`);
+                navigate(`/tx/${value}`);
             }
         },
         blockHeight(value, history) {
             let number = parseInt(value, 10);
             if (number == value) {
-                history.push(`/block/${value}`);
+                navigate(`/block/${value}`);
             }
             return true;
         }
@@ -94,32 +92,32 @@ class Search extends PureComponent {
         // 1. transaction 66
         // 2. block   66
         // 3. address length=38
-        if(`${value}`.startsWith('-')){
+        if (`${value}`.startsWith('-')) {
             message.error(INPUT_STARTS_WITH_MINUS_TIP);
             return;
         }
-        if(+value === 0){
+        if (+value === 0) {
             message.error(INPUT_ZERO_TIP);
             return;
         }
 
         if (isAElfAddress(value)) {
             const address = AElf.utils.encodeAddressRep(AElf.utils.decodeAddressRep(value));
-            this.SEARCHRULES.address(address, this.props.history);
+            this.SEARCHRULES.address(address, this.props.navigate);
         }
         else if (isTxid.includes(length)) {
-            this.SEARCHRULES.transaction(value, this.props.history);
+            this.SEARCHRULES.transaction(value, this.props.navigate);
         }
         else {
-            this.SEARCHRULES.blockHeight(value, this.props.history) || message.error('Wrong Search Input', 6);
+            this.SEARCHRULES.blockHeight(value, this.props.navigate) || message.error('Wrong Search Input', 6);
         }
     };
 
     render() {
-        const {content} = this.state;
+        const { content } = this.state;
         const suffix = content ? (
-                <Icon type="close-circle" onClick={this.emitEmpty} />
-            ) : <span />;
+            <Icon type="close-circle" onClick={this.emitEmpty} />
+        ) : <span />;
         return (
             <div className="search-container">
                 <Input

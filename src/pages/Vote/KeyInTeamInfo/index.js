@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { withRouter } from 'react-router-dom';
 import {
   Form,
   Input,
@@ -20,6 +19,7 @@ import { urlRegExp } from '@pages/Vote/constants';
 import { addUrlPrefix, removeUrlPrefix } from '@utils/formater';
 import './index.less';
 import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
+import { withRouter } from '../../../routes/utils.js';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -383,10 +383,7 @@ class KeyInTeamInfo extends PureComponent {
             ...submitValues
           }).then(res => {
             if (+res.code === 0) {
-              this.props.history.push({
-                pathname: '/vote/team',
-                search: `pubkey=${publicKey}`
-              });
+              this.props.navigate(`/vote/team?pubkey=${publicKey}`);
             } else {
               message.error(res.msg);
             }

@@ -7,23 +7,21 @@
  * @Description: file content
  */
 import React, { memo } from 'react';
-import { withRouter } from 'react-router';
 import { Button, Icon } from 'antd';
 
 import './ElectionRuleCard.style.less';
 import { isPhoneCheck } from '@utils/deviceCheck';
 import Svg from "../../../../components/Svg/Svg";
+import { useNavigate } from 'react-router';
+import { withRouter } from '../../../../routes/utils';
 
 function ElectionRuleCard(props) {
+  const navigate = useNavigate();
   const { isCandidate, displayApplyModal, currentWallet, quitElection } = props;
 
   const onClick = () => {
     if (isCandidate) {
-      const { history } = props;
-      history.push({
-        pathname: '/vote/apply/keyin',
-        search: `pubkey=${currentWallet && currentWallet.pubkey}`,
-      });
+      navigate(`/vote/apply/keyin?pubkey=${currentWallet && currentWallet.pubkey}`)
     } else {
       displayApplyModal();
     }
@@ -63,9 +61,9 @@ function ElectionRuleCard(props) {
         {isCandidate &&
           <div className="quit-button" onClick={quitElection}>
             Quit <Svg
-            icon="quit"
-            className="quit-logo"
-          />
+              icon="quit"
+              className="quit-logo"
+            />
           </div>
         }
       </div>

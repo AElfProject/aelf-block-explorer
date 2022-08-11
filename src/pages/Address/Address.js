@@ -6,17 +6,18 @@ import React, {useEffect, useState, useRef} from 'react';
 import IFrame from '../../components/IFrame';
 import {rand16Num} from "../../utils/utils";
 import useLocation from "react-use/lib/useLocation";
+import { withRouter } from '../../routes/utils';
 
 const DEFAULT_URL = '/viewer/address.html#/address';
 
 const Address = props => {
   const {
-    match
+    params
   } = props;
   const location = useLocation();
   const {
     id: address = ''
-  } = match.params;
+  } = params;
   const ll = useRef(location);
   ll.current = location;
   const [url, setUrl] = useState(`${DEFAULT_URL}${address ? `/${address}` : ''}`);
@@ -52,4 +53,4 @@ const Address = props => {
   );
 };
 
-export default Address;
+export default withRouter(Address);

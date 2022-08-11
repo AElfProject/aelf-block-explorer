@@ -20,7 +20,7 @@ export default class ResourceDetail extends PureComponent {
     super(props);
     this.state = {
       loading: false,
-      address: props.match.params.id || '',
+      address: '',
       data: null,
       pagination: {
         pageSize: PAGE_SIZE,
@@ -32,6 +32,10 @@ export default class ResourceDetail extends PureComponent {
   }
 
   componentDidMount() {
+    const { params = { id: '' } } = this.props
+    this.setState({
+      address: params.id
+    })
     this.getResourceDetail(PAGE_SIZE, page);
   }
 
@@ -46,7 +50,7 @@ export default class ResourceDetail extends PureComponent {
       order: 'desc',
       address
     });
-    let records = data.records || [];
+    let { records = [] } = data;
     records.map((item, index) => {
       item.key = index + page;
       item.resource = (+item.resource / ELF_DECIMAL).toFixed(8);

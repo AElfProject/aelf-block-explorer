@@ -52,6 +52,7 @@ function nightELFLogin(useLock) {
         // console.log('this.getCurrentWalletLock getLogin', error, result, getLoginQueue.length);
         if (result) {
             callback(result);
+            // Plugin popup is closed
             if (result.error === 200010) {
                 getLoginQueue = [];
             }
