@@ -1,0 +1,11 @@
+/coverage
+/dist
+/.history
+/node_modules
+npm-debug.log*
+.idea/
+
+explore.conf
+package-lock.json
+.yarn-error.log
+.DS_Store

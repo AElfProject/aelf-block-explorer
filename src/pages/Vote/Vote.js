@@ -21,11 +21,7 @@ import { thousandsCommaWithDecimal } from "@utils/formater";
 import getContractAddress from "@utils/getContractAddress";
 import DownloadPlugins from "@components/DownloadPlugins/DownloadPlugins";
 // import NumericInput from '@components/NumericInput';
-import config, {
-  DEFAUTRPCSERVER as DEFAUT_RPC_SERVER,
-  APPNAME,
-  schemeIds,
-} from "@config/config";
+import config, { APPNAME, schemeIds } from "@config/config";
 import { aelf } from "@src/utils";
 // import voteStore from '@store/vote';
 import contractsStore from "@store/contracts";
@@ -269,8 +265,6 @@ class VoteContainer extends Component {
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.voteNextCallback = this.voteNextCallback.bind(this);
-    // this.handleAllIn = this.handleAllIn.bind(this);
     this.handleLockTimeChange = this.handleLockTimeChange.bind(this);
     this.handleVoteConfirmOk = this.handleVoteConfirmOk.bind(this);
     this.handleVoteTypeChange = this.handleVoteTypeChange.bind(this);
@@ -296,8 +290,8 @@ class VoteContainer extends Component {
   }
 
   async componentDidMount() {
-    const { history } = this.props;
     // Get contracts
+
     try {
       const result = await getContractAddress();
       if (!result.chainInfo) {
@@ -522,7 +516,7 @@ class VoteContainer extends Component {
         if (result && result.error === 0) {
           console.log("result", result);
           const wallet = JSON.parse(result.detail);
-          this.getNightElfKeypair(wallet);
+          this.getNightElfKeyPair(wallet);
           // todo: Extract
           this.onExtensionAndWalletReady().then(() => {
             resolve();
@@ -658,7 +652,7 @@ class VoteContainer extends Component {
         return;
       }
       // the vote expired can be withdrawn
-      withdrawnableVoteRecords.push(record);
+      withdrawableVoteRecords.push(record);
       expiredVotesAmount += +record.amount;
     });
 
