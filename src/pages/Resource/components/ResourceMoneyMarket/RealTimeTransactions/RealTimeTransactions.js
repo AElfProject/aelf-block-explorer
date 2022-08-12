@@ -14,7 +14,7 @@ import {
   ELF_DECIMAL,
   ELF_PRECISION,
   TXSSTATUS,
-  REAL_TIME_FETCH_INTERVAL
+  REAL_TIME_FETCH_INTERVAL,
 } from '@src/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import { get } from '../../../../../utils';
@@ -28,7 +28,7 @@ class RealTimeTransactions extends PureComponent {
     super(props);
     this.getResourceRealtimeRecordsTimer = null;
     this.state = {
-      recordsData: null
+      recordsData: null,
     };
   }
 
@@ -45,9 +45,11 @@ class RealTimeTransactions extends PureComponent {
 
   getTableHeadHTML() {
     return (
-      <Row className='table-head' type='flex' align='middle'>
+      <Row className="table-head" type="flex" align="middle">
         <Col span={6} offset={6}>
-          Average price({SYMBOL})
+          Average price(
+          {SYMBOL}
+          )
         </Col>
         <Col span={6}>Number</Col>
         <Col span={6}>Cumulative</Col>
@@ -57,12 +59,12 @@ class RealTimeTransactions extends PureComponent {
 
   async getResourceRealtimeRecords() {
     const {
-      type
+      type,
     } = this.props;
     try {
       const data = await get(RESOURCE_REALTIME_RECORDS, {
         limit: fetchLimit,
-        type
+        type,
       });
       // todo: move the logic to backend
       // todo: repeating code
@@ -74,13 +76,13 @@ class RealTimeTransactions extends PureComponent {
         .slice(0, displayLimit);
       // console.log('data', data);
       this.setState({
-        recordsData: data || []
+        recordsData: data || [],
       });
       this.props.getRealTimeTransactionLoading();
       this.getResourceRealtimeRecordsTimer = setTimeout(() => {
         this.getResourceRealtimeRecords();
       }, REAL_TIME_FETCH_INTERVAL);
-    } catch(error) {
+    } catch (error) {
       this.getResourceRealtimeRecordsTimer = setTimeout(() => {
         this.getResourceRealtimeRecords();
       }, REAL_TIME_FETCH_INTERVAL);
@@ -99,19 +101,19 @@ class RealTimeTransactions extends PureComponent {
       return data.map((item, index) => {
         const date = this.formatDate(item.time);
         let {
-            resource = 0,
-            elf = 0,
-            fee = 0
+          resource = 0,
+          elf = 0,
+          fee = 0,
         } = item;
         resource /= ELF_DECIMAL;
         elf /= ELF_DECIMAL;
         fee /= ELF_DECIMAL;
         return (
-          <Row className='table-sell' type='flex' align='middle' key={index}>
+          <Row className="table-sell" type="flex" align="middle" key={index}>
             <Col span={4}>
               <Link to={`/tx/${item.tx_id}`}>{date}</Link>
             </Col>
-            <Col span={3} className='sell'>
+            <Col span={3} className="sell">
               Sell
             </Col>
             <Col span={5}>
@@ -142,20 +144,20 @@ class RealTimeTransactions extends PureComponent {
       data = recordsData.buyRecords || [];
       return data.map((item, index) => {
         const date = this.formatDate(item.time);
-          let {
-              resource = 0,
-              elf = 0,
-              fee = 0
-          } = item;
-          resource /= ELF_DECIMAL;
-          elf /= ELF_DECIMAL;
-          fee /= ELF_DECIMAL;
+        let {
+          resource = 0,
+          elf = 0,
+          fee = 0,
+        } = item;
+        resource /= ELF_DECIMAL;
+        elf /= ELF_DECIMAL;
+        fee /= ELF_DECIMAL;
         return (
-          <Row className='table-buy' type='flex' align='middle' key={index}>
+          <Row className="table-buy" type="flex" align="middle" key={index}>
             <Col span={4}>
               <Link to={`/tx/${item.tx_id}`}>{date}</Link>
             </Col>
-            <Col span={3} className='sell'>
+            <Col span={3} className="sell">
               Buy
             </Col>
             <Col span={5}>
@@ -174,12 +176,12 @@ class RealTimeTransactions extends PureComponent {
     const sellInfo = this.getSellInfoHTML();
     const buyInfo = this.getBuyInfoHTML();
     return (
-      <div className='real-time-transactions'>
+      <div className="real-time-transactions">
         <Row>
-            <Col className="real-time-transactions-head">Real Time Transactions</Col>
+          <Col className="real-time-transactions-head">Real Time Transactions</Col>
         </Row>
         <Divider className="resource-buy-divider" />
-        <div className='real-time-transactions-body'>
+        <div className="real-time-transactions-body">
           {tableHead}
           {sellInfo}
           {buyInfo}
@@ -189,8 +191,8 @@ class RealTimeTransactions extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  ...state.common
+const mapStateToProps = (state) => ({
+  ...state.common,
 });
 
 export default connect(mapStateToProps)(RealTimeTransactions);

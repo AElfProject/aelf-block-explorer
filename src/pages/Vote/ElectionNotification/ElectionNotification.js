@@ -6,104 +6,110 @@
  * @LastEditTime: 2019-12-09 18:36:12
  * @Description: the page of election and nodes's notification
  */
-import React, { PureComponent } from 'react';
-import { withRouter } from 'react-router-dom';
-import Decimal from 'decimal.js';
-import { message } from 'antd';
-import moment from 'moment';
+import React, { PureComponent } from "react";
+import { withRouter } from "../../../routes/utils";
+import Decimal from "decimal.js";
+import { message } from "antd";
+import moment from "moment";
 
-import StatisticalData from '@components/StatisticalData/';
-import NodeTable from './NodeTable';
-import ElectionRuleCard from './ElectionRuleCard/ElectionRuleCard';
-import MyWalletCard from './MyWalletCard/MyWalletCard';
-import Dividends from "../../../components/Dividends";
+import StatisticalData from "@components/StatisticalData/";
 import {
   SYMBOL,
   ELECTION_NOTIFI_DATA_TIP,
   txStatusInUpperCase,
   UNKNOWN_ERROR_TIP,
   LONG_NOTIFI_TIME,
-  ELF_DECIMAL
-} from '@src/constants';
-import './ElectionNotification.style.less';
-import CandidateApplyModal from './CandidateApplyModal/CandidateApplyModal';
-import { aelf } from '@src/utils';
-import {
-  getTokenDecimal
-} from '../../../utils/utils';
-import getStateJudgment from '@utils/getStateJudgment';
+  ELF_DECIMAL,
+} from "@src/constants";
+import { aelf } from "@src/utils";
+import getStateJudgment from "@utils/getStateJudgment";
+import NodeTable from "./NodeTable";
+import ElectionRuleCard from "./ElectionRuleCard/ElectionRuleCard";
+import MyWalletCard from "./MyWalletCard/MyWalletCard";
+import Dividends from "../../../components/Dividends";
+import "./ElectionNotification.style.less";
+import CandidateApplyModal from "./CandidateApplyModal/CandidateApplyModal";
+import { getTokenDecimal } from "../../../utils/utils";
 
 const electionNotifiStatisData = {
   termEndTime: {
     id: 0,
     title: "Current Term's Countdown (-th term)",
     isCountdown: true,
-    resetTime: 1000 * 60 * 60 * 24 * 7
+    resetTime: 1000 * 60 * 60 * 24 * 7,
   },
   currentNodesAmount: {
     id: 1,
-    title: "Current Node's Amount"
+    title: "Current Node's Amount",
   },
   currentVotesAmount: {
     id: 2,
-    title: 'Current Votes Amount'
+    title: "Current Votes Amount",
   },
   currentMiningReward: {
     id: 3,
-    title: 'Current Mining Reward'
-  }
+    title: "Current Mining Reward",
+  },
 };
 
 async function getDividend(treasury, consensus) {
   let undistributed = {
     value: {
-      ELF: 0
-    }
+      ELF: 0,
+    },
   };
   const miner = await consensus.GetCurrentTermMiningReward.call();
   try {
     undistributed = await treasury.GetUndistributedDividends.call();
   } catch (e) {
-    console.log('call contract method failed');
+    console.log("call contract method failed");
   }
   let dividends = {
-    ELF: 0
+    ELF: 0,
   };
   if (undistributed && undistributed.value) {
     dividends = {
       ...(undistributed.value || {}),
-      ELF: new Decimal((undistributed.value || {}).ELF || 0).add((miner && miner.value) ? miner.value : 0).toNumber()
+      ELF: new Decimal((undistributed.value || {}).ELF || 0)
+        .add(miner && miner.value ? miner.value : 0)
+        .toNumber(),
     };
   }
   dividends = dividends || {};
   if (Object.keys(dividends).length > 0) {
     const symbols = Object.keys(dividends);
-    let decimals = await Promise.all(symbols.map(s => getTokenDecimal(s)));
-    decimals = symbols.reduce((acc, v, i) => ({
-      ...acc,
-      [v]: decimals[i]
-    }), {});
-    dividends = Object.keys(dividends).reduce((acc, key) => ({
-      ...acc,
-      [key]: new Decimal(dividends[key]).dividedBy(`1e${decimals[key] || 8}`).toNumber()
-    }), {});
+    let decimals = await Promise.all(symbols.map((s) => getTokenDecimal(s)));
+    decimals = symbols.reduce(
+      (acc, v, i) => ({
+        ...acc,
+        [v]: decimals[i],
+      }),
+      {}
+    );
+    dividends = Object.keys(dividends).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: new Decimal(dividends[key])
+          .dividedBy(`1e${decimals[key] || 8}`)
+          .toNumber(),
+      }),
+      {}
+    );
   }
   return dividends;
 }
 
-const Display = props => {
-  const {
-    dividends
-  } = props;
+const Display = (props) => {
+  const { dividends } = props;
   return (
-      <div className="ant-statistic vote-statistic">
-        <div className="ant-statistic-title">Current Mining Reward</div>
-        <div className="ant-statistic-content">
-          <span className="ant-statistic-content-value">
-            <Dividends dividends={dividends} useButton={false} />
-          </span>
-        </div>
+    <div className='ant-statistic vote-statistic'>
+      <div className='ant-statistic-title'>Current Mining Reward</div>
+      <div className='ant-statistic-content'>
+        <span className='ant-statistic-content-value'>
+          <Dividends dividends={dividends} useButton={false} />
+        </span>
       </div>
+    </div>
   );
 };
 
@@ -123,7 +129,7 @@ class ElectionNotification extends PureComponent {
       statisData: electionNotifiStatisData,
       statisDataLoading: false,
 
-      applyModalVisible: false
+      applyModalVisible: false,
     };
 
     this.hasRun = false;
@@ -140,14 +146,19 @@ class ElectionNotification extends PureComponent {
       electionContract,
       multiTokenContract,
       dividendContract,
-      profitContractFromExt
+      profitContractFromExt,
     } = this.props;
 
     await this.fetchData();
 
-    if (dividendContract && electionContract && multiTokenContract && profitContractFromExt) {
+    if (
+      dividendContract &&
+      electionContract &&
+      multiTokenContract &&
+      profitContractFromExt
+    ) {
       changeVoteState({
-        shouldRefreshMyWallet: true
+        shouldRefreshMyWallet: true,
       });
     }
   }
@@ -162,7 +173,7 @@ class ElectionNotification extends PureComponent {
       consensusContract,
       dividendContract,
       shouldRefreshElectionNotifiStatis,
-      changeVoteState
+      changeVoteState,
     } = this.props;
     // todo: decouple, it's too couple here
     if (
@@ -180,7 +191,7 @@ class ElectionNotification extends PureComponent {
       // Avoid repeating refresh
       changeVoteState(
         {
-          shouldRefreshElectionNotifiStatis: false
+          shouldRefreshElectionNotifiStatis: false,
         },
         () => {
           this.fetchStatisData();
@@ -200,96 +211,90 @@ class ElectionNotification extends PureComponent {
     statisData = { ...statisData };
     this.setState(
       {
-        statisData
+        statisData,
       },
       () => {
         // todo: put the setState where it should be
         this.setState({
-          statisDataLoading: false
+          statisDataLoading: false,
         });
       }
     );
   }
 
   async fetchStatisData() {
-    const {
-      statisDataLoading,
-      statisData
-    } = this.state;
+    const { statisDataLoading, statisData } = this.state;
     if (statisDataLoading) {
       return;
     }
-    const { electionContract, consensusContract, dividendContract } = this.props;
+    const { electionContract, consensusContract, dividendContract } =
+      this.props;
     this.setState({
-      statisDataLoading: true
+      statisDataLoading: true,
     });
     const dataSource = [
       {
         contract: consensusContract,
-        method: 'GetCurrentTermNumber',
-        statisDataKey: 'termEndTime',
-        processor: value => `Current Term's Countdown (${value}th term)`,
-        dataKey: 'title'
+        method: "GetCurrentTermNumber",
+        statisDataKey: "termEndTime",
+        processor: (value) => `Current Term's Countdown (${value}th term)`,
+        dataKey: "title",
       },
       {
         contract: electionContract,
-        method: 'GetCandidates',
-        processor: value => value.length,
-        statisDataKey: 'currentNodesAmount',
-        dataKey: 'num'
+        method: "GetCandidates",
+        processor: (value) => value.length,
+        statisDataKey: "currentNodesAmount",
+        dataKey: "num",
       },
       {
         contract: electionContract,
-        method: 'GetVotesAmount',
-        processor: value => value / ELF_DECIMAL,
-        statisDataKey: 'currentVotesAmount',
-        dataKey: 'num'
+        method: "GetVotesAmount",
+        processor: (value) => value / ELF_DECIMAL,
+        statisDataKey: "currentVotesAmount",
+        dataKey: "num",
       },
       {
         contract: consensusContract,
-        method: 'GetNextElectCountDown',
-        processor: value => moment().add(value, 'seconds'),
-        statisDataKey: 'termEndTime',
-        dataKey: 'num'
-      }
+        method: "GetNextElectCountDown",
+        processor: (value) => moment().add(value, "seconds"),
+        statisDataKey: "termEndTime",
+        dataKey: "num",
+      },
     ];
-    const list = await Promise.all(dataSource.map(async item => {
-      const {
-        contract,
-        dataKey,
-        method,
-        processor,
-        statisDataKey
-      } = item;
-      try {
-        const r = await contract[method].call();
+    const list = await Promise.all(
+      dataSource.map(async (item) => {
+        const { contract, dataKey, method, processor, statisDataKey } = item;
+        try {
+          const r = await contract[method].call();
+          return {
+            statisDataKey,
+            [dataKey]: processor((r || { value: 0 }).value),
+          };
+        } catch (e) {
+          return {
+            statisDataKey,
+            [dataKey]: 0,
+          };
+        }
+      })
+    );
+    const result = list.reduce(
+      (acc, v) => {
+        const { statisDataKey, ...left } = v;
         return {
-          statisDataKey,
-          [dataKey]: processor((r || {value: 0}).value)
+          ...acc,
+          [statisDataKey]: {
+            ...(statisData[statisDataKey] || {}),
+            ...(acc[statisDataKey] || {}),
+            ...left,
+          },
         };
-      } catch(e) {
-        return {
-          statisDataKey,
-          [dataKey]: 0
-        }
+      },
+      {
+        ...statisData,
       }
-    }));
-    const result = list.reduce((acc, v) => {
-      const {
-        statisDataKey,
-        ...left
-      } = v;
-      return {
-        ...acc,
-        [statisDataKey]: {
-          ...(statisData[statisDataKey] || {}),
-          ...(acc[statisDataKey] || {}),
-          ...left
-        }
-      };
-    }, {
-      ...statisData
-    });
+    );
     const dividends = await getDividend(dividendContract, consensusContract);
     this.setState({
       statisData: {
@@ -297,10 +302,10 @@ class ElectionNotification extends PureComponent {
         currentMiningReward: {
           ...statisData.currentMiningReward,
           isRender: true,
-          num: <Display key="currentMiningReward" dividends={dividends} />
-        }
+          num: <Display key='currentMiningReward' dividends={dividends} />,
+        },
       },
-      statisDataLoading: false
+      statisDataLoading: false,
     });
   }
 
@@ -309,15 +314,15 @@ class ElectionNotification extends PureComponent {
       currentWallet,
       electionContractFromExt,
       checkExtensionLockStatus,
-      judgeCurrentUserIsCandidate
+      judgeCurrentUserIsCandidate,
     } = this.props;
 
     checkExtensionLockStatus().then(() => {
       electionContractFromExt
         .QuitElection({
-          value: currentWallet.pubkey
+          value: currentWallet.pubkey,
         })
-        .then(res => {
+        .then((res) => {
           if (res.error) {
             message.error(res.errorMessage.message);
             return;
@@ -337,11 +342,11 @@ class ElectionNotification extends PureComponent {
               judgeCurrentUserIsCandidate();
             } catch (e) {
               console.log(e);
-              message.error(e.message || e.Error || 'Network error');
+              message.error(e.message || e.Error || "Network error");
             }
           }, 4000);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     });
@@ -352,7 +357,7 @@ class ElectionNotification extends PureComponent {
       currentWallet,
       electionContractFromExt,
       checkExtensionLockStatus,
-      judgeCurrentUserIsCandidate
+      judgeCurrentUserIsCandidate,
     } = this.props;
 
     // todo: there are the same code in Vote.js
@@ -360,7 +365,7 @@ class ElectionNotification extends PureComponent {
     checkExtensionLockStatus().then(() => {
       electionContractFromExt
         .AnnounceElection(admin)
-        .then(res => {
+        .then((res) => {
           if (res.error) {
             message.error(res.errorMessage.message);
             return;
@@ -376,24 +381,25 @@ class ElectionNotification extends PureComponent {
             try {
               const result = await aelf.chain.getTxResult(transactionId);
               this.setState({
-                applyModalVisible: false
+                applyModalVisible: false,
               });
               const { Status: status } = result;
               getStateJudgment(status, transactionId);
               judgeCurrentUserIsCandidate();
               if (status === txStatusInUpperCase.mined) {
                 this.props.history.push(
-                    `/vote/apply/keyin?pubkey=${currentWallet &&
-                    currentWallet.pubkey}`
+                  `/vote/apply/keyin?pubkey=${
+                    currentWallet && currentWallet.pubkey
+                  }`
                 );
               }
             } catch (e) {
               console.log(e);
-              message.error(e.message || e.Error || 'Network error');
+              message.error(e.message || e.Error || "Network error");
             }
           }, 4000);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     });
@@ -401,13 +407,13 @@ class ElectionNotification extends PureComponent {
 
   displayApplyModal() {
     this.setState({
-      applyModalVisible: true
+      applyModalVisible: true,
     });
   }
 
   handleApplyModalCancel() {
     this.setState({
-      applyModalVisible: false
+      applyModalVisible: false,
     });
   }
 
@@ -427,14 +433,14 @@ class ElectionNotification extends PureComponent {
       changeVoteState,
       shouldRefreshMyWallet,
       checkExtensionLockStatus,
-      currentWallet
+      currentWallet,
     } = this.props;
     const {
       totalVotesAmount,
       showDownloadPlugin,
       statisData,
       statisDataLoading,
-      applyModalVisible
+      applyModalVisible,
     } = this.state;
 
     const { electionContract } = this.props;
@@ -447,14 +453,14 @@ class ElectionNotification extends PureComponent {
           style={{ marginBottom: 20 }}
           tooltip={ELECTION_NOTIFI_DATA_TIP}
         />
-        <div className="election-blank" />
+        <div className='election-blank' />
         <ElectionRuleCard
           isCandidate={isCandidate}
           currentWallet={currentWallet}
           quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
-        <div className="election-blank" />
+        <div className='election-blank' />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -468,7 +474,7 @@ class ElectionNotification extends PureComponent {
           checkExtensionLockStatus={checkExtensionLockStatus}
           currentWallet={currentWallet}
         />
-        <div className="election-blank" />
+        <div className='election-blank' />
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}

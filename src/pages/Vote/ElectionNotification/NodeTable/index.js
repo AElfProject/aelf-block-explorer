@@ -13,7 +13,7 @@ import {
   Button,
   Input,
   Icon,
-  Tooltip
+  Tooltip,
 } from 'antd';
 import moment from 'moment';
 // import Highlighter from 'react-highlight-words';
@@ -23,27 +23,27 @@ import io from 'socket.io-client';
 import {
   getAllTeamDesc,
   fetchPageableCandidateInformation,
-  fetchElectorVoteWithRecords
+  fetchElectorVoteWithRecords,
 } from '@api/vote';
 import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import {
   FROM_WALLET,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
+  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
 } from '@src/pages/Vote/constants';
 import './index.less';
-import {ELF_DECIMAL} from "../../constants";
-import {SOCKET_URL_NEW} from "../../../../constants";
-import addressFormat from "../../../../utils/addressFormat";
+import { ELF_DECIMAL } from '../../constants';
+import { SOCKET_URL_NEW } from '../../../../constants';
+import addressFormat from '../../../../utils/addressFormat';
 
 const clsPrefix = 'node-table';
 
 const pagination = {
   showQuickJumper: true,
   total: 0,
-  showTotal: total => `Total ${total} items`,
-  pageSize: 20
+  showTotal: (total) => `Total ${total} items`,
+  pageSize: 20,
 };
 
 class NodeTable extends PureComponent {
@@ -83,42 +83,40 @@ class NodeTable extends PureComponent {
   }
 
   wsProducedBlocks() {
-    this.socket.on("produced_blocks", (data) => {
+    this.socket.on('produced_blocks', (data) => {
       this.setState({
-        producedBlocks: data
+        producedBlocks: data,
       });
 
-      const {nodeList} = this.state;
+      const { nodeList } = this.state;
       if (!nodeList || !nodeList.length) {
         return;
       }
-      const newNodeList = nodeList.map(item => {
-        item.producedBlocks = data[item.pubkey]
+      const newNodeList = nodeList.map((item) => {
+        item.producedBlocks = data[item.pubkey];
         return item;
       });
       this.setState({
-        nodeList: newNodeList
+        nodeList: newNodeList,
       });
     });
   }
 
-  getColumnSearchProps = dataIndex => ({
+  getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
       confirm,
-      clearFilters
+      clearFilters,
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={node => {
+          ref={(node) => {
             this.searchInput = node;
           }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
@@ -140,19 +138,18 @@ class NodeTable extends PureComponent {
         </Button>
       </div>
     ),
-    filterIcon: filtered => (
+    filterIcon: (filtered) => (
       <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: visible => {
+    onFilter: (value, record) => record[dataIndex]
+      .toString()
+      .toLowerCase()
+      .includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
       }
-    }
+    },
     // render: text => (
     //   <Highlighter
     //     highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
@@ -171,7 +168,7 @@ class NodeTable extends PureComponent {
         key: 'rank',
         width: 70,
         defaultSortOrder: 'ascend',
-        sorter: (a, b) => a.rank - b.rank
+        sorter: (a, b) => a.rank - b.rank,
       },
       {
         title: 'Node Name',
@@ -190,13 +187,13 @@ class NodeTable extends PureComponent {
             </Link>
           </Tooltip>
         ),
-        ...this.getColumnSearchProps('name')
+        ...this.getColumnSearchProps('name'),
       },
       {
         title: 'Node Type',
         dataIndex: 'nodeType',
         width: 90,
-        key: 'nodeType'
+        key: 'nodeType',
         // todo: write the sorter after the api is ready
         // sorter: (a, b) => a.nodeType - b.nodeType
       },
@@ -206,7 +203,7 @@ class NodeTable extends PureComponent {
         width: 80,
         key: 'terms',
         defaultSortOrder: 'descend',
-        sorter: (a, b) => a.terms - b.terms
+        sorter: (a, b) => a.terms - b.terms,
       },
       {
         title: 'Produce Blocks',
@@ -214,7 +211,7 @@ class NodeTable extends PureComponent {
         width: 140,
         key: 'producedBlocks',
         defaultSortOrder: 'descend',
-        sorter: (a, b) => a.producedBlocks - b.producedBlocks
+        sorter: (a, b) => a.producedBlocks - b.producedBlocks,
       },
       {
         title: 'Obtain Votes',
@@ -223,7 +220,7 @@ class NodeTable extends PureComponent {
         key: 'obtainedVotesCount',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.obtainedVotesAmount - b.obtainedVotesAmount,
-        render: value => Number.parseFloat((value / ELF_DECIMAL).toFixed(2)).toLocaleString()
+        render: (value) => Number.parseFloat((value / ELF_DECIMAL).toFixed(2)).toLocaleString(),
       },
       {
         title: 'Voted Rate',
@@ -231,10 +228,10 @@ class NodeTable extends PureComponent {
         width: 108,
         dataIndex: 'votedRate',
         defaultSortOrder: 'descend',
-        render: value =>
+        render: (value) =>
           // <Progress percent={value} status="active" strokeColor="#fff" />
           `${value}%`,
-        sorter: (a, b) => a.votedRate - b.votedRate
+        sorter: (a, b) => a.votedRate - b.votedRate,
       },
       {
         title: 'My Votes',
@@ -242,7 +239,7 @@ class NodeTable extends PureComponent {
         width: 100,
         dataIndex: 'myTotalVoteAmount',
         sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount,
-        render: value => (value && value !== '-') ? value / ELF_DECIMAL : '-'
+        render: (value) => ((value && value !== '-') ? value / ELF_DECIMAL : '-'),
       },
       {
         title: 'Operations',
@@ -281,8 +278,8 @@ class NodeTable extends PureComponent {
               Redeem
             </Button>
           </div>
-        )
-      }
+        ),
+      },
     ];
 
     // todo: Realize it using css
@@ -291,7 +288,7 @@ class NodeTable extends PureComponent {
     //   nodeListCols.pop();
     // }
 
-    nodeListCols.forEach(item => {
+    nodeListCols.forEach((item) => {
       item.align = 'center';
     });
 
@@ -303,7 +300,7 @@ class NodeTable extends PureComponent {
     // this.setState({ searchText: selectedKeys[0] });
   };
 
-  handleReset = clearFilters => {
+  handleReset = (clearFilters) => {
     clearFilters();
     // this.setState({ searchText: '' });
   };
@@ -313,31 +310,31 @@ class NodeTable extends PureComponent {
       electionContract,
       consensusContract,
       shouldRefreshNodeTable,
-      changeVoteState
+      changeVoteState,
     } = this.props;
     // todo: It seems to has useless render in cdm
     console.log({
       flag: !this.hasRun || shouldRefreshNodeTable,
-      shouldRefreshNodeTable
+      shouldRefreshNodeTable,
     });
     if (
-      electionContract &&
-      consensusContract &&
-      (!this.hasRun || shouldRefreshNodeTable)
+      electionContract
+      && consensusContract
+      && (!this.hasRun || shouldRefreshNodeTable)
     ) {
       changeVoteState(
         {
-          shouldRefreshNodeTable: false
+          shouldRefreshNodeTable: false,
         },
         async () => {
           this.setState({
-            isLoading: true
+            isLoading: true,
           });
           // Need await to ensure the totalVotesCount take its seat.
           // todo: fetchTheTotalVotesAmount after contract changed
           // await this.fetchTotalVotesAmount();
           this.fetchNodes(currentWallet);
-        }
+        },
       );
       this.hasRun = true;
     }
@@ -353,37 +350,37 @@ class NodeTable extends PureComponent {
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
-        length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
+        length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL, // give a number large enough to make sure that we get all the nodes
       }),
       getAllTeamDesc(),
       currentWallet.pubKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: currentWallet.pubKey
-          })
+          value: currentWallet.pubKey,
+        })
         : null,
-      fetchCurrentMinerPubkeyList(consensusContract)
+      fetchCurrentMinerPubkeyList(consensusContract),
     ])
-      .then(resArr => {
+      .then((resArr) => {
         // process data
         const processedNodesData = this.processNodesData(resArr);
         // console.log('processedNodesData currentWallet', resArr, processedNodesData, currentWallet.pubKey);
         //   this.state.currentWallet, currentWalletInput);
         this.setState(
           {
-            nodeList: processedNodesData
+            nodeList: processedNodesData,
           },
           () => {
             this.setState({
-              isLoading: false
+              isLoading: false,
             });
-          }
+          },
         );
         console.log('GetPageableCandidateInformation', {
           processedNodesData,
-          resArr
+          resArr,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('GetPageableCandidateInformation', err);
       });
   }
@@ -401,17 +398,17 @@ class NodeTable extends PureComponent {
     }
     const BPNodes = resArr[3].pubkeys;
     // add node name, add my vote amount
-    nodeInfos.forEach(item => {
+    nodeInfos.forEach((item) => {
       // compute totalActiveVotesAmount
       // FIXME: It will result in some problem when getPageable can only get 20 nodes info at most in one time
       totalActiveVotesAmount += +item.obtainedVotesAmount;
       // add node name
       const teamInfo = teamInfos.find(
-        team => team.public_key === item.candidateInformation.pubkey
+        (team) => team.public_key === item.candidateInformation.pubkey,
       );
       // get address from pubkey
       item.candidateInformation.address = publicKeyToAddress(
-        item.candidateInformation.pubkey
+        item.candidateInformation.pubkey,
       );
       item.candidateInformation.formattedAddress = addressFormat(item.candidateInformation.address);
       if (teamInfo === undefined) {
@@ -436,54 +433,47 @@ class NodeTable extends PureComponent {
       }
       // todo: use the method filterUserVoteRecordsForOneCandidate in voteUtil instead
       const myVoteRecordsForOneCandidate = activeVotingRecords.filter(
-        votingRecord =>
-          votingRecord.candidate === item.candidateInformation.pubkey
+        (votingRecord) => votingRecord.candidate === item.candidateInformation.pubkey,
       );
       const myTotalVoteAmount = myVoteRecordsForOneCandidate.reduce(
-        (total, current) => {
-          return total + +current.amount;
-        },
-        0
+        (total, current) => total + +current.amount,
+        0,
       );
       // todo: use the method computeUserRedeemableVoteAmountForOneCandidate in voteUtil instead
       const myRedeemableVoteAmountForOneCandidate = myVoteRecordsForOneCandidate
-        .filter(record => record.unlockTimestamp.seconds <= moment().unix())
-        .reduce((total, current) => {
-          return total + +current.amount;
-        }, 0);
+        .filter((record) => record.unlockTimestamp.seconds <= moment().unix())
+        .reduce((total, current) => total + +current.amount, 0);
 
       item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || '-';
-      item.candidateInformation.myRedeemableVoteAmountForOneCandidate =
-        myRedeemableVoteAmountForOneCandidate || '-';
+      item.candidateInformation.myRedeemableVoteAmountForOneCandidate = myRedeemableVoteAmountForOneCandidate || '-';
 
       if (producedBlocks) {
-        item.candidateInformation.producedBlocks = producedBlocks[item.candidateInformation.pubkey]
+        item.candidateInformation.producedBlocks = producedBlocks[item.candidateInformation.pubkey];
       } else {
         item.candidateInformation.producedBlocks = 0;
       }
     });
 
     return nodeInfos
-      .map(item => {
-        const votedRate =
-          totalActiveVotesAmount === 0
-            ? 0
-            : (
-                (item.obtainedVotesAmount / totalActiveVotesAmount) *
-                100
-              ).toFixed(2);
+      .map((item) => {
+        const votedRate = totalActiveVotesAmount === 0
+          ? 0
+          : (
+            (item.obtainedVotesAmount / totalActiveVotesAmount)
+                * 100
+          ).toFixed(2);
         return {
           ...item.candidateInformation,
           obtainedVotesAmount: item.obtainedVotesAmount,
-          votedRate
+          votedRate,
         };
       })
-      .filter(item => item.isCurrentCandidate)
+      .filter((item) => item.isCurrentCandidate)
       .sort((a, b) => b.obtainedVotesAmount - a.obtainedVotesAmount) // todo: is it accurate?
       .map((item, index) => ({
         ...item,
         rank: index + 1,
-        terms: item.terms.length
+        terms: item.terms.length,
       }));
   }
 
@@ -491,18 +481,18 @@ class NodeTable extends PureComponent {
     const { electionContract } = this.props;
 
     electionContract.GetVotesAmount.call()
-      .then(res => {
+      .then((res) => {
         if (res === null) {
           this.setState({
-            totalVotesAmount: 0
+            totalVotesAmount: 0,
           });
           return;
         }
         this.setState({
-          totalVotesAmount: res.value
+          totalVotesAmount: res.value,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('GetVotesAmount', err);
       });
   }
@@ -541,7 +531,7 @@ class NodeTable extends PureComponent {
           // onChange={handleTableChange}
           loading={isLoading}
           pagination={pagination}
-          rowKey={record => record.pubkey}
+          rowKey={(record) => record.pubkey}
           scroll={{ x: 1024 }}
           // size='middle'
         />
@@ -550,8 +540,8 @@ class NodeTable extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  ...state.common
+const mapStateToProps = (state) => ({
+  ...state.common,
 });
 
 export default connect(mapStateToProps)(NodeTable);

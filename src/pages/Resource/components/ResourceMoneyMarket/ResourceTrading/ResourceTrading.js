@@ -5,14 +5,16 @@
  */
 
 import React, { PureComponent } from 'react';
-import { Row, Col, Modal, Divider } from 'antd';
+import {
+  Row, Col, Modal, Divider,
+} from 'antd';
 import { connect } from 'react-redux';
 
 import ResourceBuy from './ResourceBuy/ResourceBuy';
 import ResourceSell from './ResourceSell/ResourceSell';
 import ResourceBuyModal from './ResourceBuyModal/ResourceBuyModal';
 import ResourceSellModal from './ResourceSellModal/ResourceSellModal';
-import {isPhoneCheck} from '../../../../../utils/deviceCheck';
+import { isPhoneCheck } from '../../../../../utils/deviceCheck';
 import './ResourceTrading.less';
 
 class ResourceTrading extends PureComponent {
@@ -36,7 +38,7 @@ class ResourceTrading extends PureComponent {
       buyEstimateValueLoading: false,
       sellNum: null,
       sellFee: 0,
-      sellEstimateValueLoading: false
+      sellEstimateValueLoading: false,
     };
 
     this.isPhone = isPhoneCheck();
@@ -47,31 +49,31 @@ class ResourceTrading extends PureComponent {
   static getDerivedStateFromProps(props, state) {
     if (props.currentWallet !== state.currentWallet) {
       return {
-        currentWallet: props.currentWallet
+        currentWallet: props.currentWallet,
       };
     }
 
     if (props.nightElf !== state.nightElf) {
       return {
-        nightElf: props.nightElf
+        nightElf: props.nightElf,
       };
     }
 
     if (props.contracts !== state.contracts) {
       return {
-        contracts: props.contracts
+        contracts: props.contracts,
       };
     }
 
     if (props.tokenConverterContract !== state.tokenConverterContract) {
       return {
-        tokenConverterContract: props.tokenConverterContract
+        tokenConverterContract: props.tokenConverterContract,
       };
     }
 
     if (props.tokenContract !== state.tokenContract) {
       return {
-        tokenContract: props.tokenContract
+        tokenContract: props.tokenContract,
       };
     }
 
@@ -80,26 +82,26 @@ class ResourceTrading extends PureComponent {
 
   handleSellModalShow(value, ELFValue) {
     this.setState({
-      sellVisible: true
+      sellVisible: true,
     });
   }
 
-  handleCancel = e => {
+  handleCancel = (e) => {
     this.setState({
       buyVisible: false,
-      sellVisible: false
+      sellVisible: false,
     });
   };
 
   modalMaskClosable() {
     this.setState({
-      maskClosable: false
+      maskClosable: false,
     });
   }
 
   modalUnMaskClosable() {
     this.setState({
-      maskClosable: true
+      maskClosable: true,
     });
   }
 
@@ -113,7 +115,7 @@ class ResourceTrading extends PureComponent {
       account,
       currentResourceType,
       currentResourceIndex,
-      loginAndInsertKeypairs
+      loginAndInsertKeypairs,
     } = this.props;
     const {
       sellVisible,
@@ -131,34 +133,46 @@ class ResourceTrading extends PureComponent {
       buyEstimateValueLoading,
       sellNum,
       sellFee,
-      sellEstimateValueLoading
+      sellEstimateValueLoading,
     } = this.state;
 
     return (
-      <div className='resource-trading'>
+      <div className="resource-trading">
         {!nightElf ? (
-          <div className='mobile-mask'>
-            <p className='mobile-mask-text'>Can not find wallet extension</p>
+          <div className="mobile-mask">
+            <p className="mobile-mask-text">Can not find wallet extension</p>
           </div>
         ) : null}
-        <div className='resource-trading-body'>
+        <div className="resource-trading-body">
           {
             isPhoneCheck()
               ? null
-              : <Row>
+              : (
+                <Row>
                   <Col
-                      className="trading-title-buy"
-                      xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
+                    className="trading-title-buy"
+                    xxl={12}
+                    xl={12}
+                    lg={12}
+                    md={12}
+                    sm={24}
+                    xs={24}
                   >
                     Buy
                   </Col>
                   <Col
-                      className="trading-title-sell"
-                      xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}
+                    className="trading-title-sell"
+                    xxl={12}
+                    xl={12}
+                    lg={12}
+                    md={12}
+                    sm={24}
+                    xs={24}
                   >
                     Sell
                   </Col>
                 </Row>
+              )
           }
           <Divider className="resource-buy-divider" />
           <Row>
@@ -202,8 +216,8 @@ class ResourceTrading extends PureComponent {
           </Row>
         </div>
         <Modal
-          className='modal-display-box'
-          title='Resource buying'
+          className="modal-display-box"
+          title="Resource buying"
           destroyOnClose
           closable={false}
           footer={null}
@@ -234,8 +248,8 @@ class ResourceTrading extends PureComponent {
           />
         </Modal>
         <Modal
-          className='modal-display-box'
-          title='Resource selling'
+          className="modal-display-box"
+          title="Resource selling"
           destroyOnClose
           closable={false}
           footer={null}
@@ -270,8 +284,8 @@ class ResourceTrading extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  ...state.common
+const mapStateToProps = (state) => ({
+  ...state.common,
 });
 
 export default connect(mapStateToProps)(ResourceTrading);

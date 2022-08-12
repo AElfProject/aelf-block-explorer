@@ -13,7 +13,7 @@ import config, {
 } from '@config/config';
 
 import AElfBridge from 'aelf-bridge';
-import {getObjectPublicKeyFromString, getPublicKeyFromObject} from "../getPublicKey";
+import { getObjectPublicKeyFromString, getPublicKeyFromObject } from '../getPublicKey';
 
 const HTTP_PROVIDER = DEFAUTRPCSERVER;
 let aelfBridgeInstance = null;
@@ -28,16 +28,16 @@ export default class AelfBridgeCheck {
     // let resovleTemp = null;
     this.check = new Promise((resolve, reject) => {
       const bridgeInstance = new AElfBridge({
-        timeout: 3000
+        timeout: 3000,
       });
-      bridgeInstance.connect().then(isConnected => {
+      bridgeInstance.connect().then((isConnected) => {
         // console.log('NightElfCheck.getInstance() 22', isConnected);
         if (isConnected) {
           resolve(true);
         } else {
           reject({
             error: 200001,
-            message: 'timeout, please use AELF Wallet APP or open the page in PC'
+            message: 'timeout, please use AELF Wallet APP or open the page in PC',
           });
         }
       });
@@ -45,7 +45,7 @@ export default class AelfBridgeCheck {
         // console.log('NightElfCheck.getInstance() setTimeout', false);
         reject({
           error: 200001,
-          message: 'timeout, please use AELF Wallet APP or open the page in PC'
+          message: 'timeout, please use AELF Wallet APP or open the page in PC',
         });
       }, 3000);
     });
@@ -53,6 +53,7 @@ export default class AelfBridgeCheck {
     //   resovleTemp(true);
     // });
   }
+
   static getInstance() {
     if (!aelfBridgeInstance) {
       aelfBridgeInstance = new AelfBridgeCheck();
@@ -74,7 +75,7 @@ export default class AelfBridgeCheck {
   static initAelfInstanceByExtension() {
     aelfInstanceByBridge = new AElfBridge({
       // endpoint: 'https://explorer.aelf.io/chain' //HTTP_PROVIDER
-      endpoint: HTTP_PROVIDER
+      endpoint: HTTP_PROVIDER,
     });
 
     // support async/await & callback
@@ -85,19 +86,19 @@ export default class AelfBridgeCheck {
 
         const pubKeyString = account.publicKey.match('"x"')
           ? getPublicKeyFromObject(JSON.parse(account.publicKey)) : account.publicKey;
-        const pubKeyObject =  account.publicKey.match('"x"')
+        const pubKeyObject = account.publicKey.match('"x"')
           ? JSON.parse(account.publicKey) : getObjectPublicKeyFromString(account.publicKey);
         account.pubkey = pubKeyString;
         account.publicKey = pubKeyObject;
         accountInfo = {
-          detail: JSON.stringify(account)
+          detail: JSON.stringify(account),
         };
       }
 
       callback(null, {
         ...accountInfo,
         error: 0,
-        message: ''
+        message: '',
       });
       return accountInfo;
     };
@@ -115,12 +116,12 @@ export default class AelfBridgeCheck {
   }
 
   static async getContractInstance(inputInitParams) {
-    const {contractAddress} = inputInitParams;
+    const { contractAddress } = inputInitParams;
 
     if (!accountInfo) {
       throw Error('Please login');
     }
-    const address = JSON.parse(accountInfo.detail).address;
+    const { address } = JSON.parse(accountInfo.detail);
 
     if (contractInstances[contractAddress + address]) {
       return contractInstances[contractAddress + address];
@@ -130,12 +131,12 @@ export default class AelfBridgeCheck {
 
   // singleton to get, new to init
   static async initContractInstance(inputInitParams) {
-    const {contractAddress} = inputInitParams;
+    const { contractAddress } = inputInitParams;
     const aelf = AelfBridgeCheck.getAelfInstanceByExtension();
     if (!accountInfo) {
       throw Error('Please login');
     }
-    const address = JSON.parse(accountInfo.detail).address;
+    const { address } = JSON.parse(accountInfo.detail);
 
     const contractInstance = await aelf.chain.contractAt(contractAddress);
     contractInstances[contractAddress + address] = contractInstance;

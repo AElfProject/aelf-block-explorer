@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Input, Button, Table, Icon, Tooltip } from 'antd';
+import {
+  Input, Button, Table, Icon, Tooltip,
+} from 'antd';
 
 import {
   NODE_DEFAULT_NAME,
   FROM_ACTIVE_VOTES,
-  RANK_NOT_EXISTED_SYMBOL
+  RANK_NOT_EXISTED_SYMBOL,
 } from '@src/pages/Vote/constants';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import { centerEllipsis } from '@utils/formater';
 
 import './MyVoteRecords.less';
-import {ELF_DECIMAL} from "../../constants";
+import { ELF_DECIMAL } from '../../constants';
 
 const { Search } = Input;
 const clsPrefix = 'my-vote-records';
@@ -26,9 +28,7 @@ function genMyVoteRecordsCols() {
       dataIndex: 'displayedRank',
       key: 'rank',
       width: 70,
-      sorter: (a, b) => {
-        return a.rank - b.rank;
-      }
+      sorter: (a, b) => a.rank - b.rank,
     },
     {
       title: 'Node Name',
@@ -42,19 +42,19 @@ function genMyVoteRecordsCols() {
           <Link
             to={{
               pathname: '/vote/team',
-              search: `pubkey=${record.candidate}`
+              search: `pubkey=${record.candidate}`,
             }}
           >
             {text}
           </Link>
         </Tooltip>
-      )
+      ),
     },
     {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      width: 90
+      width: 90,
     },
     {
       title: 'Vote Amount',
@@ -62,24 +62,24 @@ function genMyVoteRecordsCols() {
       key: 'voteAmount',
       width: 100,
       sorter: (a, b) => a.amount - b.amount,
-      render: value => value / ELF_DECIMAL
+      render: (value) => value / ELF_DECIMAL,
     },
     {
       title: 'Lock Time',
       dataIndex: 'formatedLockTime',
-      key: 'formatedLockTime'
+      key: 'formatedLockTime',
     },
     {
       title: 'Unlock Time',
       ellipsis: true,
       dataIndex: 'formatedUnlockTime',
-      key: 'formatedUnlockTime'
+      key: 'formatedUnlockTime',
     },
     {
       title: 'Status',
       key: 'status',
       dataIndex: 'status',
-      width: 110
+      width: 110,
     },
     {
       title: 'Operation Time',
@@ -97,7 +97,7 @@ function genMyVoteRecordsCols() {
           : b.voteTimestamp.seconds;
 
         return prev - next;
-      }
+      },
     },
     {
       title: 'Operations',
@@ -118,8 +118,8 @@ function genMyVoteRecordsCols() {
             Redeem
           </Button>
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   // todo: Use css way
@@ -127,7 +127,7 @@ function genMyVoteRecordsCols() {
     myVoteRecordsCols.pop();
   }
 
-  myVoteRecordsCols.forEach(item => {
+  myVoteRecordsCols.forEach((item) => {
     // eslint-disable-next-line no-param-reassign
     item.align = 'center';
   });
@@ -137,27 +137,25 @@ function genMyVoteRecordsCols() {
 const pagination = {
   showQuickJumper: true,
   total: 0,
-  showTotal: total => `Total ${total} items`
+  showTotal: (total) => `Total ${total} items`,
 };
 
 class MyVoteRecords extends Component {
-  getColumnSearchProps = dataIndex => ({
+  getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
       confirm,
-      clearFilters
+      clearFilters,
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={node => {
+          ref={(node) => {
             this.searchInput = node;
           }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
@@ -179,26 +177,25 @@ class MyVoteRecords extends Component {
         </Button>
       </div>
     ),
-    filterIcon: filtered => (
+    filterIcon: (filtered) => (
       <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: visible => {
+    onFilter: (value, record) => record[dataIndex]
+      .toString()
+      .toLowerCase()
+      .includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
       }
-    }
+    },
   });
 
   handleSearch = (selectedKeys, confirm) => {
     confirm();
   };
 
-  handleReset = clearFilters => {
+  handleReset = (clearFilters) => {
     clearFilters();
   };
 
@@ -224,7 +221,7 @@ class MyVoteRecords extends Component {
           dataSource={data}
           // loading={loading}
           pagination={pagination}
-          rowKey={record => record.voteId}
+          rowKey={(record) => record.voteId}
           scroll={{ x: 1024 }}
         />
       </section>
@@ -232,8 +229,8 @@ class MyVoteRecords extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  ...state.common
+const mapStateToProps = (state) => ({
+  ...state.common,
 });
 
 export default connect(mapStateToProps)(MyVoteRecords);

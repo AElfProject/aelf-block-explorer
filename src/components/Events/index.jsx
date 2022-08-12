@@ -2,28 +2,28 @@
  * @file event item
  * @author atom-yang
  */
-import React  from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import EventItem from "../EventItem";
+import EventItem from '../EventItem';
 
-const Events = props => {
-    const {
-        list
-    } = props;
-    return (
-        <div className="event-list">
-            {list.map((item, index) => (<EventItem key={index} {...item} />))}
-        </div>
-    );
+const Events = (props) => {
+  const {
+    list,
+  } = props;
+  return (
+    <div className="event-list">
+      {list.map((item, index) => (<EventItem key={index} {...item} />))}
+    </div>
+  );
 };
 
 Events.propTypes = {
-    list: PropTypes.arrayOf(PropTypes.shape({
-        Indexed: PropTypes.array,
-        NoIndexed: PropTypes.string,
-        Name: PropTypes.string.isRequired,
-        Address: PropTypes.string.isRequired
-    })).isRequired
+  list: PropTypes.arrayOf(PropTypes.shape({
+    Indexed: PropTypes.array,
+    NoIndexed: PropTypes.string,
+    Name: PropTypes.string.isRequired,
+    Address: PropTypes.string.isRequired,
+  })).isRequired,
 };
 
 export default Events;

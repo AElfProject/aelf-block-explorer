@@ -3,17 +3,15 @@
  * @author atom-yang
  */
 import React from 'react';
-import IframeViewer from "../../components/IframeViewer";
+import IframeViewer from '../../components/IframeViewer';
 
 const DEFAULT_URL = '/viewer/address.html#/contract';
 
-const Viewer = props => {
-    return (
-        <IframeViewer
-            {...props}
-            defaultUrl={DEFAULT_URL}
-        />
-    );
-};
+const Viewer = (props) => (
+  <IframeViewer
+    {...props}
+    defaultUrl={DEFAULT_URL}
+  />
+);
 
 export default Viewer;

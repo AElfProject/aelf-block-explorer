@@ -8,7 +8,7 @@
  */
 // todo: Consider to save isSmallScreen as a global variable instead of saving in redux
 const initialState = {
-  isSmallScreen: false
+  isSmallScreen: false,
 };
 
 const common = (state = initialState, { type, payload }) => {

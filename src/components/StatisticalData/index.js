@@ -6,13 +6,15 @@
  * @LastEditTime: 2019-12-10 17:00:44
  * @Description: file content
  */
-import React, { PureComponent } from "react";
-import { Tooltip, Icon, Statistic, Spin } from "antd";
+import React, { PureComponent } from 'react';
+import {
+  Tooltip, Icon, Statistic, Spin,
+} from 'antd';
 
-import "./index.less";
+import './index.less';
 
 const { Countdown } = Statistic;
-const clsPrefix = "statistical-data";
+const clsPrefix = 'statistical-data';
 
 const arrFormate = function (arr) {
   // const arr = new Array(arrInput);
@@ -65,7 +67,7 @@ export default class StatisticalData extends PureComponent {
 
   renderList(arr) {
     return arr.map((item, index) => {
-      let number = item.num;
+      const number = item.num;
       if (item.isRender) {
         return item.num;
       }
@@ -90,7 +92,9 @@ export default class StatisticalData extends PureComponent {
   }
 
   render() {
-    const { spinning, style, tooltip, inline } = this.props;
+    const {
+      spinning, style, tooltip, inline,
+    } = this.props;
     const { arr } = this.state;
     if (!arr) return null;
 
@@ -102,7 +106,7 @@ export default class StatisticalData extends PureComponent {
         <Spin spinning={spinning}>
           <section
             className={`${clsPrefix}-container card-container ${
-              inline ? "inline-style" : ""
+              inline ? 'inline-style' : ''
             }`}
           >
             {tooltip ? (

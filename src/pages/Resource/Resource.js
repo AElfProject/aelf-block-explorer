@@ -5,9 +5,9 @@
  * TODO: Vote && Resource To migrate out of Application
  */
 
-import React, { Component } from "react";
-import { message } from "antd";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { message } from 'antd';
+import { connect } from 'react-redux';
 
 import { aelf } from '../../utils';
 import { APPNAME, resourceTokens } from '../../../config/config';
@@ -33,26 +33,26 @@ class Resource extends Component {
       showDownloadPlugins: false,
       showWallet: false,
       currentBalance: 0,
-      resourceTokens: resourceTokens.map(v => ({...v, balance: 0})),
+      resourceTokens: resourceTokens.map((v) => ({ ...v, balance: 0 })),
       loading: false,
-      nightElf: null
+      nightElf: null,
     };
     this.walletRef = null;
   }
 
   componentDidMount() {
-    getContractAddress().then(result => {
+    getContractAddress().then((result) => {
       this.setState({
-        contracts: result
+        contracts: result,
       });
       if (!result.chainInfo) {
         message.error(
           'The chain has stopped or cannot be connected to the chain. Please check your network or contact us.',
-          10
+          10,
         );
         return;
       }
-      this.getContract(result)
+      this.getContract(result);
     });
 
     NightElfCheck.getInstance()
@@ -68,7 +68,7 @@ class Resource extends Component {
               .then((result) => {
                 // TODO log in when it returns true
                 // this.loginAndInsertKeypairs(result);
-              })
+              });
           }
         }
       })
@@ -85,18 +85,18 @@ class Resource extends Component {
       result.wallet,
       (error, result) => {
         this.setState({
-          tokenContract: result
+          tokenContract: result,
         });
-      }
+      },
     );
     aelf.chain.contractAt(
       result.tokenConverter,
       result.wallet,
       (error, result) => {
         this.setState({
-          tokenConverterContract: result
+          tokenConverterContract: result,
         });
-      }
+      },
     );
   }
 
@@ -104,45 +104,44 @@ class Resource extends Component {
     const { nightElf } = this.state;
     const getLoginPayload = {
       appName,
-      connectChain: this.connectChain
+      connectChain: this.connectChain,
     };
 
-    getLogin(nightElf, getLoginPayload, result => {
+    getLogin(nightElf, getLoginPayload, (result) => {
       if (result && result.error === 0) {
         const wallet = JSON.parse(result.detail);
         this.getNightElfKeyPair(wallet);
         toastMessage && message.success('Login success!!', 3);
       } else {
-        this.loginFailed()
+        this.loginFailed();
       }
     }, useLock);
   }
 
   loginFailed(result) {
     this.setState({
-      showWallet: false
+      showWallet: false,
     });
-    const warningStr =
-      ((result && result.error === 200010)
-        ? "Please Login."
-        : result && result.errorMessage.message) ||
-      "Please check your NightELF browser extension.";
+    const warningStr = ((result && result.error === 200010)
+      ? 'Please Login.'
+      : result && result.errorMessage.message)
+      || 'Please check your NightELF browser extension.';
     message.warn(warningStr);
   }
 
   getNightElfKeyPair(wallet) {
     if (wallet) {
-      localStorage.setItem('currentWallet', JSON.stringify({...wallet, timestamp: new Date().valueOf()}));
+      localStorage.setItem('currentWallet', JSON.stringify({ ...wallet, timestamp: new Date().valueOf() }));
       this.setState({
         currentWallet: wallet,
-        showWallet: true
+        showWallet: true,
       });
     }
   }
 
   getCurrentBalance = (value) => {
     this.setState({
-      currentBalance: value
+      currentBalance: value,
     });
   }
 
@@ -155,19 +154,19 @@ class Resource extends Component {
       this.walletRef.refreshWalletInfo();
     }, 2000);
     this.setState({
-      loading: true
+      loading: true,
     });
   }
 
   endRefresh() {
     this.setState({
-      loading: false
+      loading: false,
     });
   }
 
   getResource = (resource) => {
     this.setState({
-      resourceTokens: resource.map(v => ({...v}))
+      resourceTokens: resource.map((v) => ({ ...v })),
     });
   }
 
@@ -177,7 +176,7 @@ class Resource extends Component {
       tokenConverterContract,
       currentWallet,
       resourceTokens,
-      currentBalance
+      currentBalance,
     } = this.state;
     return (
       <ResourceAElfWallet
@@ -207,24 +206,24 @@ class Resource extends Component {
       tokenContract,
       tokenConverterContract,
       nightElf,
-      resourceTokens
+      resourceTokens,
     } = this.state;
-    let account = {
+    const account = {
       balance: currentBalance,
-      resourceTokens
+      resourceTokens,
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {
-      downloadPlugins = [this.getDownloadPluginsHTML(), <div className='resource-blank' />];
+      downloadPlugins = [this.getDownloadPluginsHTML(), <div className="resource-blank" />];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
     const isPhone = isPhoneCheck();
     return (
-      <div className='resource-body basic-container basic-container-white'>
+      <div className="resource-body basic-container basic-container-white">
         {!isPhone && downloadPlugins}
-        {/*{isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}*/}
+        {/* {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>} */}
         {nightElf && resourceAElfWalletHtml}
-        <div className='resource-money-market'>
+        <div className="resource-money-market">
           <ResourceMoneyMarket
             loginAndInsertKeypairs={this.loginAndInsertKeyPairs}
             currentWallet={currentWallet}
@@ -244,8 +243,8 @@ class Resource extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  ...state.common
+const mapStateToProps = (state) => ({
+  ...state.common,
 });
 
 export default connect(mapStateToProps)(Resource);

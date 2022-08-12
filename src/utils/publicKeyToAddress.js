@@ -8,7 +8,7 @@
  */
 import AElf from 'aelf-sdk';
 
-const publicKeyToAddress = publicKey => {
+const publicKeyToAddress = (publicKey) => {
   const { getAddressFromPubKey, ellipticEc } = AElf.wallet;
 
   const pubkeyByteArray = ellipticEc.keyFromPublic(publicKey, 'hex');

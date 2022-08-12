@@ -8,14 +8,14 @@
  */
 import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from '@src/constants';
 
-const thousandsComma = value => {
+const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
-  return (value + '').replace(reg, '$&,');
+  return (`${value}`).replace(reg, '$&,');
 };
 
-const addUrlPrefix = url => `https://${url}`;
+const addUrlPrefix = (url) => `https://${url}`;
 
-const removeUrlPrefix = url => url.replace(/^https:\/\//, '');
+const removeUrlPrefix = (url) => url.replace(/^https:\/\//, '');
 
 // todo: consider to write another method to display a precision of 8. (8 contain the integer precision)
 // todo: then use the method metioned above to display the resource and elf
@@ -36,14 +36,12 @@ const thousandsCommaWithDecimal = (value, hasDecimal = true) => {
   return processedValue;
 };
 
-const centerEllipsis = str => {
-  return str && `${str.slice(0, 10)}...${str.slice(str.length - 10)}`;
-};
+const centerEllipsis = (str) => str && `${str.slice(0, 10)}...${str.slice(str.length - 10)}`;
 
 export {
   thousandsComma,
   addUrlPrefix,
   removeUrlPrefix,
   thousandsCommaWithDecimal,
-  centerEllipsis
+  centerEllipsis,
 };

@@ -1,21 +1,21 @@
-import React, { Component } from "react";
-import { Layout } from "antd";
+import React, { Component } from 'react';
+import { Layout } from 'antd';
 
-import "./container.styles.less";
+import './container.styles.less';
 
 const { Content } = Layout;
 
 export default class Container extends Component {
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render() {
-        const { children } = this.props;
-        return (
-            <Content className="body-container">
-                {children}
-            </Content>
-        );
-    }
+  render() {
+    const { children } = this.props;
+    return (
+      <Content className="body-container">
+        {children}
+      </Content>
+    );
+  }
 }

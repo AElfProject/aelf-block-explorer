@@ -1,23 +1,21 @@
 // enum NETWORK_TYPE: MAIN | TEST
-import { NETWORK_TYPE } from "../../config/config";
-import axios from "axios";
+import axios from 'axios';
+import { NETWORK_TYPE } from '../../config/config';
 
-export const sleep = (time) => {
-  return new Promise((resolve) => {
-    const ids = setTimeout(() => {
-      clearTimeout(ids);
-      resolve("sleep");
-    }, time);
-  });
-};
+export const sleep = (time) => new Promise((resolve) => {
+  const ids = setTimeout(() => {
+    clearTimeout(ids);
+    resolve('sleep');
+  }, time);
+});
 
 // get cms data
 export async function getCMSDelayRequest(delay = 5000) {
   try {
     await sleep(delay);
     const res = await axios({
-      method: "get",
-      url: "/cms/chain-list-by-networks",
+      method: 'get',
+      url: '/cms/chain-list-by-networks',
       params: {
         // populate: "chain",
         // "filters[netWorkType][$eq]": NETWORK_TYPE,
@@ -26,9 +24,8 @@ export async function getCMSDelayRequest(delay = 5000) {
     });
     if (res.data && res.data.length) {
       return res.data[0] || {};
-    } else {
-      return {};
     }
+    return {};
   } catch (error) {
     throw error;
   }

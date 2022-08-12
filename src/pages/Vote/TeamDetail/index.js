@@ -10,7 +10,7 @@ import {
   Tag,
   Typography,
   message,
-  Icon
+  Icon,
 } from 'antd';
 import queryString from 'query-string';
 
@@ -19,23 +19,23 @@ import { getTeamDesc, fetchElectorVoteWithRecords } from '@api/vote';
 import { fetchCurrentMinerPubkeyList } from '@api/consensus';
 import {
   FROM_WALLET,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
+  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
 } from '@src/pages/Vote/constants';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import getCurrentWallet from '@utils/getCurrentWallet';
 import {
   filterUserVoteRecordsForOneCandidate,
-  computeUserRedeemableVoteAmountForOneCandidate
+  computeUserRedeemableVoteAmountForOneCandidate,
 } from '@utils/voteUtils';
 import './index.less';
-import {ELF_DECIMAL} from "../constants";
-import addressFormat from "../../../utils/addressFormat";
+import { ELF_DECIMAL } from '../constants';
+import addressFormat from '../../../utils/addressFormat';
 
 const { Paragraph } = Typography;
 
 const clsPrefix = 'team-detail';
 
-const ellipsis = {rows: 1};
+const ellipsis = { rows: 1 };
 
 class TeamDetail extends PureComponent {
   constructor(props) {
@@ -52,7 +52,7 @@ class TeamDetail extends PureComponent {
       producedBlocks: '-',
       userRedeemableVoteAmountForOneCandidate: 0,
       hasAuth: false,
-      isCandidate: true
+      isCandidate: true,
     };
 
     this.teamPubkey = queryString.parse(window.location.search).pubkey;
@@ -73,7 +73,7 @@ class TeamDetail extends PureComponent {
 
     if (currentWallet) {
       this.setState({
-        hasAuth: currentWallet.pubkey === this.teamPubkey
+        hasAuth: currentWallet.pubkey === this.teamPubkey,
       });
     }
   }
@@ -92,22 +92,22 @@ class TeamDetail extends PureComponent {
     if (prevProps.currentWallet !== currentWallet) {
       this.setState(
         {
-          hasAuth: currentWallet.pubkey === this.teamPubkey
+          hasAuth: currentWallet.pubkey === this.teamPubkey,
         },
-        this.fetchCandidateInfo
+        this.fetchCandidateInfo,
       );
     }
   }
 
   fetchData() {
     getTeamDesc(this.teamPubkey)
-      .then(res => {
+      .then((res) => {
         if (res.code !== 0) {
           return;
         }
         this.setState({ data: res.data });
       })
-      .catch(err => message.error(err));
+      .catch((err) => message.error(err));
   }
 
   fetchDataFromElectionContract() {
@@ -120,21 +120,21 @@ class TeamDetail extends PureComponent {
 
     electionContract.GetPageableCandidateInformation.call({
       start: 0,
-      length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
+      length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL, // give a number large enough to make sure that we get all the nodes
       // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
     })
-      .then(res => this.processAllCandidateInfo(res.value))
-      .catch(err => {
+      .then((res) => this.processAllCandidateInfo(res.value))
+      .catch((err) => {
         console.error(err);
       });
   }
 
   processAllCandidateInfo(allCandidateInfo) {
     const candidateVotesArr = allCandidateInfo
-      .map(item => item.obtainedVotesAmount)
+      .map((item) => item.obtainedVotesAmount)
       .sort((a, b) => b - a);
     const currentCandidate = allCandidateInfo.find(
-      item => item.candidateInformation.pubkey === this.teamPubkey
+      (item) => item.candidateInformation.pubkey === this.teamPubkey,
     );
 
     const candidateAddress = publicKeyToAddress(this.teamPubkey);
@@ -143,25 +143,23 @@ class TeamDetail extends PureComponent {
     if (!currentCandidate) {
       this.setState({
         isCandidate: false,
-        formattedAddress
+        formattedAddress,
       });
       return;
     }
 
     const totalVoteAmount = candidateVotesArr.reduce(
       (total, current) => total + +current,
-      0
+      0,
     );
     const currentCandidateInfo = currentCandidate.candidateInformation;
 
-    const rank =
-      +candidateVotesArr.indexOf(currentCandidate.obtainedVotesAmount) + 1;
+    const rank = +candidateVotesArr.indexOf(currentCandidate.obtainedVotesAmount) + 1;
     const terms = currentCandidateInfo.terms.length;
     const totalVotes = currentCandidate.obtainedVotesAmount;
-    const votedRate =
-      totalVoteAmount === 0
-        ? 0
-        : ((100 * totalVotes) / totalVoteAmount).toFixed(2);
+    const votedRate = totalVoteAmount === 0
+      ? 0
+      : ((100 * totalVotes) / totalVoteAmount).toFixed(2);
     const { producedBlocks } = currentCandidateInfo;
 
     this.setState({
@@ -171,7 +169,7 @@ class TeamDetail extends PureComponent {
       votedRate,
       producedBlocks,
       candidateAddress,
-      formattedAddress
+      formattedAddress,
     });
   }
 
@@ -181,14 +179,14 @@ class TeamDetail extends PureComponent {
     const currentWallet = getCurrentWallet();
 
     fetchElectorVoteWithRecords(electionContract, {
-      value: currentWallet.pubKey
+      value: currentWallet.pubKey,
     })
-      .then(res => {
+      .then((res) => {
         this.computeUserRedeemableVoteAmountForOneCandidate(
-          res.activeVotingRecords
+          res.activeVotingRecords,
         );
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('fetchElectorVoteWithRecords', err);
       });
   }
@@ -196,13 +194,13 @@ class TeamDetail extends PureComponent {
   computeUserRedeemableVoteAmountForOneCandidate(usersActiveVotingRecords) {
     const userVoteRecordsForOneCandidate = filterUserVoteRecordsForOneCandidate(
       usersActiveVotingRecords,
-      this.teamPubkey
+      this.teamPubkey,
     );
     const userRedeemableVoteAmountForOneCandidate = computeUserRedeemableVoteAmountForOneCandidate(
-      userVoteRecordsForOneCandidate
+      userVoteRecordsForOneCandidate,
     );
     this.setState({
-      userRedeemableVoteAmountForOneCandidate
+      userRedeemableVoteAmountForOneCandidate,
     });
   }
 
@@ -210,42 +208,44 @@ class TeamDetail extends PureComponent {
     const { consensusContract } = this.props;
 
     fetchCurrentMinerPubkeyList(consensusContract)
-      .then(res => {
+      .then((res) => {
         if (res.pubkeys.indexOf(this.teamPubkey) !== -1) {
           this.setState({
-            isBP: true
+            isBP: true,
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('fetchCurrentMinerPubkeyList', err);
       });
   }
 
   getStaticData() {
-    const { rank, terms, totalVotes, votedRate, producedBlocks } = this.state;
+    const {
+      rank, terms, totalVotes, votedRate, producedBlocks,
+    } = this.state;
 
     return {
       rank: {
         title: 'Rank',
-        num: rank
+        num: rank,
       },
       terms: {
         title: 'Terms',
-        num: terms
+        num: terms,
       },
       totalVotes: {
         title: 'Total Vote',
-        num: totalVotes
+        num: totalVotes,
       },
       votedRate: {
         title: 'Voted Rate',
-        num: `${votedRate}%`
+        num: `${votedRate}%`,
       },
       producedBlocks: {
         title: 'Produced Blocks',
-        num: producedBlocks
-      }
+        num: producedBlocks,
+      },
     };
   }
 
@@ -257,7 +257,7 @@ class TeamDetail extends PureComponent {
       userRedeemableVoteAmountForOneCandidate,
       hasAuth,
       data,
-      isCandidate
+      isCandidate,
     } = this.state;
 
     const avatarSize = isSmallScreen ? 50 : 150;
@@ -296,11 +296,15 @@ class TeamDetail extends PureComponent {
                   {data.name ? data.name : formattedAddress}
                   <Tag color="#f50">{isBP ? 'BP' : (isCandidate ? 'Candidate' : 'Quited')}</Tag>
                 </h5>
-                <Paragraph ellipsis={{rows: 1}}>
-                  Location: {data.location || '-'}
+                <Paragraph ellipsis={{ rows: 1 }}>
+                  Location:
+                  {' '}
+                  {data.location || '-'}
                 </Paragraph>
                 <Paragraph copyable={{ text: formattedAddress }} ellipsis={ellipsis}>
-                  Address: {formattedAddress}
+                  Address:
+                  {' '}
+                  {formattedAddress}
                 </Paragraph>
                 <If condition={!!data.officialWebsite}>
                   <Then>
@@ -323,7 +327,7 @@ class TeamDetail extends PureComponent {
                     <Link
                       to={{
                         pathname: '/vote/apply/keyin',
-                        search: `pubkey=${this.teamPubkey}`
+                        search: `pubkey=${this.teamPubkey}`,
                       }}
                     >
                       Edit
@@ -407,14 +411,14 @@ class TeamDetail extends PureComponent {
               <Then>
                 <div className="vote-team-detail-social-network">
                   {
-                    (data.socials || []).map(item => (
-                        <div className="vote-team-detail-social-network-item">
-                          <span className="vote-team-detail-social-network-item-title">{item.type}</span>
-                          <span className="vote-team-detail-social-network-item-url">
-                            :&nbsp;
-                            <a href={item.url} target="_blank" rel="noreferrer noopener">{item.url}</a>
-                          </span>
-                        </div>
+                    (data.socials || []).map((item) => (
+                      <div className="vote-team-detail-social-network-item">
+                        <span className="vote-team-detail-social-network-item-title">{item.type}</span>
+                        <span className="vote-team-detail-social-network-item-url">
+                          :&nbsp;
+                          <a href={item.url} target="_blank" rel="noreferrer noopener">{item.url}</a>
+                        </span>
+                      </div>
                     ))
                   }
                 </div>
@@ -430,6 +434,6 @@ class TeamDetail extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({ ...state.common });
+const mapStateToProps = (state) => ({ ...state.common });
 
 export default connect(mapStateToProps)(TeamDetail);

@@ -6,12 +6,12 @@ import { NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 6 }
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 18 }
-  }
+    sm: { span: 18 },
+  },
 };
 
 export class RedeemAnVoteModal extends PureComponent {
@@ -23,20 +23,20 @@ export class RedeemAnVoteModal extends PureComponent {
         {
           label: 'Node Name',
           render: (
-            <span className='form-item-value'>{voteToRedeem.nodeName}</span>
-          )
+            <span className="form-item-value">{voteToRedeem.nodeName}</span>
+          ),
         },
         {
           label: 'Node Add',
           render: (
-            <span className='form-item-value'>{voteToRedeem.nodeAddress}</span>
-          )
+            <span className="form-item-value">{voteToRedeem.nodeAddress}</span>
+          ),
         },
         {
           label: 'Redeem Amount',
-          render: <span className='form-item-value'>{voteToRedeem.amount}</span>
-        }
-      ]
+          render: <span className="form-item-value">{voteToRedeem.amount}</span>,
+        },
+      ],
     };
   }
 
@@ -44,18 +44,18 @@ export class RedeemAnVoteModal extends PureComponent {
     const {
       redeemOneVoteModalVisible,
       changeVoteState,
-      handleRedeemOneVoteConfirm
+      handleRedeemOneVoteConfirm,
     } = this.props;
     const voteAnRedeemForm = this.generateVoteAnRedeemForm();
     return (
       <Modal
-        className='vote-redeem-modal'
-        title='Redeem The Vote'
+        className="vote-redeem-modal"
+        title="Redeem The Vote"
         visible={redeemOneVoteModalVisible}
         onOk={handleRedeemOneVoteConfirm}
         onCancel={() => {
           changeVoteState({
-            redeemOneVoteModalVisible: false
+            redeemOneVoteModalVisible: false,
           });
         }}
         width={860}
@@ -64,16 +64,14 @@ export class RedeemAnVoteModal extends PureComponent {
         keyboard
       >
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-          {voteAnRedeemForm.formItems &&
-            voteAnRedeemForm.formItems.map(item => {
-              return (
-                <Form.Item label={item.label} key={item.label}>
-                  {item.render}
-                </Form.Item>
-              );
-            })}
+          {voteAnRedeemForm.formItems
+            && voteAnRedeemForm.formItems.map((item) => (
+              <Form.Item label={item.label} key={item.label}>
+                {item.render}
+              </Form.Item>
+            ))}
         </Form>
-        <p className='tip-color' style={{ marginTop: 10 }}>
+        <p className="tip-color" style={{ marginTop: 10 }}>
           {NEED_PLUGIN_AUTHORIZE_TIP}
         </p>
       </Modal>

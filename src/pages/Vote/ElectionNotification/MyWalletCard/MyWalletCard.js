@@ -6,20 +6,22 @@
  * @LastEditTime: 2019-12-10 17:07:00
  * @Description: file content
  */
-import React, { PureComponent } from "react";
-import { Button, Icon, message, Spin } from "antd";
-import moment from "moment";
+import React, { PureComponent } from 'react';
+import {
+  Button, Icon, message, Spin,
+} from 'antd';
+import moment from 'moment';
 
-import "./MyWalletCard.less";
-import { thousandsCommaWithDecimal } from "@utils/formater";
-import { ELF_DECIMAL, SYMBOL } from "@src/constants";
-import { APPNAME } from "@config/config";
-import NightElfCheck from "../../../../utils/NightElfCheck";
-import getLogin from "../../../../utils/getLogin";
-import { isPhoneCheck } from "../../../../utils/deviceCheck";
-import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
-import Dividends from "../../../../components/Dividends";
-import addressFormat from "../../../../utils/addressFormat";
+import './MyWalletCard.less';
+import { thousandsCommaWithDecimal } from '@utils/formater';
+import { ELF_DECIMAL, SYMBOL } from '@src/constants';
+import { APPNAME } from '@config/config';
+import NightElfCheck from '../../../../utils/NightElfCheck';
+import getLogin from '../../../../utils/getLogin';
+import { isPhoneCheck } from '../../../../utils/deviceCheck';
+import { getPublicKeyFromObject } from '../../../../utils/getPublicKey';
+import Dividends from '../../../../components/Dividends';
+import addressFormat from '../../../../utils/addressFormat';
 
 // @inject('contractsStore') @observer
 // todo: move the code fetch data on the upper component
@@ -27,10 +29,10 @@ export default class MyWalletCard extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      balance: "-",
-      withdrawnVotedVotesAmount: "-",
-      activeVotedVotesAmount: "-",
-      totalAssets: "-",
+      balance: '-',
+      withdrawnVotedVotesAmount: '-',
+      activeVotedVotesAmount: '-',
+      totalAssets: '-',
       loading: false,
       lastestUnlockTime: null, // todo: rename the variable
       currentWallet: {
@@ -61,10 +63,10 @@ export default class MyWalletCard extends PureComponent {
       profitContractFromExt,
     } = this.props;
     if (
-      electionContract &&
-      multiTokenContract &&
-      profitContractFromExt &&
-      !this.hasRun
+      electionContract
+      && multiTokenContract
+      && profitContractFromExt
+      && !this.hasRun
     ) {
       changeVoteState({
         shouldRefreshMyWallet: true,
@@ -83,7 +85,7 @@ export default class MyWalletCard extends PureComponent {
           nightElf,
           { appName: APPNAME },
           (result) => {
-            console.log("getCurrentWallet: ", result);
+            console.log('getCurrentWallet: ', result);
             if (result.error) {
               // message.warn(result.message || result.errorMessage.message);
             } else {
@@ -102,11 +104,11 @@ export default class MyWalletCard extends PureComponent {
               });
             }
           },
-          useLock
+          useLock,
         );
       })
       .catch(() => {
-        message.warn("Please download and install NightELF browser extension.");
+        message.warn('Please download and install NightELF browser extension.');
       });
   }
 
@@ -140,10 +142,10 @@ export default class MyWalletCard extends PureComponent {
     // todo: maybe we need to use electionContractFromExt instead
     // After get balance and lockAmount, calculate the total assets
     if (
-      electionContract &&
-      multiTokenContract &&
-      activeVotedVotesAmount !== "-" &&
-      balance !== "-"
+      electionContract
+      && multiTokenContract
+      && activeVotedVotesAmount !== '-'
+      && balance !== '-'
     ) {
       this.computedTotalAssets();
     }
@@ -162,7 +164,7 @@ export default class MyWalletCard extends PureComponent {
               loading: false,
             });
           });
-        }
+        },
       );
     }
   }
@@ -183,7 +185,7 @@ export default class MyWalletCard extends PureComponent {
           balance: +res.balance / ELF_DECIMAL,
         });
       })
-      .catch((err) => console.error("fetchWalletBalance", err));
+      .catch((err) => console.error('fetchWalletBalance', err));
   }
 
   fetchElectorVoteInfo() {
@@ -205,26 +207,25 @@ export default class MyWalletCard extends PureComponent {
           this.computedLastestUnlockTime(activeVotingRecords);
         }
         activeVotedVotesAmount = +activeVotedVotesAmount;
-        const withdrawnVotedVotesAmount =
-          allVotedVotesAmount - activeVotedVotesAmount;
+        const withdrawnVotedVotesAmount = allVotedVotesAmount - activeVotedVotesAmount;
         this.setState({
           activeVotedVotesAmount: activeVotedVotesAmount / ELF_DECIMAL,
           withdrawnVotedVotesAmount: withdrawnVotedVotesAmount / ELF_DECIMAL,
         });
       })
       .catch((err) => {
-        console.error("fetchElectorVoteInfo", err);
+        console.error('fetchElectorVoteInfo', err);
       });
   }
 
   computedLastestUnlockTime(activeVotingRecords) {
     const lastestUnlockTimestamp = activeVotingRecords.sort(
-      (a, b) => a.unlockTimestamp.seconds - b.unlockTimestamp.seconds
+      (a, b) => a.unlockTimestamp.seconds - b.unlockTimestamp.seconds,
     )[0];
 
     const lastestUnlockTime = moment
       .unix(lastestUnlockTimestamp.unlockTimestamp.seconds)
-      .format("YYYY-MM-DD  HH:mm:ss");
+      .format('YYYY-MM-DD  HH:mm:ss');
     this.setState({
       lastestUnlockTime,
     });
@@ -243,7 +244,7 @@ export default class MyWalletCard extends PureComponent {
         this.computedTotalAssets();
       })
       .catch((err) => {
-        console.error("updateWallet", err);
+        console.error('updateWallet', err);
       });
     // this.fetchProfitAmount();
   }
@@ -261,9 +262,9 @@ export default class MyWalletCard extends PureComponent {
     const nightElf = NightElfCheck.getAelfInstanceByExtension();
     getLogin(
       nightElf,
-      { file: "MyVote.js" },
+      { file: 'MyVote.js' },
       (result) => {
-        console.log("extensionLogout getLogin: ", result);
+        console.log('extensionLogout getLogin: ', result);
         if (result.error && result.error === 200005) {
           message.warn(result.message || result.errorMessage.message);
         } else {
@@ -277,21 +278,21 @@ export default class MyWalletCard extends PureComponent {
               (error, result) => {
                 // TODO: more refactor actions for login and logout
                 message.success(
-                  "Logout successful, refresh after 3s.",
+                  'Logout successful, refresh after 3s.',
                   3,
                   () => {
-                    localStorage.removeItem("currentWallet");
+                    localStorage.removeItem('currentWallet');
                     window.location.reload();
-                  }
+                  },
                 );
-              }
+              },
             )
             .catch((error) => {
-              message.error("logout failed");
+              message.error('logout failed');
             });
         }
       },
-      false
+      false,
     );
   }
 
@@ -309,15 +310,15 @@ export default class MyWalletCard extends PureComponent {
 
     const walletItems = [
       {
-        type: "Total assets",
+        type: 'Total assets',
         value: thousandsCommaWithDecimal(totalAssets),
       },
       {
-        type: "Balance",
+        type: 'Balance',
         value: thousandsCommaWithDecimal(balance),
       },
       {
-        type: "Claimable profit",
+        type: 'Claimable profit',
         value: (
           <Dividends className="wallet-dividends" dividends={dividends.total} />
         ),
@@ -326,7 +327,7 @@ export default class MyWalletCard extends PureComponent {
             type="primary"
             size="small"
             shape="round"
-            className={"my-wallet-card-body-wallet-content-withdraw-btn"}
+            className="my-wallet-card-body-wallet-content-withdraw-btn"
             onClick={handleDividendClick}
           >
             Claim
@@ -334,15 +335,15 @@ export default class MyWalletCard extends PureComponent {
         ),
       },
       {
-        type: "Active votes",
+        type: 'Active votes',
         value: thousandsCommaWithDecimal(activeVotedVotesAmount),
       },
       {
-        type: "Redeemed votes",
+        type: 'Redeemed votes',
         value: thousandsCommaWithDecimal(withdrawnVotedVotesAmount),
       },
       {
-        type: "Earliest vote expired time",
+        type: 'Earliest vote expired time',
         value: thousandsCommaWithDecimal(lastestUnlockTime),
       },
     ];
@@ -387,13 +388,15 @@ export default class MyWalletCard extends PureComponent {
               <>
                 <div>
                   <span className="my-wallet-card-body-wallet-title-key">
-                    Name:{" "}
+                    Name:
+                    {' '}
                   </span>
                   <span className="primary-color">{currentWallet.name}</span>
                 </div>
                 <div>
                   <span className="my-wallet-card-body-wallet-title-key">
-                    Address:{" "}
+                    Address:
+                    {' '}
                   </span>
                   <span className="primary-color">
                     {currentWallet.formattedAddress}
@@ -403,12 +406,14 @@ export default class MyWalletCard extends PureComponent {
             ) : (
               <>
                 <span className="my-wallet-card-body-wallet-title-key">
-                  Name:{" "}
+                  Name:
+                  {' '}
                 </span>
                 <span className="primary-color">{currentWallet.name}</span>
                 <span className="my-wallet-card-body-wallet-title-blank" />
                 <span className="my-wallet-card-body-wallet-title-key">
-                  Address:{" "}
+                  Address:
+                  {' '}
                 </span>
                 <span className="primary-color">
                   {currentWallet.formattedAddress}
@@ -418,15 +423,16 @@ export default class MyWalletCard extends PureComponent {
           </div>
           <div className="my-wallet-card-body">
             <ul className="my-wallet-card-body-wallet-content">
-              {walletItems.map((item, index) => {
-                return (
-                  <li key={index}>
-                    <span className="item-type">{item.type}:</span>
-                    <span className="item-value">{item.value}</span>
-                    <span className="item-extra">{item.extra}</span>
-                  </li>
-                );
-              })}
+              {walletItems.map((item, index) => (
+                <li key={index}>
+                  <span className="item-type">
+                    {item.type}
+                    :
+                  </span>
+                  <span className="item-value">{item.value}</span>
+                  <span className="item-extra">{item.extra}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </Spin>

@@ -11,9 +11,9 @@ const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const baseConfig = require('./webpack.base');
-const { OUTPUT_PATH, ROOT } = require('./utils');
+const { OUTPUT_PATH, ROOT } = require('./util');
 
-const nodeModule = (...segments) => path.join(ROOT, 'node_modules', ...segments);
+const nodeModule = (...segments) => path.join(ROOT, '../../', 'node_modules', ...segments);
 
 const prodConfig = {
   mode: 'production',
@@ -25,6 +25,7 @@ const prodConfig = {
   },
   output: {
     path: OUTPUT_PATH,
+    // path: path.resolve(OUTPUT_PATH, './static'),
     filename: '[name].[chunkhash:5].js'
   },
   plugins: [
@@ -42,11 +43,7 @@ const prodConfig = {
         cache: true,
         parallel: true,
         sourceMap: false,
-        terserOptions: {
-          compress: {
-            drop_console: true
-          }
-        }
+        terserOptions: {}
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {

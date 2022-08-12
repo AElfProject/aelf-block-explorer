@@ -1,4 +1,4 @@
-@import './assets/less/_variables.less';
+@import "./assets/less/_variables.less";
 
 html,
 body,
@@ -52,7 +52,7 @@ body {
   .has-mask-on-mobile {
     position: relative;
     &:before {
-      content: 'View More On The PC';
+      content: "View More On The PC";
       position: absolute;
       z-index: 100;
       width: 100%;
@@ -155,3 +155,16 @@ body {
   background: @hoverColor;
 }
 /* header menu rewrite end */
+
+.ant-menu-horizontal:not(.ant-menu-dark) {
+  .ant-menu-item-active:after,
+  .ant-menu-item-open:after,
+  .ant-menu-item-selected:after,
+  .ant-menu-item:hover:after,
+  .ant-menu-submenu-active:after,
+  .ant-menu-submenu-open:after,
+  .ant-menu-submenu-selected:after,
+  .ant-menu-submenu:hover:after {
+    border-bottom: 2px solid transparent; // 因为antd v4默认会有个蓝色底
+  }
+}

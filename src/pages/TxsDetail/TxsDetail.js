@@ -6,36 +6,38 @@
 import React from 'react';
 import { Row, Col, Tag } from 'antd';
 import { isEmpty } from 'lodash';
-import {aelf, formatKey, get, getContractNames} from '../../utils';
+import moment from 'moment';
+import {
+  aelf, formatKey, get, getContractNames,
+} from '../../utils';
 import addressFormat from '../../utils/addressFormat';
 import {
   removeAElfPrefix,
-  getFee
+  getFee,
 } from '../../utils/utils';
 import {
   CONTRACT_VIEWER_URL,
-  TXS_INFO_API_URL
+  TXS_INFO_API_URL,
 } from '../../constants';
 
 import './txsdetail.styles.less';
-import {Link} from "react-router-dom";
-import Dividends from "../../components/Dividends";
-import moment from "moment";
-import Events from "../../components/Events";
+import { Link } from 'react-router-dom';
+import Dividends from '../../components/Dividends';
+import Events from '../../components/Events';
 
 async function getInfoBackUp(transaction) {
   const {
-    BlockNumber
+    BlockNumber,
   } = transaction;
   const block = await aelf.chain.getBlockByHeight(BlockNumber, false);
   const {
     Header: {
-      Time
-    }
+      Time,
+    },
   } = block;
   return {
     ...(await getFee(transaction)),
-    time: Time
+    time: Time,
   };
 }
 
@@ -51,45 +53,45 @@ export default class TxsDetailPage extends React.Component {
       to: '',
       blockHash: '',
       contractName: '',
-      parsedResult: {}
+      parsedResult: {},
     };
   }
 
-  fetchTxInfo = txsId => {
+  fetchTxInfo = (txsId) => {
     if (isEmpty(txsId)) {
       return;
     }
-    aelf.chain.getTxResult(txsId).then(result => {
+    aelf.chain.getTxResult(txsId).then((result) => {
       this.setState({
         result,
-        error: null
+        error: null,
       });
-      getInfoBackUp(result).then(backup => {
+      getInfoBackUp(result).then((backup) => {
         this.setState({
           parsedResult: {
             time: backup.time,
             resources: backup.resources,
-            tx_fee: backup.fee
-          }
+            tx_fee: backup.fee,
+          },
         });
       });
-      getContractNames().then(names => {
+      getContractNames().then((names) => {
         let name = names[result.Transaction.To] || {};
         name = name && name.isSystemContract ? removeAElfPrefix(name.contractName) : name.contractName;
         this.setState({
-          contractName: name || result.Transaction.To
+          contractName: name || result.Transaction.To,
         });
-      }).catch(e => {
+      }).catch((e) => {
         console.log(e);
       });
-    }).catch(error => {
+    }).catch((error) => {
       this.setState({
         result: {},
-        error
+        error,
       });
     });
 
-    aelf.chain.getChainStatus().then(chainStatus => {
+    aelf.chain.getChainStatus().then((chainStatus) => {
       this.setState({
         chainStatus,
       });
@@ -129,14 +131,16 @@ export default class TxsDetailPage extends React.Component {
     let jsonFormatted = value;
     try {
       jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
-    } catch(e) {}
+    } catch (e) {}
 
-    return <textarea
-      rows={rows}
-      value={jsonFormatted}
-      className='tx-block-code-like-content'
-      disabled>
-    </textarea>
+    return (
+      <textarea
+        rows={rows}
+        value={jsonFormatted}
+        className="tx-block-code-like-content"
+        disabled
+      />
+    );
   }
 
   renderLogs(logs) {
@@ -144,13 +148,12 @@ export default class TxsDetailPage extends React.Component {
     try {
       list = JSON.parse(logs);
     } catch (e) {
-      list =  [];
+      list = [];
     }
     if (Array.isArray(list) && list.length > 0) {
       return <Events list={list} key={this.props.match.params.id} />;
-    } else {
-      return this.renderCodeLikeParams(list, 1);
     }
+    return this.renderCodeLikeParams(list, 1);
   }
 
   renderCol(key, value) {
@@ -159,9 +162,9 @@ export default class TxsDetailPage extends React.Component {
     }
     // console.log('txDetail key: ', key);
     let valueHTML = value;
-    const {LastIrreversibleBlockHeight} = this.state.chainStatus;
+    const { LastIrreversibleBlockHeight } = this.state.chainStatus;
     const {
-      contractName
+      contractName,
     } = this.state;
     switch (key) {
       case 'Status':
@@ -182,14 +185,16 @@ export default class TxsDetailPage extends React.Component {
         valueHTML = addressFormat(value);
         break;
       case 'Transaction_To':
-        valueHTML = (<Link
+        valueHTML = (
+          <Link
             to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + value)}`}
             title={addressFormat(value)}
-        >
-          {
-            contractName ? contractName : addressFormat(value)
+          >
+            {
+            contractName || addressFormat(value)
           }
-        </Link>);
+          </Link>
+        );
         break;
       case 'Bloom':
         valueHTML = this.renderCodeLikeParams(value, 1);
@@ -201,25 +206,45 @@ export default class TxsDetailPage extends React.Component {
         const confirmedBlocks = LastIrreversibleBlockHeight - value;
         const isIB = confirmedBlocks >= 0;
 
-        valueHTML = (<>
-          {value} {isIB
-            ? <Tag>{confirmedBlocks} Block Confirmations </Tag>
-            : (<Tag color='red'>Unconfirmed</Tag>)}
-          </>);
+        valueHTML = (
+          <>
+            {value}
+            {' '}
+            {isIB
+              ? (
+                <Tag>
+                  {confirmedBlocks}
+                  {' '}
+                  Block Confirmations
+                  {' '}
+                </Tag>
+              )
+              : (<Tag color="red">Unconfirmed</Tag>)}
+          </>
+        );
         break;
     }
 
     return (
-      <Row className='tx-detail-row' key={key}>
+      <Row className="tx-detail-row" key={key}>
         <Col
-          xs={24} sm={24} md={6} lg={6} xl={6} className='title'
+          xs={24}
+          sm={24}
+          md={6}
+          lg={6}
+          xl={6}
+          className="title"
           style={{ height: 'auto' }}
         >
           {formatKey(key)}
         </Col>
         <Col
           style={{ height: 'auto', wordBreak: 'break-all' }}
-          xs={24} sm={24} md={18} lg={18} xl={18}
+          xs={24}
+          sm={24}
+          md={18}
+          lg={18}
+          xl={18}
         >
           <div className="text-ellipsis">{valueHTML}</div>
         </Col>
@@ -230,12 +255,10 @@ export default class TxsDetailPage extends React.Component {
 
   renderCols(result = {}) {
     const blackList = ['tx_trc', 'return'];
-    return Object.keys(result).filter(v => blackList.indexOf(v) < 0).map(key => {
+    return Object.keys(result).filter((v) => blackList.indexOf(v) < 0).map((key) => {
       const item = result[key];
       if (item && typeof item === 'object' && key.toLowerCase() !== 'logs') {
-        return Object.keys(item).map(innerKey => {
-          return this.renderCol(`${key}_${innerKey}`, item[innerKey]);
-        });
+        return Object.keys(item).map((innerKey) => this.renderCol(`${key}_${innerKey}`, item[innerKey]));
       }
       return this.renderCol(key, item);
     }).reduce((acc, v) => acc.concat(v), []);
@@ -243,19 +266,19 @@ export default class TxsDetailPage extends React.Component {
 
   renderExtra() {
     const {
-      parsedResult
+      parsedResult,
     } = this.state;
     if (Object.keys(parsedResult).length > 0) {
       const {
         time,
         resources,
-        tx_fee
+        tx_fee,
       } = parsedResult;
       return [
-          this.renderCol('Time', moment(time).format('YYYY-MM-DD  HH:mm:ss')),
-          this.renderCol('Transaction Fee', <Dividends dividends={tx_fee} />),
-          this.renderCol('Resources Fee', <Dividends dividends={resources} />)
-      ]
+        this.renderCol('Time', moment(time).format('YYYY-MM-DD  HH:mm:ss')),
+        this.renderCol('Transaction Fee', <Dividends dividends={tx_fee} />),
+        this.renderCol('Resources Fee', <Dividends dividends={resources} />),
+      ];
     }
     return null;
   }
@@ -265,11 +288,11 @@ export default class TxsDetailPage extends React.Component {
     const colsHtml = this.renderCols(error || result);
 
     return (
-      <div className='tx-block-detail-container basic-container basic-container-white'>
-        <div className='tx-block-detail-panel tx-block-detail-panel-simple'>
-          <span className='title'>Overview</span>
+      <div className="tx-block-detail-container basic-container basic-container-white">
+        <div className="tx-block-detail-panel tx-block-detail-panel-simple">
+          <span className="title">Overview</span>
         </div>
-        <Row className='tx-block-detail-body'>
+        <Row className="tx-block-detail-body">
           {colsHtml}
           {this.renderExtra()}
         </Row>

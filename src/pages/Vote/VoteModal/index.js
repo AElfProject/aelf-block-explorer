@@ -9,12 +9,12 @@ import {
   Button,
   Table,
   Icon,
-  Tooltip
+  Tooltip,
 } from 'antd';
-import DatePickerReact from "react-datepicker";
+import DatePickerReact from 'react-datepicker';
 import moment from 'moment';
 
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 
 import {
   SYMBOL,
@@ -23,36 +23,36 @@ import {
   SELECT_SOMETHING_TIP,
   INTEGER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
-  FEE_TIP
+  FEE_TIP,
 } from '@src/constants';
 import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
-  FROM_ACTIVE_VOTES
+  FROM_ACTIVE_VOTES,
 } from '@src/pages/Vote/constants';
 import { thousandsCommaWithDecimal } from '@utils/formater';
 import './index.less';
-import {ELF_DECIMAL} from "../constants";
-import {isIPhone} from "../../../utils/deviceCheck";
+import { ELF_DECIMAL } from '../constants';
+import { isIPhone } from '../../../utils/deviceCheck';
 
 const { TabPane } = Tabs;
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 6 }
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 }
-  }
+    sm: { span: 16 },
+  },
 };
 
 const switchVotePagination = {
   showQuickJumper: true,
   total: 0,
-  showTotal: total => `Total ${total} items`,
-  pageSize: 3
+  showTotal: (total) => `Total ${total} items`,
+  pageSize: 3,
 };
 
 // todo: Consider to use it globally
@@ -61,11 +61,11 @@ const validateMessages = {
   required: INPUT_SOMETHING_TIP,
   types: {
     email: 'Not a validate email!',
-    number: 'Not a validate number!'
+    number: 'Not a validate number!',
   },
   number: {
-    range: 'Must be between ${min} and ${max}'
-  }
+    range: 'Must be between ${min} and ${max}',
+  },
 };
 
 // todo: Consider to use constant in Vote instead
@@ -73,14 +73,16 @@ const validateMessages = {
 const formItemsNeedToValidateMap = {
   fromWallet: ['lockTime', 'voteAmountInput'],
   fromExpiredVotes: [],
-  fromActiveVotes: ['switchVoteRowSelection']
+  fromActiveVotes: ['switchVoteRowSelection'],
 };
 
 function disabledDate(current) {
   // Can not select days before today and today
-  return current
-      && (current < moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day')
-      || current > moment().add(1080, 'd'));
+  return (
+    current
+    && (current < moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day')
+      || current > moment().add(1080, 'd'))
+  );
 }
 
 function getColumns() {
@@ -98,41 +100,41 @@ function getColumns() {
           <Link
             to={{
               pathname: '/vote/team',
-              search: `pubkey=${record.candidate}`
+              search: `pubkey=${record.candidate}`,
             }}
             className="node-name-in-table"
             // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
             style={{ width: 150 }}
             onClick={() => {
               changeVoteState({
-                voteModalVisible: false
+                voteModalVisible: false,
               });
             }}
           >
             {text}
           </Link>
         </Tooltip>
-      )
+      ),
     },
     {
       title: 'Vote Amount',
       dataIndex: 'amount',
       key: 'voteAmount',
       sorter: (a, b) => a.amount - b.amount,
-      render: value => value / ELF_DECIMAL
+      render: (value) => value / ELF_DECIMAL,
     },
     {
       title: 'Lock Time',
       dataIndex: 'formatedLockTime',
       key: 'lockTime',
-      sorter: (a, b) => a.lockTime - b.lockTime
+      sorter: (a, b) => a.lockTime - b.lockTime,
     },
     {
       title: 'Vote Time',
       dataIndex: 'formatedVoteTime',
       key: 'voteTime',
-      sorter: (a, b) => a.voteTimestamp.seconds - b.voteTimestamp.seconds
-    }
+      sorter: (a, b) => a.voteTimestamp.seconds - b.voteTimestamp.seconds,
+    },
   ];
 }
 
@@ -149,9 +151,15 @@ class VoteModal extends Component {
     this.state = {
       currentTab: 'fromWallet', // fromActiveVotes
       formattedLockTime: null,
-      datePickerTime: null
+      datePickerTime: null,
     };
   }
+
+  onValuesChange(_, values) {
+    console.log('onValuesChange', values);
+  }
+  // todo: why is validateMessages didn't work when mapPropsToFields?
+  // validateMessages
 
   getFormItems() {
     const {
@@ -172,12 +180,10 @@ class VoteModal extends Component {
       voteFromExpiredVoteAmount,
       voteFromExpiredSelectedRowKeys,
       handleVoteFromExpiredSelectedRowChange,
-      changeVoteState
+      changeVoteState,
     } = this.props;
 
-    const {
-      datePickerTime
-    } = this.state;
+    const { datePickerTime } = this.state;
 
     const columns = getColumns.call(this);
 
@@ -185,7 +191,7 @@ class VoteModal extends Component {
       selectedRowKeys: voteFromExpiredSelectedRowKeys,
       onChange: handleVoteFromExpiredSelectedRowChange,
       hideDefaultSelections: true,
-      type: 'checkbox'
+      type: 'checkbox',
     };
 
     const switchVoteRowSelection = {
@@ -193,15 +199,15 @@ class VoteModal extends Component {
       onChange: (...params) => {
         handleSwithVoteSelectedRowChange(...params);
         this.setState({
-          formattedLockTime: params[1][0].formatedLockTime
+          formattedLockTime: params[1][0].formatedLockTime,
         });
       },
       hideDefaultSelections: true,
-      type: 'radio'
+      type: 'radio',
     };
 
     const switchVoteRecord = switchableVoteRecords.find(
-      record => record.key === switchVoteSelectedRowKeys[0]
+      (record) => record.key === switchVoteSelectedRowKeys[0],
     );
     const switchVoteAmount = switchVoteRecord && switchVoteRecord.amount;
 
@@ -216,19 +222,19 @@ class VoteModal extends Component {
             // FIXME: handle the other case
             render: (
               <span className="form-item-value">
-                {/*{centerEllipsis(nodeName)}*/}
+                {/* {centerEllipsis(nodeName)} */}
                 {nodeName}
               </span>
-            )
+            ),
           },
           {
             label: 'Node Address',
             render: (
               <span className="form-item-value">
-                {/*{centerEllipsis(nodeAddress)}*/}
+                {/* {centerEllipsis(nodeAddress)} */}
                 {nodeAddress}
               </span>
-            )
+            ),
           },
           {
             label: 'Vote Amount',
@@ -253,90 +259,102 @@ class VoteModal extends Component {
               rules: [
                 {
                   required: true,
-                  message: INPUT_SOMETHING_TIP
+                  message: INPUT_SOMETHING_TIP,
                 },
                 // todo: What if I want to validate a number and return ok for the number like 1. ?
                 {
                   type: 'integer',
                   transform: Number,
-                  message: INTEGER_TIP
+                  message: INTEGER_TIP,
                 },
                 {
                   type: 'integer',
                   min: 1,
                   max: Math.floor(balance),
-                  message: BETWEEN_ZEOR_AND_BALANCE_TIP
-                }
+                  message: BETWEEN_ZEOR_AND_BALANCE_TIP,
+                },
               ],
               validateTrigger: ['onChange', 'onBlur'],
               fieldDecoratorid: 'voteAmountInput',
-              validateFirst: true // todo: How to set it to default?
+              validateFirst: true, // todo: How to set it to default?
             },
             // todo: extra should compatible with ReactElement and string
-            tip: isIPhone() ? null : `Usable Balance: ${thousandsCommaWithDecimal(
-              balance,
-              false
-            )} ${SYMBOL}`
+            tip: isIPhone()
+              ? null
+              : `Usable Balance: ${thousandsCommaWithDecimal(
+                balance,
+                false,
+              )} ${SYMBOL}`,
           },
           {
             label: 'Lock Time',
             render: (
-              <span style={{
-                position: 'relative'
-              }}>
-                {isIPhone() ? <DatePickerReact
-                  dateFormat="yyyy-MM-dd"
-                  minDate={new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))}
-                  maxDate={new Date(moment().add(1080, "d"))}
-                  showYearDropdown
-                  selected={datePickerTime}
-                  onChange={(date) => {
-                    console.log('setFieldsValue', date);
-                    this.setState({
-                      datePickerTime: date
-                    });
-                    this.props.form.setFieldsValue({
-                      lockTime: moment(date)
-                    });
-                  }}
-                  className="react-datepicker-custom-container date-picker-in-modal"
-                  dayClassName={() => "day-class"}
-                  includeDateIntervals={[
-                    {
-                      start: new Date(moment().add(SHORTEST_LOCK_TIME, "d")),
-                      end: new Date(moment().add(1080, "d"))
+              <span
+                style={{
+                  position: 'relative',
+                }}
+              >
+                {isIPhone() ? (
+                  <DatePickerReact
+                    dateFormat="yyyy-MM-dd"
+                    minDate={
+                      new Date(moment().add(SHORTEST_LOCK_TIME + 1, 'd'))
                     }
-                  ]}
-                  placeholderText="Select date"
-                /> : <DatePicker
-                  className="date-picker-in-modal"
-                  disabledDate={disabledDate}
-                  onChange={value => {
-                    this.setState({
-                      datePickerTime: new Date(value)
-                    });
-                    this.props.form.setFieldsValue({
-                      lockTime: value
-                    });
-                  }}
-                />}
+                    maxDate={new Date(moment().add(1080, 'd'))}
+                    showYearDropdown
+                    selected={datePickerTime}
+                    onChange={(date) => {
+                      console.log('setFieldsValue', date);
+                      this.setState({
+                        datePickerTime: date,
+                      });
+                      this.props.form.setFieldsValue({
+                        lockTime: moment(date),
+                      });
+                    }}
+                    className="react-datepicker-custom-container date-picker-in-modal"
+                    dayClassName={() => 'day-class'}
+                    includeDateIntervals={[
+                      {
+                        start: new Date(moment().add(SHORTEST_LOCK_TIME, 'd')),
+                        end: new Date(moment().add(1080, 'd')),
+                      },
+                    ]}
+                    placeholderText="Select date"
+                  />
+                ) : (
+                  <DatePicker
+                    className="date-picker-in-modal"
+                    disabledDate={disabledDate}
+                    onChange={(value) => {
+                      this.setState({
+                        datePickerTime: new Date(value),
+                      });
+                      this.props.form.setFieldsValue({
+                        lockTime: value,
+                      });
+                    }}
+                  />
+                )}
               </span>
             ),
-            tip: isIPhone() ? null : 'Withdraw and transfer are not supported during the locking period',
+            tip: isIPhone()
+              ? null
+              : 'Withdraw and transfer are not supported during the locking period',
             validator: {
               rules: [
                 {
                   required: true,
-                  message: SELECT_SOMETHING_TIP
-                }
+                  message: SELECT_SOMETHING_TIP,
+                },
               ],
               initialValue: defaultDate,
-              fieldDecoratorid: 'lockTime'
+              fieldDecoratorid: 'lockTime',
               // todo: How to validate DatePicker in a proper time?
               // validateTrigger: ['onBlur']
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       /* {
         type: FROM_ACTIVE_VOTES,
@@ -439,7 +457,9 @@ class VoteModal extends Component {
 
   // todo: the method seems useless
   handleOk() {
-    const { callback, changeVoteState, form, setVoteConfirmLoading } = this.props;
+    const {
+      callback, changeVoteState, form, setVoteConfirmLoading,
+    } = this.props;
     const { voteType } = this.props;
     const formItemsNeedToValidate = formItemsNeedToValidateMap[voteType];
 
@@ -474,23 +494,21 @@ class VoteModal extends Component {
     });
   }
 
-  getColumnSearchProps = dataIndex => ({
+  getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
       confirm,
-      clearFilters
+      clearFilters,
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={node => {
+          ref={(node) => {
             this.searchInput = node;
           }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
@@ -512,19 +530,15 @@ class VoteModal extends Component {
         </Button>
       </div>
     ),
-    filterIcon: filtered => (
+    filterIcon: (filtered) => (
       <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: visible => {
+    onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
       }
-    }
+    },
     // render: text => (
     //   <Highlighter
     //     highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
@@ -540,7 +554,7 @@ class VoteModal extends Component {
     // this.setState({ searchText: selectedKeys[0] });
   };
 
-  handleReset = clearFilters => {
+  handleReset = (clearFilters) => {
     clearFilters();
     // this.setState({ searchText: '' });
   };
@@ -552,22 +566,30 @@ class VoteModal extends Component {
       voteType,
       voteConfirmLoading,
       isLockTimeForTest,
-      changeVoteState
+      changeVoteState,
     } = this.props;
     const { getFieldDecorator } = this.props.form;
     const formItems = this.getFormItems();
 
-    const {
-      formattedLockTime
-    } = this.state;
+    const { formattedLockTime } = this.state;
     let tipHTML = <p className="tip-color">{FEE_TIP}</p>;
     if (voteType !== 'fromWallet') {
-      tipHTML = <>
-        <p className="tip-color">
-          <div>Once the transfer is confirmed, your lock-up time will be reset. Another {formattedLockTime ? formattedLockTime : 'days'} will be counted from today.</div>
-          <div>The transfer will cost 0.4301 ELF as the transaction fee.</div>
-        </p>
-      </>
+      tipHTML = (
+        <>
+          <p className="tip-color">
+            <div>
+              Once the transfer is confirmed, your lock-up time will be reset.
+              Another
+              {' '}
+              {formattedLockTime || 'days'}
+              {' '}
+              will be
+              counted from today.
+            </div>
+            <div>The transfer will cost 0.4301 ELF as the transaction fee.</div>
+          </p>
+        </>
+      );
     }
 
     return (
@@ -585,7 +607,7 @@ class VoteModal extends Component {
         keyboard
         destroyOnClose
         okButtonProps={{
-          type: 'primary'
+          type: 'primary',
         }}
         // todo: optimize, can I use ...this.props instead of the code on the top?
         {...this.props}
@@ -596,12 +618,12 @@ class VoteModal extends Component {
           onChange={handleVoteTypeChange}
           activeKey={voteType}
         >
-          {formItems.map((form, index) => {
+          {formItems.map((form, index) =>
             // console.log('index', form.index, index);
             // console.log('form', form);
-            return (
+            (
               <TabPane
-                tab={
+                tab={(
                   <span>
                     <input
                       type="radio"
@@ -612,19 +634,17 @@ class VoteModal extends Component {
                     />
                     <label htmlFor={form.label}>{form.label}</label>
                   </span>
-                }
+                )}
                 key={form.type}
               >
                 <Form
                   className="vote-modal-form"
                   {...formItemLayout}
                   onSubmit={this.handleSubmit}
-                  // todo: why is the validateMessages don't work?
-                  // validateMessages={validateMessages}
                 >
-                  {form.formItems.map(item => {
-                    // todo: there are repeat code in form
-                    return (
+                  {form.formItems.map((item) =>
+                  // todo: there are repeat code in form
+                    (
                       <>
                         <Form.Item
                           label={item.label}
@@ -633,29 +653,25 @@ class VoteModal extends Component {
                         >
                           {item.validator
                             ? getFieldDecorator(
-                                item.validator.fieldDecoratorid,
-                                item.validator
-                              )(item.render || <Input />)
+                              item.validator.fieldDecoratorid,
+                              item.validator,
+                            )(item.render || <Input />)
                             : item.render}
                           {item.tip ? (
                             <Tooltip title={item.tip}>
-                              <Icon
+                               <Icon
                                 className="right-icon"
                                 theme="filled"
                                 type="info-circle"
-                                // width={16}
-                                // height={16}
                               />
-                            </Tooltip>
+                             </Tooltip>
                           ) : null}
                         </Form.Item>
                       </>
-                    );
-                  })}
+                    ))}
                 </Form>
               </TabPane>
-            );
-          })}
+            ))}
         </Tabs>
         {tipHTML}
       </Modal>
@@ -663,10 +679,4 @@ class VoteModal extends Component {
   }
 }
 
-export default Form.create({
-  onValuesChange(_, values) {
-    console.log('onValuesChange', values);
-  }
-  // todo: why is validateMessages didn't work when mapPropsToFields?
-  // validateMessages
-})(VoteModal);
+export default VoteModal;

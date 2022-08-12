@@ -1,41 +1,34 @@
 /**
  * @file App
  * @author huangzongzhe
-*/
-import React, {
-    Component
-} from 'react';
-import {
-    Switch
-} from 'react-router-dom';
+ */
+import React, { Suspense } from "react";
+import { BrowserRouter } from "react-router-dom";
+import BrowserHeader from "./components/Header/Header";
+import HeaderBlank from "./components/Header/HeaderBlank";
+import BrowserFooter from "./components/Footer/Footer";
+import BrowserBreadcrumb from "./components/Breadcrumb/Breadcrumb";
+import Container from "./components/Container/Container";
+import { PageRouter } from "./routes/routes";
 
-import BrowserHeader from './components/Header/Header';
-import HeaderBlank from './components/Header/HeaderBlank';
-import BrowserFooter from './components/Footer/Footer';
-import BrowserBreadcrumb from './components/Breadcrumb/Breadcrumb';
-import Container from './components/Container/Container';
-import AppRoutes from './routes';
+import "./App.less";
 
-import './App.less';
-
-export default class App extends Component {
-    componentDidCatch(error) {
-        console.log(`component occurred error: ${error}`);
-    }
-
-    render() {
-        return (
-            <div className='App'>
-                <BrowserHeader />
-                <HeaderBlank />
-                <BrowserBreadcrumb />
-                <Container>
-                    <Switch>
-                        <AppRoutes />
-                    </Switch>
-                </Container>
-                <BrowserFooter />
-            </div>
-        );
-    }
+function App() {
+  return (
+    <Suspense fallback={null}>
+      <div className='App'>
+        <BrowserRouter>
+          <BrowserHeader />
+          <HeaderBlank />
+          <BrowserBreadcrumb />
+          <Container>
+            <PageRouter />
+          </Container>
+          <BrowserFooter />
+        </BrowserRouter>
+      </div>
+    </Suspense>
+  );
 }
+
+export default App;
