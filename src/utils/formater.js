@@ -6,37 +6,39 @@
  * @LastEditTime: 2019-12-10 01:01:54
  * @Description: file content
  */
-import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from '@src/constants';
+import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from "@src/constants";
 
 const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
-  return (`${value}`).replace(reg, '$&,');
+  return (value + "").replace(reg, "$&,");
 };
 
 const addUrlPrefix = (url) => `https://${url}`;
 
-const removeUrlPrefix = (url) => url.replace(/^https:\/\//, '');
+const removeUrlPrefix = (url) => url.replace(/^https:\/\//, "");
 
-// todo: consider to write another method to display a precision of 8. (8 contain the integer precision)
-// todo: then use the method metioned above to display the resource and elf
-// todo: optimize the function name
-const thousandsCommaWithDecimal = (value, hasDecimal = true) => {
-  if (typeof value !== 'number') return value;
+function getProcessedValue(value, hasDecimal) {
   let decimalProcessedValue = value;
-  if (value < RESOURCE_OPERATE_LIMIT && value > 0) {
-    decimalProcessedValue = value.toFixed(ELF_PRECISION);
-  } else {
-    decimalProcessedValue = value.toFixed(2);
-  }
+  const isSmallNumber = value < RESOURCE_OPERATE_LIMIT && value > 0;
+  decimalProcessedValue = value.toFixed(isSmallNumber ? ELF_PRECISION : 2);
 
-  const arr = `${decimalProcessedValue}`.split('.');
-  const wholeNum = thousandsComma(arr[0]);
-  const decimal = arr[1];
+  let [wholeNum, decimal] = `${decimalProcessedValue}`.split(".");
+  wholeNum = thousandsComma(wholeNum);
   const processedValue = hasDecimal ? `${wholeNum}.${decimal}` : wholeNum;
   return processedValue;
+}
+
+// todo: consider to write another method to display a precision of 8. (8 contain the integer precision)
+// todo: then use the method mentioned above to display the resource and elf
+// todo: optimize the function name
+const thousandsCommaWithDecimal = (value, hasDecimal = true) => {
+  if (typeof value !== "number") return value;
+  return getProcessedValue(value, hasDecimal);
 };
 
-const centerEllipsis = (str) => str && `${str.slice(0, 10)}...${str.slice(str.length - 10)}`;
+const centerEllipsis = (str) => {
+  return str && `${str.slice(0, 10)}...${str.slice(str.length - 10)}`;
+};
 
 export {
   thousandsComma,

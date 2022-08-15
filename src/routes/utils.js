@@ -1,4 +1,4 @@
-import { useLocation, useMatch, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 
 export function withRouter(Child) {
   return (props) => {

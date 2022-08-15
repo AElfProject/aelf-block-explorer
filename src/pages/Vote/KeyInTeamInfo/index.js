@@ -374,10 +374,7 @@ class KeyInTeamInfo extends PureComponent {
             ...submitValues,
           }).then((res) => {
             if (+res.code === 0) {
-              this.props.history.push({
-                pathname: "/vote/team",
-                search: `pubkey=${publicKey}`,
-              });
+              this.props.navigate(`/vote/team?pubkey=${publicKey}`);
             } else {
               message.error(res.msg);
             }

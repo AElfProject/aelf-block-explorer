@@ -13,17 +13,17 @@ import { Button, Icon } from "antd";
 import "./ElectionRuleCard.style.less";
 import { isPhoneCheck } from "@utils/deviceCheck";
 import Svg from "../../../../components/Svg/Svg";
+import { useNavigate } from "react-router";
 
 function ElectionRuleCard(props) {
+  const navigate = useNavigate();
   const { isCandidate, displayApplyModal, currentWallet, quitElection } = props;
 
   const onClick = () => {
     if (isCandidate) {
-      const { history } = props;
-      history.push({
-        pathname: "/vote/apply/keyin",
-        search: `pubkey=${currentWallet && currentWallet.pubkey}`,
-      });
+      navigate(
+        `/vote/apply/keyin?pubkey=${currentWallet && currentWallet.pubkey}`
+      );
     } else {
       displayApplyModal();
     }

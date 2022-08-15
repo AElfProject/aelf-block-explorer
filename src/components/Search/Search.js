@@ -31,10 +31,10 @@ class Search extends PureComponent {
   };
 
   SEARCHRULES = {
-    address(value, history) {
-      history.push(`/address/${value}`);
+    address(value, navigate) {
+      navigate(`/address/${value}`);
     },
-    async transaction(value, history) {
+    async transaction(value, navigate) {
       const getTxsOption = {
         limit: 1,
         page: 0,
@@ -44,15 +44,15 @@ class Search extends PureComponent {
       const blockInfo = await get("/block/transactions", getTxsOption);
       const isBlock = blockInfo.transactions && blockInfo.transactions.length;
       if (isBlock) {
-        history.push(`/block/${value}`);
+        navigate(`/block/${value}`);
       } else {
-        history.push(`/tx/${value}`);
+        navigate(`/tx/${value}`);
       }
     },
-    blockHeight(value, history) {
+    blockHeight(value, navigate) {
       const number = parseInt(value, 10);
       if (number == value) {
-        history.push(`/block/${value}`);
+        navigate(`/block/${value}`);
       }
       return true;
     },
@@ -94,11 +94,11 @@ class Search extends PureComponent {
       const address = AElf.utils.encodeAddressRep(
         AElf.utils.decodeAddressRep(value)
       );
-      this.SEARCHRULES.address(address, this.props.history);
+      this.SEARCHRULES.address(address, this.props.navigate);
     } else if (isTxid.includes(length)) {
-      this.SEARCHRULES.transaction(value, this.props.history);
+      this.SEARCHRULES.transaction(value, this.props.navigate);
     } else {
-      this.SEARCHRULES.blockHeight(value, this.props.history) ||
+      this.SEARCHRULES.blockHeight(value, this.props.navigate) ||
         message.error("Wrong Search Input", 6);
     }
   };
