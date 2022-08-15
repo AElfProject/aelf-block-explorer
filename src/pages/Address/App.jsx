@@ -2,26 +2,17 @@
  * @file App container
  * @author atom-yang
  */
-import React, { useEffect, useState } from 'react';
-import {
-  Switch,
-  Redirect,
-  Route,
-} from 'react-router-dom';
-import useLocation from 'react-use/lib/useLocation';
-import ContractInfo from './containers/ContractInfo';
-import ContractList from './containers/ContractList';
-import AccountList from './containers/AccountList';
-import AccountInfo from './containers/AccountInfo';
-import TokenList from './containers/TokenList';
-import TokenInfo from './containers/TokenInfo';
-import {
-  sendMessage,
-  getContractNames,
-} from '../../common/utils';
-import {
-  Contracts,
-} from './common/context';
+import React, { useEffect, lazy, Suspense, useState } from "react";
+import { Switch, HashRouter, Redirect, Route } from "react-router-dom";
+import useLocation from "react-use/lib/useLocation";
+const ContractInfo = lazy(() => import("./containers/ContractInfo"));
+const ContractList = lazy(() => import("./containers/ContractList"));
+const AccountList = lazy(() => import("./containers/AccountList"));
+const AccountInfo = lazy(() => import("./containers/AccountInfo"));
+const TokenList = lazy(() => import("./containers/TokenList"));
+const TokenInfo = lazy(() => import("./containers/TokenInfo"));
+import { sendMessage, getContractNames } from "../../common/utils";
+import { Contracts } from "./common/context";
 
 const App = () => {
   const fullPath = useLocation();
@@ -38,27 +29,28 @@ const App = () => {
   }, []);
   return (
     <Contracts.Provider value={contracts}>
-      <Switch>
-        <Route exact path="/address">
-          <AccountList />
-        </Route>
-        <Route path="/address/:address?/:symbol?">
-          <AccountInfo />
-        </Route>
-        <Route exact path="/contract">
-          <ContractList />
-        </Route>
-        <Route path="/contract/:address?/:codeHash?">
-          <ContractInfo />
-        </Route>
-        <Route exact path="/token">
-          <TokenList />
-        </Route>
-        <Route path="/token/:symbol">
-          <TokenInfo />
-        </Route>
-        <Redirect to="/address" />
-      </Switch>
+      <HashRouter>
+        <Suspense>
+          <Switch>
+            <Route exact path='/address' element={AccountList} />
+
+            <Route path='/address/:address?/:symbol?' element={AccountInfo} />
+
+            <Route exact path='/contract' element={ContractList} />
+
+            <Route
+              path='/contract/:address?/:codeHash?'
+              element={ContractInfo}
+            />
+
+            <Route exact path='/token' element={TokenList} />
+
+            <Route path='/token/:symbol' element={TokenInfo} />
+
+            <Redirect to='/address' />
+          </Switch>
+        </Suspense>
+      </HashRouter>
     </Contracts.Provider>
   );
 };

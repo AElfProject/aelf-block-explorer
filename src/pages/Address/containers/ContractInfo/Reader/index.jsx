@@ -29,7 +29,7 @@ import {
 import moment from 'moment';
 import {
   sendHeight,
-} from '../../../../../common/utils';
+} from '@src/common/utils';
 import FileTree from '../../../components/FileTree';
 import Header from '../../../components/Header';
 import SaveAsZip from '../../../components/Save';

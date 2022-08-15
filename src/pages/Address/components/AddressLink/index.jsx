@@ -1,27 +1,27 @@
 /**
  * @author atom-yang
  */
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Link,
-} from 'react-router-dom';
-import { Contracts } from '../../common/context';
-import config from '../../../../common/config';
-
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import config from "../../../../common/config";
+import { getContractNames } from "../../../../utils";
 const AddressLink = (props) => {
-  const {
-    address,
-    suffix,
-  } = props;
-  const contracts = useContext(Contracts);
+  const { address, suffix } = props;
+  const [contracts, setContracts] = useState({});
+  useEffect(() => {
+    getContractNames()
+      .then((res) => setContracts(res))
+      .catch((err) => console.error(err));
+  }, []);
   return (
     <Link
-      to={`/${contracts[address] ? 'contract' : 'address'}/${address}`}
+      to={`/${contracts[address] ? "contract" : "address"}/${address}`}
       title={`ELF_${address}_${config.viewer.chainId}`}
     >
-      {`ELF_${address}_${config.viewer.chainId}`}
-      {suffix}
+      {`/${contracts[address] ? "contract" : "address"}/${address}`}
+      {/* {`ELF_${address}_${config.viewer.chainId}`}
+      {suffix} */}
     </Link>
   );
 };

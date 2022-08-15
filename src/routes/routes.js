@@ -8,7 +8,7 @@ import { Navigate, useRoutes } from "react-router";
 const HomePage = lazy(() => import("../pages/Home/Home"));
 const BlocksPage = lazy(() => import("../pages/Blocks/Blocks"));
 const BlockDetailPage = lazy(() => import("../pages/BlockDetail/BlockDetail"));
-const AddressPage = lazy(() => import("../pages/Address/Address"));
+const AddressPage = lazy(() => import("../pages/Address/App.jsx"));
 const TxsPage = lazy(() => import("../pages/Txs/Txs"));
 const TxsDetailPage = lazy(() => import("../pages/TxsDetail/TxsDetail"));
 const VotePage = lazy(() => import("../pages/Vote/Vote"));
@@ -20,27 +20,29 @@ const Viewer = lazy(() => import("../pages/Viewer"));
 const Token = lazy(() => import("../pages/Token"));
 const Proposal = lazy(() => import("../pages/Proposal"));
 
+import { AddressRouter } from "../pages/Address/routes";
+
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
 
 export const PageRouter = () =>
-  useRoutes([
-    { path: "/", element: <HomePage /> },
-    { path: "/blocks", element: <BlocksPage /> },
-    { path: "/unconfirmedBlocks", element: <BlocksPage /> },
-    { path: "/block/:id", element: <BlockDetailPage /> },
-    { path: "/address", element: <AddressPage /> },
-    { path: "/address/:id", element: <AddressPage /> },
-    { path: "/txs", element: <TxsPage /> },
-    { path: "/unconfirmedTxs", element: <TxsPage /> },
-    { path: "/txs/block", element: <TxsPage /> },
-    { path: "/tx/:id", element: <TxsDetailPage /> },
-    { path: "/vote", element: <Navigate to='/vote/election' /> },
-    { path: "/vote/*", element: <VotePage /> },
-    { path: "/resource", element: <Resource /> },
-    { path: "/resourceDetail/:id", element: <ResourceDetail /> },
-    { path: "/contract", element: <Viewer /> },
-    { path: "/token", element: <Token /> },
-    { path: "/proposal", element: <Proposal /> },
-    { path: "*", element: <Navigate to='/' /> },
-  ]);
+  useRoutes(
+    AddressRouter.concat([
+      { path: "/", element: <HomePage /> },
+      { path: "/blocks", element: <BlocksPage /> },
+      { path: "/unconfirmedBlocks", element: <BlocksPage /> },
+      { path: "/block/:id", element: <BlockDetailPage /> },
+      { path: "/txs", element: <TxsPage /> },
+      { path: "/unconfirmedTxs", element: <TxsPage /> },
+      { path: "/txs/block", element: <TxsPage /> },
+      { path: "/tx/:id", element: <TxsDetailPage /> },
+      { path: "/vote", element: <Navigate to='/vote/election' /> },
+      { path: "/vote/*", element: <VotePage /> },
+      { path: "/resource", element: <Resource /> },
+      { path: "/resourceDetail/:id", element: <ResourceDetail /> },
+      { path: "/contract", element: <Viewer /> },
+      { path: "/token", element: <Token /> },
+      { path: "/proposal", element: <Proposal /> },
+      // { path: "*", element: <Navigate to='/' /> },
+    ])
+  );
