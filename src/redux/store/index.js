@@ -6,8 +6,9 @@
  * @LastEditTime: 2019-11-04 17:27:17
  * @Description: file content
  */
-import { createStore } from 'redux';
-import rootReducer from '../reducers';
+import { applyMiddleware, createStore } from "redux";
+import rootReducer from "../reducers";
+import reduxThunk from "redux-thunk";
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(reduxThunk));
 export default store;

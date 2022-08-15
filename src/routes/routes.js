@@ -8,7 +8,6 @@ import { Navigate, useRoutes } from "react-router";
 const HomePage = lazy(() => import("../pages/Home/Home"));
 const BlocksPage = lazy(() => import("../pages/Blocks/Blocks"));
 const BlockDetailPage = lazy(() => import("../pages/BlockDetail/BlockDetail"));
-const AddressPage = lazy(() => import("../pages/Address/App.jsx"));
 const TxsPage = lazy(() => import("../pages/Txs/Txs"));
 const TxsDetailPage = lazy(() => import("../pages/TxsDetail/TxsDetail"));
 const VotePage = lazy(() => import("../pages/Vote/Vote"));
@@ -16,18 +15,17 @@ const Resource = lazy(() => import("../pages/Resource/Resource"));
 const ResourceDetail = lazy(() =>
   import("../pages/ResourceDetail/ResourceDetail")
 );
-const Viewer = lazy(() => import("../pages/Viewer"));
 const Token = lazy(() => import("../pages/Token"));
-const Proposal = lazy(() => import("../pages/Proposal"));
 
 import { AddressRouter } from "../pages/Address/routes";
+import { ProposalRouter } from "../pages/Proposal/routes";
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
 
 export const PageRouter = () =>
   useRoutes(
-    AddressRouter.concat([
+    AddressRouter.concat(ProposalRouter, [
       { path: "/", element: <HomePage /> },
       { path: "/blocks", element: <BlocksPage /> },
       { path: "/unconfirmedBlocks", element: <BlocksPage /> },
@@ -40,9 +38,7 @@ export const PageRouter = () =>
       { path: "/vote/*", element: <VotePage /> },
       { path: "/resource", element: <Resource /> },
       { path: "/resourceDetail/:id", element: <ResourceDetail /> },
-      { path: "/contract", element: <Viewer /> },
       { path: "/token", element: <Token /> },
-      { path: "/proposal", element: <Proposal /> },
-      // { path: "*", element: <Navigate to='/' /> },
+      { path: "*", element: <Navigate to='/' /> },
     ])
   );
