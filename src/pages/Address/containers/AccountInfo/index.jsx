@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Layout, Tabs, Typography, Modal, Tooltip } from "antd";
 import QRCode from "qrcode.react";
 import { QrcodeOutlined } from "@ant-design/icons";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import OldTransactionList from "../../components/OldTransactionList";
 import DetailHeader from "../../../../components/DetailHeader";
 import TokenList from "../../components/TokenList";
@@ -95,7 +95,7 @@ const AccountInfo = () => {
   const routerParams = useParams();
   const { symbol = "ELF", address } = routerParams;
   const [columns, setColumns] = useState([]);
-  const history = useHistory();
+  const history = useNavigate();
   const [contracts, setContracts] = useState({});
   useEffect(() => {
     getContractNames()

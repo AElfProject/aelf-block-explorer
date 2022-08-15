@@ -9,11 +9,19 @@ export const AddressRouter = [
   {
     path: "/address",
     element: <AccountList />,
-    children: [{ path: "/:address/:symbol", element: <AccountInfo /> }],
   },
-
+  {
+    path: "/address/:address",
+    element: <AccountInfo />,
+  },
+  {
+    // We cannot use ? in v6
+    path: "/address/:address/:symbol",
+    element: <AccountInfo />,
+  },
   { path: "/contract", element: <ContractList /> },
-  { path: "/contract/:address?/:codeHash?", element: <ContractInfo /> },
+  { path: "/contract/:address", element: <ContractInfo /> },
+  { path: "/contract/:address/:codeHash", element: <ContractInfo /> },
   { path: "/token", element: <TokenList /> },
   { path: "/token/:symbol", element: <TokenInfo /> },
 ];

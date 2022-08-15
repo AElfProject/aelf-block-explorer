@@ -19,9 +19,8 @@ const AddressLink = (props) => {
       to={`/${contracts[address] ? "contract" : "address"}/${address}`}
       title={`ELF_${address}_${config.viewer.chainId}`}
     >
-      {`/${contracts[address] ? "contract" : "address"}/${address}`}
-      {/* {`ELF_${address}_${config.viewer.chainId}`}
-      {suffix} */}
+      {`ELF_${address}_${config.viewer.chainId}`}
+      {suffix}
     </Link>
   );
 };

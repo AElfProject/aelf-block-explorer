@@ -5,10 +5,10 @@
 import React from "react";
 import Bread from "../../components/Bread";
 import HolderList from "../../components/HolderList";
+import { Outlet } from "react-router-dom";
 
 const AccountList = () => (
   <div className='account-list main-container'>
-    <Outlet />
     <Bread title='Account List' />
     <HolderList symbol='ELF' />
   </div>
