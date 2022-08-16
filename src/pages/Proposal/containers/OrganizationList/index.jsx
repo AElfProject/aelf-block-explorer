@@ -103,7 +103,9 @@ const OrganizationList = () => {
         animated={false}
         tabBarExtraContent={
           logStatus === LOG_STATUS.LOGGED ? (
-            <Link to='/createOrganizations'>Create Organization&gt;</Link>
+            <Link to='/proposal/createOrganizations'>
+              Create Organization&gt;
+            </Link>
           ) : null
         }
         className='organization-list-tab'

@@ -115,7 +115,6 @@ class Search extends PureComponent {
         <Input
           className='header-search'
           placeholder='Address / Tx / Block / Block Height'
-          // prefix={<Icon type="search" className="search-icon" />}
           suffix={suffix}
           value={content}
           onChange={this.onChangeUserName}

@@ -293,7 +293,7 @@ class BrowserHeader extends PureComponent {
           className='aelf-submenu-container'
         >
           <Menu.Item key='/proposal'>
-            <Link to='/proposal'>Proposal</Link>
+            <Link to='/proposal/proposals'>Proposal</Link>
           </Menu.Item>
           {voteHTML}
           {resourceHTML}
@@ -333,7 +333,6 @@ class BrowserHeader extends PureComponent {
           type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
           className='aelf-logo-container'
         />
-        {/*...*/}
         <Icon type='menu' />
       </div>
     );

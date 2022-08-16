@@ -195,7 +195,7 @@ class BrowserBreadcrumb extends Component {
         BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState];
 
       if (!STATE) {
-        this.props.history.push("/");
+        this.props.navigate("/");
         return;
       }
 

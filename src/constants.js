@@ -3,43 +3,42 @@
  * @author longyue, huangzongzhe, yangpeiyang
  */
 /* eslint-disable fecs-camelcase */
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowRightOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-import { thousandsCommaWithDecimal } from '@utils/formater';
-import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from '../config/config';
-import addressFormat from './utils/addressFormat';
-import {
-  removeAElfPrefix,
-} from './utils/utils';
-import Dividends from './components/Dividends';
+import { thousandsCommaWithDecimal } from "@utils/formater";
+import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from "../config/config";
+import addressFormat from "./utils/addressFormat";
+import { removeAElfPrefix } from "./utils/utils";
+import Dividends from "./components/Dividends";
 
 dayjs.extend(relativeTime);
 
-const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
+const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : "production";
 
-const ALL_BLOCKS_API_URL = '/all/blocks';
-const ALL_UNCONFIRMED_BLOCKS_API_URL = '/all/unconfirmedBlocks';
-const ALL_TXS_API_URL = '/all/transactions';
-const ALL_UNCONFIRMED_TXS_API_URL = '/all/unconfirmedTransactions';
-const TXS_BLOCK_API_URL = '/block/transactions';
-export const TXS_INFO_API_URL = '/block/txInfo';
-export const BLOCK_INFO_API_URL = '/block/blockInfo';
-const ADDRESS_TXS_API_URL = '/address/transactions';
-const ADDRESS_BALANCE_API_URL = '/api/address/balance';
-const TPS_LIST_API_URL = '/tps/all';
-const ADDRESS_TOKENS_API_URL = '/address/tokens';
-const ELF_REALTIME_PRICE_URL = 'https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY';
-const ELF_REST_TRADE_API = 'https://www.bcex.top/Api_Market/getCoinTrade';
-const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
-const RESOURCE_TURNOVER = '/resource/turnover';
-const RESOURCE_RECORDS = '/resource/records';
-const SOCKET_URL = '/socket';
-const SOCKET_URL_NEW = '/new-socket';
-const BASIC_INFO = '/chain-info';
+const ALL_BLOCKS_API_URL = "/all/blocks";
+const ALL_UNCONFIRMED_BLOCKS_API_URL = "/all/unconfirmedBlocks";
+const ALL_TXS_API_URL = "/all/transactions";
+const ALL_UNCONFIRMED_TXS_API_URL = "/all/unconfirmedTransactions";
+const TXS_BLOCK_API_URL = "/block/transactions";
+export const TXS_INFO_API_URL = "/block/txInfo";
+export const BLOCK_INFO_API_URL = "/block/blockInfo";
+const ADDRESS_TXS_API_URL = "/address/transactions";
+const ADDRESS_BALANCE_API_URL = "/api/address/balance";
+const TPS_LIST_API_URL = "/tps/all";
+const ADDRESS_TOKENS_API_URL = "/address/tokens";
+const ELF_REALTIME_PRICE_URL =
+  "https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY";
+const ELF_REST_TRADE_API = "https://www.bcex.top/Api_Market/getCoinTrade";
+const RESOURCE_REALTIME_RECORDS = "/resource/realtime-records";
+const RESOURCE_TURNOVER = "/resource/turnover";
+const RESOURCE_RECORDS = "/resource/records";
+const SOCKET_URL = "/socket";
+const SOCKET_URL_NEW = "/new-socket";
+const BASIC_INFO = "/chain-info";
 
 const LOWER_SYMBOL = SYMBOL.toLocaleLowerCase();
 const PAGE_SIZE = 25;
@@ -58,10 +57,10 @@ const TXSSTATUS = {
   // Pending: '交易中',
   // Failed: '失败',
   // Mined: '成功',
-  NotExisted: 'NotExisted',
-  Pending: 'Pending',
-  Failed: 'Failed',
-  Mined: 'Mined',
+  NotExisted: "NotExisted",
+  Pending: "Pending",
+  Failed: "Failed",
+  Mined: "Mined",
 };
 
 const txStatusInUpperCase = {
@@ -69,41 +68,55 @@ const txStatusInUpperCase = {
   // Pending: '交易中',
   // Failed: '失败',
   // Mined: '成功',
-  notExisted: 'NOT_EXISTED',
-  pending: 'PENDING',
-  failed: 'FAILED',
-  mined: 'MINED',
+  notExisted: "NOT_EXISTED",
+  pending: "PENDING",
+  failed: "FAILED",
+  mined: "MINED",
 };
 
 const FAILED_MESSAGE_DISPLAY_TIME = 20; // seconds
 // todo: use a object to gather all tip?
-const IE_ADVICE = "We recommend using Chrome/Safari/Firefox to view our page. In recent time we don't support IE!";
+const IE_ADVICE =
+  "We recommend using Chrome/Safari/Firefox to view our page. In recent time we don't support IE!";
 const INPUT_STARTS_WITH_MINUS_TIP = "Input can't starts with minus symbol!";
 const INPUT_ZERO_TIP = "Input can't be 0!";
 const BALANCE_LESS_THAN_OPERATE_LIMIT_TIP = `Your balance is less than the operate limit ${RESOURCE_OPERATE_LIMIT}`;
-const OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP = 'Your operating number is too small.';
-const BUY_OR_SELL_MORE_THAN_ASSETS_TIP = 'Buy or sell more than available assets';
-const BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP = 'Please purchase or sell a smaller amount of resources than the inventory in the resource contract.';
-const TRANSACT_LARGE_THAN_ZERO_TIP = 'You should transact an amount large than 0.';
-const ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP = 'Only support positive float and integer.';
-const CHECK_BALANCE_TIP = 'Please Check your balance Then.';
-const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP = 'Sorry, you can not buy so many resources in one time.';
-const INPUT_NUMBER_TIP = 'Your should input a number';
-const BETWEEN_ZEOR_AND_BALANCE_TIP = 'Too large value';
-const SELECT_SOMETHING_TIP = 'Please select something to continue';
+const OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP =
+  "Your operating number is too small.";
+const BUY_OR_SELL_MORE_THAN_ASSETS_TIP =
+  "Buy or sell more than available assets";
+const BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP =
+  "Please purchase or sell a smaller amount of resources than the inventory in the resource contract.";
+const TRANSACT_LARGE_THAN_ZERO_TIP =
+  "You should transact an amount large than 0.";
+const ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP =
+  "Only support positive float and integer.";
+const CHECK_BALANCE_TIP = "Please Check your balance Then.";
+const BUY_MORE_THAN_HALT_OF_INVENTORY_TIP =
+  "Sorry, you can not buy so many resources in one time.";
+const INPUT_NUMBER_TIP = "Your should input a number";
+const BETWEEN_ZEOR_AND_BALANCE_TIP = "Too large value";
+const SELECT_SOMETHING_TIP = "Please select something to continue";
 const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
-const UNKNOWN_ERROR_TIP = 'Sorry, it seems that we encountered an unknown error.';
-const NO_AUTHORIZATION_ERROR_TIP = "Sorry, you temporarily don't has the authorization to the page.";
-const INPUT_SOMETHING_TIP = 'Sorry, you should input something';
-const INTEGER_TIP = 'It can only be integer';
-const UNLOCK_PLUGIN_TIP = 'Your plugin has beed locked, please unlock and refresh the page';
-const GET_TIP = 'It can only be integer';
-const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = 'You already been candidate';
-const NOT_CURRENT_CANDIDATE_TIP = 'Sorry, the node is not current candidate \n Please refresh the page then choose another node to vote.';
-const THE_REASON_TO_BECOME_A_NON_CANDIDATE = 'It may be result from: \n 1. The node has quited election during the time. \n 2. The node became an evil node then was kicked out of the candidates.';
-const FEE_TIP = 'A bit fee of ELF will be deducted from the operation';
-const ELECTION_NOTIFI_DATA_TIP = 'The election term is 7 days, there is no interval between terms; the number of nodes is the total number of current production nodes and candidate nodes; the number of votes is the sum of the votes amount since the election started; the reward pool includes a block reward of the production nodes, 90% of the transaction fee and 50% of the resource tokens transaction fee.';
-const MY_VOTE_DATA_TIP = 'The Total Votes is the votes amount you voted, and the Redeemable Votes is the number of votes that has expired.';
+const UNKNOWN_ERROR_TIP =
+  "Sorry, it seems that we encountered an unknown error.";
+const NO_AUTHORIZATION_ERROR_TIP =
+  "Sorry, you temporarily don't has the authorization to the page.";
+const INPUT_SOMETHING_TIP = "Sorry, you should input something";
+const INTEGER_TIP = "It can only be integer";
+const UNLOCK_PLUGIN_TIP =
+  "Your plugin has beed locked, please unlock and refresh the page";
+const GET_TIP = "It can only be integer";
+const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = "You already been candidate";
+const NOT_CURRENT_CANDIDATE_TIP =
+  "Sorry, the node is not current candidate \n Please refresh the page then choose another node to vote.";
+const THE_REASON_TO_BECOME_A_NON_CANDIDATE =
+  "It may be result from: \n 1. The node has quited election during the time. \n 2. The node became an evil node then was kicked out of the candidates.";
+const FEE_TIP = "A bit fee of ELF will be deducted from the operation";
+const ELECTION_NOTIFI_DATA_TIP =
+  "The election term is 7 days, there is no interval between terms; the number of nodes is the total number of current production nodes and candidate nodes; the number of votes is the sum of the votes amount since the election started; the reward pool includes a block reward of the production nodes, 90% of the transaction fee and 50% of the resource tokens transaction fee.";
+const MY_VOTE_DATA_TIP =
+  "The Total Votes is the votes amount you voted, and the Redeemable Votes is the number of votes that has expired.";
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const SHORTEST_LOCK_TIME = 90; // day
@@ -114,88 +127,79 @@ const RPCSERVER = DEFAUTRPCSERVER;
 // TODO: Why is this undefined?
 const BLOCKS_LIST_COLUMNS = [
   {
-    title: 'Height',
-    dataIndex: 'block_height',
-    key: 'block_height',
+    title: "Height",
+    dataIndex: "block_height",
+    key: "block_height",
     width: 150,
-    render: (text) => (
-      <Link to={`/block/${text}`}>
-        {' '}
-        {text}
-        {' '}
-      </Link>
-    ),
+    render: (text) => <Link to={`/block/${text}`}> {text} </Link>,
   },
   {
-    title: 'Block Hash',
-    dataIndex: 'block_hash',
-    key: 'block_hash',
+    title: "Block Hash",
+    dataIndex: "block_hash",
+    key: "block_hash",
     width: 280,
     ellipsis: true,
     render: (text, row) => (
       <Link title={text} to={`/block/${row.block_height}`}>
-        {' '}
-        {text}
-        {' '}
+        {" "}
+        {text}{" "}
       </Link>
     ),
   },
   {
-    title: 'Miner',
-    dataIndex: 'miner',
-    key: 'miner',
+    title: "Miner",
+    dataIndex: "miner",
+    key: "miner",
     width: 280,
     ellipsis: true,
     render(text) {
-      return (<Link title={`${SYMBOL}_${text}_${CHAIN_ID}`} to={`/address/${text}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>);
+      return (
+        <Link
+          title={`${SYMBOL}_${text}_${CHAIN_ID}`}
+          to={`/address/${text}`}
+        >{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
+      );
     },
   },
   {
-    title: 'Dividends',
-    dataIndex: 'dividends',
-    key: 'dividends',
+    title: "Dividends",
+    dataIndex: "dividends",
+    key: "dividends",
     width: 120,
     render(text) {
       return <Dividends dividends={JSON.parse(text)} />;
     },
   },
   {
-    title: 'Txs',
-    dataIndex: 'tx_count ',
-    key: 'tx_count ',
+    title: "Txs",
+    dataIndex: "tx_count ",
+    key: "tx_count ",
     width: 60,
-    render: (text, row) => (!isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
-      <Link to={`/txs/block?${row.block_hash}`}>
-        {' '}
-        {row.tx_count}
-        {' '}
-      </Link>
-    ) : (
-      row.tx_count
-    )),
+    render: (text, row) =>
+      !isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
+        <Link to={`/txs/block?${row.block_hash}`}> {row.tx_count} </Link>
+      ) : (
+        row.tx_count
+      ),
   },
   {
-    title: 'Time',
-    dataIndex: 'time',
-    key: 'time',
+    title: "Time",
+    dataIndex: "time",
+    key: "time",
     render: (time) => (
-      <span>
-        {' '}
-        {dayjs(time).format('YYYY/MM/DD HH:mm:ss')}
-        {' '}
-      </span>
+      <span> {dayjs(time).format("YYYY/MM/DD HH:mm:ss")} </span>
     ),
     //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   },
 ];
 
-export const CONTRACT_VIEWER_URL = '/viewer/address.html#/contract/';
+export const CONTRACT_VIEWER_URL = "/viewer/address.html#/contract/";
 
 const ALL_TXS_LIST_COLUMNS = [
   {
-    title: 'Tx Id',
-    dataIndex: 'tx_id',
-    key: 'tx_id',
+    title: "Tx Id",
+    dataIndex: "tx_id",
+    key: "tx_id",
     width: 300,
     ellipsis: true,
     render: (text, row) => (
@@ -205,80 +209,76 @@ const ALL_TXS_LIST_COLUMNS = [
     ),
   },
   {
-    title: 'Height',
-    dataIndex: 'block_height',
-    key: 'block_height',
+    title: "Height",
+    dataIndex: "block_height",
+    key: "block_height",
     width: 150,
-    align: 'center',
+    align: "center",
     render: (text, row) => (
       <Link to={`/block/${row.block_height}`} title={row.block_height}>
-        {' '}
-        {row.block_height}
-        {' '}
+        {" "}
+        {row.block_height}{" "}
       </Link>
     ),
   },
   {
-    title: 'From ',
-    dataIndex: 'address_from',
-    key: 'address_from',
+    title: "From ",
+    dataIndex: "address_from",
+    key: "address_from",
     ellipsis: true,
     render: (text) => (
       <Link to={`/address/${text}`} title={addressFormat(text)}>
-        {' '}
+        {" "}
         {addressFormat(text)}
       </Link>
     ),
   },
   {
     title: null,
-    key: 'payIcon',
+    key: "payIcon",
     width: 50,
-    render: () => <Icon type="arrow-right" theme="outlined" />,
+    render: () => <ArrowRightOutlined />,
   },
   {
-    title: 'To',
-    dataIndex: 'address_to',
-    key: 'address_to',
+    title: "To",
+    dataIndex: "address_to",
+    key: "address_to",
     ellipsis: true,
     render: (text, row) => {
-      const {
-        contractName,
-        isSystemContract,
-      } = row.contractName || {};
-      const name = isSystemContract ? removeAElfPrefix(contractName) : contractName;
+      const { contractName, isSystemContract } = row.contractName || {};
+      const name = isSystemContract
+        ? removeAElfPrefix(contractName)
+        : contractName;
       return (
         <Link
           to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + text)}`}
           title={addressFormat(text)}
         >
-          {
-              name || addressFormat(text)
-            }
+          {name || addressFormat(text)}
         </Link>
       );
     },
   },
   {
-    title: 'Method',
-    dataIndex: 'method',
-    key: 'method',
+    title: "Method",
+    dataIndex: "method",
+    key: "method",
     ellipsis: true,
   },
   {
-    title: 'Tx Fee',
-    dataIndex: 'tx_fee',
-    key: 'tx_fee',
+    title: "Tx Fee",
+    dataIndex: "tx_fee",
+    key: "tx_fee",
     render(text) {
       return <Dividends dividends={JSON.parse(text)} />;
     },
   },
   {
-    title: 'Amount',
-    dataIndex: 'amount',
-    key: 'amount',
+    title: "Amount",
+    dataIndex: "amount",
+    key: "amount",
     render: (text, row) => {
-      let amount = '-';
+      let amount = "-";
       let symbol;
       if (row.quantity && row.decimals) {
         // 1e-7
@@ -305,104 +305,102 @@ const ALL_TXS_LIST_COLUMNS = [
 
 const ADDRESS_INFO_COLUMN = [
   {
-    title: 'address',
-    dataIndex: 'address',
-    key: 'address',
+    title: "address",
+    dataIndex: "address",
+    key: "address",
   },
   {
-    title: 'balance',
-    dataIndex: 'balance',
-    key: 'balance',
+    title: "balance",
+    dataIndex: "balance",
+    key: "balance",
   },
   {
-    title: 'value',
-    dataIndex: 'value',
-    key: 'value',
+    title: "value",
+    dataIndex: "value",
+    key: "value",
   },
 ];
 
 const RESOURCE_DETAILS_COLUMN = [
   {
-    title: 'Tx Id',
-    dataIndex: 'tx_id',
-    key: 'tx_id',
-    align: 'center',
+    title: "Tx Id",
+    dataIndex: "tx_id",
+    key: "tx_id",
+    align: "center",
     ellipsis: true,
+    render: (text) => <Link to={`/tx/${text}`}>{text}</Link>,
+  },
+  {
+    title: "Time",
+    dataIndex: "time",
+    key: "time",
+    align: "center",
+    render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
+  },
+  {
+    title: "Type(Resource)",
+    dataIndex: "type",
+    key: "type",
+    align: "center",
+  },
+  {
+    title: "Operation",
+    dataIndex: "method",
+    key: "method",
+    align: "center",
+    width: 80,
     render: (text) => (
-      <Link
-        to={`/tx/${text}`}
-      >
+      <span className={`${(text || "buy").toLocaleLowerCase()}-color`}>
         {text}
-      </Link>
+      </span>
     ),
   },
   {
-    title: 'Time',
-    dataIndex: 'time',
-    key: 'time',
-    align: 'center',
-    render: (text) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
-  },
-  {
-    title: 'Type(Resource)',
-    dataIndex: 'type',
-    key: 'type',
-    align: 'center',
-  },
-  {
-    title: 'Operation',
-    dataIndex: 'method',
-    key: 'method',
-    align: 'center',
-    width: 80,
-    render: (text) => (<span className={`${(text || 'buy').toLocaleLowerCase()}-color`}>{text}</span>),
-  },
-  {
-    title: 'Price(ELF)',
-    dataIndex: 'fee',
-    key: 'fee',
-    align: 'center',
+    title: "Price(ELF)",
+    dataIndex: "fee",
+    key: "fee",
+    align: "center",
     render: (_, row) => {
       let price;
       const { resource, method } = row;
       let { elf, fee } = row;
       elf /= ELF_DECIMAL;
       fee /= ELF_DECIMAL;
-      price = ((method === 'Buy' ? elf + fee : elf - fee) / resource).toFixed(
-        ELF_PRECISION,
+      price = ((method === "Buy" ? elf + fee : elf - fee) / resource).toFixed(
+        ELF_PRECISION
       );
-      price = isNaN(price) ? '-' : price;
+      price = isNaN(price) ? "-" : price;
       return price;
     },
   },
   {
-    title: 'Amount(Resource)',
-    dataIndex: 'resource',
-    key: 'number',
-    align: 'center',
+    title: "Amount(Resource)",
+    dataIndex: "resource",
+    key: "number",
+    align: "center",
   },
   {
     title: `Sum(${SYMBOL})`,
-    dataIndex: 'elf',
-    key: 'elfNumber',
-    align: 'center',
+    dataIndex: "elf",
+    key: "elfNumber",
+    align: "center",
     render: (text, row) => {
       const { method } = row;
       let { elf, fee } = row;
       let actualNumber;
       elf /= ELF_DECIMAL;
       fee /= ELF_DECIMAL;
-      actualNumber = (method === 'Buy' ? elf + fee : elf - fee).toFixed(
-        ELF_PRECISION,
+      actualNumber = (method === "Buy" ? elf + fee : elf - fee).toFixed(
+        ELF_PRECISION
       );
       return actualNumber;
     },
   },
   {
-    title: 'Fee(ELF)',
-    dataIndex: 'fee',
-    key: 'serviceCharge',
-    align: 'center',
+    title: "Fee(ELF)",
+    dataIndex: "fee",
+    key: "serviceCharge",
+    align: "center",
     render: (text, row) => {
       let { fee } = row;
       fee /= ELF_DECIMAL;
@@ -410,10 +408,10 @@ const RESOURCE_DETAILS_COLUMN = [
     },
   },
   {
-    title: 'Tx status',
-    dataIndex: 'tx_status',
-    key: 'tx_status',
-    align: 'center',
+    title: "Tx status",
+    dataIndex: "tx_status",
+    key: "tx_status",
+    align: "center",
   },
 ];
 

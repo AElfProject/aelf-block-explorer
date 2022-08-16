@@ -3,24 +3,25 @@
  * @author zhouminghui
  */
 
-import React, { PureComponent } from 'react';
-import { Table } from 'antd';
-import { get } from '../../utils';
+import React, { PureComponent } from "react";
+import { Table } from "antd";
+import { get } from "../../utils";
 import {
   RESOURCE_RECORDS,
   RESOURCE_DETAILS_COLUMN,
   PAGE_SIZE,
   ELF_DECIMAL,
-} from '../../constants';
-import './ResourceDetail.less';
+} from "../../constants";
+import "./ResourceDetail.less";
+import { withRouter } from "../../../routes/utils";
 
 const page = 0;
-export default class ResourceDetail extends PureComponent {
+class ResourceDetail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
-      address: props.match.params.id || '',
+      address: props.params.id || "",
       data: null,
       pagination: {
         pageSize: PAGE_SIZE,
@@ -43,7 +44,7 @@ export default class ResourceDetail extends PureComponent {
     const data = await get(RESOURCE_RECORDS, {
       limit: PAGE_SIZE,
       page,
-      order: 'desc',
+      order: "desc",
       address,
     });
     const records = data.records || [];
@@ -73,7 +74,7 @@ export default class ResourceDetail extends PureComponent {
     const { pagination, data, loading } = this.state;
     const { handleTableChange } = this;
     return (
-      <div className="transaction-details basic-container basic-container-white">
+      <div className='transaction-details basic-container basic-container-white'>
         <Table
           columns={RESOURCE_DETAILS_COLUMN}
           pagination={pagination}
@@ -86,3 +87,4 @@ export default class ResourceDetail extends PureComponent {
     );
   }
 }
+export default withRouter(ResourceDetail);

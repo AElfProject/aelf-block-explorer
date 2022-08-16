@@ -32,22 +32,26 @@ export const ProposalRouter = [
       {
         path: "apply/:orgAddress",
         element: (isLogged) =>
-          isLogged ? <CreateProposal /> : <Redirect to='/proposals' />,
+          isLogged ? <CreateProposal /> : <Redirect to='/proposal/proposals' />,
       },
       {
         path: "apply",
         element: (isLogged) =>
-          isLogged ? <CreateProposal /> : <Redirect to='/proposals' />,
+          isLogged ? <CreateProposal /> : <Redirect to='/proposal/proposals' />,
       },
       {
         path: "myProposals",
         element: (isLogged) =>
-          isLogged ? <MyProposal /> : <Redirect to='/proposals' />,
+          isLogged ? <MyProposal /> : <Redirect to='/proposal/proposals' />,
       },
       {
         path: "createOrganizations",
         element: (isLogged) =>
-          isLogged ? <CreateOrganization /> : <Redirect to='/organizations' />,
+          isLogged ? (
+            <CreateOrganization />
+          ) : (
+            <Redirect to='/proposal/organizations' />
+          ),
       },
     ],
   },

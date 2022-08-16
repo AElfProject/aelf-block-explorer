@@ -26,7 +26,7 @@ const ROUTES_UNDER_TABS = {
 };
 
 function useRouteMatch(path) {
-  const pathKey = path.split("/")[1];
+  const pathKey = path.split("/")[2];
   const [result] = Object.values(ROUTES_UNDER_TABS).find((tab) =>
     tab.find((item) => item === pathKey)
   ) || ["proposals"];
@@ -72,7 +72,7 @@ const App = () => {
       });
   }, []);
   const handleTabChange = (key) => {
-    navigate(`/${key}`);
+    navigate(`/proposal/${key}`);
   };
   return (
     <div className='proposal'>

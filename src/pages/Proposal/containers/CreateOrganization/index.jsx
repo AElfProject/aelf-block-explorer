@@ -411,7 +411,7 @@ const CreateOrganization = () => {
       });
       showTransactionResult(result);
       await sleep(2000);
-      navigate("/organizations");
+      navigate("/proposal/organizations");
     } catch (e) {
       console.error(e);
       message.error(
@@ -448,7 +448,9 @@ const CreateOrganization = () => {
           Create Organization
         </div>
         <div className='create-organization-header-action'>
-          <Link to='/organizations'>&lt;Back to Organization List</Link>
+          <Link to='/proposal/organizations'>
+            &lt;Back to Organization List
+          </Link>
         </div>
       </div>
       <Divider />
