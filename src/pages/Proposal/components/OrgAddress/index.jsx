@@ -2,33 +2,32 @@
  * @file org address
  * @author atom-yang
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Button } from 'antd';
-import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import config from '../../../../common/config';
-import { setCurrentOrg } from '../../actions/proposalDetail';
-import './index.less';
+import React from "react";
+import PropTypes from "prop-types";
+import { Button } from "antd";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import config from "../../../../common/config";
+import { setCurrentOrg } from "../../actions/proposalDetail";
+import "./index.less";
 
 const OrgAddress = (props) => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const {
-    orgAddress,
-    proposalType,
-  } = props;
+  const navigate = useNavigate();
+  const { orgAddress, proposalType } = props;
   function handleClick() {
-    dispatch(setCurrentOrg({
-      orgAddress,
-      proposalType,
-    }));
-    history.push(`/apply/${orgAddress}`);
+    dispatch(
+      setCurrentOrg({
+        orgAddress,
+        proposalType,
+      })
+    );
+    navigate(`/apply/${orgAddress}`);
   }
   return (
     <Button
-      className="text-ellipsis org-address-btn"
-      type="link"
+      className='text-ellipsis org-address-btn'
+      type='link'
       onClick={handleClick}
       title={`ELF_${orgAddress}_${config.viewer.chainId}`}
     >

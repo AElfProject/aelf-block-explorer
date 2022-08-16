@@ -2,18 +2,13 @@
  * @file create organization
  * @author atom-yang
  */
-import React, { useEffect, useState, useMemo } from 'react';
-import AElf from 'aelf-sdk';
-import Decimal from 'decimal.js';
-import {
-  Link,
-  useHistory,
-} from 'react-router-dom';
-import ReactIf from 'react-if';
-import {
-  useSelector,
-} from 'react-redux';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import React, { useEffect, useState, useMemo } from "react";
+import AElf from "aelf-sdk";
+import Decimal from "decimal.js";
+import { Link, useNavigate } from "react-router-dom";
+import ReactIf from "react-if";
+import { useSelector } from "react-redux";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import {
   Button,
   Select,
@@ -24,34 +19,23 @@ import {
   message,
   Divider,
   Form,
-} from 'antd';
-import constants, {
-  API_PATH,
-} from '../../common/constants';
-import { request } from '../../../../common/request';
+} from "antd";
+import constants, { API_PATH } from "../../common/constants";
+import { request } from "../../../../common/request";
 import {
   commonFilter,
   getContractAddress,
   showTransactionResult,
   rand16Num,
-} from '../../common/utils';
-import {
-  getTokenList,
-  getContract,
-  sleep,
-} from '../../../../common/utils';
-import './index.less';
+} from "../../common/utils";
+import { getTokenList, getContract, sleep } from "../../../../common/utils";
+import "./index.less";
 
-const {
-  Switch: ConditionSwitch,
-  Case,
-} = ReactIf;
+const { Switch: ConditionSwitch, Case } = ReactIf;
 
 const { TextArea } = Input;
 
-const {
-  proposalTypes,
-} = constants;
+const { proposalTypes } = constants;
 
 const FormItem = Form.Item;
 
@@ -66,7 +50,7 @@ const formItemLayout = {
 
 async function validateAddressList(rule, value) {
   if (value && value.length > 0) {
-    const inValid = value.split(',').filter((v) => {
+    const inValid = value.split(",").filter((v) => {
       try {
         AElf.utils.decodeAddressRep(v);
         return false;
@@ -83,7 +67,7 @@ async function validateAddressList(rule, value) {
 
 const FIELDS_MAP = {
   proposalType: {
-    name: 'proposalType',
+    name: "proposalType",
     label: (
       <span>
         Proposal Mode&nbsp;
@@ -92,75 +76,82 @@ const FIELDS_MAP = {
           After selecting one, you will need to operate according to its rules.
           For specific rules, see 'Proposal rules'"
         >
-          <QuestionCircleOutlined className="main-color" />
+          <QuestionCircleOutlined className='main-color' />
         </Tooltip>
-      </span>),
-    placeholder: 'Please select a proposal mode',
+      </span>
+    ),
+    placeholder: "Please select a proposal mode",
     rules: [
       {
         required: true,
-        message: 'Please select a proposal mode!',
+        message: "Please select a proposal mode!",
       },
     ],
   },
   minimalApprovalThreshold: {
-    name: ['proposalReleaseThreshold', 'minimalApprovalThreshold'],
-    label: 'Minimal Approval Threshold',
-    placeholder: '',
+    name: ["proposalReleaseThreshold", "minimalApprovalThreshold"],
+    label: "Minimal Approval Threshold",
+    placeholder: "",
     rules: [
       {
         required: true,
-        message: 'Please set the threshold',
+        message: "Please set the threshold",
       },
       {
         validator(rule, value) {
           // eslint-disable-next-line max-len
-          return value > 0 ? Promise.resolve() : Promise.reject(new Error('Minimal Approval Threshold needs to be larger than 0'));
+          return value > 0
+            ? Promise.resolve()
+            : Promise.reject(
+                new Error(
+                  "Minimal Approval Threshold needs to be larger than 0"
+                )
+              );
         },
       },
     ],
   },
   maximalRejectionThreshold: {
-    name: ['proposalReleaseThreshold', 'maximalRejectionThreshold'],
-    label: 'Maximal Rejection Threshold',
-    placeholder: '',
+    name: ["proposalReleaseThreshold", "maximalRejectionThreshold"],
+    label: "Maximal Rejection Threshold",
+    placeholder: "",
     rules: [
       {
         required: true,
-        message: 'Please set the threshold',
+        message: "Please set the threshold",
       },
     ],
   },
   maximalAbstentionThreshold: {
-    name: ['proposalReleaseThreshold', 'maximalAbstentionThreshold'],
-    label: 'Maximal Abstention Threshold',
-    placeholder: '',
+    name: ["proposalReleaseThreshold", "maximalAbstentionThreshold"],
+    label: "Maximal Abstention Threshold",
+    placeholder: "",
     rules: [
       {
         required: true,
-        message: 'Please set the threshold',
+        message: "Please set the threshold",
       },
     ],
   },
   minimalVoteThreshold: {
-    name: ['proposalReleaseThreshold', 'minimalVoteThreshold'],
-    label: 'Minimal Vote Threshold',
-    placeholder: '',
+    name: ["proposalReleaseThreshold", "minimalVoteThreshold"],
+    label: "Minimal Vote Threshold",
+    placeholder: "",
     rules: [
       {
         required: true,
-        message: 'Please set the threshold',
+        message: "Please set the threshold",
       },
     ],
   },
   tokenSymbol: {
-    name: 'tokenSymbol',
-    label: 'Token Symbol',
-    placeholder: 'Please select a token',
+    name: "tokenSymbol",
+    label: "Token Symbol",
+    placeholder: "Please select a token",
     rules: [
       {
         required: true,
-        message: 'Please select a token!',
+        message: "Please select a token!",
       },
     ],
   },
@@ -168,62 +159,63 @@ const FIELDS_MAP = {
     label: (
       <span>
         Proposer Authority Required&nbsp;
-        <Tooltip
-          title="set to false to allow anyone to create a new proposal"
-        >
-          <QuestionCircleOutlined className="main-color" />
+        <Tooltip title='set to false to allow anyone to create a new proposal'>
+          <QuestionCircleOutlined className='main-color' />
         </Tooltip>
-      </span>),
-    placeholder: '',
+      </span>
+    ),
+    placeholder: "",
     rules: [
       {
         required: true,
-        message: 'Please set the value!',
+        message: "Please set the value!",
       },
     ],
-    valuePropName: 'checked',
+    valuePropName: "checked",
   },
   members: {
-    name: 'members',
+    name: "members",
     label: (
       <span>
         Organization members&nbsp;
         <Tooltip
-          title="Input the address list of members,
+          title='Input the address list of members,
           separated by commas, such as
-          `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`"
+          `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`'
         >
-          <QuestionCircleOutlined className="main-color" />
+          <QuestionCircleOutlined className='main-color' />
         </Tooltip>
-      </span>),
-    placeholder: 'Input the address list of members, separated by commas',
+      </span>
+    ),
+    placeholder: "Input the address list of members, separated by commas",
     rules: [
       {
         required: false,
-        type: 'string',
+        type: "string",
         // message: 'Please input the correct members list',
         validator: validateAddressList,
       },
     ],
   },
   proposers: {
-    name: 'proposers',
+    name: "proposers",
     label: (
       <span>
         Proposer White List&nbsp;
         <Tooltip
-          title="Input the address list of proposers,
+          title='Input the address list of proposers,
           separated by commas, such as
-           `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`"
+           `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`'
         >
-          <QuestionCircleOutlined className="main-color" />
+          <QuestionCircleOutlined className='main-color' />
         </Tooltip>
-      </span>),
-    placeholder: 'Input the address list of proposers, separated by commas',
+      </span>
+    ),
+    placeholder: "Input the address list of proposers, separated by commas",
     rules: [
       {
         required: false,
-        type: 'string',
+        type: "string",
         // message: 'Please input the correct proposers list',
         validator: validateAddressList,
       },
@@ -269,20 +261,23 @@ function getContractParams(formValue, tokenList) {
   const {
     proposalType,
     tokenSymbol,
-    proposers = '',
-    members = '',
+    proposers = "",
+    members = "",
     proposerAuthorityRequired = false,
     proposalReleaseThreshold,
   } = formValue;
-  const proposersList = proposers.split(',').filter((v) => v);
-  const membersList = members.split(',').filter((v) => v);
+  const proposersList = proposers.split(",").filter((v) => v);
+  const membersList = members.split(",").filter((v) => v);
   switch (proposalType) {
     case proposalTypes.PARLIAMENT:
       return {
-        proposalReleaseThreshold: Object.keys(proposalReleaseThreshold).reduce((acc, key) => ({
-          ...acc,
-          [key]: proposalReleaseThreshold[key] * ABSTRACT_TOTAL,
-        }), {}),
+        proposalReleaseThreshold: Object.keys(proposalReleaseThreshold).reduce(
+          (acc, key) => ({
+            ...acc,
+            [key]: proposalReleaseThreshold[key] * ABSTRACT_TOTAL,
+          }),
+          {}
+        ),
         proposerAuthorityRequired,
         parliamentMemberProposingAllowed: true,
       };
@@ -301,39 +296,47 @@ function getContractParams(formValue, tokenList) {
       let decimal = tokenList.filter((v) => v.symbol === tokenSymbol);
       decimal = decimal.length > 0 ? decimal[0].decimals : 8;
       return {
-        proposalReleaseThreshold: Object.keys(proposalReleaseThreshold).reduce((acc, key) => ({
-          ...acc,
-          [key]: new Decimal(proposalReleaseThreshold[key]).mul(`1e${decimal}`),
-        }), {}),
+        proposalReleaseThreshold: Object.keys(proposalReleaseThreshold).reduce(
+          (acc, key) => ({
+            ...acc,
+            [key]: new Decimal(proposalReleaseThreshold[key]).mul(
+              `1e${decimal}`
+            ),
+          }),
+          {}
+        ),
         tokenSymbol,
         proposerWhiteList: {
           proposers: proposersList,
         },
       };
     default:
-      throw new Error('why are you here');
+      throw new Error("why are you here");
   }
 }
 
 function getWhiteList() {
-  return request(API_PATH.GET_ORGANIZATIONS, {
-    pageNum: 1,
-    proposalType: proposalTypes.PARLIAMENT,
-  }, {
-    method: 'GET',
-  }).then((res) => {
-    const {
-      bpList = [],
-      parliamentProposerList = [],
-    } = res;
-    return {
-      bpList,
-      parliamentProposerList,
-    };
-  }).catch((e) => {
-    console.error(e);
-    return [];
-  });
+  return request(
+    API_PATH.GET_ORGANIZATIONS,
+    {
+      pageNum: 1,
+      proposalType: proposalTypes.PARLIAMENT,
+    },
+    {
+      method: "GET",
+    }
+  )
+    .then((res) => {
+      const { bpList = [], parliamentProposerList = [] } = res;
+      return {
+        bpList,
+        parliamentProposerList,
+      };
+    })
+    .catch((e) => {
+      console.error(e);
+      return [];
+    });
 }
 
 const SELECT_OPTIONS_WITH_AUTHORITY = [
@@ -348,26 +351,22 @@ const SELECT_OPTIONS_WITH_NO_AUTHORITY = [
 ];
 
 const FORM_INITIAL = {
-  proposalType: '',
+  proposalType: "",
   proposerAuthorityRequired: false,
-  tokenSymbol: 'ELF',
+  tokenSymbol: "ELF",
 };
 
 const CreateOrganization = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
-  const {
-    validateFields,
-  } = form;
+  const { validateFields } = form;
   const common = useSelector((state) => state.common);
-  const {
-    aelf,
-    wallet,
-    currentWallet,
-  } = common;
+  const { aelf, wallet, currentWallet } = common;
   const [tokenList, setTokenList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectOptions, setSelectOptions] = useState(SELECT_OPTIONS_WITH_AUTHORITY);
+  const [selectOptions, setSelectOptions] = useState(
+    SELECT_OPTIONS_WITH_AUTHORITY
+  );
   const [formData, setFormData] = useState({
     proposalType: proposalTypes.ASSOCIATION,
   });
@@ -389,9 +388,16 @@ const CreateOrganization = () => {
       const formValue = await validateFields();
       setIsLoading(true);
       let param = getContractParams(formValue, tokenList);
-      const contract = await getContract(aelf, getContractAddress(formValue.proposalType));
-      const orgAddress = await contract.CalculateOrganizationAddress.call(param);
-      const isOrgExist = await contract.ValidateOrganizationExist.call(orgAddress);
+      const contract = await getContract(
+        aelf,
+        getContractAddress(formValue.proposalType)
+      );
+      const orgAddress = await contract.CalculateOrganizationAddress.call(
+        param
+      );
+      const isOrgExist = await contract.ValidateOrganizationExist.call(
+        orgAddress
+      );
       if (isOrgExist) {
         param = {
           ...param,
@@ -401,14 +407,18 @@ const CreateOrganization = () => {
       const result = await wallet.invoke({
         contractAddress: getContractAddress(formValue.proposalType),
         param,
-        contractMethod: 'CreateOrganization',
+        contractMethod: "CreateOrganization",
       });
       showTransactionResult(result);
       await sleep(2000);
-      history.push('/organizations');
+      navigate("/organizations");
     } catch (e) {
       console.error(e);
-      message.error((e.errorMessage || {}).message || e.message || 'Please input the required form field');
+      message.error(
+        (e.errorMessage || {}).message ||
+          e.message ||
+          "Please input the required form field"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -421,28 +431,28 @@ const CreateOrganization = () => {
     });
   }
 
-  const INPUT_PROPS_MAP = useMemo(() => getInputPropsMap(
-    formData.proposalType || proposalTypes.PARLIAMENT,
-    formData.tokenSymbol,
-    tokenList,
-  ), [formData.proposalType, formData.tokenSymbol, tokenList]);
+  const INPUT_PROPS_MAP = useMemo(
+    () =>
+      getInputPropsMap(
+        formData.proposalType || proposalTypes.PARLIAMENT,
+        formData.tokenSymbol,
+        tokenList
+      ),
+    [formData.proposalType, formData.tokenSymbol, tokenList]
+  );
 
   return (
-    <div className="create-organization">
-      <div className="create-organization-header">
-        <div className="create-organization-header-title">
+    <div className='create-organization'>
+      <div className='create-organization-header'>
+        <div className='create-organization-header-title'>
           Create Organization
         </div>
-        <div className="create-organization-header-action">
-          <Link to="/organizations">&lt;Back to Organization List</Link>
+        <div className='create-organization-header-action'>
+          <Link to='/organizations'>&lt;Back to Organization List</Link>
         </div>
       </div>
       <Divider />
-      <Form
-        form={form}
-        initialValues={FORM_INITIAL}
-        {...formItemLayout}
-      >
+      <Form form={form} initialValues={FORM_INITIAL} {...formItemLayout}>
         <FormItem
           label={FIELDS_MAP.proposalType.label}
           required
@@ -452,11 +462,11 @@ const CreateOrganization = () => {
             placeholder={FIELDS_MAP.proposalType.placeholder}
             onChange={handleProposalTypeChange}
           >
-            {
-              selectOptions.map((v) => (
-                <Select.Option value={v} key={v}>{v}</Select.Option>
-              ))
-            }
+            {selectOptions.map((v) => (
+              <Select.Option value={v} key={v}>
+                {v}
+              </Select.Option>
+            ))}
           </Select>
         </FormItem>
         <ConditionSwitch>
@@ -470,14 +480,8 @@ const CreateOrganization = () => {
             </FormItem>
           </Case>
           <Case condition={formData.proposalType === proposalTypes.ASSOCIATION}>
-            <FormItem
-              label={FIELDS_MAP.members.label}
-              {...FIELDS_MAP.members}
-            >
-              <TextArea
-                placeholder={FIELDS_MAP.members.placeholder}
-                autoSize
-              />
+            <FormItem label={FIELDS_MAP.members.label} {...FIELDS_MAP.members}>
+              <TextArea placeholder={FIELDS_MAP.members.placeholder} autoSize />
             </FormItem>
           </Case>
           <Case condition={formData.proposalType === proposalTypes.REFERENDUM}>
@@ -488,69 +492,60 @@ const CreateOrganization = () => {
             >
               <Select
                 showSearch
-                optionFilterProp="children"
+                optionFilterProp='children'
                 filterOption={commonFilter}
                 placeholder={FIELDS_MAP.tokenSymbol.placeholder}
               >
-                {tokenList.map((v) => (<Select.Option key={v.symbol} value={v.symbol}>{v.symbol}</Select.Option>))}
+                {tokenList.map((v) => (
+                  <Select.Option key={v.symbol} value={v.symbol}>
+                    {v.symbol}
+                  </Select.Option>
+                ))}
               </Select>
             </FormItem>
           </Case>
         </ConditionSwitch>
-        {
-          formData.proposalType && formData.proposalType !== proposalTypes.PARLIAMENT
-            ? (
-              <FormItem
-                label={FIELDS_MAP.proposers.label}
-                {...FIELDS_MAP.proposers}
-              >
-                <TextArea
-                  placeholder={FIELDS_MAP.proposers.placeholder}
-                  autoSize
-                />
-              </FormItem>
-            ) : null
-        }
+        {formData.proposalType &&
+        formData.proposalType !== proposalTypes.PARLIAMENT ? (
+          <FormItem
+            label={FIELDS_MAP.proposers.label}
+            {...FIELDS_MAP.proposers}
+          >
+            <TextArea placeholder={FIELDS_MAP.proposers.placeholder} autoSize />
+          </FormItem>
+        ) : null}
         <FormItem
           label={FIELDS_MAP.minimalApprovalThreshold.label}
           required
           {...FIELDS_MAP.minimalApprovalThreshold}
         >
-          <InputNumber
-            {...INPUT_PROPS_MAP}
-          />
+          <InputNumber {...INPUT_PROPS_MAP} />
         </FormItem>
         <FormItem
           label={FIELDS_MAP.maximalRejectionThreshold.label}
           required
           {...FIELDS_MAP.maximalRejectionThreshold}
         >
-          <InputNumber
-            {...INPUT_PROPS_MAP}
-          />
+          <InputNumber {...INPUT_PROPS_MAP} />
         </FormItem>
         <FormItem
           label={FIELDS_MAP.maximalAbstentionThreshold.label}
           required
           {...FIELDS_MAP.maximalAbstentionThreshold}
         >
-          <InputNumber
-            {...INPUT_PROPS_MAP}
-          />
+          <InputNumber {...INPUT_PROPS_MAP} />
         </FormItem>
         <FormItem
           label={FIELDS_MAP.minimalVoteThreshold.label}
           required
           {...FIELDS_MAP.minimalVoteThreshold}
         >
-          <InputNumber
-            {...INPUT_PROPS_MAP}
-          />
+          <InputNumber {...INPUT_PROPS_MAP} />
         </FormItem>
         <FormItem {...tailFormItemLayout}>
           <Button
-            shape="round"
-            type="primary"
+            shape='round'
+            type='primary'
             loading={isLoading}
             onClick={handleSubmit}
           >

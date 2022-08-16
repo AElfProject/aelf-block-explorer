@@ -193,7 +193,6 @@ class KeyInTeamInfo extends PureComponent {
 
   getSocialFormItems() {
     const { teamInfo } = this.state;
-    const { getFieldDecorator } = this.props.form;
 
     return this.socialKeys.map((socialKey) => {
       let initialValue = teamInfo.socials.filter(
@@ -206,29 +205,26 @@ class KeyInTeamInfo extends PureComponent {
           label={socialKey}
           required={false}
           key={socialKey}
+          name={socialKey}
+          initialValue={initialValue}
+          validateTrigger={["onBlur"]}
+          rules={[
+            {
+              pattern: urlRegExp,
+              message: "The input is not valid url!",
+            },
+          ]}
         >
-          {getFieldDecorator(socialKey, {
-            initialValue,
-            validateTrigger: ["onBlur"],
-            rules: [
-              {
-                pattern: urlRegExp,
-                message: "The input is not valid url!",
-              },
-            ],
-          })(
-            <Input
-              addonBefore='https://'
-              placeholder='input your social network website'
-            />
-          )}
+          <Input
+            addonBefore='https://'
+            placeholder='input your social network website'
+          />
         </Form.Item>
       );
     });
   }
 
   getRealContent() {
-    const { getFieldDecorator } = this.props.form;
     const { hasAuth, teamInfoKeyInForm, isLoading } = this.state;
 
     const socialFormItems = this.getSocialFormItems();
@@ -249,18 +245,28 @@ class KeyInTeamInfo extends PureComponent {
                   onSubmit={this.handleSubmit}
                 >
                   {teamInfoKeyInForm.formItems &&
-                    teamInfoKeyInForm.formItems.map((item) => (
-                      <Form.Item label={item.label} key={item.label}>
-                        {item.validator ? (
-                          getFieldDecorator(
-                            item.validator.fieldDecoratorId,
-                            item.validator
-                          )(item.render || <Input />)
-                        ) : (
-                          <Input placeholder={item.placeholder} />
-                        )}
-                      </Form.Item>
-                    ))}
+                    teamInfoKeyInForm.formItems.map((item) => {
+                      return (
+                        <div>
+                          {item.validator ? (
+                            <Form.Item
+                              label={item.label}
+                              key={item.label}
+                              name={item.validator.fieldDecoratorId}
+                              ruels={item.validator.rules}
+                              initialValue={item.validator.initialValue}
+                              validateTrigger={item.validator.validateTrigger}
+                            >
+                              ({item.render} || <Input />)
+                            </Form.Item>
+                          ) : (
+                            <Form.Item label={item.label} key={item.label}>
+                              <Input placeholder={item.placeholder} />
+                            </Form.Item>
+                          )}
+                        </div>
+                      );
+                    })}
                   {socialFormItems}
                 </Form>
                 <div className={`${clsPrefix}-footer`}>

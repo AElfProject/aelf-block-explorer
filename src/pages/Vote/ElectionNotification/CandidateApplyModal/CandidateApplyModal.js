@@ -101,9 +101,16 @@ class CandidateApplyModal extends PureComponent {
   }
 
   render() {
-    const { onOk, onCancel, visible, form } = this.props;
-    const { getFieldDecorator } = form;
+    const { onCancel, visible } = this.props;
     const candidateApplyForm = generateCandidateApplyForm();
+    const rules = [
+      {
+        required: true,
+        type: "string",
+        validator: validateAddress,
+        message: "Please input your admin address!",
+      },
+    ];
     return (
       <Modal
         className='apply-node-modal'
@@ -119,22 +126,20 @@ class CandidateApplyModal extends PureComponent {
       >
         <Form {...modalFormItemLayout}>
           {candidateApplyForm.formItems &&
-            candidateApplyForm.formItems.map((item) => (
-              <Form.Item label={item.label} key={item.label}>
-                {item.render ? item.render : <Input />}
-              </Form.Item>
-            ))}
-          <Form.Item label='Candidate Admin:' className='candidate-admin'>
-            {getFieldDecorator("admin", {
-              rules: [
-                {
-                  required: true,
-                  type: "string",
-                  validator: validateAddress,
-                  message: "Please input your admin address!",
-                },
-              ],
-            })(<Input placeholder='Please input admin address' />)}
+            candidateApplyForm.formItems.map((item) => {
+              return (
+                <Form.Item label={item.label} key={item.label}>
+                  {item.render ? item.render : <Input />}
+                </Form.Item>
+              );
+            })}
+          <Form.Item
+            label='Candidate Admin:'
+            className='candidate-admin'
+            name='admin'
+            rules={rules}
+          >
+            <Input placeholder='Please input admin address' />
             <Tooltip
               className='candidate-admin-tip'
               title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."

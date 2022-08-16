@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import {
   Tabs,
   Modal,
@@ -10,11 +10,11 @@ import {
   Table,
   Icon,
   Tooltip,
-} from 'antd';
-import DatePickerReact from 'react-datepicker';
-import moment from 'moment';
+} from "antd";
+import DatePickerReact from "react-datepicker";
+import moment from "moment";
 
-import 'react-datepicker/dist/react-datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
 
 import {
   SYMBOL,
@@ -24,16 +24,16 @@ import {
   INTEGER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
   FEE_TIP,
-} from '@src/constants';
+} from "@src/constants";
 import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
-} from '@src/pages/Vote/constants';
-import { thousandsCommaWithDecimal } from '@utils/formater';
-import './index.less';
-import { ELF_DECIMAL } from '../constants';
-import { isIPhone } from '../../../utils/deviceCheck';
+} from "@src/pages/Vote/constants";
+import { thousandsCommaWithDecimal } from "@utils/formater";
+import "./index.less";
+import { ELF_DECIMAL } from "../constants";
+import { isIPhone } from "../../../utils/deviceCheck";
 
 const { TabPane } = Tabs;
 
@@ -60,28 +60,28 @@ const validateMessages = {
   // todo: Why is the fieldDecoratorId still appear?
   required: INPUT_SOMETHING_TIP,
   types: {
-    email: 'Not a validate email!',
-    number: 'Not a validate number!',
+    email: "Not a validate email!",
+    number: "Not a validate number!",
   },
   number: {
-    range: 'Must be between ${min} and ${max}',
+    range: "Must be between ${min} and ${max}",
   },
 };
 
 // todo: Consider to use constant in Vote instead
 // todo: Consider to remove this after refactoring the component
 const formItemsNeedToValidateMap = {
-  fromWallet: ['lockTime', 'voteAmountInput'],
+  fromWallet: ["lockTime", "voteAmountInput"],
   fromExpiredVotes: [],
-  fromActiveVotes: ['switchVoteRowSelection'],
+  fromActiveVotes: ["switchVoteRowSelection"],
 };
 
 function disabledDate(current) {
   // Can not select days before today and today
   return (
-    current
-    && (current < moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day')
-      || current > moment().add(1080, 'd'))
+    current &&
+    (current < moment().add(SHORTEST_LOCK_TIME, "days").endOf("day") ||
+      current > moment().add(1080, "d"))
   );
 }
 
@@ -90,19 +90,19 @@ function getColumns() {
 
   return [
     {
-      title: 'Node Name',
-      dataIndex: 'name',
-      key: 'nodeName',
-      ...this.getColumnSearchProps('name'),
+      title: "Node Name",
+      dataIndex: "name",
+      key: "nodeName",
+      ...this.getColumnSearchProps("name"),
       render: (text, record) => (
         // todo: consider to extract the component as a independent component
         <Tooltip title={text}>
           <Link
             to={{
-              pathname: '/vote/team',
+              pathname: "/vote/team",
               search: `pubkey=${record.candidate}`,
             }}
-            className="node-name-in-table"
+            className='node-name-in-table'
             // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
             style={{ width: 150 }}
             onClick={() => {
@@ -117,28 +117,28 @@ function getColumns() {
       ),
     },
     {
-      title: 'Vote Amount',
-      dataIndex: 'amount',
-      key: 'voteAmount',
+      title: "Vote Amount",
+      dataIndex: "amount",
+      key: "voteAmount",
       sorter: (a, b) => a.amount - b.amount,
       render: (value) => value / ELF_DECIMAL,
     },
     {
-      title: 'Lock Time',
-      dataIndex: 'formatedLockTime',
-      key: 'lockTime',
+      title: "Lock Time",
+      dataIndex: "formatedLockTime",
+      key: "lockTime",
       sorter: (a, b) => a.lockTime - b.lockTime,
     },
     {
-      title: 'Vote Time',
-      dataIndex: 'formatedVoteTime',
-      key: 'voteTime',
+      title: "Vote Time",
+      dataIndex: "formatedVoteTime",
+      key: "voteTime",
       sorter: (a, b) => a.voteTimestamp.seconds - b.voteTimestamp.seconds,
     },
   ];
 }
 
-const defaultDate = moment().add(SHORTEST_LOCK_TIME, 'days').endOf('day');
+const defaultDate = moment().add(SHORTEST_LOCK_TIME, "days").endOf("day");
 
 class VoteModal extends Component {
   constructor(props) {
@@ -149,14 +149,14 @@ class VoteModal extends Component {
     this.getFormItems = this.getFormItems.bind(this);
 
     this.state = {
-      currentTab: 'fromWallet', // fromActiveVotes
+      currentTab: "fromWallet", // fromActiveVotes
       formattedLockTime: null,
       datePickerTime: null,
     };
   }
 
   onValuesChange(_, values) {
-    console.log('onValuesChange', values);
+    console.log("onValuesChange", values);
   }
   // todo: why is validateMessages didn't work when mapPropsToFields?
   // validateMessages
@@ -191,7 +191,7 @@ class VoteModal extends Component {
       selectedRowKeys: voteFromExpiredSelectedRowKeys,
       onChange: handleVoteFromExpiredSelectedRowChange,
       hideDefaultSelections: true,
-      type: 'checkbox',
+      type: "checkbox",
     };
 
     const switchVoteRowSelection = {
@@ -203,47 +203,47 @@ class VoteModal extends Component {
         });
       },
       hideDefaultSelections: true,
-      type: 'radio',
+      type: "radio",
     };
 
     const switchVoteRecord = switchableVoteRecords.find(
-      (record) => record.key === switchVoteSelectedRowKeys[0],
+      (record) => record.key === switchVoteSelectedRowKeys[0]
     );
     const switchVoteAmount = switchVoteRecord && switchVoteRecord.amount;
 
     return [
       {
         type: FROM_WALLET,
-        label: 'From Wallet',
+        label: "From Wallet",
         index: 0,
         formItems: [
           {
-            label: 'Node Name',
+            label: "Node Name",
             // FIXME: handle the other case
             render: (
-              <span className="form-item-value">
+              <span className='form-item-value'>
                 {/* {centerEllipsis(nodeName)} */}
                 {nodeName}
               </span>
             ),
           },
           {
-            label: 'Node Address',
+            label: "Node Address",
             render: (
-              <span className="form-item-value">
+              <span className='form-item-value'>
                 {/* {centerEllipsis(nodeAddress)} */}
                 {nodeAddress}
               </span>
             ),
           },
           {
-            label: 'Vote Amount',
+            label: "Vote Amount",
             render: (
               // <div>
               <Input
-                className="vote-input"
+                className='vote-input'
                 // suffix={SYMBOL}
-                placeholder="Enter vote amount"
+                placeholder='Enter vote amount'
                 // todo: How to make parser/formatter work well with validator?
                 // parser={value => +value.replace(/\$\s?|(,*)/g, '')}
                 // formatter={value =>
@@ -263,48 +263,48 @@ class VoteModal extends Component {
                 },
                 // todo: What if I want to validate a number and return ok for the number like 1. ?
                 {
-                  type: 'integer',
+                  type: "integer",
                   transform: Number,
                   message: INTEGER_TIP,
                 },
                 {
-                  type: 'integer',
+                  type: "integer",
                   min: 1,
                   max: Math.floor(balance),
                   message: BETWEEN_ZEOR_AND_BALANCE_TIP,
                 },
               ],
-              validateTrigger: ['onChange', 'onBlur'],
-              fieldDecoratorid: 'voteAmountInput',
+              validateTrigger: ["onChange", "onBlur"],
+              fieldDecoratorid: "voteAmountInput",
               validateFirst: true, // todo: How to set it to default?
             },
             // todo: extra should compatible with ReactElement and string
             tip: isIPhone()
               ? null
               : `Usable Balance: ${thousandsCommaWithDecimal(
-                balance,
-                false,
-              )} ${SYMBOL}`,
+                  balance,
+                  false
+                )} ${SYMBOL}`,
           },
           {
-            label: 'Lock Time',
+            label: "Lock Time",
             render: (
               <span
                 style={{
-                  position: 'relative',
+                  position: "relative",
                 }}
               >
                 {isIPhone() ? (
                   <DatePickerReact
-                    dateFormat="yyyy-MM-dd"
+                    dateFormat='yyyy-MM-dd'
                     minDate={
-                      new Date(moment().add(SHORTEST_LOCK_TIME + 1, 'd'))
+                      new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))
                     }
-                    maxDate={new Date(moment().add(1080, 'd'))}
+                    maxDate={new Date(moment().add(1080, "d"))}
                     showYearDropdown
                     selected={datePickerTime}
                     onChange={(date) => {
-                      console.log('setFieldsValue', date);
+                      console.log("setFieldsValue", date);
                       this.setState({
                         datePickerTime: date,
                       });
@@ -312,19 +312,19 @@ class VoteModal extends Component {
                         lockTime: moment(date),
                       });
                     }}
-                    className="react-datepicker-custom-container date-picker-in-modal"
-                    dayClassName={() => 'day-class'}
+                    className='react-datepicker-custom-container date-picker-in-modal'
+                    dayClassName={() => "day-class"}
                     includeDateIntervals={[
                       {
-                        start: new Date(moment().add(SHORTEST_LOCK_TIME, 'd')),
-                        end: new Date(moment().add(1080, 'd')),
+                        start: new Date(moment().add(SHORTEST_LOCK_TIME, "d")),
+                        end: new Date(moment().add(1080, "d")),
                       },
                     ]}
-                    placeholderText="Select date"
+                    placeholderText='Select date'
                   />
                 ) : (
                   <DatePicker
-                    className="date-picker-in-modal"
+                    className='date-picker-in-modal'
                     disabledDate={disabledDate}
                     onChange={(value) => {
                       this.setState({
@@ -340,7 +340,7 @@ class VoteModal extends Component {
             ),
             tip: isIPhone()
               ? null
-              : 'Withdraw and transfer are not supported during the locking period',
+              : "Withdraw and transfer are not supported during the locking period",
             validator: {
               rules: [
                 {
@@ -349,7 +349,7 @@ class VoteModal extends Component {
                 },
               ],
               initialValue: defaultDate,
-              fieldDecoratorid: 'lockTime',
+              fieldDecoratorid: "lockTime",
               // todo: How to validate DatePicker in a proper time?
               // validateTrigger: ['onBlur']
             },
@@ -457,9 +457,8 @@ class VoteModal extends Component {
 
   // todo: the method seems useless
   handleOk() {
-    const {
-      callback, changeVoteState, form, setVoteConfirmLoading,
-    } = this.props;
+    const { callback, changeVoteState, form, setVoteConfirmLoading } =
+      this.props;
     const { voteType } = this.props;
     const formItemsNeedToValidate = formItemsNeedToValidateMap[voteType];
 
@@ -508,22 +507,24 @@ class VoteModal extends Component {
           }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
-          style={{ width: 188, marginBottom: 8, display: 'block' }}
+          style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
-          type="primary"
+          type='primary'
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon="search"
-          size="small"
+          icon='search'
+          size='small'
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size="small"
+          size='small'
           style={{ width: 90 }}
         >
           Reset
@@ -531,9 +532,10 @@ class VoteModal extends Component {
       </div>
     ),
     filterIcon: (filtered) => (
-      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+      <Icon type='search' style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
-    onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
@@ -568,23 +570,17 @@ class VoteModal extends Component {
       isLockTimeForTest,
       changeVoteState,
     } = this.props;
-    const { getFieldDecorator } = this.props.form;
     const formItems = this.getFormItems();
 
     const { formattedLockTime } = this.state;
-    let tipHTML = <p className="tip-color">{FEE_TIP}</p>;
-    if (voteType !== 'fromWallet') {
+    let tipHTML = <p className='tip-color'>{FEE_TIP}</p>;
+    if (voteType !== "fromWallet") {
       tipHTML = (
         <>
-          <p className="tip-color">
+          <p className='tip-color'>
             <div>
               Once the transfer is confirmed, your lock-up time will be reset.
-              Another
-              {' '}
-              {formattedLockTime || 'days'}
-              {' '}
-              will be
-              counted from today.
+              Another {formattedLockTime || "days"} will be counted from today.
             </div>
             <div>The transfer will cost 0.4301 ELF as the transaction fee.</div>
           </p>
@@ -594,11 +590,11 @@ class VoteModal extends Component {
 
     return (
       <Modal
-        className="vote-modal"
-        title="Node Vote"
+        className='vote-modal'
+        title='Node Vote'
         visible={voteModalVisible}
         onOk={this.handleOk}
-        okText="OK"
+        okText='OK'
         confirmLoading={voteConfirmLoading}
         width={980}
         // okText='Next'
@@ -607,7 +603,7 @@ class VoteModal extends Component {
         keyboard
         destroyOnClose
         okButtonProps={{
-          type: 'primary',
+          type: "primary",
         }}
         // todo: optimize, can I use ...this.props instead of the code on the top?
         {...this.props}
@@ -618,60 +614,63 @@ class VoteModal extends Component {
           onChange={handleVoteTypeChange}
           activeKey={voteType}
         >
-          {formItems.map((form, index) =>
+          {formItems.map((form, index) => (
             // console.log('index', form.index, index);
             // console.log('form', form);
-            (
-              <TabPane
-                tab={(
-                  <span>
-                    <input
-                      type="radio"
-                      checked={voteType === form.type}
-                      value={form.type}
-                      style={{ marginRight: 10 }}
-                      onChange={() => {}}
-                    />
-                    <label htmlFor={form.label}>{form.label}</label>
-                  </span>
-                )}
-                key={form.type}
+            <TabPane
+              tab={
+                <span>
+                  <input
+                    type='radio'
+                    checked={voteType === form.type}
+                    value={form.type}
+                    style={{ marginRight: 10 }}
+                    onChange={() => {}}
+                  />
+                  <label htmlFor={form.label}>{form.label}</label>
+                </span>
+              }
+              key={form.type}
+            >
+              <Form
+                className='vote-modal-form'
+                {...formItemLayout}
+                onSubmit={this.handleSubmit}
               >
-                <Form
-                  className="vote-modal-form"
-                  {...formItemLayout}
-                  onSubmit={this.handleSubmit}
-                >
-                  {form.formItems.map((item) =>
+                {form.formItems.map((item) => (
                   // todo: there are repeat code in form
-                    (
-                      <>
-                        <Form.Item
-                          label={item.label}
-                          key={item.label}
-                          className={item.extra ? 'form-item-with-extra' : ''}
-                        >
-                          {item.validator
-                            ? getFieldDecorator(
-                              item.validator.fieldDecoratorid,
-                              item.validator,
-                            )(item.render || <Input />)
-                            : item.render}
-                          {item.tip ? (
-                            <Tooltip title={item.tip}>
-                               <Icon
-                                className="right-icon"
-                                theme="filled"
-                                type="info-circle"
-                              />
-                             </Tooltip>
-                          ) : null}
-                        </Form.Item>
-                      </>
-                    ))}
-                </Form>
-              </TabPane>
-            ))}
+                  <>
+                    <Form.Item
+                      label={item.label}
+                      key={item.label}
+                      className={item.extra ? "form-item-with-extra" : ""}
+                      name={item.validator?.fieldDecoratorId}
+                      ruels={item.validator?.rules}
+                      initialValue={item.validator?.initialValue}
+                      validateTrigger={item.validator?.validateTrigger}
+                    >
+                      (
+                      {item.validator ? (
+                        <span>{item.render}</span> || <Input />
+                      ) : (
+                        <span>{item.render}</span>
+                      )}
+                      )
+                      {item.tip ? (
+                        <Tooltip title={item.tip}>
+                          <Icon
+                            className='right-icon'
+                            theme='filled'
+                            type='info-circle'
+                          />
+                        </Tooltip>
+                      ) : null}
+                    </Form.Item>
+                  </>
+                ))}
+              </Form>
+            </TabPane>
+          ))}
         </Tabs>
         {tipHTML}
       </Modal>
