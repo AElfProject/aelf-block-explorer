@@ -2,7 +2,7 @@
  * @file organization list reducer
  * @author atom-yang
  */
-import { SET_MODIFY_ORG_DETAIL } from "@pages/proposal/actions/proposalDetail";
+import { SET_MODIFY_ORG_DETAIL } from "@pages/Proposal/actions/proposalDetail";
 
 const initialState = {};
 
