@@ -54,13 +54,36 @@ const App = () => {
   useEffect(() => {
     walletInstance.isExist
       .then((result) => {
+        const wallet = JSON.parse(localStorage.getItem("currentWallet"));
+        const timeDiff = wallet
+          ? new Date().valueOf() - Number(wallet.timestamp)
+          : 15 * 60 * 1000;
+
         setIsExist(result);
-        if (result === true) {
-          const wallet = localStorage.getItem("currentWallet");
-          if (wallet) {
-            dispatch(logIn());
-          }
+        if (!result) {
+          dispatch({
+            type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+            payload: {},
+          });
+        } else if (
+          typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+          "function"
+        ) {
+          walletInstance.getExtensionInfo().then((info) => {
+            if (!info.locked) {
+              dispatch(logIn());
+            } else {
+              localStorage.removeItem("currentWallet");
+              dispatch({
+                type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+                payload: {},
+              });
+            }
+          });
+        } else if (timeDiff < 15 * 60 * 1000) {
+          dispatch(logIn());
         } else {
+          localStorage.removeItem("currentWallet");
           dispatch({
             type: LOG_IN_ACTIONS.LOG_IN_FAILED,
             payload: {},

@@ -2,7 +2,7 @@
  * @file wallet related
  * @author atom-yang
  */
-import Extension from './extension';
+import Extension from "./extension";
 
 const WALLET_TYPE = {
   EXTENSION: Extension,
@@ -15,6 +15,10 @@ export class Wallet {
     };
     this.proxy = new WALLET_TYPE[options.walletType](this.options);
     this.isExist = this.proxy.isExist;
+  }
+
+  getExtensionInfo() {
+    return this.proxy.elfInstance.getExtensionInfo();
   }
 
   login(...args) {
@@ -35,7 +39,7 @@ export class Wallet {
 }
 
 const walletInstance = new Wallet({
-  walletType: 'EXTENSION',
+  walletType: "EXTENSION",
 });
 
 export default walletInstance;
