@@ -260,7 +260,7 @@
       height: 76px;
       align-items: flex-end;
       .ant-pagination-options {
-        display: block;
+        display: flex;
         border: none;
         top: 0;
         &::before {
@@ -284,11 +284,12 @@
   min-width: calc(100vw - 48px);
   left: 50% !important;
   transform: translateX(calc(24px - 50vw));
-  transition: none !important;
+  transition: left .3s !important;
   .ant-tooltip-arrow {
     display: none;
   }
   .ant-tooltip-content {
     width: 100%;
+    box-shadow: 0px 0px 100000px 100000px rgba(0, 0, 0, 0.6);
   }
 }
