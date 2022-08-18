@@ -150,6 +150,7 @@ export default function TransactionList() {
             total={total}
             pageSizeOptions={["25", "50", "100"]}
             onChange={handlePageChange}
+            onShowSizeChange={handlePageChange}
           />
         </div>
       </div>
