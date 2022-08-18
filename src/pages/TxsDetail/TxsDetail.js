@@ -39,11 +39,11 @@ async function getInfoBackUp(transaction) {
   };
 }
 
-export default class TxsDetailPage extends React.Component {
+class TxsDetailPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      txsId: props.match.params.id || '',
+      txsId: props.params.id || '',
       status: 'Pending',
       chainStatus: {},
       blockHeight: -1,
@@ -97,13 +97,13 @@ export default class TxsDetailPage extends React.Component {
   };
 
   componentDidMount() {
-    const { params } = this.props.match;
+    const { params } = this.props;
     this.fetchTxInfo(params.id);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { params } = this.props.match;
-    if (prevProps.match.params.id !== params.id) {
+    const { params } = this.props;
+    if (prevProps.params.id !== params.id) {
       this.fetchTxInfo(params.id);
     }
   }
@@ -277,3 +277,5 @@ export default class TxsDetailPage extends React.Component {
     );
   }
 }
+
+export default withRouter(TxsDetailPage)

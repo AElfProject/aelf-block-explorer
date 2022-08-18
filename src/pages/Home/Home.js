@@ -228,132 +228,127 @@ export default class HomePage extends Component {
         // const screenHeight = screenWidth > 992 ? 'auto' : '100%';
         // const screenHeight = 'auto';
 
-        const {
-            totalAccounts,
-            localAccounts,
-            totalTransactions,
-            localTransactions,
-            dividends
-        } = this.state;
-        return (
-            <section
-                // className='home-bg-earth'
-                className='home-bg-grey'
-                style={{
-                    height: screenHeight
-                }}
-            >
-                <div className='basic-container home-basic-information'>
-                    <div className="home-header-blank" />
-                    {this.renderSearchBanner()}
-                    <Row className="first-page-sub-container">
-                        <div className='home-basic-title-con'>
-                            <span className='TPSChart-title'>Transactions Per Minute</span>
-                        </div>
-                        <ContainerRichard>
-                            <TPSChart/>
-                        </ContainerRichard>
-                    </Row>
-                    <Row className="first-page-sub-container chain-info">
-                        <ChainInfo
-                            chainId={CHAIN_ID}
-                            localAccounts={localAccounts}
-                            localTxs={localTransactions}
-                            totalAccounts={totalAccounts}
-                            totalTxs={totalTransactions}
-                            blockHeight={this.blockHeight}
-                            unconfirmedBlockHeight={this.unconfirmedBlockHeight}
-                            dividends={dividends}
-                        />
-                    </Row>
-                </div>
-            </section>
-        );
-    }
+    const {
+      totalAccounts,
+      localAccounts,
+      totalTransactions,
+      localTransactions,
+      dividends,
+    } = this.state;
+    return (
+      <section
+        className="home-bg-grey"
+        style={{
+          height: screenHeight,
+        }}
+      >
+        <div className="basic-container home-basic-information">
+          <div className="home-header-blank" />
+          {this.renderSearchBanner()}
+          <Row className="first-page-sub-container">
+            <Col span={24}>
+              <div className="home-basic-title-con">
+                <span className="TPSChart-title">Transactions Per Minute</span>
+              </div>
+              <ContainerRichard>
+                <TPSChart />
+              </ContainerRichard>
+            </Col>
+          </Row>
+          <Row className="first-page-sub-container chain-info">
+            <Col span={24}>
+              <ChainInfo
+                chainId={CHAIN_ID}
+                localAccounts={localAccounts}
+                localTxs={localTransactions}
+                totalAccounts={totalAccounts}
+                totalTxs={Number(totalTransactions)}
+                blockHeight={this.blockHeight}
+                unconfirmedBlockHeight={Number(this.unconfirmedBlockHeight)}
+                dividends={dividends}
+              />
+            </Col>
+          </Row>
+        </div>
+      </section>
+    );
+  }
 
-    blockRenderItem = item => {
-        let {
-            time,
-            dividends,
-            block_height,
-            tx_count,
-            miner
-        } = item;
-        try {
-            dividends = JSON.parse(dividends);
-        } catch (e) {}
-        const props = {
-            title: {
-                text: `#${block_height}`,
-                link: `/block/${block_height}`
-            },
-            time,
-            middleLeftTitle: {
-                name: 'Txs',
-                text: tx_count
-            },
-            middleRightTitle: {
-                name: 'Dividend',
-                text: `${dividends.ELF || 0} ELF`
-            },
-            bottomTitle: {
-                name: 'Miner',
-                text: addressFormat(miner),
-                link: `/address/${miner}`
-            }
-        };
-        return (
-            <>
-                <HomeItem
-                    {...props}
-                />
-                <Divider />
-            </>
-        );
+  blockRenderItem = (item) => {
+    let {
+      time, dividends, block_height, tx_count, miner,
+    } = item;
+    try {
+      dividends = JSON.parse(dividends);
+    } catch (e) { }
+    const props = {
+      title: {
+        text: `#${block_height}`,
+        link: `/block/${block_height}`,
+      },
+      time,
+      middleLeftTitle: {
+        name: 'Txs',
+        text: (tx_count).toString(),
+      },
+      middleRightTitle: {
+        name: 'Dividend',
+        text: `${dividends.ELF || 0} ELF`,
+      },
+      bottomTitle: {
+        name: 'Miner',
+        text: addressFormat(miner),
+        link: `/address/${miner}`,
+      },
     };
+    // console.log('>>>props', props)
+    return (
+      <>
+        <HomeItem {...props} />
+        <Divider />
+      </>
+    );
+  };
 
-    txsRenderItem = item => {
-        const { contractNames } = this.state;
-        const {
-            time,
-            address_from,
-            address_to,
-            tx_fee,
-            tx_id
-        } = item;
-        let fee = tx_fee;
-        try {
-            fee = JSON.parse(tx_fee);
-        } catch (e) {}
-        const props = {
-            title: {
-                text: tx_id,
-                link: `/tx/${tx_id}`
-            },
-            time,
-            middleLeftTitle: {
-                name: 'From',
-                text: addressFormat(address_from),
-                link: `/address/${address_from}`
-            },
-            middleRightTitle: {
-                name: 'To',
-                text: getFormattedContractName(contractNames, address_to),
-                link: `/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + address_to)}`
-            },
-            bottomTitle: {
-                name: 'Fee',
-                text: <Dividends  className="home-fee" dividends={fee} />
-            }
-        };
-        return (
-            <>
-                <HomeItem
-                    {...props}
-                />
-                <Divider />
-            </>);
+  txsRenderItem = (item) => {
+    const { contractNames } = this.state;
+    const {
+      time, address_from, address_to, tx_fee, tx_id,
+    } = item;
+    let fee = tx_fee;
+    try {
+      fee = JSON.parse(tx_fee);
+    } catch (e) { }
+    const props = {
+      title: {
+        text: tx_id,
+        link: `/tx/${tx_id}`,
+      },
+      time,
+      middleLeftTitle: {
+        name: 'From',
+        text: addressFormat(address_from),
+        link: `/address/${address_from}`,
+      },
+      middleRightTitle: {
+        name: 'To',
+        text: getFormattedContractName(contractNames, address_to),
+        link: `/contract?#${decodeURIComponent(
+          CONTRACT_VIEWER_URL + address_to,
+        )}`,
+      },
+      bottomTitle: {
+        name: 'Fee',
+        text: <Dividends className="home-fee" dividends={fee} />,
+      },
     };
+    return (
+      <>
+        <HomeItem {...props} />
+        <Divider />
+      </>
+    );
+  };
 
     renderBlocksAndTxsList() {
         const {blocks, transactions} = this.state;

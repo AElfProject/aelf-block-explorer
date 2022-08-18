@@ -1,0 +1,172 @@
+@import "../../assets/less/blockTxsDetail.less";
+
+.tx-block-detail-container {
+  .ant-tag {
+    border: none;
+    padding: 1px 8px;
+    font-size: 14px;
+    background: @headerbgColor4;
+    color: @mariner;
+  }
+  textarea {
+    border-radius: 4px;
+    border: none;
+    background: @bgMenuItem;
+    padding: 8px 12px;
+  }
+  .ant-tabs {
+    margin-top: 16px;
+    background: white;
+    .ant-tabs-nav-wrap {
+      padding: 1px 24px;
+    }
+  }
+  .overview-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    padding: 24px 40px 64px;
+    .wrap {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 16px;
+      border-bottom: 1px solid @border-color2;
+      row-gap: 16px;
+      &:last-of-type {
+        border: none;
+      }
+      .row {
+        display: flex;
+        line-height: 22px;
+        min-height: 22px;
+        column-gap: 24px;
+        .label {
+          min-width: 206px;
+          text-align: right;
+          font-family: "Roboto-Medium";
+          font-size: 14px;
+        }
+        .value {
+          width: 100%;
+          color: @scorpion;
+          .value-block {
+            a {
+              margin-right: 8px;
+            }
+            .ant-tag {
+              padding: 2px 8px;
+              font-size: 12px;
+              color: @scorpion;
+              background: @bgMenuItem;
+              &.unconfirmed {
+                background: @fair-pink;
+                color: @sunset-orange;
+              }
+            }
+          }
+          .value-timestamp {
+            .anticon {
+              margin-right: 8px;
+            }
+          }
+          .value-address {
+            display: flex;
+            .anticon {
+              margin-left: 8px;
+            }
+            .ant-tag {
+              margin-left: 16px;
+            }
+          }
+        }
+      }
+    }
+    .show-more-btn {
+      display: flex;
+      padding: 0;
+      margin-left: 230px;
+      align-items: center;
+      width: fit-content;
+      &.less {
+        .anticon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+  .logs-container {
+    padding: 8px 42px 16px 40px;
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      > div {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+    p.info {
+      display: flex;
+      align-items: center;
+      color: @scorpion;
+      .label {
+        color: @mine-shaft;
+        text-align: right;
+        display: block;
+        min-width: 66px;
+        font-family: "Roboto-Medium";
+        font-size: 14px;
+        line-height: 22px;
+        height: 22px;
+        margin-right: 24px;
+      }
+      .copy-btn {
+        font-size: 16px;
+        margin-left: 10px;
+      }
+    }
+    .event-item {
+      margin-left: 90px;
+      textarea {
+        padding: 8px 12px;
+        color: @scorpion;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
+
+.tx-block-detail-container.mobile {
+  padding-bottom: 32px !important;
+  .overview-container {
+    padding: 10px 16px;
+    .wrap {
+      row-gap: 24px;
+      .row {
+        flex-direction: column;
+        row-gap: 6px;
+        .label {
+          text-align: left;
+        }
+        .value {
+          overflow-wrap: anywhere;
+          .value-address {
+            display: flex;
+            flex-direction: column;
+            .ant-tag {
+              width: fit-content;
+              margin: 0;
+              margin-top: 9px;
+            }
+          }
+        }
+      }
+    }
+    .show-more-btn {
+      margin-left: 0;
+      margin-top: -8px;
+      margin-bottom: 54px;
+    }
+  }
+}

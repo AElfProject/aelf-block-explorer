@@ -1,0 +1,35 @@
+// rewrite antd components style
+
+.ant-btn-default {
+  background-color: @mariner;
+  color: white;
+  border-radius: 2px;
+  border: 1px solid @mariner;
+  &:hover {
+    background-color: @blueHover;
+    color: white;
+    border: 1px solid @blueHover;
+  }
+  &[disabled] {
+    background-color: @wild-sand;
+    color: @silver;
+    border-color: currentColor;
+  }
+}
+
+.ant-pagination {
+  li {
+    line-height: 32px;
+    min-width: 32px;
+    height: 32px;
+    border: @alto 1px solid;
+    border-radius: 2px;
+    &.ant-pagination-item-active {
+      border: @mariner 1px solid;
+    }
+    &.ant-pagination-jump-prev-custom-icon,
+    &.ant-pagination-jump-next-custom-icon {
+      border: none;
+    }
+  }
+}

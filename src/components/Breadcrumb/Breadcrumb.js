@@ -42,6 +42,13 @@ const BREADCRUMB_NAME_MAP = {
   'myvote': 'My Vote'
 };
 
+const DO_NOT_DISPLAY_PATH = [
+  '/transaction-list',
+  '/txs',
+  '/unconfirmedTxs',
+  '/tx/'
+]
+
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
 const BREADCRUMB_NAMES_TATE = {
@@ -183,7 +190,7 @@ class BrowserBreadcrumb extends Component {
         index === pathSnippets.length - 1
           ? STATE.url[index] || reloadUrl
           : STATE.url[index] ||
-          `/${pathSnippets.slice(0, index + 1).join('/')}`;
+          `/${pathSnippets.slice(0, index + 1).join("/")}`;
 
       console.log('breadcrumbTitle: ', breadcrumbTitle);
       const isCurrentTitle = this.checkLocation(breadcrumbTitle);
@@ -249,10 +256,13 @@ class BrowserBreadcrumb extends Component {
   }
 
   render() {
-    const {
-      location
-    } = this.props;
-    const pathname = location.pathname;
+    const { location } = this.props;
+    const { pathname } = location;
+
+    if (DO_NOT_DISPLAY_PATH.includes(pathname) || pathname.includes('/tx/')) {
+      return <></>
+    }
+
     const reloadUrl = pathname + location.search;
     const className = noBreadcrumb(pathname) ? 'breadcrumb' : 'breadcrumb hide';
     const pathSnippets = pathname.split('/').filter(i => i);

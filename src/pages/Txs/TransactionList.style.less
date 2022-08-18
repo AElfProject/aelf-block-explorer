@@ -1,0 +1,294 @@
+.txs-page-container {
+  padding-top: 24px;
+  h2 {
+    font-size: 18px;
+    font-family: "Roboto Bold";
+    margin-bottom: 16px;
+    color: @cloud-burst;
+  }
+
+  .before-table {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    .left {
+      display: flex;
+      flex-direction: column;
+      row-gap: 2px;
+      p {
+        font-family: "Roboto";
+        height: 22px;
+        line-height: 22px;
+        color: @scorpion;
+        font-size: 14px;
+      }
+    }
+    .right {
+      padding-top: 8px;
+    }
+  }
+  .transaction-table {
+    display: flex;
+    background: @bgBlankWhite;
+    > .block {
+      width: 16px;
+      height: 55px;
+      border-bottom: @border-color2 1px solid !important;
+    }
+    .ant-table-wrapper {
+      width: calc(100% - 32px);
+      thead {
+        th {
+          font-family: "Roboto-Medium";
+          background: @bgBlankWhite !important;
+          border-bottom: @border-color2 1px solid !important;
+          font-weight: 400;
+          &::before {
+            display: none !important;
+            width: 0 !important;
+          }
+          &:first-child {
+            text-align: center;
+          }
+          &:last-child {
+            text-align: right;
+          }
+          .time {
+            cursor: pointer;
+            .anticon {
+              font-size: 12px;
+              margin-left: 8px;
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          padding: 0 16px;
+          overflow: hidden;
+          td {
+            border-bottom: none !important;
+            &:first-child {
+              border-top-left-radius: 4px;
+              border-bottom-left-radius: 4px;
+            }
+            &:last-child {
+              border-top-right-radius: 4px;
+              border-bottom-right-radius: 4px;
+            }
+            .id {
+              width: 161px;
+              display: flex;
+              align-items: center;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              .anticon {
+                font-size: 24px;
+                margin-right: 24px;
+              }
+              a {
+                display: block;
+                width: 113px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+            .method {
+              width: 96px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            .block {
+              width: 71px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            .time {
+              min-width: 113px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            .address {
+              width: 116px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              a {
+                display: block;
+                width: 116px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+            .fee {
+              width: 92px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .after-table {
+    margin-top: 16px;
+    ul {
+      display: flex;
+      position: relative;
+      justify-content: flex-end;
+      color: @scorpion;
+      font-size: 14px;
+      .ant-pagination-options {
+        position: absolute;
+        border: none;
+        left: 0;
+        margin-left: 0;
+        &::before {
+          content: "Show";
+          font-size: 14px;
+          margin-right: 8px;
+        }
+        &::after {
+          content: "records";
+          font-size: 14px;
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+}
+.transaction-tooltip {
+  .ant-tooltip-content {
+    width: 337.5px;
+    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.08),
+      0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+    .ant-tooltip-inner {
+      padding: 0 !important;
+      background-color: white;
+    }
+  }
+  .previewer-card {
+    display: flex;
+    flex-direction: column;
+    .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 20px 11px 22px;
+      border-bottom: 1px solid @border-color2;
+      font-size: 14px;
+      font-family: "Roboto-Medium";
+      line-height: 22px;
+      color: @mine-shaft;
+      a {
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: fit-content;
+        .anticon {
+          font-size: 10px;
+          margin: 0 0 0 4px;
+        }
+      }
+    }
+    .bottom {
+      row-gap: 16px;
+      padding: 8px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      .label {
+        color: @textContext1;
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+      .block {
+        color: @scorpion;
+        .ant-tag,
+        .ant-spin {
+          margin-left: 8px;
+        }
+        .ant-tag {
+          border-radius: 4px;
+          background: @bgMenuItem;
+          border: none;
+          font-size: 12px;
+          padding: 2px 8px;
+          color: @scorpion;
+          &.unconfirmed {
+            background: @fair-pink;
+            color: @sunset-orange;
+          }
+        }
+      }
+      .value {
+        .ant-tag {
+          background: @bgMenuItem;
+          border-radius: 4px;
+          border: none;
+          padding: 1px 8px;
+          font-size: 14px;
+          span {
+            margin-left: 4px;
+            color: @gray;
+          }
+        }
+      }
+    }
+  }
+}
+.txs-page-container.mobile {
+  .before-table {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    .right {
+      padding-top: 16px;
+    }
+  }
+  .transaction-table {
+    padding: 0 16px;
+    background: transparent;
+    width: 100vw;
+    overflow-x: scroll;
+    margin-left: -20px;
+    .ant-table-wrapper {
+      min-width: 960px;
+    }
+  }
+  .after-table {
+    display: flex;
+    padding-bottom: 16px;
+    ul {
+      height: 76px;
+      align-items: flex-end;
+      .ant-pagination-options {
+        display: block;
+        border: none;
+        top: 0;
+        &::before {
+          content: "Show";
+          font-size: 14px;
+          margin-right: 8px;
+        }
+        &::after {
+          content: "records";
+          font-size: 14px;
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+}
+
+.transaction-tooltip.mobile {
+  margin: 0 auto;
+  padding: 0;
+  min-width: calc(100vw - 48px);
+  left: 50% !important;
+  transform: translateX(calc(24px - 50vw));
+  transition: none !important;
+  .ant-tooltip-arrow {
+    display: none;
+  }
+  .ant-tooltip-content {
+    width: 100%;
+  }
+}
