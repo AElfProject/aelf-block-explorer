@@ -113,6 +113,7 @@ async function getContractAddress() {
       ...result,
     },
   };
+  console.log(result);
   fs.writeFileSync(
     path.resolve(__dirname, "../config.json"),
     `${JSON.stringify(result, null, 2)}\n`

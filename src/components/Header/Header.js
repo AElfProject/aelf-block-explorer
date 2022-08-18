@@ -233,48 +233,45 @@ class BrowserHeader extends PureComponent {
           popupOffset={[0, -7]}
           title={
             <>
-              <span className='submenu-title-wrapper'>
-                {/* <Icon type='gold' /> */}
-                Blockchain
-              </span>
+              <span className='submenu-title-wrapper'>Blockchain</span>
               {!isPhone && <IconFont className='submenu-arrow' type='Down' />}
             </>
           }
           className='aelf-submenu-container'
         >
-          <SubMenu key='Block' title='Block' popupOffset={[0, -4]}>
-            <Menu.Item key='/blocks'>
-              {/* <Icon type='gold' /> */}
-              <Link to='/blocks'>Blocks</Link>
-            </Menu.Item>
-            <Menu.Item key='/unconfirmedBlocks'>
-              {/* <Icon type='gold' /> */}
-              <Link to='/unconfirmedBlocks'>Unconfirmed Blocks</Link>
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key='Transaction' title='Transaction'>
-            <Menu.Item key='/txs'>
-              {/* <Icon type='pay-circle' /> */}
-              <Link to='/txs'>Transactions</Link>
-            </Menu.Item>
-            <Menu.Item key='/unconfirmedTxs'>
-              {/* <Icon type='pay-circle' /> */}
-              <Link to='/unconfirmedTxs'>Unconfirmed Transactions</Link>
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key='Address' title='Address'>
-            <Menu.Item key='/address'>
-              {/* <Icon type='pay-circle' /> */}
-              <Link to='/address'>Accounts</Link>
-            </Menu.Item>
-            <Menu.Item key='/contract'>
-              {/* <Icon type='pay-circle' /> */}
-              <Link to='/contract'>Contracts</Link>
-            </Menu.Item>
-          </SubMenu>
+          <>
+            <SubMenu key='Block' title='Block' popupOffset={[0, -4]}>
+              <Menu.Item key='/blocks'>
+                <Link to='/blocks'>Blocks</Link>
+              </Menu.Item>
+              <Menu.Item key='/unconfirmedBlocks'>
+                <Link to='/unconfirmedBlocks'>Unconfirmed Blocks</Link>
+              </Menu.Item>
+            </SubMenu>
+          </>
+          <>
+            <SubMenu key='Transaction' title='Transaction'>
+              <Menu.Item key='/txs'>
+                <Link to='/txs'>Transactions</Link>
+              </Menu.Item>
+              <Menu.Item key='/unconfirmedTxs'>
+                <Link to='/unconfirmedTxs'>Unconfirmed Transactions</Link>
+              </Menu.Item>
+            </SubMenu>
+          </>
+          <>
+            <SubMenu key='Address' title='Address'>
+              <Menu.Item key='/address'>
+                <Link to='/address'>Accounts</Link>
+              </Menu.Item>
+              <Menu.Item key='/contract'>
+                <Link to='/contract'>Contracts</Link>
+              </Menu.Item>
+            </SubMenu>
+          </>
         </SubMenu>
+
         <Menu.Item key='/token'>
-          {/* <Icon type='home' /> */}
           <Link to='/token'>Token</Link>
         </Menu.Item>
         <SubMenu
@@ -283,10 +280,7 @@ class BrowserHeader extends PureComponent {
           popupClassName='common-header-submenu'
           title={
             <>
-              <span className='submenu-title-wrapper'>
-                {/* <Icon type='gold' /> */}
-                Governance
-              </span>
+              <span className='submenu-title-wrapper'>Governance</span>
               {!isPhone && <IconFont className='submenu-arrow' type='Down' />}
             </>
           }

@@ -46,7 +46,7 @@ const prodConfig = {
     minimizer: [
       new TerserPlugin({
         cache: true,
-        parallel: false,
+        parallel: true,
         sourceMap: false,
         terserOptions: {},
       }),
