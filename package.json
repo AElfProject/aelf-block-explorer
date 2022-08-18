@@ -7,9 +7,9 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "predev": "cross-env RELOAD_ENV=reload NODE_ENV=development node scripts/queryConfig.js",
+    "predev": "cross-env RELOAD_ENV=reload NODE_ENV=development node scripts/queryConfig.js && node scripts/queryViewerConfig.js",
     "dev": "npm run clean && cross-env RELOAD_ENV=false NODE_ENV=development webpack-dev-server --progress --colors --display-chunks --watch --config ./build/webpack.dev.js",
-    "prebuild": "cross-env RELOAD_ENV=reload NODE_ENV=production node scripts/queryConfig.js",
+    "prebuild": "cross-env RELOAD_ENV=reload NODE_ENV=production node scripts/queryConfig.js && node scripts/queryViewerConfig.js",
     "build": "cross-env RELOAD_ENV=reload NODE_ENV=production webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
     "build:dev": "cross-env RELOAD_ENV=reload NODE_ENV=dev webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
     "analyze": "npm run clean && cross-env RELOAD_ENV=reload NODE_ENV=production webpack --config ./build/webpack.analyze.js",

@@ -2,7 +2,7 @@
  * @file config
  * @author atom-yang
  */
-import config from "../../config.json";
+import config from "../../config/viewer/config.json";
 
 export default {
   ...config,
