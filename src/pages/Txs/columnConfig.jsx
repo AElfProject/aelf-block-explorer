@@ -50,7 +50,7 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
             </Link>
             {!lastBlockLoading ? (
               <Tag className={confirmations < 0 && "unconfirmed"}>
-                {confirmations > 0
+                {confirmations >= 0
                   ? `${confirmations} Block Confirmations`
                   : "Unconfirmed"}
               </Tag>

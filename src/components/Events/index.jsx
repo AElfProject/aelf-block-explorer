@@ -24,7 +24,7 @@ const Events = (props) => {
             >
               {addressFormat(item.Address)}
             </Link>
-            <CopyButton value={addressFormat(item.address)} />
+            <CopyButton value={addressFormat(item.Address)} />
           </p>
           <p className="info">
             <span className="label">Name: </span>
