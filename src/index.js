@@ -4,7 +4,7 @@
  */
 /* eslint-disable fecs-camelcase */
 import React from "react";
-import { createRoot } from "react-dom";
+import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
 
@@ -46,11 +46,11 @@ async function getNodesInfo() {
 getNodesInfo();
 
 const container = document.getElementById("app");
-const root = createRoot(container);
-root.render(
+ReactDOM.render(
   <ConfigProvider locale={en_US}>
     <Provider store={store}>
       <App />
     </Provider>
-  </ConfigProvider>
+  </ConfigProvider>,
+  container
 );
