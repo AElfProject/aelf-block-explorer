@@ -19,6 +19,7 @@ import IconFont from "../../../components/IconFont";
 export default function BasicInfo({
   info,
   parsedLogs,
+  isDone,
   lastHeight,
   contractName,
 }) {
@@ -27,8 +28,8 @@ export default function BasicInfo({
   const values = useMemo(() => {
     let value = {};
     const obj = Object.fromEntries(
-      parsedLogs.map((item) => [
-        item.key + "-" + item.symbol,
+      parsedLogs.map((item, index) => [
+        index + "-" + item.symbol,
         Number(item.amount),
       ])
     );
@@ -40,7 +41,6 @@ export default function BasicInfo({
         value = Object.assign(value, { [symbol]: obj[key] });
       }
     });
-    console.log(">>>arr", value);
     return value;
   }, [parsedLogs]);
 
@@ -130,7 +130,7 @@ export default function BasicInfo({
     () =>
       info &&
       values && [
-        ["Value", <TokenTag values={values} price={price} />],
+        ["Value", <TokenTag values={values} isDone={isDone} price={price} />],
         ["Transaction Fee", <Dividends dividends={info.fee} />],
         ["Resources Fee", <Dividends dividends={info.resources} />],
       ],

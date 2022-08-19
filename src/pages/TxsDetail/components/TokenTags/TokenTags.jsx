@@ -1,9 +1,9 @@
-import { Button, Tag } from "antd";
+import { Button, Spin, Tag } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 
 import "./TokenTags.style.less";
 import IconFont from "../../../../components/IconFont";
-export default function TokenTag({ values, price }) {
+export default function TokenTag({ values, isDone, price }) {
   const [showMore, setShowMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
 
@@ -29,17 +29,25 @@ export default function TokenTag({ values, price }) {
     <div className="token-tags">
       <div className={`tags-wrap  ${showMore && "more"}`}>
         <div className="tags-container">
-          {elfFirst.map((key) => {
-            const val = values[key] / key === "ELF" ? 100000000 : 1;
-            return (
-              <div key={key}>
-                <Tag>
-                  {`${val} ${key}`}
-                  {key === "ELF" && <span>(${price.USD * val})</span>}
-                </Tag>
-              </div>
-            );
-          })}
+          {isDone ? (
+            elfFirst.map((key) => {
+              const val = values[key] / (key === "ELF" ? 100000000 : 1);
+              return (
+                <div key={key}>
+                  <Tag>
+                    {`${val.toLocaleString(undefined, {
+                      maximumFractionDigits: 8,
+                    })} ${key}`}
+                    {key === "ELF" && (
+                      <span>(${(price.USD * val).toFixed(2)})</span>
+                    )}
+                  </Tag>
+                </div>
+              );
+            })
+          ) : (
+            <Spin />
+          )}
         </div>
       </div>
       {hasMore && (

@@ -1,7 +1,5 @@
 import { Button, Tabs } from "antd";
-import React, { useState } from "react";
-// import { useParams } from "react-router";
-import { useEffectOnce } from "react-use";
+import React, { useMemo, useState } from "react";
 import { aelf, getContractNames } from "../../utils";
 import { deserializeLog, getFee, removeAElfPrefix } from "../../utils/utils";
 
@@ -15,11 +13,10 @@ import BasicInfo from "./components/BasicInfo";
 import CodeBlock from "../../components/CodeBlock/CodeBlock";
 import IconFont from "../../components/IconFont";
 import useMobile from "../../hooks/useMobile";
+import { withRouter } from "react-router";
 
-export default function TransactionDetail() {
-  // const { id } = useParams();
-  const { pathname } = location;
-  const id = pathname.split("/")[2];
+function TransactionDetail(props) {
+  const { id } = props.match.params;
   const [lastHeight, setLastHeight] = useState(undefined);
   const [info, setInfo] = useState(undefined);
   const [contractName, setContractName] = useState("");
@@ -28,7 +25,7 @@ export default function TransactionDetail() {
 
   const isMobile = useMobile();
 
-  useEffectOnce(() => {
+  useEffect(() => {
     aelf.chain.getChainStatus().then(({ LastIrreversibleBlockHeight }) => {
       setLastHeight(LastIrreversibleBlockHeight);
     });
@@ -46,11 +43,10 @@ export default function TransactionDetail() {
           console.log(e);
         });
       getInfoBackUp(res).then((backup) => {
-        console.log(">>>>", res, backup, JSON.parse(res.Transaction.Params));
         setInfo({ ...res, ...backup });
       });
     });
-  });
+  }, [id]);
 
   useEffect(() => {
     const { Logs = [] } = info || {};
@@ -60,11 +56,17 @@ export default function TransactionDetail() {
       arr.forEach((item, index) => {
         deserializeLog(item).then((res) => {
           logs.push({ ...res, key: arr[index].Name + arr[index].Address });
-          setParsedLogs(logs);
+          setParsedLogs([...logs]);
         });
       });
     }
   }, [info]);
+
+  const logIsAllParsed = useMemo(() => {
+    const { Logs = [] } = info || {};
+    const arr = Logs.filter((item) => item.Name === "Transferred");
+    return arr.length === parsedLogs.length;
+  }, [parsedLogs, info]);
 
   async function getInfoBackUp(transaction) {
     const { BlockNumber } = transaction;
@@ -92,6 +94,7 @@ export default function TransactionDetail() {
               <BasicInfo
                 info={info}
                 parsedLogs={parsedLogs}
+                isDone={logIsAllParsed}
                 lastHeight={lastHeight}
                 contractName={contractName}
               />
@@ -124,3 +127,5 @@ export default function TransactionDetail() {
     </div>
   );
 }
+
+export default withRouter(TransactionDetail);
