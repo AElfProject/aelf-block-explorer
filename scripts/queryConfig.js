@@ -3,22 +3,19 @@ global.location = {};
 const AElf = require("aelf-sdk");
 const fs = require("fs");
 const path = require("path");
-const dotenv = require("dotenv");
 const config = require("../config/config.json");
 const mergedConfig = require("../config/config.js");
 const axios = require("axios");
-
-dotenv.config("../.env");
-
+const host = process.argv[process.argv.indexOf("--CHAIN_ENDPOINT") + 1];
 const aelf = new AElf(
-  new AElf.providers.HttpProvider(process.env.CHAIN_ENDPOINT)
+  new AElf.providers.HttpProvider(
+    process.argv[process.argv.indexOf("--CHAIN_ENDPOINT") + 1]
+  )
 );
 const wallet = AElf.wallet.getWalletByPrivateKey(mergedConfig.commonPrivateKey);
-
 const result = {
   ...config,
 };
-
 async function getConfig() {
   const { CONTRACTS, schemeIds } = config;
   const { ChainId, GenesisContractAddress } = await aelf.chain.getChainStatus();
@@ -104,6 +101,126 @@ async function getCMS() {
   }
 }
 
+const contractNames = [
+  {
+    name: "Token",
+    description: "contract Token",
+    contractName: "AElf.ContractNames.Token",
+  },
+  {
+    name: "Dividend",
+    description: "contract Dividend",
+    contractName: "AElf.ContractNames.Treasury",
+  },
+  {
+    name: "Consensus.Dpos",
+    description: "contract Consensus",
+    contractName: "AElf.ContractNames.Consensus",
+  },
+  {
+    name: "Token Converter",
+    description: "contract Token Converter",
+    contractName: "AElf.ContractNames.TokenConverter",
+  },
+  {
+    name: "Election",
+    description: "contract Election",
+    contractName: "AElf.ContractNames.Election",
+  },
+  {
+    name: "Profit",
+    description: "contract Profit",
+    contractName: "AElf.ContractNames.Profit",
+  },
+  {
+    name: "Parliament",
+    description: "contract Parliament",
+    contractName: "AElf.ContractNames.Parliament",
+  },
+  {
+    name: "Association",
+    description: "contract Association",
+    contractName: "AElf.ContractNames.Association",
+  },
+  {
+    name: "Referendum",
+    description: "contract Referendum",
+    contractName: "AElf.ContractNames.Referendum",
+  },
+  {
+    name: "CrossChain",
+    description: "contract CrossChain",
+    contractName: "AElf.ContractNames.CrossChain",
+  },
+];
+
+async function getContractAddress() {
+  const aelf = new AElf(new AElf.providers.HttpProvider(host));
+  const wallet = AElf.wallet.createNewWallet();
+  const { ChainId, GenesisContractAddress } = await aelf.chain.getChainStatus();
+  let result = {
+    chainId: ChainId,
+  };
+  const zeroContract = await aelf.chain.contractAt(
+    GenesisContractAddress,
+    wallet
+  );
+  const list = await Promise.all(
+    contractNames.map(async (item) => {
+      const { contractName, name, ...left } = item;
+      try {
+        const address = await zeroContract.GetContractAddressByName.call(
+          AElf.utils.sha256(contractName)
+        );
+        return {
+          ...left,
+          contractAddress: address,
+          contractName: name,
+        };
+      } catch (e) {
+        return {
+          ...left,
+          contractAddress: "",
+          contractName: name,
+        };
+      }
+    })
+  ).then((results) => results.filter((item) => item.contractAddress));
+  console.log(list);
+  result = {
+    ...result,
+    contractAddress: [
+      {
+        contractName: "Genesis",
+        description: "contract Genesis",
+        contractAddress: GenesisContractAddress,
+      },
+      ...list,
+    ],
+  };
+  const originResult = JSON.parse(
+    fs
+      .readFileSync(path.resolve(__dirname, "../config/viewer/config.json"))
+      .toString()
+  );
+  result = {
+    ...originResult,
+    viewer: {
+      ...originResult.viewer,
+      ...result,
+    },
+  };
+  fs.writeFileSync(
+    path.resolve(__dirname, "../config/viewer/config.json"),
+    `${JSON.stringify(result, null, 2)}\n`
+  );
+}
+
 getCMS().catch(console.error);
 
 getConfig().catch(console.error);
+
+// for viewer
+(async () => {
+  await getContractAddress();
+})();
