@@ -78,6 +78,7 @@ export default function TransactionList() {
         order: "desc",
         page: page - 1,
         limit: pageSize,
+        block_hash: (search && search.slice(1)) || undefined,
       });
       const contractNames = await getContractNames();
 

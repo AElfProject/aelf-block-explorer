@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 
-import {Breadcrumb} from 'antd';
+import { Breadcrumb } from 'antd';
 
 import './breadcrumb.styles.less';
 import addressFormat from "../../utils/addressFormat";
@@ -144,7 +144,7 @@ class BrowserBreadcrumb extends Component {
     );
   }
 
-  checkLocation (breadcrumbTitle) {
+  checkLocation(breadcrumbTitle) {
 
     const current = BREADCRUMB_NAMES_TATE.currentState;
     const pathname = location.pathname;
@@ -259,7 +259,9 @@ class BrowserBreadcrumb extends Component {
     const { location } = this.props;
     const { pathname } = location;
 
-    if (DO_NOT_DISPLAY_PATH.includes(pathname) || pathname.includes('/tx/')) {
+    if (DO_NOT_DISPLAY_PATH.includes(pathname)
+      || pathname.includes('/tx/')
+      || pathname.includes('/txs')) {
       return <></>
     }
 
