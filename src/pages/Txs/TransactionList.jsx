@@ -63,6 +63,7 @@ export default function TransactionList() {
 
   const fetch = useCallback(
     async (page = 1) => {
+      setDataSource(undefined);
       setDataLoading(true);
       let url;
       if (search) {
