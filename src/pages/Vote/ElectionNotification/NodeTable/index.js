@@ -77,7 +77,7 @@ class NodeTable extends PureComponent {
   componentDidMount() {
     this.getCurrentWallet();
     this.wsProducedBlocks();
-    if ((this.props.electionContract && this.props.consensusContract)) {
+    if (this.props.electionContract && this.props.consensusContract) {
       this.fetchNodes({});
     }
   }
