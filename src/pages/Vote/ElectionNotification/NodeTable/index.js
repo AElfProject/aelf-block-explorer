@@ -77,6 +77,7 @@ class NodeTable extends PureComponent {
   componentDidMount() {
     this.getCurrentWallet();
     this.wsProducedBlocks();
+      this.fetchNodes({});
   }
 
   componentWillUnmount() {
