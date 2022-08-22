@@ -58,7 +58,7 @@ export default function TokenTag({ values, isDone, price }) {
                 <div key={key}>
                   <Tag>
                     {`${val.toLocaleString(undefined, {
-                      maximumFractionDigits: 8,
+                      maximumFractionDigits: decimal,
                     })} ${key}`}
                     {key === "ELF" && (
                       <span>(${(price.USD * val).toFixed(2)})</span>
