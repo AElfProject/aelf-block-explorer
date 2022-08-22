@@ -82,7 +82,7 @@ export default function TransactionList() {
       });
       const contractNames = await getContractNames();
 
-      setActualTotal(data ? data.total : 0);
+      setActualTotal(data ? data.total || data.transactions.length : 0);
       const transactions = merge(data, contractNames);
       setDataLoading(false);
       setDataSource(transactions);

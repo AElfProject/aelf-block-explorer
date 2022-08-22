@@ -30,6 +30,7 @@ export const TXS_INFO_API_URL = '/block/txInfo';
 export const BLOCK_INFO_API_URL = '/block/blockInfo';
 const ADDRESS_TXS_API_URL = '/address/transactions';
 const ADDRESS_BALANCE_API_URL = '/api/address/balance';
+const VIEWER_GET_ALL_TOKENS = '/viewer/getAllTokens';
 const TPS_LIST_API_URL = '/tps/all';
 const ADDRESS_TOKENS_API_URL = '/address/tokens';
 const ELF_REALTIME_PRICE_URL =
@@ -242,53 +243,53 @@ const ALL_TXS_LIST_COLUMNS = [
       } = row.contractName || {};
       const name = isSystemContract ? removeAElfPrefix(contractName) : contractName;
       return (
-          <Link
-              to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + text)}`}
-              title={addressFormat(text)}
-          >
-            {
-              name ? name : addressFormat(text)
-            }
-          </Link>
+        <Link
+          to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + text)}`}
+          title={addressFormat(text)}
+        >
+          {
+            name ? name : addressFormat(text)
+          }
+        </Link>
       )
     }
   },
   {
-      title: 'Method',
-      dataIndex: 'method',
-      key: 'method',
-      ellipsis: true
+    title: 'Method',
+    dataIndex: 'method',
+    key: 'method',
+    ellipsis: true
   },
   {
     title: 'Tx Fee',
     dataIndex: 'tx_fee',
     key: 'tx_fee',
     render(text) {
-      return <Dividends dividends={JSON.parse(text)}/>
+      return <Dividends dividends={JSON.parse(text)} />
     }
   },
   {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-      render: (text, row) => {
-        let amount = '-';
-        let symbol;
-        if (row.quantity && row.decimals) {
-          // 1e-7
-          if (row.quantity <= 99) {
-            amount = '0.000000' + row.quantity;
-          } else if (row.quantity <= 9) {
-            amount = '0.0000000' + row.quantity;
-          } else {
-            amount = row.quantity / Math.pow(10, row.decimals);
-          }
+    title: 'Amount',
+    dataIndex: 'amount',
+    key: 'amount',
+    render: (text, row) => {
+      let amount = '-';
+      let symbol;
+      if (row.quantity && row.decimals) {
+        // 1e-7
+        if (row.quantity <= 99) {
+          amount = '0.000000' + row.quantity;
+        } else if (row.quantity <= 9) {
+          amount = '0.0000000' + row.quantity;
+        } else {
+          amount = row.quantity / Math.pow(10, row.decimals);
         }
-        if (row.symbol) {
-          symbol = `(${row.symbol})`;
-        }
-        return <span>{amount}{symbol}</span>;
       }
+      if (row.symbol) {
+        symbol = `(${row.symbol})`;
+      }
+      return <span>{amount}{symbol}</span>;
+    }
   }
 ];
 
@@ -318,11 +319,11 @@ const RESOURCE_DETAILS_COLUMN = [
     align: 'center',
     ellipsis: true,
     render: text => (
-        <Link
-            to={`/tx/${text}`}
-        >
-          {text}
-        </Link>
+      <Link
+        to={`/tx/${text}`}
+      >
+        {text}
+      </Link>
     )
   },
   {
@@ -417,6 +418,7 @@ export {
   ALL_UNCONFIRMED_TXS_API_URL,
   TXS_BLOCK_API_URL,
   ADDRESS_TXS_API_URL,
+  VIEWER_GET_ALL_TOKENS,
   ADDRESS_TOKENS_API_URL,
   TPS_LIST_API_URL,
   ELF_REALTIME_PRICE_URL,

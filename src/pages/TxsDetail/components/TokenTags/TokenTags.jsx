@@ -3,9 +3,14 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import "./TokenTags.style.less";
 import IconFont from "../../../../components/IconFont";
+import { useCallback } from "react";
+import { get } from "../../../../utils";
+import { useEffectOnce } from "react-use";
+import { VIEWER_GET_ALL_TOKENS } from "../../../../constants";
 export default function TokenTag({ values, isDone, price }) {
   const [showMore, setShowMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [decimals, setDecimals] = useState({});
 
   const elfFirst = useMemo(() => {
     const keys = Object.keys(values);
@@ -16,6 +21,22 @@ export default function TokenTag({ values, isDone, price }) {
     }
     return ["ELF", ...withoutELF];
   }, [values]);
+
+  const getDecimal = useCallback(async () => {
+    const result = await get(VIEWER_GET_ALL_TOKENS, {
+      pageSize: 5000,
+      pageNum: 1,
+    });
+    const { data = { list: [] } } = result;
+    const { list } = data;
+    setDecimals(
+      Object.fromEntries(list.map((item) => [item.symbol, item.decimals]))
+    );
+  }, []);
+
+  useEffectOnce(() => {
+    getDecimal();
+  });
 
   useEffect(() => {
     const container = document.querySelector(".tags-container");
@@ -31,7 +52,8 @@ export default function TokenTag({ values, isDone, price }) {
         <div className="tags-container">
           {isDone ? (
             elfFirst.map((key) => {
-              const val = values[key] / (key === "ELF" ? 100000000 : 1);
+              const decimal = decimals[key] || 0;
+              const val = values[key] / Math.pow(10, decimal);
               return (
                 <div key={key}>
                   <Tag>
