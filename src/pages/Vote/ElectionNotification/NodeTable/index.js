@@ -81,6 +81,9 @@ class NodeTable extends PureComponent {
 
   componentWillUnmount() {
     this.socket.disconnect();
+    if (this.props.electionContract && this.props.consensusContract) {
+      this.fetchNodes({});
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
