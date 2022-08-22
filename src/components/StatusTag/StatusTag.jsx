@@ -19,7 +19,6 @@ export default function StatusTag({ status }) {
     }),
     []
   );
-  console.log(">>>>>status", status);
   const { [status]: sta = "NotExisted" } = statusObj;
   const { [status]: icon = "CNotExisted" } = iconObj;
   return (

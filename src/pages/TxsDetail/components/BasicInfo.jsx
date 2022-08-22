@@ -157,7 +157,7 @@ export default function BasicInfo({
           {(item[1] || []).map((list, index) => {
             return (
               <div key={index} className="row">
-                <p className="label">{list[0]}: </p>
+                <p className="label">{list[0]} : </p>
                 <div className="value">{list[1]}</div>
               </div>
             );

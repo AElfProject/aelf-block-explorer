@@ -14,6 +14,7 @@ import CodeBlock from "../../components/CodeBlock/CodeBlock";
 import IconFont from "../../components/IconFont";
 import useMobile from "../../hooks/useMobile";
 import { withRouter } from "react-router";
+import { useCallback } from "react";
 
 function TransactionDetail(props) {
   const { id } = props.match.params;
@@ -22,30 +23,23 @@ function TransactionDetail(props) {
   const [contractName, setContractName] = useState("");
   const [parsedLogs, setParsedLogs] = useState([]);
   const [showExtensionInfo, setShowExtensionInfo] = useState(false);
-
+  const [activeKey, setActiveKey] = useState("overview");
   const isMobile = useMobile();
 
   useEffect(() => {
+    setShowExtensionInfo(false);
+    setActiveKey("overview");
     aelf.chain.getChainStatus().then(({ LastIrreversibleBlockHeight }) => {
       setLastHeight(LastIrreversibleBlockHeight);
     });
-    aelf.chain.getTxResult(id).then((res) => {
-      getContractNames()
-        .then((names) => {
-          const { isSystemContract, contractName } =
-            names[res.Transaction.To] || {};
-          const name = isSystemContract
-            ? removeAElfPrefix(contractName)
-            : contractName;
-          setContractName(name || res.Transaction.To);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      getInfoBackUp(res).then((backup) => {
-        setInfo({ ...res, ...backup });
+    aelf.chain
+      .getTxResult(id)
+      .then((res) => {
+        getData(res);
+      })
+      .catch((e) => {
+        getData(e);
       });
-    });
   }, [id]);
 
   useEffect(() => {
@@ -80,6 +74,24 @@ function TransactionDetail(props) {
     };
   }
 
+  const getData = useCallback(
+    (res) => {
+      console.log(">>>res", res);
+      getContractNames().then((names) => {
+        const { isSystemContract, contractName } =
+          names[res.Transaction.To] || {};
+        const name = isSystemContract
+          ? removeAElfPrefix(contractName)
+          : contractName;
+        setContractName(name || res.Transaction.To);
+      });
+      getInfoBackUp(res).then((backup) => {
+        setInfo({ ...res, ...backup });
+      });
+    },
+    [getContractNames, getInfoBackUp]
+  );
+
   return (
     <div
       className={`tx-block-detail-container basic-container-new ${
@@ -87,7 +99,7 @@ function TransactionDetail(props) {
       }`}
     >
       <h2>Transaction Details</h2>
-      <Tabs>
+      <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
         <TabPane tab="Overview" key="overview">
           {info && (
             <div className="overview-container">

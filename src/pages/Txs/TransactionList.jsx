@@ -34,10 +34,12 @@ export default function TransactionList() {
   });
 
   const pageTitle = useMemo(
-    () =>
-      pathname.includes("unconfirmed")
-        ? "Unconfirmed Transactions"
-        : "Transactions",
+    () => (isUnconfirmed ? "Unconfirmed Transactions" : "Transactions"),
+    [isUnconfirmed]
+  );
+
+  const isUnconfirmed = useMemo(
+    () => pathname.includes("unconfirmed"),
     [pathname]
   );
 
@@ -119,7 +121,7 @@ export default function TransactionList() {
           <div className="left">
             <p>
               More than {">"} {Number(actualTotal).toLocaleString()}{" "}
-              transactions found
+              {isUnconfirmed && "unconfirmed"} transactions found
             </p>
             <p>(showing the last 500k records)</p>
           </div>

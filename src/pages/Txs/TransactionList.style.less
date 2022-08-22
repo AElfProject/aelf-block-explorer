@@ -129,29 +129,6 @@
   }
   .after-table {
     margin-top: 16px;
-    .ant-pagination {
-      display: flex;
-      position: relative;
-      justify-content: flex-end;
-      color: @scorpion;
-      font-size: 14px;
-      .ant-pagination-options {
-        position: absolute;
-        border: none;
-        left: 0;
-        margin-left: 0;
-        &::before {
-          content: "Show";
-          font-size: 14px;
-          margin-right: 8px;
-        }
-        &::after {
-          content: "records";
-          font-size: 14px;
-          margin-left: 8px;
-        }
-      }
-    }
   }
 }
 .transaction-tooltip {
@@ -161,6 +138,9 @@
       0px 4px 8px 0px rgba(0, 0, 0, 0.08);
     .ant-tooltip-inner {
       padding: 0 !important;
+      background-color: white;
+    }
+    .ant-tooltip-arrow:before {
       background-color: white;
     }
   }
@@ -212,10 +192,6 @@
           font-size: 12px;
           padding: 2px 8px;
           color: @scorpion;
-          &.unconfirmed {
-            background: @fair-pink;
-            color: @sunset-orange;
-          }
         }
       }
       .value {
@@ -240,6 +216,7 @@
     flex-direction: column;
     margin-bottom: 16px;
     .right {
+      display: flex;
       padding-top: 16px;
     }
   }
@@ -258,22 +235,6 @@
     padding-bottom: 16px;
     .ant-pagination {
       height: 76px;
-      align-items: flex-end;
-      .ant-pagination-options {
-        display: flex;
-        border: none;
-        top: 0;
-        &::before {
-          content: "Show";
-          font-size: 14px;
-          margin-right: 8px;
-        }
-        &::after {
-          content: "records";
-          font-size: 14px;
-          margin-left: 8px;
-        }
-      }
     }
   }
 }
@@ -284,7 +245,7 @@
   min-width: calc(100vw - 48px);
   left: 50% !important;
   transform: translateX(calc(24px - 50vw));
-  transition: left .3s !important;
+  transition: left 0.3s !important;
   .ant-tooltip-arrow {
     display: none;
   }

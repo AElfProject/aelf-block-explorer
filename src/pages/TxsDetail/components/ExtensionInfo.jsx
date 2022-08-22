@@ -32,7 +32,7 @@ export default function ExtensionInfo({ transaction, show = false }) {
       {extensionInfo.map((item, index) => {
         return (
           <div key={index} className="row">
-            <p className="label">{item[0]}: </p>
+            <p className="label">{item[0]} : </p>
             <div className="value">{item[1]}</div>
           </div>
         );

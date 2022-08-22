@@ -18,6 +18,11 @@
 }
 
 .ant-pagination {
+  display: flex;
+  position: relative;
+  justify-content: flex-end;
+  color: @scorpion;
+  font-size: 14px;
   .ant-pagination > li {
     line-height: 32px;
     min-width: 32px;
@@ -32,4 +37,55 @@
       border: none;
     }
   }
+  .ant-pagination-options {
+    position: absolute;
+    border: none;
+    left: 0;
+    margin-left: 0;
+    &::before,
+    &::after {
+      font-size: 14px;
+      margin-right: 8px;
+      line-height: 32px;
+    }
+    &::before {
+      content: "Show";
+    }
+    &::after {
+      content: "records";
+    }
+  }
+}
+.mobile .ant-pagination {
+  align-items: flex-end;
+  .ant-pagination-options {
+    display: flex;
+    border: none;
+    top: 0;
+    &::before {
+      content: "Show";
+      font-size: 14px;
+      margin-right: 8px;
+    }
+    &::after {
+      content: "records";
+      font-size: 14px;
+      margin-left: 8px;
+    }
+  }
+}
+
+.ant-tabs-nav .ant-tabs-tab {
+  padding: 12px 0;
+  margin: 0 24px 0 0;
+}
+
+.ant-tag.unconfirmed {
+  width: 96px !important;
+  height: 24px !important;
+  font-size: 12px !important;
+  padding: 2px 8px 2px 18px !important;
+  color: @sunset-orange !important;
+  background: url("../../assets/images/bg_unconfirmed.png") no-repeat !important;
+  background-size: 96px 24px !important;
 }
