@@ -66,6 +66,9 @@ class NodeTable extends PureComponent {
   // todo: how to combine cdm & cdu
   componentDidMount() {
     this.wsProducedBlocks();
+    if (this.props.electionContract && this.props.consensusContract) {
+      this.fetchNodes({});
+    }
   }
 
   componentWillUnmount() {
