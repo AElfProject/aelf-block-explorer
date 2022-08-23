@@ -61,6 +61,7 @@
   .ant-pagination-options {
     display: flex;
     border: none;
+    align-items: center;
     top: 0;
     &::before {
       content: "Show";
@@ -88,4 +89,14 @@
   color: @sunset-orange !important;
   background: url("../../assets/images/bg_unconfirmed.png") no-repeat !important;
   background-size: 96px 24px !important;
+}
+
+.ant-table-thead > tr > th {
+  padding: 14px 16px 10px 0;
+  line-height: 20px;
+}
+.ant-table-tbody > tr > td,
+.ant-table-thead > tr > th {
+  padding-left: 0;
+  padding-right: 16px;
 }

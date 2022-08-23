@@ -127,12 +127,15 @@ function TransactionDetail(props) {
         <TabPane tab={`Logs (${info ? info.Logs.length : 0})`} key="logs">
           <div className="logs-container">
             {info &&
-              info.Logs &&
-              (Array.isArray(info.Logs) ? (
+            (Array.isArray(info.logs) ? info.logs.length : info.logs) ? (
+              Array.isArray(info.Logs) ? (
                 <Events list={info.Logs} key={id} />
               ) : (
                 <CodeBlock value={info.logs} />
-              ))}
+              )
+            ) : (
+              <div className="no-data">No Data</div>
+            )}
           </div>
         </TabPane>
       </Tabs>

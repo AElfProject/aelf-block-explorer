@@ -17,14 +17,16 @@ const Events = (props) => {
         <div key={index}>
           <p className="info">
             <span className="label">Address: </span>
-            <Link
-              className="info"
-              to={`/address/${item.Address}`}
-              title={addressFormat(item.Address)}
-            >
-              {addressFormat(item.Address)}
-            </Link>
-            <CopyButton value={addressFormat(item.Address)} />
+            <div>
+              <Link
+                className="info"
+                to={`/address/${item.Address}`}
+                title={addressFormat(item.Address)}
+              >
+                {addressFormat(item.Address)}
+              </Link>
+              <CopyButton value={addressFormat(item.Address)} />
+            </div>
           </p>
           <p className="info">
             <span className="label">Name: </span>

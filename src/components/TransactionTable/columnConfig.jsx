@@ -18,14 +18,14 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
     setLastBlockLoading(false);
   });
   let amount = "-";
-  if (quantity && decimals) {
+  if (quantity) {
     // 1e-7
     if (quantity <= 99) {
       amount = `0.000000${quantity}`;
     } else if (quantity <= 9) {
       amount = `0.0000000${quantity}`;
     } else {
-      amount = quantity / Math.pow(10, decimals);
+      amount = quantity / Math.pow(10, 8);
     }
   }
 
@@ -80,7 +80,7 @@ export default (timeFormat, price, handleFormatChange) => {
   return [
     {
       dataIndex: "tx_id",
-      width: 192,
+      width: 166,
       title: "Txn Hash",
       render: (text, record) => {
         return (
@@ -107,7 +107,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "method",
       title: "Method",
-      width: 126,
+      width: 111,
       render: (text) => {
         return <div className="method">{text}</div>;
       },
@@ -115,6 +115,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "block_height",
       title: "Block",
+      width: 85,
       render: (text) => {
         return (
           <div className="block">
@@ -132,6 +133,7 @@ export default (timeFormat, price, handleFormatChange) => {
           {timeFormat} <IconFont type="change" />
         </div>
       ),
+      width: 132,
       render: (text) => {
         return <div>{getFormattedDate(text, timeFormat)}</div>;
       },
@@ -139,14 +141,14 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "address_from",
       title: "From",
+      width: 144,
       render: (text) => {
         return (
           <div className="address">
-            <div>
-              <Link to={`/address/${text}`} title={addressFormat(text)}>
-                {text}
-              </Link>
-            </div>
+            <Link to={`/address/${text}`} title={addressFormat(text)}>
+              {text}
+            </Link>
+            <IconFont type="right2" />
           </div>
         );
       },
@@ -154,6 +156,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "address_to",
       title: "Interacted With (To)",
+      width: 126,
       render: (text) => {
         return (
           <div className="address">
@@ -167,6 +170,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "tx_fee",
       title: "Txn Fee",
+      width: 102,
       render: (text) => {
         return (
           <div className="fee">

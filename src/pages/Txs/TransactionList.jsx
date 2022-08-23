@@ -1,4 +1,4 @@
-import { Pagination, Table } from "antd";
+import { Pagination } from "antd";
 import React from "react";
 import { useState } from "react";
 import "./TransactionList.style.less";
@@ -7,24 +7,21 @@ import useLocation from "react-use/lib/useLocation";
 import {
   ALL_TXS_API_URL,
   ALL_UNCONFIRMED_TXS_API_URL,
-  ELF_REALTIME_PRICE_URL,
   TXS_BLOCK_API_URL,
 } from "../../constants";
 import { get, getContractNames } from "../../utils";
-import ColumnConfig from "./columnConfig";
 import { useCallback } from "react";
-import { useDebounce, useEffectOnce } from "react-use";
+import { useDebounce } from "react-use";
 import useMobile from "../../hooks/useMobile";
+import TransactionTable from "../../components/TransactionTable/TransactionTable";
 
 export default function TransactionList() {
   const { pathname = "", search } = useLocation();
   const isMobile = useMobile();
 
-  const [price, setPrice] = useState(0);
   const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-  const [timeFormat, setTimeFormat] = useState("Age");
   const [dataSource, setDataSource] = useState(undefined);
   const [actualTotal, setActualTotal] = useState(0);
 
@@ -42,18 +39,6 @@ export default function TransactionList() {
     () => pathname.includes("unconfirmed"),
     [pathname]
   );
-
-  const columns = useMemo(
-    () =>
-      ColumnConfig(timeFormat, price, () => {
-        setTimeFormat(timeFormat === "Age" ? "Date Time" : "Age");
-      }),
-    [timeFormat, price]
-  );
-
-  useEffectOnce(() => {
-    get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
-  });
 
   const merge = (data = {}, contractNames) => {
     const { transactions = [] } = data;
@@ -135,17 +120,7 @@ export default function TransactionList() {
             />
           </div>
         </div>
-        <div className="transaction-table">
-          <div className="block" />
-          <Table
-            loading={dataLoading}
-            columns={columns}
-            dataSource={dataSource}
-            pagination={false}
-            rowKey="tx_id"
-          />
-          <div className="block" />
-        </div>
+        <TransactionTable dataLoading={dataLoading} dataSource={dataSource} />
         <div className="after-table">
           <Pagination
             showSizeChanger

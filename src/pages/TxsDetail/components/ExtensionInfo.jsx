@@ -21,8 +21,8 @@ export default function ExtensionInfo({ transaction, show = false }) {
             ],
             ["Transaction Signature", transaction.Transaction.Signature],
             ["Return Value", transaction.ReturnValue],
-            ["Error", transaction.Error],
-            ["Transaction Size", transaction.TransactionSize],
+            ["Error", transaction.Error || "null"],
+            ["Transaction Size", `${transaction.TransactionSize} Bytes`],
           ]
         : [],
     [transaction]

@@ -105,6 +105,7 @@
       display: flex;
       align-items: center;
       color: @scorpion;
+      overflow-wrap: anywhere;
       .label {
         color: @mine-shaft;
         text-align: right;
@@ -128,6 +129,12 @@
         color: @scorpion;
         margin-bottom: 20px;
       }
+    }
+    .no-data {
+      height: 351px;
+      padding-top: 140px;
+      text-align: center;
+      color: @silver;
     }
   }
 }
@@ -162,6 +169,24 @@
       margin-left: 0;
       margin-top: -8px;
       margin-bottom: 54px;
+    }
+  }
+  .logs-container {
+    padding: 8px 16px;
+    p.info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      .label {
+        text-align: left;
+      }
+    }
+    .event-list > div {
+      gap: 24px;
+    }
+    .event-item {
+      margin-left: 0;
     }
   }
 }

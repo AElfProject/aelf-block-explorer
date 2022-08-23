@@ -158,7 +158,7 @@ export default function BasicInfo({
             return (
               <div key={index} className="row">
                 <p className="label">{list[0]} : </p>
-                <div className="value">{list[1]}</div>
+                <div className="value">{list[1] || '-'}</div>
               </div>
             );
           })}
