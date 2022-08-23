@@ -134,7 +134,7 @@ export default function BasicInfo({
         ["Transaction Fee", <Dividends dividends={info.fee} />],
         ["Resources Fee", <Dividends dividends={info.resources} />],
       ],
-    [values, info]
+    [values, info, price]
   );
 
   const renderList = useMemo(
@@ -147,7 +147,9 @@ export default function BasicInfo({
   );
 
   useEffectOnce(() => {
-    get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
+    get(ELF_REALTIME_PRICE_URL).then((price) => {
+      setPrice(price);
+    });
   });
 
   return (
@@ -158,7 +160,7 @@ export default function BasicInfo({
             return (
               <div key={index} className="row">
                 <p className="label">{list[0]} : </p>
-                <div className="value">{list[1] || '-'}</div>
+                <div className="value">{list[1] || "-"}</div>
               </div>
             );
           })}

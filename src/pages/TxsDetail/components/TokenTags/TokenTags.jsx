@@ -11,6 +11,8 @@ export default function TokenTag({ values, isDone, price }) {
   const [showMore, setShowMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [decimals, setDecimals] = useState({});
+  const [loadingFlag, setLoadingFlag] = useState(undefined);
+  const [forceDone, setForceDone] = useState(false);
 
   const elfFirst = useMemo(() => {
     const keys = Object.keys(values);
@@ -44,13 +46,19 @@ export default function TokenTag({ values, isDone, price }) {
     if (height > 96) {
       setHasMore(true);
     }
+    if (!isDone && !loadingFlag) {
+      const flag = setTimeout(() => {
+        setForceDone(true);
+      }, 5000);
+      setLoadingFlag(flag);
+    }
   }, [values]);
 
   return (
     <div className="token-tags">
       <div className={`tags-wrap  ${showMore && "more"}`}>
         <div className="tags-container">
-          {isDone ? (
+          {isDone || forceDone ? (
             elfFirst.map((key) => {
               const decimal = decimals[key] || 0;
               const val = values[key] / Math.pow(10, decimal);
