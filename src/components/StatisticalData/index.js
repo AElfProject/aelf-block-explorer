@@ -6,15 +6,15 @@
  * @LastEditTime: 2019-12-10 17:00:44
  * @Description: file content
  */
-import React, { PureComponent } from 'react';
-import { Row, Col, Tooltip, Icon, Statistic, Spin } from 'antd';
+import React, { PureComponent } from "react";
+import { Tooltip, Icon, Statistic, Spin } from "antd";
 
-import './index.less';
+import "./index.less";
 
 const { Countdown } = Statistic;
-const clsPrefix = 'statistical-data';
+const clsPrefix = "statistical-data";
 
-const arrFormate = function(arr) {
+const arrFormate = function (arr) {
   // const arr = new Array(arrInput);
   switch (arr.length) {
     case 4:
@@ -23,7 +23,7 @@ const arrFormate = function(arr) {
       break;
     default:
       // eslint-disable-next-line no-return-assign, no-param-reassign
-      arr.forEach(item => (item.span = 24 / arr.length));
+      arr.forEach((item) => (item.span = 24 / arr.length));
       break;
   }
   return arr;
@@ -33,15 +33,14 @@ export default class StatisticalData extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      arr: null
+      arr: null,
     };
   }
 
   componentDidMount() {
     const { data } = this.props;
-
     this.setState({
-      arr: Object.values(data)
+      arr: Object.values(data),
     });
   }
 
@@ -50,7 +49,7 @@ export default class StatisticalData extends PureComponent {
 
     if (prevProps.data !== data) {
       this.setState({
-        arr: Object.values(data)
+        arr: Object.values(data),
       });
     }
   }
@@ -58,7 +57,7 @@ export default class StatisticalData extends PureComponent {
   handleFinish(id) {
     const { arr } = this.state;
     // todo: limit the data's type to object
-    const countdown = arr.find(item => item.id === id);
+    const countdown = arr.find((item) => item.id === id);
     countdown.num = Date.now() + countdown.resetTime;
     this.setState({ arr: [...arr] });
     // todo: update the current term number at the same time
@@ -82,9 +81,9 @@ export default class StatisticalData extends PureComponent {
         />
       ) : (
         <Statistic
-            key={index}
-            title={item.title}
-            value={isNaN(parseInt(number, 10)) ? 0 : number}
+          key={index}
+          title={item.title}
+          value={isNaN(parseInt(number, 10)) ? 0 : number}
         />
       );
     });
@@ -103,7 +102,7 @@ export default class StatisticalData extends PureComponent {
         <Spin spinning={spinning}>
           <section
             className={`${clsPrefix}-container card-container ${
-              inline ? 'inline-style' : ''
+              inline ? "inline-style" : ""
             }`}
           >
             {tooltip ? (
@@ -120,5 +119,5 @@ export default class StatisticalData extends PureComponent {
 }
 
 StatisticalData.defaultProps = {
-  spinning: false
+  spinning: false,
 };

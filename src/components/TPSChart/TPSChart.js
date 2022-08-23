@@ -108,7 +108,7 @@ export default class TPSChart extends React.Component {
         };
 
         return {
-            color: ['rgb(25, 143, 255)', 'rgb(85, 1, 153)'],
+            color: ['#5c28a9', '#266CD3'],
             legend: {
                 show: true,
                 data: [ 'All Chains', CHAIN_ID ],

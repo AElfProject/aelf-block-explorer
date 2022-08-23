@@ -1,26 +1,25 @@
-import React, { Component } from 'react';
-import moment from 'moment';
+import React, { Component } from "react";
+import moment from "moment";
 
-import StatisticalData from '@components/StatisticalData/';
-import {ELF_DECIMAL, myVoteStatisData} from '../constants';
-import MyVoteRecord from './MyVoteRecords';
-import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
-import publicKeyToAddress from '@utils/publicKeyToAddress';
-import {
-  RANK_NOT_EXISTED_SYMBOL
-} from '@src/pages/Vote/constants';
-import { MY_VOTE_DATA_TIP } from '@src/constants';
+import StatisticalData from "@components/StatisticalData/";
+import { ELF_DECIMAL, myVoteStatistData } from "../constants";
+import MyVoteRecord from "./MyVoteRecords";
+import { getAllTeamDesc, fetchPageableCandidateInformation } from "@api/vote";
+import publicKeyToAddress from "@utils/publicKeyToAddress";
+import { RANK_NOT_EXISTED_SYMBOL } from "@src/pages/Vote/constants";
+import { MY_VOTE_DATA_TIP } from "@src/constants";
 import NightElfCheck from "../../../utils/NightElfCheck";
 import getLogin from "../../../utils/getLogin";
-import {message, Spin} from "antd";
-import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
+import { Button, Spin } from "antd";
+import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
 import addressFormat from "../../../utils/addressFormat";
 
+import "./MyVote.style.less";
 export default class MyVote extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      statisData: myVoteStatisData,
+      statistData: myVoteStatistData,
       tableData: [],
       spinningLoading: true,
       currentWallet: {
@@ -28,63 +27,78 @@ export default class MyVote extends Component {
         name: null,
         pubKey: {
           x: null,
-          y: null
-        }
-      }
+          y: null,
+        },
+      },
     };
 
     this.hasRun = false;
   }
 
   componentDidMount() {
-    this.getCurrentWallet();
+    if (this.props.currentWallet) {
+      this.getCurrentWallet();
+    }
   }
 
   // todo: update the vote info after switch to this tab
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.currentWallet && !prevProps.currentWallet) {
+      this.getCurrentWallet();
+    }
+    if (prevProps.currentWallet && prevProps.currentWallet.address !== this.props.currentWallet.address) {
+      this.getCurrentWallet();
+    }
     if (!this.hasRun) {
-      this.fetchTableDataAndStatisData();
+      this.fetchTableDataAndStatistData();
     }
   }
   getCurrentWallet() {
-    NightElfCheck.getInstance().check.then(ready => {
-      const nightElf = NightElfCheck.getAelfInstanceByExtension();
-      getLogin(nightElf, {file: 'MyVote.js'}, result => {
-        if (result.error) {
-          this.setState({
-            spinningLoading: false
-          });
-          // message.warn(result.message || result.errorMessage.message);
-        } else {
-          const wallet =  JSON.parse(result.detail);
-          const currentWallet = {
-            formattedAddress:  addressFormat(wallet.address),
-            address: wallet.address,
-            name: wallet.name,
-            pubKey: getPublicKeyFromObject(wallet.publicKey)
-          };
-          this.setState({
-            currentWallet
-          });
-          setTimeout(() => {
-            this.fetchTableDataAndStatisData(currentWallet);
-          });
-        }
-      }, false);
-    }).catch(error => {
-      this.setState({
-        spinningLoading: false
+    NightElfCheck.getInstance()
+      .check.then((ready) => {
+        const nightElf = NightElfCheck.getAelfInstanceByExtension();
+        getLogin(
+          nightElf,
+          { file: "MyVote.js" },
+          (result) => {
+            if (result.error) {
+              this.setState({
+                spinningLoading: false,
+              });
+              // message.warn(result.message || result.errorMessage.message);
+            } else {
+              const wallet = JSON.parse(result.detail);
+              const currentWallet = {
+                formattedAddress: addressFormat(wallet.address),
+                address: wallet.address,
+                name: wallet.name,
+                pubKey: getPublicKeyFromObject(wallet.publicKey),
+              };
+              this.setState({
+                currentWallet,
+              });
+              this.props.checkExtensionLockStatus();
+              setTimeout(() => {
+                this.fetchTableDataAndStatistData(currentWallet);
+              });
+            }
+          },
+          false
+        );
+      })
+      .catch((error) => {
+        this.setState({
+          spinningLoading: false,
+        });
+        // message.warn('Please download and install NightELF browser extension.');
       });
-      // message.warn('Please download and install NightELF browser extension.');
-    });
   }
 
-  fetchTableDataAndStatisData(currentWalletTemp) {
+  fetchTableDataAndStatistData(currentWalletTemp) {
     const { electionContract } = this.props;
     if (!electionContract) return;
     this.hasRun = true;
     const currentWallet = currentWalletTemp || this.state.currentWallet;
-    // console.log('fetchTableDataAndStatisData: ', currentWallet);
     if (!currentWallet || !currentWallet.address) {
       this.hasRun = false;
       return false;
@@ -94,21 +108,21 @@ export default class MyVote extends Component {
     // todo: add error handle
     Promise.all([
       electionContract.GetElectorVoteWithAllRecords.call({
-        value: currentWallet.pubKey
+        value: currentWallet.pubKey,
       }),
       getAllTeamDesc(),
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
         // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
-        length: 5
-      })
+        length: 5,
+      }),
     ])
-      .then(resArr => {
-        console.log('resArr', resArr);
+      .then((resArr) => {
+        console.log("resArr", resArr);
         this.processData(resArr);
       })
-      .catch(err => {
-        console.error('err', 'fetchTableDataAndStatisData', err);
+      .catch((err) => {
+        console.error("err", "fetchTableDataAndStatistData", err);
       });
   }
 
@@ -121,26 +135,26 @@ export default class MyVote extends Component {
         return item;
       });
     let allTeamInfo = null;
-    const withdrawnableVoteRecords = [];
-    let withdrawnableVoteAmount = 0;
+    const withdrawableVoteRecords = [];
+    let withdrawableVoteAmount = 0;
     if (resArr[1].code === 0) {
       allTeamInfo = resArr[1].data;
     }
 
     const myVoteRecords = [
       ...electorVotes.activeVotingRecords,
-      ...electorVotes.withdrawnVotesRecords
+      ...electorVotes.withdrawnVotesRecords,
     ];
-    electorVotes.activeVotingRecords.forEach(record => {
+    electorVotes.activeVotingRecords.forEach((record) => {
       if (record.unlockTimestamp.seconds < moment().unix()) {
-        withdrawnableVoteRecords.push(record);
+        withdrawableVoteRecords.push(record);
       }
     });
 
     // assign rank
-    myVoteRecords.forEach(record => {
+    myVoteRecords.forEach((record) => {
       const foundedNode = allNodeInfo.find(
-        item => item.candidateInformation.pubkey === record.candidate
+        (item) => item.candidateInformation.pubkey === record.candidate
       );
       if (foundedNode === undefined) {
         // rank: used to sort
@@ -153,19 +167,23 @@ export default class MyVote extends Component {
       }
     });
     const myTotalVotesAmount = electorVotes.allVotedVotesAmount;
-    withdrawnableVoteAmount = withdrawnableVoteRecords.reduce(
+    withdrawableVoteAmount = withdrawableVoteRecords.reduce(
       (total, current) => total + +current.amount,
       0
     );
     console.log({
       myTotalVotesAmount,
-      withdrawnableVoteAmount
+      withdrawableVoteAmount: withdrawableVoteAmount,
     });
-    this.processStatisData('myTotalVotesAmount', 'num', myTotalVotesAmount / ELF_DECIMAL);
-    this.processStatisData(
-      'withdrawnableVotesAmount',
-      'num',
-      withdrawnableVoteAmount / ELF_DECIMAL
+    this.processStatistData(
+      "myTotalVotesAmount",
+      "num",
+      myTotalVotesAmount / ELF_DECIMAL
+    );
+    this.processStatistData(
+      "withdrawableVotesAmount",
+      "num",
+      withdrawableVoteAmount / ELF_DECIMAL
     );
     this.processTableData(myVoteRecords, allTeamInfo);
   }
@@ -174,11 +192,11 @@ export default class MyVote extends Component {
   processTableData(myVoteRecords, allTeamInfo) {
     // add node name
     const tableData = myVoteRecords;
-    tableData.forEach(record => {
+    tableData.forEach((record) => {
       const teamInfo = allTeamInfo.find(
-        team => team.public_key === record.candidate
+        (team) => team.public_key === record.candidate
       );
-      console.log('teamInfo', teamInfo);
+      console.log("teamInfo", teamInfo);
       if (teamInfo === undefined) {
         record.address = publicKeyToAddress(record.candidate);
         record.name = addressFormat(record.address);
@@ -186,57 +204,73 @@ export default class MyVote extends Component {
         record.name = teamInfo.name;
       }
       if (record.isWithdrawn) {
-        record.type = 'Redeem';
+        record.type = "Redeem";
         record.operationTime = moment
           .unix(record.withdrawTimestamp.seconds)
-          .format('YYYY-MM-DD HH:mm:ss');
+          .format("YYYY-MM-DD HH:mm:ss");
       } else if (record.isChangeTarget) {
-        record.type = 'Switch Vote';
+        record.type = "Switch Vote";
         record.operationTime = moment
           .unix(record.voteTimestamp.seconds)
-          .format('YYYY-MM-DD HH:mm:ss');
+          .format("YYYY-MM-DD HH:mm:ss");
       } else {
-        record.type = 'Vote';
+        record.type = "Vote";
         record.operationTime = moment
           .unix(record.voteTimestamp.seconds)
-          .format('YYYY-MM-DD HH:mm:ss');
+          .format("YYYY-MM-DD HH:mm:ss");
       }
-      record.status = 'Success';
-      console.log('record.lockTime', record.lockTime);
+      record.status = "Success";
+      console.log("record.lockTime", record.lockTime);
       const start = moment.unix(record.voteTimestamp.seconds);
       const end = moment.unix(record.unlockTimestamp.seconds);
-      record.formatedLockTime = end.from(start, true);
-      record.formatedUnlockTime = end.format('YYYY-MM-DD HH:mm:ss');
+      record.formattedLockTime = end.from(start, true);
+      record.formattedUnlockTime = end.format("YYYY-MM-DD HH:mm:ss");
       record.isRedeemable = record.unlockTimestamp.seconds <= moment().unix();
     });
     // todo: withdrawn's timestamp
 
     this.setState({
       tableData,
-      spinningLoading: false
+      spinningLoading: false,
     });
   }
 
-  processStatisData(key, param, value) {
-    let { statisData } = this.state;
-    statisData[key][param] = value;
-    // todo: Is it required?
-    statisData = { ...statisData };
+  processStatistData(key, param, value) {
+    let { statistData } = this.state;
+    statistData[key][param] = value;
     this.setState({
-      statisData,
-      spinningLoading: false
+      statistData,
+      spinningLoading: false,
     });
   }
 
   render() {
-    const { statisData, spinningLoading, tableData } = this.state;
+    const {
+      statistData,
+      spinningLoading,
+      tableData,
+      currentWallet,
+    } = this.state;
+
+    const onLogin = () => {
+      this.getCurrentWallet();
+    };
 
     return (
       <section>
-        <Spin spinning={spinningLoading}>
-          <StatisticalData data={statisData} tooltip={MY_VOTE_DATA_TIP} />
-          <MyVoteRecord data={tableData} />
-        </Spin>
+        {currentWallet.address ? (
+          <Spin spinning={spinningLoading}>
+            <StatisticalData data={statistData} tooltip={MY_VOTE_DATA_TIP} />
+            <MyVoteRecord data={tableData} />
+          </Spin>
+        ) : (
+          <div className="not-logged-section">
+            <p>It seems like you are not logged in.</p>
+            <Button onClick={onLogin} type="primary">
+              Login
+            </Button>
+          </div>
+        )}
       </section>
     );
   }

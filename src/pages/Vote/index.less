@@ -85,8 +85,17 @@ button {
   .ant-menu {
     background: @bgBlankGrey;
     .ant-menu-item {
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 22px;
+      padding: 12px 0;
+      margin-right: 32px;
+      &.ant-menu-item-selected {
+        border-color: #266CD3 !important;
+      }
+      &:hover {
+        border-color: transparent;
+      }
     }
   }
 }
@@ -132,7 +141,7 @@ button {
         display: inline-block;
         margin-right: 5px;
         border-radius: 50%;
-        content: '';
+        content: "";
         width: 10px;
         height: 10px;
         background: lightgreen;

@@ -15,29 +15,37 @@
 //@media (min-width: 1200px) { ... }#F7F8F9
 // New UI start ---
 @purple: #5c28a9;
+@primary-blue: #266CD3;
 @purpleHover: rgba(92, 40, 169, 0.8);
 @purpleInputFocus: rgba(92, 40, 169, 0.3);
 @blue: #235aa9;
-@blueHover: rgba(32, 80, 159, 0.8);
+@blueHover: #327DEC;
+@blueInputFocus: rgba(32, 80, 159, 0.8);
 @purpleDark: #3a1884;
 @purpleLight: #5e2ab1;
 
+@bgHover: #327DEC;
+@bgMenuItem: #f7f8fa;
 @bgBlankGrey: #f7f8f9;
 @bgBlankWhite: #ffffff;
-@bgMain: @purple;
-@bgMainHover: @purpleHover;
+@bgMain: @primary-blue;
+@bgMainHover: @blueHover;
 @linkMain: @bgMain;
 @linkHover: @bgMainHover;
 @hoverColor: @linkHover;
 @hoverTextColor: @bgBlankWhite;
+@hoverColor1:  #266CD3;
 
-@inputFocus: @purpleInputFocus;
+@inputFocus: @blueInputFocus;
 
 @bgTitle: #f7f8f9; // 用于标题栏
 @textContext: #000;
 @textContextWhite: #fff;
 @textContextLight: #666;
 @subTitle: @textContextLight;
+@textContext1: #262626;
+@textContext2: #595959;
+@textContext3: #266CD3;
 
 @borderColor: #e5e5e5;
 
@@ -60,6 +68,7 @@
 @bgPurpleDark01: rgba(57, 0, 57, 0.1);
 @bgPurpleDark03: rgba(57, 0, 57, 0.3);
 @bgPurpleDark09: rgba(57, 0, 57, 0.9);
+@hoverBg: rgba(229, 240, 255, 1);
 
 @bgBlack07: rgba(0, 0, 0, 0.7);
 
@@ -68,22 +77,31 @@
 @bodybgColor: #fbfbfb;
 @breadcrumbColor: #fdfdfd;
 @headerbgColor: #001529;
-
+@headerbgColor1: #1D2A51;
+@headerbgColor2:  #266CD3;
+@headerbgColor3: #2D3F68;
+@headerbgColor4: #E5F0FF;
 //@searchInputFontColor: #c7b8cc;
 //@fontColorLightPurple: #c7b8cc;
 
 @borderWhite: #fff;
 
 @list-border-color: #eee;
+@border-color1: #266CD3;
+@border-color2: #E6E6E6;
 
-@header-height: 64px;
+@header-height: 108px;
+@header-top-height: 56px;
 @page-width: 1170px;
 
 @paddingLeftRight: 0 16px 0 16px;
 
 @default-line-height: 64px;
+@line-height1: 56px;
+@line-height2: 52px;
 
 @font-sets: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+@font-header-sets: 'PingFangSC-Regular';
 
 @sellColor: #d34a64;
 @buyColor: #05ac90;
@@ -100,7 +118,7 @@
 
 // Custom color
 // Ant Design requires name like xxx-xxx
-@primary-color: @purple;
+@primary-color: @primary-blue;
 @tipColor: #999;
 @cusBlack: #4c4c4c;
 

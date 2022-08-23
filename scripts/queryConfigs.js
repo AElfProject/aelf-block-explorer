@@ -6,6 +6,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const config = require('../config/config.json');
 const mergedConfig = require('../config/config.js');
+const axios = require('axios');
 
 dotenv.config('../.env');
 
@@ -69,5 +70,27 @@ async function getConfig() {
     console.log(result);
     fs.writeFileSync(path.resolve('./config/config.json'), `${JSON.stringify(result, null, 2)}\n`);
 }
+
+// enum netWorkType: MAIN | TESTNET
+// get cms data
+async function getCMS() {
+    try {
+        const res = await axios({
+            method: "get",
+            url: "https://test-cms.aelf.io/cms/chain-list-by-networks",
+            params: {
+                // populate: "chain",
+                // "filters[netWorkType][$eq]": mergedConfig.NETWORK_TYPE,
+                netWorkType:  mergedConfig.NETWORK_TYPE
+            },
+            });
+            const data =  res?.data?.[0] ?? {};
+            fs.writeFileSync(path.resolve('./config/configCMS.json'), `${JSON.stringify(data, null, 2)}\n`);
+        } catch (error) {
+            throw error;
+        }
+}
+
+getCMS().catch(console.error);
 
 getConfig().catch(console.error);

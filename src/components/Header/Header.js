@@ -3,22 +3,47 @@
  * @author huangzongzhe
  */
 /* eslint-disable fecs-camelcase */
-import React, { PureComponent } from 'react';
-import { Menu, Icon } from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { Menu, Icon, Drawer, Divider } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import Svg from '../../components/Svg/Svg';
 import './header.styles.less';
 import { getPathnameFirstSlash } from '@utils/urlUtils';
 import { setIsSmallScreen } from '@actions/common';
 import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
-import config, {CHAINS_LINK, CHAINS_LINK_NAMES, CHAIN_ID} from '../../../config/config';
+import config, {CHAIN_ID, NETWORK_TYPE} from '../../../config/config';
+import CHAIN_STATE  from '../../../config/configCMS.json';
 import {isPhoneCheck} from '../../utils/deviceCheck';
+import HeaderTop from './HeaderTop';
+import IconFont from '../IconFont';
+import NetSelect from '../NetSelect/NetSelect';
+import { getCMSDelayRequest } from '../../utils/getCMS';
 
+const networkList = [
+  {
+    title: "AELF Mainnet",
+    url: "https://explorer.aelf.io",
+    netWorkType: "MAIN",
+  },
+  {
+    title: "AELF Testnet",
+    url: "https://explorer-test.aelf.io",
+    netWorkType: "TESTNET",
+  },
+];
+
+const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 const { SubMenu } = Menu;
 const MenuItemGroup = Menu.ItemGroup;
+
+const WIDTH_BOUNDARY = 942;
+
+function isPhoneCheckWithWindow() {
+  const windowWidth = window.innerWidth;
+  return isPhoneCheck() || windowWidth <= WIDTH_BOUNDARY
+}
 
 class BrowserHeader extends PureComponent {
   constructor() {
@@ -29,12 +54,13 @@ class BrowserHeader extends PureComponent {
     this.state = {
       showSearch: this.getSearchStatus(),
       showMobileMenu: false,
+      chainList: CHAINS_LIST,
       current:
         location.pathname === '/'
           ? '/home'
           : getPathnameFirstSlash(location.pathname)
     };
-    this.isPhone = isPhoneCheck();
+    this.isPhone = isPhoneCheckWithWindow();
     this.handleResize = this.handleResize.bind(this);
   }
 
@@ -78,9 +104,18 @@ class BrowserHeader extends PureComponent {
   componentDidMount() {
     this.setSeleted();
     this.handleResize();
+    this.fetchChainList();
 
     window.addEventListener('scroll', this.handleScroll.bind(this));
     window.addEventListener('resize', this.handleResize);
+  }
+
+  // fetch chain list by network
+  async fetchChainList() {
+    const data = await getCMSDelayRequest(0);
+    if(data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at) this.setState({
+        chainList: data.chainItem
+    })
   }
 
   componentWillUnmount() {
@@ -125,25 +160,24 @@ class BrowserHeader extends PureComponent {
   };
 
   renderPhoneMenu() {
-    const chainIdHTML = Object.keys(CHAINS_LINK).map(item => {
+    const networkHTML = networkList.map(item => {
       let classSelected = '';
-      if (CHAIN_ID === item) {
+      if (NETWORK_TYPE === item.netWorkType) {
         classSelected = 'header-chain-selected';
       }
-      return  <Menu.Item key={item}>
-        <a href={CHAINS_LINK[item]} className={classSelected}>{CHAINS_LINK_NAMES[item]}</a>
+      return  <Menu.Item key={item.netWorkType}>
+        <a href={item.url} className={classSelected}>{item.title}</a>
       </Menu.Item>;
     });
     return <SubMenu
-      title={
-        <span className='submenu-title-wrapper'>
-                  EXPLORERS
-            </span>
-      }
-      className='aelf-submenu-container'
-    >
-      {chainIdHTML}
-    </SubMenu>;
+          popupClassName='common-header-submenu'
+          title={
+            <span className='submenu-title-wrapper'>Explorers</span>
+          }
+          className='aelf-submenu-container'
+        >
+          {networkHTML}
+        </SubMenu>;
   }
 
 
@@ -157,7 +191,7 @@ class BrowserHeader extends PureComponent {
       voteHTML = (
         <Menu.Item key='/vote'>
           {/* <Icon type='appstore' /> */}
-          <Link to='/vote'>VOTE</Link>
+          <Link to='/vote'>Vote</Link>
           {/* <Link to='/voteold'>VoteOld</Link> */}
           {/* <span>APP CENTER [Building]</span> */}
         </Menu.Item>
@@ -165,14 +199,14 @@ class BrowserHeader extends PureComponent {
       resourceHTML = (
         <Menu.Item key='/resource'>
           {/* <Icon type='appstore' /> */}
-          <Link to='/resource'>RESOURCE</Link>
+          <Link to='/resource'>Resource</Link>
           {/* <span>APP CENTER [Building]</span> */}
         </Menu.Item>
       );
     }
 
     const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
-    const isPhone = isPhoneCheck();
+    const isPhone = isPhoneCheckWithWindow();
 
     return (
       <Menu
@@ -181,21 +215,29 @@ class BrowserHeader extends PureComponent {
         mode={menuMode}
         key='navbar'
         className={menuClass}
+        expandIcon={<IconFont className="submenu-right-arrow" type="Down" />}
       >
         <Menu.Item key='/home'>
           {/* <Icon type='home' /> */}
-          <Link to='/'>HOME</Link>
+          <Link to='/'>Home</Link>
         </Menu.Item>
         <SubMenu
+          key="BLOCKCHAIN"
+          popupClassName='common-header-submenu'
+          popupOffset={[0, -7]}
           title={
-            <span className='submenu-title-wrapper'>
-              {/* <Icon type='gold' /> */}
-              BLOCKCHAIN
-            </span>
+            <>
+              <span className='submenu-title-wrapper'>
+                {/* <Icon type='gold' /> */}
+                Blockchain
+              </span>
+              {!isPhone && <IconFont className="submenu-arrow" type="Down" />}
+            </>
+          
           }
           className='aelf-submenu-container'
         >
-          <MenuItemGroup title='Block'>
+          <SubMenu key='Block' title='Block'  popupOffset={[0, -4]}>
             <Menu.Item key='/blocks'>
               {/* <Icon type='gold' /> */}
               <Link to='/blocks'>Blocks</Link>
@@ -204,8 +246,8 @@ class BrowserHeader extends PureComponent {
               {/* <Icon type='gold' /> */}
               <Link to='/unconfirmedBlocks'>Unconfirmed Blocks</Link>
             </Menu.Item>
-          </MenuItemGroup>
-          <MenuItemGroup title='Transaction'>
+          </SubMenu>
+          <SubMenu key='Transaction' title='Transaction'>
             <Menu.Item key='/txs'>
               {/* <Icon type='pay-circle' /> */}
               <Link to='/txs'>Transactions</Link>
@@ -214,8 +256,8 @@ class BrowserHeader extends PureComponent {
               {/* <Icon type='pay-circle' /> */}
               <Link to='/unconfirmedTxs'>Unconfirmed Transactions</Link>
             </Menu.Item>
-          </MenuItemGroup>
-          <MenuItemGroup title='Address'>
+          </SubMenu>
+          <SubMenu key='Address' title='Address'>
             <Menu.Item key='/address'>
               {/* <Icon type='pay-circle' /> */}
               <Link to='/address'>Accounts</Link>
@@ -224,38 +266,45 @@ class BrowserHeader extends PureComponent {
               {/* <Icon type='pay-circle' /> */}
               <Link to='/contract'>Contracts</Link>
             </Menu.Item>
-          </MenuItemGroup>
+          </SubMenu>
         </SubMenu>
         <Menu.Item key='/token'>
           {/* <Icon type='home' /> */}
-          <Link to='/token'>TOKEN</Link>
+          <Link to='/token'>Token</Link>
         </Menu.Item>
         <SubMenu
+          key='GOVERNANCE'
+          popupOffset={[0, -7]}
+          popupClassName='common-header-submenu'
             title={
-              <span className='submenu-title-wrapper'>
-              {/* <Icon type='gold' /> */}
-                GOVERNANCE
-            </span>
+              <>
+                <span className='submenu-title-wrapper'>
+                  {/* <Icon type='gold' /> */}
+                  Governance
+                </span>
+                {!isPhone && <IconFont className="submenu-arrow" type="Down" />}
+              </>
+            
             }
             className='aelf-submenu-container'
         >
           <Menu.Item key='/proposal'>
-            <Link to='/proposal'>PROPOSAL</Link>
+            <Link to='/proposal'>Proposal</Link>
           </Menu.Item>
           {voteHTML}
           {resourceHTML}
         </SubMenu>
-        <Menu.Item key='/about'>
-          {/* <Icon type='profile' /> */}
-          <a
-            href='https://www.aelf.io/'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            ABOUT
-          </a>
-        </Menu.Item>
+        {isPhone && <Divider className='divider-mobile'/>}
         {isPhone && this.renderPhoneMenu()}
+        {isPhone && <Menu.Item key="/about">
+          <a
+            href="https://www.aelf.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            About
+          </a>
+        </Menu.Item>}
       </Menu>
     );
   }
@@ -269,46 +318,73 @@ class BrowserHeader extends PureComponent {
   renderMobileMore() {
     return (
       <div
-        className='header-navbar-mobile-more'
+        className={`header-navbar-mobile-more ${NETWORK_TYPE === "MAIN" ? 'header-navbar-main-mobile-more' : ''}`}
         onClick={() => this.toggleMenu()}
       >
+        <IconFont
+          type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
+          className="aelf-logo-container"
+        />
         {/*...*/}
         <Icon type="menu" />
       </div>
     );
   }
 
+  renderDrawerMenu(menuMode, showMenu=true) {
+    return (
+      <Drawer
+        visible={showMenu}
+        placement='right'
+        width={'80%'}
+        closable={false}
+        className={`header-drawer-menu-wrapper ${NETWORK_TYPE === "MAIN" ? 'header-main-drawer-menu-wrapper' : ''}`}
+        onClose={()=>this.toggleMenu()}
+        getContainer={false}
+        title={
+          <>
+            <IconFont
+              type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
+              className="aelf-logo-container"
+            />
+            <IconFont type='ErrorClose' className='close-icon' onClick={()=>this.toggleMenu()}/>
+          </>
+        }
+        >
+          <NetSelect chainList={this.state.chainList}/>
+        {this.renderMenu(menuMode, showMenu)}
+      </Drawer>
+    )
+  }
+
   render() {
 
     const menuMode = this.isPhone ? 'inline' : 'horizontal';
     const mobileMoreHTML = this.isPhone ? this.renderMobileMore() : '';
-
+    console.log(this.isPhone,'==this.isPhone')
     let menuHtml;
     if (this.isPhone) {
-      menuHtml = this.renderMenu(menuMode, this.state.showMobileMenu);
+      menuHtml = this.renderDrawerMenu(menuMode, this.state.showMobileMenu);
     } else {
       menuHtml = this.renderMenu(menuMode);
     }
 
     const headerClass = this.isPhone ? 'header-container header-container-mobile' : 'header-container';
+    const networkClass = this.isPhone ?  (NETWORK_TYPE === 'MAIN' ? ' header-main-container-mobile' : '') : (NETWORK_TYPE === 'MAIN' ? ' header-main-container' : '');
 
     return (
       <div className='header-fixed-container'>
-        <div className={headerClass}>
-          <Link to='/' key='logo'>
-            <Svg
-              icon='aelf_logo_purple'
-              className='aelf-logo-container'
-            />
-          </Link>
-
+        <div>
+        {!this.isPhone && <HeaderTop showSearch={this.state.showSearch} headerClass={headerClass} menuMode={menuMode} networkList={networkList} />}
+        <div className={headerClass + networkClass}>
           {mobileMoreHTML}
 
           <nav className='header-navbar'>
             {menuHtml}
-            {this.state.showSearch && <Search />}
-            {!this.isPhone && <ChainSelect />}
+            {this.isPhone && this.state.showSearch && <Search />}
+            {!this.isPhone && <ChainSelect chainList={this.state.chainList}/>}
           </nav>
+        </div>
         </div>
       </div>
     );

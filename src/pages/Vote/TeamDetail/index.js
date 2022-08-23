@@ -348,7 +348,7 @@ class TeamDetail extends PureComponent {
               data-votetype={FROM_WALLET}
               data-nodeaddress={formattedAddress}
               data-nodename={data.name || formattedAddress}
-              data-targetPublicKey={this.teamPubkey}
+              data-targetpublickey={this.teamPubkey}
             >
               Vote
             </Button>
@@ -359,7 +359,7 @@ class TeamDetail extends PureComponent {
               data-role="redeem"
               data-shoulddetectlock
               data-nodeaddress={formattedAddress}
-              data-targetPublicKey={this.teamPubkey}
+              data-targetpublickey={this.teamPubkey}
               data-nodename={data.name}
               disabled={userRedeemableVoteAmountForOneCandidate <= 0}
             >
