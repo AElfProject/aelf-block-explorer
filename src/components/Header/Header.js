@@ -343,7 +343,6 @@ class BrowserHeader extends PureComponent {
           NETWORK_TYPE === "MAIN" ? "header-main-drawer-menu-wrapper" : ""
         }`}
         onClose={() => this.toggleMenu()}
-        getContainer={false}
         title={
           <>
             <IconFont
