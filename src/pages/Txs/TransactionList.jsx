@@ -30,15 +30,14 @@ export default function TransactionList() {
     return actualTotal;
   });
 
-  const pageTitle = useMemo(
-    () => (isUnconfirmed ? "Unconfirmed Transactions" : "Transactions"),
-    [isUnconfirmed]
-  );
-
   const isUnconfirmed = useMemo(
     () => pathname.includes("unconfirmed"),
     [pathname]
   );
+
+  const pageTitle = useMemo(() => {
+    return isUnconfirmed ? "Unconfirmed Transactions" : "Transactions";
+  }, [isUnconfirmed]);
 
   const merge = (data = {}, contractNames) => {
     const { transactions = [] } = data;

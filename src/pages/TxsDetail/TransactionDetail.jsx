@@ -26,6 +26,19 @@ function TransactionDetail(props) {
   const [activeKey, setActiveKey] = useState("overview");
   const isMobile = useMobile();
 
+  const hasLogs = useMemo(() => {
+    if (info) {
+      if (Array.isArray(info.Logs)) {
+        if (info.Logs.length) {
+          return true;
+        }
+      } else if (info.Logs) {
+        return true;
+      }
+    }
+    return false;
+  }, [info]);
+
   useEffect(() => {
     setShowExtensionInfo(false);
     setActiveKey("overview");
@@ -126,12 +139,11 @@ function TransactionDetail(props) {
         </TabPane>
         <TabPane tab={`Logs (${info ? info.Logs.length : 0})`} key="logs">
           <div className="logs-container">
-            {info &&
-            (Array.isArray(info.logs) ? info.logs.length : info.logs) ? (
+            {hasLogs ? (
               Array.isArray(info.Logs) ? (
                 <Events list={info.Logs} key={id} />
               ) : (
-                <CodeBlock value={info.logs} />
+                <CodeBlock value={info.Logs} />
               )
             ) : (
               <div className="no-data">No Data</div>
