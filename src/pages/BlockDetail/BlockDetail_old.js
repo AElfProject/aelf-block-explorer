@@ -17,7 +17,7 @@ import {
     getContractNames
 } from '../../utils';
 
-import {isPhoneCheck} from '../../utils/deviceCheck'
+import { isPhoneCheck } from '../../utils/deviceCheck'
 
 import {
     ALL_TXS_LIST_COLUMNS, BLOCK_INFO_API_URL, CHAIN_ID, SYMBOL
@@ -58,7 +58,7 @@ export default class BlockDetailPage extends React.Component {
             block_hash: blockhash
         };
 
-        let data =  await get('/block/transactions', getTxsOption);
+        let data = await get('/block/transactions', getTxsOption);
         const contractNames = await getContractNames();
         data = {
             ...data,
@@ -125,7 +125,7 @@ export default class BlockDetailPage extends React.Component {
         }
 
         get(BLOCK_INFO_API_URL, {
-           height: blockHeight
+            height: blockHeight
         }).then(res => {
             this.setState({
                 parsedResult: res
@@ -190,7 +190,7 @@ export default class BlockDetailPage extends React.Component {
     }
 
     componentWillUnmount() {
-        this.setState = () => {};
+        this.setState = () => { };
     }
 
     handleTableChange = pagination => {
@@ -202,7 +202,7 @@ export default class BlockDetailPage extends React.Component {
         this.setState({
             pagination: pager
         });
-        const {blockInfo} = this.state;
+        const { blockInfo } = this.state;
         this.getTxsList(blockInfo.blockHash, pagination.current - 1).then(result => {
             this.setState({
                 txs: result.transactions
@@ -223,10 +223,10 @@ export default class BlockDetailPage extends React.Component {
                     columns={ALL_TXS_LIST_COLUMNS}
                     dataSource={txs}
                     pagination={pagination}
-                    rowKey = 'tx_id'
+                    rowKey='tx_id'
                     loading={txs_loading}
                     onChange={this.handleTableChange}
-                    scroll={{x: 1024}}
+                    scroll={{ x: 1024 }}
                 />
             </div>
         );
@@ -236,15 +236,15 @@ export default class BlockDetailPage extends React.Component {
         let jsonFormatted = value;
         try {
             jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
-        } catch(e) {
+        } catch (e) {
             // do nothing
         }
 
         return <textarea
-          rows={rows}
-          value={jsonFormatted}
-          className='tx-block-code-like-content'
-          disabled>
+            rows={rows}
+            value={jsonFormatted}
+            className='tx-block-code-like-content'
+            disabled>
         </textarea>
     }
 
@@ -253,7 +253,7 @@ export default class BlockDetailPage extends React.Component {
         // Because of the 'float'? I do not clear it.
 
         let valueHTML = value;
-        const {LastIrreversibleBlockHeight} = this.state.chainStatus;
+        const { LastIrreversibleBlockHeight } = this.state.chainStatus;
 
         switch (key) {
             case 'Extra':
@@ -268,8 +268,8 @@ export default class BlockDetailPage extends React.Component {
 
                 valueHTML = (<>
                     {value} {isIB
-                  ? <Tag>{confirmedBlocks} Block Confirmations </Tag>
-                  : (<Tag color='red'>Unconfirmed</Tag>)}
+                        ? <Tag>{confirmedBlocks} Block Confirmations </Tag>
+                        : (<Tag color='red'>Unconfirmed</Tag>)}
                 </>);
                 break;
         }
@@ -278,8 +278,8 @@ export default class BlockDetailPage extends React.Component {
             <Row key={key + Math.random()}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6} className='title'>{formatKey(key)}</Col>
                 <Col xs={24} sm={24} md={18} lg={18} xl={18}><div>{valueHTML}</div></Col>
-              {/*<Col span={6}>{formatKey(key)}</Col>*/}
-              {/*<Col span={18}><div>{value}</div></Col>*/}
+                {/*<Col span={6}>{formatKey(key)}</Col>*/}
+                {/*<Col span={18}><div>{value}</div></Col>*/}
             </Row>
         );
     }

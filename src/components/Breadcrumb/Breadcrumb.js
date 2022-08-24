@@ -46,7 +46,9 @@ const DO_NOT_DISPLAY_PATH = [
   '/transaction-list',
   '/txs',
   '/unconfirmedTxs',
-  '/tx/'
+  '/tx/',
+  '/blocks',
+  '/unconfirmedBlocks'
 ]
 
 // Notice: we need register the route in Breadcurmb.js.
@@ -261,7 +263,8 @@ class BrowserBreadcrumb extends Component {
 
     if (DO_NOT_DISPLAY_PATH.includes(pathname)
       || pathname.includes('/tx/')
-      || pathname.includes('/txs')) {
+      || pathname.includes('/txs')
+      || pathname.includes('/block/')) {
       return <></>
     }
 

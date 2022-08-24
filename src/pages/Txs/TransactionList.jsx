@@ -111,6 +111,7 @@ export default function TransactionList() {
           </div>
           <div className="right">
             <Pagination
+              showLessItems={isMobile}
               showSizeChanger={false}
               current={pageIndex}
               pageSize={pageSize}
@@ -122,6 +123,7 @@ export default function TransactionList() {
         <TransactionTable dataLoading={dataLoading} dataSource={dataSource} />
         <div className="after-table">
           <Pagination
+            showLessItems={isMobile}
             showSizeChanger
             current={pageIndex}
             pageSize={pageSize}

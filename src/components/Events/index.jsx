@@ -15,7 +15,7 @@ const Events = (props) => {
     <div className="event-list">
       {list.map((item, index) => (
         <div key={index}>
-          <p className="info">
+          <div className="info">
             <span className="label">Address: </span>
             <div>
               <Link
@@ -27,11 +27,11 @@ const Events = (props) => {
               </Link>
               <CopyButton value={addressFormat(item.Address)} />
             </div>
-          </p>
-          <p className="info">
+          </div>
+          <div className="info">
             <span className="label">Name: </span>
             <span className="info">{item.Name}</span>
-          </p>
+          </div>
           <EventItem {...item} />
         </div>
       ))}

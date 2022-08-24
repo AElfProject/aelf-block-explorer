@@ -5,10 +5,10 @@
 */
 
 import React from 'react';
-import {Route} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import HomePage from './pages/Home/Home';
-import BlocksPage from './pages/Blocks/Blocks';
+import BlocksPage from './pages/Blocks/BlockList';
 import BlockDetailPage from './pages/BlockDetail/BlockDetail';
 import AddressPage from './pages/Address/Address';
 import TxsPage from './pages/Txs/TransactionList';
