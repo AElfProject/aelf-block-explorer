@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 const config = require('../config/config.json');
 const mergedConfig = require('../config/config.js');
 const axios = require('axios');
+const https = require('https');
 
 dotenv.config('../.env');
 
@@ -77,7 +78,8 @@ async function getCMS() {
     try {
         const res = await axios({
             method: "get",
-            url: "https://test-cms.aelf.io/cms/chain-list-by-networks",
+            httpsAgent: new https.Agent({ keepAlive: true }),
+            url: `https://${mergedConfig.NETWORK_TYPE === 'TESTNET' ? 'test-' : ''}cms.aelf.io/cms/chain-list-by-networks`,
             params: {
                 // populate: "chain",
                 // "filters[netWorkType][$eq]": mergedConfig.NETWORK_TYPE,

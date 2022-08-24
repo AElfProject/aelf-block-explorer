@@ -53,5 +53,16 @@
     "changeOrigin": true,
     "ws": true,
     "secure": false
+  },
+  {
+    "description": "get cms data",
+    "target": "https://test-cms.aelf.io",
+    "context": [
+      "/cms"
+    ],
+    "headers": {
+    },
+    "changeOrigin": true,
+    "secure": false
   }
 ]
