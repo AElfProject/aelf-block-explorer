@@ -33,9 +33,11 @@ import {
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
 } from '@src/pages/Vote/constants';
 import './index.less';
-import {ELF_DECIMAL} from "../../constants";
-import {SOCKET_URL_NEW} from "../../../../constants";
+import { ELF_DECIMAL } from "../../constants";
+import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
+import NightElfCheck from '../../../../utils/NightElfCheck';
+import { getPublicKeyFromObject } from '../../../../utils/getPublicKey';
 
 const clsPrefix = 'node-table';
 
@@ -77,11 +79,23 @@ class NodeTable extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if ((!prevProps.electionContract || !prevProps.consensusContract)
-      && (this.props.electionContract && this.props.consensusContract)) {
+      && (this.props.electionContract && this.props.consensusContract)
+    ) {
       this.fetchNodes({});
     }
-    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime
+    ) {
       this.fetchNodes({});
+    }
+    if (((!prevProps.electionContract || !prevProps.consensusContract)
+      && (this.props.electionContract && this.props.consensusContract))
+      || this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime
+
+    ) {
+      if ((!prevProps.currentWallet && this.props.currentWallet)
+        || this.props.currentWallet.address !== prevProps.currentWallet.address) {
+        this.fetchNodes({});
+      }
     }
   }
 
@@ -91,7 +105,7 @@ class NodeTable extends PureComponent {
         producedBlocks: data
       });
 
-      const {nodeList} = this.state;
+      const { nodeList } = this.state;
       if (!nodeList || !nodeList.length) {
         return;
       }
@@ -351,7 +365,7 @@ class NodeTable extends PureComponent {
   fetchNodes(currentWalletInput) {
     const { electionContract, consensusContract } = this.props;
     const currentWallet = Object.keys(currentWalletInput).length && currentWalletInput
-      || this.state.currentWallet;
+      || this.props.currentWallet;
 
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
@@ -359,10 +373,10 @@ class NodeTable extends PureComponent {
         length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
       }),
       getAllTeamDesc(),
-      currentWallet.pubKey
+      currentWallet.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: currentWallet.pubKey
-          })
+          value: getPublicKeyFromObject(currentWallet.publicKey)
+        })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract)
     ])
@@ -472,9 +486,9 @@ class NodeTable extends PureComponent {
           totalActiveVotesAmount === 0
             ? 0
             : (
-                (item.obtainedVotesAmount / totalActiveVotesAmount) *
-                100
-              ).toFixed(2);
+              (item.obtainedVotesAmount / totalActiveVotesAmount) *
+              100
+            ).toFixed(2);
         return {
           ...item.candidateInformation,
           obtainedVotesAmount: item.obtainedVotesAmount,
@@ -546,7 +560,7 @@ class NodeTable extends PureComponent {
           pagination={pagination}
           rowKey={record => record.pubkey}
           scroll={{ x: 1024 }}
-          // size='middle'
+        // size='middle'
         />
       </section>
     );
