@@ -87,13 +87,9 @@ class NodeTable extends PureComponent {
     ) {
       this.fetchNodes({});
     }
-    if (((!prevProps.electionContract || !prevProps.consensusContract)
-      && (this.props.electionContract && this.props.consensusContract))
-      || this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime
-
-    ) {
+    if (this.props.electionContract && this.props.consensusContract) {
       if ((!prevProps.currentWallet && this.props.currentWallet)
-        || this.props.currentWallet.address !== prevProps.currentWallet.address) {
+        || (this.props.currentWallet && (this.props.currentWallet.address !== prevProps.currentWallet.address))) {
         this.fetchNodes({});
       }
     }
@@ -373,7 +369,7 @@ class NodeTable extends PureComponent {
         length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
       }),
       getAllTeamDesc(),
-      currentWallet.publicKey
+      currentWallet && currentWallet.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
           value: getPublicKeyFromObject(currentWallet.publicKey)
         })
