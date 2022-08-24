@@ -56,7 +56,7 @@ const myVoteStatistData = {
   // myVoteProfit: {
   //   title: `投票收益(${LOWER_SYMBOL})`
   // },
-  withdrawnableVotesAmount: {
+  withdrawableVotesAmount: {
     title: `Redeemable Votes`,
   },
 };
