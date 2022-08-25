@@ -239,9 +239,13 @@ export default class MyVote extends Component {
 
   processStatistData(key, param, value) {
     const { statistData } = this.state;
-    statistData[key][param] = value;
     this.setState({
-      statistData,
+      statistData: {
+        ...statistData, [key]: {
+          ...(statistData[key] || {}),
+          [param]: value
+        }
+      },
       spinningLoading: false,
     });
   }
