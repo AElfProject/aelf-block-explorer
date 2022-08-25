@@ -219,7 +219,7 @@ class VoteContainer extends Component {
       this.setState({
         currentWallet: {
           ...wallet,
-          pubKey: getPublicKeyFromObject(wallet.publicKey)
+          pubkey: getPublicKeyFromObject(wallet.publicKey)
         }
       })
     } else {
@@ -601,7 +601,7 @@ class VoteContainer extends Component {
         shouldJudgeIsCurrentCandidate: false
       },
       () => {
-        if (!currentWallet.pubKey) {
+        if (!currentWallet.publicKey) {
           console.log(
             "The user didn't storage the publicKey to localStorage yet"
           );
@@ -609,7 +609,7 @@ class VoteContainer extends Component {
         }
         // todo: Maybe cause problem if the currentWallet is null
         electionContract.GetCandidateInformation.call({
-          value: currentWallet.pubKey
+          value: currentWallet.pubkey
         })
           .then(res => {
             this.setState({
