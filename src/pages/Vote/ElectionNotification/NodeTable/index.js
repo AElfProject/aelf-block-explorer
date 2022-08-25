@@ -91,12 +91,6 @@ class NodeTable extends PureComponent {
         this.fetchNodes({});
       }
     }
-    if (this.props.electionContract && this.props.consensusContract) {
-      if ((!prevProps.currentWallet && this.props.currentWallet)
-        || (this.props.currentWallet && (this.props.currentWallet.address !== prevProps.currentWallet.address))) {
-        this.fetchNodes({});
-      }
-    }
   }
 
   wsProducedBlocks() {
@@ -477,7 +471,7 @@ class NodeTable extends PureComponent {
           ? 0
           : (
             (item.obtainedVotesAmount / totalActiveVotesAmount)
-                * 100
+            * 100
           ).toFixed(2);
         return {
           ...item.candidateInformation,
