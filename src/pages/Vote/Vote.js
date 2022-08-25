@@ -217,7 +217,10 @@ class VoteContainer extends Component {
     let wallet = JSON.parse(localStorage.getItem('currentWallet'))
     if (wallet && (new Date().valueOf() - Number(wallet.timestamp)) < 15 * 60 * 1000) {
       this.setState({
-        currentWallet: wallet
+        currentWallet: {
+          ...wallet,
+          pubKey: getPublicKeyFromObject(wallet.publicKey)
+        }
       })
     } else {
       localStorage.removeItem('currentWallet')
@@ -598,7 +601,7 @@ class VoteContainer extends Component {
         shouldJudgeIsCurrentCandidate: false
       },
       () => {
-        if (!currentWallet.publicKey) {
+        if (!currentWallet.pubKey) {
           console.log(
             "The user didn't storage the publicKey to localStorage yet"
           );
@@ -606,7 +609,7 @@ class VoteContainer extends Component {
         }
         // todo: Maybe cause problem if the currentWallet is null
         electionContract.GetCandidateInformation.call({
-          value: getPublicKeyFromObject(currentWallet.publicKey)
+          value: currentWallet.pubKey
         })
           .then(res => {
             this.setState({
