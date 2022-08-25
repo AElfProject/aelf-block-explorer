@@ -66,14 +66,14 @@ function genMyVoteRecordsCols() {
     },
     {
       title: 'Lock Time',
-      dataIndex: 'formatedLockTime',
-      key: 'formatedLockTime',
+      dataIndex: 'formattedLockTime',
+      key: 'formattedLockTime'
     },
     {
       title: 'Unlock Time',
       ellipsis: true,
-      dataIndex: 'formatedUnlockTime',
-      key: 'formatedUnlockTime',
+      dataIndex: 'formattedUnlockTime',
+      key: 'formattedUnlockTime'
     },
     {
       title: 'Status',
