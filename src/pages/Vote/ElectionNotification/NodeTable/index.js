@@ -66,6 +66,9 @@ class NodeTable extends PureComponent {
   // todo: how to combine cdm & cdu
   componentDidMount() {
     this.wsProducedBlocks();
+    if (this.props.electionContract && this.props.consensusContract) {
+      this.fetchNodes({});
+    }
   }
 
   componentWillUnmount() {
@@ -74,11 +77,25 @@ class NodeTable extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if ((!prevProps.electionContract || !prevProps.consensusContract)
-      && (this.props.electionContract && this.props.consensusContract)) {
+      && (this.props.electionContract && this.props.consensusContract)
+    ) {
       this.fetchNodes({});
     }
-    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime
+    ) {
       this.fetchNodes({});
+    }
+    if (this.props.electionContract && this.props.consensusContract) {
+      if ((!prevProps.currentWallet && this.props.currentWallet)
+        || (this.props.currentWallet && (this.props.currentWallet.address !== prevProps.currentWallet.address))) {
+        this.fetchNodes({});
+      }
+    }
+    if (this.props.electionContract && this.props.consensusContract) {
+      if ((!prevProps.currentWallet && this.props.currentWallet)
+        || (this.props.currentWallet && (this.props.currentWallet.address !== prevProps.currentWallet.address))) {
+        this.fetchNodes({});
+      }
     }
   }
 
@@ -345,7 +362,7 @@ class NodeTable extends PureComponent {
   fetchNodes(currentWalletInput) {
     const { electionContract, consensusContract } = this.props;
     const currentWallet = Object.keys(currentWalletInput).length && currentWalletInput
-      || this.state.currentWallet;
+      || this.props.currentWallet;
 
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
@@ -353,9 +370,9 @@ class NodeTable extends PureComponent {
         length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL, // give a number large enough to make sure that we get all the nodes
       }),
       getAllTeamDesc(),
-      currentWallet.pubKey
+      currentWallet && currentWallet.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-          value: currentWallet.pubKey,
+          value: getPublicKeyFromObject(currentWallet.publicKey)
         })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract),
@@ -533,7 +550,7 @@ class NodeTable extends PureComponent {
           pagination={pagination}
           rowKey={(record) => record.pubkey}
           scroll={{ x: 1024 }}
-          // size='middle'
+        // size='middle'
         />
       </section>
     );

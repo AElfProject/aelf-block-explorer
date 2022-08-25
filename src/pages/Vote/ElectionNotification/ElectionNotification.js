@@ -461,6 +461,7 @@ class ElectionNotification extends PureComponent {
           shouldRefreshNodeTable={shouldRefreshNodeTable}
           nodeTableRefreshTime={nodeTableRefreshTime}
           changeVoteState={changeVoteState}
+          currentWallet={currentWallet}
         />
         <CandidateApplyModal
           visible={applyModalVisible}
