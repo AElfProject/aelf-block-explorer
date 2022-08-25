@@ -606,7 +606,7 @@ class VoteContainer extends Component {
         }
         // todo: Maybe cause problem if the currentWallet is null
         electionContract.GetCandidateInformation.call({
-          value: currentWallet.pubkey
+          value: getPublicKeyFromObject(currentWallet.publicKey)
         })
           .then(res => {
             this.setState({
@@ -741,6 +741,14 @@ class VoteContainer extends Component {
         console.log('checkExtensionLockStatus: ', this.hasGetContractsFromExt);
         if (this.hasGetContractsFromExt) {
           resolve();
+        }
+
+        if (typeof nightElf.getExtensionInfo === 'function') {
+          nightElf.getExtensionInfo().then(info => {
+            this.setState({
+              isPluginLock: info.locked
+            });
+          })
         }
 
         localStorage.setItem('currentWallet', JSON.stringify({ ...this.state.currentWallet, timestamp: new Date().valueOf() }))
