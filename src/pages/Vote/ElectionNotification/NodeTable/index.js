@@ -77,12 +77,10 @@ class NodeTable extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if ((!prevProps.electionContract || !prevProps.consensusContract)
-      && (this.props.electionContract && this.props.consensusContract)
-    ) {
+      && (this.props.electionContract && this.props.consensusContract)) {
       this.fetchNodes({});
     }
-    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime
-    ) {
+    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
       this.fetchNodes({});
     }
     if (this.props.electionContract && this.props.consensusContract) {
