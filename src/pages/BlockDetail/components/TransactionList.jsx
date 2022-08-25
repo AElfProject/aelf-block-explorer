@@ -1,10 +1,12 @@
 import { Pagination } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import TransactionTable from "../../../components/TransactionTable/TransactionTable";
+import useMobile from "../../../hooks/useMobile";
 
 export default function TransactionList({ allData = [] }) {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const isMobile = useMobile();
   const dataSource = useMemo(() => {
     return allData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [pageIndex, pageSize, allData]);
