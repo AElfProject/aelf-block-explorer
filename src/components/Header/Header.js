@@ -301,7 +301,7 @@ class BrowserHeader extends PureComponent {
               target='_blank'
               rel='noopener noreferrer'
             >
-              About
+              About-repo
             </a>
           </Menu.Item>
         )}

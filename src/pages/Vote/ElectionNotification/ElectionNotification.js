@@ -200,28 +200,6 @@ class ElectionNotification extends PureComponent {
     }
   }
 
-  // fetchTotalVotesAmount() {
-  //   const { electionContract } = this.props;
-  // }
-
-  processStatisData(key, param, value) {
-    let { statisData } = this.state;
-    statisData[key][param] = value;
-    // todo: Is it required?
-    statisData = { ...statisData };
-    this.setState(
-      {
-        statisData,
-      },
-      () => {
-        // todo: put the setState where it should be
-        this.setState({
-          statisDataLoading: false,
-        });
-      }
-    );
-  }
-
   async fetchStatisData() {
     const { statisDataLoading, statisData } = this.state;
     if (statisDataLoading) {
@@ -267,6 +245,7 @@ class ElectionNotification extends PureComponent {
         const { contract, dataKey, method, processor, statisDataKey } = item;
         try {
           const r = await contract[method].call();
+
           return {
             statisDataKey,
             [dataKey]: processor((r || { value: 0 }).value),

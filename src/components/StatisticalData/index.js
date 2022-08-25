@@ -6,15 +6,14 @@
  * @LastEditTime: 2019-12-10 17:00:44
  * @Description: file content
  */
-import React, { PureComponent } from 'react';
-import {
-  Tooltip, Icon, Statistic, Spin,
-} from 'antd';
+import React, { PureComponent } from "react";
+import { Tooltip, Statistic, Spin } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
-import './index.less';
+import "./index.less";
 
 const { Countdown } = Statistic;
-const clsPrefix = 'statistical-data';
+const clsPrefix = "statistical-data";
 
 const arrFormate = function (arr) {
   // const arr = new Array(arrInput);
@@ -76,7 +75,7 @@ export default class StatisticalData extends PureComponent {
           key={index}
           title={item.title}
           value={item.num || 0}
-          format="D day HH : mm : ss "
+          format='D day HH : mm : ss '
           onFinish={() => {
             this.handleFinish(item.id);
           }}
@@ -92,9 +91,7 @@ export default class StatisticalData extends PureComponent {
   }
 
   render() {
-    const {
-      spinning, style, tooltip, inline,
-    } = this.props;
+    const { spinning, style, tooltip, inline } = this.props;
     const { arr } = this.state;
     if (!arr) return null;
 
@@ -106,12 +103,12 @@ export default class StatisticalData extends PureComponent {
         <Spin spinning={spinning}>
           <section
             className={`${clsPrefix}-container card-container ${
-              inline ? 'inline-style' : ''
+              inline ? "inline-style" : ""
             }`}
           >
             {tooltip ? (
               <Tooltip title={tooltip}>
-                <Icon style={{ fontSize: 20 }} type="exclamation-circle" />
+                <ExclamationCircleOutlined style={{ fontSize: 20 }} />
               </Tooltip>
             ) : null}
             {listHTML}

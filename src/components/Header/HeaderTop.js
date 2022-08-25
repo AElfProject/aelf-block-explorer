@@ -61,7 +61,7 @@ export default function HeaderTop({
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                About
+                About-repo
               </a>
             </MenuItem>
           </Menu>
