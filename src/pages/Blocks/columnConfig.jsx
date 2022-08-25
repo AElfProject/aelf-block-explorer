@@ -34,7 +34,7 @@ export default (timeFormat, handleFormatChange) => {
     },
     {
       dataIndex: "tx_count",
-      title: "Txs",
+      title: "Txns",
       width: 102,
       render: (text, record) => {
         return (

@@ -23,7 +23,7 @@ import {
     ALL_TXS_LIST_COLUMNS, BLOCK_INFO_API_URL, CHAIN_ID, SYMBOL
 } from '../../constants';
 
-import './blockdetail.styles.less';
+import './BlockDetail.styles.less';
 import Dividends from "../../components/Dividends";
 
 export default class BlockDetailPage extends React.Component {
