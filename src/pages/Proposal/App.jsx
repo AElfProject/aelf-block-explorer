@@ -33,6 +33,17 @@ function useRouteMatch(path) {
   return result;
 }
 
+export const RouterComponent = (options) => {
+  const logStatus = useSelector((state) => state.common.logStatus);
+  const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus]);
+  const target = useMemo(
+    () =>
+      isLogged ? options.target : <Navigate to={options.default} replace />,
+    [isLogged]
+  );
+  return target;
+};
+
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

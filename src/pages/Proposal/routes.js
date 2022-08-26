@@ -2,6 +2,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { Redirect } from "react-router-dom";
 import { lazy } from "react";
+import { RouterComponent } from "./App";
 const App = lazy(() => import("./App"));
 const CreateOrganization = lazy(() =>
   import("./containers/CreateOrganization")
@@ -31,27 +32,39 @@ export const ProposalRouter = [
       },
       {
         path: "apply/:orgAddress",
-        element: (isLogged) =>
-          isLogged ? <CreateProposal /> : <Redirect to='/proposal/proposals' />,
+        element: (
+          <RouterComponent
+            target={<CreateProposal />}
+            default='/proposal/proposals'
+          ></RouterComponent>
+        ),
       },
       {
         path: "apply",
-        element: (isLogged) =>
-          isLogged ? <CreateProposal /> : <Redirect to='/proposal/proposals' />,
+        element: (
+          <RouterComponent
+            target={<CreateProposal />}
+            default='/proposal/proposals'
+          ></RouterComponent>
+        ),
       },
       {
         path: "myProposals",
-        element: (isLogged) =>
-          isLogged ? <MyProposal /> : <Redirect to='/proposal/proposals' />,
+        element: (
+          <RouterComponent
+            target={<MyProposal />}
+            default='/proposal/proposals'
+          ></RouterComponent>
+        ),
       },
       {
         path: "createOrganizations",
-        element: (isLogged) =>
-          isLogged ? (
-            <CreateOrganization />
-          ) : (
-            <Redirect to='/proposal/organizations' />
-          ),
+        element: (
+          <RouterComponent
+            target={<MyProposal />}
+            default='/proposal/organizations'
+          ></RouterComponent>
+        ),
       },
     ],
   },
