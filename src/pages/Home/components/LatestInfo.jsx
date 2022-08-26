@@ -35,7 +35,13 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
               <p className="age">{getFormattedDate(block.time)}</p>
               <p className="txns">{block.tx_count}</p>
               <div className="reward">
-                <Dividends dividends={JSON.parse(block.tx_fee) || {}} />
+                <Dividends
+                  dividends={
+                    typeof block.dividends === "string"
+                      ? JSON.parse(block.dividends)
+                      : block.dividends || {}
+                  }
+                />
               </div>
             </div>
           ))}

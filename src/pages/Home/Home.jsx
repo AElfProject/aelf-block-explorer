@@ -8,7 +8,7 @@ import {
   BASIC_INFO,
   ELF_REALTIME_PRICE_URL,
 } from "../../constants";
-import { get } from "../../utils";
+import { get, transactionFormat } from "../../utils";
 import ChainInfo from "./components/ChainInfo";
 import LatestInfo from "./components/LatestInfo";
 import Search from "./components/Search";
@@ -18,6 +18,8 @@ const PAGE_SIZE = 25;
 
 const TokenIcon = require("../../assets/images/tokenLogo.png");
 
+let blockHeight = 0;
+
 import "./home.styles.less";
 import { initSocket } from "./socket";
 import { useEffectOnce } from "react-use";
@@ -25,13 +27,11 @@ export default function Home() {
   const [price, setPrice] = useState({ USD: 0 });
   const [blocks, setBlocks] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [blockHeight, setBlockHeight] = useState(0);
   const [reward, setReward] = useState({ ELF: 0 });
   const [localTransactions, setLocalTransactions] = useState(0);
   const [localAccounts, setLocalAccounts] = useState(0);
   const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(0);
   const isMobile = useMobile();
-
   const latestSection = useMemo(
     () => <LatestInfo blocks={blocks} transactions={transactions} />,
     [blocks, transactions]
@@ -70,7 +70,7 @@ export default function Home() {
       unconfirmedBlockHeight = 0,
       accountNumber = 0,
     } = result;
-    setBlockHeight(height);
+    blockHeight = height;
     setLocalTransactions(totalTxs);
     setUnconfirmedBlockHeight(unconfirmedBlockHeight);
     setLocalAccounts(accountNumber);
@@ -115,15 +115,21 @@ export default function Home() {
         .reduce((acc, i) => acc.concat(i.txs), [])
         .map(transactionFormat);
       const new_blocks = arr.map((item) => formatBlock(item.block));
-      setBlockHeight(height);
+      blockHeight = height;
       setUnconfirmedBlockHeight(unconfirmedHeight);
-      setTransactions([...new_transactions, ...transactions].slice(0, 25));
-      setBlocks([...new_blocks, ...blocks].slice(0, 25));
+      setTransactions((v) => {
+        return [...new_transactions, ...v].slice(0, 25);
+      });
+      setBlocks((v) => {
+        return [...new_blocks, ...v].slice(0, 25);
+      });
       setLocalAccounts(accountNumber);
       setLocalTransactions(totalTxs);
-      setReward(JSON.parse(dividends));
+      setReward(
+        typeof dividends === "string" ? JSON.parse(dividends) : dividends || {}
+      );
     },
-    [transactions, blocks]
+    []
   );
 
   const formatBlock = useCallback((block) => {

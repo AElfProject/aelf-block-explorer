@@ -24,7 +24,7 @@ export default function ChainInfo({
       {
         icon: "reward",
         label: "Reward",
-        value: <Dividends dividends={reward} />,
+        value: <p>{reward && reward.ELF.toLocaleString()}ELF</p>,
       },
       {
         icon: "unconfirmedblocks",
@@ -39,7 +39,7 @@ export default function ChainInfo({
       {
         icon: "citizenwelfare",
         label: "Citizen Welfare",
-        value: <Dividends dividends={{ ELF: reward.ELF * 0.75 }} />,
+        value: <p>{reward && (reward.ELF * 0.75).toLocaleString()}ELF</p>,
       },
     ],
     [
