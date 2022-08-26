@@ -39,7 +39,7 @@ const prodConfig = {
     }),
   ],
   optimization: {
-    moduleIds: "hashed",
+    moduleIds: "deterministic",
     removeEmptyChunks: true,
     sideEffects: true,
     minimizer: [
@@ -47,7 +47,9 @@ const prodConfig = {
         cache: true,
         parallel: true,
         sourceMap: false,
-        terserOptions: {},
+        terserOptions: {
+          compress: {},
+        },
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {

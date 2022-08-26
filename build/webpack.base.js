@@ -23,7 +23,6 @@ const {
 } = require("./util");
 
 const copies = [];
-console.log(isProdMode, "isProdMode");
 
 const baseConfig = {
   // entry: ENTRIES,
