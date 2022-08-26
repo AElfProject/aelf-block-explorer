@@ -201,7 +201,10 @@ class VoteContainer extends Component {
       new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
     ) {
       this.setState({
-        currentWallet: wallet,
+        currentWallet: {
+          ...wallet,
+          pubkey: getPublicKeyFromObject(wallet.publicKey),
+        },
       });
     } else {
       localStorage.removeItem("currentWallet");
@@ -686,6 +689,14 @@ class VoteContainer extends Component {
           );
           if (this.hasGetContractsFromExt) {
             resolve();
+          }
+
+          if (typeof nightElf.getExtensionInfo === "function") {
+            nightElf.getExtensionInfo().then((info) => {
+              this.setState({
+                isPluginLock: info.locked,
+              });
+            });
           }
 
           localStorage.setItem(

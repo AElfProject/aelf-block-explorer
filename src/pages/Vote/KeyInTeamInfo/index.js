@@ -164,18 +164,18 @@ class KeyInTeamInfo extends PureComponent {
   componentDidUpdate(prevProps) {
     const { currentWallet } = this.props;
 
-    if (
-      currentWallet &&
-      currentWallet.address &&
-      (!prevProps.currentWallet.address ||
-        prevProps.currentWallet.address !== currentWallet.address)
-    ) {
-      this.setState(
-        {
-          hasAuth: currentWallet.pubkey === this.teamPubkey,
-        },
-        this.fetchCandidateInfo
-      );
+    if (currentWallet && currentWallet.address) {
+      if (
+        !prevProps.currentWallet ||
+        prevProps.currentWallet.address !== currentWallet.address
+      ) {
+        this.setState(
+          {
+            hasAuth: currentWallet.pubkey === this.teamPubkey,
+          },
+          this.fetchCandidateInfo
+        );
+      }
     }
   }
 
@@ -360,9 +360,9 @@ class KeyInTeamInfo extends PureComponent {
               url: value,
             };
           })
-          .filter(
-            ({ type, url }) => url !== undefined && url !== null && url !== ""
-          );
+          .filter(({ type, url }) => {
+            return url !== undefined && url !== null && url !== "";
+          });
         this.processUrl(submitValues, addUrlPrefix);
 
         checkExtensionLockStatus().then(async () => {

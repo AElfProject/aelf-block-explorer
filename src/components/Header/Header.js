@@ -321,13 +321,13 @@ class BrowserHeader extends PureComponent {
         className={`header-navbar-mobile-more ${
           NETWORK_TYPE === "MAIN" ? "header-navbar-main-mobile-more" : ""
         }`}
-        onClick={() => this.toggleMenu()}
       >
         <IconFont
           type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
           className='aelf-logo-container'
         />
-        <Icon type='menu' />
+        {/*...*/}
+        <Icon type='menu' onClick={() => this.toggleMenu()} />
       </div>
     );
   }
