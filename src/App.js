@@ -10,7 +10,7 @@ import BrowserFooter from "./components/Footer/Footer";
 import BrowserBreadcrumb from "./components/Breadcrumb/Breadcrumb";
 import Container from "./components/Container/Container";
 import { PageRouter } from "./routes/routes";
-import { hot } from "react-hot-loader/root";
+// import { hot } from "react-hot-loader/root";
 
 import "./App.less";
 
@@ -31,7 +31,8 @@ function App() {
     </Suspense>
   );
 }
-if (module.hot) {
-  module.hot.accept();
-}
-export default hot(App);
+// if (module.hot) {
+//   module.hot.accept();
+// }
+// export default hot(App);
+export default App;

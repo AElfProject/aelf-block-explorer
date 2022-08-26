@@ -391,7 +391,7 @@ class KeyInTeamInfo extends PureComponent {
   }
 
   handleBack() {
-    this.props.history.goBack();
+    this.props.navigate(-1);
   }
 
   render() {

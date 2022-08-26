@@ -18,7 +18,7 @@ import {
 import getCurrentWallet from "@utils/getCurrentWallet";
 import "./CandidateApplyModal.style.less";
 import addressFormat from "../../../../utils/addressFormat";
-
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 const modalFormItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -37,7 +37,7 @@ function generateCandidateApplyForm() {
       {
         label: "Mortgage Add",
         render: (
-          <span className='list-item-value text-ellipsis'>
+          <span className='list-item-value'>
             {addressFormat(currentWallet.address)}
           </span>
         ),
@@ -51,7 +51,7 @@ function generateCandidateApplyForm() {
               title={`The ${SYMBOL} cannot be redeemed during the time being a BP
               node`}
             >
-              <Icon type='exclamation-circle' />
+              <ExclamationCircleOutlined />
             </Tooltip>
           </span>
         ),
@@ -85,19 +85,21 @@ function validateAddress(rule, value, callback) {
 }
 
 class CandidateApplyModal extends PureComponent {
+  formRef = React.createRef();
   constructor(props) {
     super(props);
     this.handleOk = this.handleOk.bind(this);
   }
 
   handleOk() {
-    const { onOk, form } = this.props;
+    const { onOk } = this.props;
     console.log("handle ok");
-    form.validateFields((err, values) => {
-      if (!err) {
+    this.formRef.current
+      .validateFields()
+      .then((values) => {
         onOk(values.admin.trim());
-      }
-    });
+      })
+      .catch((e) => {});
   }
 
   render() {
@@ -124,7 +126,7 @@ class CandidateApplyModal extends PureComponent {
         keyboard
         width={800}
       >
-        <Form {...modalFormItemLayout}>
+        <Form {...modalFormItemLayout} ref={this.formRef}>
           {candidateApplyForm.formItems &&
             candidateApplyForm.formItems.map((item) => {
               return (
@@ -137,14 +139,14 @@ class CandidateApplyModal extends PureComponent {
             label='Candidate Admin:'
             className='candidate-admin'
             name='admin'
-            rules={rules}
+            rules={[{ required: true, message: "Please input your username!" }]}
           >
             <Input placeholder='Please input admin address' />
             <Tooltip
               className='candidate-admin-tip'
               title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
             >
-              <Icon type='exclamation-circle' />
+              <ExclamationCircleOutlined />
             </Tooltip>
           </Form.Item>
         </Form>
