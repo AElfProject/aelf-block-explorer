@@ -3,7 +3,7 @@
  * @author atom-yang
  */
 import React, { useEffect, useState, useMemo } from "react";
-import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { useLocation, useNavigate, Outlet, Navigate } from "react-router-dom";
 import useUseLocation from "react-use/lib/useLocation";
 import { useSelector, useDispatch } from "react-redux";
 import { ExclamationCircleOutlined } from "@ant-design/icons";

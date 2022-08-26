@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/react-in-jsx-scope */
-import { Redirect } from "react-router-dom";
 import { lazy } from "react";
 import { RouterComponent } from "./App";
 const App = lazy(() => import("./App"));
@@ -61,7 +60,7 @@ export const ProposalRouter = [
         path: "createOrganizations",
         element: (
           <RouterComponent
-            target={<MyProposal />}
+            target={<CreateOrganization />}
             default='/proposal/organizations'
           ></RouterComponent>
         ),
