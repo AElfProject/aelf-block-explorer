@@ -16,6 +16,7 @@ import ExtensionInfo from "./components/ExtensionInfo";
 import TransactionList from "./components/TransactionList";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useDebounce } from "react-use";
 function BlockDetail(props) {
   const [pageId, setPageId] = useState(undefined);
   const [blockHeight, setBlockHeight] = useState(undefined);
@@ -47,11 +48,14 @@ function BlockDetail(props) {
   }, [blockHeight]);
 
   useEffect(() => {
-    const { match } = props;
+    const { match, location } = props;
     const { id } = match.params;
     setPageId(id);
     setShowExtensionInfo(false);
     setActiveKey("overview");
+    if (location.search && location.search.includes("tab=txns")) {
+      setActiveKey("transactions");
+    }
   }, [props]);
 
   const merge = useCallback((data = [], contractNames) => {
@@ -122,8 +126,8 @@ function BlockDetail(props) {
     const input = pageId;
     setLoading(true);
     const chainStatus = await getChainStatus();
-    const { BestChainHeight = 0 } = chainStatus;
-    setBestChainHeight(BestChainHeight);
+    const { BestChainHeight, LastIrreversibleBlockHeight = 0 } = chainStatus;
+    setBestChainHeight(LastIrreversibleBlockHeight);
     const messageHide = message.loading("Loading...", 0);
 
     let result;
@@ -138,7 +142,6 @@ function BlockDetail(props) {
         );
       } else {
         const data = await getDataFromHeight(input);
-        console.log(">>>>data", data);
         result = data.blockInfo;
         txsList = data.transactionList;
       }
@@ -155,7 +158,6 @@ function BlockDetail(props) {
     get(BLOCK_INFO_API_URL, {
       height: blockHeight,
     }).then((res) => {
-      console.log(">>>>res", res);
       const { Header: header } = result;
       setBlockInfo({
         basicInfo: {
@@ -193,9 +195,13 @@ function BlockDetail(props) {
     }
   }, [pageId]);
 
-  useEffect(() => {
-    fetchBlockInfo();
-  }, [pageId, blockHeight]);
+  useDebounce(
+    () => {
+      fetchBlockInfo();
+    },
+    1000,
+    [pageId, blockHeight]
+  );
 
   return (
     <div

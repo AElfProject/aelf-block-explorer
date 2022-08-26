@@ -11,7 +11,7 @@
   box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.08);
   //background-color: rgba(0, 0, 0, 0.5);
   background-color: @bgBlankWhite;
-  height: @header-height;
+  height: fit-content;
   font-family: @font-header-sets;
 }
 
@@ -509,6 +509,9 @@
 @media screen and (max-width: 942px) and (min-width: 584px) {
   .header-fixed-container {
     height: @header-top-height;
+    &.only-menu {
+      height: 56px;
+    }
   }
   .header-container,
   .header-navbar {
@@ -525,7 +528,8 @@
     }
   }
   .header-main-container-mobile,
-  .header-drawer-menu-wrapper.header-main-drawer-menu-wrapper .ant-drawer-header{
+  .header-drawer-menu-wrapper.header-main-drawer-menu-wrapper
+    .ant-drawer-header {
     .aelf-logo-container {
       & > svg {
         width: 72px;

@@ -15,7 +15,7 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
       basicInfo
         ? {
             "Block Height": (
-              <div>
+              <div className="value-height">
                 {basicInfo.blockHeight}
                 {Number(basicInfo.blockHeight) > bestChainHeight && (
                   <Tag className="unconfirmed">Unconfirmed</Tag>
@@ -37,13 +37,15 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
             "Chain ID": basicInfo.chainId,
             Miner: (
               <div>
-                <Link to={"/address" + basicInfo.miner}>
+                <Link to={"/address/" + basicInfo.miner}>
                   {addressFormat(basicInfo.miner)}
                 </Link>
                 <CopyButton value={addressFormat(basicInfo.miner)} />
               </div>
             ),
-            Reward: <Dividends dividends={JSON.parse(basicInfo.reward)} />,
+            Reward: (
+              <Dividends dividends={JSON.parse(basicInfo.reward) || {}} />
+            ),
             "Previous Block Hash": basicInfo.previousBlockHash,
           }
         : {},
@@ -55,7 +57,7 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
       {(Object.keys(renderObj) || []).map((key, index) => {
         return (
           <div key={index} className="row">
-            <p className="label">{key}: </p>
+            <p className="label">{key} : </p>
             <div className="value">{renderObj[key]}</div>
           </div>
         );

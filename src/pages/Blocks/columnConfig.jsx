@@ -40,7 +40,7 @@ export default (timeFormat, handleFormatChange) => {
         return (
           <div>
             {!isNaN(+record.tx_count) && +record.tx_count !== 0 ? (
-              <Link to={`/txs/block?${record.block_hash}`}>
+              <Link to={`/block/${record.block_height}?tab=txns`}>
                 {record.tx_count}
               </Link>
             ) : (

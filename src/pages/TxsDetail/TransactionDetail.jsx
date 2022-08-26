@@ -89,7 +89,6 @@ function TransactionDetail(props) {
 
   const getData = useCallback(
     (res) => {
-      console.log(">>>res", res);
       getContractNames().then((names) => {
         const { isSystemContract, contractName } =
           names[res.Transaction.To] || {};

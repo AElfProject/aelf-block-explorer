@@ -139,10 +139,6 @@ function transactionFormat(result) {
     return newTxs;
 }
 
-const transactionInfo = (hash) => {
-    return aelf.chain.getTxResult(hash, {sync: true});
-}
-
 function isAElfAddress(address) {
     if (!address) {
         return false;
@@ -162,7 +158,6 @@ export {
     format,
     formatKey,
     transactionFormat,
-    transactionInfo,
     getContractNames,
     isAElfAddress
 };

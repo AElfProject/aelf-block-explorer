@@ -6,5 +6,5 @@ export default function useMobile() {
   useEffect(() => {
     setIsMobile(isPhoneCheck())
   }, [navigator])
-  return isMobile
+  return !!isMobile
 }
