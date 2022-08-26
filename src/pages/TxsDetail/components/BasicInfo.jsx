@@ -58,9 +58,9 @@ export default function BasicInfo({
             </Link>
             {lastHeight ? (
               <Tag
-                className={lastHeight - info.BlockNumber < 0 && "unconfirmed"}
+                className={lastHeight - info.BlockNumber < 0 ? "unconfirmed" : 'confirmations'}
               >
-                {lastHeight - info.BlockNumber > 0
+                {lastHeight - info.BlockNumber >= 0
                   ? `${lastHeight - info.BlockNumber} Block Confirmations`
                   : "Unconfirmed"}
               </Tag>

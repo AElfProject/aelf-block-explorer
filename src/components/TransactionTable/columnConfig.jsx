@@ -95,7 +95,7 @@ export default (timeFormat, price, handleFormatChange) => {
               color="white"
               placement="right"
             >
-              <IconFont type="kejian" />
+              <IconFont type="Eye-on" />
             </Tooltip>
             <Link to={`/tx/${text}`} title={text}>
               {text}

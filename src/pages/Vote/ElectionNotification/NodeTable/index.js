@@ -26,7 +26,6 @@ import {
   fetchElectorVoteWithRecords
 } from '@api/vote';
 import { fetchCurrentMinerPubkeyList } from '@api/consensus';
-import getCurrentWallet from '@utils/getCurrentWallet';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
 import {
   FROM_WALLET,
@@ -36,7 +35,6 @@ import './index.less';
 import { ELF_DECIMAL } from "../../constants";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
-import NightElfCheck from '../../../../utils/NightElfCheck';
 import { getPublicKeyFromObject } from '../../../../utils/getPublicKey';
 
 const clsPrefix = 'node-table';

@@ -3,6 +3,7 @@
     font-family: "Roboto Bold";
     color: @cloud-burst;
     font-weight: 400;
+    font-size: 18px;
   }
   .ant-tag {
     border: none;
@@ -92,6 +93,11 @@
       margin-left: 230px;
       align-items: center;
       width: fit-content;
+      &:focus,
+      &:hover {
+        color: @mariner !important;
+      }
+
       &.less {
         .anticon {
           transform: rotate(180deg);

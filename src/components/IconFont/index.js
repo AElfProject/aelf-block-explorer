@@ -1,5 +1,5 @@
 import { Icon } from 'antd';
-const ICON_FONT_URL = 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/svg_17168_27.d47a40ece190516008c1316d2ca251ee.js';
+const ICON_FONT_URL = 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/svg_17168_28.c2e61e374ab8f5ce6463a2d026b1c004.js';
 
 
 const IconFont = Icon.createFromIconfontCN({

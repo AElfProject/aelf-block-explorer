@@ -51,7 +51,7 @@ export default function BlockList() {
       setDataLoading(false);
       setDataSource(data && data.blocks.length ? data.blocks : null);
     },
-    [api]
+    [api, pageSize]
   );
 
   useDebounce(
