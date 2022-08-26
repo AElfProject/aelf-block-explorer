@@ -8,10 +8,10 @@
   "main": "src/index.js",
   "scripts": {
     "beforeDev": "cross-env RELOAD_ENV=reload NODE_ENV=development node scripts/queryConfig.js",
-    "dev": "npm run clean && cross-env RELOAD_ENV=false NODE_ENV=development webpack-dev-server --progress --colors --display-chunks --watch --config ./build/webpack.dev.js",
+    "dev": "npm run clean && cross-env RELOAD_ENV=false NODE_ENV=development webpack-dev-server --progress --hot --color --config ./build/webpack.dev.js",
     "beforeBuild": "cross-env RELOAD_ENV=reload NODE_ENV=production node scripts/queryConfig.js",
-    "build": "cross-env RELOAD_ENV=reload NODE_ENV=production webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
-    "build:dev": "cross-env RELOAD_ENV=reload NODE_ENV=dev webpack --progress --colors --display-chunks --config ./build/webpack.prod.js",
+    "build": "cross-env RELOAD_ENV=reload NODE_ENV=production webpack --progress --color --config ./build/webpack.prod.js",
+    "build:dev": "cross-env RELOAD_ENV=reload NODE_ENV=dev webpack --progress --color --config ./build/webpack.prod.js",
     "analyze": "npm run clean && cross-env RELOAD_ENV=reload NODE_ENV=production webpack --config ./build/webpack.analyze.js",
     "clean": "rimraf dist/*",
     "commit": "git-cz",
@@ -20,6 +20,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
     "@babel/runtime": "^7.7.2",
+    "@hot-loader/react-dom": "^17.0.2",
     "@sentry/apm": "^5.19.0",
     "@sentry/node": "^5.19.0",
     "@sentry/react": "^5.19.0",
@@ -55,6 +56,7 @@
     "mobx-state-tree": "^3.3.0",
     "moment": "^2.24.0",
     "monaco-editor": "^0.18.1",
+    "process": "^0.11.10",
     "prop-types": "^15.7.2",
     "qrcode.react": "^1.0.1",
     "query-string": "^5.1.1",
@@ -62,6 +64,7 @@
     "react-circular-progressbar": "^2.0.3",
     "react-datepicker": "^4.5.0",
     "react-dom": "^18.2.0",
+    "react-hot-loader": "^4.13.0",
     "react-i18next": "^11.1.0",
     "react-if": "^3.4.3",
     "react-redux": "^7.2.0",
@@ -78,7 +81,10 @@
     "sequelize": "^5.21.4",
     "smooth-scrollbar": "^8.3.1",
     "socket.io-client": "^2.2.0",
-    "vconsole": "^3.9.5"
+    "vconsole": "^3.9.5",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.10.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
@@ -111,7 +117,7 @@
     "file-loader": "^4.2.0",
     "git-cz": "^3.3.0",
     "glob": "^7.1.6",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^5.5.0",
     "husky": "^3.0.9",
     "lerna": "^3.18.3",
     "less": "^3.10.3",
@@ -131,10 +137,7 @@
     "unused-files-webpack-plugin": "^3.4.0",
     "url-loader": "^2.2.0",
     "vconsole": "^3.9.5",
-    "webpack": "^4.41.2",
     "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0",
     "webpack-merge": "^4.2.2"
   },
   "husky": {

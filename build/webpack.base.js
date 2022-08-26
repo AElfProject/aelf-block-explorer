@@ -23,11 +23,12 @@ const {
 } = require("./util");
 
 const copies = [];
+console.log(isProdMode, "isProdMode");
 
 const baseConfig = {
   // entry: ENTRIES,
   entry: {
-    app: path.resolve(ROOT, "src/index.js"),
+    app: ["react-hot-loader/patch", path.resolve(ROOT, "src/index.js")],
   },
   output: {
     path: OUTPUT_PATH,
@@ -35,6 +36,8 @@ const baseConfig = {
   },
   resolve: {
     alias: {
+      "react-dom": "@hot-loader/react-dom",
+      process: "process/browser",
       "aelf-sdk": "aelf-sdk/dist/aelf.umd.js",
       "@config": path.resolve(ROOT, "config"),
       "@src": path.resolve(ROOT, "src"),
@@ -57,13 +60,14 @@ const baseConfig = {
           loader: require.resolve("babel-loader"),
           options: {
             rootMode: "upward",
+            plugins: ["react-hot-loader/babel"],
           },
         },
       },
       {
         test: /\.less$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          isProdMode ? MiniCssExtractPlugin.loader : "style-loader",
           "css-loader",
           "postcss-loader",
           {
@@ -79,7 +83,11 @@ const baseConfig = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+        use: [
+          isProdMode ? MiniCssExtractPlugin.loader : "style-loader",
+          "css-loader",
+          "postcss-loader",
+        ],
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -174,6 +182,9 @@ const baseConfig = {
         "gotoLine",
         "linesOperations",
       ],
+    }),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
     }),
   ],
 };

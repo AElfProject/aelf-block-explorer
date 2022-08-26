@@ -3,21 +3,21 @@
  * @author longyue, huangzongzhe
  */
 /* eslint-disable fecs-camelcase */
-import React, { Component } from 'react';
-import io from 'socket.io-client';
-import { Link } from 'react-router-dom';
-import { CHAIN_ID } from '@src/constants';
-import { Row, Col, Divider } from 'antd';
-import SmoothScrollbar from 'smooth-scrollbar';
-import OverscrollPlugin from 'smooth-scrollbar/plugins/overscroll';
-import Scrollbar from 'react-smooth-scrollbar';
-import { getContractNames, get, transactionFormat } from '../../utils';
-import SearchBanner from '../../components/SearchBanner/SearchBanner';
-import ContainerRichard from '../../components/ContainerRichard/ContainerRichard';
-import TPSChart from '../../components/TPSChart/TPSChart';
+import React, { Component } from "react";
+import io from "socket.io-client";
+import { Link } from "react-router-dom";
+import { CHAIN_ID } from "@src/constants";
+import { Row, Col, Divider } from "antd";
+import SmoothScrollbar from "smooth-scrollbar";
+import OverscrollPlugin from "smooth-scrollbar/plugins/overscroll";
+import Scrollbar from "react-smooth-scrollbar";
+import { getContractNames, get, transactionFormat } from "../../utils";
+import SearchBanner from "../../components/SearchBanner/SearchBanner";
+import ContainerRichard from "../../components/ContainerRichard/ContainerRichard";
+import TPSChart from "../../components/TPSChart/TPSChart";
 
-import ChainInfo from './ChainInfo';
-import HomeItem from '../../components/HomeItem';
+import ChainInfo from "./ChainInfo";
+import HomeItem from "../../components/HomeItem";
 
 import {
   PAGE_SIZE,
@@ -26,20 +26,21 @@ import {
   SOCKET_URL,
   BASIC_INFO,
   CONTRACT_VIEWER_URL,
-} from '../../constants';
+} from "../../constants";
 
-import './home.styles.less';
-import { removeAElfPrefix } from '../../utils/utils';
-import addressFormat from '../../utils/addressFormat';
-import Dividends from '../../components/Dividends';
+import "./home.styles.less";
+import { removeAElfPrefix } from "../../utils/utils";
+import addressFormat from "../../utils/addressFormat";
+import Dividends from "../../components/Dividends";
 
 SmoothScrollbar.use(OverscrollPlugin);
 
 function getFormattedContractName(contractNames, address) {
   let name = contractNames[address] || {};
-  name = name && name.isSystemContract
-    ? removeAElfPrefix(name.contractName)
-    : name.contractName;
+  name =
+    name && name.isSystemContract
+      ? removeAElfPrefix(name.contractName)
+      : name.contractName;
   return name || addressFormat(address);
 }
 
@@ -65,7 +66,7 @@ export default class HomePage extends Component {
     const res = await get(url, {
       page: 0,
       limit: PAGE_SIZE,
-      order: 'desc',
+      order: "desc",
     });
 
     return res;
@@ -137,20 +138,20 @@ export default class HomePage extends Component {
   initSocket() {
     this.socket = io(location.origin, {
       path: SOCKET_URL,
-      transports: ['websocket', 'polling'],
+      transports: ["websocket", "polling"],
     });
 
-    this.socket.on('reconnect_attempt', () => {
-      this.socket.io.opts.transports = ['polling', 'websocket'];
+    this.socket.on("reconnect_attempt", () => {
+      this.socket.io.opts.transports = ["polling", "websocket"];
     });
-    this.socket.on('connection', (data) => {
-      if (data !== 'success') {
+    this.socket.on("connection", (data) => {
+      if (data !== "success") {
         throw new Error("can't connect to socket");
       }
     });
 
     let isFirst = true;
-    this.socket.on('getBlocksList', (data) => {
+    this.socket.on("getBlocksList", (data) => {
       if (isFirst) {
         this.handleSocketData(data, true);
         isFirst = false;
@@ -159,7 +160,7 @@ export default class HomePage extends Component {
       }
     });
 
-    this.socket.emit('getBlocksList');
+    this.socket.emit("getBlocksList");
   }
 
   handleSocketData(
@@ -173,7 +174,7 @@ export default class HomePage extends Component {
       allChainAccount,
       dividends,
     },
-    isFirst,
+    isFirst
   ) {
     let arr = list;
     if (!isFirst) {
@@ -215,7 +216,7 @@ export default class HomePage extends Component {
 
   renderSearchBanner() {
     if (document.body.offsetWidth <= 768) {
-      return '';
+      return "";
     }
     return <SearchBanner />;
   }
@@ -224,8 +225,8 @@ export default class HomePage extends Component {
     const screenWidth = document.body.offsetWidth;
     // const screenHeight = screenWidth > 992 ? document.body.offsetHeight : 'auto';
     // const screenHeight = screenWidth < 992 ? 'auto' : document.body.offsetHeight;
-    const height = document.body.offsetHeight >= 1010 ? 1010 : 'auto';
-    const screenHeight = screenWidth < 992 ? 'auto' : height;
+    const height = document.body.offsetHeight >= 1010 ? 1010 : "auto";
+    const screenHeight = screenWidth < 992 ? "auto" : height;
     // const screenHeight = screenWidth > 992 ? 'auto' : '100%';
     // const screenHeight = 'auto';
 
@@ -238,25 +239,25 @@ export default class HomePage extends Component {
     } = this.state;
     return (
       <section
-        className="home-bg-grey"
+        className='home-bg-grey'
         style={{
           height: screenHeight,
         }}
       >
-        <div className="basic-container home-basic-information">
-          <div className="home-header-blank" />
+        <div className='basic-container home-basic-information'>
+          <div className='home-header-blank' />
           {this.renderSearchBanner()}
-          <Row className="first-page-sub-container">
+          <Row className='first-page-sub-container'>
             <Col span={24}>
-              <div className="home-basic-title-con">
-                <span className="TPSChart-title">Transactions Per Minute</span>
+              <div className='home-basic-title-con'>
+                <span className='TPSChart-title'>Transactions Per Minute</span>
               </div>
               <ContainerRichard>
                 <TPSChart />
               </ContainerRichard>
             </Col>
           </Row>
-          <Row className="first-page-sub-container chain-info">
+          <Row className='first-page-sub-container chain-info'>
             <Col span={24}>
               <ChainInfo
                 chainId={CHAIN_ID}
@@ -276,9 +277,7 @@ export default class HomePage extends Component {
   }
 
   blockRenderItem = (item) => {
-    let {
-      time, dividends, block_height, tx_count, miner,
-    } = item;
+    let { time, dividends, block_height, tx_count, miner } = item;
     try {
       dividends = JSON.parse(dividends);
     } catch (e) {}
@@ -289,15 +288,15 @@ export default class HomePage extends Component {
       },
       time,
       middleLeftTitle: {
-        name: 'Txs',
+        name: "Txs",
         text: tx_count,
       },
       middleRightTitle: {
-        name: 'Dividend',
+        name: "Dividend",
         text: `${dividends.ELF || 0} ELF`,
       },
       bottomTitle: {
-        name: 'Miner',
+        name: "Miner",
         text: addressFormat(miner),
         link: `/address/${miner}`,
       },
@@ -312,9 +311,7 @@ export default class HomePage extends Component {
 
   txsRenderItem = (item) => {
     const { contractNames } = this.state;
-    const {
-      time, address_from, address_to, tx_fee, tx_id,
-    } = item;
+    const { time, address_from, address_to, tx_fee, tx_id } = item;
     let fee = tx_fee;
     try {
       fee = JSON.parse(tx_fee);
@@ -326,20 +323,20 @@ export default class HomePage extends Component {
       },
       time,
       middleLeftTitle: {
-        name: 'From',
+        name: "From",
         text: addressFormat(address_from),
         link: `/address/${address_from}`,
       },
       middleRightTitle: {
-        name: 'To',
+        name: "To",
         text: getFormattedContractName(contractNames, address_to),
         link: `/contract?#${decodeURIComponent(
-          CONTRACT_VIEWER_URL + address_to,
+          CONTRACT_VIEWER_URL + address_to
         )}`,
       },
       bottomTitle: {
-        name: 'Fee',
-        text: <Dividends className="home-fee" dividends={fee} />,
+        name: "Fee",
+        text: <Dividends className='home-fee' dividends={fee} />,
       },
     };
     return (
@@ -356,7 +353,9 @@ export default class HomePage extends Component {
     // const blocksReversed = blocks.reverse();
     const blocksHTML = blocks.map((item) => this.blockRenderItem(item));
 
-    const transactionsHTML = transactions.map((item) => this.txsRenderItem(item));
+    const transactionsHTML = transactions.map((item) =>
+      this.txsRenderItem(item)
+    );
 
     const screenHeight = document.documentElement.offsetHeight;
     const heightStyle = {
@@ -364,37 +363,40 @@ export default class HomePage extends Component {
     };
 
     return [
-      <Row key="basicinfo">
+      <Row key='basicinfo'>
         <Col span={24}>
           <div />
         </Col>
       </Row>,
       <Row
-        className="content-container"
-        key="infolist"
+        className='content-container'
+        key='infolist'
         gutter={{
-          xs: 8, sm: 16, md: 24, lg: 32,
+          xs: 8,
+          sm: 16,
+          md: 24,
+          lg: 32,
         }}
       >
-        <Col xs={24} sm={24} md={12} className="container-list">
-          <div className="panel-heading">
-            <h2 className="panel-title">Latest Blocks</h2>
-            <Link to="/blocks" className="pannel-btn">
+        <Col xs={24} sm={24} md={12} className='container-list'>
+          <div className='panel-heading'>
+            <h2 className='panel-title'>Latest Blocks</h2>
+            <Link to='/blocks' className='pannel-btn'>
               View all
             </Link>
           </div>
-          <div className="home-blocksInfo-list-con">
+          <div className='home-blocksInfo-list-con'>
             <Scrollbar style={heightStyle}>{blocksHTML}</Scrollbar>
           </div>
         </Col>
-        <Col xs={24} sm={24} md={12} className="container-list">
-          <div className="panel-heading">
-            <h2 className="panel-title">Latest Transactions</h2>
-            <Link to="/txs" className="pannel-btn">
+        <Col xs={24} sm={24} md={12} className='container-list'>
+          <div className='panel-heading'>
+            <h2 className='panel-title'>Latest Transactions</h2>
+            <Link to='/txs' className='pannel-btn'>
               View all
             </Link>
           </div>
-          <div className="home-blocksInfo-list-con">
+          <div className='home-blocksInfo-list-con'>
             <Scrollbar style={heightStyle}>{transactionsHTML}</Scrollbar>
           </div>
         </Col>
@@ -407,10 +409,10 @@ export default class HomePage extends Component {
     const firstPageHTML = this.renderFirstPage();
 
     return (
-      <div className="fullscreen-container">
+      <div className='fullscreen-container'>
         {firstPageHTML}
-        <section className="home-bg-white">
-          <div className="basic-container">{blocksAndTxsListHTML}</div>
+        <section className='home-bg-white'>
+          <div className='basic-container'>{blocksAndTxsListHTML}</div>
         </section>
       </div>
     );

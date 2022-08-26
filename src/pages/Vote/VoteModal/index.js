@@ -1,16 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import {
-  Tabs,
-  Modal,
-  Form,
-  Input,
-  DatePicker,
-  Button,
-  Table,
-  Icon,
-  Tooltip,
-} from "antd";
+import { Tabs, Modal, Form, Input, DatePicker, Button, Tooltip } from "antd";
+import { SearchOutlined, InfoCircleFilled } from "@ant-design/icons";
 import DatePickerReact from "react-datepicker";
 import moment from "moment";
 
@@ -296,6 +287,7 @@ class VoteModal extends Component {
               >
                 {isIPhone() ? (
                   <DatePickerReact
+                    style={{ width: "100%" }}
                     dateFormat='yyyy-MM-dd'
                     minDate={
                       new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))
@@ -324,7 +316,7 @@ class VoteModal extends Component {
                   />
                 ) : (
                   <DatePicker
-                    className='date-picker-in-modal'
+                    style={{ width: "100%" }}
                     disabledDate={disabledDate}
                     onChange={(value) => {
                       this.setState({
@@ -532,7 +524,7 @@ class VoteModal extends Component {
       </div>
     ),
     filterIcon: (filtered) => (
-      <Icon type='search' style={{ color: filtered ? "#1890ff" : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
@@ -645,25 +637,21 @@ class VoteModal extends Component {
                       key={item.label}
                       className={item.extra ? "form-item-with-extra" : ""}
                       name={item.validator?.fieldDecoratorId}
-                      ruels={item.validator?.rules}
+                      rules={item.validator?.rules}
                       initialValue={item.validator?.initialValue}
                       validateTrigger={item.validator?.validateTrigger}
                     >
-                      (
                       {item.validator ? (
                         <span>{item.render}</span> || <Input />
                       ) : (
                         <span>{item.render}</span>
                       )}
-                      )
                       {item.tip ? (
-                        <Tooltip title={item.tip}>
-                          <Icon
-                            className='right-icon'
-                            theme='filled'
-                            type='info-circle'
-                          />
-                        </Tooltip>
+                        <span style={{ position: "relative" }}>
+                          <Tooltip title={item.tip}>
+                            <InfoCircleFilled className='right-icon' />
+                          </Tooltip>
+                        </span>
                       ) : null}
                     </Form.Item>
                   </>

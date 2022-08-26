@@ -45,6 +45,10 @@ async function getNodesInfo() {
 
 getNodesInfo();
 
+if (module.hot) {
+  module.hot.accept();
+}
+
 const container = document.getElementById("app");
 ReactDOM.render(
   <ConfigProvider locale={en_US}>

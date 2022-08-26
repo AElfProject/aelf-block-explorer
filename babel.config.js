@@ -50,6 +50,7 @@ module.exports = (api) => {
       ],
       "@babel/plugin-proposal-class-properties",
       "@babel/plugin-transform-runtime",
+      "react-hot-loader/babel",
     ],
     env: {
       build: {

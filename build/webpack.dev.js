@@ -64,38 +64,40 @@ const devConfig = {
     }),
   ],
   devServer: {
-    disableHostCheck: true,
-    contentBase: OUTPUT_PATH,
+    // disableHostCheck: true,
+    // webpack5 require
+    static: OUTPUT_PATH,
     host: "0.0.0.0",
     port: 3000,
     compress: true,
-    hot: false,
-    inline: false,
+    hot: true,
+    // hotOnly: true,
+    // inline: false,
     historyApiFallback: true,
     proxy: proxyServer,
-    before(app) {
-      app.all("*", (req, res, next) => {
-        let mockFile = mockMapper[req.path];
-        if (isObject(mockFile)) {
-          mockFile = mockFile[req.query.path];
-        }
-        if (mockFile && devMode === "local") {
-          res.sendFile(
-            path.resolve(__dirname, mockFile),
-            {
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-              },
-            },
-            (err) => {
-              err && console.error(err);
-            }
-          );
-        } else {
-          next();
-        }
-      });
-    },
+    // before(app) {
+    //   app.all("*", (req, res, next) => {
+    //     let mockFile = mockMapper[req.path];
+    //     if (isObject(mockFile)) {
+    //       mockFile = mockFile[req.query.path];
+    //     }
+    //     if (mockFile && devMode === "local") {
+    //       res.sendFile(
+    //         path.resolve(__dirname, mockFile),
+    //         {
+    //           headers: {
+    //             "Content-Type": "application/json; charset=utf-8",
+    //           },
+    //         },
+    //         (err) => {
+    //           err && console.error(err);
+    //         }
+    //       );
+    //     } else {
+    //       next();
+    //     }
+    //   });
+    // },
   },
 };
 
