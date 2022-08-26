@@ -217,7 +217,10 @@ class VoteContainer extends Component {
     let wallet = JSON.parse(localStorage.getItem('currentWallet'))
     if (wallet && (new Date().valueOf() - Number(wallet.timestamp)) < 15 * 60 * 1000) {
       this.setState({
-        currentWallet: wallet
+        currentWallet: {
+          ...wallet,
+          pubkey: getPublicKeyFromObject(wallet.publicKey)
+        }
       })
     } else {
       localStorage.removeItem('currentWallet')
@@ -741,6 +744,14 @@ class VoteContainer extends Component {
         console.log('checkExtensionLockStatus: ', this.hasGetContractsFromExt);
         if (this.hasGetContractsFromExt) {
           resolve();
+        }
+
+        if (typeof nightElf.getExtensionInfo === 'function') {
+          nightElf.getExtensionInfo().then(info => {
+            this.setState({
+              isPluginLock: info.locked
+            });
+          })
         }
 
         localStorage.setItem('currentWallet', JSON.stringify({ ...this.state.currentWallet, timestamp: new Date().valueOf() }))

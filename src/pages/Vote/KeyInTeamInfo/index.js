@@ -19,7 +19,7 @@ import getCurrentWallet from '@utils/getCurrentWallet';
 import { urlRegExp } from '@pages/Vote/constants';
 import { addUrlPrefix, removeUrlPrefix } from '@utils/formater';
 import './index.less';
-import {getPublicKeyFromObject} from "../../../utils/getPublicKey";
+import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -181,13 +181,15 @@ class KeyInTeamInfo extends PureComponent {
   componentDidUpdate(prevProps) {
     const { currentWallet } = this.props;
 
-    if (currentWallet && currentWallet.address && (!prevProps.currentWallet.address || prevProps.currentWallet.address !== currentWallet.address)) {
-      this.setState(
-        {
-          hasAuth: currentWallet.pubkey === this.teamPubkey
-        },
-        this.fetchCandidateInfo
-      );
+    if (currentWallet && currentWallet.address) {
+      if (!prevProps.currentWallet || prevProps.currentWallet.address !== currentWallet.address) {
+        this.setState(
+          {
+            hasAuth: currentWallet.pubkey === this.teamPubkey
+          },
+          this.fetchCandidateInfo
+        );
+      }
     }
   }
 
@@ -210,7 +212,7 @@ class KeyInTeamInfo extends PureComponent {
     const { getFieldDecorator } = this.props.form;
 
     return this.socialKeys.map(socialKey => {
-      let initialValue = teamInfo.socials.filter(({type}) => type === socialKey);
+      let initialValue = teamInfo.socials.filter(({ type }) => type === socialKey);
       initialValue = initialValue.length === 0 ? '' : initialValue[0].url;
       return (
         <Form.Item
@@ -363,7 +365,7 @@ class KeyInTeamInfo extends PureComponent {
             type: socialKey,
             url: value
           };
-        }).filter(({type, url}) => {
+        }).filter(({ type, url }) => {
           return url !== undefined && url !== null && url !== '';
         });
         this.processUrl(submitValues, addUrlPrefix);
