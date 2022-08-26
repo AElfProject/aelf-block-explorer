@@ -37,11 +37,10 @@ const prodConfig = {
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash:5].css",
     }),
-    new webpack.HashedModuleIdsPlugin(),
   ],
   optimization: {
+    moduleIds: "hashed",
     removeEmptyChunks: true,
-    occurrenceOrder: true,
     sideEffects: true,
     minimizer: [
       new TerserPlugin({
