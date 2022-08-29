@@ -118,10 +118,12 @@ export default function Home() {
       blockHeight = height;
       setUnconfirmedBlockHeight(unconfirmedHeight);
       setTransactions((v) => {
-        return [...new_transactions, ...v].slice(0, 25);
+        const temp = new Set([...new_transactions, ...v]);
+        return Array.from(temp).slice(0, 25);
       });
       setBlocks((v) => {
-        return [...new_blocks, ...v].slice(0, 25);
+        const temp = new Set([...new_blocks, ...v]);
+        return Array.from(temp).slice(0, 25);
       });
       setLocalAccounts(accountNumber);
       setLocalTransactions(totalTxs);
