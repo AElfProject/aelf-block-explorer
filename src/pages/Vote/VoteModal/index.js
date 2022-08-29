@@ -132,6 +132,7 @@ function getColumns() {
 const defaultDate = moment().add(SHORTEST_LOCK_TIME, "days").endOf("day");
 
 class VoteModal extends Component {
+  formRef = React.createRef();
   constructor(props) {
     super(props);
 
@@ -230,45 +231,33 @@ class VoteModal extends Component {
           {
             label: "Vote Amount",
             render: (
-              // <div>
-              <Input
-                className='vote-input'
-                // suffix={SYMBOL}
-                placeholder='Enter vote amount'
-                // todo: How to make parser/formatter work well with validator?
-                // parser={value => +value.replace(/\$\s?|(,*)/g, '')}
-                // formatter={value =>
-                //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                // }
-                // min={0}
-                // max={Math.floor(balance)}
-                // value={voteAmountInput}
-                // onChange={handleVoteAmountChange}
-              />
+              <Form.Item
+                noStyle
+                name={"voteAmountInput"}
+                rules={[
+                  {
+                    required: true,
+                    message: INPUT_SOMETHING_TIP,
+                  },
+                  // todo: What if I want to validate a number and return ok for the number like 1. ?
+                  {
+                    type: "integer",
+                    transform: Number,
+                    message: INTEGER_TIP,
+                  },
+                  {
+                    type: "integer",
+                    min: 1,
+                    max: Math.floor(balance),
+                    message: BETWEEN_ZEOR_AND_BALANCE_TIP,
+                  },
+                ]}
+                validateTrigger={["onChange", "onBlur"]}
+                validateFirst={true} // todo: How to set it to default?
+              >
+                <Input className='vote-input' placeholder='Enter vote amount' />
+              </Form.Item>
             ),
-            validator: {
-              rules: [
-                {
-                  required: true,
-                  message: INPUT_SOMETHING_TIP,
-                },
-                // todo: What if I want to validate a number and return ok for the number like 1. ?
-                {
-                  type: "integer",
-                  transform: Number,
-                  message: INTEGER_TIP,
-                },
-                {
-                  type: "integer",
-                  min: 1,
-                  max: Math.floor(balance),
-                  message: BETWEEN_ZEOR_AND_BALANCE_TIP,
-                },
-              ],
-              validateTrigger: ["onChange", "onBlur"],
-              fieldDecoratorid: "voteAmountInput",
-              validateFirst: true, // todo: How to set it to default?
-            },
             // todo: extra should compatible with ReactElement and string
             tip: isIPhone()
               ? null
@@ -285,161 +274,73 @@ class VoteModal extends Component {
                   position: "relative",
                 }}
               >
-                {isIPhone() ? (
-                  <DatePickerReact
-                    style={{ width: "100%" }}
-                    dateFormat='yyyy-MM-dd'
-                    minDate={
-                      new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))
-                    }
-                    maxDate={new Date(moment().add(1080, "d"))}
-                    showYearDropdown
-                    selected={datePickerTime}
-                    onChange={(date) => {
-                      console.log("setFieldsValue", date);
-                      this.setState({
-                        datePickerTime: date,
-                      });
-                      this.props.form.setFieldsValue({
-                        lockTime: moment(date),
-                      });
-                    }}
-                    className='react-datepicker-custom-container date-picker-in-modal'
-                    dayClassName={() => "day-class"}
-                    includeDateIntervals={[
-                      {
-                        start: new Date(moment().add(SHORTEST_LOCK_TIME, "d")),
-                        end: new Date(moment().add(1080, "d")),
-                      },
-                    ]}
-                    placeholderText='Select date'
-                  />
-                ) : (
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    disabledDate={disabledDate}
-                    onChange={(value) => {
-                      this.setState({
-                        datePickerTime: new Date(value),
-                      });
-                      this.props.form.setFieldsValue({
-                        lockTime: value,
-                      });
-                    }}
-                  />
-                )}
+                <Form.Item
+                  noStyle
+                  rules={[
+                    {
+                      required: true,
+                      message: SELECT_SOMETHING_TIP,
+                    },
+                  ]}
+                  initialValue={defaultDate}
+                  name='lockTime'
+                >
+                  {isIPhone() ? (
+                    <DatePickerReact
+                      style={{ width: "100%" }}
+                      dateFormat='yyyy-MM-dd'
+                      minDate={
+                        new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))
+                      }
+                      maxDate={new Date(moment().add(1080, "d"))}
+                      showYearDropdown
+                      selected={datePickerTime}
+                      onChange={(date) => {
+                        console.log("setFieldsValue", date);
+                        this.setState({
+                          datePickerTime: date,
+                        });
+                        this.formRef.current.setFieldsValue({
+                          lockTime: moment(date),
+                        });
+                      }}
+                      className='react-datepicker-custom-container date-picker-in-modal'
+                      dayClassName={() => "day-class"}
+                      includeDateIntervals={[
+                        {
+                          start: new Date(
+                            moment().add(SHORTEST_LOCK_TIME, "d")
+                          ),
+                          end: new Date(moment().add(1080, "d")),
+                        },
+                      ]}
+                      placeholderText='Select date'
+                    />
+                  ) : (
+                    <DatePicker
+                      style={{ width: "100%" }}
+                      disabledDate={disabledDate}
+                      onChange={(value) => {
+                        this.setState({
+                          datePickerTime: new Date(value),
+                        });
+                        this.formRef.current.setFieldsValue({
+                          lockTime: value,
+                        });
+                      }}
+                    />
+                  )}
+                </Form.Item>
               </span>
             ),
             tip: isIPhone()
               ? null
               : "Withdraw and transfer are not supported during the locking period",
-            validator: {
-              rules: [
-                {
-                  required: true,
-                  message: SELECT_SOMETHING_TIP,
-                },
-              ],
-              initialValue: defaultDate,
-              fieldDecoratorid: "lockTime",
-              // todo: How to validate DatePicker in a proper time?
-              // validateTrigger: ['onBlur']
-            },
           },
         ],
       },
-      /* {
-        type: FROM_ACTIVE_VOTES,
-        label: 'From Not Expired Votes',
-        index: 2,
-        formItems: [
-          {
-            label: 'Node Name',
-            render: (
-              <span className="form-item-value">
-                {nodeName}
-              </span>
-            )
-          },
-          {
-            label: 'Node Address',
-            render: (
-              <span className="form-item-value">
-                {nodeAddress}
-              </span>
-            )
-          },
-          {
-            label: 'Select Vote',
-            render: (
-                <Table
-                    size="middle"
-                    dataSource={switchableVoteRecords}
-                    columns={columns}
-                    rowSelection={switchVoteRowSelection}
-                    pagination={switchVotePagination}
-                    scroll={{ x: 798 }}
-                />
-            ),
-            validator: {
-              initialValue: switchVoteSelectedRowKeys.length > 0 ? switchVoteSelectedRowKeys[0] : '',
-              rules: [
-                {
-                  required: true,
-                  message: SELECT_SOMETHING_TIP
-                }
-              ],
-              fieldDecoratorid: 'switchVoteRowSelection'
-              // todo: How to validate DatePicker in a proper time?
-              // validateTrigger: ['onBlur']
-            }
-          }
-          // {
-          //   label: '锁定期',
-          //   render: (
-          //     <div>
-          //       <DatePicker
-          //         disabledDate={disabledDate}
-          //         value={lockTime}
-          //         onChange={handleLockTimeChange}
-          //       />
-          //       <span className='tip-color' style={{ marginLeft: 10 }}>
-          //         锁定期内不支持提币和转账
-          //       </span>
-          //     </div>
-          //   ),
-          //   // todo: unify the validator form, use rules or Form.Item's
-          //   validator: {
-          //     rules: [
-          //       // todo: add the validator rule
-          //       {
-          //         required: true,
-          //         message: 'Please select your lock time!'
-          //       }
-          //     ],
-          //     validateTrigger: ['onChange', 'onBlur'],
-          //     fieldDecoratorid: 'lockTime'
-          //   }
-          // }
-        ]
-      } */
     ];
   }
-
-  // handleCheckboxChange(checked, index) {
-  //   const { switchVoteAmount } = this.props;
-  //   const { checkedGroup } = this.state;
-  //   checkedGroup[index] = checked;
-
-  //   this.setState(
-  //     {
-  //       checkedGroup: [...checkedGroup]
-  //     },
-  //     () => {
-  //       switchVoteAmount();
-  //     }
-  //   );
-  // }
 
   handleAllIn() {
     const { balance, changeVoteState } = this.props;
@@ -449,8 +350,7 @@ class VoteModal extends Component {
 
   // todo: the method seems useless
   handleOk() {
-    const { callback, changeVoteState, form, setVoteConfirmLoading } =
-      this.props;
+    const { callback, changeVoteState, setVoteConfirmLoading } = this.props;
     const { voteType } = this.props;
     const formItemsNeedToValidate = formItemsNeedToValidateMap[voteType];
 
@@ -461,28 +361,29 @@ class VoteModal extends Component {
       setVoteConfirmLoading(false);
     }, 60 * 1000);
 
-    form.validateFields(formItemsNeedToValidate, (err, values) => {
-      if (err) {
+    this.formRef.current.validateFields(formItemsNeedToValidate).then(
+      (values) => {
+        changeVoteState(values, () => {
+          // The switch/case is for the future's product require changing.
+          switch (voteType) {
+            case FROM_WALLET:
+              callback();
+              break;
+            case FROM_EXPIRED_VOTES:
+              callback();
+              break;
+            case FROM_ACTIVE_VOTES:
+              callback();
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      (err) => {
         setVoteConfirmLoading(false);
-        return;
       }
-      changeVoteState(values, () => {
-        // The switch/case is for the future's product require changing.
-        switch (voteType) {
-          case FROM_WALLET:
-            callback();
-            break;
-          case FROM_EXPIRED_VOTES:
-            callback();
-            break;
-          case FROM_ACTIVE_VOTES:
-            callback();
-            break;
-          default:
-            break;
-        }
-      });
-    });
+    );
   }
 
   getColumnSearchProps = (dataIndex) => ({
@@ -625,36 +526,35 @@ class VoteModal extends Component {
               key={form.type}
             >
               <Form
+                ref={this.formRef}
                 className='vote-modal-form'
                 {...formItemLayout}
                 onSubmit={this.handleSubmit}
               >
                 {form.formItems.map((item) => (
                   // todo: there are repeat code in form
-                  <>
-                    <Form.Item
-                      label={item.label}
-                      key={item.label}
-                      className={item.extra ? "form-item-with-extra" : ""}
-                      name={item.validator?.fieldDecoratorId}
-                      rules={item.validator?.rules}
-                      initialValue={item.validator?.initialValue}
-                      validateTrigger={item.validator?.validateTrigger}
-                    >
-                      {item.validator ? (
-                        <span>{item.render}</span> || <Input />
-                      ) : (
-                        <span>{item.render}</span>
-                      )}
-                      {item.tip ? (
-                        <span style={{ position: "relative" }}>
-                          <Tooltip title={item.tip}>
-                            <InfoCircleFilled className='right-icon' />
-                          </Tooltip>
-                        </span>
-                      ) : null}
-                    </Form.Item>
-                  </>
+
+                  <Form.Item
+                    required={
+                      item.label === "Vote Amount" || item.label === "Lock Time"
+                    }
+                    label={item.label}
+                    key={item.label}
+                    className={item.extra ? "form-item-with-extra" : ""}
+                  >
+                    {item.validator ? (
+                      <>{item.render}</> || <Input />
+                    ) : (
+                      <>{item.render}</>
+                    )}
+                    {item.tip ? (
+                      <span style={{ position: "relative" }}>
+                        <Tooltip title={item.tip}>
+                          <InfoCircleFilled className='right-icon' />
+                        </Tooltip>
+                      </span>
+                    ) : null}
+                  </Form.Item>
                 ))}
               </Form>
             </TabPane>

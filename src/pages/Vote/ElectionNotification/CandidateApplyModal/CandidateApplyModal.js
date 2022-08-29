@@ -139,7 +139,7 @@ class CandidateApplyModal extends PureComponent {
             label='Candidate Admin:'
             className='candidate-admin'
             name='admin'
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={rules}
           >
             <Input placeholder='Please input admin address' />
             <Tooltip
