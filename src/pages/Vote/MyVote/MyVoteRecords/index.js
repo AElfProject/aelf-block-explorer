@@ -1,47 +1,39 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import {
-  Input, Button, Table, Icon, Tooltip,
-} from 'antd';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { Input, Button, Table, Tooltip } from "antd";
 
-import {
-  NODE_DEFAULT_NAME,
-  FROM_ACTIVE_VOTES,
-  RANK_NOT_EXISTED_SYMBOL,
-} from '@src/pages/Vote/constants';
-import publicKeyToAddress from '@utils/publicKeyToAddress';
-import { centerEllipsis } from '@utils/formater';
+import { SearchOutlined } from "@ant-design/icons";
+import publicKeyToAddress from "@utils/publicKeyToAddress";
 
-import './MyVoteRecords.less';
-import { ELF_DECIMAL } from '../../constants';
+import "./MyVoteRecords.less";
+import { ELF_DECIMAL } from "../../constants";
 
-const { Search } = Input;
-const clsPrefix = 'my-vote-records';
+const clsPrefix = "my-vote-records";
 
 function genMyVoteRecordsCols() {
   const { isSmallScreen } = this.props;
 
   const myVoteRecordsCols = [
     {
-      title: 'Rank',
-      dataIndex: 'displayedRank',
-      key: 'rank',
+      title: "Rank",
+      dataIndex: "displayedRank",
+      key: "rank",
       width: 70,
       sorter: (a, b) => a.rank - b.rank,
     },
     {
-      title: 'Node Name',
-      dataIndex: 'name',
-      key: 'nodeName',
+      title: "Node Name",
+      dataIndex: "name",
+      key: "nodeName",
       width: 250,
       ellipsis: true,
-      ...this.getColumnSearchProps('name'),
+      ...this.getColumnSearchProps("name"),
       render: (text, record) => (
         <Tooltip title={text}>
           <Link
             to={{
-              pathname: '/vote/team',
+              pathname: "/vote/team",
               search: `pubkey=${record.candidate}`,
             }}
           >
@@ -51,41 +43,41 @@ function genMyVoteRecordsCols() {
       ),
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
       width: 90,
     },
     {
-      title: 'Vote Amount',
-      dataIndex: 'amount',
-      key: 'voteAmount',
-      width: 100,
+      title: "Vote Amount",
+      dataIndex: "amount",
+      key: "voteAmount",
       sorter: (a, b) => a.amount - b.amount,
       render: (value) => value / ELF_DECIMAL,
     },
     {
-      title: 'Lock Time',
-      dataIndex: 'formattedLockTime',
-      key: 'formattedLockTime'
+      title: "Lock Time",
+      dataIndex: "formattedLockTime",
+      key: "formattedLockTime",
     },
     {
-      title: 'Unlock Time',
+      title: "Unlock Time",
       ellipsis: true,
-      dataIndex: 'formattedUnlockTime',
-      key: 'formattedUnlockTime'
+      dataIndex: "formattedUnlockTime",
+      key: "formattedUnlockTime",
     },
     {
-      title: 'Status',
-      key: 'status',
-      dataIndex: 'status',
+      title: "Status",
+      key: "status",
+      dataIndex: "status",
       width: 110,
     },
     {
-      title: 'Operation Time',
-      dataIndex: 'operationTime',
-      key: 'operationTime',
-      defaultSortOrder: 'descend',
+      title: "Operation Time",
+      dataIndex: "operationTime",
+      defaultSortOrder: "descend",
+      key: "operationTime",
+      width: 180,
       sorter: (a, b) => {
         let prev = null;
         let next = null;
@@ -100,18 +92,18 @@ function genMyVoteRecordsCols() {
       },
     },
     {
-      title: 'Operations',
-      key: 'operations',
+      title: "Operations",
+      key: "operations",
       render: (text, record) => (
-        <div className="node-list-btn-group">
+        <div className='node-list-btn-group'>
           <Button
-            type="primary"
-            className="table-btn redeem-btn"
-            data-role="redeemOne"
+            type='primary'
+            className='table-btn redeem-btn'
+            data-role='redeemOne'
             data-nodeaddress={publicKeyToAddress(record.candidate)}
             data-nodename={record.nane || publicKeyToAddress(record.candidate)}
             data-amount={record.amount}
-            disabled={!record.isRedeemable || record.type === 'Redeem'}
+            disabled={!record.isRedeemable || record.type === "Redeem"}
             data-shoulddetectlock
             data-voteId={JSON.stringify(record.voteId)}
           >
@@ -129,7 +121,7 @@ function genMyVoteRecordsCols() {
 
   myVoteRecordsCols.forEach((item) => {
     // eslint-disable-next-line no-param-reassign
-    item.align = 'center';
+    item.align = "center";
   });
   return myVoteRecordsCols;
 }
@@ -155,22 +147,24 @@ class MyVoteRecords extends Component {
           }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
-          style={{ width: 188, marginBottom: 8, display: 'block' }}
+          style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
-          type="primary"
+          type='primary'
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon="search"
-          size="small"
+          icon={<SearchOutlined />}
+          size='small'
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
-          size="small"
+          size='small'
           style={{ width: 90 }}
         >
           Reset
@@ -178,12 +172,10 @@ class MyVoteRecords extends Component {
       </div>
     ),
     filterIcon: (filtered) => (
-      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
-    onFilter: (value, record) => record[dataIndex]
-      .toString()
-      .toLowerCase()
-      .includes(value.toLowerCase()),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
@@ -207,19 +199,10 @@ class MyVoteRecords extends Component {
       <section className={`${clsPrefix}-section`}>
         <h2 className={`${clsPrefix}-header table-card-header`}>
           <span>My Votes</span>
-          {/* <span className='node-color-intro-group'>
-            <span className='node-color-intro-item'>BP节点</span>
-            <span className='node-color-intro-item'>候选节点</span>
-          </span> */}
-          {/* <Search
-            placeholder='输入节点名称'
-            onSearch={value => console.log(value)}
-          /> */}
         </h2>
         <Table
           columns={myVoteRecordsCols}
           dataSource={data}
-          // loading={loading}
           pagination={pagination}
           rowKey={(record) => record.voteId}
           scroll={{ x: 1024 }}
