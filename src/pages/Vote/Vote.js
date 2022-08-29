@@ -1060,7 +1060,6 @@ class VoteContainer extends Component {
       }),
     ])
       .then((resArr) => {
-        // debugger;
         const [tokens, ...list] = resArr;
         const decimals = tokens.reduce(
           (acc, v) => ({
