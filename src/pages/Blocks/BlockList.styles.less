@@ -11,7 +11,8 @@
   .before-table {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 16px;
     .left {
       display: flex;
       flex-direction: column;
@@ -24,15 +25,13 @@
         font-size: 14px;
       }
     }
-    .right {
-      padding-top: 8px;
-    }
   }
   .block-table {
     display: flex;
     background: @bgBlankWhite;
+    padding-bottom: 16px;
     > .block {
-      width: 16px;
+      min-width: 16px;
       height: 45px;
       border-bottom: @border-color2 1px solid !important;
     }
@@ -47,6 +46,9 @@
           &::before {
             display: none !important;
             width: 0 !important;
+          }
+          &:first-child {
+            padding-left: 16px;
           }
           &:last-child {
             text-align: right;
@@ -75,25 +77,19 @@
               border-bottom-right-radius: 4px;
             }
             .height {
-              width: 71px;
               display: flex;
+              padding-left: 16px;
               align-items: center;
               overflow: hidden;
               text-overflow: ellipsis;
               a {
                 display: block;
-                width: 113px;
                 overflow: hidden;
                 text-overflow: ellipsis;
               }
             }
             .block {
               width: 71px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            }
-            .time {
-              min-width: 113px;
               overflow: hidden;
               text-overflow: ellipsis;
             }
@@ -124,6 +120,7 @@
   .before-table {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     margin-bottom: 16px;
     .right {
       display: flex;
@@ -131,13 +128,12 @@
     }
   }
   .block-table {
-    padding: 0 16px;
-    background: transparent;
-    width: 100vw;
+    background: white;
     overflow-x: scroll;
-    margin-left: -20px;
+    border-radius: 4px;
+    padding-bottom: 10px;
     .ant-table-wrapper {
-      min-width: 960px;
+      min-width: 691px;
     }
   }
   .after-table {

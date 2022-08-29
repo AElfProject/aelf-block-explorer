@@ -39,8 +39,7 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
               <div>
                 <Link to={"/address/" + basicInfo.miner}>
                   {addressFormat(basicInfo.miner)}
-                </Link>
-                <CopyButton value={addressFormat(basicInfo.miner)} />
+                </Link> <CopyButton value={addressFormat(basicInfo.miner)} />
               </div>
             ),
             Reward: (

@@ -80,7 +80,7 @@ export default (timeFormat, price, handleFormatChange) => {
   return [
     {
       dataIndex: "tx_id",
-      width: 166,
+      width: isMobile ? 171 : 166,
       title: "Txn Hash",
       render: (text, record) => {
         return (
@@ -107,7 +107,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "method",
       title: "Method",
-      width: 111,
+      width: isMobile ? 100 : 111,
       render: (text) => {
         return <div className="method">{text}</div>;
       },
@@ -115,7 +115,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "block_height",
       title: "Block",
-      width: 85,
+      width: isMobile ? 75 : 85,
       render: (text) => {
         return (
           <div className="block">
@@ -133,7 +133,7 @@ export default (timeFormat, price, handleFormatChange) => {
           {timeFormat} <IconFont type="change" />
         </div>
       ),
-      width: 132,
+      width: isMobile ?140 : 132,
       render: (text) => {
         return <div>{getFormattedDate(text, timeFormat)}</div>;
       },
@@ -141,7 +141,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "address_from",
       title: "From",
-      width: 144,
+      width: isMobile ? 116 : 144,
       render: (text) => {
         return (
           <div className="address">
@@ -156,7 +156,7 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "address_to",
       title: "Interacted With (To)",
-      width: 126,
+      width: isMobile ? 117 : 126,
       render: (text) => {
         return (
           <div className="address">

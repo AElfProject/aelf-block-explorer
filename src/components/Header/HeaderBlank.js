@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
-import { isPhoneCheck } from "../../utils/deviceCheck";
 import "./HeaderBlank.less";
 
 class HeaderBlank extends Component {
@@ -11,14 +10,12 @@ class HeaderBlank extends Component {
     }
   }
   componentDidMount() {
-    this.setState({ isHome: !!isPhoneCheck() })
+    this.setState({ isHome: this.props.pathname === '/' })
   }
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps && prevProps.location.pathname !== this.props.location.pathname) {
-      if (this.props.location.pathname === '/') {
-        this.setState({ isHome: true })
-      } else {
-        this.setState({ isHome: false })
+    if (prevProps && prevProps.location.pathname !== this.props.pathname) {
+      if ((this.props.location.pathname === '/') !== this.state.isHome) {
+        this.setState({ isHome: this.props.location.pathname === '/' })
       }
     }
   }

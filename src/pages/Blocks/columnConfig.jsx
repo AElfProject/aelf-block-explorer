@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { getFormattedDate } from "../../utils/timeUtils";
 import IconFont from "../../components/IconFont";
 import { SYMBOL, CHAIN_ID } from "../../../config/config";
+import { isPhoneCheck } from "../../utils/deviceCheck";
 
 export default (timeFormat, handleFormatChange) => {
+  const isMobile = isPhoneCheck();
   return [
     {
       dataIndex: "block_height",
-      width: 160,
+      width: isMobile ? 101 : 160,
       title: "Block",
       render: (text) => {
         return (
@@ -22,7 +24,7 @@ export default (timeFormat, handleFormatChange) => {
     },
     {
       dataIndex: "time",
-      width: 169,
+      width: isMobile ? 140 : 169,
       title: (
         <div className="time" onClick={handleFormatChange}>
           {timeFormat} <IconFont type="change" />
@@ -35,7 +37,7 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "tx_count",
       title: "Txns",
-      width: 102,
+      width: isMobile ? 32 : 102,
       render: (text, record) => {
         return (
           <div>
@@ -53,7 +55,7 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "block_hash",
       title: "Block Hash",
-      width: 224,
+      width: isMobile ? 127 : 224,
       render: (text, record) => {
         return (
           <div className="address">
@@ -67,7 +69,7 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "miner",
       title: "Miner",
-      width: 224,
+      width: isMobile ? 130 : 224,
       render: (text) => {
         return (
           <div className="address">

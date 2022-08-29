@@ -39,7 +39,6 @@ function BlockDetail(props) {
         <Link to={prevLink} disabled={+blockHeight === 1}>
           <IconFont type="left" />
         </Link>
-        <span>&nbsp;&nbsp;&nbsp;</span>
         <Link to={nextLink}>
           <IconFont style={{ transform: "rotate(180deg)" }} type="left" />
         </Link>

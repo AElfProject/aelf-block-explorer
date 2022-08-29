@@ -20,6 +20,11 @@
     width: 100%;
     font-size: 14px;
     line-height: 16px;
+    &:disabled {
+      color: @scorpion;
+      opacity: 1;
+      -webkit-text-fill-color: @scorpion;
+    }
   }
   .ant-tabs {
     margin-top: 16px;
@@ -180,6 +185,12 @@
               margin-top: 9px;
             }
           }
+          .value-timestamp {
+            align-items: baseline;
+            i {
+              line-height: 22px;
+            }
+          }
         }
       }
     }
@@ -203,6 +214,9 @@
     }
     .event-list > div {
       gap: 24px;
+      .info > div {
+        overflow-wrap: anywhere;
+      }
     }
     .event-item {
       margin-left: 0;
