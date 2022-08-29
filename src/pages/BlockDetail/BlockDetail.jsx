@@ -199,7 +199,7 @@ function BlockDetail(props) {
       fetchBlockInfo();
     },
     1000,
-    [pageId, blockHeight]
+    [pageId]
   );
 
   return (

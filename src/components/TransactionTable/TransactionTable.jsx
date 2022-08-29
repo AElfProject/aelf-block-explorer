@@ -24,13 +24,17 @@ export default function TransactionTable({ dataLoading, dataSource }) {
   return (
     <div className="transaction-table">
       <div className="block" />
-      <Table
-        loading={dataLoading}
-        columns={columns}
-        dataSource={dataSource}
-        pagination={false}
-        rowKey="tx_id"
-      />
+      {dataSource ? (
+        <Table
+          loading={dataLoading}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={false}
+          rowKey="tx_id"
+        />
+      ) : (
+        ""
+      )}
       <div className="block" />
     </div>
   );

@@ -33,9 +33,9 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
     <div className="previewer-card">
       <div className="title">
         <span>Additional Info</span>
-        <Link to={`/tx/${text}`} title={text}>
+        <a onClick={() => (location.href = `/tx/${text}`)}>
           See more Details <IconFont type="chakangengduojiantou" />
-        </Link>
+        </a>
       </div>
       <div className="bottom">
         <div className="status">
@@ -45,9 +45,9 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
         <div className="block">
           <p className="label">Block:</p>
           <div>
-            <Link to={`/block/${info.block_height}`} title={info.block_height}>
+            <a onClick={() => (location.href = `/block/${info.block_height}`)}>
               {info.block_height}
-            </Link>
+            </a>
             {!lastBlockLoading ? (
               <Tag className={confirmations < 0 && "unconfirmed"}>
                 {confirmations >= 0
@@ -133,7 +133,7 @@ export default (timeFormat, price, handleFormatChange) => {
           {timeFormat} <IconFont type="change" />
         </div>
       ),
-      width: isMobile ?140 : 132,
+      width: isMobile ? 140 : 132,
       render: (text) => {
         return <div>{getFormattedDate(text, timeFormat)}</div>;
       },
