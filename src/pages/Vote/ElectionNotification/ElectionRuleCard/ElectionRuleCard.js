@@ -11,7 +11,7 @@ import { withRouter } from "../../../../routes/utils";
 import { Button, Icon } from "antd";
 
 import "./ElectionRuleCard.style.less";
-import { isPhoneCheck } from "@utils/deviceCheck";
+import { FileTextFilled } from "@ant-design/icons";
 import Svg from "../../../../components/Svg/Svg";
 import { useNavigate } from "react-router";
 
@@ -69,7 +69,7 @@ function ElectionRuleCard(props) {
   return (
     <section className='election-rule-card'>
       <h2 className='election-header-title'>
-        <Icon type='file-text' theme='filled' className='card-header-icon' />
+        <FileTextFilled className='card-header-icon' />
         Node Election
       </h2>
       <div className='election-container'>

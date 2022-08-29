@@ -47,8 +47,8 @@
   .tx-block-code-like-content {
     width: 100%;
     border-radius: 3px;
-    border-color: #E5E5E5;
-    background: #FAFAFA;
+    border-color: #e5e5e5;
+    background: #fafafa;
   }
 
   .tx-block-detail-body {
@@ -56,6 +56,9 @@
     padding: 0px 16px 16px 16px;
     color: @textContext;
     background-color: @bgBlankWhite;
+    .ant-col {
+      width: 100%;
+    }
 
     //.ant-col-3,
     //.ant-col-21 {
@@ -63,13 +66,13 @@
     //  padding: 5px 0;
     //  line-height: 34px;
     //}
-    .ant-col-6, .ant-col-18 {
+    .ant-col-6,
+    .ant-col-18 {
       //line-height: 34px;
       padding: 5px 0;
       min-height: 34px;
       word-break: break-word;
     }
-
   }
 
   .tx-block-detail-footer {
@@ -77,16 +80,20 @@
     justify-content: center;
   }
 
-    .ant-table table {
-        word-break: break-all;
-        word-wrap: break-word;
-    }
+  .ant-table table {
+    word-break: break-all;
+    word-wrap: break-word;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .tx-block-detail-container {
     .tx-block-detail-body {
-      .ant-col-6, .ant-col-18 {
+      .ant-col {
+        width: 100%;
+      }
+      .ant-col-6,
+      .ant-col-18 {
         height: auto;
         float: none;
         flex: none;
@@ -116,5 +123,4 @@
       margin: 0 0 4px 0;
     }
   }
-
 }

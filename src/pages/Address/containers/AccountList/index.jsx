@@ -5,7 +5,7 @@
 import React from "react";
 import Bread from "../../components/Bread";
 import HolderList from "../../components/HolderList";
-import { Outlet } from "react-router-dom";
+import "./index.less";
 
 const AccountList = () => (
   <div className='account-list main-container'>

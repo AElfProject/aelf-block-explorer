@@ -247,6 +247,7 @@ class VoteModal extends Component {
                   },
                   {
                     type: "integer",
+                    transform: Number,
                     min: 1,
                     max: Math.floor(balance),
                     message: BETWEEN_ZEOR_AND_BALANCE_TIP,

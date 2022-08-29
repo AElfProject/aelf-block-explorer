@@ -142,7 +142,7 @@ class NodeTable extends PureComponent {
           Search
         </Button>
         <Button
-          onClick={() => this.handleReset(clearFilters)}
+          onClick={() => this.handleReset(clearFilters, confirm)}
           size='small'
           style={{ width: 90 }}
         >
@@ -310,9 +310,10 @@ class NodeTable extends PureComponent {
     // this.setState({ searchText: selectedKeys[0] });
   };
 
-  handleReset = (clearFilters) => {
+  // Must write in this way because of antd v4 bug.
+  handleReset = (clearFilters, confirm) => {
     clearFilters();
-    // this.setState({ searchText: '' });
+    confirm();
   };
 
   fetchData(currentWallet) {

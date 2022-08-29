@@ -121,7 +121,7 @@ const AccountInfo = () => {
   return (
     <Layout>
       <Content>
-        <div className='main-container'>
+        <div className='main-container account-info-container'>
           <Bread
             title='Account'
             subTitle={`ELF_${address}_${config.viewer.chainId}`}

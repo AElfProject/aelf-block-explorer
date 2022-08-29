@@ -101,17 +101,11 @@ class CandidateApplyModal extends PureComponent {
       },
       () => ({
         validator(_, value) {
-          if (value && value.length > 0) {
-            try {
-              AElf.utils.decodeAddressRep(value.trim());
-              return Promise.resolve();
-            } catch (e) {
-              return Promise.reject(
-                new Error(`${value} is not a valid address`)
-              );
-            }
-          } else {
-            return Promise.reject(new Error("Please input your admin address"));
+          try {
+            AElf.utils.decodeAddressRep(value.trim());
+            return Promise.resolve();
+          } catch (e) {
+            return Promise.reject(new Error(`${value} is not a valid address`));
           }
         },
       }),
