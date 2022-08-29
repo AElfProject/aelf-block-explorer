@@ -20,6 +20,16 @@
     "secure": false
   },
   {
+    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "target": "https://explorer-test.aelf.io",
+    "context": ["/cms"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
     "description": "链节点，只需要更改target",
     "target": "https://explorer-test.aelf.io",
     "context": ["/chain"],

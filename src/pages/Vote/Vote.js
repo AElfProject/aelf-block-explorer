@@ -1060,45 +1060,55 @@ class VoteContainer extends Component {
       }),
     ])
       .then((resArr) => {
+        // debugger;
         const [tokens, ...list] = resArr;
         const decimals = tokens.reduce(
-          (acc, { symbol, decimals }) =>
-            Object.assign(acc, { [symbol]: decimals }),
+          (acc, v) => ({
+            [v.symbol]: v.decimals,
+          }),
           {}
         );
-
         let total = {};
-        const dividendAmounts = schemeIds.map(({ type, schemeId }, index) => {
-          const profit = list[index] || { result: {} };
-          const { result = {} } = profit;
-          let { value = { ELF: 0 } } = result;
+        const dividendAmounts = schemeIds.map((item, index) => {
+          const profit = list[index];
+          const result = profit ? profit.result || profit : {};
 
-          const amounts = Object.keys(value).reduce(
-            (acc, key) =>
-              Object.assign(acc, {
-                [key]: new Decimal(value[key] || 0)
-                  .dividedBy(`1e${decimals[key] || 8}`)
-                  .toNumber(),
-              }),
-            {}
-          );
-
-          const newTotal = Object.keys(amounts).reduce(
-            (acc, key) =>
-              Object.assign(acc, { [key]: (total[key] || 0) + amounts[key] }),
-            {}
-          );
-
-          total = Object.assign(total, newTotal);
-
-          return { type, amounts, schemeId };
+          let { value = {} } = result || {};
+          value = !value
+            ? {
+                ELF: 0,
+              }
+            : value;
+          value = Object.keys(value).reduce((acc, key) => {
+            return {
+              ...acc,
+              [key]: new Decimal(value[key] || 0)
+                .dividedBy(`1e${decimals[key] || 8}`)
+                .toNumber(),
+            };
+          }, {});
+          total = {
+            ...total,
+            ...Object.keys(value).reduce((acc, key) => {
+              return {
+                ...acc,
+                [key]: (total[key] || 0) + value[key],
+              };
+            }, {}),
+          };
+          return {
+            type: item.type,
+            amounts: value,
+            schemeId: item.schemeId,
+          };
         });
-
         const dividends = {
           total,
           amounts: dividendAmounts,
         };
-        this.setState({ dividends });
+        this.setState({
+          dividends,
+        });
       })
       .catch((err) => {
         console.error("GetAllProfitAmount", err);

@@ -298,6 +298,7 @@ export default class MyWalletCard extends PureComponent {
 
   render() {
     const { handleDividendClick, dividends } = this.props;
+    // debugger;
     const {
       balance,
       withdrawnVotedVotesAmount,
