@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-12-09 15:05:34
  * @Description: file content
  */
-import React, { PureComponent } from "react";
+import React, { PureComponent, forwardRef } from "react";
 import AElf from "aelf-sdk";
 import { Form, Input, Button, Modal, message, Tooltip, Icon } from "antd";
 
@@ -71,19 +71,6 @@ function generateCandidateApplyForm() {
   };
 }
 
-function validateAddress(rule, value, callback) {
-  if (value && value.length > 0) {
-    try {
-      AElf.utils.decodeAddressRep(value.trim());
-      callback();
-    } catch (e) {
-      callback(new Error(`${value} is not a valid address`));
-    }
-  } else {
-    callback(new Error("Please input your admin address"));
-  }
-}
-
 class CandidateApplyModal extends PureComponent {
   formRef = React.createRef();
   constructor(props) {
@@ -93,13 +80,14 @@ class CandidateApplyModal extends PureComponent {
 
   handleOk() {
     const { onOk } = this.props;
-    console.log("handle ok");
     this.formRef.current
       .validateFields()
       .then((values) => {
         onOk(values.admin.trim());
       })
-      .catch((e) => {});
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
   render() {
@@ -109,10 +97,42 @@ class CandidateApplyModal extends PureComponent {
       {
         required: true,
         type: "string",
-        validator: validateAddress,
         message: "Please input your admin address!",
       },
+      () => ({
+        validator(_, value) {
+          if (value && value.length > 0) {
+            try {
+              AElf.utils.decodeAddressRep(value.trim());
+              return Promise.resolve();
+            } catch (e) {
+              return Promise.reject(
+                new Error(`${value} is not a valid address`)
+              );
+            }
+          } else {
+            return Promise.reject(new Error("Please input your admin address"));
+          }
+        },
+      }),
     ];
+    const TooltipInput = forwardRef((props, ref) => {
+      return (
+        <>
+          <Input
+            ref={ref}
+            {...props}
+            placeholder='Please input admin address'
+          />
+          <Tooltip
+            className='candidate-admin-tip'
+            title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
+          >
+            <ExclamationCircleOutlined />
+          </Tooltip>
+        </>
+      );
+    });
     return (
       <Modal
         className='apply-node-modal'
@@ -141,13 +161,7 @@ class CandidateApplyModal extends PureComponent {
             name='admin'
             rules={rules}
           >
-            <Input placeholder='Please input admin address' />
-            <Tooltip
-              className='candidate-admin-tip'
-              title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
-            >
-              <ExclamationCircleOutlined />
-            </Tooltip>
+            <TooltipInput></TooltipInput>
           </Form.Item>
         </Form>
         <p className='tip-color' style={{ marginTop: 10 }}>

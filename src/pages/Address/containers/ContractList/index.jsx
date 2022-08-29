@@ -2,58 +2,46 @@
  * @file contract list
  * @author atom-yang
  */
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import {
-  Divider,
-  message,
-  Pagination,
-  Table,
-  Tag,
-  Input,
-  Tooltip,
-} from 'antd';
-import {
-  Link,
-} from 'react-router-dom';
-import { request } from '../../../../common/request';
-import { API_PATH } from '../../common/constants';
-import config from '../../../../common/config';
-import Total from '../../../../components/Total';
-import './index.less';
+import React, { useState, useEffect } from "react";
+import moment from "moment";
+import { Divider, message, Pagination, Table, Tag, Input, Tooltip } from "antd";
+import { Link } from "react-router-dom";
+import { request } from "../../../../common/request";
+import { API_PATH } from "../../common/constants";
+import config from "../../../../common/config";
+import Total from "../../../../components/Total";
+import "./index.less";
 import {
   removePrefixOrSuffix,
   removeAElfPrefix,
   sendHeight,
-} from '../../../../common/utils';
-import Bread from '../../components/Bread';
+} from "../../../../common/utils";
+import Bread from "../../components/Bread";
 
-const {
-  Search,
-} = Input;
+const { Search } = Input;
 
 const ListColumn = [
   {
-    title: <span title="Contract Name">Name</span>,
-    dataIndex: 'contractName',
-    key: 'contractName',
+    title: <span title='Contract Name'>Name</span>,
+    dataIndex: "contractName",
+    key: "contractName",
     ellipsis: true,
     width: 120,
-    render: (name, record) => (name && +name !== -1 ? (
-      <Link
-        to={`/contract/${record.address}`}
-        title={name}
-      >
-        <Tooltip title={name} placement="topLeft">
-          {removeAElfPrefix(name)}
-        </Tooltip>
-      </Link>
-    ) : '-'),
+    render: (name, record) =>
+      name && +name !== -1 ? (
+        <Link to={`/contract/${record.address}`} title={name}>
+          <Tooltip title={name} placement='topLeft'>
+            {removeAElfPrefix(name)}
+          </Tooltip>
+        </Link>
+      ) : (
+        "-"
+      ),
   },
   {
-    title: 'Contract Address',
-    dataIndex: 'address',
-    key: 'address',
+    title: "Contract Address",
+    dataIndex: "address",
+    key: "address",
     ellipsis: true,
     width: 320,
     render: (address) => (
@@ -66,55 +54,59 @@ const ListColumn = [
     ),
   },
   {
-    title: <span title="Contract Type">Type</span>,
-    dataIndex: 'isSystemContract',
-    key: 'isSystemContract',
+    title: <span title='Contract Type'>Type</span>,
+    dataIndex: "isSystemContract",
+    key: "isSystemContract",
     ellipsis: true,
     render: (isSystemContract) => (
-      <Tag color={isSystemContract ? 'green' : 'blue'}>{isSystemContract ? 'System' : 'User'}</Tag>
+      <Tag color={isSystemContract ? "green" : "blue"}>
+        {isSystemContract ? "System" : "User"}
+      </Tag>
     ),
   },
   {
-    title: 'Version',
-    dataIndex: 'version',
-    key: 'version',
+    title: "Version",
+    dataIndex: "version",
+    key: "version",
   },
   {
-    title: 'Author',
-    dataIndex: 'author',
-    key: 'author',
+    title: "Author",
+    dataIndex: "author",
+    key: "author",
     ellipsis: true,
     width: 320,
     render: (address) => (
       <a
         href={`${config.viewer.addressUrl}/${address}`}
-        target="_blank"
-        rel="noopener noreferrer"
+        target='_blank'
+        rel='noopener noreferrer'
       >
         {`ELF_${address}_${config.viewer.chainId}`}
       </a>
     ),
   },
   {
-    title: 'Last Updated At',
-    dataIndex: 'updateTime',
-    key: 'updateTime',
+    title: "Last Updated At",
+    dataIndex: "updateTime",
+    key: "updateTime",
     width: 150,
     render(text) {
-      return moment(text).format('YYYY/MM/DD HH:mm:ss');
+      return moment(text).format("YYYY/MM/DD HH:mm:ss");
     },
   },
 ];
 
 const fetchingStatusMap = {
-  FETCHING: 'fetching',
-  ERROR: 'error',
-  SUCCESS: 'success',
+  FETCHING: "fetching",
+  ERROR: "error",
+  SUCCESS: "success",
 };
 
 const ContractList = () => {
   const [list, setList] = useState([]);
-  const [fetchingStatus, setFetchingStatus] = useState(fetchingStatusMap.FETCHING);
+  const [fetchingStatus, setFetchingStatus] = useState(
+    fetchingStatusMap.FETCHING
+  );
   const [pagination, setPagination] = useState({
     total: 0,
     pageSize: 10,
@@ -124,25 +116,24 @@ const ContractList = () => {
   const getList = (pager) => {
     setFetchingStatus(fetchingStatusMap.FETCHING);
     request(API_PATH.GET_LIST, pager, {
-      method: 'GET',
-    }).then((result) => {
-      setFetchingStatus(fetchingStatusMap.SUCCESS);
-      const {
-        list: resultList,
-        total,
-      } = result;
-      setList(resultList);
-      setPagination({
-        ...pager,
-        total,
+      method: "GET",
+    })
+      .then((result) => {
+        setFetchingStatus(fetchingStatusMap.SUCCESS);
+        const { list: resultList, total } = result;
+        setList(resultList);
+        setPagination({
+          ...pager,
+          total,
+        });
+        sendHeight();
+      })
+      .catch((e) => {
+        setFetchingStatus(fetchingStatusMap.ERROR);
+        console.error(e);
+        sendHeight();
+        message.error("Network error");
       });
-      sendHeight();
-    }).catch((e) => {
-      setFetchingStatus(fetchingStatusMap.ERROR);
-      console.error(e);
-      sendHeight();
-      message.error('Network error');
-    });
   };
 
   useEffect(() => {
@@ -177,28 +168,28 @@ const ContractList = () => {
   };
 
   return (
-    <div className="contract-list">
-      <Bread title="Contract List" />
-      <div className="contract-list-search">
+    <div className='contract-list'>
+      <Bread title='Contract List' />
+      <div className='contract-list-search'>
         <h2>&nbsp;</h2>
         <Search
-          className="contract-list-search-input"
-          placeholder="Input contract address"
-          size="large"
+          className='contract-list-search-input'
+          placeholder='Input contract address'
+          size='large'
           onSearch={onSearch}
         />
       </div>
       <Divider />
-      <div className="contract-list-content">
+      <div className='contract-list-content'>
         <Table
           dataSource={list}
           columns={ListColumn}
           loading={fetchingStatus === fetchingStatusMap.FETCHING}
-          rowKey="address"
+          rowKey='address'
           pagination={false}
         />
       </div>
-      <div className="contract-list-pagination">
+      <div className='contract-list-pagination'>
         <Pagination
           showQuickJumper
           total={pagination.total}
