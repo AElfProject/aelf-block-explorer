@@ -36,7 +36,13 @@ import RedeemModal from "./RedeemModal";
 import RedeemAnVoteModal from "./RedeemAnVoteModal";
 // todo: use a import instead
 import * as constants from "./constants";
-import { contractsNeedToLoad, FROM_WALLET, routePaths } from "./constants";
+import {
+  contractsNeedToLoad,
+  FROM_WALLET,
+  FROM_EXPIRED_VOTES,
+  FROM_ACTIVE_VOTES,
+  routePaths,
+} from "./constants";
 import getCurrentWallet from "@utils/getCurrentWallet";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
 import { getAllTeamDesc } from "@api/vote";
@@ -872,9 +878,9 @@ class VoteContainer extends Component {
   handleVoteConfirmOk() {
     const { voteType } = this.state;
     const type2Fun = {
-      FROM_WALLET: this.handleVoteFromWallet,
-      FROM_EXPIRED_VOTES: this.handleVoteFromExpiredVote,
-      FROM_ACTIVE_VOTES: this.handleSwitchVote,
+      [FROM_WALLET]: this.handleVoteFromWallet.bind(this),
+      [FROM_EXPIRED_VOTES]: this.handleVoteFromExpiredVote.bind(this),
+      [FROM_ACTIVE_VOTES]: this.handleSwitchVote.bind(this),
     };
     if (type2Fun[voteType]) {
       type2Fun[voteType]();

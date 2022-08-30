@@ -544,11 +544,7 @@ class VoteModal extends Component {
                     key={item.label}
                     className={item.extra ? "form-item-with-extra" : ""}
                   >
-                    {item.validator ? (
-                      <>{item.render}</> || <Input />
-                    ) : (
-                      <>{item.render}</>
-                    )}
+                    {item.validator ? item.render || <Input /> : item.render}
                     {item.tip ? (
                       <span style={{ position: "relative" }}>
                         <Tooltip title={item.tip}>
