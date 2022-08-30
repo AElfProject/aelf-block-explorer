@@ -24,8 +24,7 @@ const Dividends = (props) => {
             <Menu>
               {keys.map((key) => (
                 <Menu.Item key={key}>
-                  {dividends[key]}
-                  {key}
+                  {dividends[key]}&nbsp;{key}
                 </Menu.Item>
               ))}
             </Menu>
@@ -34,14 +33,12 @@ const Dividends = (props) => {
         >
           {useButton ? (
             <Button>
-              {dividends[defaultKey] || 0}
-              {defaultKey}
+              {dividends[defaultKey] || 0}&nbsp;{defaultKey}
               <DownOutlined />
             </Button>
           ) : (
             <div>
-              {dividends[defaultKey] || 0}
-              {defaultKey}
+              {dividends[defaultKey] || 0}&nbsp;{defaultKey}
               <DownOutlined />
             </div>
           )}
@@ -49,8 +46,7 @@ const Dividends = (props) => {
       </Then>
       <Else>
         <div {...rest}>
-          {dividends[defaultKey] || 0}
-          {defaultKey}
+          {dividends[defaultKey] || 0}&nbsp;{defaultKey}
         </div>
       </Else>
     </If>

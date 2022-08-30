@@ -105,6 +105,7 @@ class CandidateApplyModal extends PureComponent {
             AElf.utils.decodeAddressRep(value.trim());
             return Promise.resolve();
           } catch (e) {
+            if (!value) return Promise.resolve();
             return Promise.reject(new Error(`${value} is not a valid address`));
           }
         },

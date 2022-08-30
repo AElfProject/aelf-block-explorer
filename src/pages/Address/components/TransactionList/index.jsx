@@ -2,30 +2,28 @@
  * @file transaction list
  * @author atom-yang
  */
-import React, { useMemo, useState, useEffect } from 'react';
-import axios from 'axios';
-import moment from 'moment';
-import PropTypes from 'prop-types';
+import React, { useMemo, useState, useEffect } from "react";
+import axios from "axios";
+import moment from "moment";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { Table, Pagination, message } from "antd";
+import config from "../../../../common/config";
 import {
-  Link,
-} from 'react-router-dom';
-import {
-  Table,
-  Pagination,
-  message,
-} from 'antd';
-import config from '../../../../common/config';
-import { getContractNames, removeAElfPrefix, sendHeight } from '../../../../common/utils';
-import Total from '../../../../components/Total';
-import Dividends from '../Dividends';
-import AddressLink from '../AddressLink';
+  getContractNames,
+  removeAElfPrefix,
+  sendHeight,
+} from "../../../../common/utils";
+import Total from "../../../../components/Total";
+import Dividends from "../../../../components/Dividends";
+import AddressLink from "../AddressLink";
 
 function getTableColumns(contractNames, ownerAddress) {
   return [
     {
-      title: 'Tx Id',
-      dataIndex: 'txId',
-      key: 'txId',
+      title: "Tx Id",
+      dataIndex: "txId",
+      key: "txId",
       ellipsis: true,
       width: 250,
       render(txId) {
@@ -33,8 +31,8 @@ function getTableColumns(contractNames, ownerAddress) {
           <a
             title={txId}
             href={`${config.viewer.txUrl}/${txId}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            target='_blank'
+            rel='noopener noreferrer'
           >
             {txId}
           </a>
@@ -42,15 +40,15 @@ function getTableColumns(contractNames, ownerAddress) {
       },
     },
     {
-      title: 'Height',
-      dataIndex: 'blockHeight',
-      key: 'blockHeight',
+      title: "Height",
+      dataIndex: "blockHeight",
+      key: "blockHeight",
       render(height) {
         return (
           <a
             href={`${config.viewer.blockUrl}/${height}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            target='_blank'
+            rel='noopener noreferrer'
           >
             {height}
           </a>
@@ -58,77 +56,77 @@ function getTableColumns(contractNames, ownerAddress) {
       },
     },
     {
-      title: 'Method',
+      title: "Method",
       width: 200,
-      dataIndex: 'method',
-      key: 'method',
+      dataIndex: "method",
+      key: "method",
       ellipsis: true,
     },
     {
-      title: 'From',
-      dataIndex: 'addressFrom',
-      key: 'addressFrom',
+      title: "From",
+      dataIndex: "addressFrom",
+      key: "addressFrom",
       ellipsis: true,
       render(from) {
-        return from === ownerAddress ? `ELF_${from}_${config.viewer.chainId}` : (
+        return from === ownerAddress ? (
+          `ELF_${from}_${config.viewer.chainId}`
+        ) : (
           <AddressLink address={from} />
         );
       },
     },
     {
-      title: 'To',
-      dataIndex: 'addressTo',
-      key: 'addressTo',
+      title: "To",
+      dataIndex: "addressTo",
+      key: "addressTo",
       ellipsis: true,
       render(to) {
         let text = `ELF_${to}_${config.viewer.chainId}`;
         if (contractNames[to] && contractNames[to].contractName) {
           text = removeAElfPrefix(contractNames[to].contractName);
         }
-        return to === ownerAddress ? text : (
-          <Link
-            to={`/contract/${to}`}
-            title={text}
-          >
+        return to === ownerAddress ? (
+          text
+        ) : (
+          <Link to={`/contract/${to}`} title={text}>
             {text}
           </Link>
         );
       },
     },
     {
-      title: 'Tx Fee',
-      dataIndex: 'txFee',
-      key: 'txFee',
+      title: "Tx Fee",
+      dataIndex: "txFee",
+      key: "txFee",
       render(fee) {
         return <Dividends dividends={fee} />;
       },
     },
     {
-      title: 'Time',
-      dataIndex: 'time',
-      key: 'time',
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
       width: 160,
       render(time) {
-        return moment(time).format('YYYY/MM/DD HH:mm:ss');
+        return moment(time).format("YYYY/MM/DD HH:mm:ss");
       },
     },
   ];
 }
 
 function getList(api, params, formatter) {
-  return axios.get(api, {
-    params,
-  }).then((res) => {
-    const { data } = res;
-    const {
-      total = 0,
-      list = [],
-    } = formatter(data);
-    return {
-      total,
-      list,
-    };
-  })
+  return axios
+    .get(api, {
+      params,
+    })
+    .then((res) => {
+      const { data } = res;
+      const { total = 0, list = [] } = formatter(data);
+      return {
+        total,
+        list,
+      };
+    })
     .catch((e) => {
       console.error(e);
       return {
@@ -149,10 +147,10 @@ const TransactionList = (props) => {
     ...rest
   } = props;
   const [contractNames, setContractNames] = useState({});
-  const columns = useMemo(() => getColumns(contractNames, owner), [
-    contractNames,
-    owner,
-  ]);
+  const columns = useMemo(
+    () => getColumns(contractNames, owner),
+    [contractNames, owner]
+  );
 
   const [result, setResult] = useState({
     list: [],
@@ -172,10 +170,7 @@ const TransactionList = (props) => {
     });
     getList(api, requestParamsFormatter(apiParams), responseFormatter)
       .then((res) => {
-        const {
-          list,
-          total,
-        } = res;
+        const { list, total } = res;
         setResult({
           list,
           total,
@@ -190,7 +185,7 @@ const TransactionList = (props) => {
       .catch((e) => {
         sendHeight(500);
         console.error(e);
-        message.error('Network error');
+        message.error("Network error");
       });
   }
 
@@ -210,7 +205,7 @@ const TransactionList = (props) => {
     });
   }
   return (
-    <div className="transaction-list">
+    <div className='transaction-list'>
       <Table
         {...rest}
         dataSource={result.list}
@@ -219,7 +214,7 @@ const TransactionList = (props) => {
         pagination={false}
       />
       <Pagination
-        className="float-right gap-top"
+        className='float-right gap-top'
         showQuickJumper
         total={result.total}
         current={params.pageNum}
@@ -246,7 +241,7 @@ TransactionList.propTypes = {
 TransactionList.defaultProps = {
   requestParamsFormatter: (params) => params,
   responseFormatter: (response) => response.data,
-  owner: '',
+  owner: "",
   getColumns: getTableColumns,
 };
 
