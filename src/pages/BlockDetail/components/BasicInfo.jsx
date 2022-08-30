@@ -45,7 +45,11 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
               </div>
             ),
             Reward: (
-              <Dividends dividends={JSON.parse(basicInfo.reward) || {}} />
+              <Dividends
+                dividends={
+                  basicInfo.reward ? JSON.parse(basicInfo.reward || "") : {}
+                }
+              />
             ),
             "Previous Block Hash": basicInfo.previousBlockHash,
           }
