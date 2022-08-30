@@ -31,6 +31,7 @@ import "./index.less";
 import { ELF_DECIMAL } from "../../constants";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
+import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
 
 const clsPrefix = "node-table";
 
