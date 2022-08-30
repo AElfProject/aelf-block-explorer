@@ -89,7 +89,7 @@ class RedeemModal extends PureComponent {
           Search
         </Button>
         <Button
-          onClick={() => this.handleReset(clearFilters)}
+          onClick={() => this.handleReset(clearFilters, confirm)}
           size='small'
           style={{ width: 90 }}
         >
@@ -113,8 +113,9 @@ class RedeemModal extends PureComponent {
     confirm();
   };
 
-  handleReset = (clearFilters) => {
+  handleReset = (clearFilters, confirm) => {
     clearFilters();
+    confirm();
   };
 
   generateVoteRedeemForm() {

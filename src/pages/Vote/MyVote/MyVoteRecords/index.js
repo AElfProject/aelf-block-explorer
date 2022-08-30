@@ -163,7 +163,7 @@ class MyVoteRecords extends Component {
           Search
         </Button>
         <Button
-          onClick={() => this.handleReset(clearFilters)}
+          onClick={() => this.handleReset(clearFilters, confirm)}
           size='small'
           style={{ width: 90 }}
         >
@@ -187,8 +187,9 @@ class MyVoteRecords extends Component {
     confirm();
   };
 
-  handleReset = (clearFilters) => {
+  handleReset = (clearFilters, confirm) => {
     clearFilters();
+    confirm();
   };
 
   render() {

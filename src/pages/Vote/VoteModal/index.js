@@ -417,7 +417,7 @@ class VoteModal extends Component {
           Search
         </Button>
         <Button
-          onClick={() => this.handleReset(clearFilters)}
+          onClick={() => this.handleReset(clearFilters, confirm)}
           size='small'
           style={{ width: 90 }}
         >
@@ -450,8 +450,9 @@ class VoteModal extends Component {
     // this.setState({ searchText: selectedKeys[0] });
   };
 
-  handleReset = (clearFilters) => {
+  handleReset = (clearFilters, confirm) => {
     clearFilters();
+    confirm();
     // this.setState({ searchText: '' });
   };
 

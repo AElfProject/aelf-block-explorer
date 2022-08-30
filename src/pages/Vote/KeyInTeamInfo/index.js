@@ -11,11 +11,9 @@ import { urlRegExp } from "@pages/Vote/constants";
 import { addUrlPrefix, removeUrlPrefix } from "@utils/formater";
 import "./index.less";
 import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
+import { LockTwoTone } from "@ant-design/icons";
 
-const { Option } = Select;
 const { TextArea } = Input;
-
-const socialDefaultValue = "Github";
 
 const TeamInfoFormItemLayout = {
   labelCol: {
@@ -28,115 +26,17 @@ const TeamInfoFormItemLayout = {
   },
 };
 
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 20, offset: 4 },
-  },
-};
-
-function generateTeamInfoKeyInForm(data) {
-  return {
-    formItems: [
-      {
-        label: "Node Name",
-        validator: {
-          rules: [
-            // todo: add the validator rule
-            {
-              required: true,
-              message: "Please input your node name!",
-            },
-            {
-              pattern: /^[.-\w]+$/,
-              message: "Only support english alpha, number and symbol - . _",
-            },
-          ],
-          validateTrigger: ["onChange"],
-          fieldDecoratorId: "name",
-          initialValue: data.name || "",
-        },
-        placeholder: "Input your node name:",
-      },
-      {
-        label: "Node Avatar",
-        validator: {
-          fieldDecoratorId: "avatar",
-          rules: [
-            {
-              pattern: urlRegExp,
-              message: "The input is not valid url!",
-            },
-          ],
-          validateTrigger: ["onBlur"],
-          initialValue: data.avatar || "",
-        },
-        render: (
-          <Input addonBefore='https://' placeholder='Input avatar url:' />
-        ),
-      },
-      {
-        label: "Location",
-        validator: {
-          fieldDecoratorId: "location",
-          initialValue: data.location,
-        },
-        placeholder: "Input your location:",
-      },
-      {
-        label: "Official Website",
-        validator: {
-          fieldDecoratorId: "officialWebsite",
-          rules: [
-            {
-              pattern: urlRegExp,
-              message: "The input is not valid url!",
-            },
-          ],
-          validateTrigger: ["onBlur"],
-          initialValue: data.officialWebsite || "",
-        },
-        render: (
-          <Input addonBefore='https://' placeholder='Input your website:' />
-        ),
-      },
-      {
-        label: "Email",
-        validator: {
-          rules: [
-            {
-              type: "email",
-              message: "The input is not valid E-mail!",
-            },
-          ],
-          fieldDecoratorId: "mail",
-          initialValue: data.mail || "",
-          validateTrigger: ["onBlur"],
-        },
-        placeholder: "Input your email:",
-      },
-      {
-        label: "Intro",
-        validator: {
-          fieldDecoratorId: "intro",
-          initialValue: data.intro || "",
-        },
-        render: <TextArea placeholder='Intro your team here:' />,
-      },
-    ],
-  };
-}
-
 const clsPrefix = "candidate-apply-team-info-key-in";
 
 class KeyInTeamInfo extends PureComponent {
+  formRef = React.createRef();
   constructor(props) {
     super(props);
     this.socialKeys = ["Github", "Facebook", "Telegram", "Twitter", "Steemit"];
     this.state = {
       isLoading: true,
       hasAuth: false,
-      teamInfoKeyInForm: generateTeamInfoKeyInForm({}),
+      teamInfoKeyInForm: this.generateTeamInfoKeyInForm({}),
       teamInfo: {
         socials: [],
       },
@@ -146,6 +46,105 @@ class KeyInTeamInfo extends PureComponent {
     this.handleBack = this.handleBack.bind(this);
 
     this.teamPubkey = queryString.parse(window.location.search).pubkey;
+  }
+
+  generateTeamInfoKeyInForm(data) {
+    // initialValue only init once, if want to change u should use setFieldsValue
+    this.formRef.current?.setFieldsValue({
+      name: data.name,
+      avatar: data.avatar,
+      location: data.location,
+      email: data.email,
+      intro: data.intro,
+    });
+    return {
+      formItems: [
+        {
+          label: "Node Name",
+          validator: {
+            rules: [
+              // todo: add the validator rule
+              {
+                required: true,
+                message: "Please input your node name!",
+              },
+              {
+                pattern: /^[.-\w]+$/,
+                message: "Only support english alpha, number and symbol - . _",
+              },
+            ],
+            validateTrigger: ["onChange"],
+            fieldDecoratorId: "name",
+            initialValue: data.name || "",
+          },
+        },
+        {
+          label: "Node Avatar",
+          validator: {
+            fieldDecoratorId: "avatar",
+            rules: [
+              {
+                pattern: urlRegExp,
+                message: "The input is not valid url!",
+              },
+            ],
+            validateTrigger: ["onBlur"],
+            initialValue: data.avatar || "",
+          },
+          render: (
+            <Input addonBefore='https://' placeholder='Input avatar url:' />
+          ),
+        },
+        {
+          label: "Location",
+          validator: {
+            fieldDecoratorId: "location",
+            initialValue: data.location,
+          },
+          placeholder: "Input your location:",
+        },
+        {
+          label: "Official Website",
+          validator: {
+            fieldDecoratorId: "officialWebsite",
+            rules: [
+              {
+                pattern: urlRegExp,
+                message: "The input is not valid url!",
+              },
+            ],
+            validateTrigger: ["onBlur"],
+            initialValue: data.officialWebsite || "",
+          },
+          render: (
+            <Input addonBefore='https://' placeholder='Input your website:' />
+          ),
+        },
+        {
+          label: "Email",
+          validator: {
+            rules: [
+              {
+                type: "email",
+                message: "The input is not valid E-mail!",
+              },
+            ],
+            fieldDecoratorId: "mail",
+            initialValue: data.mail || "",
+            validateTrigger: ["onBlur"],
+          },
+          placeholder: "Input your email:",
+        },
+        {
+          label: "Intro",
+          validator: {
+            fieldDecoratorId: "intro",
+            initialValue: data.intro || "",
+          },
+          render: <TextArea placeholder='Intro your team here:' />,
+        },
+      ],
+    };
   }
 
   componentDidMount() {
@@ -183,7 +182,7 @@ class KeyInTeamInfo extends PureComponent {
     return (
       <section className='card-container'>
         <Result
-          icon={<Icon type='lock' theme='twoTone' twoToneColor='#2b006c' />}
+          icon={<LockTwoTone twoToneColor='#2b006c' />}
           status='warning'
           title={UNLOCK_PLUGIN_TIP}
         />
@@ -240,6 +239,7 @@ class KeyInTeamInfo extends PureComponent {
               <React.Fragment>
                 <h3 className={`${clsPrefix}-title`}>Edit Team Info</h3>
                 <Form
+                  ref={this.formRef}
                   className={`${clsPrefix}-form`}
                   {...TeamInfoFormItemLayout}
                   onSubmit={this.handleSubmit}
@@ -253,11 +253,11 @@ class KeyInTeamInfo extends PureComponent {
                               label={item.label}
                               key={item.label}
                               name={item.validator.fieldDecoratorId}
-                              ruels={item.validator.rules}
+                              rules={item.validator.rules}
                               initialValue={item.validator.initialValue}
                               validateTrigger={item.validator.validateTrigger}
                             >
-                              ({item.render} || <Input />)
+                              {item.render ? item.render : <Input />}
                             </Form.Item>
                           ) : (
                             <Form.Item label={item.label} key={item.label}>
@@ -311,7 +311,7 @@ class KeyInTeamInfo extends PureComponent {
         this.processUrl(values, removeUrlPrefix);
         this.setState({
           teamInfo: values,
-          teamInfoKeyInForm: generateTeamInfoKeyInForm(values),
+          teamInfoKeyInForm: this.generateTeamInfoKeyInForm(values),
         });
       })
       .catch((err) => {
@@ -341,13 +341,13 @@ class KeyInTeamInfo extends PureComponent {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { nightElf, checkExtensionLockStatus, form } = this.props;
-
+    const { nightElf, checkExtensionLockStatus } = this.props;
+    const form = this.formRef.current;
     const currentWallet = getCurrentWallet();
     const publicKey = getPublicKeyFromObject(currentWallet.publicKey);
     const randomNum = rand16Num(32);
-    form.validateFields((err, values) => {
-      if (!err) {
+    form?.validateFields().then(
+      (values) => {
         const submitValues = {
           ...values,
         };
@@ -386,8 +386,11 @@ class KeyInTeamInfo extends PureComponent {
             }
           });
         });
+      },
+      (err) => {
+        console.error(err);
       }
-    });
+    );
   }
 
   handleBack() {
