@@ -2,51 +2,34 @@
  * @file organization item
  * @author atom-yang
  */
-import React, { useMemo } from 'react';
-import roundTo from 'round-to';
-import { Switch, Case } from 'react-if';
-import moment from 'moment';
-import PropTypes from 'prop-types';
-import { EditOutlined } from '@ant-design/icons';
-import {
-  Card,
-  Row,
-  Select,
-  Col,
-  Divider,
-} from 'antd';
-import config from '../../../../../common/config';
-import Circle from '../../../components/Circle';
+import React, { useMemo } from "react";
+import roundTo from "round-to";
+import { Switch, Case } from "react-if";
+import moment from "moment";
+import PropTypes from "prop-types";
+import { EditOutlined } from "@ant-design/icons";
+import { Card, Row, Select, Col, Divider } from "antd";
+import config from "../../../../../common/config";
+import Circle from "../../../components/Circle";
 import constants, {
   LOG_STATUS,
   organizationInfoPropTypes,
-} from '../../../common/constants';
-import './index.less';
-import { isPhoneCheck } from '../../../../../common/utils';
-import { PRIMARY_COLOR } from '../../../../../common/constants';
+} from "../../../common/constants";
+import "./index.less";
+import { isPhoneCheck } from "../../../../../common/utils";
+import { PRIMARY_COLOR } from "../../../../../common/constants";
 
-const {
-  viewer,
-} = config;
+const { viewer } = config;
 
 const { Option } = Select;
 
-const {
-  proposalTypes,
-  proposalActions,
-} = constants;
+const { proposalTypes, proposalActions } = constants;
 
 const Title = (props) => {
-  const {
-    proposalType,
-  } = props;
+  const { proposalType } = props;
   return (
-    <div className="organization-list-item-title">
-      <span className="gap-right-small">
-        {proposalType}
-        {' '}
-        Organization
-      </span>
+    <div className='organization-list-item-title'>
+      <span className='gap-right-small'>{proposalType} Organization</span>
     </div>
   );
 };
@@ -58,7 +41,12 @@ function getRate(number, precision = 2) {
   return roundTo(number * 100, precision);
 }
 
-export function getCircleValues(proposalType, releaseThreshold, leftOrgInfo, bpCount = 1) {
+export function getCircleValues(
+  proposalType,
+  releaseThreshold,
+  leftOrgInfo,
+  bpCount = 1
+) {
   const abstractVoteTotal = 10000;
   const {
     minimalApprovalThreshold,
@@ -71,9 +59,7 @@ export function getCircleValues(proposalType, releaseThreshold, leftOrgInfo, bpC
   let precision = 0;
   if (proposalType === proposalType.ASSOCIATION) {
     const {
-      organizationMemberList: {
-        organizationMembers,
-      },
+      organizationMemberList: { organizationMembers },
     } = leftOrgInfo;
     total = organizationMembers.length;
   } else if (proposalType === proposalTypes.PARLIAMENT) {
@@ -112,17 +98,19 @@ export function getCircleValues(proposalType, releaseThreshold, leftOrgInfo, bpC
   return result;
 }
 
-function isProposer(logStatus, user, proposalType, leftOrgInfo, bpList, parliamentProposerList) {
+function isProposer(
+  logStatus,
+  user,
+  proposalType,
+  leftOrgInfo,
+  bpList,
+  parliamentProposerList
+) {
   if (logStatus !== LOG_STATUS.LOGGED) {
     return false;
   }
-  const {
-    proposerAuthorityRequired,
-    proposerWhiteList = {},
-  } = leftOrgInfo;
-  let {
-    proposers = [],
-  } = proposerWhiteList;
+  const { proposerAuthorityRequired, proposerWhiteList = {} } = leftOrgInfo;
+  let { proposers = [] } = proposerWhiteList;
   if (proposalType === proposalTypes.PARLIAMENT) {
     if (proposerAuthorityRequired === true) {
       proposers = [...bpList, ...parliamentProposerList];
@@ -134,19 +122,20 @@ function isProposer(logStatus, user, proposalType, leftOrgInfo, bpList, parliame
   return proposers.indexOf(user) > -1;
 }
 
-export function getOrganizationLeftInfo(proposalType, leftOrgInfo, bpList, parliamentProposerList) {
+export function getOrganizationLeftInfo(
+  proposalType,
+  leftOrgInfo,
+  bpList,
+  parliamentProposerList
+) {
   const {
     tokenSymbol,
     proposerAuthorityRequired,
     proposerWhiteList = {},
     organizationMemberList = {},
   } = leftOrgInfo;
-  let {
-    proposers = [],
-  } = proposerWhiteList;
-  let {
-    organizationMembers = [],
-  } = organizationMemberList;
+  let { proposers = [] } = proposerWhiteList;
+  let { organizationMembers = [] } = organizationMemberList;
   if (proposalType === proposalTypes.PARLIAMENT) {
     organizationMembers = [...bpList];
     if (proposerAuthorityRequired === true) {
@@ -154,52 +143,68 @@ export function getOrganizationLeftInfo(proposalType, leftOrgInfo, bpList, parli
       proposers = [...new Set(proposers)];
     }
   }
-  const proposerList = proposers.length > 0 ? (
-    // eslint-disable-next-line max-len
-    <Select size="small" defaultValue={proposers[0]}>{proposers.map((v) => (<Option key={v} value={v}>{`ELF_${v}_${viewer.chainId}`}</Option>))}</Select>
-  ) : 'None';
-  const members = organizationMembers.length > 0 ? (
-    // eslint-disable-next-line max-len
-    <Select size="small" defaultValue={organizationMembers[0]}>{organizationMembers.map((v) => (<Option key={v} value={v}>{`ELF_${v}_${viewer.chainId}`}</Option>))}</Select>
-  ) : 'None';
+  const proposerList =
+    proposers.length > 0 ? (
+      // eslint-disable-next-line max-len
+      <Select size='small' defaultValue={proposers[0]}>
+        {proposers.map((v) => (
+          <Option key={v} value={v}>{`ELF_${v}_${viewer.chainId}`}</Option>
+        ))}
+      </Select>
+    ) : (
+      "None"
+    );
+  const members =
+    organizationMembers.length > 0 ? (
+      // eslint-disable-next-line max-len
+      <Select size='small' defaultValue={organizationMembers[0]}>
+        {organizationMembers.map((v) => (
+          <Option key={v} value={v}>{`ELF_${v}_${viewer.chainId}`}</Option>
+        ))}
+      </Select>
+    ) : (
+      "None"
+    );
   return (
     <Switch>
       <Case condition={proposalType === proposalTypes.REFERENDUM}>
         <>
-          <div className="gap-bottom-small card-list-desc-item">
-            <span className="sub-title">Token:</span>
+          <div className='gap-bottom-small card-list-desc-item'>
+            <span className='sub-title'>Token:</span>
             <span>{tokenSymbol}</span>
           </div>
-          <div className="gap-bottom-small card-list-desc-item">
-            <span className="sub-title">Members:</span>
+          <div className='gap-bottom-small card-list-desc-item'>
+            <span className='sub-title'>Members:</span>
             <span>All Users</span>
           </div>
-          <div className="card-list-desc-item">
-            <span className="sub-title">Proposer White List:</span>
+          <div className='card-list-desc-item'>
+            <span className='sub-title'>Proposer White List:</span>
             <span>{proposerList}</span>
           </div>
         </>
       </Case>
       <Case condition={proposalType === proposalTypes.PARLIAMENT}>
         <>
-          <div className="gap-bottom-small card-list-desc-item">
-            <span className="sub-title">Members:</span>
+          <div className='gap-bottom-small card-list-desc-item'>
+            <span className='sub-title'>Members:</span>
             <span>{members}</span>
           </div>
-          <div className="card-list-desc-item">
-            <span className="sub-title">Proposer White List:</span>
-            <span>{proposerAuthorityRequired === false ? 'All Users' : proposerList}</span>
+          <div className='card-list-desc-item'>
+            <span className='sub-title'>Proposer White List:</span>
+            <span>
+              {proposerAuthorityRequired === false ? "All Users" : proposerList}
+            </span>
           </div>
         </>
       </Case>
       <Case condition={proposalType === proposalTypes.ASSOCIATION}>
         <>
-          <div className="gap-bottom-small card-list-desc-item">
-            <span className="sub-title">Members:</span>
+          <div className='gap-bottom-small card-list-desc-item'>
+            <span className='sub-title'>Members:</span>
             <span>{members}</span>
           </div>
-          <div className="card-list-desc-item">
-            <span className="sub-title">Proposer White List:</span>
+          <div className='card-list-desc-item'>
+            <span className='sub-title'>Proposer White List:</span>
             <span>{proposerList}</span>
           </div>
         </>
@@ -222,79 +227,89 @@ const Organization = (props) => {
     parliamentProposerList,
     currentWallet,
   } = props;
-  const votesData = useMemo(() => getCircleValues(proposalType, releaseThreshold, leftOrgInfo, bpList.length), [
-    proposalType,
-    releaseThreshold,
-    leftOrgInfo,
-  ]);
-  console.log('votesData', votesData);
-  const leftOrg = useMemo(() => getOrganizationLeftInfo(proposalType, leftOrgInfo, bpList, parliamentProposerList), [
-    leftOrgInfo,
-    bpList,
-    parliamentProposerList,
-  ]);
+  const votesData = useMemo(
+    () =>
+      getCircleValues(
+        proposalType,
+        releaseThreshold,
+        leftOrgInfo,
+        bpList.length
+      ),
+    [proposalType, releaseThreshold, leftOrgInfo]
+  );
+  console.log("votesData", votesData);
+  const leftOrg = useMemo(
+    () =>
+      getOrganizationLeftInfo(
+        proposalType,
+        leftOrgInfo,
+        bpList,
+        parliamentProposerList
+      ),
+    [leftOrgInfo, bpList, parliamentProposerList]
+  );
   // eslint-disable-next-line max-len
-  const canEdit = useMemo(() => isProposer(logStatus, currentWallet.address, proposalType, leftOrgInfo, bpList, parliamentProposerList), [
-    logStatus,
-    currentWallet,
-  ]);
+  const canEdit = useMemo(
+    () =>
+      isProposer(
+        logStatus,
+        currentWallet.address,
+        proposalType,
+        leftOrgInfo,
+        bpList,
+        parliamentProposerList
+      ),
+    [logStatus, currentWallet]
+  );
   const handleEdit = () => {
     editOrganization(orgAddress);
   };
 
   if (isPhoneCheck()) {
     return (
-      <div className="organization-list-item gap-bottom">
-        <Card
-          title={(
-            <Title
-              proposalType={proposalType}
-            />
-          )}
-        >
-          <div className="organization-list-item-id">
-            <div className="gap-right-large text-ellipsis">
-              {orgAddress}
-            </div>
-            {canEdit
-              ? (<EditOutlined color={PRIMARY_COLOR} onClick={handleEdit} />) : null}
+      <div className='organization-list-item gap-bottom'>
+        <Card title={<Title proposalType={proposalType} />}>
+          <div className='organization-list-item-id'>
+            <div className='gap-right-large text-ellipsis'>{orgAddress}</div>
+            {canEdit ? (
+              <EditOutlined color={PRIMARY_COLOR} onClick={handleEdit} />
+            ) : null}
           </div>
           <Divider />
-          <div className="organization-list-item-info">
-            <div className="organization-list-item-info-item">
-              <span className="sub-title gap-right">Author:</span>
-              <span className="text-ellipsis">
+          <div className='organization-list-item-info'>
+            <div className='organization-list-item-info-item'>
+              <span className='sub-title gap-right'>Author:</span>
+              <span className='text-ellipsis'>
                 <a
                   href={`${viewer.addressUrl}/${creator}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target='_blank'
+                  rel='noopener noreferrer'
                 >
                   {`ELF_${creator}_${viewer.chainId}`}
                 </a>
               </span>
             </div>
-            <div className="organization-list-item-info-item">
-              <span className="sub-title gap-right">Update Time:</span>
-              <span className="text-ellipsis">{moment(updatedAt).format('YYYY/MM/DD HH:mm:ss')}</span>
+            <div className='organization-list-item-info-item'>
+              <span className='sub-title gap-right'>Update Time:</span>
+              <span className='text-ellipsis'>
+                {moment(updatedAt).format("YYYY/MM/DD HH:mm:ss")}
+              </span>
             </div>
           </div>
           <Divider />
-          <div className="organization-list-item-votes">
+          <div className='organization-list-item-votes'>
             <p>Voting Data: Votes (Votes / Minimum Votes)</p>
-            <Row
-              gutter={16}
-              className="organization-list-item-vote-chart"
-            >
+            <Row gutter={16} className='organization-list-item-vote-chart'>
               <Col span={8} offset={2}>
                 <Circle
-                  className="organization-list-item-vote-chart-circle"
+                  className='organization-list-item-vote-chart-circle'
                   type={proposalActions.APPROVE}
                   {...votesData[proposalActions.APPROVE]}
                 />
               </Col>
               <Col span={8} offset={4}>
                 <Circle
-                  className="organization-list-item-vote-chart-circle"
+                  className='organization-list-item-vote-chart-circle'
                   type={proposalActions.REJECT}
                   {...votesData[proposalActions.REJECT]}
                 />
@@ -302,244 +317,241 @@ const Organization = (props) => {
             </Row>
             <Row gutter={16}>
               <Col span={12}>
-                <div className="organization-list-item-vote-desc text-center">
-                  <div className="text-ellipsis" title="Approved Votes">Approved Votes</div>
+                <div className='organization-list-item-vote-desc text-center'>
+                  <div className='text-ellipsis' title='Approved Votes'>
+                    Approved Votes
+                  </div>
                   <div
-                    className="text-ellipsis"
-                    title={`${votesData[proposalActions.APPROVE].num}(${votesData[proposalActions.APPROVE].rate})`}
+                    className='text-ellipsis'
+                    title={`${votesData[proposalActions.APPROVE].num}(${
+                      votesData[proposalActions.APPROVE].rate
+                    })`}
                   >
-                    <span className="sub-title gap-right-small">{votesData[proposalActions.APPROVE].num}</span>
-                    <span>
-                      (
-                      {votesData[proposalActions.APPROVE].rate}
-                      )
+                    <span className='sub-title gap-right-small'>
+                      {votesData[proposalActions.APPROVE].num}
                     </span>
+                    <span>({votesData[proposalActions.APPROVE].rate})</span>
                   </div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="organization-list-item-vote-desc text-center">
-                  <div className="text-ellipsis" title="Rejected Votes">Rejected Votes</div>
+                <div className='organization-list-item-vote-desc text-center'>
+                  <div className='text-ellipsis' title='Rejected Votes'>
+                    Rejected Votes
+                  </div>
                   <div
-                    className="text-ellipsis"
-                    title={`${votesData[proposalActions.REJECT].num}(${votesData[proposalActions.REJECT].rate})`}
+                    className='text-ellipsis'
+                    title={`${votesData[proposalActions.REJECT].num}(${
+                      votesData[proposalActions.REJECT].rate
+                    })`}
                   >
-                    <span className="sub-title gap-right-small">{votesData[proposalActions.REJECT].num}</span>
-                    <span>
-                      (
-                      {votesData[proposalActions.REJECT].rate}
-                      )
+                    <span className='sub-title gap-right-small'>
+                      {votesData[proposalActions.REJECT].num}
                     </span>
+                    <span>({votesData[proposalActions.REJECT].rate})</span>
                   </div>
                 </div>
               </Col>
             </Row>
 
-            <Row
-              gutter={16}
-              className="organization-list-item-vote-chart"
-            >
+            <Row gutter={16} className='organization-list-item-vote-chart'>
               <Col span={8} offset={2}>
                 <Circle
-                  className="organization-list-item-vote-chart-circle"
+                  className='organization-list-item-vote-chart-circle'
                   type={proposalActions.ABSTAIN}
                   {...votesData[proposalActions.ABSTAIN]}
                 />
               </Col>
               <Col span={8} offset={4}>
                 <Circle
-                  className="organization-list-item-vote-chart-circle"
-                  type="Total"
+                  className='organization-list-item-vote-chart-circle'
+                  type='Total'
                   {...votesData.Total}
                 />
               </Col>
             </Row>
             <Row gutter={16}>
               <Col span={12}>
-                <div className="organization-list-item-vote-desc text-center">
-                  <div className="text-ellipsis" title="Abstained Votes">Abstained Votes</div>
+                <div className='organization-list-item-vote-desc text-center'>
+                  <div className='text-ellipsis' title='Abstained Votes'>
+                    Abstained Votes
+                  </div>
                   <div
-                    className="text-ellipsis"
-                    title={`${votesData[proposalActions.ABSTAIN].num}(${votesData[proposalActions.ABSTAIN].rate})`}
+                    className='text-ellipsis'
+                    title={`${votesData[proposalActions.ABSTAIN].num}(${
+                      votesData[proposalActions.ABSTAIN].rate
+                    })`}
                   >
-                    <span className="sub-title gap-right-small">{votesData[proposalActions.ABSTAIN].num}</span>
-                    <span>
-                      (
-                      {votesData[proposalActions.ABSTAIN].rate}
-                      )
+                    <span className='sub-title gap-right-small'>
+                      {votesData[proposalActions.ABSTAIN].num}
                     </span>
+                    <span>({votesData[proposalActions.ABSTAIN].rate})</span>
                   </div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="organization-list-item-vote-desc text-center">
-                  <div className="text-ellipsis" title="Total Votes">Total Votes</div>
+                <div className='organization-list-item-vote-desc text-center'>
+                  <div className='text-ellipsis' title='Total Votes'>
+                    Total Votes
+                  </div>
                   <div
-                    className="text-ellipsis"
+                    className='text-ellipsis'
                     title={`${votesData.Total.num}(${votesData.Total.rate})`}
                   >
-                    <span className="sub-title gap-right-small">{votesData.Total.num}</span>
-                    <span>
-                      (
-                      {votesData.Total.rate}
-                      )
+                    <span className='sub-title gap-right-small'>
+                      {votesData.Total.num}
                     </span>
+                    <span>({votesData.Total.rate})</span>
                   </div>
                 </div>
               </Col>
             </Row>
           </div>
           <Divider />
-          <div className="organization-list-item-extra">
-            {leftOrg}
-          </div>
+          <div className='organization-list-item-extra'>{leftOrg}</div>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="organization-list-item gap-bottom">
-      <Card
-        title={(
-          <Title
-            proposalType={proposalType}
-          />
-        )}
-      >
-        <div className="organization-list-item-id">
-          <div className="gap-right-large text-ellipsis">
-            {orgAddress}
-          </div>
-          {canEdit
-            ? (<EditOutlined color={PRIMARY_COLOR} onClick={handleEdit} />) : null}
+    <div className='organization-list-item gap-bottom'>
+      <Card title={<Title proposalType={proposalType} />}>
+        <div className='organization-list-item-id'>
+          <div className='gap-right-large text-ellipsis'>{orgAddress}</div>
+          {canEdit ? (
+            <EditOutlined color={PRIMARY_COLOR} onClick={handleEdit} />
+          ) : null}
         </div>
         <Divider />
-        <div className="organization-list-item-info">
-          <div className="organization-list-item-info-item">
-            <span className="sub-title gap-right">Author:</span>
-            <span className="text-ellipsis">
+        <div className='organization-list-item-info'>
+          <div className='organization-list-item-info-item'>
+            <span className='sub-title gap-right'>Author:</span>
+            <span className='text-ellipsis'>
               <a
                 href={`${viewer.addressUrl}/${creator}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 {`ELF_${creator}_${viewer.chainId}`}
               </a>
             </span>
           </div>
-          <div className="organization-list-item-info-item">
-            <span className="sub-title gap-right">Update Time:</span>
-            <span className="text-ellipsis">{moment(updatedAt).format('YYYY/MM/DD HH:mm:ss')}</span>
+          <div className='organization-list-item-info-item'>
+            <span className='sub-title gap-right'>Update Time:</span>
+            <span className='text-ellipsis'>
+              {moment(updatedAt).format("YYYY/MM/DD HH:mm:ss")}
+            </span>
           </div>
         </div>
         <Divider />
-        <div className="organization-list-item-votes">
+        <div className='organization-list-item-votes'>
           <p>Voting Data: Votes (Votes / Minimum Votes)</p>
-          <Row
-            gutter={16}
-            className="organization-list-item-vote-chart"
-          >
+          <Row gutter={16} className='organization-list-item-vote-chart'>
             <Col span={4} offset={1}>
               <Circle
-                className="organization-list-item-vote-chart-circle"
+                className='organization-list-item-vote-chart-circle'
                 type={proposalActions.APPROVE}
                 {...votesData[proposalActions.APPROVE]}
               />
             </Col>
             <Col span={4} offset={2}>
               <Circle
-                className="organization-list-item-vote-chart-circle"
+                className='organization-list-item-vote-chart-circle'
                 type={proposalActions.REJECT}
                 {...votesData[proposalActions.REJECT]}
               />
             </Col>
             <Col span={4} offset={2}>
               <Circle
-                className="organization-list-item-vote-chart-circle"
+                className='organization-list-item-vote-chart-circle'
                 type={proposalActions.ABSTAIN}
                 {...votesData[proposalActions.ABSTAIN]}
               />
             </Col>
             <Col span={4} offset={2}>
               <Circle
-                className="organization-list-item-vote-chart-circle"
-                type="Total"
+                className='organization-list-item-vote-chart-circle'
+                type='Total'
                 {...votesData.Total}
               />
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={6}>
-              <div className="organization-list-item-vote-desc text-center">
-                <div className="text-ellipsis" title="Approved Votes">Approved Votes</div>
+              <div className='organization-list-item-vote-desc text-center'>
+                <div className='text-ellipsis' title='Approved Votes'>
+                  Approved Votes
+                </div>
                 <div
-                  className="text-ellipsis"
-                  title={`${votesData[proposalActions.APPROVE].num}(${votesData[proposalActions.APPROVE].rate})`}
+                  className='text-ellipsis'
+                  title={`${votesData[proposalActions.APPROVE].num}(${
+                    votesData[proposalActions.APPROVE].rate
+                  })`}
                 >
-                  <span className="sub-title gap-right-small">{votesData[proposalActions.APPROVE].num}</span>
-                  <span>
-                    (
-                    {votesData[proposalActions.APPROVE].rate}
-                    )
+                  <span className='sub-title gap-right-small'>
+                    {votesData[proposalActions.APPROVE].num}
                   </span>
+                  <span>({votesData[proposalActions.APPROVE].rate})</span>
                 </div>
               </div>
             </Col>
             <Col span={6}>
-              <div className="organization-list-item-vote-desc text-center">
-                <div className="text-ellipsis" title="Rejected Votes">Rejected Votes</div>
+              <div className='organization-list-item-vote-desc text-center'>
+                <div className='text-ellipsis' title='Rejected Votes'>
+                  Rejected Votes
+                </div>
                 <div
-                  className="text-ellipsis"
-                  title={`${votesData[proposalActions.REJECT].num}(${votesData[proposalActions.REJECT].rate})`}
+                  className='text-ellipsis'
+                  title={`${votesData[proposalActions.REJECT].num}(${
+                    votesData[proposalActions.REJECT].rate
+                  })`}
                 >
-                  <span className="sub-title gap-right-small">{votesData[proposalActions.REJECT].num}</span>
-                  <span>
-                    (
-                    {votesData[proposalActions.REJECT].rate}
-                    )
+                  <span className='sub-title gap-right-small'>
+                    {votesData[proposalActions.REJECT].num}
                   </span>
+                  <span>({votesData[proposalActions.REJECT].rate})</span>
                 </div>
               </div>
             </Col>
             <Col span={6}>
-              <div className="organization-list-item-vote-desc text-center">
-                <div className="text-ellipsis" title="Abstained Votes">Abstained Votes</div>
+              <div className='organization-list-item-vote-desc text-center'>
+                <div className='text-ellipsis' title='Abstained Votes'>
+                  Abstained Votes
+                </div>
                 <div
-                  className="text-ellipsis"
-                  title={`${votesData[proposalActions.ABSTAIN].num}(${votesData[proposalActions.ABSTAIN].rate})`}
+                  className='text-ellipsis'
+                  title={`${votesData[proposalActions.ABSTAIN].num}(${
+                    votesData[proposalActions.ABSTAIN].rate
+                  })`}
                 >
-                  <span className="sub-title gap-right-small">{votesData[proposalActions.ABSTAIN].num}</span>
-                  <span>
-                    (
-                    {votesData[proposalActions.ABSTAIN].rate}
-                    )
+                  <span className='sub-title gap-right-small'>
+                    {votesData[proposalActions.ABSTAIN].num}
                   </span>
+                  <span>({votesData[proposalActions.ABSTAIN].rate})</span>
                 </div>
               </div>
             </Col>
             <Col span={6}>
-              <div className="organization-list-item-vote-desc text-center">
-                <div className="text-ellipsis" title="Total Votes">Total Votes</div>
+              <div className='organization-list-item-vote-desc text-center'>
+                <div className='text-ellipsis' title='Total Votes'>
+                  Total Votes
+                </div>
                 <div
-                  className="text-ellipsis"
+                  className='text-ellipsis'
                   title={`${votesData.Total.num}(${votesData.Total.rate})`}
                 >
-                  <span className="sub-title gap-right-small">{votesData.Total.num}</span>
-                  <span>
-                    (
-                    {votesData.Total.rate}
-                    )
+                  <span className='sub-title gap-right-small'>
+                    {votesData.Total.num}
                   </span>
+                  <span>({votesData.Total.rate})</span>
                 </div>
               </div>
             </Col>
           </Row>
         </div>
         <Divider />
-        <div className="organization-list-item-extra">
-          {leftOrg}
-        </div>
+        <div className='organization-list-item-extra'>{leftOrg}</div>
       </Card>
     </div>
   );

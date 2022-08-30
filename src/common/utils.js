@@ -22,31 +22,6 @@ const bpRecord = [
   [1637825100000, 7], // 2021.11.25 5 -> 7BP
 ];
 
-function getBpRecordTime(time) {
-  if (process.env.NODE_ENV !== "production") {
-    return 5;
-  }
-  for (let i = 0, len = bpRecord.length; i < len; i++) {
-    if (bpRecord[i][0] < time) {
-      return bpRecord[i][1];
-    }
-  }
-  return 5;
-}
-export function getBPCount(status, createAt, expiredAt, releasedAt) {
-  const currentTime = new Date().getTime();
-  const expiredTime = new Date(expiredAt).getTime();
-  const releasedTime = new Date(releasedAt).getTime();
-
-  if (status === proposalStatus.RELEASED) {
-    return getBpRecordTime(releasedTime);
-  }
-  if (status === proposalStatus.EXPIRED) {
-    return getBpRecordTime(expiredTime);
-  }
-  return getBpRecordTime(currentTime);
-}
-
 export function getPublicKeyFromObject(publicKey) {
   try {
     return ellipticEc.keyFromPublic(publicKey).getPublic("hex");

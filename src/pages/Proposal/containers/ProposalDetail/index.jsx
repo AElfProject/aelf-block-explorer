@@ -39,7 +39,6 @@ import "./index.less";
 import { getContractAddress, sendTransaction } from "../../common/utils";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import {
-  getBPCount,
   isPhoneCheck,
   sendHeight,
   validateURL,
@@ -352,10 +351,7 @@ const ProposalDetail = () => {
                   abstentions={abstentions}
                   canVote={canVote}
                   votedStatus={votedStatus}
-                  bpCount={
-                    getBPCount(status, createAt, expiredTime, releasedTime) ||
-                    info.bpList.length
-                  }
+                  bpCount={info.bpList.length}
                   handleApprove={handleApprove}
                   handleReject={handleReject}
                   handleAbstain={handleAbstain}
@@ -364,10 +360,7 @@ const ProposalDetail = () => {
                 <OrganizationCard
                   className='gap-top-large'
                   bpList={info.bpList}
-                  bpCount={
-                    getBPCount(status, createAt, expiredTime, releasedTime) ||
-                    info.bpList.length
-                  }
+                  bpCount={info.bpList.length}
                   parliamentProposerList={info.parliamentProposerList}
                   {...info.organization}
                 />
