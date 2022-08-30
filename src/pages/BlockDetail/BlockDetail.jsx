@@ -156,7 +156,7 @@ function BlockDetail(props) {
 
     get(BLOCK_INFO_API_URL, {
       height: blockHeight,
-    }).then((res) => {
+    }).then((res = { miner: "", dividends: "" }) => {
       const { Header: header } = result;
       setBlockInfo({
         basicInfo: {
