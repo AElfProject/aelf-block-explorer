@@ -24,6 +24,7 @@ let blockHeight = 0;
 import "./home.styles.less";
 import { initSocket } from "./socket";
 import { useEffectOnce } from "react-use";
+import { NETWORK_TYPE } from "../../../config/config";
 export default function Home() {
   const [price, setPrice] = useState({ USD: 0 });
   const [blocks, setBlocks] = useState([]);
