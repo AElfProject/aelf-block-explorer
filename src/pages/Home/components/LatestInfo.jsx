@@ -25,7 +25,7 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
           <p className="reward">Reward</p>
         </div>
         <div className="table-body">
-          {blocks.map((block) => (
+          {blocks.map((block, index) => (
             <div key={block.block_height} className="row">
               <p className="block">
                 <Link to={`/block/${block.block_height}`}>
@@ -33,7 +33,12 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
                 </Link>
               </p>
               <p className="age">{getFormattedDate(block.time)}</p>
-              <p className="txns">{block.tx_count}</p>
+              <Link
+                to={`/block/${block.block_height}?tab=txns`}
+                className="txns"
+              >
+                {block.tx_count}
+              </Link>
               <div className="reward">
                 <Dividends
                   dividends={

@@ -13,6 +13,7 @@ import ChainInfo from "./components/ChainInfo";
 import LatestInfo from "./components/LatestInfo";
 import Search from "./components/Search";
 import useMobile from "../../hooks/useMobile";
+import { CHAIN_ID } from "../../../config/config.json";
 
 const PAGE_SIZE = 25;
 
@@ -38,7 +39,8 @@ export default function Home() {
   );
 
   useEffectOnce(() => {
-    get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
+    if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN")
+      get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
   });
 
   useEffect(() => {
@@ -118,12 +120,22 @@ export default function Home() {
       blockHeight = height;
       setUnconfirmedBlockHeight(unconfirmedHeight);
       setTransactions((v) => {
-        const temp = new Set([...new_transactions, ...v]);
-        return Array.from(temp).slice(0, 25);
+        const temp = Object.fromEntries(
+          [...new_transactions, ...v].map((item) => [item.tx_id, item])
+        );
+        return Object.entries(temp)
+          .map((item) => item[1])
+          .sort((a, b) => b.block_height - a.block_height)
+          .slice(0, 25);
       });
       setBlocks((v) => {
-        const temp = new Set([...new_blocks, ...v]);
-        return Array.from(temp).slice(0, 25);
+        const temp = Object.fromEntries(
+          [...new_blocks, ...v].map((item) => [item.block_height, item])
+        );
+        return Object.entries(temp)
+          .map((item) => item[1])
+          .sort((a, b) => b.block_height - a.block_height)
+          .slice(0, 25);
       });
       setLocalAccounts(accountNumber);
       setLocalTransactions(totalTxs);

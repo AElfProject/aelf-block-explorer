@@ -371,17 +371,26 @@ class BrowserHeader extends PureComponent {
       menuHtml = this.renderMenu(menuMode);
     }
 
-    const headerClass = this.isPhone ? 'header-container header-container-mobile' : 'header-container';
-    const networkClass = this.isPhone ? (NETWORK_TYPE === 'MAIN' ? ' header-main-container-mobile' : '') : (NETWORK_TYPE === 'MAIN' ? ' header-main-container' : '');
+    const headerClass = this.isPhone
+      ? 'header-container header-container-mobile'
+      : 'header-container';
+    const networkClass = this.isPhone
+      ? (NETWORK_TYPE === 'MAIN' ? ' header-main-container-mobile' : '')
+      : (NETWORK_TYPE === 'MAIN' ? ' header-main-container' : '');
+
+    const onlyMenu = this.state.showSearch
+      ? ''
+      : 'only-menu '
+    const isMainNet = (NETWORK_TYPE === 'MAIN') ? 'main-net' : 'test-net'
 
     return (
-      <div className={'header-fixed-container ' + this.state.showSearch || 'only-menu'}>
+      <div className={'header-fixed-container ' + onlyMenu + isMainNet}>
         <div>
           {!this.isPhone && <HeaderTop showSearch={this.state.showSearch} headerClass={headerClass} menuMode={menuMode} networkList={networkList} />}
           <div className={headerClass + networkClass}>
             {mobileMoreHTML}
 
-            <nav className='header-navbar'>
+            <nav className={'header-navbar ' + ((NETWORK_TYPE === 'MAIN') ? 'header-main-navbar' : '')}>
               {menuHtml}
               {this.isPhone && this.state.showSearch && <Search />}
               {!this.isPhone && <ChainSelect chainList={this.state.chainList} />}

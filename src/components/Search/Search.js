@@ -11,10 +11,11 @@ import {
 } from "react-router-dom";
 import { isAElfAddress } from '../../utils';
 import {
-    Input,
     Icon,
+    Input,
     message
 } from 'antd';
+import IconFont from '../../components/IconFont'
 
 import {
     get
@@ -94,11 +95,11 @@ class Search extends PureComponent {
         // 1. transaction 66
         // 2. block   66
         // 3. address length=38
-        if(`${value}`.startsWith('-')){
+        if (`${value}`.startsWith('-')) {
             message.error(INPUT_STARTS_WITH_MINUS_TIP);
             return;
         }
-        if(+value === 0){
+        if (+value === 0) {
             message.error(INPUT_ZERO_TIP);
             return;
         }
@@ -116,10 +117,10 @@ class Search extends PureComponent {
     };
 
     render() {
-        const {content} = this.state;
+        const { content } = this.state;
         const suffix = content ? (
-                <Icon type="close-circle" onClick={this.emitEmpty} />
-            ) : <span />;
+            <Icon type="close-circle" onClick={this.emitEmpty} />
+        ) : <span />;
         return (
             <div className="search-container">
                 <Input
@@ -138,7 +139,7 @@ class Search extends PureComponent {
                         searchValue: this.state.content
                     })}
                 >
-                    <Icon type="search" className="search-icon" />
+                    <IconFont type="Search" />
                 </span>
             </div>
         );

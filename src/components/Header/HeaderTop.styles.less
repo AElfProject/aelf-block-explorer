@@ -7,12 +7,6 @@
   border-bottom: 1px solid @border-color2;
   .header-top-content {
     display: flex;
-    .search-container .search-icon-container {
-      background-color: @headerbgColor2;
-      &:hover {
-        background-color: @bgHover;
-      }
-    }
   }
   .net-change-menu {
     color: @textContext1;
@@ -65,12 +59,12 @@
     justify-content: space-between;
   }
   .ant-menu-item-selected::after {
-    content: '';
+    content: "";
     width: 16px;
     height: 16px;
     opacity: 1;
     transform: none;
-    background: url('../../assets/images/correct.png') no-repeat;
+    background: url("../../assets/images/correct.png") no-repeat;
     background-size: 16px 16px;
     display: inline-block;
     top: auto;
@@ -92,7 +86,7 @@
   .ant-menu-horizontal > .ant-menu-item > a {
     color: @textContextWhite;
   }
-  .net-change-menu  {
+  .net-change-menu {
     .ant-menu-item-active .ant-menu-submenu-title .submenu-title-wrapper,
     .ant-menu-submenu-active .ant-menu-submenu-title .submenu-title-wrapper {
       border-bottom: 0;

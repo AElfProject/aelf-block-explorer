@@ -1,5 +1,9 @@
 @import "../../assets/less/_variables.less";
 
+.main-net {
+  background: @cloud-burst;
+}
+
 .header-fixed-container {
   position: fixed;
   top: 0;
@@ -108,13 +112,11 @@
 
   .header-navbar {
     display: flex;
+    background: white;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     padding-right: 24px;
-    .search-container .search-icon-container {
-      background-color: @headerbgColor2;
-    }
   }
 
   .ant-menu-item,
@@ -202,11 +204,9 @@
 }
 
 .header-container-mobile {
+  flex-direction: column;
   .header-navbar {
-    position: fixed;
     width: 100%;
-    left: 0;
-    top: 56px;
     display: flex;
     flex-direction: column;
   }
@@ -278,11 +278,6 @@
     background-color: @headerbgColor1;
     color: @textContextWhite;
   }
-  .search-container {
-    background: @bgBlankWhite;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-  }
 
   .aelf-submenu-container {
     .ant-menu {
@@ -295,6 +290,9 @@
     & > svg {
       width: 72px;
     }
+  }
+  .header-main-navbar {
+    background: @cloud-burst;
   }
 }
 

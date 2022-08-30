@@ -17,6 +17,7 @@ import TransactionList from "./components/TransactionList";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useDebounce } from "react-use";
+import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 function BlockDetail(props) {
   const [pageId, setPageId] = useState(undefined);
   const [blockHeight, setBlockHeight] = useState(undefined);
@@ -127,7 +128,6 @@ function BlockDetail(props) {
     const chainStatus = await getChainStatus();
     const { BestChainHeight, LastIrreversibleBlockHeight = 0 } = chainStatus;
     setBestChainHeight(LastIrreversibleBlockHeight);
-    const messageHide = message.loading("Loading...", 0);
 
     let result;
     let blockHeight;
@@ -182,7 +182,6 @@ function BlockDetail(props) {
       });
     });
     // Dismiss manually and asynchronously
-    setTimeout(messageHide, 0);
     if ((!txsList || !txsList.length) && blockHeight <= BestChainHeight + 6) {
       if (retryBlockInfoCount >= retryBlockInfoLimit) {
         return;
@@ -215,27 +214,31 @@ function BlockDetail(props) {
       </h2>
       <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
         <TabPane tab="Overview" key="overview">
-          {blockInfo && (
-            <div className="overview-container">
-              <BasicInfo
-                basicInfo={blockInfo.basicInfo}
-                bestChainHeight={bestChainHeight}
-              />
-              {showExtensionInfo && (
-                <ExtensionInfo extensionInfo={blockInfo.extensionInfo} />
+          <div className="overview-container">
+            <CustomSkeleton loading={!blockInfo}>
+              {blockInfo && (
+                <>
+                  <BasicInfo
+                    basicInfo={blockInfo.basicInfo}
+                    bestChainHeight={bestChainHeight}
+                  />
+                  {showExtensionInfo && (
+                    <ExtensionInfo extensionInfo={blockInfo.extensionInfo} />
+                  )}
+                  <Button
+                    className={`show-more-btn ${
+                      showExtensionInfo ? "more" : "less"
+                    }`}
+                    type="link"
+                    onClick={() => setShowExtensionInfo(!showExtensionInfo)}
+                  >
+                    Click to see {!showExtensionInfo ? "More" : "Less"}
+                    <IconFont type="shouqijiantou" />
+                  </Button>
+                </>
               )}
-              <Button
-                className={`show-more-btn ${
-                  showExtensionInfo ? "more" : "less"
-                }`}
-                type="link"
-                onClick={() => setShowExtensionInfo(!showExtensionInfo)}
-              >
-                Click to see {!showExtensionInfo ? "More" : "Less"}
-                <IconFont type="shouqijiantou" />
-              </Button>
-            </div>
-          )}
+            </CustomSkeleton>
+          </div>
         </TabPane>
         <TabPane tab="Transactions" key="transactions">
           <div className="transactions-container">

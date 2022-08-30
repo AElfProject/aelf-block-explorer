@@ -15,6 +15,7 @@ import IconFont from "../../components/IconFont";
 import useMobile from "../../hooks/useMobile";
 import { withRouter } from "react-router";
 import { useCallback } from "react";
+import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 
 function TransactionDetail(props) {
   const { id } = props.match.params;
@@ -113,40 +114,46 @@ function TransactionDetail(props) {
       <h2>Transaction Details</h2>
       <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
         <TabPane tab="Overview" key="overview">
-          {info && (
-            <div className="overview-container">
-              <BasicInfo
-                info={info}
-                parsedLogs={parsedLogs}
-                isDone={logIsAllParsed}
-                lastHeight={lastHeight}
-                contractName={contractName}
-              />
-              <ExtensionInfo transaction={info} show={showExtensionInfo} />
-              <Button
-                className={`show-more-btn ${
-                  showExtensionInfo ? "more" : "less"
-                }`}
-                type="link"
-                onClick={() => setShowExtensionInfo(!showExtensionInfo)}
-              >
-                Click to see {!showExtensionInfo ? "More" : "Less"}
-                <IconFont type="shouqijiantou" />
-              </Button>
-            </div>
-          )}
+          <div className="overview-container">
+            <CustomSkeleton loading={!info}>
+              {info && (
+                <>
+                  <BasicInfo
+                    info={info}
+                    parsedLogs={parsedLogs}
+                    isDone={logIsAllParsed}
+                    lastHeight={lastHeight}
+                    contractName={contractName}
+                  />
+                  <ExtensionInfo transaction={info} show={showExtensionInfo} />
+                  <Button
+                    className={`show-more-btn ${
+                      showExtensionInfo ? "more" : "less"
+                    }`}
+                    type="link"
+                    onClick={() => setShowExtensionInfo(!showExtensionInfo)}
+                  >
+                    Click to see {!showExtensionInfo ? "More" : "Less"}
+                    <IconFont type="shouqijiantou" />
+                  </Button>
+                </>
+              )}
+            </CustomSkeleton>
+          </div>
         </TabPane>
         <TabPane tab={`Logs (${info ? info.Logs.length : 0})`} key="logs">
           <div className="logs-container">
-            {hasLogs ? (
-              Array.isArray(info.Logs) ? (
-                <Events list={info.Logs} key={id} />
+            <CustomSkeleton loading={!info}>
+              {hasLogs ? (
+                Array.isArray(info.Logs) ? (
+                  <Events list={info.Logs} key={id} />
+                ) : (
+                  <CodeBlock value={info.Logs} />
+                )
               ) : (
-                <CodeBlock value={info.Logs} />
-              )
-            ) : (
-              <div className="no-data">No Data</div>
-            )}
+                <div className="no-data">No Data</div>
+              )}
+            </CustomSkeleton>
           </div>
         </TabPane>
       </Tabs>

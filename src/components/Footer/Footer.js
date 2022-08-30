@@ -1,115 +1,50 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Row, Col } from 'antd';
-import Logo from '../../assets/images/logo.png';
-
-import { BitcoinIcon, RedditIcon, SendIcon } from '../custom.icons';
 
 import './footer.styles.less';
 
-function getIconList(props) {
-  const { isSmallScreen } = props;
-
-  const listInfo = [
-    {
-      href: 'mailto:contact@aelf.io',
-      type: 'mail'
-    },
-    {
-      href: 'https://www.facebook.com/aelfofficial/',
-      target: '_blank',
-      type: 'facebook'
-    },
-    {
-      href: 'https://twitter.com/aelfblockchain',
-      target: '_blank',
-      type: 'twitter'
-    },
-    {
-      href: 'https://t.me/aelfblockchain',
-      target: '_blank',
-      component: SendIcon
-    },
-    {
-      href: 'https://www.reddit.com/r/aelfofficial/',
-      target: '_blank',
-      component: RedditIcon
-    },
-    {
-      href: 'https://medium.com/aelfblockchain',
-      target: '_blank',
-      type: 'medium'
-    },
-    {
-      href: 'https://github.com/aelfProject',
-      target: '_blank',
-      type: 'github'
-    },
-    {
-      href: 'http://slack.aelf.io/',
-      target: '_blank',
-      type: 'slack'
-    },
-    {
-      href: 'https://www.linkedin.com/company/aelfblockchain/',
-      target: '_blank',
-      type: 'linkedin'
-    },
-    {
-      href: 'http://www.youtube.com/c/aelfblockchain',
-      target: '_blank',
-      type: 'youtube'
-    },
-    {
-      href: 'https://0.plus/aelf_chs',
-      target: '_blank',
-      component: BitcoinIcon
-    }
-  ];
-
-  const html = listInfo.map(item => {
-    return (
-      <Button
-        key={item.href}
-        href={item.href}
-        rel='noopener noreferrer'
-        target={item.target || ''}
-        shape='circle'
-      >
-        <Icon
-          style={{
-            color: '#000'
-          }}
-          type={item.type || null}
-          component={item.component || ''}
-        />
-      </Button>
-    );
-  });
-
-  return html;
-}
-
 const BrowserFooter = props => {
-  const iconListHTML = getIconList(props);
 
   return (
     <section {...props} className='footer'>
-      <div
-        className='footer-container basic-container'
-      >
-        <div
-          className="footer-logo"
-        >
-          <img alt="aelf" src={Logo} />
-          <p>Decentralized Cloud Computing Blockchain Network</p>
+      <div className='footer-container' >
+        <div className='left'>
+          <div className='top'>
+            <h4>AELF Explorer</h4>
+            <p className='description'>Decentralized Cloud Computing Blockchain Network</p>
+          </div>
+          <div className='bottom'>
+            <div className='powered-by'>
+              Powered by AELF
+            </div>
+            <a target='_blank' href='https://aelf.com'>
+              aelf.com
+            </a>
+          </div>
         </div>
-        <div
-          className='footer-links-container'
-        >{iconListHTML}</div>
+        <div className='footer-links-container'>
+          <div className='link-list community'>
+            <p>Community</p>
+            <div className='list'>
+              <a target='_blank' href='https://t.me/aelfblockchain'>Telegram</a>
+              <a target='_blank' href='https://medium.com/aelfblockchain'>Medium</a>
+              <a target='_blank' href='https://twitter.com/aelfblockchain'>Twitter</a>
+              <a target='_blank' href='http://www.youtube.com/c/aelfblockchain'>Youtube</a>
+              <a target='_blank' href='https://discord.gg/bgysa9xjvD'>Discord</a>
+            </div>
+          </div>
+          <div className='link-list technology'>
+            <p>Technology</p>
+            <div className='list'>
+              <a target='_blank' href='https://docs.aelf.io/en/latest/introduction/introduction.html'>Dev Docs</a>
+              <a target='_blank' href='https://github.com/aelfProject'>Github</a>
+              <a target='_blank' href='https://chrome.google.com/webstore/detail/aelf-explorer-extension/mlmlhipeonlflbcclinpbmcjdnpnmkpf?hl=zh-CN'>Wallet</a>
+            </div>
+          </div>
+        </div>
       </div>
       <p className='copyright-container'>
-        Copyright © {new Date().getFullYear()} ælf
+        AELF © {new Date().getFullYear()}
       </p>
     </section>
   );

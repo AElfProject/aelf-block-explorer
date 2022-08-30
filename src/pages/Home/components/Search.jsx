@@ -60,9 +60,6 @@ function Search(props) {
     return "blockHeight";
   }, []);
 
-  const handleTypeChange = useCallback((val) => {
-    setType(val);
-  }, []);
   const handleInput = useCallback((e) => {
     setValue(e.target.value);
   }, []);
@@ -86,24 +83,13 @@ function Search(props) {
       message.error(INPUT_ZERO_TIP);
       return;
     }
-    const searchType = type === "all" ? getInputType(tempValue) : type;
+    const searchType = getInputType(tempValue);
 
     searchRules[searchType](tempValue);
   }, [value]);
 
   return (
     <div className="new-search">
-      <Select
-        defaultValue="all"
-        getPopupContainer={(node) => node.parentElement}
-        onChange={handleTypeChange}
-      >
-        <Option value="all">All Filters</Option>
-        <Option value="address">Address</Option>
-        <Option value="transaction">Txn Hash</Option>
-        <Option value="block">Block</Option>
-        <Option value="blockHeight">Block Height</Option>
-      </Select>
       <Input
         value={value}
         placeholder="Search by Address / Txn Hash / Block / Block Height"
