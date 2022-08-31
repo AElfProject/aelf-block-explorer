@@ -41,7 +41,7 @@ export default function Home() {
   );
 
   const range = useMemo(() => {
-    if ((price.USD, previousPrice.usd)) {
+    if (price.USD && previousPrice.usd) {
       return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
     }
     return 0;
