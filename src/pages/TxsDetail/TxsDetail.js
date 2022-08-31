@@ -180,10 +180,7 @@ class TxsDetailPage extends React.Component {
         break;
       case "Transaction_To":
         valueHTML = (
-          <Link
-            to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + value)}`}
-            title={addressFormat(value)}
-          >
+          <Link to={`/contract/${value}`} title={addressFormat(value)}>
             {contractName || addressFormat(value)}
           </Link>
         );

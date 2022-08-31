@@ -182,6 +182,17 @@ input {
   outline-color: @blueInputFocus;
 }
 
+.ant-pagination {
+  .ant-pagination-total-text {
+    span {
+      span {
+        // imitate older version antd v3
+        margin-left: 3px;
+      }
+    }
+  }
+}
+
 @media screen and (max-width: 768px) {
   .App {
     background: @bgBlankWhite;
