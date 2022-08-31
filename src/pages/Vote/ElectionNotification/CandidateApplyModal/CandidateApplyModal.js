@@ -159,9 +159,7 @@ class CandidateApplyModal extends PureComponent {
             <TooltipInput></TooltipInput>
           </Form.Item>
         </Form>
-        <p className='tip-color' style={{ marginTop: 10 }}>
-          {NEED_PLUGIN_AUTHORIZE_TIP}
-        </p>
+        <p className='tip-color'>{NEED_PLUGIN_AUTHORIZE_TIP}</p>
       </Modal>
     );
   }

@@ -330,9 +330,7 @@ export default class HomePage extends Component {
       middleRightTitle: {
         name: "To",
         text: getFormattedContractName(contractNames, address_to),
-        link: `/contract?#${decodeURIComponent(
-          CONTRACT_VIEWER_URL + address_to
-        )}`,
+        link: `/contract/${address_to}`,
       },
       bottomTitle: {
         name: "Fee",

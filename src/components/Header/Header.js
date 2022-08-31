@@ -4,7 +4,7 @@
  */
 /* eslint-disable fecs-camelcase */
 import React, { PureComponent } from "react";
-import { Menu, Icon, Drawer, Divider } from "antd";
+import { Menu, Drawer, Divider } from "antd";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -20,6 +20,7 @@ import HeaderTop from "./HeaderTop";
 import IconFont from "../IconFont";
 import NetSelect from "../NetSelect/NetSelect";
 import { getCMSDelayRequest } from "../../utils/getCMS";
+import { MenuOutlined } from "@ant-design/icons";
 
 const networkList = [
   {
@@ -193,17 +194,12 @@ class BrowserHeader extends PureComponent {
     if (chain_id === config.MAINCHAINID) {
       voteHTML = (
         <Menu.Item key='/vote'>
-          {/* <Icon type='appstore' /> */}
           <Link to='/vote'>Vote</Link>
-          {/* <Link to='/voteold'>VoteOld</Link> */}
-          {/* <span>APP CENTER [Building]</span> */}
         </Menu.Item>
       );
       resourceHTML = (
         <Menu.Item key='/resource'>
-          {/* <Icon type='appstore' /> */}
           <Link to='/resource'>Resource</Link>
-          {/* <span>APP CENTER [Building]</span> */}
         </Menu.Item>
       );
     }
@@ -326,8 +322,7 @@ class BrowserHeader extends PureComponent {
           type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
           className='aelf-logo-container'
         />
-        {/*...*/}
-        <Icon type='menu' onClick={() => this.toggleMenu()} />
+        <MenuOutlined onClick={() => this.toggleMenu()} />
       </div>
     );
   }

@@ -8,8 +8,6 @@ import { Link } from "react-router-dom";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-
-import { thousandsCommaWithDecimal } from "@utils/formater";
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from "../config/config";
 import addressFormat from "./utils/addressFormat";
 import { removeAElfPrefix } from "./utils/utils";
