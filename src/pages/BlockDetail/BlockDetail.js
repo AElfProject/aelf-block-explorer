@@ -29,6 +29,7 @@ class BlockDetailPage extends React.Component {
       pagination: {
         pageSize: isPhoneCheck() ? 8 : 20,
         showQuickJumper: true,
+        showSizeChanger: false,
         showTotal: (total) => `Total ${total} items`,
       },
       parsedResult: {},

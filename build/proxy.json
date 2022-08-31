@@ -59,9 +59,11 @@
     "secure": false
   },
   {
-    "target": "https://explorer-test-side02.aelf.io",
+    "target": "https://explorer-test.aelf.io/chain/",
     "context": ["/api/blockChain"],
-    "headers": {},
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
     "changeOrigin": true,
     "secure": false
   }

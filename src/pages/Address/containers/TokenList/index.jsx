@@ -18,7 +18,7 @@ function getListColumn(preTotal) {
       title: "Rank",
       dataIndex: "id",
       key: "id",
-      width: 65,
+      width: 70,
       render(id, record, index) {
         return preTotal + index + 1;
       },
@@ -75,6 +75,7 @@ const TokenList = () => {
     total: 0,
     pageSize: 10,
     pageNum: 1,
+    showSizeChanger: false,
   });
   const columns = useMemo(
     () => getListColumn(pagination.pageSize * (pagination.pageNum - 1)),

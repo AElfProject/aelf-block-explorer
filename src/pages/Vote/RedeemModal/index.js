@@ -25,6 +25,7 @@ const pagination = {
   total: 0,
   showTotal: (total) => `Total ${total} items`,
   pageSize: 3,
+  showSizeChanger: false,
 };
 
 function getColumns() {

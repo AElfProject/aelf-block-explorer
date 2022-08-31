@@ -40,6 +40,7 @@ const pagination = {
   total: 0,
   showTotal: (total) => `Total ${total} items`,
   pageSize: 20,
+  showSizeChanger: false,
 };
 
 class NodeTable extends PureComponent {

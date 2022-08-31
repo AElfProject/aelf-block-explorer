@@ -130,6 +130,7 @@ const pagination = {
   showQuickJumper: true,
   total: 0,
   showTotal: (total) => `Total ${total} items`,
+  showSizeChanger: false,
 };
 
 class MyVoteRecords extends Component {

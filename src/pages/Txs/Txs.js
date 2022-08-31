@@ -35,6 +35,7 @@ class TxsPage extends Component {
       data: [],
       pagination: {
         pageSize: PAGE_SIZE,
+        showSizeChanger: false,
         showQuickJumper: true,
         total: 0,
         showTotal: (total) => `Total ${total} items`,

@@ -24,6 +24,7 @@ class BlocksPage extends Component {
       data: [],
       pagination: {
         showQuickJumper: true,
+        showSizeChanger: false,
         pageSize: PAGE_SIZE,
         total: 0,
         showTotal: (total) => `Total ${total} items`,
