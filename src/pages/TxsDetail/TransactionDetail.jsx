@@ -43,9 +43,14 @@ function TransactionDetail(props) {
   useEffect(() => {
     setShowExtensionInfo(false);
     setActiveKey("overview");
-    aelf.chain.getChainStatus().then(({ LastIrreversibleBlockHeight }) => {
-      setLastHeight(LastIrreversibleBlockHeight);
-    });
+    aelf.chain
+      .getChainStatus()
+      .then(({ LastIrreversibleBlockHeight }) => {
+        setLastHeight(LastIrreversibleBlockHeight);
+      })
+      .catch((error) => {
+        location.href = "/search-failed";
+      });
     aelf.chain
       .getTxResult(id)
       .then((res) => {
@@ -78,7 +83,11 @@ function TransactionDetail(props) {
 
   async function getInfoBackUp(transaction) {
     const { BlockNumber } = transaction;
-    const block = await aelf.chain.getBlockByHeight(BlockNumber, false);
+    const block = await aelf.chain
+      .getBlockByHeight(BlockNumber, false)
+      .catch((error) => {
+        location.href = "/search-failed";
+      });
     const {
       Header: { Time },
     } = block;
@@ -90,17 +99,26 @@ function TransactionDetail(props) {
 
   const getData = useCallback(
     (res) => {
-      getContractNames().then((names) => {
-        const { isSystemContract, contractName } =
-          names[res.Transaction.To] || {};
-        const name = isSystemContract
-          ? removeAElfPrefix(contractName)
-          : contractName;
-        setContractName(name || res.Transaction.To);
-      });
-      getInfoBackUp(res).then((backup) => {
-        setInfo({ ...res, ...backup });
-      });
+      getContractNames()
+        .then((names) => {
+          const { isSystemContract, contractName } =
+            names[res.Transaction.To] || {};
+          const name = isSystemContract
+            ? removeAElfPrefix(contractName)
+            : contractName;
+          setContractName(name || res.Transaction.To);
+        })
+        .catch((error) => {
+          location.href = "/search-failed";
+        });
+      getInfoBackUp(res)
+        .then((backup) => {
+          setInfo({ ...res, ...backup });
+        })
+        .catch((error) => {
+          console.log(">>>error", error);
+          location.href = "/search-failed";
+        });
     },
     [getContractNames, getInfoBackUp]
   );

@@ -77,7 +77,7 @@ class BrowserHeader extends PureComponent {
     } else {
       showSearch = true;
     }
-    if (pathname === '/') {
+    if (pathname === '/' || pathname.includes('search-')) {
       showSearch = false
     }
     return showSearch;

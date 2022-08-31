@@ -5,6 +5,8 @@ import './footer.styles.less';
 
 const BrowserFooter = props => {
 
+  if (location.pathname.includes('/search-')) return <></>
+
   return (
     <section {...props} className='footer'>
       <div className='footer-container' >

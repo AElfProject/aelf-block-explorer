@@ -1,4 +1,4 @@
-import { Button, Input, message, Select } from "antd";
+import { Button, Input, message } from "antd";
 import React, { useState } from "react";
 import { useCallback } from "react";
 import IconFont from "../../../components/IconFont";
@@ -11,10 +11,7 @@ import {
   TXS_BLOCK_API_URL,
 } from "../../../constants";
 
-const { Option } = Select;
-
 function Search(props) {
-  const [type, setType] = useState("all");
   const [value, setValue] = useState("");
   const { history } = props;
 
@@ -43,6 +40,9 @@ function Search(props) {
       blockHeight: (value) => {
         history.push(`/block/${value}`);
       },
+      invalid: (value) => {
+        history.push(`/search-invalid/${value}`);
+      },
     }),
     []
   );
@@ -57,7 +57,11 @@ function Search(props) {
     if (isTxId.includes(length)) {
       return "hash";
     }
-    return "blockHeight";
+    let number = parseInt(value, 10);
+    if (number === value) {
+      return "blockHeight";
+    }
+    return "invalid";
   }, []);
 
   const handleInput = useCallback((e) => {

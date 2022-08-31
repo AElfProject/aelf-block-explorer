@@ -39,7 +39,8 @@ const BREADCRUMB_NAME_MAP = {
   '/contract': 'Contract',
   '/proposal': 'Proposal',
   '/token': 'Token',
-  'myvote': 'My Vote'
+  'myvote': 'My Vote',
+  '/search-invalid': ''
 };
 
 const DO_NOT_DISPLAY_PATH = [
@@ -48,7 +49,7 @@ const DO_NOT_DISPLAY_PATH = [
   '/unconfirmedTxs',
   '/tx/',
   '/blocks',
-  '/unconfirmedBlocks'
+  '/unconfirmedBlocks',
 ]
 
 // Notice: we need register the route in Breadcurmb.js.
@@ -264,7 +265,9 @@ class BrowserBreadcrumb extends Component {
     if (DO_NOT_DISPLAY_PATH.includes(pathname)
       || pathname.includes('/tx/')
       || pathname.includes('/txs')
-      || pathname.includes('/block/')) {
+      || pathname.includes('/block/')
+      || pathname.includes('/search-invalid')
+      || pathname.includes('/search-failed')) {
       return <></>
     }
 

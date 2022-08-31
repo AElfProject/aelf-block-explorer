@@ -2,7 +2,7 @@ import { message, Tag, Tabs, Button } from "antd";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import { withRouter } from "react-router";
+import { Redirect, withRouter } from "react-router";
 import IconFont from "../../components/IconFont";
 import { BLOCK_INFO_API_URL } from "../../constants";
 import useMobile from "../../hooks/useMobile";
@@ -50,13 +50,27 @@ function BlockDetail(props) {
   useEffect(() => {
     const { match, location } = props;
     const { id } = match.params;
+    console.log(">>>????");
     setPageId(id);
+    setBlockInfo(undefined);
     setShowExtensionInfo(false);
     setActiveKey("overview");
     if (location.search && location.search.includes("tab=txns")) {
       setActiveKey("transactions");
     }
   }, [props]);
+
+  useDebounce(
+    () => {
+      try {
+        fetchBlockInfo();
+      } catch (error) {
+        console.log(">>>error", error);
+      }
+    },
+    1000,
+    [pageId]
+  );
 
   const merge = useCallback((data = [], contractNames) => {
     return (data || []).map((item) => ({
@@ -66,9 +80,14 @@ function BlockDetail(props) {
   }, []);
 
   const getChainStatus = useCallback(() => {
-    return aelf.chain.getChainStatus().then((result) => {
-      return result;
-    });
+    return aelf.chain
+      .getChainStatus()
+      .then((result) => {
+        return result;
+      })
+      .catch((error) => {
+        location.href = "/search-failed";
+      });
   }, [aelf]);
 
   const getTxsList = useCallback(
@@ -80,8 +99,16 @@ function BlockDetail(props) {
         block_hash: blockHash,
       };
 
-      let data = await get("/block/transactions", getTxsOption);
-      const contractNames = await getContractNames();
+      let data = await get("/block/transactions", getTxsOption).catch(
+        (error) => {
+          console.log(">>>>error", error);
+          location.href = "/search-failed";
+        }
+      );
+      const contractNames = await getContractNames().catch((error) => {
+        console.log(">>>>error", error);
+        location.href = "/search-failed";
+      });
       data = {
         ...data,
         transactions: merge(data.transactions || [], contractNames),
@@ -94,10 +121,16 @@ function BlockDetail(props) {
   const getDataFromHeight = useCallback(
     async (blockHeight) => {
       try {
-        const result = await aelf.chain.getBlockByHeight(blockHeight, false);
+        const result = await aelf.chain
+          .getBlockByHeight(blockHeight, false)
+          .catch((error) => {
+            location.href = "/search-failed";
+          });
         const { BlockHash: blockHash } = result;
         const { transactions = [] } = blockHash
-          ? await getTxsList(blockHash)
+          ? await getTxsList(blockHash).catch((error) => {
+              location.href = "/search-failed";
+            })
           : {};
         return { blockInfo: result, transactionList: transactions };
       } catch (err) {
@@ -110,12 +143,19 @@ function BlockDetail(props) {
 
   const getDataFromHash = useCallback(
     async (blockHash) => {
+      const { match, location } = props;
+      const { id } = match.params;
       const txsList = await getTxsList(blockHash);
       const { transactions = [] } = txsList;
+      if (!transactions[0]) {
+        location.href = "/search-invalid/" + id;
+      }
       const { block_height: blockHeight } = transactions[0];
-      const result = blockHeight
-        ? await aelf.chain.getBlockByHeight(blockHeight, false)
-        : undefined;
+      const result = await aelf.chain
+        .getBlockByHeight(blockHeight, false)
+        .catch((error) => {
+          location.href = "/search-failed";
+        });
       return { blockInfo: result, transactionList: transactions };
     },
     [aelf, getTxsList]
@@ -156,31 +196,39 @@ function BlockDetail(props) {
 
     get(BLOCK_INFO_API_URL, {
       height: blockHeight,
-    }).then((res = { miner: "", dividends: "" }) => {
-      const { Header: header } = result;
-      setBlockInfo({
-        basicInfo: {
-          blockHeight: blockHeight,
-          timestamp: header.Time,
-          blockHash: result.BlockHash,
-          transactions: txsList.length,
-          chainId: header.ChainId,
-          miner: res.miner,
-          reward: res.dividends,
-          previousBlockHash: header.PreviousBlockHash,
-        },
-        extensionInfo: {
-          blockSize: result.BlockSize,
-          merkleTreeRootOfTransactions: header.MerkleTreeRootOfTransactions,
-          merkleTreeRootOfWorldState: header.MerkleTreeRootOfWorldState,
-          merkleTreeRootOfTransactionState:
-            header.MerkleTreeRootOfTransactionState,
-          extra: header.Extra,
-          bloom: header.Bloom,
-          signerPubkey: header.SignerPubkey,
-        },
+    })
+      .then((res = { miner: "", dividends: "" }) => {
+        if (result) {
+          const { Header: header } = result;
+          setBlockInfo({
+            basicInfo: {
+              blockHeight: blockHeight,
+              timestamp: header.Time,
+              blockHash: result.BlockHash,
+              transactions: txsList.length,
+              chainId: header.ChainId,
+              miner: res.miner,
+              reward: res.dividends,
+              previousBlockHash: header.PreviousBlockHash,
+            },
+            extensionInfo: {
+              blockSize: result.BlockSize,
+              merkleTreeRootOfTransactions: header.MerkleTreeRootOfTransactions,
+              merkleTreeRootOfWorldState: header.MerkleTreeRootOfWorldState,
+              merkleTreeRootOfTransactionState:
+                header.MerkleTreeRootOfTransactionState,
+              extra: header.Extra,
+              bloom: header.Bloom,
+              signerPubkey: header.SignerPubkey,
+            },
+          });
+        } else {
+          location.href = "/search-invalid/" + pageId;
+        }
+      })
+      .catch((error) => {
+        location.href = "/search-failed";
       });
-    });
     // Dismiss manually and asynchronously
     if ((!txsList || !txsList.length) && blockHeight <= BestChainHeight + 6) {
       if (retryBlockInfoCount >= retryBlockInfoLimit) {
@@ -192,14 +240,6 @@ function BlockDetail(props) {
       }, 1000);
     }
   }, [pageId]);
-
-  useDebounce(
-    () => {
-      fetchBlockInfo();
-    },
-    1000,
-    [pageId]
-  );
 
   return (
     <div

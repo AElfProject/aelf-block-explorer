@@ -37,7 +37,7 @@ export default function HeaderTop({
       get(HISTORY_PRICE, {
         token_id: "aelf",
         vs_currencies: "usd",
-        date: new Date().valueOf() - 24 * 3600 * 1000,
+        date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
       }).then((res) => {
         if (!res.message) {
           setPreviousPrice(res);
@@ -64,7 +64,7 @@ export default function HeaderTop({
       <div className={headerClass}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Svg icon={NETWORK_TYPE === "MAIN" ? "main_logo" : "test_logo"} className="aelf-logo-container" />
-          {range
+          {!!range
             && <div className="price-container">
               <img src={TokenIcon} />
               <span className="price">$ {price.USD}</span>

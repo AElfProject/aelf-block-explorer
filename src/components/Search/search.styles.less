@@ -58,7 +58,7 @@
 }
 
 .header-container-top .search-container {
-  border: 1.6px solid @alto;
+  border: 1px solid @alto;
   .ant-input {
     color: @silver;
     &::placeholder {
@@ -73,7 +73,7 @@
 .header-container-main-top,
 .header-main-container-mobile {
   .search-container {
-    border: 1.6px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: rgba(255, 255, 255, 0.3);
     .ant-input {
       color: rgba(255, 255, 255, 0.3);
@@ -104,9 +104,13 @@
 
 @media (max-width: 900px) and (-webkit-max-device-pixel-ratio: 2) {
   .search-container {
+    border: 1px solid @alto;
     height: 36px;
     margin: 18px 16px;
     width: calc(100vw - 32px) !important;
+    i {
+      color: @silver;
+    }
     .header-search {
       width: 100px;
     }

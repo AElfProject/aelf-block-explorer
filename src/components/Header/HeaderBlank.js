@@ -10,11 +10,15 @@ class HeaderBlank extends Component {
     }
   }
   componentDidMount() {
-    this.setState({ isHome: this.props.pathname === '/' })
+    const { location } = this.props
+    this.setState({
+      isHome: (location.pathname === '/'
+        || location.pathname.includes("/search-"))
+    })
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevProps && prevProps.location.pathname !== this.props.pathname) {
-      if ((this.props.location.pathname === '/') !== this.state.isHome) {
+      if ((this.props.location.pathname === '/' || location.pathname.includes("/search-")) !== this.state.isHome) {
         this.setState({ isHome: this.props.location.pathname === '/' })
       }
     }

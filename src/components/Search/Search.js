@@ -67,8 +67,9 @@ class Search extends PureComponent {
             let number = parseInt(value, 10);
             if (number == value) {
                 history.push(`/block/${value}`);
+                return true;
             }
-            return true;
+            return false
         }
     }
 
@@ -112,7 +113,7 @@ class Search extends PureComponent {
             this.SEARCHRULES.transaction(value, this.props.history);
         }
         else {
-            this.SEARCHRULES.blockHeight(value, this.props.history) || message.error('Wrong Search Input', 6);
+            this.SEARCHRULES.blockHeight(value, this.props.history) || (location.href = '/search-invalid/' + value);
         }
     };
 

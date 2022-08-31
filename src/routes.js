@@ -19,6 +19,8 @@ import ResourceDetail from './pages/ResourceDetail/ResourceDetail';
 import Viewer from './pages/Viewer';
 import Token from './pages/Token';
 import Proposal from './pages/Proposal';
+import SearchInvalid from './pages/SearchInvalid/SearchInvalid';
+import SearchFailed from './pages/SearchFailed/SearchFailed';
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
@@ -38,5 +40,7 @@ export default () => [
     <Route path='/resourceDetail/:id' component={ResourceDetail} key='resourceDetail' />,
     <Route path='/contract' exact component={Viewer} key='contract' />,
     <Route path='/token' exact component={Token} key='token' />,
-    <Route path='/proposal' component={Proposal} key='proposal' />
+    <Route path='/proposal' component={Proposal} key='proposal' />,
+    <Route path='/search-invalid/:string' component={SearchInvalid} key='search-invalid' />,
+    <Route path='/search-failed' component={SearchFailed} key='search-failed' />
 ];
