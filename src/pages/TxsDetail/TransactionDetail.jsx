@@ -54,7 +54,11 @@ function TransactionDetail(props) {
     aelf.chain
       .getTxResult(id)
       .then((res) => {
-        getData(res);
+        if (res.Status === "NOTEXISTED") {
+          location.href = "/search-invalid/" + res.TransactionId;
+        } else {
+          getData(res);
+        }
       })
       .catch((e) => {
         getData(e);
@@ -111,14 +115,9 @@ function TransactionDetail(props) {
         .catch((error) => {
           location.href = "/search-failed";
         });
-      getInfoBackUp(res)
-        .then((backup) => {
-          setInfo({ ...res, ...backup });
-        })
-        .catch((error) => {
-          console.log(">>>error", error);
-          location.href = "/search-failed";
-        });
+      getInfoBackUp(res).then((backup) => {
+        setInfo({ ...res, ...backup });
+      });
     },
     [getContractNames, getInfoBackUp]
   );

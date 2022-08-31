@@ -57,8 +57,8 @@ function Search(props) {
     if (isTxId.includes(length)) {
       return "hash";
     }
-    let number = parseInt(value, 10);
-    if (number === value) {
+    const number = parseInt(value, 10).toString();
+    if (number === (value)) {
       return "blockHeight";
     }
     return "invalid";

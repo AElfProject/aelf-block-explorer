@@ -44,10 +44,13 @@ class Search extends PureComponent {
     };
 
     SEARCHRULES = {
-        address(value, history) {
+        address: (value, history) => {
+            this.setState({
+                content: ''
+            });
             history.push(`/address/${value}`);
         },
-        async transaction(value, history) {
+        transaction: async (value, history) => {
             let getTxsOption = {
                 limit: 1,
                 page: 0,
@@ -56,6 +59,9 @@ class Search extends PureComponent {
 
             const blockInfo = await get('/block/transactions', getTxsOption);
             const isBlock = blockInfo.transactions && blockInfo.transactions.length;
+            this.setState({
+                content: ''
+            });
             if (isBlock) {
                 history.push(`/block/${value}`);
             }
@@ -63,9 +69,12 @@ class Search extends PureComponent {
                 history.push(`/tx/${value}`);
             }
         },
-        blockHeight(value, history) {
+        blockHeight: (value, history) => {
             let number = parseInt(value, 10);
             if (number == value) {
+                this.setState({
+                    content: ''
+                });
                 history.push(`/block/${value}`);
                 return true;
             }
@@ -119,16 +128,13 @@ class Search extends PureComponent {
 
     render() {
         const { content } = this.state;
-        const suffix = content ? (
-            <Icon type="close-circle" onClick={this.emitEmpty} />
-        ) : <span />;
         return (
             <div className="search-container">
                 <Input
                     className="header-search"
-                    placeholder="Address / Tx / Block / Block Height"
+                    placeholder="Search by Address / Txn Hash..."
                     // prefix={<Icon type="search" className="search-icon" />}
-                    suffix={suffix}
+                    suffix={<></>}
                     value={content}
                     onChange={this.onChangeUserName}
                     ref={node => (this.userNameInput = node)}
