@@ -7,6 +7,7 @@ import {
   ALL_TXS_API_URL,
   BASIC_INFO,
   ELF_REALTIME_PRICE_URL,
+  HISTORY_PRICE,
 } from "../../constants";
 import { get, transactionFormat } from "../../utils";
 import ChainInfo from "./components/ChainInfo";
@@ -23,10 +24,10 @@ let blockHeight = 0;
 
 import "./home.styles.less";
 import { initSocket } from "./socket";
-import { useEffectOnce } from "react-use";
 import { NETWORK_TYPE } from "../../../config/config";
 export default function Home() {
   const [price, setPrice] = useState({ USD: 0 });
+  const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
   const [blocks, setBlocks] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [reward, setReward] = useState({ ELF: 0 });
@@ -39,10 +40,29 @@ export default function Home() {
     [blocks, transactions]
   );
 
-  useEffectOnce(() => {
-    if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN")
+  const range = useMemo(() => {
+    if ((price.USD, previousPrice.usd)) {
+      return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
+    }
+    return 0;
+  }, [price.USD, previousPrice.usd]);
+
+  useEffect(() => {
+    // todo change this
+    // if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && isMobile) {
+    if (CHAIN_ID === "AELF" && isMobile) {
       get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
-  });
+      get(HISTORY_PRICE, {
+        token_id: "aelf",
+        vs_currencies: "usd",
+        date: new Date().valueOf() - 24 * 3600 * 1000,
+      }).then((res) => {
+        if (!res.message) {
+          setPreviousPrice(res);
+        }
+      });
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     const socket = initSocket(handleSocketData);
@@ -176,7 +196,10 @@ export default function Home() {
           <div className="price-info">
             <img src={TokenIcon} />
             <span className="price">$ {price.USD}</span>
-            {/* <span className="range">+12.1%</span> */}
+            <span className={"range " + (range >= 0 ? "rise" : "fall")}>
+              {range >= 0 ? "+" : ""}
+              {range.toFixed(2)}%
+            </span>
           </div>
         )}
       </section>

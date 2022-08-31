@@ -5,6 +5,6 @@ export default function useMobile() {
   const [isMobile, setIsMobile] = useState(false)
   useEffect(() => {
     setIsMobile(isPhoneCheck())
-  }, [navigator])
+  }, [location])
   return !!isMobile
 }

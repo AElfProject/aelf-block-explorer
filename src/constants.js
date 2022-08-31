@@ -35,6 +35,7 @@ const TPS_LIST_API_URL = '/tps/all';
 const ADDRESS_TOKENS_API_URL = '/address/tokens';
 const ELF_REALTIME_PRICE_URL =
   'https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY';
+const HISTORY_PRICE = '/token/price-history';
 const ELF_REST_TRADE_API = 'https://www.bcex.top/Api_Market/getCoinTrade';
 const RESOURCE_REALTIME_RECORDS = '/resource/realtime-records';
 const RESOURCE_TURNOVER = '/resource/turnover';
@@ -463,6 +464,7 @@ export {
   MY_VOTE_DATA_TIP,
   THE_REASON_TO_BECOME_A_NON_CANDIDATE,
   FEE_TIP,
+  HISTORY_PRICE,
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,

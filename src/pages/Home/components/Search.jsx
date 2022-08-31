@@ -92,7 +92,7 @@ function Search(props) {
     <div className="new-search">
       <Input
         value={value}
-        placeholder="Search by Address / Txn Hash / Block / Block Height"
+        placeholder="Search by Address / Txn Hash / Block"
         onChange={handleInput}
         onPressEnter={handleSearch}
       />
