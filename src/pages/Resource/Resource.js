@@ -115,14 +115,10 @@ class Resource extends Component {
 
   loginAndInsertKeyPairs = (useLock = true, toastMessage = true) => {
     const { nightElf } = this.state;
-    const getLoginPayload = {
-      appName,
-      connectChain: this.connectChain,
-    };
 
     getLogin(
       nightElf,
-      getLoginPayload,
+      {},
       (result) => {
         if (result && result.error === 0) {
           localStorage.setItem(
@@ -133,7 +129,9 @@ class Resource extends Component {
             })
           );
           const wallet = JSON.parse(result.detail);
-          this.getNightElfKeyPair(wallet);
+          nightElf.chain.getChainStatus(() => {
+            this.getNightElfKeyPair(wallet);
+          })
           toastMessage && message.success("Login success!!", 3);
         } else {
           this.loginFailed();
@@ -237,7 +235,7 @@ class Resource extends Component {
       nightElf,
       resourceTokens,
     } = this.state;
-    let account = {
+    const account = {
       balance: currentBalance,
       resourceTokens,
     };

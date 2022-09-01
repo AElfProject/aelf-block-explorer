@@ -77,6 +77,7 @@ class ResourceDetail extends PureComponent {
     return (
       <div className='transaction-details basic-container basic-container-white'>
         <Table
+          showSorterTooltip={false}
           columns={RESOURCE_DETAILS_COLUMN}
           pagination={pagination}
           dataSource={data}

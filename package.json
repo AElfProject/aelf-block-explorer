@@ -123,7 +123,7 @@
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "lint-staged": "^9.4.2",
-    "mini-css-extract-plugin": "^0.8.0",
+    "mini-css-extract-plugin": "^2.6.1",
     "minimist": "^1.2.0",
     "moment-locales-webpack-plugin": "^1.1.0",
     "monaco-editor-webpack-plugin": "^1.7.0",

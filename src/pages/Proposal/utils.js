@@ -1,8 +1,8 @@
-import { getCsrfToken, getSignParams, getTxResult } from "../../common/utils";
-import { request } from "../../../../common/request";
-import { API_PATH } from "../../common/constants";
+import { getCsrfToken, getSignParams, getTxResult } from "./common/utils";
+import { request } from "../../common/request";
+import { API_PATH } from "./common/constants";
 
-import { deserializeLog } from "../../../../common/utils";
+import { deserializeLog } from "../../common/utils";
 
 export async function updateContractName(wallet, currentWallet, params) {
   const signedParams = await getSignParams(wallet, currentWallet);
@@ -60,8 +60,5 @@ export async function getDeserializeLog(aelf, txId, logName) {
 
 export function getContractURL(address) {
   // eslint-disable-next-line max-len
-  const innerURL = `${window.location.protocol}//${window.location.host}/viewer/address.html#/contract/${address}`;
-  return `${window.location.protocol}//${
-    window.location.host
-  }/contract?#${encodeURIComponent(innerURL)}`;
+  return `${window.location.protocol}//${window.location.host}/contract/${address}`;
 }

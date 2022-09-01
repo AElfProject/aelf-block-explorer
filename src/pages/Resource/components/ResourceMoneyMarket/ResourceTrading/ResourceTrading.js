@@ -111,7 +111,6 @@ class ResourceTrading extends PureComponent {
 
   render() {
     const {
-      isSmallScreen,
       account,
       currentResourceType,
       currentResourceIndex,
@@ -284,8 +283,4 @@ class ResourceTrading extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => ({
-  ...state.common,
-});
-
-export default connect(mapStateToProps)(ResourceTrading);
+export default ResourceTrading;

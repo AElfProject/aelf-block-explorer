@@ -129,22 +129,22 @@ export default class ResourceMoneyMarket extends PureComponent {
             />
             <Row className="resource-sub-container">
               {nightElf && (
-              <Col xxl={14} xl={24} lg={24}>
-                <ResourceTrading
-                  loginAndInsertKeypairs={loginAndInsertKeypairs}
-                  currentResourceType={currentResourceSymbol}
-                  currentResourceIndex={currentIndex}
-                  currentWallet={currentWallet}
-                  contracts={contracts}
-                  tokenConverterContract={tokenConverterContract}
-                  tokenContract={tokenContract}
-                  account={account}
-                  onRefresh={onRefresh}
-                  endRefresh={endRefresh}
-                  nightElf={nightElf}
-                  appName={appName}
-                />
-              </Col>
+                <Col xxl={14} xl={24} lg={24}>
+                  <ResourceTrading
+                    loginAndInsertKeypairs={loginAndInsertKeypairs}
+                    currentResourceType={currentResourceSymbol}
+                    currentResourceIndex={currentIndex}
+                    currentWallet={currentWallet}
+                    contracts={contracts}
+                    tokenConverterContract={tokenConverterContract}
+                    tokenContract={tokenContract}
+                    account={account}
+                    onRefresh={onRefresh}
+                    endRefresh={endRefresh}
+                    nightElf={nightElf}
+                    appName={appName}
+                  />
+                </Col>
               )}
               <Col xxl={{ span: 9, offset: 1 }} xl={24} lg={24}>
                 <RealTimeTransactions

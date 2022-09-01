@@ -94,7 +94,7 @@ function handleDataList(list = [], interval, length) {
   };
 }
 
-function getMAData(list) {
+function getMAData(list = []) {
   const maList = [5, 10, 20, 30];
   const filteredMa = maList.filter((v) => v <= list.length);
   const legend = filteredMa.map((v) => `MA${v}`);

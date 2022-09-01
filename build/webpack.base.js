@@ -69,7 +69,10 @@ const baseConfig = {
       {
         test: /\.less$/,
         use: [
-          isProdMode ? MiniCssExtractPlugin.loader : "style-loader",
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {},
+          },
           "css-loader",
           "postcss-loader",
           {
@@ -86,7 +89,10 @@ const baseConfig = {
       {
         test: /\.css$/,
         use: [
-          isProdMode ? MiniCssExtractPlugin.loader : "style-loader",
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {},
+          },
           "css-loader",
           "postcss-loader",
         ],

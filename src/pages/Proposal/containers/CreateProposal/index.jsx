@@ -20,7 +20,7 @@ import {
   addContractName,
   getDeserializeLog,
   updateContractName,
-} from "./utils";
+} from "../../utils";
 import {
   useCallbackAssem,
   useReleaseApprovedContractAction,

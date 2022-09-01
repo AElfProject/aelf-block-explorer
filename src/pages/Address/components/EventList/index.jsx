@@ -115,6 +115,7 @@ const EventList = (props) => {
   return (
     <>
       <Table
+        showSorterTooltip={false}
         dataSource={list}
         columns={columns}
         loading={fetchingStatus === fetchingStatusMap.FETCHING}

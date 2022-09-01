@@ -190,6 +190,7 @@ class RedeemModal extends PureComponent {
           render: (
             <div>
               <Table
+                showSorterTooltip={false}
                 dataSource={redeemableVoteRecordsForOneCandidate}
                 columns={columns}
                 pagination={pagination}
