@@ -1,5 +1,42 @@
 @import "../../assets/less/_variables";
 .footer {
+  &.test {
+    background: url("../../assets/images/bg_footer_test.png") no-repeat center;
+    color: @mine-shaft;
+    a {
+      color: @scorpion;
+    }
+    .footer-container {
+      .left {
+        .top {
+          h4 {
+            color: @mine-shaft;
+          }
+          .description {
+            color: @scorpion;
+          }
+        }
+        .bottom {
+          .powered-by {
+            border: 1px solid @alto;
+            background: url("../../assets/images/footer_aelf_test.png")
+              no-repeat;
+            background-size: 32px 28px;
+            background-position: 13px center;
+            color: @scorpion;
+          }
+        }
+      }
+    }
+    .footer-links-container {
+      .link-list > p {
+        color: @mine-shaft;
+      }
+    }
+    .copyright-container {
+      color: @scorpion;
+    }
+  }
   text-align: center;
   background: url("../../assets/images/bg_footer.png") no-repeat center;
   background-color: #1d2a51;

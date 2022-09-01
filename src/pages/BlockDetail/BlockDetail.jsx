@@ -176,9 +176,7 @@ function BlockDetail(props) {
     if (parseInt(input, 10) == input) {
       blockHeight = input;
       if (blockHeight > BestChainHeight) {
-        message.error(
-          `${blockHeight} is larger than current chain best height ${BestChainHeight}`
-        );
+        location.href = "/search-invalid/" + blockHeight;
       } else {
         const data = await getDataFromHeight(input);
         result = data.blockInfo;

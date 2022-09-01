@@ -4,11 +4,7 @@ import { useCallback } from "react";
 import IconFont from "../../../components/IconFont";
 import { get, isAElfAddress } from "../../../utils";
 import { useMemo } from "react";
-import {
-  INPUT_STARTS_WITH_MINUS_TIP,
-  INPUT_ZERO_TIP,
-  TXS_BLOCK_API_URL,
-} from "../../../constants";
+import { TXS_BLOCK_API_URL } from "../../../constants";
 import { withRouter } from "../../../routes/utils";
 
 function Search(props) {
@@ -17,34 +13,34 @@ function Search(props) {
 
   const searchRules = useMemo(
     () => ({
-      hash: async (value) => {
+      hash: async (val) => {
         const getTxsOption = {
           limit: 1,
           page: 0,
-          block_hash: value,
+          block_hash: val,
         };
 
         const blockInfo = await get(TXS_BLOCK_API_URL, getTxsOption);
         const isBlock = blockInfo.transactions && blockInfo.transactions.length;
-        searchRules[isBlock ? "block" : "transaction"](value);
+        searchRules[isBlock ? "block" : "transaction"](val);
       },
-      address: (value) => {
-        navigate(`/address/${value}`);
+      address: (val) => {
+        navigate(`/address/${val}`);
       },
-      transaction: async (value) => {
-        navigate(`/tx/${value}`);
+      transaction: async (val) => {
+        navigate(`/tx/${val}`);
       },
-      block: (value) => {
-        navigate(`/block/${value}`);
+      block: (val) => {
+        navigate(`/block/${val}`);
       },
-      blockHeight: (value) => {
-        navigate(`/block/${value}`);
+      blockHeight: (val) => {
+        navigate(`/block/${val}`);
       },
-      invalid: (value) => {
+      invalid: (val) => {
         navigate(`/search-invalid/${value}`);
       },
     }),
-    []
+    [value]
   );
 
   const getInputType = useCallback((value) => {
@@ -69,6 +65,7 @@ function Search(props) {
   }, []);
   const handleSearch = useCallback(() => {
     let tempValue = value.trim();
+    if (!tempValue) return;
 
     if (tempValue.indexOf("_") > 0) {
       tempValue = tempValue.split("_")[1];
@@ -80,11 +77,11 @@ function Search(props) {
     // 2. block   66
     // 3. address length=38
     if (`${tempValue}`.startsWith("-")) {
-      message.error(INPUT_STARTS_WITH_MINUS_TIP);
+      location.href = "/search-invalid/" + tempValue;
       return;
     }
     if (+tempValue === 0) {
-      message.error(INPUT_ZERO_TIP);
+      location.href = "/search-invalid/" + tempValue;
       return;
     }
     const searchType = getInputType(tempValue);
