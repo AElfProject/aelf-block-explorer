@@ -283,12 +283,11 @@ class VoteModal extends Component {
                       message: SELECT_SOMETHING_TIP,
                     },
                   ]}
-                  initialValue={defaultDate}
+                  // initialValue={defaultDate}
                   name='lockTime'
                 >
                   {isIPhone() ? (
                     <DatePickerReact
-                      style={{ width: "100%" }}
                       dateFormat='yyyy-MM-dd'
                       minDate={
                         new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))
@@ -319,7 +318,6 @@ class VoteModal extends Component {
                     />
                   ) : (
                     <DatePicker
-                      style={{ width: "100%" }}
                       disabledDate={disabledDate}
                       onChange={(value) => {
                         this.setState({

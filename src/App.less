@@ -192,6 +192,17 @@ input {
     }
   }
 }
+// delete the tr line
+.ant-table-thead {
+  tr {
+    th.ant-table-cell {
+      line-height: 20px;
+      &:before {
+        width: 0 !important;
+      }
+    }
+  }
+}
 
 @media screen and (max-width: 768px) {
   .App {
