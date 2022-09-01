@@ -2,20 +2,12 @@
  * @file event item
  * @author atom-yang
  */
-import React, { useState } from 'react';
-import {
-  Button,
-  message,
-  Input,
-} from 'antd';
-import PropTypes from 'prop-types';
-import {
-  deserializeLog,
-} from '../../utils/utils';
+import React, { useState } from "react";
+import { Button, message, Input } from "antd";
+import PropTypes from "prop-types";
+import { deserializeLog } from "../../utils/utils";
 
-const {
-  TextArea,
-} = Input;
+const { TextArea } = Input;
 
 const EventItem = (props) => {
   const [result, setResult] = useState({ ...(props || {}) });

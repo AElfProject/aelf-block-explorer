@@ -3,11 +3,11 @@
  * @author huangzongzhe
  */
 import React, {
-  Component,
+  Component
 } from 'react';
 
 import {
-  Select,
+  Select
 } from 'antd';
 import './ChainSelect.styles.less';
 import { CHAIN_ID } from '../../constants';

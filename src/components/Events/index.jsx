@@ -2,17 +2,39 @@
  * @file event item
  * @author atom-yang
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-import EventItem from '../EventItem';
+import React from "react";
+import PropTypes from "prop-types";
+import EventItem from "../EventItem";
+import CopyButton from "../CopyButton/CopyButton";
+import { Link } from "react-router-dom";
+import addressFormat from "../../utils/addressFormat";
 
 const Events = (props) => {
-  const {
-    list,
-  } = props;
+  const { list } = props;
   return (
     <div className="event-list">
-      {list.map((item, index) => (<EventItem key={index} {...item} />))}
+      {list.map((item, index) => (
+        <div key={index}>
+          <div className="info">
+            <span className="label">Address: </span>
+            <div>
+              <Link
+                className="info"
+                to={`/address/${item.Address}`}
+                title={addressFormat(item.Address)}
+              >
+                {addressFormat(item.Address)}
+              </Link>
+              <CopyButton value={addressFormat(item.Address)} />
+            </div>
+          </div>
+          <div className="info">
+            <span className="label">Name: </span>
+            <span className="info">{item.Name}</span>
+          </div>
+          <EventItem {...item} />
+        </div>
+      ))}
     </div>
   );
 };

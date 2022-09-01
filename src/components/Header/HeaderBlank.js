@@ -2,11 +2,30 @@ import React, { Component } from "react";
 import "./HeaderBlank.less";
 import { withRouter } from "../../routes/utils";
 class HeaderBlank extends Component {
-  render() {
-    if (location.pathname === "/") {
-      return "";
+  constructor() {
+    super()
+    this.state = {
+      isHome: false
     }
-    return <div className='header-blank' />;
+  }
+  componentDidMount() {
+    const { location } = this.props
+    this.setState({
+      isHome: (location.pathname === '/'
+        || location.pathname.includes("/search-"))
+    })
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps && prevProps.location.pathname !== this.props.pathname) {
+      if ((this.props.location.pathname === '/' || location.pathname.includes("/search-")) !== this.state.isHome) {
+        this.setState({ isHome: this.props.location.pathname === '/' })
+      }
+    }
+  }
+  render() {
+    return (
+      <div className={"header-blank " + (this.state.isHome && 'only-menu')} />
+    );
   }
 }
 export default withRouter(HeaderBlank);

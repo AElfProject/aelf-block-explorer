@@ -55,7 +55,6 @@
       "Host": "explorer-test.aelf.io"
     },
     "changeOrigin": true,
-    "ws": true,
     "secure": false
   },
   {

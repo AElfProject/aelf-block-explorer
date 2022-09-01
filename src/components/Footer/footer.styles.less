@@ -1,56 +1,104 @@
 @import "../../assets/less/_variables";
 .footer {
-  //position: absolute;
-  //bottom: 0;
-  //left: 0;
-  //width: 100%;
-  ////height: @footerHeight;
-  //min-height: @footerHeight;
   text-align: center;
-  background: #266CD3;
-  //background-size: 100% 100%;
+  background: url("../../assets/images/bg_footer.png") no-repeat center;
+  background-color: #1d2a51;
+  background-size: 1440px;
   color: #fff;
   overflow: hidden;
-
+  height: 262px;
+  a {
+    text-align: left;
+    color: rgba(255, 255, 255, 0.8);
+  }
   .footer-container {
+    max-width: @maxWidth;
+    margin: 0 auto;
+    padding-top: 40px;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     min-height: 88px;
     height: 100%;
+    .left {
+      height: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 43px;
+      .top {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 4px;
+        h4 {
+          color: white;
+          font-family: "Roboto Medium";
+          font-weight: 400;
+          font-size: 20px;
+          margin: 0;
+        }
+        .description {
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 22px;
+        }
+      }
+      .bottom {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 16px;
+        .powered-by {
+          padding: 11px 21px 11px 48px;
+          border: 1px solid rgba(255, 255, 255, 0.6);
+          border-radius: 4px;
+          color: white;
+          background: url("../../assets/images/footer_aelf.png") no-repeat;
+          background-size: 32px 28px;
+          background-position: 13px center;
+        }
+        p {
+          line-height: 22px;
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+    }
     .footer-information {
       width: 100%;
     }
   }
 
-  .footer-logo {
-    text-align: left;
-    //margin-bottom: @mgb30;
-  }
   // todo: limit the links within main body of page
   .footer-links-container {
-    height: 91px;
-    padding: 40px 0 0 0;
-    .ant-btn {
-      width: 40px;
-      height: 40px;
-      line-height: 40px;
-      margin: 10px 10px 0 10px;
-      color: @iconColor;
-      //background-color: @bgColor;
-      background-color: #fff;
-      border-color: @bgColor;
-
-      &:hover {
-        background-color: @bgWhite;
+    display: flex;
+    gap: 91px;
+    height: 100%;
+    .link-list {
+      > p {
+        color: white;
+        margin-bottom: 16px;
+        font-family: "Roboto Medium";
+      }
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
     }
   }
 
   .copyright-container {
+    position: absolute;
+    bottom: 16px;
+    width: 85px;
+    left: 50%;
+    transform: translateX(-42.5px);
     text-align: center;
-    margin: 16px 0 16px 0;
+    color: rgba(255, 255, 255, 0.8);
   }
 }
 @media (max-width: 1050px) {
@@ -69,40 +117,27 @@
 
 @media (max-width: @smallScreenWidth) {
   .footer {
-    padding: 0;
+    height: 490px;
+    padding: 32px 24px;
+    background: url("../../assets/images/bg_footer_mobile.png") no-repeat;
+    background-color: #1d2a51;
+    background-position: right top;
+    background-size: 375px;
     .footer-container {
-      display: block;
+      display: flex;
       position: static;
-      .footer-links-container {
-        margin-top: 32px;
+      flex-direction: column;
+      padding: 0;
+      gap: 40px;
+      .left {
         width: 100%;
-        .ant-btn:first-child {
-          margin-left: 0;
-        }
-        .ant-btn:last-child {
-        }
+        gap: 24px;
+        height: fit-content;
       }
-    }
-  }
-}
-
-@media (max-width: 682px) {
-  .footer {
-    padding: 0;
-    .footer-container {
       .footer-links-container {
-        height: auto;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        .ant-btn:first-child {
-          margin: 10px;
-        }
+        gap: 66px;
+        width: 100%;
       }
-    }
-    .footer-logo {
-      margin-left: 10px;
     }
   }
 }
-

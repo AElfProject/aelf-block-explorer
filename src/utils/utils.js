@@ -133,3 +133,14 @@ export async function deserializeLog(log) {
 export function deserializeLogs(logs) {
   return Promise.all(logs.map((log) => deserializeLog(log)));
 }
+
+export function getOmittedStr(str = '', front = 8, rear = 4) {
+  const strArr = [...str]
+
+  const { length } = str
+  if (length > (front + rear)) {
+    strArr.splice(front, length - rear - front, '...')
+    return strArr.join('')
+  }
+  return str
+}

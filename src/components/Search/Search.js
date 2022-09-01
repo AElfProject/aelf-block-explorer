@@ -8,6 +8,7 @@ import { withRouter } from "../../routes/utils";
 import { isAElfAddress, get } from "../../utils";
 import { Input, message } from "antd";
 import { SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import IconFont from '../../components/IconFont'
 
 import "./search.styles.less";
 import { INPUT_STARTS_WITH_MINUS_TIP, INPUT_ZERO_TIP } from "@src/constants";
@@ -31,32 +32,43 @@ class Search extends PureComponent {
   };
 
   SEARCHRULES = {
-    address(value, navigate) {
+    address: (value, navigate) => {
+      this.setState({
+        content: ''
+      });
       navigate(`/address/${value}`);
     },
-    async transaction(value, navigate) {
+    transaction: async (value, navigate) => {
       const getTxsOption = {
         limit: 1,
         page: 0,
         block_hash: value,
       };
 
-      const blockInfo = await get("/block/transactions", getTxsOption);
+      const blockInfo = await get('/block/transactions', getTxsOption);
       const isBlock = blockInfo.transactions && blockInfo.transactions.length;
+      this.setState({
+        content: ''
+      });
       if (isBlock) {
         navigate(`/block/${value}`);
-      } else {
+      }
+      else {
         navigate(`/tx/${value}`);
       }
     },
-    blockHeight(value, navigate) {
-      const number = parseInt(value, 10);
+    blockHeight: (value, navigate) => {
+      let number = parseInt(value, 10);
       if (number == value) {
+        this.setState({
+          content: ''
+        });
         navigate(`/block/${value}`);
+        return true;
       }
-      return true;
-    },
-  };
+      return false
+    }
+  }
 
   handleSearch = (e) => {
     let value = (e.target && e.target.value) || e.searchValue || "";
@@ -99,37 +111,29 @@ class Search extends PureComponent {
       this.SEARCHRULES.transaction(value, this.props.navigate);
     } else {
       this.SEARCHRULES.blockHeight(value, this.props.navigate) ||
-        message.error("Wrong Search Input", 6);
+        (location.href = '/search-invalid/' + value);
     }
   };
 
   render() {
     const { content } = this.state;
-    const suffix = content ? (
-      <CloseCircleOutlined onClick={this.emitEmpty} />
-    ) : (
-      <span />
-    );
     return (
-      <div className='search-container'>
+      <div className="search-container">
         <Input
-          className='header-search'
-          placeholder='Address / Tx / Block / Block Height'
-          suffix={suffix}
+          className="header-search"
+          placeholder="Search by Address / Txn Hash..."
           value={content}
           onChange={this.onChangeUserName}
-          ref={(node) => (this.userNameInput = node)}
+          ref={node => (this.userNameInput = node)}
           onPressEnter={this.handleSearch}
         />
         <span
-          className='search-icon-container'
-          onClick={() =>
-            this.handleSearch({
-              searchValue: this.state.content,
-            })
-          }
+          className="search-icon-container"
+          onClick={() => this.handleSearch({
+            searchValue: this.state.content
+          })}
         >
-          <SearchOutlined className='search-icon' />
+          <IconFont type="Search" />
         </span>
       </div>
     );

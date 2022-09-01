@@ -46,7 +46,7 @@ const Item = (props) => {
 
 const descItemPropsType = PropTypes.shape({
   name: PropTypes.string,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.any.isRequired,
   link: PropTypes.string,
 });
 

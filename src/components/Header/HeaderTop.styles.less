@@ -5,14 +5,31 @@
   transition: all 200ms;
   height: @header-top-height;
   border-bottom: 1px solid @border-color2;
-  .header-top-content {
-    display: flex;
-    .search-container .search-icon-container {
-      background-color: @headerbgColor2;
-      &:hover {
-        background-color: @bgHover;
+  .price-container {
+    display: inline-flex;
+    border-radius: 14px;
+    background: rgba(177, 202, 255, 0.1);
+    padding: 3px 8px 3px 5px;
+    height: 28px;
+    margin-left: 18px;
+    color: white;
+    img {
+      width: 22px;
+      height: 22px;
+      margin-right: 6px;
+    }
+    .range {
+      margin-left: 8px;
+      &.rise {
+        color: @jade;
+      }
+      &.fall {
+        color: @sunset-orange;
       }
     }
+  }
+  .header-top-content {
+    display: flex;
   }
   .net-change-menu {
     // Add width for preventing menuItem change to ...
