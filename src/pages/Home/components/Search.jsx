@@ -5,11 +5,7 @@ import IconFont from "../../../components/IconFont";
 import { get, isAElfAddress } from "../../../utils";
 import { useMemo } from "react";
 import { withRouter } from "react-router";
-import {
-  INPUT_STARTS_WITH_MINUS_TIP,
-  INPUT_ZERO_TIP,
-  TXS_BLOCK_API_URL,
-} from "../../../constants";
+import { TXS_BLOCK_API_URL } from "../../../constants";
 
 function Search(props) {
   const [value, setValue] = useState("");
@@ -17,34 +13,34 @@ function Search(props) {
 
   const searchRules = useMemo(
     () => ({
-      hash: async (value) => {
+      hash: async (val) => {
         const getTxsOption = {
           limit: 1,
           page: 0,
-          block_hash: value,
+          block_hash: val,
         };
 
         const blockInfo = await get(TXS_BLOCK_API_URL, getTxsOption);
         const isBlock = blockInfo.transactions && blockInfo.transactions.length;
-        searchRules[isBlock ? "block" : "transaction"](value);
+        searchRules[isBlock ? "block" : "transaction"](val);
       },
-      address: (value) => {
-        history.push(`/address/${value}`);
+      address: (val) => {
+        history.push(`/address/${val}`);
       },
-      transaction: async (value) => {
-        history.push(`/tx/${value}`);
+      transaction: async (val) => {
+        history.push(`/tx/${val}`);
       },
-      block: (value) => {
-        history.push(`/block/${value}`);
+      block: (val) => {
+        history.push(`/block/${val}`);
       },
-      blockHeight: (value) => {
-        history.push(`/block/${value}`);
+      blockHeight: (val) => {
+        history.push(`/block/${val}`);
       },
-      invalid: (value) => {
+      invalid: (val) => {
         history.push(`/search-invalid/${value}`);
       },
     }),
-    []
+    [value]
   );
 
   const getInputType = useCallback((value) => {
@@ -58,7 +54,7 @@ function Search(props) {
       return "hash";
     }
     const number = parseInt(value, 10).toString();
-    if (number === (value)) {
+    if (number === value) {
       return "blockHeight";
     }
     return "invalid";
@@ -69,6 +65,7 @@ function Search(props) {
   }, []);
   const handleSearch = useCallback(() => {
     let tempValue = value.trim();
+    if (!tempValue) return;
 
     if (tempValue.indexOf("_") > 0) {
       tempValue = tempValue.split("_")[1];
@@ -80,11 +77,11 @@ function Search(props) {
     // 2. block   66
     // 3. address length=38
     if (`${tempValue}`.startsWith("-")) {
-      message.error(INPUT_STARTS_WITH_MINUS_TIP);
+      location.href = "/search-invalid/" + tempValue;
       return;
     }
     if (+tempValue === 0) {
-      message.error(INPUT_ZERO_TIP);
+      location.href = "/search-invalid/" + tempValue;
       return;
     }
     const searchType = getInputType(tempValue);

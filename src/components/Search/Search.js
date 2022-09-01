@@ -22,7 +22,6 @@ import {
 } from '../../utils';
 
 import './search.styles.less';
-import { INPUT_STARTS_WITH_MINUS_TIP, INPUT_ZERO_TIP } from '@src/constants';
 
 class Search extends PureComponent {
 
@@ -106,11 +105,11 @@ class Search extends PureComponent {
         // 2. block   66
         // 3. address length=38
         if (`${value}`.startsWith('-')) {
-            message.error(INPUT_STARTS_WITH_MINUS_TIP);
+            (location.href = '/search-invalid/' + (e.target && e.target.value || e.searchValue))
             return;
         }
         if (+value === 0) {
-            message.error(INPUT_ZERO_TIP);
+            (location.href = '/search-invalid/' + (e.target && e.target.value || e.searchValue))
             return;
         }
 
@@ -122,7 +121,8 @@ class Search extends PureComponent {
             this.SEARCHRULES.transaction(value, this.props.history);
         }
         else {
-            this.SEARCHRULES.blockHeight(value, this.props.history) || (location.href = '/search-invalid/' + value);
+            this.SEARCHRULES.blockHeight(value, this.props.history)
+                || (location.href = '/search-invalid/' + (e.target && e.target.value || e.searchValue));
         }
     };
 
