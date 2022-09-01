@@ -12,7 +12,7 @@ import {
   SYMBOL,
 } from "../../constants";
 
-import "./blockdetail.styles.less";
+import "./Blockdetail.styles.less";
 import Dividends from "../../components/Dividends";
 import { withRouter } from "../../routes/utils";
 
@@ -115,7 +115,7 @@ class BlockDetailPage extends React.Component {
     }
 
     get(BLOCK_INFO_API_URL, {
-       height: blockHeight,
+      height: blockHeight,
     }).then((res) => {
       this.setState({
         parsedResult: res,
@@ -277,9 +277,9 @@ class BlockDetailPage extends React.Component {
         </Col>
         <Col xs={24} sm={24} md={18} lg={18} xl={18}>
           <div>{valueHTML}</div>
-          </Col>
+        </Col>
         {/* <Col span={6}>{formatKey(key)}</Col> */}
-          {/* <Col span={18}><div>{value}</div></Col> */}
+        {/* <Col span={18}><div>{value}</div></Col> */}
       </Row>
     );
   }

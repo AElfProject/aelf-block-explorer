@@ -10,7 +10,7 @@ import BasicInfo from "./components/BasicInfo";
 
 const { TabPane } = Tabs;
 
-import "./blockDetail.styles.less";
+import "./BlockDetail.styles.less";
 import ExtensionInfo from "./components/ExtensionInfo";
 import TransactionList from "./components/TransactionList";
 import { useMemo } from "react";
