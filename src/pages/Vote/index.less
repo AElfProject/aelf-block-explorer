@@ -339,9 +339,13 @@ button {
 }
 
 // todo: Limit the work range to certain item such as the Calendar inner Modal
-.ant-calendar-picker-container {
-  .ant-calendar {
+.ant-picker-dropdown {
+  .ant-picker-date-panel {
     width: 450px;
+    .ant-picker-header,
+    .ant-picker-content {
+      width: 100%;
+    }
 
     .ant-calendar-disabled-cell.ant-calendar-selected-day
       .ant-calendar-date::before {

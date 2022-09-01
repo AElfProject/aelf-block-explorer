@@ -63,10 +63,29 @@ class Resource extends Component {
             this.setState({
               nightElf,
             });
-            nightElf.chain.getChainStatus().then((result) => {
-              // TODO log in when it returns true
-              // this.loginAndInsertKeypairs(result);
-            });
+            if (nightElf.getExtensionInfo) {
+              nightElf.getExtensionInfo().then((info) => {
+                if (!info.locked) {
+                  nightElf.chain.getChainStatus().then((result) => {
+                    this.loginAndInsertKeyPairs(result);
+                  });
+                } else {
+                  localStorage.removeItem("currentWallet");
+                }
+              });
+            } else {
+              let wallet = JSON.parse(localStorage.getItem("currentWallet"));
+              if (
+                wallet &&
+                new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
+              ) {
+                nightElf.chain.getChainStatus().then((result) => {
+                  this.loginAndInsertKeyPairs(result);
+                });
+              } else {
+                localStorage.removeItem("currentWallet");
+              }
+            }
           }
         }
       })
@@ -218,7 +237,7 @@ class Resource extends Component {
       nightElf,
       resourceTokens,
     } = this.state;
-    const account = {
+    let account = {
       balance: currentBalance,
       resourceTokens,
     };
@@ -234,7 +253,7 @@ class Resource extends Component {
     return (
       <div className='resource-body basic-container basic-container-white'>
         {!isPhone && downloadPlugins}
-        {/* {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>} */}
+        {/*{isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}*/}
         {nightElf && resourceAElfWalletHtml}
         <div className='resource-money-market'>
           <ResourceMoneyMarket

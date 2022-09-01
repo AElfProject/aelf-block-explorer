@@ -35,11 +35,14 @@ function useRouteMatch(path) {
 
 export const RouterComponent = (options) => {
   const logStatus = useSelector((state) => state.common.logStatus);
-  const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus]);
+  const isLogged = useMemo(
+    () => logStatus === LOG_STATUS.LOGGED,
+    [logStatus, options]
+  );
   const target = useMemo(
     () =>
       isLogged ? options.target : <Navigate to={options.default} replace />,
-    [isLogged]
+    [isLogged, options]
   );
   return target;
 };
