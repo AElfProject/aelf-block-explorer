@@ -33,9 +33,6 @@ import {
 } from '@src/constants';
 import { getMagneticValue } from '@utils/styleUtils';
 import { regPos } from '@utils/regExps';
-import {
-  multiToken,
-} from '../../../../../../../config/config';
 import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
 import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
 import getFees from '../../../../../../utils/getFees';
