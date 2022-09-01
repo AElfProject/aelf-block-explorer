@@ -11,7 +11,6 @@ function SearchInvalid(props) {
   const { match } = props;
   const { params } = match;
   const isMobile = useMobile();
-  if (!params.string) location.href = "/";
   return (
     <div
       className={

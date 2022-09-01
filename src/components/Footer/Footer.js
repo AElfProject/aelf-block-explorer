@@ -1,14 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { NETWORK_TYPE } from '../../../config/config';
 
 import './footer.styles.less';
 
 const BrowserFooter = props => {
 
   if (location.pathname.includes('/search-')) return <></>
+  const NETWORK_TYPE = NETWORK_TYPE
 
   return (
-    <section {...props} className='footer'>
+    <section {...props} className={'footer ' + (NETWORK_TYPE === 'MAIN' ? 'main' : 'test')}>
       <div className='footer-container' >
         <div className='left'>
           <div className='top'>
