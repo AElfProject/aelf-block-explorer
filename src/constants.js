@@ -248,10 +248,7 @@ const ALL_TXS_LIST_COLUMNS = [
         ? removeAElfPrefix(contractName)
         : contractName;
       return (
-        <Link
-          to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + text)}`}
-          title={addressFormat(text)}
-        >
+        <Link to={`/contract/${text}`} title={addressFormat(text)}>
           {name || addressFormat(text)}
         </Link>
       );

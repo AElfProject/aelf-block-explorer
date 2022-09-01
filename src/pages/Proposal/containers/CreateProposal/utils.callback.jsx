@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { getOriginProposedContractInputHash } from "../../common/util.proposed";
 import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
-import { getContractURL, getDeserializeLog } from "./utils";
+import { getContractURL, getDeserializeLog } from "../../utils";
 
 export const useCallbackAssem = () => {
   const common = useSelector((state) => state.common);
