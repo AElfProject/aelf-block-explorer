@@ -147,6 +147,7 @@ const TokenList = () => {
       </div>
       <div className='token-list-content'>
         <Table
+          showSorterTooltip={false}
           dataSource={list}
           columns={columns}
           loading={fetchingStatus === fetchingStatusMap.FETCHING}

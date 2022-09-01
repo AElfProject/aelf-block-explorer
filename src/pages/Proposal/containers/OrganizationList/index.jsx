@@ -87,6 +87,7 @@ const OrganizationList = () => {
   const editOrganization = (orgAddress) => {
     const org = list.filter((item) => item.orgAddress === orgAddress)[0];
     Modal.confirm({
+      className: "organization-list-modal",
       title: "Modify Organization?",
       content:
         "Modifying the organization requires initiating a proposal to modify. Are you sure you want to modify?",
@@ -94,6 +95,7 @@ const OrganizationList = () => {
         dispatch(setCurrentOrg(org));
         navigate(`/apply/${org.orgAddress}`);
       },
+      icon: null,
     });
   };
 

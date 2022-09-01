@@ -89,6 +89,7 @@ class BlocksPage extends Component {
         key='body'
       >
         <Table
+          showSorterTooltip={false}
           columns={BLOCKS_LIST_COLUMNS}
           dataSource={data}
           pagination={pagination}

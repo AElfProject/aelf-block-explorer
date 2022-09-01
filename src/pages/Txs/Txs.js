@@ -123,6 +123,7 @@ class TxsPage extends Component {
         key='body'
       >
         <Table
+          showSorterTooltip={false}
           columns={ALL_TXS_LIST_COLUMNS_WITH_TIME}
           dataSource={data}
           pagination={pagination}

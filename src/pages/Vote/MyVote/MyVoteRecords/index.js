@@ -203,6 +203,7 @@ class MyVoteRecords extends Component {
           <span>My Votes</span>
         </h2>
         <Table
+          showSorterTooltip={false}
           columns={myVoteRecordsCols}
           dataSource={data}
           pagination={pagination}

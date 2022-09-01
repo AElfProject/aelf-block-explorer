@@ -182,6 +182,7 @@ const ContractList = () => {
       <Divider />
       <div className='contract-list-content'>
         <Table
+          showSorterTooltip={false}
           dataSource={list}
           columns={ListColumn}
           loading={fetchingStatus === fetchingStatusMap.FETCHING}

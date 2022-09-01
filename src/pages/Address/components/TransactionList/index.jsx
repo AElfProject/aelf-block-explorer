@@ -207,6 +207,7 @@ const TransactionList = (props) => {
   return (
     <div className='transaction-list'>
       <Table
+        showSorterTooltip={false}
         {...rest}
         dataSource={result.list}
         columns={columns}

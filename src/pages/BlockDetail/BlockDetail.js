@@ -208,6 +208,7 @@ class BlockDetailPage extends React.Component {
       <div>
         <h3 className='block-detail-txs-title'>Transaction List</h3>
         <Table
+          showSorterTooltip={false}
           columns={ALL_TXS_LIST_COLUMNS}
           dataSource={txs}
           pagination={pagination}

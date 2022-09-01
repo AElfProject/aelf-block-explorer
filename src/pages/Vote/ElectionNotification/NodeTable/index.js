@@ -546,6 +546,7 @@ class NodeTable extends PureComponent {
           </Button> */}
         </h2>
         <Table
+          showSorterTooltip={false}
           className='node-table-wrapper'
           columns={nodeListCols}
           dataSource={nodeList}
