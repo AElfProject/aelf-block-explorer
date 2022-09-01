@@ -177,6 +177,7 @@ const Proposal = (props) => {
         <div className='proposal-list-item-actions'>
           <div className='proposal-list-item-buttons'>
             <Button
+              type='primary'
               disabled={!canThisUserVote}
               className='approve-color gap-right'
               shape='round'

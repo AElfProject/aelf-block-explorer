@@ -22,7 +22,7 @@ const OrgAddress = (props) => {
         proposalType,
       })
     );
-    navigate(`/apply/${orgAddress}`);
+    navigate(`/proposal/apply/${orgAddress}`);
   }
   return (
     <Button
