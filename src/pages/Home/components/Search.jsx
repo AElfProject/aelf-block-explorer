@@ -13,7 +13,7 @@ import { withRouter } from "../../../routes/utils";
 
 function Search(props) {
   const [value, setValue] = useState("");
-  const { history } = props;
+  const { navigate } = props;
 
   const searchRules = useMemo(
     () => ({
@@ -29,19 +29,19 @@ function Search(props) {
         searchRules[isBlock ? "block" : "transaction"](value);
       },
       address: (value) => {
-        history.push(`/address/${value}`);
+        navigate(`/address/${value}`);
       },
       transaction: async (value) => {
-        history.push(`/tx/${value}`);
+        navigate(`/tx/${value}`);
       },
       block: (value) => {
-        history.push(`/block/${value}`);
+        navigate(`/block/${value}`);
       },
       blockHeight: (value) => {
-        history.push(`/block/${value}`);
+        navigate(`/block/${value}`);
       },
       invalid: (value) => {
-        history.push(`/search-invalid/${value}`);
+        navigate(`/search-invalid/${value}`);
       },
     }),
     []
@@ -58,7 +58,7 @@ function Search(props) {
       return "hash";
     }
     const number = parseInt(value, 10).toString();
-    if (number === (value)) {
+    if (number === value) {
       return "blockHeight";
     }
     return "invalid";

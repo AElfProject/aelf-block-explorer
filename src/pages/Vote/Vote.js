@@ -605,7 +605,8 @@ class VoteContainer extends Component {
   }
 
   handleClick(e) {
-    const ele = e.target;
+    const ele = JSON.stringify(e.target.dataset) !== '{}'
+      ? e.target : e.target.parentNode;
     const {
       role = "default",
       shoulddetectlock: shouldDetectLock,
@@ -1081,8 +1082,8 @@ class VoteContainer extends Component {
           let { value = {} } = result || {};
           value = !value
             ? {
-                ELF: 0,
-              }
+              ELF: 0,
+            }
             : value;
           value = Object.keys(value).reduce((acc, key) => {
             return {
@@ -1327,8 +1328,6 @@ class VoteContainer extends Component {
         />,
       ],
     ];
-
-    console.log(">>>path2Component", path2Component);
 
     const secondaryLevelNav = this.renderSecondaryLevelNav();
 
