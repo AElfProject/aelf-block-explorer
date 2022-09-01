@@ -1,5 +1,9 @@
 @import "../../assets/less/_variables.less";
 
+.main-net {
+  background: @cloud-burst;
+}
+
 .header-fixed-container {
   position: fixed;
   top: 0;
@@ -11,7 +15,7 @@
   box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.08);
   //background-color: rgba(0, 0, 0, 0.5);
   background-color: @bgBlankWhite;
-  height: @header-height;
+  height: fit-content;
   font-family: @font-header-sets;
 }
 
@@ -22,7 +26,7 @@
   // height: @header-height;
   margin: 0 auto;
 
-  max-width: 1000px;
+  max-width: @maxWidth;
   padding: 0;
 
   .aelf-logo-container {
@@ -109,13 +113,11 @@
 
   .header-navbar {
     display: flex;
+    background: white;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     padding-right: 24px;
-    .search-container .search-icon-container {
-      background-color: @headerbgColor2;
-    }
   }
 
   .ant-menu-item,
@@ -203,11 +205,9 @@
 }
 
 .header-container-mobile {
+  flex-direction: column;
   .header-navbar {
-    position: fixed;
     width: 100%;
-    left: 0;
-    top: 56px;
     display: flex;
     flex-direction: column;
   }
@@ -279,11 +279,6 @@
     background-color: @headerbgColor1;
     color: @textContextWhite;
   }
-  .search-container {
-    background: @bgBlankWhite;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-  }
 
   .aelf-submenu-container {
     .ant-menu {
@@ -296,6 +291,9 @@
     & > svg {
       width: 72px;
     }
+  }
+  .header-main-navbar {
+    background: @cloud-burst;
   }
 }
 
@@ -510,6 +508,9 @@
 @media screen and (max-width: 942px) and (min-width: 584px) {
   .header-fixed-container {
     height: @header-top-height;
+    &.only-menu {
+      height: 56px;
+    }
   }
   .header-container,
   .header-navbar {

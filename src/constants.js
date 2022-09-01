@@ -26,10 +26,12 @@ export const TXS_INFO_API_URL = "/block/txInfo";
 export const BLOCK_INFO_API_URL = "/block/blockInfo";
 const ADDRESS_TXS_API_URL = "/address/transactions";
 const ADDRESS_BALANCE_API_URL = "/api/address/balance";
+const VIEWER_GET_ALL_TOKENS = '/viewer/getAllTokens';
 const TPS_LIST_API_URL = "/tps/all";
 const ADDRESS_TOKENS_API_URL = "/address/tokens";
 const ELF_REALTIME_PRICE_URL =
   "https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY";
+const HISTORY_PRICE = '/token/price-history';
 const ELF_REST_TRADE_API = "https://www.bcex.top/Api_Market/getCoinTrade";
 const RESOURCE_REALTIME_RECORDS = "/resource/realtime-records";
 const RESOURCE_TURNOVER = "/resource/turnover";
@@ -255,10 +257,10 @@ const ALL_TXS_LIST_COLUMNS = [
     },
   },
   {
-    title: "Method",
-    dataIndex: "method",
-    key: "method",
-    ellipsis: true,
+    title: 'Method',
+    dataIndex: 'method',
+    key: 'method',
+    ellipsis: true
   },
   {
     title: "Tx Fee",
@@ -419,6 +421,7 @@ export {
   ALL_UNCONFIRMED_TXS_API_URL,
   TXS_BLOCK_API_URL,
   ADDRESS_TXS_API_URL,
+  VIEWER_GET_ALL_TOKENS,
   ADDRESS_TOKENS_API_URL,
   TPS_LIST_API_URL,
   ELF_REALTIME_PRICE_URL,
@@ -463,6 +466,7 @@ export {
   MY_VOTE_DATA_TIP,
   THE_REASON_TO_BECOME_A_NON_CANDIDATE,
   FEE_TIP,
+  HISTORY_PRICE,
   GET_NULL,
   SHORTEST_LOCK_TIME,
   FAILED_MESSAGE_DISPLAY_TIME,

@@ -6,10 +6,10 @@
 import { lazy } from "react";
 import { Navigate, useRoutes } from "react-router";
 const HomePage = lazy(() => import("../pages/Home/Home"));
-const BlocksPage = lazy(() => import("../pages/Blocks/Blocks"));
+const BlocksPage = lazy(() => import("../pages/Blocks/BlockList"));
 const BlockDetailPage = lazy(() => import("../pages/BlockDetail/BlockDetail"));
-const TxsPage = lazy(() => import("../pages/Txs/Txs"));
-const TxsDetailPage = lazy(() => import("../pages/TxsDetail/TxsDetail"));
+const TxsPage = lazy(() => import("../pages/Txs/TransactionList"));
+const TxsDetailPage = lazy(() => import("../pages/TxsDetail/TransactionDetail"));
 const VotePage = lazy(() => import("../pages/Vote/Vote"));
 const Resource = lazy(() => import("../pages/Resource/Resource"));
 const ResourceDetail = lazy(() =>

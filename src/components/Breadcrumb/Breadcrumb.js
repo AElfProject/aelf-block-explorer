@@ -47,7 +47,17 @@ const BREADCRUMB_NAME_MAP = {
   "/proposal": "Proposal",
   "/token": "Token",
   myvote: "My Vote",
+  '/search-invalid': ''
 };
+
+const DO_NOT_DISPLAY_PATH = [
+  '/transaction-list',
+  '/txs',
+  '/unconfirmedTxs',
+  '/tx/',
+  '/blocks',
+  '/unconfirmedBlocks',
+]
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
@@ -276,6 +286,16 @@ class BrowserBreadcrumb extends Component {
   render() {
     const { location } = this.props;
     const { pathname } = location;
+
+    if (DO_NOT_DISPLAY_PATH.includes(pathname)
+      || pathname.includes('/tx/')
+      || pathname.includes('/txs')
+      || pathname.includes('/block/')
+      || pathname.includes('/search-invalid')
+      || pathname.includes('/search-failed')) {
+      return <></>
+    }
+
     const reloadUrl = pathname + location.search;
     const className = noBreadcrumb(pathname) ? "breadcrumb" : "breadcrumb hide";
     const pathSnippets = pathname.split("/").filter((i) => i);

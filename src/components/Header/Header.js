@@ -13,7 +13,7 @@ import { getPathnameFirstSlash } from "@utils/urlUtils";
 import { setIsSmallScreen } from "@actions/common";
 import Search from "../Search/Search";
 import ChainSelect from "../ChainSelect/ChainSelect";
-import config, { NETWORK_TYPE } from "../../../config/config";
+import config, { CHAIN_ID, NETWORK_TYPE } from '../../../config/config';
 import CHAIN_STATE from "../../../config/configCMS.json";
 import { isPhoneCheck } from "../../utils/deviceCheck";
 import HeaderTop from "./HeaderTop";
@@ -76,6 +76,9 @@ class BrowserHeader extends PureComponent {
       }
     } else {
       showSearch = true;
+    }
+    if (pathname === '/' || pathname.includes('search-')) {
+      showSearch = false
     }
     return showSearch;
   }
@@ -314,9 +317,8 @@ class BrowserHeader extends PureComponent {
   renderMobileMore() {
     return (
       <div
-        className={`header-navbar-mobile-more ${
-          NETWORK_TYPE === "MAIN" ? "header-navbar-main-mobile-more" : ""
-        }`}
+        className={`header-navbar-mobile-more ${NETWORK_TYPE === "MAIN" ? "header-navbar-main-mobile-more" : ""
+          }`}
       >
         <IconFont
           type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
@@ -334,9 +336,8 @@ class BrowserHeader extends PureComponent {
         placement='right'
         width={"80%"}
         closable={false}
-        className={`header-drawer-menu-wrapper ${
-          NETWORK_TYPE === "MAIN" ? "header-main-drawer-menu-wrapper" : ""
-        }`}
+        className={`header-drawer-menu-wrapper ${NETWORK_TYPE === "MAIN" ? "header-main-drawer-menu-wrapper" : ""
+          }`}
         onClose={() => this.toggleMenu()}
         title={
           <>
@@ -377,11 +378,15 @@ class BrowserHeader extends PureComponent {
         ? " header-main-container-mobile"
         : ""
       : NETWORK_TYPE === "MAIN"
-      ? " header-main-container"
-      : "";
+        ? " header-main-container"
+        : "";
+    const onlyMenu = this.state.showSearch
+      ? ''
+      : 'only-menu '
+    const isMainNet = (NETWORK_TYPE === 'MAIN') ? 'main-net' : 'test-net'
 
     return (
-      <div className='header-fixed-container'>
+      <div className={'header-fixed-container ' + onlyMenu + isMainNet}>
         <div>
           {!this.isPhone && (
             <HeaderTop
@@ -394,7 +399,7 @@ class BrowserHeader extends PureComponent {
           <div className={headerClass + networkClass}>
             {mobileMoreHTML}
 
-            <nav className='header-navbar'>
+            <nav className={'header-navbar ' + ((NETWORK_TYPE === 'MAIN') ? 'header-main-navbar' : '')}>
               {menuHtml}
               {this.isPhone && this.state.showSearch && <Search />}
               {!this.isPhone && (
