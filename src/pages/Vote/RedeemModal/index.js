@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { Modal, Form, Input, Button, Table } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 import {
   SYMBOL,
@@ -99,7 +100,7 @@ class RedeemModal extends PureComponent {
       </div>
     ),
     filterIcon: (filtered) => (
-      <Icon type='search' style={{ color: filtered ? "#1890ff" : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),

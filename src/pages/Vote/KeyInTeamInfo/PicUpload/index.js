@@ -1,5 +1,6 @@
-import React from 'react';
-import { Upload, Icon, Modal } from 'antd';
+import React from "react";
+import { Upload, Modal } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -15,14 +16,13 @@ export default class PicUpload extends React.Component {
     super(props);
     this.state = {
       previewVisible: false,
-      previewImage: '',
+      previewImage: "",
       fileList: [
         {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          uid: "-1",
+          name: "image.png",
+          status: "done",
+          url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
         },
       ],
     };
@@ -47,15 +47,15 @@ export default class PicUpload extends React.Component {
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButton = (
       <div>
-        <Icon type="plus" />
-        <div className="ant-upload-text">Upload</div>
+        <PlusOutlined />
+        <div className='ant-upload-text'>Upload</div>
       </div>
     );
     return (
-      <div className="clearfix">
+      <div className='clearfix'>
         <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="picture-card"
+          action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+          listType='picture-card'
           fileList={fileList}
           onPreview={this.handlePreview}
           onChange={this.handleChange}
@@ -67,7 +67,7 @@ export default class PicUpload extends React.Component {
           footer={null}
           onCancel={this.handleCancel}
         >
-          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+          <img alt='example' style={{ width: "100%" }} src={previewImage} />
         </Modal>
       </div>
     );
