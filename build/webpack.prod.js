@@ -43,14 +43,12 @@ const prodConfig = {
     removeEmptyChunks: true,
     sideEffects: true,
     minimizer: [
-      // new TerserPlugin({
-      //   cache: true,
-      //   parallel: true,
-      //   sourceMap: false,
-      //   terserOptions: {
-      //     compress: {},
-      //   },
-      // }),
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: {},
+        },
+      }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
           autoprefixer: {
