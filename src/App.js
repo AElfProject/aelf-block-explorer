@@ -22,6 +22,16 @@ export default class App extends Component {
     componentDidCatch(error) {
         console.log(`component occurred error: ${error}`);
     }
+    componentDidUpdate(preProps, preState) {
+        this.back2Top()
+    }
+
+    back2Top = () => {
+        const app = document.querySelector('#app')
+        if (app) {
+            app.scrollIntoView({ block: 'start', behavior: 'auto' })
+        }
+    }
 
     render() {
         return (
