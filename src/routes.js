@@ -42,6 +42,5 @@ export default () => [
     <Route path='/token' exact component={Token} key='token' />,
     <Route path='/proposal' component={Proposal} key='proposal' />,
     <Route path='/search-invalid/:string' component={SearchInvalid} key='search-invalid' />,
-    <Route path='/search-invalid' component={SearchInvalid} key='search-invalid' />,
     <Route path='/search-failed' component={SearchFailed} key='search-failed' />
 ];
