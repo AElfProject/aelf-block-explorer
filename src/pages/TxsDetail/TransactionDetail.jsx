@@ -43,6 +43,7 @@ function TransactionDetail(props) {
   useEffect(() => {
     setShowExtensionInfo(false);
     setActiveKey("overview");
+    setInfo(undefined);
     aelf.chain
       .getChainStatus()
       .then(({ LastIrreversibleBlockHeight }) => {
