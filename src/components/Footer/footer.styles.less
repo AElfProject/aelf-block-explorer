@@ -2,6 +2,8 @@
 .footer {
   &.test {
     background: url("../../assets/images/bg_footer_test.png") no-repeat center;
+    background-color: white;
+    background-size: 1440px;
     color: @mine-shaft;
     a {
       color: @scorpion;
@@ -160,6 +162,42 @@
     background-color: #1d2a51;
     background-position: right top;
     background-size: 375px;
+    &.test {
+      background: url("../../assets/images/bg_footer_mobile_test.png") no-repeat right;
+      background-color: white;
+      background-size: 375px;
+      color: @mine-shaft;
+      a {
+        color: @scorpion;
+      }
+      .footer-container {
+        .left {
+          .top {
+            h4 {
+              color: @mine-shaft;
+            }
+            .description {
+              color: @scorpion;
+            }
+          }
+          .bottom {
+            .powered-by {
+              border: 1px solid @alto;
+              background-position: 13px center;
+              color: @scorpion;
+            }
+          }
+        }
+      }
+      .footer-links-container {
+        .link-list > p {
+          color: @mine-shaft;
+        }
+      }
+      .copyright-container {
+        color: @scorpion;
+      }
+    }
     .footer-container {
       display: flex;
       position: static;

@@ -7,7 +7,6 @@ import './footer.styles.less';
 const BrowserFooter = props => {
 
   if (location.pathname.includes('/search-')) return <></>
-  const NETWORK_TYPE = NETWORK_TYPE
 
   return (
     <section {...props} className={'footer ' + (NETWORK_TYPE === 'MAIN' ? 'main' : 'test')}>

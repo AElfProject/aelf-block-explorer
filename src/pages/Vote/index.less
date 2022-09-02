@@ -352,9 +352,13 @@ button {
       width: 100%;
     }
 
-    .ant-calendar-disabled-cell.ant-calendar-selected-day
-      .ant-calendar-date::before {
-      left: 18px;
+    .ant-calendar-disabled-cell {
+      &.ant-calendar-selected-day,
+      &.ant-calendar-today {
+        .ant-calendar-date::before {
+          left: 18px;
+        }
+      }
     }
   }
 }

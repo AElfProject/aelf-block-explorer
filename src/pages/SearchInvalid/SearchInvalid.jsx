@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import IconFont from "../../components/IconFont";
 import Search from "../Home/components/Search";
@@ -7,9 +6,9 @@ import useMobile from "../../hooks/useMobile";
 const banner = require("../../assets/images/search_invalid.png");
 
 import "./SearchInvalid.styles.less";
+import { withRouter } from "../../routes/utils";
 function SearchInvalid(props) {
-  const { match } = props;
-  const { params } = match;
+  const { params } = props;
   const isMobile = useMobile();
   return (
     <div

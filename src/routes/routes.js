@@ -16,6 +16,8 @@ const ResourceDetail = lazy(() =>
   import("../pages/ResourceDetail/ResourceDetail")
 );
 const Token = lazy(() => import("../pages/Token"));
+const SearchFailed = lazy(() => import("../pages/SearchFailed/SearchFailed"));
+const SearchInvalid = lazy(() => import("../pages/SearchInvalid/SearchInvalid"));
 
 import { AddressRouter } from "../pages/Address/routes";
 import { ProposalRouter } from "../pages/Proposal/routes";
@@ -39,6 +41,8 @@ export const PageRouter = () =>
       { path: "/resource", element: <Resource /> },
       { path: "/resourceDetail/:id", element: <ResourceDetail /> },
       { path: "/token", element: <Token /> },
+      { path: "/search-invalid/:string", element: <SearchInvalid /> },
+      { path: "/search-failed", element: <SearchFailed /> },
       { path: "*", element: <Navigate to='/' /> },
     ])
   );

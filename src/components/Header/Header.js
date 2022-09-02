@@ -86,16 +86,30 @@ class BrowserHeader extends PureComponent {
   // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
   setSeleted() {
     this.timerInterval = setInterval(() => {
-      let pathname = `/${location.pathname.split("/")[1]}`;
-      pathname = pathname === "/" ? "/home" : pathname;
-      if (this.state.current !== pathname) {
-        // white list
-        const whiteList = ["/block", "/address", "/vote", "/voteold"];
-        if (whiteList.indexOf(pathname) > -1) {
-          pathname = "/blocks";
-        }
+      let pathname = `/${location.pathname.split('/')[1]}`;
+      const { current } = this.state;
+      pathname = pathname === '/' ? '/home' : pathname;
+      const whiteList = [['/block', 'Block'],
+      ['/tx', 'Transaction'],
+      ['/address', '/address'],
+      ['/vote', '/vote'],
+      ['/voteold', '/vote']];
+      const target = whiteList.find(item => item[0] === pathname)
+      const showSearch = this.getSearchStatus();
 
-        const showSearch = this.getSearchStatus();
+      if (target && current !== target[1]) {
+        // white list
+        pathname = target[1]
+        this.setState({
+          current: pathname,
+          showSearch
+        });
+      } else if (!target) {
+        this.setState({
+          current: pathname,
+          showSearch,
+        });
+      } else if (!target) {
         this.setState({
           current: pathname,
           showSearch,
@@ -401,7 +415,11 @@ class BrowserHeader extends PureComponent {
 
             <nav className={'header-navbar ' + ((NETWORK_TYPE === 'MAIN') ? 'header-main-navbar' : '')}>
               {menuHtml}
-              {this.isPhone && this.state.showSearch && <Search />}
+              {this.isPhone
+                && this.state.showSearch
+                && <div className='search-mobile-container'>
+                  <Search />
+                </div>}
               {!this.isPhone && (
                 <ChainSelect chainList={this.state.chainList} />
               )}
