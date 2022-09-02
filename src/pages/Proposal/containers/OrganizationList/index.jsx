@@ -93,7 +93,7 @@ const OrganizationList = () => {
         "Modifying the organization requires initiating a proposal to modify. Are you sure you want to modify?",
       onOk() {
         dispatch(setCurrentOrg(org));
-        navigate(`/apply/${org.orgAddress}`);
+        navigate(`/proposal/apply/${org.orgAddress}`);
       },
       icon: null,
     });
