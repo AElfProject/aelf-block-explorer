@@ -18,38 +18,40 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
             </Link>
           )}
         </div>
-        <div className="table-header">
-          <p className="block">Block</p>
-          <p className="age">Age</p>
-          <p className="txns">Txns</p>
-          <p className="reward">Reward</p>
-        </div>
-        <div className="table-body">
-          {blocks.map((block, index) => (
-            <div key={block.block_height} className="row">
-              <p className="block">
-                <Link to={`/block/${block.block_height}`}>
-                  {block.block_height}
+        <div className="mobile-scroll">
+          <div className="table-header">
+            <p className="block">Block</p>
+            <p className="age">Age</p>
+            <p className="txns">Txns</p>
+            <p className="reward">Reward</p>
+          </div>
+          <div className="table-body">
+            {blocks.map((block, index) => (
+              <div key={block.block_height} className="row">
+                <p className="block">
+                  <Link to={`/block/${block.block_height}`}>
+                    {block.block_height}
+                  </Link>
+                </p>
+                <p className="age">{getFormattedDate(block.time)}</p>
+                <Link
+                  to={`/block/${block.block_height}?tab=txns`}
+                  className="txns"
+                >
+                  {block.tx_count}
                 </Link>
-              </p>
-              <p className="age">{getFormattedDate(block.time)}</p>
-              <Link
-                to={`/block/${block.block_height}?tab=txns`}
-                className="txns"
-              >
-                {block.tx_count}
-              </Link>
-              <div className="reward">
-                <Dividends
-                  dividends={
-                    typeof block.dividends === "string"
-                      ? JSON.parse(block.dividends)
-                      : block.dividends || {}
-                  }
-                />
+                <div className="reward">
+                  <Dividends
+                    dividends={
+                      typeof block.dividends === "string"
+                        ? JSON.parse(block.dividends)
+                        : block.dividends || {}
+                    }
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         <div className="table-footer">
           {isMobile && (

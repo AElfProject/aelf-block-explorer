@@ -91,7 +91,7 @@ button {
       padding: 12px 0;
       margin-right: 32px;
       &.ant-menu-item-selected {
-        border-color: #266CD3 !important;
+        border-color: #266cd3 !important;
       }
       &:hover {
         border-color: transparent;
@@ -339,9 +339,13 @@ button {
   .ant-calendar {
     width: 450px;
 
-    .ant-calendar-disabled-cell.ant-calendar-selected-day
-      .ant-calendar-date::before {
-      left: 18px;
+    .ant-calendar-disabled-cell {
+      &.ant-calendar-selected-day,
+      &.ant-calendar-today {
+        .ant-calendar-date::before {
+          left: 18px;
+        }
+      }
     }
   }
 }

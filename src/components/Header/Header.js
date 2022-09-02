@@ -87,15 +87,24 @@ class BrowserHeader extends PureComponent {
   setSeleted() {
     this.timerInterval = setInterval(() => {
       let pathname = `/${location.pathname.split('/')[1]}`;
+      const { current } = this.state;
       pathname = pathname === '/' ? '/home' : pathname;
-      if (this.state.current !== pathname) {
-        // white list
-        const whiteList = ['/block', '/address', '/vote', '/voteold'];
-        if (whiteList.indexOf(pathname) > -1) {
-          pathname = '/blocks';
-        }
+      const whiteList = [['/block', 'Block'],
+      ['/tx', 'Transaction'],
+      ['/address', '/address'],
+      ['/vote', '/vote'],
+      ['/voteold', '/vote']];
+      const target = whiteList.find(item => item[0] === pathname)
+      const showSearch = this.getSearchStatus();
 
-        const showSearch = this.getSearchStatus();
+      if (target && current !== target[1]) {
+        // white list
+        pathname = target[1]
+        this.setState({
+          current: pathname,
+          showSearch
+        });
+      } else if (!target) {
         this.setState({
           current: pathname,
           showSearch
@@ -242,21 +251,17 @@ class BrowserHeader extends PureComponent {
         >
           <SubMenu key='Block' title='Block' popupOffset={[0, -4]}>
             <Menu.Item key='/blocks'>
-              {/* <Icon type='gold' /> */}
               <Link to='/blocks'>Blocks</Link>
             </Menu.Item>
             <Menu.Item key='/unconfirmedBlocks'>
-              {/* <Icon type='gold' /> */}
               <Link to='/unconfirmedBlocks'>Unconfirmed Blocks</Link>
             </Menu.Item>
           </SubMenu>
           <SubMenu key='Transaction' title='Transaction'>
             <Menu.Item key='/txs'>
-              {/* <Icon type='pay-circle' /> */}
               <Link to='/txs'>Transactions</Link>
             </Menu.Item>
             <Menu.Item key='/unconfirmedTxs'>
-              {/* <Icon type='pay-circle' /> */}
               <Link to='/unconfirmedTxs'>Unconfirmed Transactions</Link>
             </Menu.Item>
           </SubMenu>
@@ -392,7 +397,11 @@ class BrowserHeader extends PureComponent {
 
             <nav className={'header-navbar ' + ((NETWORK_TYPE === 'MAIN') ? 'header-main-navbar' : '')}>
               {menuHtml}
-              {this.isPhone && this.state.showSearch && <Search />}
+              {this.isPhone
+                && this.state.showSearch
+                && <div className='search-mobile-container'>
+                  <Search />
+                </div>}
               {!this.isPhone && <ChainSelect chainList={this.state.chainList} />}
             </nav>
           </div>
