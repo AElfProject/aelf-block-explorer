@@ -82,10 +82,10 @@ export const useReleaseApprovedContractAction = () => {
             ? "Proposal is created！"
             : "Proposal failed to be created！",
         children: (
-          <>
+          <div style={{ textAlign: "left" }}>
             {!isError && newProposalId ? (
               <CopylistItem
-                label='Proposal ID：'
+                label="Proposal ID："
                 value={newProposalId ?? ""}
                 // href={`/proposalsDetail/${newProposalId}`}
               />
@@ -93,7 +93,7 @@ export const useReleaseApprovedContractAction = () => {
               "This may be due to transaction failure. Please check it via Transaction ID:"
             )}
             <CopylistItem
-              label='Transaction ID：'
+              label="Transaction ID："
               isParentHref
               value={
                 result?.TransactionId || result?.result?.TransactionId || ""
@@ -102,7 +102,7 @@ export const useReleaseApprovedContractAction = () => {
                 result?.TransactionId || result?.result?.TransactionId || ""
               }`}
             />
-          </>
+          </div>
         ),
       };
     },
@@ -174,10 +174,10 @@ export const useReleaseCodeCheckedContractAction = () => {
             ? `Contract is ${isDeploy ? "deployed" : "updated"}！`
             : `Contract failed to be ${isDeploy ? "deployed" : "updated"}！`,
         children: (
-          <>
+          <div style={{ textAlign: "left" }}>
             {!isError && contractAddress ? (
               <CopylistItem
-                label='Contract Address：'
+                label="Contract Address："
                 isParentHref
                 value={contractAddress}
                 href={getContractURL(contractAddress || "")}
@@ -185,7 +185,7 @@ export const useReleaseCodeCheckedContractAction = () => {
             ) : (
               "Please check your Proposal ."
             )}
-          </>
+          </div>
         ),
       };
     },

@@ -35,12 +35,15 @@ function BlockDetail(props) {
     const nextLink = `/block/${+blockHeight + 1}`;
 
     return (
-      <span className='jump-link'>
-        <Link to={prevLink} disabled={+blockHeight === 1}>
-          <IconFont type='left' />
-        </Link>
+      <span className="jump-link">
+        <a
+          disabled={+blockHeight === 1}
+          onClick={() => +blockHeight === 1 || props.navigate(prevLink)}
+        >
+          <IconFont type="left" />
+        </a>
         <Link to={nextLink}>
-          <IconFont style={{ transform: "rotate(180deg)" }} type='left' />
+          <IconFont style={{ transform: "rotate(180deg)" }} type="left" />
         </Link>
       </span>
     );
@@ -173,9 +176,7 @@ function BlockDetail(props) {
     if (parseInt(input, 10) == input) {
       blockHeight = input;
       if (blockHeight > BestChainHeight) {
-        message.error(
-          `${blockHeight} is larger than current chain best height ${BestChainHeight}`
-        );
+        location.href = "/search-invalid/" + blockHeight;
       } else {
         const data = await getDataFromHeight(input);
         result = data.blockInfo;
@@ -246,12 +247,12 @@ function BlockDetail(props) {
     >
       <h2>
         Block
-        {blockHeight && <Tag className='block-height'>#{blockHeight}</Tag>}
+        {blockHeight && <Tag className="block-height">#{blockHeight}</Tag>}
         {blockHeight && jumpLink}
       </h2>
       <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
-        <TabPane tab='Overview' key='overview'>
-          <div className='overview-container'>
+        <TabPane tab="Overview" key="overview">
+          <div className="overview-container">
             <CustomSkeleton loading={!blockInfo}>
               {blockInfo && (
                 <>
@@ -266,19 +267,19 @@ function BlockDetail(props) {
                     className={`show-more-btn ${
                       showExtensionInfo ? "more" : "less"
                     }`}
-                    type='link'
+                    type="link"
                     onClick={() => setShowExtensionInfo(!showExtensionInfo)}
                   >
                     Click to see {!showExtensionInfo ? "More" : "Less"}
-                    <IconFont type='shouqijiantou' />
+                    <IconFont type="shouqijiantou" />
                   </Button>
                 </>
               )}
             </CustomSkeleton>
           </div>
         </TabPane>
-        <TabPane tab='Transactions' key='transactions'>
-          <div className='transactions-container'>
+        <TabPane tab="Transactions" key="transactions">
+          <div className="transactions-container">
             <TransactionList allData={transactionList} />
           </div>
         </TabPane>

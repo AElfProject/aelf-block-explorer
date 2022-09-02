@@ -10,8 +10,11 @@ import { Input, message } from "antd";
 import { SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import IconFont from '../../components/IconFont'
 
-import "./search.styles.less";
-import { INPUT_STARTS_WITH_MINUS_TIP, INPUT_ZERO_TIP } from "@src/constants";
+import {
+    get
+} from '../../utils';
+
+import './search.styles.less';
 
 class Search extends PureComponent {
   state = {
@@ -87,33 +90,33 @@ class Search extends PureComponent {
     const { length } = value;
     const isTxid = [64];
 
-    // address.length === 38/66 && address.match(/^0x/)
-    // search
-    // 0. 0x
-    // 1. transaction 66
-    // 2. block   66
-    // 3. address length=38
-    if (`${value}`.startsWith("-")) {
-      message.error(INPUT_STARTS_WITH_MINUS_TIP);
-      return;
-    }
-    if (+value === 0) {
-      message.error(INPUT_ZERO_TIP);
-      return;
-    }
+        // address.length === 38/66 && address.match(/^0x/)
+        // search
+        // 0. 0x
+        // 1. transaction 66
+        // 2. block   66
+        // 3. address length=38
+        if (`${value}`.startsWith('-')) {
+            (location.href = '/search-invalid/' + (e.target && e.target.value || e.searchValue))
+            return;
+        }
+        if (+value === 0) {
+            (location.href = '/search-invalid/' + (e.target && e.target.value || e.searchValue))
+            return;
+        }
 
-    if (isAElfAddress(value)) {
-      const address = AElf.utils.encodeAddressRep(
-        AElf.utils.decodeAddressRep(value)
-      );
-      this.SEARCHRULES.address(address, this.props.navigate);
-    } else if (isTxid.includes(length)) {
-      this.SEARCHRULES.transaction(value, this.props.navigate);
-    } else {
-      this.SEARCHRULES.blockHeight(value, this.props.navigate) ||
-        (location.href = '/search-invalid/' + value);
-    }
-  };
+        if (isAElfAddress(value)) {
+            const address = AElf.utils.encodeAddressRep(AElf.utils.decodeAddressRep(value));
+            this.SEARCHRULES.address(address, this.props.history);
+        }
+        else if (isTxid.includes(length)) {
+            this.SEARCHRULES.transaction(value, this.props.history);
+        }
+        else {
+            this.SEARCHRULES.blockHeight(value, this.props.history)
+                || (location.href = '/search-invalid/' + (e.target && e.target.value || e.searchValue));
+        }
+    };
 
   render() {
     const { content } = this.state;
