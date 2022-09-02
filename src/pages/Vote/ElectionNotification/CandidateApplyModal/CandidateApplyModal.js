@@ -110,6 +110,7 @@ class CandidateApplyModal extends PureComponent {
     return (
       <Modal
         className="apply-node-modal"
+        destroyOnClose
         title="Apply Node"
         visible={visible}
         okText="Apply Now"
