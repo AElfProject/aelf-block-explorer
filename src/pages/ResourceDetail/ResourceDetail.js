@@ -14,6 +14,7 @@ import {
 } from "../../constants";
 import "./ResourceDetail.less";
 import { withRouter } from "../../routes/utils";
+import TableLayer from "../../components/TableLayer/TableLayer";
 
 const page = 0;
 class ResourceDetail extends PureComponent {
@@ -76,15 +77,17 @@ class ResourceDetail extends PureComponent {
     const { handleTableChange } = this;
     return (
       <div className='transaction-details basic-container basic-container-white'>
-        <Table
-          showSorterTooltip={false}
-          columns={RESOURCE_DETAILS_COLUMN}
-          pagination={pagination}
-          dataSource={data}
-          loading={loading}
-          onChange={handleTableChange}
-          scroll={{ x: 1024 }}
-        />
+        <TableLayer>
+          <Table
+            showSorterTooltip={false}
+            columns={RESOURCE_DETAILS_COLUMN}
+            pagination={pagination}
+            dataSource={data}
+            loading={loading}
+            onChange={handleTableChange}
+            scroll={{ x: 1024 }}
+          />
+        </TableLayer>
       </div>
     );
   }

@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useEffectOnce } from "react-use";
 import { ELF_REALTIME_PRICE_URL } from "../../constants";
 import { get } from "../../utils";
+import TableLayer from "../TableLayer/TableLayer";
 
 import ColumnConfig from "./columnConfig";
 import "./TransactionTable.styles.less";
@@ -22,8 +23,7 @@ export default function TransactionTable({ dataLoading, dataSource }) {
     get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
   });
   return (
-    <div className="transaction-table">
-      <div className="block" />
+    <TableLayer className="transaction-table">
       <Table
         loading={dataLoading}
         columns={columns}
@@ -31,7 +31,6 @@ export default function TransactionTable({ dataLoading, dataSource }) {
         pagination={false}
         rowKey="tx_id"
       />
-      <div className="block" />
-    </div>
+    </TableLayer>
   );
 }

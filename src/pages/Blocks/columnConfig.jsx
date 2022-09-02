@@ -10,7 +10,7 @@ export default (timeFormat, handleFormatChange) => {
   return [
     {
       dataIndex: "block_height",
-      width: isMobile ? 101 : 187,
+      width: isMobile ? 117 : 187,
       title: "Block",
       render: (text) => {
         return (
@@ -37,7 +37,7 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "tx_count",
       title: "Txns",
-      width: isMobile ? 32 : 136,
+      width: isMobile ? 48 : 136,
       render: (text, record) => {
         return (
           <div>
@@ -55,7 +55,7 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "block_hash",
       title: "Block Hash",
-      width: isMobile ? 127 : 213,
+      width: isMobile ? 143 : 213,
       render: (text, record) => {
         return (
           <div className="address">
@@ -69,7 +69,7 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "miner",
       title: "Miner",
-      width: isMobile ? 130 : 150,
+      width: isMobile ? 146 : 150,
       render: (text) => {
         return (
           <div className="address">

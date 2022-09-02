@@ -10,6 +10,7 @@ import config from "../../../../common/config";
 import Total from "../../../../components/Total";
 import { sendHeight } from "../../../../common/utils";
 import AddressLink from "../AddressLink";
+import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 function getListColumn(preTotal) {
   return [
@@ -118,14 +119,16 @@ const HolderList = (props) => {
 
   return (
     <>
-      <Table
-        showSorterTooltip={false}
-        dataSource={list}
-        columns={columns}
-        loading={fetchingStatus === fetchingStatusMap.FETCHING}
-        rowKey='owner'
-        pagination={false}
-      />
+      <TableLayer>
+        <Table
+          showSorterTooltip={false}
+          dataSource={list}
+          columns={columns}
+          loading={fetchingStatus === fetchingStatusMap.FETCHING}
+          rowKey='owner'
+          pagination={false}
+        />
+      </TableLayer>
       <div className='account-list-pagination gap-top float-right'>
         <Pagination
           showQuickJumper

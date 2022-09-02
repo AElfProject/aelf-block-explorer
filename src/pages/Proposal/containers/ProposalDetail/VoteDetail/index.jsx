@@ -28,6 +28,7 @@ import constants, {
 import { getContractAddress, sendTransaction } from "../../../common/utils";
 import "./index.less";
 import { removePrefixOrSuffix } from "../../../../../common/utils";
+import TableLayer from "../../../../../components/TableLayer/TableLayer";
 
 const { Title } = Typography;
 const { viewer } = config;
@@ -60,8 +61,8 @@ const listColumn = [
     render: (voter) => (
       <a
         href={`${viewer.addressUrl}/${voter}`}
-        target='_blank'
-        rel='noopener noreferrer'
+        target="_blank"
+        rel="noopener noreferrer"
       >
         {`ELF_${voter}_${viewer.chainId}`}
       </a>
@@ -76,8 +77,8 @@ const listColumn = [
     render: (txId) => (
       <a
         href={`${viewer.txUrl}/${txId}`}
-        target='_blank'
-        rel='noopener noreferrer'
+        target="_blank"
+        rel="noopener noreferrer"
       >
         {txId}
       </a>
@@ -233,7 +234,7 @@ const VoteDetail = (props) => {
   }
 
   return (
-    <div className='vote-detail'>
+    <div className="vote-detail">
       <If
         condition={
           logStatus === LOG_STATUS.LOGGED &&
@@ -242,43 +243,45 @@ const VoteDetail = (props) => {
         }
       >
         <Then>
-          <div className='vote-detail-personal gap-bottom-small'>
+          <div className="vote-detail-personal gap-bottom-small">
             <Title level={4}>Personal Votes</Title>
-            <div className='vote-detail-personal-total gap-bottom'>
-              <span className='sub-title gap-right-small'>Token Voted:</span>
+            <div className="vote-detail-personal-total gap-bottom">
+              <span className="sub-title gap-right-small">Token Voted:</span>
               <span>
                 {personVote.left}
-                <Tag color='blue'>{symbol}</Tag> left
+                <Tag color="blue">{symbol}</Tag> left
               </span>
               <Button
-                className='gap-left'
-                type='primary'
+                className="gap-left"
+                type="primary"
                 disabled={!personVote.canReclaim}
                 onClick={reclaimToken}
               >
                 Reclaim
               </Button>
             </div>
-            <Table
-              showSorterTooltip={false}
-              dataSource={personVote.list}
-              columns={personListColumn}
-              rowKey='txId'
-              pagination={false}
-              scroll={{ x: 980 }}
-            />
+            <TableLayer>
+              <Table
+                showSorterTooltip={false}
+                dataSource={personVote.list}
+                columns={personListColumn}
+                rowKey="txId"
+                pagination={false}
+                scroll={{ x: 980 }}
+              />
+            </TableLayer>
           </div>
         </Then>
       </If>
-      <Title level={4} className='gap-top-large'>
+      <Title level={4} className="gap-top-large">
         All Votes
       </Title>
       <Search
-        className='vote-detail-search'
-        placeholder='Input voter address/transaction id'
+        className="vote-detail-search"
+        placeholder="Input voter address/transaction id"
         onSearch={onSearch}
       />
-      <div className='vote-detail-content gap-top-large'>
+      <TableLayer className="vote-detail-content gap-top-large">
         <Table
           showSorterTooltip={false}
           dataSource={list.list}
@@ -288,13 +291,13 @@ const VoteDetail = (props) => {
               : listColumn
           }
           loading={list.loadingStatus === LOADING_STATUS.LOADING}
-          rowKey='txId'
+          rowKey="txId"
           pagination={false}
           scroll={{ x: 980 }}
         />
-      </div>
+      </TableLayer>
       <Pagination
-        className='float-right gap-top'
+        className="float-right gap-top"
         showQuickJumper
         total={list.total}
         current={list.params.pageNum}

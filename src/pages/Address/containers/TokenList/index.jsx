@@ -11,6 +11,7 @@ import Total from "../../../../components/Total";
 import { sendHeight } from "../../../../common/utils";
 import Bread from "../../components/Bread";
 import "./index.less";
+import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 function getListColumn(preTotal) {
   return [
@@ -145,7 +146,7 @@ const TokenList = () => {
           onSearch={onSearch}
         />
       </div>
-      <div className='token-list-content'>
+      <TableLayer className='token-list-content'>
         <Table
           showSorterTooltip={false}
           dataSource={list}
@@ -154,7 +155,7 @@ const TokenList = () => {
           rowKey='symbol'
           pagination={false}
         />
-      </div>
+      </TableLayer>
       <div className='account-list-pagination gap-top float-right'>
         <Pagination
           showQuickJumper

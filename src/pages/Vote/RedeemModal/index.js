@@ -9,6 +9,7 @@ import {
   FEE_TIP,
 } from "@src/constants";
 import { ELF_DECIMAL } from "../constants";
+import TableLayer from "../../../components/TableLayer/TableLayer";
 
 const formItemLayout = {
   labelCol: {
@@ -189,7 +190,7 @@ class RedeemModal extends PureComponent {
         {
           label: "Select Vote",
           render: (
-            <div>
+            <TableLayer>
               <Table
                 showSorterTooltip={false}
                 dataSource={redeemableVoteRecordsForOneCandidate}
@@ -198,7 +199,7 @@ class RedeemModal extends PureComponent {
                 rowKey={(record) => record.voteId}
                 rowSelection={rowSelection}
               />
-            </div>
+            </TableLayer>
           ),
           validator: {
             rules: [

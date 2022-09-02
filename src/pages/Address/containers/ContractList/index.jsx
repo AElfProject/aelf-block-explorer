@@ -17,6 +17,7 @@ import {
   sendHeight,
 } from "../../../../common/utils";
 import Bread from "../../components/Bread";
+import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const { Search } = Input;
 
@@ -180,7 +181,7 @@ const ContractList = () => {
         />
       </div>
       <Divider />
-      <div className='contract-list-content'>
+      <TableLayer className='contract-list-content'>
         <Table
           showSorterTooltip={false}
           dataSource={list}
@@ -189,7 +190,7 @@ const ContractList = () => {
           rowKey='address'
           pagination={false}
         />
-      </div>
+      </TableLayer>
       <div className='contract-list-pagination'>
         <Pagination
           showQuickJumper

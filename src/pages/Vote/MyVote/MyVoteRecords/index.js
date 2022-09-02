@@ -8,6 +8,7 @@ import publicKeyToAddress from "@utils/publicKeyToAddress";
 
 import "./MyVoteRecords.less";
 import { ELF_DECIMAL } from "../../constants";
+import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const clsPrefix = "my-vote-records";
 
@@ -202,14 +203,16 @@ class MyVoteRecords extends Component {
         <h2 className={`${clsPrefix}-header table-card-header`}>
           <span>My Votes</span>
         </h2>
-        <Table
-          showSorterTooltip={false}
-          columns={myVoteRecordsCols}
-          dataSource={data}
-          pagination={pagination}
-          rowKey={(record) => record.voteId}
-          scroll={{ x: 1024 }}
-        />
+        <TableLayer>
+          <Table
+            showSorterTooltip={false}
+            columns={myVoteRecordsCols}
+            dataSource={data}
+            pagination={pagination}
+            rowKey={(record) => record.voteId}
+            scroll={{ x: 1024 }}
+          />
+        </TableLayer>
       </section>
     );
   }

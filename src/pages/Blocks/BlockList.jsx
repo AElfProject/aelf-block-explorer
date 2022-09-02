@@ -11,6 +11,7 @@ import { get } from "../../utils";
 import ColumnConfig from "./columnConfig";
 
 import "./BlockList.styles.less";
+import TableLayer from "../../components/TableLayer/TableLayer";
 export default function BlockList() {
   const { pathname = "" } = useLocation();
   const isMobile = useMobile();
@@ -105,8 +106,7 @@ export default function BlockList() {
             />
           </div>
         </div>
-        <div className="block-table">
-          <div className="block" />
+        <TableLayer className="block-table">
           <Table
             loading={dataLoading}
             columns={columns}
@@ -114,8 +114,7 @@ export default function BlockList() {
             dataSource={dataSource}
             pagination={false}
           />
-          <div className="block" />
-        </div>
+        </TableLayer>
         <div className="after-table">
           <Pagination
             showLessItems={isMobile}

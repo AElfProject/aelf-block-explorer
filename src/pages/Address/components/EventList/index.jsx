@@ -10,6 +10,7 @@ import { request } from "../../../../common/request";
 import config from "../../../../common/config";
 import { sendHeight } from "../../../../common/utils";
 import Total from "../../../../components/Total";
+import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const columns = [
   {
@@ -23,8 +24,8 @@ const columns = [
         <a
           title={txId}
           href={`${config.viewer.txUrl}/${txId}`}
-          target='_blank'
-          rel='noopener noreferrer'
+          target="_blank"
+          rel="noopener noreferrer"
         >
           {txId}
         </a>
@@ -114,15 +115,17 @@ const EventList = (props) => {
 
   return (
     <>
-      <Table
-        showSorterTooltip={false}
-        dataSource={list}
-        columns={columns}
-        loading={fetchingStatus === fetchingStatusMap.FETCHING}
-        rowKey='id'
-        pagination={false}
-      />
-      <div className='account-list-pagination gap-top float-right'>
+      <TableLayer>
+        <Table
+          showSorterTooltip={false}
+          dataSource={list}
+          columns={columns}
+          loading={fetchingStatus === fetchingStatusMap.FETCHING}
+          rowKey="id"
+          pagination={false}
+        />
+      </TableLayer>
+      <div className="account-list-pagination gap-top float-right">
         <Pagination
           showQuickJumper
           total={pagination.total}

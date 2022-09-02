@@ -32,6 +32,7 @@ import { ELF_DECIMAL } from "../../constants";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
 import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
+import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const clsPrefix = "node-table";
 
@@ -545,18 +546,19 @@ class NodeTable extends PureComponent {
             Refresh
           </Button> */}
         </h2>
-        <Table
-          showSorterTooltip={false}
-          className='node-table-wrapper'
-          columns={nodeListCols}
-          dataSource={nodeList}
-          // onChange={handleTableChange}
-          loading={isLoading}
-          pagination={pagination}
-          rowKey={(record) => record.pubkey}
-          scroll={{ x: 1024 }}
-          // size='middle'
-        />
+        <TableLayer className='node-table-wrapper'>
+          <Table
+            showSorterTooltip={false}
+            columns={nodeListCols}
+            dataSource={nodeList}
+            // onChange={handleTableChange}
+            loading={isLoading}
+            pagination={pagination}
+            rowKey={(record) => record.pubkey}
+            scroll={{ x: 1024 }}
+            // size='middle'
+          />
+        </TableLayer>
       </section>
     );
   }

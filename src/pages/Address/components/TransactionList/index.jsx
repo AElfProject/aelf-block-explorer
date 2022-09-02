@@ -17,6 +17,7 @@ import {
 import Total from "../../../../components/Total";
 import Dividends from "../../../../components/Dividends";
 import AddressLink from "../AddressLink";
+import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 function getTableColumns(contractNames, ownerAddress) {
   return [
@@ -206,14 +207,16 @@ const TransactionList = (props) => {
   }
   return (
     <div className='transaction-list'>
-      <Table
-        showSorterTooltip={false}
-        {...rest}
-        dataSource={result.list}
-        columns={columns}
-        loading={params.loading}
-        pagination={false}
-      />
+      <TableLayer>
+        <Table
+          showSorterTooltip={false}
+          {...rest}
+          dataSource={result.list}
+          columns={columns}
+          loading={params.loading}
+          pagination={false}
+        />
+      </TableLayer>
       <Pagination
         className='float-right gap-top'
         showQuickJumper
