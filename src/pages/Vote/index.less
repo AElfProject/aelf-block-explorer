@@ -107,6 +107,20 @@ button {
 .vote-container-simple {
   padding: 0 !important;
   margin: 25px auto 25px auto !important;
+  .ant-menu-horizontal:not(.ant-menu-dark) {
+    .ant-menu-item-active:after,
+    .ant-menu-item-open:after,
+    .ant-menu-item-selected:after,
+    .ant-menu-item:hover:after,
+    .ant-menu-submenu-active:after,
+    .ant-menu-submenu-open:after,
+    .ant-menu-submenu-selected:after,
+    .ant-menu-submenu:hover:after {
+      left: 0;
+      right: 0;
+      border-bottom: 2px solid #266cd3; // need underline
+    }
+  }
 }
 
 .secondary-level-nav {
@@ -243,6 +257,7 @@ button {
 
 // todo: Consider to using a more proper name to instead table-btn
 .table-btn {
+  line-height: 1;
   border: none;
   width: 78px;
   height: 26px;

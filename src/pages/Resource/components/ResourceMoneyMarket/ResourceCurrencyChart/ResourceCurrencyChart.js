@@ -4,28 +4,32 @@
  * echarts
  */
 
-import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { Icon, Tabs, Button } from 'antd';
+import React, { PureComponent } from "react";
+import { connect } from "react-redux";
+import { Tabs, Button } from "antd";
 
-import ReactEchartsCore from 'echarts-for-react/lib/core';
-import echarts from 'echarts/lib/echarts';
-import { get } from '../../../../../utils';
-import { RESOURCE_CURRENCY_CHART_FETCH_INTERVAL, RESOURCE_TURNOVER } from '../../../../../constants';
-import 'echarts/lib/chart/bar';
-import 'echarts/lib/chart/line';
-import 'echarts/lib/chart/candlestick';
-import 'echarts/lib/component/dataZoom';
-import 'echarts/lib/component/tooltip';
-import 'echarts/lib/component/toolbox';
-import './ResourceCurrencyChart.less';
+import ReactEchartsCore from "echarts-for-react/lib/core";
+import echarts from "echarts/lib/echarts";
+import { get } from "../../../../../utils";
+import {
+  RESOURCE_CURRENCY_CHART_FETCH_INTERVAL,
+  RESOURCE_TURNOVER,
+} from "../../../../../constants";
+import { AreaChartOutlined } from "@ant-design/icons";
+import "echarts/lib/chart/bar";
+import "echarts/lib/chart/line";
+import "echarts/lib/chart/candlestick";
+import "echarts/lib/component/dataZoom";
+import "echarts/lib/component/tooltip";
+import "echarts/lib/component/toolbox";
+import "./ResourceCurrencyChart.less";
 
 function calculateMA(dayCount, data) {
   const result = [];
   const { length } = data;
   for (let i = 0; i < length; i++) {
     if (i < dayCount) {
-      result.push('-');
+      result.push("-");
       continue;
     }
     let sum = 0;
@@ -47,12 +51,7 @@ function resortPrices(prices) {
   const sorted = [...prices].sort((a, b) => a - b);
   const lowest = sorted[0];
   const highest = sorted[sorted.length - 1];
-  return [
-    open,
-    end,
-    lowest,
-    highest,
-  ];
+  return [open, end, lowest, highest];
 }
 
 function handleDataList(list = [], interval, length) {
@@ -60,10 +59,14 @@ function handleDataList(list = [], interval, length) {
   let volumes = [];
   let prices = [];
   list.forEach((item, index) => {
-    dates.push(echarts.format.formatTime('yyyy-MM-dd hh:mm', item.date));
+    dates.push(echarts.format.formatTime("yyyy-MM-dd hh:mm", item.date));
     const resortedPrices = resortPrices(item.prices);
     const preResortedPrices = prices[index - 1 || 0] || resortedPrices;
-    volumes.push([index, item.volume, resortedPrices[0] - preResortedPrices[preResortedPrices.length - 1]]);
+    volumes.push([
+      index,
+      item.volume,
+      resortedPrices[0] - preResortedPrices[preResortedPrices.length - 1],
+    ]);
     prices.push(resortedPrices);
   });
   if (dates.length < length) {
@@ -74,18 +77,18 @@ function handleDataList(list = [], interval, length) {
       ...dates,
       ...emptyList
         .fill(1)
-        .map((_, i) => echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', interval * (i + 1) + lastEnd)),
+        .map((_, i) =>
+          echarts.format.formatTime(
+            "yyyy-MM-dd hh:mm:ss",
+            interval * (i + 1) + lastEnd
+          )
+        ),
     ];
     volumes = [
       ...volumes,
-      ...emptyList
-        .map((_, i) => [i + volumes.length, '-', 0]),
+      ...emptyList.map((_, i) => [i + volumes.length, "-", 0]),
     ];
-    prices = [
-      ...prices,
-      ...emptyList
-        .map(() => []),
-    ];
+    prices = [...prices, ...emptyList.map(() => [])];
   }
   return {
     prices,
@@ -103,7 +106,7 @@ function getMAData(list = []) {
     const ma = calculateMA(v, list);
     return {
       name,
-      type: 'line',
+      type: "line",
       data: ma,
       smooth: true,
       showSymbol: false,
@@ -118,9 +121,21 @@ function getMAData(list = []) {
   };
 }
 
-const colorList = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
+const colorList = [
+  "#c23531",
+  "#2f4554",
+  "#61a0a8",
+  "#d48265",
+  "#91c7ae",
+  "#749f83",
+  "#ca8622",
+  "#bda29a",
+  "#6e7074",
+  "#546570",
+  "#c4ccd3",
+];
 
-const timeZone = (new Date().getTimezoneOffset()) / 60 * -1;
+const timeZone = (new Date().getTimezoneOffset() / 60) * -1;
 
 const QUERY_RANGE = 40;
 
@@ -166,9 +181,7 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   async getEchartData() {
-    const {
-      currentResourceType,
-    } = this.props;
+    const { currentResourceType } = this.props;
     const { intervalTime, buttonIndex } = this.state;
     this.setState({
       loading: true,
@@ -214,74 +227,76 @@ class ResourceCurrencyChart extends PureComponent {
   getOption() {
     const { list, buttonIndex } = this.state;
     const { currentResourceType } = this.props;
-    const {
-      dates,
-      volumes,
-      prices,
-    } = handleDataList(list, this.intervalTimeList[buttonIndex], QUERY_RANGE);
-    const {
-      legend,
-      series,
-    } = getMAData(list);
+    const { dates, volumes, prices } = handleDataList(
+      list,
+      this.intervalTimeList[buttonIndex],
+      QUERY_RANGE
+    );
+    const { legend, series } = getMAData(list);
     return {
       animation: false,
       color: colorList,
       title: {
-        left: 'center',
-        text: 'Resource Trade',
+        left: "center",
+        text: "Resource Trade",
       },
       legend: {
         top: 30,
         data: [currentResourceType, ...legend],
       },
       tooltip: {
-        trigger: 'axis',
+        trigger: "axis",
         axisPointer: {
-          type: 'line',
+          type: "line",
         },
       },
       axisPointer: {
-        link: [{
-          xAxisIndex: [0, 1],
-        }],
+        link: [
+          {
+            xAxisIndex: [0, 1],
+          },
+        ],
       },
-      grid: [{
-        left: 40,
-        right: 20,
-        top: 110,
-        height: 300,
-      }, {
-        left: 40,
-        right: 20,
-        height: 60,
-        top: 470,
-      }],
+      grid: [
+        {
+          left: 40,
+          right: 20,
+          top: 110,
+          height: 300,
+        },
+        {
+          left: 40,
+          right: 20,
+          height: 60,
+          top: 470,
+        },
+      ],
       xAxis: [
         {
-          type: 'category',
+          type: "category",
           data: dates,
           boundaryGap: true,
-          axisLine: { lineStyle: { color: '#777' } },
+          axisLine: { lineStyle: { color: "#777" } },
           axisLabel: {
             formatter(value) {
               if (buttonIndex >= 4) {
-                return echarts.format.formatTime('MM-dd', value);
+                return echarts.format.formatTime("MM-dd", value);
               }
-              return echarts.format.formatTime('MM-dd\nhh:mm', value);
+              return echarts.format.formatTime("MM-dd\nhh:mm", value);
             },
           },
           axisTick: {
             show: true,
             alignWithLabel: true,
           },
-          min: 'dataMin',
-          max: 'dataMax',
+          min: "dataMin",
+          max: "dataMax",
           axisPointer: {
             show: true,
           },
         },
         {
-          type: 'category',
+          type: "category",
           gridIndex: 1,
           data: dates,
           scale: true,
@@ -292,59 +307,62 @@ class ResourceCurrencyChart extends PureComponent {
             show: false,
             alignWithLabel: true,
           },
-          axisLine: { lineStyle: { color: '#777' } },
+          axisLine: { lineStyle: { color: "#777" } },
           splitNumber: 20,
-          min: 'dataMin',
-          max: 'dataMax',
+          min: "dataMin",
+          max: "dataMax",
         },
       ],
-      yAxis: [{
-        scale: true,
-        splitNumber: 2,
-        axisLine: { lineStyle: { color: '#777' } },
-        splitLine: { show: true },
-        axisTick: { show: false },
-        min(value) {
-          return Math.min(value.min, 0);
+      yAxis: [
+        {
+          scale: true,
+          splitNumber: 2,
+          axisLine: { lineStyle: { color: "#777" } },
+          splitLine: { show: true },
+          axisTick: { show: false },
+          min(value) {
+            return Math.min(value.min, 0);
+          },
+          max(value) {
+            return (value.max * 1.2).toFixed(3);
+          },
+          axisLabel: {
+            inside: false,
+            formatter: "{value}\n",
+          },
         },
-        max(value) {
-          return (value.max * 1.2).toFixed(3);
+        {
+          scale: true,
+          gridIndex: 1,
+          splitNumber: 2,
+          axisLabel: { show: false },
+          axisLine: { show: false },
+          axisTick: { show: false },
+          splitLine: { show: false },
         },
-        axisLabel: {
-          inside: false,
-          formatter: '{value}\n',
-        },
-      }, {
-        scale: true,
-        gridIndex: 1,
-        splitNumber: 2,
-        axisLabel: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: { show: false },
-      }],
+      ],
       series: [
         {
-          name: 'Volume',
-          type: 'bar',
+          name: "Volume",
+          type: "bar",
           xAxisIndex: 1,
           yAxisIndex: 1,
           itemStyle: {
             color(params) {
-              return params.data[2] >= 0 ? '#05ac90' : '#d34a64';
+              return params.data[2] >= 0 ? "#05ac90" : "#d34a64";
             },
           },
           data: volumes,
         },
         {
-          type: 'candlestick',
+          type: "candlestick",
           name: currentResourceType,
           data: prices,
           itemStyle: {
-            color: '#05ac90',
-            color0: '#d34a64',
-            borderColor: '#05ac90',
-            borderColor0: '#d34a64',
+            color: "#05ac90",
+            color0: "#d34a64",
+            borderColor: "#05ac90",
+            borderColor0: "#d34a64",
           },
         },
         ...series,
@@ -353,28 +371,19 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   typeChange(activeKey) {
-    const {
-      getMenuClick,
-    } = this.props;
+    const { getMenuClick } = this.props;
     getMenuClick(activeKey);
   }
 
   selectButtonHTML() {
-    const buttons = [
-      '5 Min',
-      '30 Min',
-      '1 Hour',
-      '4 Hours',
-      '1 Day',
-      '1 Week',
-    ];
+    const buttons = ["5 Min", "30 Min", "1 Hour", "4 Hours", "1 Day", "1 Week"];
     const { buttonIndex } = this.state;
     const buttonsHTML = buttons.map((item, index) => (
       <Button
-        className="time-button"
-        shape="round"
-        type={index === buttonIndex ? 'primary' : ''}
-        size="small"
+        className='time-button'
+        shape='round'
+        type={index === buttonIndex ? "primary" : ""}
+        size='small'
         key={index}
         onClick={this.handleButtonClick.bind(this, index)}
       >
@@ -385,29 +394,22 @@ class ResourceCurrencyChart extends PureComponent {
   }
 
   render() {
-    const {
-      list,
-    } = this.props;
+    const { list } = this.props;
     const selectButton = this.selectButtonHTML();
 
     return (
-      <div className="resource-currency-chart">
-        <div className="resource-header">
-          <div className="resource-header-title">
-            <Icon type="area-chart" className="resource-icon" />
-            <span className="resource-title">Resource Money Market</span>
+      <div className='resource-currency-chart'>
+        <div className='resource-header'>
+          <div className='resource-header-title'>
+            <AreaChartOutlined className='resource-icon' />
+            <span className='resource-title'>Resource Money Market</span>
           </div>
-          <div className="resource-header-title-btn">
-            {selectButton}
-          </div>
+          <div className='resource-header-title-btn'>{selectButton}</div>
         </div>
-        <div className="resource-sub-container">
-          <Tabs className="resource-type-switch" onChange={this.typeChange}>
+        <div className='resource-sub-container'>
+          <Tabs className='resource-type-switch' onChange={this.typeChange}>
             {list.map((v) => (
-              <Tabs.TabPane
-                key={v}
-                tab={v}
-              />
+              <Tabs.TabPane key={v} tab={v} />
             ))}
           </Tabs>
           <ReactEchartsCore
