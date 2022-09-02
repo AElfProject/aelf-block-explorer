@@ -95,7 +95,7 @@ const AccountInfo = () => {
   const routerParams = useParams();
   const { symbol = "ELF", address } = routerParams;
   const [columns, setColumns] = useState([]);
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [contracts, setContracts] = useState({});
   useEffect(() => {
     getContractNames()
@@ -104,7 +104,7 @@ const AccountInfo = () => {
   }, []);
   useEffect(() => {
     if (contracts[address]) {
-      history.replace(`/contract/${address}`);
+      navigate(`/contract/${address}`);
     }
   }, [contracts]);
   useEffect(() => {

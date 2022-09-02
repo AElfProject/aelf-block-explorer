@@ -90,11 +90,17 @@ button {
       line-height: 22px;
       padding: 12px 0;
       margin-right: 32px;
-      &.ant-menu-item-selected {
-        border-color: #266cd3 !important;
+      &-selected:after {
+        left: 0;
+        right: 0;
+        border-bottom: 2px solid #266cd3 !important; // need underline
+        transition: 0.3s;
       }
-      &:hover {
-        border-color: transparent;
+      &-active:after,
+      &-open:after,
+      &:hover:after {
+        border-bottom: 2px solid transparent;
+        transition: 0.3s;
       }
     }
   }
@@ -107,20 +113,6 @@ button {
 .vote-container-simple {
   padding: 0 !important;
   margin: 25px auto 25px auto !important;
-  .ant-menu-horizontal:not(.ant-menu-dark) {
-    .ant-menu-item-active:after,
-    .ant-menu-item-open:after,
-    .ant-menu-item-selected:after,
-    .ant-menu-item:hover:after,
-    .ant-menu-submenu-active:after,
-    .ant-menu-submenu-open:after,
-    .ant-menu-submenu-selected:after,
-    .ant-menu-submenu:hover:after {
-      left: 0;
-      right: 0;
-      border-bottom: 2px solid #266cd3; // need underline
-    }
-  }
 }
 
 .secondary-level-nav {
