@@ -27,7 +27,7 @@ export default function HeaderTop({
       return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
     }
     return "-";
-  }, [price.USD, previousPrice.usd]);
+  }, [price, previousPrice]);
 
   useEffect(() => {
     //todo change this
