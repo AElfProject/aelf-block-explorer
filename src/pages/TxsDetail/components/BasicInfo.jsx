@@ -58,7 +58,11 @@ export default function BasicInfo({
             </Link>
             {lastHeight ? (
               <Tag
-                className={lastHeight - info.BlockNumber < 0 ? "unconfirmed" : 'confirmations'}
+                className={
+                  lastHeight - info.BlockNumber < 0
+                    ? "unconfirmed"
+                    : "confirmations"
+                }
               >
                 {lastHeight - info.BlockNumber >= 0
                   ? `${lastHeight - info.BlockNumber} Block Confirmations`
@@ -130,7 +134,14 @@ export default function BasicInfo({
     () =>
       info &&
       values && [
-        ["Value", <TokenTag values={values} isDone={isDone} price={price} />],
+        [
+          "Value",
+          parsedLogs.length ? (
+            <TokenTag values={values} isDone={isDone} price={price} />
+          ) : (
+            "-"
+          ),
+        ],
         ["Transaction Fee", <Dividends dividends={info.fee} />],
         ["Resources Fee", <Dividends dividends={info.resources} />],
       ],
