@@ -55,7 +55,7 @@ const CreateProposal = () => {
   const { aelf, wallet, currentWallet } = common;
   const [applyModal, setApplyModal] = useState(initApplyModal);
 
-  function handleCancel() {
+  const handleCancel = () => {
     if (normalResult.isModalVisible) {
       setNormalResult({
         ...normalResult,
@@ -69,7 +69,7 @@ const CreateProposal = () => {
         confirming: false,
       });
     }
-  }
+  };
 
   function handleNormalSubmit(results) {
     setNormalResult({
@@ -170,7 +170,7 @@ const CreateProposal = () => {
           <div style={{ textAlign: "left" }}>
             {proposalId ? (
               <CopylistItem
-                label="Proposal ID："
+                label='Proposal ID：'
                 value={proposalId}
                 // href={`/proposalsDetail/${proposalId}`}
               />
@@ -178,7 +178,7 @@ const CreateProposal = () => {
               "This may be due to transaction failure. Please check it via Transaction ID:"
             )}
             <CopylistItem
-              label="Transaction ID："
+              label='Transaction ID：'
               isParentHref
               value={
                 result?.TransactionId || result?.result?.TransactionId || ""
@@ -275,9 +275,9 @@ const CreateProposal = () => {
   }, []);
 
   return (
-    <div className="proposal-apply">
-      <Tabs className="proposal-apply-tab" defaultActiveKey="normal">
-        <TabPane tab="Ordinary Proposal" key="normal">
+    <div className='proposal-apply'>
+      <Tabs className='proposal-apply-tab' defaultActiveKey='normal'>
+        <TabPane tab='Ordinary Proposal' key='normal'>
           <NormalProposal
             isModify={orgAddress === modifyData.orgAddress}
             {...(orgAddress === modifyData.orgAddress ? modifyData : {})}
@@ -292,7 +292,7 @@ const CreateProposal = () => {
             submit={handleNormalSubmit}
           />
         </TabPane>
-        <TabPane tab="Deploy/Update Contract" key="contract">
+        <TabPane tab='Deploy/Update Contract' key='contract'>
           <ContractProposal
             loading={contractResult.confirming}
             submit={handleContractSubmit}
@@ -300,58 +300,59 @@ const CreateProposal = () => {
         </TabPane>
       </Tabs>
       <Modal
-        title="Are you sure create this new proposal?"
+        wrapClassName='create-proposal-modal'
+        title='Are you sure create this new proposal?'
+        width={720}
         visible={normalResult.isModalVisible}
         confirmLoading={normalResult.confirming}
         onOk={submitNormalResult}
-        width={720}
         onCancel={handleCancel}
       >
-        <div className="proposal-result-list">
-          <div className="proposal-result-list-item gap-bottom">
-            <span className="sub-title gap-right">Proposal Type:</span>
-            <span className="proposal-result-list-item-value text-ellipsis">
+        <div className='proposal-result-list'>
+          <div className='proposal-result-list-item gap-bottom'>
+            <span className='sub-title gap-right'>Proposal Type:</span>
+            <span className='proposal-result-list-item-value text-ellipsis'>
               {normalResult.proposalType}
             </span>
           </div>
-          <div className="proposal-result-list-item gap-bottom">
-            <span className="sub-title gap-right">Organization Address:</span>
-            <span className="proposal-result-list-item-value text-ellipsis">
+          <div className='proposal-result-list-item gap-bottom'>
+            <span className='sub-title gap-right'>Organization Address:</span>
+            <span className='proposal-result-list-item-value text-ellipsis'>
               {normalResult.organizationAddress}
             </span>
           </div>
-          <div className="proposal-result-list-item gap-bottom">
-            <span className="sub-title gap-right">Contract Address:</span>
-            <span className="proposal-result-list-item-value text-ellipsis">
+          <div className='proposal-result-list-item gap-bottom'>
+            <span className='sub-title gap-right'>Contract Address:</span>
+            <span className='proposal-result-list-item-value text-ellipsis'>
               {normalResult.toAddress}
             </span>
           </div>
-          <div className="proposal-result-list-item gap-bottom">
-            <span className="sub-title gap-right">Contract Method:</span>
-            <span className="proposal-result-list-item-value text-ellipsis">
+          <div className='proposal-result-list-item gap-bottom'>
+            <span className='sub-title gap-right'>Contract Method:</span>
+            <span className='proposal-result-list-item-value text-ellipsis'>
               {normalResult.contractMethodName}
             </span>
           </div>
-          <div className="proposal-result-list-item gap-bottom">
-            <span className="sub-title gap-right">Contract Params:</span>
-            <pre className="proposal-result-list-item-value">
+          <div className='proposal-result-list-item gap-bottom'>
+            <span className='sub-title gap-right'>Contract Params:</span>
+            <pre className='proposal-result-list-item-value'>
               {JSON.stringify((normalResult.params || {}).origin, null, 2)}
             </pre>
           </div>
-          <div className="proposal-result-list-item gap-bottom">
-            <span className="sub-title gap-right">Description URL:</span>
+          <div className='proposal-result-list-item gap-bottom'>
+            <span className='sub-title gap-right'>Description URL:</span>
             <a
               href={normalResult.proposalDescriptionUrl}
-              className="proposal-result-list-item-value text-ellipsis"
-              target="_blank"
-              rel="noopener noreferrer"
+              className='proposal-result-list-item-value text-ellipsis'
+              target='_blank'
+              rel='noopener noreferrer'
             >
               {normalResult.proposalDescriptionUrl}
             </a>
           </div>
-          <div className="proposal-result-list-item gap-bottom">
-            <span className="sub-title gap-right">Expiration Time:</span>
-            <span className="proposal-result-list-item-value text-ellipsis">
+          <div className='proposal-result-list-item gap-bottom'>
+            <span className='sub-title gap-right'>Expiration Time:</span>
+            <span className='proposal-result-list-item-value text-ellipsis'>
               {normalResult.expiredTime &&
                 normalResult.expiredTime.format("YYYY/MM/DD HH:mm:ss")}
             </span>

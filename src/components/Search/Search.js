@@ -60,7 +60,6 @@ class Search extends PureComponent {
         this.setState({
           content: "",
         });
-        debugger;
         navigate(`/block/${value}`);
         return true;
       }
