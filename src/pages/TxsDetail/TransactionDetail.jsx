@@ -69,7 +69,7 @@ function TransactionDetail(props) {
   useEffect(() => {
     const { Logs = [] } = info || {};
     const logs = [...parsedLogs];
-    if (Logs) {
+    if (Logs.length) {
       const arr = Logs.filter((item) => item.Name === "Transferred");
       arr.forEach((item, index) => {
         deserializeLog(item).then((res) => {
@@ -77,6 +77,8 @@ function TransactionDetail(props) {
           setParsedLogs([...logs]);
         });
       });
+    } else {
+      setParsedLogs([]);
     }
   }, [info]);
 
