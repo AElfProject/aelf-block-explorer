@@ -359,6 +359,7 @@ export default class MyWalletCard extends PureComponent {
             </h2>
             {!this.isPhone && currentWallet && currentWallet.name && (
               <Button
+                type="text"
                 className='my-wallet-card-header-sync-btn update-btn'
                 disabled={!(currentWallet && currentWallet.address)}
                 onClick={this.extensionLogout}
@@ -368,6 +369,7 @@ export default class MyWalletCard extends PureComponent {
               </Button>
             )}
             <Button
+              type="text"
               className='my-wallet-card-header-sync-btn update-btn'
               disabled={!(currentWallet && currentWallet.address)}
               onClick={this.handleUpdateWalletClick}
@@ -377,6 +379,7 @@ export default class MyWalletCard extends PureComponent {
             </Button>
             {!(currentWallet && currentWallet.address) && (
               <Button
+                type="text"
                 className='my-wallet-card-header-sync-btn update-btn'
                 onClick={() => this.getCurrentWallet(false)}
               >
