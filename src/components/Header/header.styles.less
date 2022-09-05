@@ -211,6 +211,12 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    .ant-drawer {
+      position: fixed;
+      .ant-menu-submenu {
+        padding: 0 !important;
+      }
+    }
   }
 
   .divider-mobile {
@@ -329,6 +335,7 @@
     padding: 16px !important;
     line-height: 24px;
     height: 56px;
+    margin: 0;
   }
   .ant-menu-inline {
     border-right: none;

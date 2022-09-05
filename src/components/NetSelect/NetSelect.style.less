@@ -1,21 +1,23 @@
 @import "../../assets/less/_variables.less";
-.net-select-container {
+.net-select-container.ant-select {
   width: 100%;
   margin-bottom: 24px;
-  .ant-select {
-    border-color: @border-color1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
+
   .ant-select-arrow {
     color: @textContext3;
+    right: 45px;
   }
   .ant-select-selector {
     height: 36px;
     margin-right: 8px;
+    justify-content: center;
+    align-items: center;
+    border-color: @border-color1;
   }
+  .ant-select-selection-item {
+    text-align: center;
+  }
+
   .ant-select-selector-selected-value {
     color: @textContext3;
   }

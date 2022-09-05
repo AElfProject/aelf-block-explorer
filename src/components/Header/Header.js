@@ -349,6 +349,7 @@ class BrowserHeader extends PureComponent {
   renderDrawerMenu(menuMode, showMenu = true) {
     return (
       <Drawer
+        getContainer={false}
         visible={showMenu}
         placement='right'
         width={"80%"}
