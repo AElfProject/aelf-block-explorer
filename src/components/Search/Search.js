@@ -60,6 +60,7 @@ class Search extends PureComponent {
         this.setState({
           content: "",
         });
+        debugger;
         navigate(`/block/${value}`);
         return true;
       }
@@ -105,11 +106,11 @@ class Search extends PureComponent {
       const address = AElf.utils.encodeAddressRep(
         AElf.utils.decodeAddressRep(value)
       );
-      this.SEARCHRULES.address(address, this.props.history);
+      this.SEARCHRULES.address(address, this.props.navigate);
     } else if (isTxid.includes(length)) {
-      this.SEARCHRULES.transaction(value, this.props.history);
+      this.SEARCHRULES.transaction(value, this.props.navigate);
     } else {
-      this.SEARCHRULES.blockHeight(value, this.props.history) ||
+      this.SEARCHRULES.blockHeight(value, this.props.navigate) ||
         (location.href =
           "/search-invalid/" + ((e.target && e.target.value) || e.searchValue));
     }
