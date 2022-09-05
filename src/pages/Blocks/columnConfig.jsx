@@ -84,6 +84,7 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "dividends",
       title: "Reward",
+      width: isMobile ? 80 : 136,
       render: (text) => {
         return (
           <div className="reward">
