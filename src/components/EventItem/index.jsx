@@ -46,7 +46,7 @@ const EventItem = (props) => {
         value={JSON.stringify(result, null, 2)}
         className="event-item-text-area gap-bottom"
       />
-      <Button onClick={decode} loading={loading}>
+      <Button type="primary" onClick={decode} loading={loading}>
         {hasDecoded ? "Encode" : "Decode"}
       </Button>
     </div>
