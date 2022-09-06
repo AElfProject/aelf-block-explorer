@@ -51,7 +51,7 @@ const LIST_TABS = {
         render(text) {
           return (
             <Link to={`/proposal/proposalsDetail/${text}`}>
-              <Tooltip title={text} placement='topLeft'>
+              <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
             </Link>
@@ -67,10 +67,10 @@ const LIST_TABS = {
           return (
             <a
               href={`${config.viewer.txUrl}/${text}`}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <Tooltip title={text} placement='topLeft'>
+              <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
             </a>
@@ -123,10 +123,10 @@ const LIST_TABS = {
           return (
             <a
               href={`${config.viewer.txUrl}/${text}`}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <Tooltip title={text} placement='topLeft'>
+              <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
             </a>
@@ -172,10 +172,10 @@ const LIST_TABS = {
           return (
             <a
               href={`${config.viewer.txUrl}/${text}`}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <Tooltip title={text} placement='topLeft'>
+              <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
             </a>
@@ -203,7 +203,7 @@ const LIST_TABS = {
         render(text) {
           return (
             <Link to={`/proposal/proposalsDetail/${text}`}>
-              <Tooltip title={text} placement='topLeft'>
+              <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
             </Link>
@@ -228,10 +228,10 @@ const LIST_TABS = {
           return (
             <a
               href={`${config.viewer.txUrl}/${text}`}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <Tooltip title={text} placement='topLeft'>
+              <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
             </a>
@@ -303,6 +303,10 @@ const MyProposal = () => {
 
   function fetch(apiParams, menuKey) {
     const apiPath = LIST_TABS[menuKey].api;
+    setResult({
+      list: [],
+      total: 0,
+    });
     setParams({
       ...params,
       loading: true,
@@ -312,15 +316,15 @@ const MyProposal = () => {
     })
       .then((res) => {
         const { list, total } = res;
-        setResult({
-          list,
-          total,
-        });
         setParams({
           ...params,
           ...apiParams,
           currentMenu: menuKey,
           loading: false,
+        });
+        setResult({
+          list,
+          total,
         });
         sendHeight(400);
       })
@@ -405,9 +409,9 @@ const MyProposal = () => {
   }
 
   return (
-    <div className='my-proposal'>
+    <div className="my-proposal">
       <Tabs
-        className='proposal-list-tab'
+        className="proposal-list-tab"
         onChange={handleProposalTypeChange}
         animated={false}
       >
@@ -424,13 +428,13 @@ const MyProposal = () => {
           key={proposalTypes.REFERENDUM}
         />
       </Tabs>
-      <Row gutter={16} className='my-proposal-list gap-top'>
+      <Row gutter={16} className="my-proposal-list gap-top">
         <Col sm={6} xs={24}>
-          <div className='my-proposal-list-menu'>
+          <div className="my-proposal-list-menu">
             <Menu
               onClick={handleMenuChange}
               defaultSelectedKeys={defaultSelectedKey}
-              mode='inline'
+              mode="inline"
             >
               <MenuItem disabled={params.loading} key={MENU_PATH.APPLIED}>
                 Applied Proposals
@@ -438,7 +442,7 @@ const MyProposal = () => {
               <SubMenu
                 disabled={params.loading}
                 key={MENU_PATH.ORGANIZATION}
-                title='My Organizations'
+                title="My Organizations"
               >
                 <MenuItem
                   disabled={params.loading}
