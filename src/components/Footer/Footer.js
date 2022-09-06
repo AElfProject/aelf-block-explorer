@@ -5,7 +5,7 @@ import { NETWORK_TYPE } from '../../../config/config';
 
 import './footer.styles.less';
 
-const BrowserFooter = props => {
+const BrowserFooter = () => {
   const { pathname } = useLocation()
   const [isNoFooter, setIsNoFooter] = useState(false)
   const NO_FOOTER_LIST = useMemo(() => ['search-invalid', 'search-failed'], [])
@@ -18,7 +18,7 @@ const BrowserFooter = props => {
   return (
     isNoFooter
       ? <></>
-      : <section {...props} className={'footer ' + (NETWORK_TYPE === 'MAIN' ? 'main' : 'test')}>
+      : <section className={'footer ' + (NETWORK_TYPE === 'MAIN' ? 'main' : 'test')}>
         <div className='footer-container' >
           <div className='left'>
             <div className='top'>
@@ -62,8 +62,4 @@ const BrowserFooter = props => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  ...state.common,
-});
-
-export default connect(mapStateToProps)(BrowserFooter);
+export default BrowserFooter;
