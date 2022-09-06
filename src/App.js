@@ -19,11 +19,20 @@ import AppRoutes from './routes';
 import './App.less';
 
 export default class App extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showFooter: false
+        }
+    }
+
     componentDidCatch(error) {
         console.log(`component occurred error: ${error}`);
     }
     componentDidUpdate(preProps, preState) {
         this.back2Top()
+        this.setShowFooter(location.pathname)
     }
 
     back2Top = () => {
@@ -31,6 +40,16 @@ export default class App extends Component {
         if (app) {
             app.scrollIntoView({ block: 'start', behavior: 'auto' })
         }
+    }
+
+    setShowFooter = (pathname) => {
+        const list = ['search-invalid', 'search-failed'];
+        const firstPathName = pathname.split('/')[1]
+
+        if (list.includes(firstPathName) === this.state.showFooter) return;
+        this.setState({
+            showFooter: list.includes(firstPathName)
+        })
     }
 
     render() {
@@ -44,7 +63,7 @@ export default class App extends Component {
                         <AppRoutes />
                     </Switch>
                 </Container>
-                <BrowserFooter />
+                <BrowserFooter showFooter={this.state.showFooter} />
             </div>
         );
     }
