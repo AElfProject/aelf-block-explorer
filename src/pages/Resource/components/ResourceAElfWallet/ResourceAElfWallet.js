@@ -216,6 +216,7 @@ export default class ResourceAElfWallet extends PureComponent {
               <Col className='resource-wallet-operation-container'>
                 {!(currentWallet && currentWallet.address && tokenContract) && (
                   <Button
+                    type='text'
                     className='resource-wallet-address-update update-btn'
                     onClick={() => loginAndInsertKeyPairs(false)}
                   >
@@ -224,6 +225,7 @@ export default class ResourceAElfWallet extends PureComponent {
                 )}
 
                 <Button
+                  type="text"
                   className='resource-wallet-address-update update-btn'
                   disabled={
                     !(currentWallet && currentWallet.address && tokenContract)
@@ -236,6 +238,7 @@ export default class ResourceAElfWallet extends PureComponent {
 
                 {!isPhone && currentWallet && currentWallet.name && (
                   <Button
+                    type="text"
                     className='resource-wallet-address-update update-btn'
                     disabled={
                       !(currentWallet && currentWallet.address && tokenContract)
