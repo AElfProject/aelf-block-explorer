@@ -52,9 +52,11 @@ function BlockDetail(props) {
   useEffect(() => {
     const { params, location } = props;
     const { id } = params;
-    setPageId(id);
-    setBlockInfo(undefined);
-    setShowExtensionInfo(false);
+    if (id !== pageId) {
+      setPageId(id);
+      setBlockInfo(undefined);
+      setShowExtensionInfo(false);
+    }
     setActiveKey("overview");
     if (location.search && location.search.includes("tab=txns")) {
       setActiveKey("transactions");
@@ -144,8 +146,8 @@ function BlockDetail(props) {
 
   const getDataFromHash = useCallback(
     async (blockHash) => {
-      const { match, location } = props;
-      const { id } = match.params;
+      const { params, location } = props;
+      const { id } = params;
       const txsList = await getTxsList(blockHash);
       const { transactions = [] } = txsList;
       if (!transactions[0]) {
