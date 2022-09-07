@@ -280,6 +280,7 @@ const ProposalList = () => {
         hideOnSinglePage
         onChange={onPageNumChange}
         showTotal={Total}
+        showSizeChanger={false}
       />
       {proposalInfo.visible ? (
         <ApproveTokenModal

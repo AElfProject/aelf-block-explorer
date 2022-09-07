@@ -27,10 +27,7 @@ const copies = [];
 const baseConfig = {
   // entry: ENTRIES,
   entry: {
-    app: [
-      // "react-hot-loader/patch",
-      path.resolve(ROOT, "src/index.js"),
-    ],
+    app: [path.resolve(ROOT, "src/index.js")],
   },
   output: {
     path: OUTPUT_PATH,
@@ -38,7 +35,6 @@ const baseConfig = {
   },
   resolve: {
     alias: {
-      // "react-dom": "@hot-loader/react-dom",
       process: "process/browser",
       "aelf-sdk": "aelf-sdk/dist/aelf.umd.js",
       "@config": path.resolve(ROOT, "config"),
@@ -69,12 +65,10 @@ const baseConfig = {
       {
         test: /\.less$/,
         use: [
-          isProdMode
-            ? {
-                loader: MiniCssExtractPlugin.loader,
-                options: {},
-              }
-            : { loader: "style-loader", options: {} },
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {},
+          },
           "css-loader",
           "postcss-loader",
           {
@@ -91,12 +85,10 @@ const baseConfig = {
       {
         test: /\.css$/,
         use: [
-          isProdMode
-            ? {
-                loader: MiniCssExtractPlugin.loader,
-                options: {},
-              }
-            : { loader: "style-loader", options: {} },
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {},
+          },
           "css-loader",
           "postcss-loader",
         ],

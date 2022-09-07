@@ -58,11 +58,7 @@ const devConfig = {
   output: {
     filename: "[name].js",
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-    }),
-  ],
+  plugins: [new MiniCssExtractPlugin()],
   devServer: {
     // disableHostCheck: true,
     // webpack5 require
