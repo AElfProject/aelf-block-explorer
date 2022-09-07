@@ -1,5 +1,5 @@
 import { Pagination } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "./TransactionList.style.less";
 import { useMemo } from "react";
@@ -84,6 +84,14 @@ export default function TransactionList() {
     [pageSize]
   );
 
+  useEffect(() => {
+    if (pageIndex === 1) {
+      fetch(pageIndex);
+    } else {
+      setPageIndex(1);
+    }
+  }, [pathname]);
+
   useDebounce(
     () => {
       fetch(pageIndex);
@@ -107,7 +115,7 @@ export default function TransactionList() {
               More than {">"} {Number(actualTotal).toLocaleString()}{" "}
               {isUnconfirmed && "unconfirmed"} transactions found
             </p>
-            <p>(showing the last 500k records)</p>
+            <p>(Showing the last 500k records)</p>
           </div>
           <div className="right">
             <Pagination

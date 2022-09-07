@@ -1,5 +1,5 @@
 import { Pagination, Table } from "antd";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import useDebounce from "react-use/lib/useDebounce";
 import useLocation from "react-use/lib/useLocation";
 import {
@@ -54,6 +54,14 @@ export default function BlockList() {
     },
     [api, pageSize]
   );
+
+  useEffect(() => {
+    if (pageIndex === 1) {
+      fetch(pageIndex);
+    } else {
+      setPageIndex(1);
+    }
+  }, [pathname]);
 
   useDebounce(
     () => {
