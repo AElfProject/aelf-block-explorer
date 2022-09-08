@@ -12,7 +12,6 @@ import { Table, Button, Input, Tooltip } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import moment from "moment";
 // import Highlighter from 'react-highlight-words';
-import { connect } from "react-redux";
 import io from "socket.io-client";
 
 import {
@@ -21,7 +20,6 @@ import {
   fetchElectorVoteWithRecords,
 } from "@api/vote";
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
-import getCurrentWallet from "@utils/getCurrentWallet";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
 import {
   FROM_WALLET,
@@ -564,8 +562,4 @@ class NodeTable extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => ({
-  ...state.common,
-});
-
-export default connect(mapStateToProps)(NodeTable);
+export default NodeTable;
