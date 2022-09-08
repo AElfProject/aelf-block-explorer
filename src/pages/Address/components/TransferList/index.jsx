@@ -8,7 +8,7 @@ import moment from "moment";
 import TransactionList from "../TransactionList";
 import config from "../../../../common/config";
 import Dividends from "../../../../components/Dividends";
-import AddressLink from "../AddressLink";
+import AddressLink from "../../../../components/AddressLink";
 
 function getColumns(contractNames, ownerAddress) {
   return [
@@ -23,8 +23,8 @@ function getColumns(contractNames, ownerAddress) {
           <a
             title={txId}
             href={`${config.viewer.txUrl}/${txId}`}
-            target='_blank'
-            rel='noopener noreferrer'
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {txId}
           </a>
@@ -41,8 +41,8 @@ function getColumns(contractNames, ownerAddress) {
         return (
           <a
             href={`${config.viewer.blockUrl}/${height}`}
-            target='_blank'
-            rel='noopener noreferrer'
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {height}
           </a>
@@ -138,7 +138,7 @@ const TransferList = (props) => {
       freezeParams={freezeParams}
       api={api}
       getColumns={getColumns}
-      rowKey='id'
+      rowKey="id"
     />
   );
 };

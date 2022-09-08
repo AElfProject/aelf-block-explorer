@@ -7,14 +7,6 @@ const TokenList = lazy(() => import("./containers/TokenList"));
 const TokenInfo = lazy(() => import("./containers/TokenInfo"));
 export const AddressRouter = [
   {
-    path: "/address",
-    element: <AccountList />,
-  },
-  {
-    path: "/address/:address",
-    element: <AccountInfo />,
-  },
-  {
     // We cannot use ? in v6
     path: "/address/:address/:symbol",
     element: <AccountInfo />,

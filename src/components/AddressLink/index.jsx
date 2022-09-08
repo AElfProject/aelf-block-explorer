@@ -4,8 +4,8 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import config from "../../../../common/config";
-import { getContractNames } from "../../../../utils";
+import config from "../../common/config";
+import { getContractNames } from "../../utils";
 const AddressLink = (props) => {
   const { address, suffix } = props;
   const [contracts, setContracts] = useState({});

@@ -16,8 +16,8 @@ import {
 } from "../../../../common/utils";
 import Total from "../../../../components/Total";
 import Dividends from "../../../../components/Dividends";
-import AddressLink from "../AddressLink";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
+import AddressLink from "../../../../components/AddressLink";
 
 function getTableColumns(contractNames, ownerAddress) {
   return [
@@ -32,8 +32,8 @@ function getTableColumns(contractNames, ownerAddress) {
           <a
             title={txId}
             href={`${config.viewer.txUrl}/${txId}`}
-            target='_blank'
-            rel='noopener noreferrer'
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {txId}
           </a>
@@ -48,8 +48,8 @@ function getTableColumns(contractNames, ownerAddress) {
         return (
           <a
             href={`${config.viewer.blockUrl}/${height}`}
-            target='_blank'
-            rel='noopener noreferrer'
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {height}
           </a>
@@ -206,7 +206,7 @@ const TransactionList = (props) => {
     });
   }
   return (
-    <div className='transaction-list'>
+    <div className="transaction-list">
       <TableLayer>
         <Table
           showSorterTooltip={false}
@@ -218,7 +218,7 @@ const TransactionList = (props) => {
         />
       </TableLayer>
       <Pagination
-        className='float-right gap-top'
+        className="float-right gap-top"
         showQuickJumper
         total={result.total}
         current={params.pageNum}

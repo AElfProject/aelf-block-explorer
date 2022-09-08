@@ -1,0 +1,71 @@
+.transfers-pane {
+  background: @bgBlankGrey;
+  .table-layer {
+    padding-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    tbody {
+      .color-blue {
+        color: @mariner;
+      }
+      .from {
+        position: relative;
+        a {
+          display: block;
+          width: 116px;
+          overflow-x: hidden;
+          text-overflow: ellipsis;
+          word-wrap: none;
+          white-space: nowrap;
+        }
+        .ant-tag {
+          position: absolute;
+          top: -1px;
+          right: 0;
+          width: 40px;
+          line-height: 20px;
+          border-radius: 2px;
+          text-align: center;
+          padding: 2px 0;
+          border: none;
+          &.in {
+            background: #e6f8f0;
+            color: @jade;
+          }
+          &.out {
+            background: @fair-pink;
+            color: @sunset-orange;
+          }
+        }
+      }
+    }
+  }
+  .after-table {
+    padding-top: 16px;
+    background: @bgBlankGrey;
+    .ant-pagination-options {
+      position: absolute;
+      border: none;
+      left: 0;
+      margin-left: 0;
+      &::before,
+      &::after {
+        font-size: 14px;
+        margin-right: 8px;
+        line-height: 32px;
+      }
+      &::before {
+        content: "Show";
+      }
+      &::after {
+        content: "records";
+      }
+      .ant-select-selector {
+        padding: 0 23px 0 9px;
+        .ant-select-selection-item {
+          padding-right: 5px;
+        }
+      }
+    }
+  }
+}

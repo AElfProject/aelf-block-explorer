@@ -9,7 +9,7 @@ import { request } from "../../../../common/request";
 import config from "../../../../common/config";
 import Total from "../../../../components/Total";
 import { sendHeight } from "../../../../common/utils";
-import AddressLink from "../AddressLink";
+import AddressLink from "../../../../components/AddressLink";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 function getListColumn(preTotal) {
@@ -125,11 +125,11 @@ const HolderList = (props) => {
           dataSource={list}
           columns={columns}
           loading={fetchingStatus === fetchingStatusMap.FETCHING}
-          rowKey='owner'
+          rowKey="owner"
           pagination={false}
         />
       </TableLayer>
-      <div className='account-list-pagination gap-top float-right'>
+      <div className="account-list-pagination gap-top float-right">
         <Pagination
           showQuickJumper
           total={pagination.total}

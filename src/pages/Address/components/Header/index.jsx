@@ -2,29 +2,16 @@
  * @file header
  * @author atom-yang
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  If,
-  Then,
-} from 'react-if';
-import {
-  Tag,
-  Divider,
-  Tooltip,
-} from 'antd';
-import {
-  LinkIcon,
-} from '../../common/Icon';
-import './index.less';
-import AddressLink from '../AddressLink';
+import React from "react";
+import PropTypes from "prop-types";
+import { If, Then } from "react-if";
+import { Tag, Divider, Tooltip } from "antd";
+import { LinkIcon } from "../../common/Icon";
+import "./index.less";
+import AddressLink from "../../../../components/AddressLink";
 
 const Header = (props) => {
-  const {
-    author,
-    isSystemContract,
-    contractName,
-  } = props;
+  const { author, isSystemContract, contractName } = props;
   return (
     <div className="contract-viewer-header">
       <If condition={contractName && +contractName !== -1}>
@@ -52,7 +39,9 @@ const Header = (props) => {
         </If>
         <div className="contract-viewer-header-desc-item">
           <div className="gap-right">Contract Type:</div>
-          <Tag color={isSystemContract ? 'green' : 'blue'}>{isSystemContract ? 'System' : 'User'}</Tag>
+          <Tag color={isSystemContract ? "green" : "blue"}>
+            {isSystemContract ? "System" : "User"}
+          </Tag>
         </div>
       </div>
     </div>
@@ -66,7 +55,7 @@ Header.propTypes = {
 };
 Header.defaultProps = {
   author: false,
-  contractName: '',
+  contractName: "",
 };
 
 export default Header;
