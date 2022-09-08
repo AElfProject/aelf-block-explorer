@@ -26,6 +26,9 @@ export default class App extends Component {
             showFooter: false
         }
     }
+    componentDidMount() {
+        this.setShowFooter(location.pathname)
+    }
 
     componentDidCatch(error) {
         console.log(`component occurred error: ${error}`);
