@@ -330,6 +330,7 @@ const RESOURCE_DETAILS_COLUMN = [
     dataIndex: "time",
     key: "time",
     align: "center",
+    width: 160,
     render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
   },
   {
