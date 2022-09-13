@@ -158,7 +158,7 @@ export default function BasicInfo({
   );
 
   useEffectOnce(() => {
-    get(ELF_REALTIME_PRICE_URL).then((price) => {
+    get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((price) => {
       setPrice(price);
     });
   });

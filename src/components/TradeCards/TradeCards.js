@@ -26,7 +26,7 @@ export default class TradeCards extends Component {
     }
 
     async componentDidMount() {
-        const price = await get(ELF_REALTIME_PRICE_URL);
+        const price = await get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" });
         try {
             //   const detail = await get("/market/detail", {
             //     symbol: "elfbtc"
@@ -57,7 +57,7 @@ export default class TradeCards extends Component {
                             <span>
                                 ≈{price.BTC}
                                 BTC
-                                </span>
+                            </span>
                         </li>
                         {/* <li className="card-left-desc">
                         开盘价: <span>{tick.open} BTC</span>
