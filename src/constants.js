@@ -27,8 +27,7 @@ const ADDRESS_BALANCE_API_URL = "/api/address/balance";
 const VIEWER_GET_ALL_TOKENS = "/viewer/getAllTokens";
 const TPS_LIST_API_URL = "/tps/all";
 const ADDRESS_TOKENS_API_URL = "/address/tokens";
-const ELF_REALTIME_PRICE_URL =
-  "https://min-api.cryptocompare.com/data/price?fsym=ELF&tsyms=USD,BTC,CNY";
+const ELF_REALTIME_PRICE_URL = "/token/price";
 const HISTORY_PRICE = "/token/price-history";
 const ELF_REST_TRADE_API = "https://www.bcex.top/Api_Market/getCoinTrade";
 const RESOURCE_REALTIME_RECORDS = "/resource/realtime-records";

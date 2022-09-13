@@ -51,7 +51,7 @@ export default function Home() {
     // todo change this
     // if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && isMobile) {
     if (CHAIN_ID === "AELF" && isMobile) {
-      get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
+      get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((price) => setPrice(price));
       get(HISTORY_PRICE, {
         token_id: "aelf",
         vs_currencies: "usd",
