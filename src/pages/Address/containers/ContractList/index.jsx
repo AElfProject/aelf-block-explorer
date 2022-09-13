@@ -30,7 +30,7 @@ const ListColumn = [
     width: 120,
     render: (name, record) =>
       name && +name !== -1 ? (
-        <Link to={`/contract/${record.address}`} title={name}>
+        <Link to={`/address/${record.address}`} title={name}>
           <Tooltip title={name} placement='topLeft'>
             {removeAElfPrefix(name)}
           </Tooltip>
@@ -47,7 +47,7 @@ const ListColumn = [
     width: 320,
     render: (address) => (
       <Link
-        to={`/contract/${address}`}
+        to={`/address/${address}`}
         title={`ELF_${address}_${config.viewer.chainId}`}
       >
         {`ELF_${address}_${config.viewer.chainId}`}

@@ -18,7 +18,7 @@ const noBreadcrumb = (pathname) => {
   const isMainPage = pathname === "/";
   return (
     NO_BREADCRUMB_PAGES.filter((item) => pathname.includes(item)).length ===
-      0 && !isMainPage
+    0 && !isMainPage
   );
 };
 
@@ -98,6 +98,10 @@ const BREADCRUMB_NAMES_TATE = {
         BREADCRUMB_NAME_MAP["/unconfirmedTxs"],
         BREADCRUMB_NAME_MAP["/unconfirmedTx"],
       ],
+    },
+    accounts: {
+      url: ["/txs", false],
+      name: [BREADCRUMB_NAME_MAP["/txs"], BREADCRUMB_NAME_MAP["/address"]],
     },
     address: {
       url: ["/txs", false],
@@ -217,7 +221,7 @@ class BrowserBreadcrumb extends Component {
         index === pathSnippets.length - 1
           ? STATE.url[index] || reloadUrl
           : STATE.url[index] ||
-            `/${pathSnippets.slice(0, index + 1).join("/")}`;
+          `/${pathSnippets.slice(0, index + 1).join("/")}`;
 
       console.log("breadcrumbTitle: ", breadcrumbTitle);
       const isCurrentTitle = this.checkLocation(breadcrumbTitle);
@@ -292,7 +296,8 @@ class BrowserBreadcrumb extends Component {
       || pathname.includes('/txs')
       || pathname.includes('/block/')
       || pathname.includes('/search-invalid')
-      || pathname.includes('/search-failed')) {
+      || pathname.includes('/search-failed')
+      || pathname.includes('/accounts')) {
       return <></>
     }
 

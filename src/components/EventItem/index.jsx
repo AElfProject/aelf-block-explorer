@@ -9,6 +9,7 @@ import { deserializeLog } from "../../utils/utils";
 
 const { TextArea } = Input;
 
+import "./EventItem.styles.less";
 const EventItem = (props) => {
   const [result, setResult] = useState({ ...(props || {}) });
   const [hasDecoded, setHasDecoded] = useState(false);
@@ -22,27 +23,29 @@ const EventItem = (props) => {
       setHasDecoded(false);
       setLoading(false);
     } else {
-      deserializeLog(props).then((res) => {
-        if (Object.keys(res).length === 0) {
-          throw new Error('Decode failed');
-        }
-        setResult(res);
-        setLoading(false);
-        setHasDecoded(true);
-      }).catch(() => {
-        message.error('Decode failed');
-        setLoading(false);
-      });
+      deserializeLog(props)
+        .then((res) => {
+          if (Object.keys(res).length === 0) {
+            throw new Error("Decode failed");
+          }
+          setResult(res);
+          setLoading(false);
+          setHasDecoded(true);
+        })
+        .catch(() => {
+          message.error("Decode failed");
+          setLoading(false);
+        });
     }
   }
   return (
-    <div className="event-item gap-bottom">
+    <div className="event-item">
       <TextArea
         readOnly
         rows="6"
         spellCheck={false}
         value={JSON.stringify(result, null, 2)}
-        className="event-item-text-area gap-bottom"
+        className="event-item-text-area"
       />
       <Button type="primary" onClick={decode} loading={loading}>
         {hasDecoded ? "Encode" : "Decode"}

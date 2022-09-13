@@ -7,22 +7,30 @@ import CopyButton from "../../components/CopyButton/CopyButton";
 import IconFont from "../../components/IconFont";
 import { CHAIN_ID } from "../../constants";
 import QrCode from "./components/QrCode/QrCode";
-import Tokens from "./components/Tokens/Tokens";
 import { get, getContractNames } from "../../utils";
-import { TOKEN_PRICE, VIEWER_BALANCES } from "../../api/url";
+import {
+  TOKEN_PRICE,
+  VIEWER_BALANCES,
+  VIEWER_GET_FILE,
+  VIEWER_HISTORY,
+} from "../../api/url";
 
 import "./AddressDetail.styles.less";
-import Transactions from "./components/Transactions/Transactions";
-import Transfers from "./components/Transfers/Transfers";
 import useMobile from "../../hooks/useMobile";
+import CommonTabPane from "./components/CommonTabPane";
+import Overview from "./components/Overview";
+import ContractTabPane from "./components/ContractTabPane";
 
 export default function AddressDetail() {
-  const { address } = useParams();
+  const { address, codeHash } = useParams();
   const isMobile = useMobile();
+  const [activeKey, setActiveKey] = useState("tokens");
   const [contracts, setContracts] = useState({});
   const [prices, setPrices] = useState({});
   const [balances, setBalances] = useState([]);
   const [tokensLoading, setTokensLoading] = useState(true);
+  const [contractInfo, setContractInfo] = useState(undefined);
+  const [contractHistory, setContractHistory] = useState(undefined);
 
   const isCA = useMemo(() => !!contracts[address], [contracts, address]);
 
@@ -52,16 +60,33 @@ export default function AddressDetail() {
           get(TOKEN_PRICE, { fsym: item.symbol, tsyms: "USD" })
         )
       ).then((res) => {
+        setTokensLoading(false);
         res.forEach(({ value: item }) => {
-          console.log(">>>item", item);
           if (item && item.USD) {
             setPrices((v) => ({ ...v, [item.symbol]: item.USD }));
           }
         });
       });
+    } else {
       setTokensLoading(false);
     }
   }, [balances]);
+
+  const fetchHistory = useCallback(async () => {
+    const result = await get(VIEWER_HISTORY, { address });
+    if (result.code === 0) {
+      const { data } = result;
+      setContractHistory(data);
+    }
+  }, [address]);
+
+  const fetchFile = useCallback(async () => {
+    const result = await get(VIEWER_GET_FILE, { address, codeHash });
+    if (result.code === 0) {
+      const { data } = result;
+      setContractInfo(data);
+    }
+  }, [address, codeHash]);
 
   useEffect(() => {
     fetchBalances();
@@ -70,6 +95,16 @@ export default function AddressDetail() {
   useEffect(() => {
     fetchPrice();
   }, [balances]);
+
+  useEffect(() => {
+    if (isCA) {
+      fetchFile();
+      fetchHistory();
+      setActiveKey("contract");
+    } else {
+      setActiveKey("tokens");
+    }
+  }, [isCA, fetchFile]);
 
   useEffectOnce(() => {
     getContractNames().then((res) => setContracts(res));
@@ -98,42 +133,24 @@ export default function AddressDetail() {
           </Tooltip>
         </p>
       </section>
-      <section className="overview">
-        <p>Overview</p>
-        <div>
-          <p>
-            <span className="label">Balance</span>
-            <span className="value">
-              {elfBalance ? `${Number(elfBalance).toLocaleString()} ELF` : "-"}
-            </span>
-          </p>
-          <p>
-            <span className="label">Value in USD</span>
-            <span className="value">
-              {elfBalance && prices.ELF
-                ? `$${(prices.ELF * elfBalance).toLocaleString()}(@ $${
-                    prices.ELF
-                  }/ELF)`
-                : "-"}
-            </span>
-          </p>
-        </div>
-      </section>
+      <Overview prices={prices} elfBalance={elfBalance} />
       <section className="more-info">
-        <Tabs>
-          <Tabs.TabPane key="tokens" tab="Tokens">
-            <Tokens
-              balances={balances}
-              prices={prices}
-              dataLoading={tokensLoading}
-            />
-          </Tabs.TabPane>
-          <Tabs.TabPane key="transactions" tab="Transactions">
-            <Transactions address={address} />
-          </Tabs.TabPane>
-          <Tabs.TabPane key="transfers" tab="Transfers">
-            <Transfers address={address} />
-          </Tabs.TabPane>
+        <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
+          {CommonTabPane({ balances, prices, tokensLoading, address }).map(
+            ({ children, ...props }) => (
+              <Tabs.TabPane {...props}>{children}</Tabs.TabPane>
+            )
+          )}
+          {isCA &&
+            ContractTabPane({
+              contractInfo,
+              contractHistory,
+              address,
+              codeHash,
+              activeKey,
+            }).map(({ children, ...props }) => (
+              <Tabs.TabPane {...props}>{children}</Tabs.TabPane>
+            ))}
         </Tabs>
       </section>
     </div>

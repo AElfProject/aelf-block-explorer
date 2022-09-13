@@ -96,7 +96,7 @@ export default function Accounts() {
           <div className="left">
             <p>
               More than {">"} {Number(actualTotal).toLocaleString()} accounts by
-              ELF balance found {`(${Number(totalELF).toLocaleString()} ELF)`}
+              ELF balance found {`(${Number(totalELF / 100000000).toLocaleString()} ELF)`}
             </p>
             <p>(Showing the top 1000 accounts only)</p>
           </div>

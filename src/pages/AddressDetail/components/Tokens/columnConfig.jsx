@@ -8,7 +8,7 @@ export default ({ prices, isMobile }) => {
       dataIndex: "symbol",
       width: isMobile ? 94 : 360,
       render(symbol) {
-        return <Link to={`/token/${symbol}`}>{symbol}</Link>;
+        return symbol ? <Link to={`/token/${symbol}`}>{symbol}</Link> : "-";
       },
     },
     {
@@ -24,7 +24,6 @@ export default ({ prices, isMobile }) => {
       dataIndex: "symbol",
       width: isMobile ? 70 : 284,
       render(symbol) {
-        console.log(">>>", symbol, prices);
         if ((symbol, prices))
           return prices[symbol]
             ? `$${Number(prices[symbol]).toLocaleString()}`

@@ -9,7 +9,6 @@ import "./Tokens.styles.less";
 export default function Tokens({ balances, prices, dataLoading }) {
   const isMobile = useMobile();
   const columns = useMemo(() => {
-    console.log(">>????", prices);
     return getColumn({ prices, isMobile });
   }, [prices]);
 

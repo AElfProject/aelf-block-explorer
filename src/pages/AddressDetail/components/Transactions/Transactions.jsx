@@ -11,7 +11,7 @@ export default function Transactions({ address }) {
   const isMobile = useMobile();
   const [dataLoading, setDataLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [dataSource, setDataSource] = useState(undefined);
 
@@ -52,7 +52,7 @@ export default function Transactions({ address }) {
           current={pageIndex}
           pageSize={pageSize}
           total={total}
-          pageSizeOptions={["25", "50", "100"]}
+          pageSizeOptions={["10", "25", "50", "100"]}
           onChange={handlePageChange}
           onShowSizeChange={(current, size) => handlePageChange(1, size)}
         />

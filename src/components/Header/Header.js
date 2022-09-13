@@ -92,7 +92,7 @@ class BrowserHeader extends PureComponent {
       const whiteList = [
         ["/block", "Block"],
         ["/tx", "Transaction"],
-        ["/address", "/address"],
+        ["/address", "Address"],
         ["/vote", "/vote"],
         ["/voteold", "/vote"],
       ];
@@ -276,8 +276,8 @@ class BrowserHeader extends PureComponent {
           </>
           <>
             <SubMenu key='Address' title='Address'>
-              <Menu.Item key='/address'>
-                <Link to='/address'>Accounts</Link>
+              <Menu.Item key='/accounts'>
+                <Link to='/accounts'>Top Accounts</Link>
               </Menu.Item>
               <Menu.Item key='/contract'>
                 <Link to='/contract'>Contracts</Link>
@@ -333,9 +333,8 @@ class BrowserHeader extends PureComponent {
   renderMobileMore() {
     return (
       <div
-        className={`header-navbar-mobile-more ${
-          NETWORK_TYPE === "MAIN" ? "header-navbar-main-mobile-more" : ""
-        }`}
+        className={`header-navbar-mobile-more ${NETWORK_TYPE === "MAIN" ? "header-navbar-main-mobile-more" : ""
+          }`}
       >
         <IconFont
           type={NETWORK_TYPE === "MAIN" ? "aelf" : "aelf-test"}
@@ -354,9 +353,8 @@ class BrowserHeader extends PureComponent {
         placement='right'
         width={"80%"}
         closable={false}
-        className={`header-drawer-menu-wrapper ${
-          NETWORK_TYPE === "MAIN" ? "header-main-drawer-menu-wrapper" : ""
-        }`}
+        className={`header-drawer-menu-wrapper ${NETWORK_TYPE === "MAIN" ? "header-main-drawer-menu-wrapper" : ""
+          }`}
         onClose={() => this.toggleMenu()}
         title={
           <>
@@ -397,8 +395,8 @@ class BrowserHeader extends PureComponent {
         ? " header-main-container-mobile"
         : ""
       : NETWORK_TYPE === "MAIN"
-      ? " header-main-container"
-      : "";
+        ? " header-main-container"
+        : "";
     const onlyMenu = this.state.showSearch ? "" : "only-menu ";
     const isMainNet = NETWORK_TYPE === "MAIN" ? "main-net" : "test-net";
 

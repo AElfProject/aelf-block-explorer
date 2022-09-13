@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { CHAIN_ID } from "../../../../constants";
 import clsx from "clsx";
 import { Tag, Tooltip } from "antd";
+import { CHAIN_ID } from "../../../../constants";
 import Dividends from "../../../../components/Dividends";
 import IconFont from "../../../../components/IconFont";
 import { getFormattedDate } from "../../../../utils/timeUtils";
