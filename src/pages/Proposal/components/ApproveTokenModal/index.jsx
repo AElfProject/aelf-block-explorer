@@ -1,30 +1,26 @@
 /**
  * @file approve token modal
  */
-import React, { useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import Decimal from 'decimal.js';
+import React, { useEffect, useMemo, useState } from "react";
+import PropTypes from "prop-types";
+import Decimal from "decimal.js";
+import { Form, InputNumber, message, Modal, Button } from "antd";
 import {
-  Form,
-  InputNumber,
-  message,
-  Modal,
-  Button,
-} from 'antd';
-import { getContractAddress, getTxResult, showTransactionResult } from '../../common/utils';
-import { getContract } from '../../../../common/utils';
-import constants from '../../common/constants';
-import './index.less';
+  getContractAddress,
+  getTxResult,
+  showTransactionResult,
+} from "../../common/utils";
+import { getContract } from "../../../../common/utils";
+import constants from "../../common/constants";
+import "./index.less";
 
 const FormItem = Form.Item;
 
-const {
-  proposalActions,
-} = constants;
+const { proposalActions } = constants;
 
 async function getTokenDecimal(aelf, symbol) {
   try {
-    const token = await getContract(aelf, getContractAddress('Token'));
+    const token = await getContract(aelf, getContractAddress("Token"));
     const result = await token.GetTokenInfo.call({
       symbol,
     });
@@ -37,7 +33,7 @@ async function getTokenDecimal(aelf, symbol) {
 
 async function getBalance(aelf, symbol, owner) {
   try {
-    const token = await getContract(aelf, getContractAddress('Token'));
+    const token = await getContract(aelf, getContractAddress("Token"));
     const result = await token.GetBalance.call({
       symbol,
       owner,
@@ -51,7 +47,7 @@ async function getBalance(aelf, symbol, owner) {
 
 async function getAllowance(aelf, params) {
   try {
-    const token = await getContract(aelf, getContractAddress('Token'));
+    const token = await getContract(aelf, getContractAddress("Token"));
     const result = await token.GetAllowance.call(params);
     return result.allowance || 0;
   } catch (e) {
@@ -62,7 +58,10 @@ async function getAllowance(aelf, params) {
 
 async function getVirtualAddress(aelf, proposalId) {
   try {
-    const referendum = await getContract(aelf, getContractAddress('Referendum'));
+    const referendum = await getContract(
+      aelf,
+      getContractAddress("Referendum")
+    );
     return referendum.GetProposalVirtualAddress.call(proposalId);
   } catch (e) {
     message.error(`failed to get virtual address of proposal ${proposalId}`);
@@ -92,7 +91,7 @@ async function getProposalAllowanceInfo(aelf, proposalId, owner, symbol) {
 }
 
 const formItemLayout = {
-  layout: 'inline',
+  layout: "inline",
   labelCol: {
     sm: { span: 8 },
   },
@@ -114,17 +113,19 @@ const sendTransaction = async (wallet, contractAddress, method, param) => {
 function getFormDesc(allowance) {
   return {
     amount: {
-      name: 'amount',
+      name: "amount",
       initialValue: allowance,
       rules: [
         {
           required: true,
-          message: 'Please input the amount',
+          message: "Please input the amount",
         },
         {
-          type: 'number',
+          type: "number",
           validator(rule, value) {
-            return value > 0 ? Promise.resolve() : Promise.reject(new Error('Value must be larger than 0'));
+            return value > 0
+              ? Promise.resolve()
+              : Promise.reject(new Error("Value must be larger than 0"));
           },
         },
       ],
@@ -135,7 +136,10 @@ function getFormDesc(allowance) {
 function getOkProps(loadings, allowanceInfo, inputAmount) {
   return {
     loading: loadings.actionLoading || loadings.tokenLoading,
-    disabled: loadings.tokenLoading || +allowanceInfo.allowance === 0 || inputAmount !== 0,
+    disabled:
+      loadings.tokenLoading ||
+      +allowanceInfo.allowance === 0 ||
+      inputAmount !== 0,
   };
 }
 
@@ -152,58 +156,51 @@ const ApproveTokenModal = (props) => {
     owner,
   } = props;
   const [form] = Form.useForm();
-  const {
-    validateFields,
-  } = form;
+  const { validateFields } = form;
   const [allowanceInfo, setAllowanceInfo] = useState({
     decimals: 8,
     allowance: 0,
     balance: 0,
-    spender: '',
+    spender: "",
   });
   const [inputAmount, setInputAmount] = useState(0);
   const [loadings, setLoadings] = useState({
     tokenLoading: true,
     actionLoading: true,
   });
-  const formDesc = useMemo(() => getFormDesc(allowanceInfo.allowance), [allowanceInfo]);
+  const formDesc = useMemo(
+    () => getFormDesc(allowanceInfo.allowance),
+    [allowanceInfo]
+  );
 
-  const okProps = useMemo(() => getOkProps(
-    loadings,
-    allowanceInfo,
-    inputAmount,
-  ), [
-    loadings,
-    allowanceInfo,
-    inputAmount,
-  ]);
+  const okProps = useMemo(
+    () => getOkProps(loadings, allowanceInfo, inputAmount),
+    [loadings, allowanceInfo, inputAmount]
+  );
 
   useEffect(() => {
     if (visible) {
-      getProposalAllowanceInfo(aelf, proposalId, owner, tokenSymbol).then((res) => {
-        setLoadings({
-          tokenLoading: false,
-          actionLoading: false,
+      getProposalAllowanceInfo(aelf, proposalId, owner, tokenSymbol)
+        .then((res) => {
+          setLoadings({
+            tokenLoading: false,
+            actionLoading: false,
+          });
+          setAllowanceInfo(res);
+          form.setFieldsValue({
+            amount: res.allowance,
+          });
+        })
+        .catch((err) => {
+          setLoadings({
+            tokenLoading: false,
+            actionLoading: false,
+          });
+          console.error(err);
+          message.error(err.message || "Network Error");
         });
-        setAllowanceInfo(res);
-        form.setFieldsValue({
-          amount: res.allowance,
-        });
-      }).catch((err) => {
-        setLoadings({
-          tokenLoading: false,
-          actionLoading: false,
-        });
-        console.error(err);
-        message.error(err.message || 'Network Error');
-      });
     }
-  }, [
-    visible,
-    tokenSymbol,
-    proposalId,
-    owner,
-  ]);
+  }, [visible, tokenSymbol, proposalId, owner]);
 
   function handleCancel() {
     onCancel();
@@ -220,48 +217,52 @@ const ApproveTokenModal = (props) => {
   async function handleStake() {
     try {
       const results = await validateFields();
-      let {
-        amount,
-      } = results;
-      const {
-        spender,
-        decimals,
-      } = allowanceInfo;
-      amount = new Decimal(amount - allowanceInfo.allowance).mul(`1e${decimals}`).toString();
+      let { amount } = results;
+      const { spender, decimals } = allowanceInfo;
+      amount = new Decimal(amount - allowanceInfo.allowance)
+        .mul(`1e${decimals}`)
+        .toString();
       setLoadings({
         tokenLoading: true,
         actionLoading: false,
       });
-      const method = amount > 0 ? 'Approve' : 'UnApprove';
+      const method = amount > 0 ? "Approve" : "UnApprove";
       amount = Math.abs(amount);
-      const result = await sendTransaction(wallet, getContractAddress('Token'), method, {
-        spender,
-        amount,
-        symbol: tokenSymbol,
-      });
+      const result = await sendTransaction(
+        wallet,
+        getContractAddress("Token"),
+        method,
+        {
+          spender,
+          amount,
+          symbol: tokenSymbol,
+        }
+      );
       const txId = result.TransactionId || result.result.TransactionId;
       const txResult = await getTxResult(aelf, txId, 0, 6000);
       message.info(`Transactions ${txId} is ${txResult.Status}`);
-      getProposalAllowanceInfo(aelf, proposalId, owner, tokenSymbol).then((res) => {
-        setAllowanceInfo(res);
-        setInputAmount(0);
-        setLoadings({
-          actionLoading: false,
-          tokenLoading: false,
+      getProposalAllowanceInfo(aelf, proposalId, owner, tokenSymbol)
+        .then((res) => {
+          setAllowanceInfo(res);
+          setInputAmount(0);
+          setLoadings({
+            actionLoading: false,
+            tokenLoading: false,
+          });
+          form.setFieldsValue({
+            amount: res.allowance,
+          });
+        })
+        .catch((err) => {
+          message.error(err.message || "Network Error");
         });
-        form.setFieldsValue({
-          amount: res.allowance,
-        });
-      }).catch((err) => {
-        message.error(err.message || 'Network Error');
-      });
     } catch (e) {
       setLoadings({
         actionLoading: false,
         tokenLoading: false,
       });
       console.error(e);
-      message.error(e.message || 'Send Transaction failed');
+      message.error(e.message || "Send Transaction failed");
     }
   }
 
@@ -271,6 +272,7 @@ const ApproveTokenModal = (props) => {
 
   return (
     <Modal
+      wrapClassName='approve-token-modal'
       title={action}
       visible={visible}
       onCancel={handleCancel}
@@ -280,37 +282,24 @@ const ApproveTokenModal = (props) => {
       destroyOnClose
       width={720}
     >
-      <div className="gap-bottom-large">
-        Token Balance:
-        {' '}
-        {allowanceInfo.balance}
-        {' '}
-        {tokenSymbol}
+      <div className='gap-bottom-large'>
+        Token Balance: {allowanceInfo.balance} {tokenSymbol}
       </div>
       <Form
         form={form}
-        className="approve-token-form"
+        className='approve-token-form'
         {...formItemLayout}
         onValuesChange={handleValueChange}
       >
-        <FormItem
-          label="Staked Token"
-        >
-          <FormItem
-            noStyle
-            {...formDesc.amount}
-          >
-            <InputNumber
-              precision={allowanceInfo.decimals}
-              step={1}
-              min={0}
-            />
+        <FormItem label='Staked Token'>
+          <FormItem noStyle {...formDesc.amount}>
+            <InputNumber precision={allowanceInfo.decimals} step={1} min={0} />
           </FormItem>
-          <span className="gap-left-small">{tokenSymbol}</span>
+          <span className='gap-left-small'>{tokenSymbol}</span>
         </FormItem>
         <FormItem colon={false}>
           <Button
-            type="primary"
+            type='primary'
             loading={loadings.tokenLoading}
             disabled={allowanceInfo.balance === 0 || inputAmount === 0}
             onClick={handleStake}

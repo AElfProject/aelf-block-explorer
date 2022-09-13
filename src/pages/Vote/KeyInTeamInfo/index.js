@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { withRouter } from "../../../routes/utils.js";
-import { Form, Input, Button, Select, Icon, Result, message, Spin } from "antd";
+import { Form, Input, Button, Result, message, Spin } from "antd";
 import queryString from "query-string";
 import { APPNAME } from "@config/config";
 import { post, get } from "@src/utils";

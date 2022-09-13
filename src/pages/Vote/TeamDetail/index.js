@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
 import { If, Then, Else } from "react-if";
 import { Row, Col, Button, Avatar, Tag, Typography, message, Icon } from "antd";
 import queryString from "query-string";
@@ -243,7 +242,7 @@ class TeamDetail extends PureComponent {
   }
 
   renderTopTeamInfo() {
-    const { isSmallScreen } = this.props;
+    const isSmallScreen = document.body.offsetWidth < 768;
     const {
       formattedAddress,
       isBP,
@@ -431,6 +430,4 @@ class TeamDetail extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => ({ ...state.common });
-
-export default connect(mapStateToProps)(TeamDetail);
+export default TeamDetail;
