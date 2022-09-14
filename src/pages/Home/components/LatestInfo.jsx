@@ -91,7 +91,7 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
                   </Link>
                 </p>
                 <p className="to">
-                  <Link to={`/contract/${transactions.address_to}`}>
+                  <Link to={`/address/${transactions.address_to}`}>
                     {transactions.address_to}
                   </Link>
                 </p>
