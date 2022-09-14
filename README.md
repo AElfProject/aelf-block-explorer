@@ -21,7 +21,7 @@ $ yarn
 
 1. Modify the proxy config in `build/proxy.json`
    - there are several proxy configs, if you have started related projects such as `aelf-block-api` in local environment, this file doesn't need any changes
-2. Change the chain node URL in script such as `yarn beforedev -- --CHAIN_ENDPOINT https://aelf-test-node.aelf.io`
+2. Change the chain node URL in script such as `yarn beforeDev -- --CHAIN_ENDPOINT https://aelf-test-node.aelf.io`
 3. Run the npm script `start`
    ```shell script
    yarn dev

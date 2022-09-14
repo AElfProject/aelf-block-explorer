@@ -1,11 +1,11 @@
 {
-  "name": "viewer",
-  "version": "0.1.0",
-  "description": "Contract viewer frontend",
-  "author": "atom-young <atom.yang@aelf.io>",
+  "name": "aelf-block-explorer",
+  "version": "1.2.1",
+  "description": "aelf block explorer",
   "homepage": "",
   "license": "MIT",
   "main": "src/index.js",
+  "private": true,
   "scripts": {
     "beforeDev": "cross-env RELOAD_ENV=reload NODE_ENV=development node scripts/queryConfig.js",
     "dev": "npm run clean && cross-env RELOAD_ENV=false NODE_ENV=development webpack-dev-server --progress --hot --color --config ./build/webpack.dev.js",

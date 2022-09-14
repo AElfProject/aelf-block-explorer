@@ -30,9 +30,7 @@ export default function HeaderTop({
   }, [price, previousPrice]);
 
   useEffect(() => {
-    //todo change this
-    // if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
-    if (CHAIN_ID === "AELF" && !isMobile) {
+    if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
       get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((price) => setPrice(price));
       get(HISTORY_PRICE, {
         token_id: "aelf",
