@@ -160,7 +160,7 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Link to={`/address/${text}`} title={addressFormat(text)}>
+            <Link to={`/contract/${text}`} title={addressFormat(text)}>
               {text}
             </Link>
           </div>
