@@ -1,5 +1,6 @@
 import { Menu } from "antd";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import clsx from "clsx";
 import IconFont from "../IconFont";
 import "./HeaderTop.styles.less";
 import { CHAIN_ID, NETWORK_TYPE } from "../../../config/config";
@@ -8,6 +9,7 @@ import Svg from "../Svg/Svg";
 import useMobile from "../../hooks/useMobile";
 import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from "../../constants";
 import { get } from "../../utils";
+
 const TokenIcon = require("../../assets/images/tokenLogo.png");
 
 const { SubMenu, Item: MenuItem } = Menu;
@@ -31,12 +33,13 @@ export default function HeaderTop({
 
   useEffect(() => {
     if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
-      get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((price) => setPrice(price));
+      const d = new Date()
+      get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((res) => setPrice(res));
       get(HISTORY_PRICE, {
         token_id: "aelf",
         vs_currencies: "usd",
         date:
-          new Date(new Date().toLocaleDateString()).valueOf() -
+          new Date(d.toLocaleDateString()).valueOf() - d.getTimezoneOffset() * 60000 -
           24 * 3600 * 1000,
       }).then((res) => {
         if (!res.message) {
@@ -55,9 +58,8 @@ export default function HeaderTop({
 
   return (
     <div
-      className={`header-container-top${
-        NETWORK_TYPE === "MAIN" ? " header-container-main-top" : ""
-      }`}
+      className={clsx('header-container-top', NETWORK_TYPE === "MAIN" && "header-container-main-top"
+      )}
     >
       <div className={headerClass}>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -67,9 +69,9 @@ export default function HeaderTop({
           />
           {range !== "-" && (
             <div className='price-container'>
-              <img src={TokenIcon} />
+              <img src={TokenIcon} alt="elf" />
               <span className='price'>$ {price.USD}</span>
-              <span className={"range " + (range >= 0 ? "rise" : "fall")}>
+              <span className={`range ${range >= 0 ? "rise" : "fall"}`}>
                 {range >= 0 ? "+" : ""}
                 {range.toFixed(2)}%
               </span>

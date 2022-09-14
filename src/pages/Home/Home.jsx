@@ -49,12 +49,16 @@ export default function Home() {
 
   useEffect(() => {
     if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && isMobile) {
-      get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((price) => setPrice(price));
+      const d = new Date();
+      get(ELF_REALTIME_PRICE_URL, { fsym: "ELF", tsyms: "USD,BTC,CNY" }).then(
+        (res) => setPrice(res)
+      );
       get(HISTORY_PRICE, {
         token_id: "aelf",
         vs_currencies: "usd",
         date:
-          new Date(new Date().toLocaleDateString()).valueOf() -
+          new Date(d.toLocaleDateString()).valueOf() -
+          d.getTimezoneOffset() * 60000 -
           24 * 3600 * 1000,
       }).then((res) => {
         if (!res.message) {
