@@ -1,9 +1,7 @@
-import { Button, Input, message } from "antd";
-import React, { useState } from "react";
-import { useCallback } from "react";
+import { Button, Input } from "antd";
+import React, { useState, useCallback, useMemo } from "react";
 import IconFont from "../../../components/IconFont";
 import { get, isAElfAddress } from "../../../utils";
-import { useMemo } from "react";
 import { TXS_BLOCK_API_URL } from "../../../constants";
 import { withRouter } from "../../../routes/utils";
 
@@ -36,25 +34,25 @@ function Search(props) {
       blockHeight: (val) => {
         navigate(`/block/${val}`);
       },
-      invalid: (val) => {
+      invalid: () => {
         navigate(`/search-invalid/${value}`);
       },
     }),
     [value]
   );
 
-  const getInputType = useCallback((value) => {
+  const getInputType = useCallback((inputValue) => {
     const isTxId = [64];
-    if (isAElfAddress(value)) {
+    if (isAElfAddress(inputValue)) {
       return "address";
     }
-    const length = value.length;
+    const { length } = inputValue;
 
     if (isTxId.includes(length)) {
       return "hash";
     }
-    const number = parseInt(value, 10).toString();
-    if (number === value) {
+    const number = parseInt(inputValue, 10).toString();
+    if (number === inputValue) {
       return "blockHeight";
     }
     return "invalid";
@@ -68,7 +66,7 @@ function Search(props) {
     if (!tempValue) return;
 
     if (tempValue.indexOf("_") > 0) {
-      tempValue = tempValue.split("_")[1];
+      [, tempValue] = tempValue.split("_");
     }
     // address.length === 38/66 && address.match(/^0x/)
     // search
@@ -77,11 +75,11 @@ function Search(props) {
     // 2. block   66
     // 3. address length=38
     if (`${tempValue}`.startsWith("-")) {
-      location.href = "/search-invalid/" + tempValue;
+      navigate(`/search-invalid/${tempValue}`);
       return;
     }
     if (+tempValue === 0) {
-      location.href = "/search-invalid/" + tempValue;
+      navigate(`/search-invalid/${tempValue}`);
       return;
     }
     const searchType = getInputType(tempValue);
