@@ -9,6 +9,15 @@ const resourceDecimals = config.resourceTokens.reduce((acc, v) => ({
   [v.symbol]: v.decimals,
 }), {});
 
+export function isAddress(value) {
+  if (/[\u4e00-\u9fa5]/.test(value)) return false
+  try {
+    return !!AElf.utils.base58.decode(value);
+  } catch {
+    return false;
+  }
+}
+
 export const rand16Num = (len = 0) => {
   const result = [];
   for (let i = 0; i < len; i += 1) {

@@ -20,6 +20,7 @@ import useMobile from "../../hooks/useMobile";
 import CommonTabPane from "./components/CommonTabPane";
 import Overview from "./components/Overview";
 import ContractTabPane from "./components/ContractTabPane";
+import { isAddress } from "../../utils/utils";
 
 export default function AddressDetail() {
   const nav = useNavigate();
@@ -116,6 +117,13 @@ export default function AddressDetail() {
   useEffectOnce(() => {
     getContractNames().then((res) => setContracts(res));
   });
+
+  useEffect(() => {
+    const res = isAddress(address);
+    if (!res) {
+      nav(`/search-invalid/${address}`);
+    }
+  }, [address]);
 
   return (
     <div
