@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from './features/counter/counterSlice';
+import smallScreenReducer from './features/smallScreen/isSmallScreen';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    smallScreen: smallScreenReducer,
   },
 });
 

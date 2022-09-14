@@ -1,0 +1,128 @@
+@import 'assets/theme/color.less';
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  margin-top: 12px;
+  height: 32px;
+  padding-right: 12px;
+
+  .anticon-close-circle {
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s;
+    font-size: 12px;
+
+    &:hover {
+      color: #999;
+    }
+    &:active {
+      color: #666;
+    }
+  }
+
+  .header-search {
+    background: transparent;
+    width: 319px;
+    height: 32px;
+    border: none;
+    .ant-input {
+      background-color: transparent;
+      border: none !important;
+      outline: none !important;
+      padding: 6px 12px;
+      box-shadow: none !important;
+
+      &:hover,
+      &:focus {
+        border: none;
+      }
+    }
+  }
+
+  .search-icon-container {
+    color: #fff;
+    display: inline-block;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+
+    :active {
+      opacity: 0.9;
+    }
+  }
+  .search-icon {
+    transform: scaleX(-1);
+  }
+}
+
+.header-container-top .search-container {
+  border: 1px solid @alto;
+  .ant-input {
+    color: @scorpion;
+    &::placeholder {
+      color: @silver;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .anticon {
+    color: @silver;
+  }
+}
+
+.header-container-main-top,
+.header-main-container-mobile {
+  .search-container {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.3);
+    .ant-input {
+      color: white;
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+      }
+    }
+    .anticon {
+      color: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .search-container .header-search {
+    width: 250px;
+  }
+}
+
+@media (max-width: 1050px) {
+  .search-container .header-search {
+    width: 200px;
+  }
+  .search-container .search-icon-container {
+    margin-left: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .search-mobile-container {
+    width: 100vw;
+    padding: 18px 16px;
+    .search-container {
+      border: 1px solid @alto;
+      height: 36px;
+      margin: 0;
+      width: calc(100vw - 32px) !important;
+      span {
+        color: @silver;
+      }
+      .header-search {
+        width: 100px;
+      }
+      .search-icon-container {
+        margin-left: 4px;
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": 2,
+  "netWorkType": "TESTNET",
+  "created_at": "2022-07-28T10:18:07.535Z",
+  "updated_at": "2022-08-01T06:20:45.330Z",
+  "chainItem": [
+    {
+      "id": 3,
+      "chainId": "AELF",
+      "chainsLinkName": "MainChain AELF",
+      "chainsLink": "https://explorer-test.aelf.io"
+    },
+    {
+      "id": 4,
+      "chainId": "tDVV",
+      "chainsLinkName": "SideChain tDVV",
+      "chainsLink": "https://explorer-test-side01.aelf.io/"
+    },
+    {
+      "id": 5,
+      "chainId": "tDVW",
+      "chainsLinkName": "SideChain tDVW ",
+      "chainsLink": "https://explorer-test-side02.aelf.io/"
+    }
+  ]
+}

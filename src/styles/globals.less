@@ -1,46 +1,209 @@
-@import '~antd/dist/antd.variable.less';
-@import '/src/assets/theme/customize.less';
-@import '/src/assets/theme/common-class.less';
-@import '/src/assets/theme/constants.less';
-@import '/src/assets/theme/color.less';
-@import '/src/assets/theme/font.less';
-html,
-body {
-  padding: 0;
-  margin: 0;
-  // font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-  //   Helvetica Neue, sans-serif;
-  // background: url('../assets/images/bg.svg') no-repeat;
-  background-color: @bg-1;
-  color: @font-2;
-  .font-family-regular();
-}
+@import '../assets/theme/color.less';
+@import './common.less';
+@import './antd.less';
 
-a {
-  color: @font-1;
-  text-decoration: none;
-}
+.App {
+  position: relative;
+  min-height: 100vh;
+  background: @bgBlankGrey;
+  display: flex;
+  flex-direction: column;
 
-* {
-  box-sizing: border-box;
-}
-.page-component {
-  overflow: scroll;
-  height: calc(100vh - @header-height - @footer-height);
-  background-image: none;
-}
-.bg-body {
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 2200px 1350px;
-}
-@media screen and (max-width: @md-width) {
-  .page-component {
-    background-repeat: no-repeat;
-    background-position: right top;
-    background-size: 240px 240px;
+  .breadcrumb-container {
+    background-color: @breadcrumbColor;
   }
-  .bg-body {
-    background-image: none;
+  .basic-container {
+    max-width: @maxWidth;
+    margin: auto;
+    padding: 20px 30px 0 30px;
+  }
+
+  .basic-container-new {
+    max-width: @maxWidth;
+    margin: 0 auto 80px auto;
+    padding: 24px 0 0;
+  }
+
+  .basic-container-white {
+    background: @bgBlankWhite;
+    margin: 0 auto 62px auto;
+    padding: 20px 20px 0 20px;
+  }
+
+  .basic-bottom-blank {
+    height: 64px;
+    width: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .basic-container-white {
+      background: @bgBlankWhite;
+      margin: auto;
+      padding: 20px 20px 0 20px;
+    }
+    .basic-container-new {
+      background: @athens-gray;
+      margin: auto;
+      padding: 24px 20px 80px 20px;
+    }
+    .basic-container {
+      padding: 8px;
+    }
+    .basic-bottom-blank {
+      height: 16px;
+      width: 10px;
+    }
+
+    .ant-pagination-total-text {
+      display: block;
+    }
+    .ant-table-pagination.ant-pagination {
+      padding: 8px;
+    }
+  }
+}
+// rewriter antd tabs style end
+
+// rewriter antd tabs style
+.ant-tabs-top > .ant-tabs-nav:before {
+  border-bottom-color: @border-color2;
+}
+// rewriter antd tabs style end
+
+// rewriter ant table style
+thead {
+  th {
+    font-family: 'Roboto-Medium';
+    font-weight: 400;
+    &.ant-table-column-has-sorters:hover {
+      background-color: #efeff0 !important;
+    }
+  }
+}
+tbody {
+  tr {
+    color: @textContext;
+    //background: rgba(57, 0, 57, 0.1) !important;
+    background: @bgBlankWhite !important;
+    td {
+      color: @scorpion;
+      border: none;
+    }
+  }
+  tr:hover {
+    background: @bgBlankGrey !important;
+    td {
+      background: none !important;
+    }
+  }
+  a {
+    color: @linkMain;
+  }
+}
+
+.ant-table-pagination.ant-pagination {
+  color: @textContext;
+  width: 100%;
+  text-align: center;
+  background: @bgBlankWhite !important;
+  margin: 0;
+  padding: 32px 0 24px 0;
+}
+
+.ant-pagination-item-link {
+  background: none !important;
+  color: @textContext !important;
+}
+
+.ant-pagination-item:hover {
+  background: rgba(82, 163, 214, 0.2);
+}
+
+.ant-pagination-item-active {
+  border: none !important;
+  background: @primary-blue !important;
+}
+.ant-pagination-item-active:hover {
+  background: @primary-blue;
+  opacity: 0.8;
+}
+.ant-pagination-item-active a {
+  color: #fff !important;
+}
+.ant-pagination-item-active a:hover {
+  color: #fff !important;
+}
+.ant-pagination-item-active:hover a {
+  color: #fff;
+}
+.ant-pagination-item-active:focus a {
+  color: #fff;
+}
+.ant-pagination-item-ellipsis {
+  color: @fontColorLightPurple !important;
+}
+.ant-pagination-item-link-icon {
+  color: @fontColorLightPurple !important;
+}
+
+.ant-pagination-options-quick-jumper input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid @borderColor;
+  color: @textContext;
+  width: 63px;
+  height: 26px;
+
+  outline: none;
+  &:hover,
+  &:focus {
+    border: 1px solid @blueInputFocus;
+    box-shadow: none;
+  }
+}
+
+.ant-table-small {
+  border: none;
+}
+
+.ant-spin-dot-item {
+  background: @bgMain;
+}
+// rewriter ant table style end
+
+a:hover {
+  color: @hoverColor1 !important;
+}
+
+.ant-input:focus {
+  box-shadow: 0 0 0 2px rgba(38, 108, 211, 0.2);
+}
+input {
+  outline-color: @blueInputFocus;
+}
+.ant-pagination-options-size-changer {
+  &.ant-select {
+    margin-right: 8px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .App {
+    background: @athens-gray;
+  }
+  .ant-pagination {
+    display: inherit;
+  }
+}
+
+@media (max-width: 1200px) {
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 1050px) {
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    padding: 0 6px;
   }
 }

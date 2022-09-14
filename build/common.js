@@ -1,6 +1,6 @@
 const rewritesConfig = require('./rewrites/index');
 module.exports = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   async rewrites() {
     return rewritesConfig;
   },
