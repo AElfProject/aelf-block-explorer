@@ -3,8 +3,14 @@
  * @author huangzongzhe
  * TODO: details modified to Resource
  */
-import { lazy } from "react";
+import React, { lazy } from "react";
 import { Navigate, useRoutes } from "react-router";
+
+import { AddressRouter } from "../pages/Address/routes";
+import { ProposalRouter } from "../pages/Proposal/routes";
+
+// Notice: we need register the route in Breadcurmb.js.
+// If not, we will always turn to '/'
 const HomePage = lazy(() => import("../pages/Home/Home"));
 const BlocksPage = lazy(() => import("../pages/Blocks/BlockList"));
 const BlockDetailPage = lazy(() => import("../pages/BlockDetail/BlockDetail"));
@@ -19,12 +25,7 @@ const Token = lazy(() => import("../pages/Token"));
 const SearchFailed = lazy(() => import("../pages/SearchFailed/SearchFailed"));
 const SearchInvalid = lazy(() => import("../pages/SearchInvalid/SearchInvalid"));
 
-import { AddressRouter } from "../pages/Address/routes";
-import { ProposalRouter } from "../pages/Proposal/routes";
-
-// Notice: we need register the route in Breadcurmb.js.
-// If not, we will always turn to '/'
-
+// eslint-disable-next-line import/prefer-default-export
 export const PageRouter = () =>
   useRoutes(
     AddressRouter.concat(ProposalRouter, [
@@ -42,6 +43,7 @@ export const PageRouter = () =>
       { path: "/resourceDetail/:id", element: <ResourceDetail /> },
       { path: "/token", element: <Token /> },
       { path: "/search-invalid/:string", element: <SearchInvalid /> },
+      { path: "/search-invalid/*", element: <SearchInvalid /> },
       { path: "/search-failed", element: <SearchFailed /> },
       { path: "*", element: <Navigate to='/' /> },
     ])

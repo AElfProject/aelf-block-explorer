@@ -1,26 +1,30 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
+import clsx from "clsx";
 import IconFont from "../../components/IconFont";
 import Search from "../Home/components/Search";
 import useMobile from "../../hooks/useMobile";
-const banner = require("../../assets/images/search_invalid.png");
 
 import "./SearchInvalid.styles.less";
-import { withRouter } from "../../routes/utils";
-function SearchInvalid(props) {
-  const { params } = props;
+
+const banner = require("../../assets/images/search_invalid.png");
+
+function SearchInvalid() {
+  const { pathname } = useLocation();
+  const { string } = useParams;
   const isMobile = useMobile();
   return (
     <div
-      className={
-        "basic-container-new search-invalid " + (isMobile ? "mobile" : "")
-      }
+      className={clsx(
+        "basic-container-new search-invalid",
+        isMobile && "mobile"
+      )}
     >
-      <img src={banner} />
+      <img src={banner} alt="search not found" />
       <h3>Search not found !</h3>
       <p className="tip">
         Oops! The search string you entered was:{isMobile ? <br /> : " "}
-        <span>{params.string}</span>
+        <span>{string || pathname.replace("/search-invalid/", "")}</span>
       </p>
       <p className="warning">Sorry! This is an invalid search string.</p>
       <Search />
@@ -32,4 +36,4 @@ function SearchInvalid(props) {
   );
 }
 
-export default withRouter(SearchInvalid);
+export default SearchInvalid;
