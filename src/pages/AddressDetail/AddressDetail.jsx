@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Tabs, Tooltip } from "antd";
 import { useEffectOnce } from "react-use";
 import CopyButton from "../../components/CopyButton/CopyButton";
@@ -22,6 +22,7 @@ import Overview from "./components/Overview";
 import ContractTabPane from "./components/ContractTabPane";
 
 export default function AddressDetail() {
+  const nav = useNavigate();
   const { address, codeHash } = useParams();
   const isMobile = useMobile();
   const [activeKey, setActiveKey] = useState("tokens");
@@ -46,9 +47,11 @@ export default function AddressDetail() {
   const fetchBalances = useCallback(async () => {
     setTokensLoading(true);
     const result = await get(VIEWER_BALANCES, { address });
-    if (result.code === 0) {
+    if (result?.code === 0) {
       const { data } = result;
       setBalances(data);
+    } else {
+      nav("/search-failed");
     }
   }, [address]);
 
@@ -74,17 +77,21 @@ export default function AddressDetail() {
 
   const fetchHistory = useCallback(async () => {
     const result = await get(VIEWER_HISTORY, { address });
-    if (result.code === 0) {
+    if (result?.code === 0) {
       const { data } = result;
       setContractHistory(data);
+    } else {
+      nav("/search-failed");
     }
   }, [address]);
 
   const fetchFile = useCallback(async () => {
     const result = await get(VIEWER_GET_FILE, { address, codeHash });
-    if (result.code === 0) {
+    if (result?.code === 0) {
       const { data } = result;
       setContractInfo(data);
+    } else {
+      nav("/search-failed");
     }
   }, [address, codeHash]);
 
@@ -138,7 +145,9 @@ export default function AddressDetail() {
         <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
           {CommonTabPane({ balances, prices, tokensLoading, address }).map(
             ({ children, ...props }) => (
-              <Tabs.TabPane {...props}>{children}</Tabs.TabPane>
+              <Tabs.TabPane key={props.key} tab={props.tab}>
+                {children}
+              </Tabs.TabPane>
             )
           )}
           {isCA &&
@@ -149,7 +158,9 @@ export default function AddressDetail() {
               codeHash,
               activeKey,
             }).map(({ children, ...props }) => (
-              <Tabs.TabPane {...props}>{children}</Tabs.TabPane>
+              <Tabs.TabPane key={props.key} tab={props.tab}>
+                {children}
+              </Tabs.TabPane>
             ))}
         </Tabs>
       </section>

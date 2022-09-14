@@ -1,6 +1,8 @@
 import React from "react";
+import clsx from "clsx";
+import useMobile from "../../../../hooks/useMobile";
 import Reader from "../Reader/Reader";
-import SaveAsZip from "../Save";
+import SaveAsFile from "../../../../components/Save";
 
 import "./Contract.styles.less";
 
@@ -10,8 +12,9 @@ export default function Contract({
   history,
   isShow,
 }) {
+  const isMobile = useMobile();
   return (
-    <div className="contract-pane">
+    <div className={clsx("contract-pane", isMobile && "mobile")}>
       <section className="contract-info">
         <p>
           <span className="label">Contract Name</span>
@@ -32,7 +35,7 @@ export default function Contract({
         <p>
           <span className="label">
             Contract Info
-            <SaveAsZip
+            <SaveAsFile
               files={JSON.parse(contractInfo.files || "[]")}
               fileName={contractInfo.address || "contract"}
             />

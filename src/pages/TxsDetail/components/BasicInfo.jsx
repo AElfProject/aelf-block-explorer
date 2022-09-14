@@ -1,16 +1,13 @@
 import { Spin, Tag } from "antd";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { useEffectOnce } from "react-use";
 import StatusTag from "../../../components/StatusTag/StatusTag";
 import { getFormattedDate } from "../../../utils/timeUtils";
 import Dividends from "../../../components/Dividends";
-import { Link } from "react-router-dom";
 import addressFormat from "../../../utils/addressFormat";
-import {
-  CONTRACT_VIEWER_URL,
-  ELF_REALTIME_PRICE_URL,
-} from "../../../constants";
-import { useEffectOnce } from "react-use";
+import { ELF_REALTIME_PRICE_URL } from "../../../constants";
 import { get } from "../../../utils";
 import CopyButton from "../../../components/CopyButton/CopyButton";
 import TokenTag from "./TokenTags/TokenTags";
@@ -29,7 +26,7 @@ export default function BasicInfo({
     let value = {};
     const obj = Object.fromEntries(
       parsedLogs.map((item, index) => [
-        index + "-" + item.symbol,
+        `${index}-${item.symbol}`,
         Number(item.amount),
       ])
     );
@@ -52,7 +49,7 @@ export default function BasicInfo({
         ["Status", <StatusTag status={info.Status} />],
         [
           "Block",
-          <div className='value-block'>
+          <div className="value-block">
             <Link to={`/block/${info.BlockNumber}`} title={info.BlockNumber}>
               {info.BlockNumber}
             </Link>
@@ -76,8 +73,8 @@ export default function BasicInfo({
         ["Block Hash", info.BlockHash],
         [
           "Timestamp",
-          <div className='value-timestamp'>
-            <IconFont type='Time' />
+          <div className="value-timestamp">
+            <IconFont type="Time" />
             <span>
               {getFormattedDate(info.time)}(
               {moment(info.time).format("MMM-DD-YYYY hh:mm:SS A")})
@@ -95,7 +92,7 @@ export default function BasicInfo({
       contractName && [
         [
           "From",
-          <div className='value-address'>
+          <div className="value-address">
             <div>
               <Link
                 to={`/address/${info.Transaction.From}`}
@@ -109,7 +106,7 @@ export default function BasicInfo({
         ],
         [
           "Interacted With(To)",
-          <div className='value-address'>
+          <div className="value-address">
             <div>
               <Link
                 to={`/contract/${info.Transaction.To}`}
@@ -156,20 +153,22 @@ export default function BasicInfo({
   );
 
   useEffectOnce(() => {
-    get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((price) => {
-      setPrice(price);
-    });
+    get(ELF_REALTIME_PRICE_URL, { fsym: "ELF", tsyms: "USD,BTC,CNY" }).then(
+      (res) => {
+        setPrice(res);
+      }
+    );
   });
 
   return (
     <>
       {renderList.map((item) => (
         <div key={item[0]} className={`wrap ${item[0]}`}>
-          {(item[1] || []).map((list, index) => {
+          {(item[1] || []).map((list) => {
             return (
-              <div key={index} className='row'>
-                <p className='label'>{list[0]} : </p>
-                <div className='value'>{list[1] || "-"}</div>
+              <div key={list[0]} className="row">
+                <p className="label">{list[0]} : </p>
+                <div className="value">{list[1] || "-"}</div>
               </div>
             );
           })}

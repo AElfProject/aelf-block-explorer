@@ -2,7 +2,6 @@
  * @file Home.js
  * @author longyue, huangzongzhe, yangpeiyang
  */
-/* eslint-disable fecs-camelcase */
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRightOutlined } from "@ant-design/icons";
@@ -10,6 +9,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from "../config/config";
 import addressFormat from "./utils/addressFormat";
+// eslint-disable-next-line import/no-cycle
 import { removeAElfPrefix } from "./utils/utils";
 import Dividends from "./components/Dividends";
 
@@ -103,7 +103,6 @@ const INPUT_SOMETHING_TIP = "Sorry, you should input something";
 const INTEGER_TIP = "It can only be integer";
 const UNLOCK_PLUGIN_TIP =
   "Your plugin has beed locked, please unlock and refresh the page";
-const GET_TIP = "It can only be integer";
 const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = "You already been candidate";
 const NOT_CURRENT_CANDIDATE_TIP =
   "Sorry, the node is not current candidate \n Please refresh the page then choose another node to vote.";
@@ -173,7 +172,7 @@ const BLOCKS_LIST_COLUMNS = [
     key: "tx_count ",
     width: 60,
     render: (text, row) =>
-      !isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
+      !Number.isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
         <Link to={`/txs/block?${row.block_hash}`}> {row.tx_count} </Link>
       ) : (
         row.tx_count
@@ -281,7 +280,7 @@ const ALL_TXS_LIST_COLUMNS = [
         } else if (row.quantity <= 9) {
           amount = `0.0000000${row.quantity}`;
         } else {
-          amount = row.quantity / Math.pow(10, row.decimals);
+          amount = row.quantity / (10 ** row.decimals);
         }
       }
       if (row.symbol) {
@@ -364,7 +363,7 @@ const RESOURCE_DETAILS_COLUMN = [
       price = ((method === "Buy" ? elf + fee : elf - fee) / resource).toFixed(
         ELF_PRECISION
       );
-      price = isNaN(price) ? "-" : price;
+      price = Number.isNaN(price) ? "-" : price;
       return price;
     },
   },
@@ -382,10 +381,9 @@ const RESOURCE_DETAILS_COLUMN = [
     render: (text, row) => {
       const { method } = row;
       let { elf, fee } = row;
-      let actualNumber;
       elf /= ELF_DECIMAL;
       fee /= ELF_DECIMAL;
-      actualNumber = (method === "Buy" ? elf + fee : elf - fee).toFixed(
+      const actualNumber = (method === "Buy" ? elf + fee : elf - fee).toFixed(
         ELF_PRECISION
       );
       return actualNumber;
@@ -419,6 +417,7 @@ export {
   ALL_UNCONFIRMED_TXS_API_URL,
   TXS_BLOCK_API_URL,
   ADDRESS_TXS_API_URL,
+  ADDRESS_BALANCE_API_URL,
   VIEWER_GET_ALL_TOKENS,
   ADDRESS_TOKENS_API_URL,
   TPS_LIST_API_URL,

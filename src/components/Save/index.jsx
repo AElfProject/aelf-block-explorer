@@ -3,38 +3,54 @@ import PropTypes from "prop-types";
 import { saveAs } from "file-saver";
 import { DownloadOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
-import { getZip } from "../../utils";
+import { getZip } from "../../utils/file";
 
-const SaveAsZip = (props) => {
+const SaveAsFile = (props) => {
   const [loading, setIsLoading] = useState(false);
-  const { title, files, fileName, ...rest } = props;
+  const {
+    title,
+    files,
+    fileName,
+    buttonType = "button",
+    fileType = ".zip",
+    ...rest
+  } = props;
 
   const download = async () => {
     setIsLoading(true);
     try {
-      const blob = await getZip(files);
-      saveAs(blob, `${fileName}.zip`);
+      const blob =
+        fileType === ".zip"
+          ? await getZip(files)
+          : new Blob([JSON.stringify(files)], { type: "text/json" });
+
+      saveAs(blob, `${fileName}${fileType}`);
     } catch (e) {
       message.error("Download failed");
     } finally {
       setIsLoading(false);
     }
   };
-  return (
+  return buttonType === "button" ? (
     <Button
       title={title}
       icon={<DownloadOutlined />}
       loading={loading}
       onClick={download}
-      {...rest}
+      className={rest.className}
     />
+  ) : (
+    <Button className={rest.className} onClick={download} type="text">
+      <DownloadOutlined /> {title}
+    </Button>
   );
 };
 
-SaveAsZip.propTypes = {
+SaveAsFile.propTypes = {
   files: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
+      // eslint-disable-next-line react/forbid-prop-types
       files: PropTypes.arrayOf(PropTypes.object),
       content: PropTypes.string,
     })
@@ -43,8 +59,8 @@ SaveAsZip.propTypes = {
   title: PropTypes.string,
 };
 
-SaveAsZip.defaultProps = {
-  title: "Download zip file",
+SaveAsFile.defaultProps = {
+  title: "Download file",
 };
 
-export default SaveAsZip;
+export default SaveAsFile;

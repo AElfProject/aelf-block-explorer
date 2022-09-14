@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import AElf from 'aelf-sdk';
 import Decimal from 'decimal.js';
 import { aelf } from '../utils';
