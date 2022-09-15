@@ -1,6 +1,5 @@
-export const BASE_URL = 'https://explorer-test.aelf.io/chain/api/';
-export const BASE_URL_TDVW = 'https://explorer-test-tdvw.aelf.io/chain/api/';
-
+const BASE_URL = 'https://explorer-test.aelf.io/chain/api/';
+const BASE_URL_TDVW = 'https://explorer-test-tdvw.aelf.io/chain/api/';
 const ALL_BLOCKS_API_URL = '/all/blocks';
 const ALL_UNCONFIRMED_BLOCKS_API_URL = '/all/unconfirmedBlocks';
 const ALL_TXS_API_URL = '/all/transactions';
@@ -24,6 +23,8 @@ const SOCKET_URL_NEW = '/new-socket';
 const BASIC_INFO = '/chain-info';
 
 export {
+  BASE_URL,
+  BASE_URL_TDVW,
   ALL_BLOCKS_API_URL,
   ALL_UNCONFIRMED_BLOCKS_API_URL,
   ALL_TXS_API_URL,
@@ -45,17 +46,4 @@ export {
   BLOCK_INFO_API_URL,
   ADDRESS_BALANCE_API_URL,
   HISTORY_PRICE,
-};
-
-export const API = {
-  GET: {
-    BLOCK_HEIGHT: 'blockChain/blockHeight',
-  },
-};
-
-// just an example
-export const API_SCAN = {
-  GET: {
-    BLOCK_HEIGHT: 'blockChain/blockHeight',
-  },
 };

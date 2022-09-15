@@ -1,4 +1,14 @@
 const RESOURCE_OPERATE_LIMIT = 0.01;
+const LOG_STATUS = {
+  LOGGED: 'logged',
+  LOG_OUT: 'log_out',
+};
+
+const LOADING_STATUS = {
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  FAILED: 'failed',
+};
 const TXSSTATUS = {
   // NotExisted: '不存在',
   // Pending: '交易中',
@@ -55,6 +65,8 @@ const MY_VOTE_DATA_TIP =
 const GET_NULL = "Cannot read property 'error' of null";
 
 export {
+  LOG_STATUS,
+  LOADING_STATUS,
   GET_TIP,
   TXSSTATUS,
   txStatusInUpperCase,

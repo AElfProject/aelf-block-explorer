@@ -9,6 +9,8 @@ import { removeAElfPrefix } from '../utils/utils';
 dayjs.extend(relativeTime);
 
 import BigNumber from 'bignumber.js';
+// todo: Use the variable in less instead
+export const PRIMARY_COLOR = '#266CD3';
 
 export const LANG_MAX = new BigNumber('9223372036854774784');
 
@@ -31,7 +33,6 @@ const PAGE_SIZE = 25;
 const ELF_DECIMAL = 100000000;
 const ELF_PRECISION = `${ELF_DECIMAL}`.length - 1;
 const GENERAL_PRECISION = 2;
-const RESOURCE_OPERATE_LIMIT = 0.01;
 const TEMP_RESOURCE_DECIMAL = 100000;
 const REAL_TIME_FETCH_INTERVAL = 1000 * 10;
 const RESOURCE_CURRENCY_CHART_FETCH_INTERVAL = 1000 * 60;
@@ -324,7 +325,6 @@ export {
   TEMP_RESOURCE_DECIMAL,
   ELF_PRECISION,
   GENERAL_PRECISION,
-  RESOURCE_OPERATE_LIMIT,
   REAL_TIME_FETCH_INTERVAL,
   RESOURCE_CURRENCY_CHART_FETCH_INTERVAL,
   LONG_NOTIFI_TIME,

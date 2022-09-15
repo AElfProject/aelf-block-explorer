@@ -9,14 +9,13 @@ class HeaderBlank extends Component {
     };
   }
   componentDidMount() {
-    const { location } = this.props;
     this.setState({
       isHome: window.location.pathname === '/' || window.location.pathname.includes('/search-'),
     });
   }
   componentDidUpdate(prevProps) {
-    if (prevProps && prevProps.router.pathname !== this.props.pathname) {
-      if ((window.location.pathname === '/' || router.pathname.includes('/search-')) !== this.state.isHome) {
+    if (prevProps && prevProps.router.pathname !== this.props.router.pathname) {
+      if ((window.location.pathname === '/' || this.props.router.pathname.includes('/search-')) !== this.state.isHome) {
         this.setState({ isHome: window.location.pathname === '/' });
       }
     }

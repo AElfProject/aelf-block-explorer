@@ -132,7 +132,7 @@ class BrowserBreadcrumb extends Component {
 
   checkLocation(breadcrumbTitle) {
     const current = BREADCRUMB_NAMES_TATE.currentState;
-    const { pathname } = props.router;
+    const { pathname } = this.props.router;
 
     // hummm, stupid solution
     const inBlockDetail = current === 'block' && breadcrumbTitle === 'Block List';
@@ -170,7 +170,7 @@ class BrowserBreadcrumb extends Component {
       const STATE = BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState];
 
       if (!STATE) {
-        this.props.navigate('/');
+        this.props.router.push('/');
         return;
       }
 
@@ -180,8 +180,6 @@ class BrowserBreadcrumb extends Component {
         index === pathSnippets.length - 1
           ? STATE.url[index] || reloadUrl
           : STATE.url[index] || `/${pathSnippets.slice(0, index + 1).join('/')}`;
-
-      console.log('breadcrumbTitle: ', breadcrumbTitle);
       const isCurrentTitle = this.checkLocation(breadcrumbTitle);
 
       return (

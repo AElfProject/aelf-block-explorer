@@ -7,6 +7,7 @@ import BrowserFooter from 'components/Footer/Footer';
 import BrowserBreadcrumb from 'components/Breadcrumb/Breadcrumb';
 import Container from 'components/Container/Container';
 import PageHead from 'components/PageHead/Header';
+import ProposalApp from './_proposalApp';
 import dynamic from 'next/dynamic';
 import { store } from '../redux/store';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -20,7 +21,12 @@ initAxios();
 function SafeHydrate({ children }) {
   return <div suppressHydrationWarning={true}>{typeof window === 'undefined' ? null : children}</div>;
 }
+const PROPOSAL_URL = ['proposals', 'proposalDetails', 'organizations', 'createOrganizations', 'apply', 'myProposals'];
 const APP = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter();
+  const pathKey = router.asPath.split('/')[2];
+  const flag = PROPOSAL_URL.includes(pathKey);
+  // debugger;
   return (
     // <SafeHydrate>
     // <NoSSR>
@@ -30,7 +36,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
         <HeaderBlank />
         <BrowserBreadcrumb />
         <Container>
-          <Component {...pageProps} />
+          {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
         </Container>
         <BrowserFooter />
       </Provider>
