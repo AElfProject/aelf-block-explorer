@@ -39,28 +39,23 @@ const Viewer = (props) => {
     const language = getLanguage(name);
     const { [path]: position = { lineNumber: 1, column: 1, top: 1 } } =
       positions;
-    if (isShow) {
-      if (editor) {
-        editor.updateOptions({
-          language,
-        });
-        editor.setValue(window.atob(content));
-        editor.setPosition(position);
-        editor.revealLine(position.lineNumber);
-        editor.setScrollTop(position.top);
-      } else {
-        if (editor) {
-          editor.dispose();
-        }
-        const monacoEditor = monaco.editor.create(editorEl.current, {
-          lineNumbers: "on",
-          readOnly: isReadOnly,
-          language,
-          value: window.atob(content),
-        });
-        setEditor(monacoEditor);
-        window.editor = monacoEditor;
-      }
+    if (editor) {
+      editor.updateOptions({
+        language,
+      });
+      editor.setValue(window.atob(content));
+      editor.setPosition(position);
+      editor.revealLine(position.lineNumber);
+      editor.setScrollTop(position.top);
+    } else {
+      const monacoEditor = monaco.editor.create(editorEl.current, {
+        lineNumbers: "on",
+        readOnly: isReadOnly,
+        language,
+        value: window.atob(content),
+      });
+      setEditor(monacoEditor);
+      window.editor = monacoEditor;
     }
     return () => {
       if (editor) {
