@@ -79,6 +79,7 @@ FileTree.propTypes = {
   files: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
+      // eslint-disable-next-line react/forbid-prop-types
       files: PropTypes.arrayOf(PropTypes.object),
     })
   ).isRequired,

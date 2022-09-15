@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState } from "react";
 import { If, Then, Switch, Case } from "react-if";
 import { Skeleton, Alert } from "antd";
 import { sendHeight } from "../../../../common/utils";
@@ -43,7 +43,6 @@ function handleFiles(data) {
     result = data.files;
   } finally {
     defaultFile = getDefaultFile(result, [result[0].name]);
-    console.log(">>>>defaultFile", defaultFile);
   }
   return {
     result,
@@ -90,35 +89,35 @@ const Reader = ({ contractInfo, isShow }) => {
 
   return (
     <div className="reader">
-      <Switch>
-        <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}>
-          <>
-            <If condition={isMobile}>
-              <Then>
-                <Alert
-                  message="Have a better experience on PC browser"
-                  type="warning"
-                  className="gap-bottom"
-                />
-              </Then>
-            </If>
-            <div className="contract-reader">
+      {/* <Switch> */}
+      {/* <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}> */}
+      <>
+        <If condition={isMobile}>
+          <Then>
+            <Alert
+              message="Have a better experience on PC browser"
+              type="warning"
+              className="gap-bottom"
+            />
+          </Then>
+        </If>
+        <div className="contract-reader">
+          <Switch>
+            <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}>
               <FileTree files={files} onChange={onFileChange} />
-              {!!viewerConfig.content && (
-                <Viewer
-                  content={viewerConfig.content || ""}
-                  name={viewerConfig.name || ""}
-                  path={viewerConfig.path || ""}
-                  isShow={isShow}
-                />
-              )}
-            </div>
-          </>
-        </Case>
-        <Case condition={fetchingStatus === fetchingStatusMap.FETCHING}>
-          <Skeleton active paragraph={sketchParagraph} />
-        </Case>
-      </Switch>
+            </Case>
+            <Case condition={fetchingStatus === fetchingStatusMap.FETCHING}>
+              <Skeleton active paragraph={sketchParagraph} />
+            </Case>
+          </Switch>
+          <Viewer
+            content={viewerConfig.content || ""}
+            name={viewerConfig.name || ""}
+            path={viewerConfig.path || ""}
+            isShow={isShow}
+          />
+        </div>
+      </>
     </div>
   );
 };
