@@ -6,8 +6,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import AElf from 'aelf-sdk';
 import { message } from 'antd';
 import { arrayToMap } from 'page-components/Proposal/common/utils';
-import dynamic from 'next/dynamic';
-const walletInstance = dynamic(() => import('page-components/Proposal/common/wallet'), { ssr: false });
+import walletInstance from 'page-components/Proposal/common/wallet';
 import constants, { LOG_STATUS } from 'page-components/Proposal/common/constants';
 
 // check is exist

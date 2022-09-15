@@ -15,6 +15,9 @@ import initAxios from '../utils/axios';
 import NoSSR from 'react-no-ssr';
 import { useRouter } from 'next/router';
 const Provider = dynamic(import('hooks/Providers/ProviderBasic'), { ssr: false });
+import Cookies from 'js-cookie';
+import { get } from 'utils/axios';
+import config from 'constants/config/config';
 // import '../utils/vconsole';
 initAxios();
 
@@ -22,6 +25,28 @@ function SafeHydrate({ children }) {
   return <div suppressHydrationWarning={true}>{typeof window === 'undefined' ? null : children}</div>;
 }
 const PROPOSAL_URL = ['proposals', 'proposalDetails', 'organizations', 'createOrganizations', 'apply', 'myProposals'];
+async function getNodesInfo() {
+  const nodesInfoProvider = '/nodes/info';
+  const nodesInfo = await get(nodesInfoProvider);
+
+  if (nodesInfo && nodesInfo.list) {
+    const nodesInfoList = nodesInfo.list;
+    localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
+
+    // todo: MAIN_CHAIN_ID CHAIN_ID
+    const nodeInfo = nodesInfoList.find((item) => {
+      if (item.chain_id === config.CHAIN_ID) {
+        return item;
+      }
+    });
+    const { contract_address, chain_id } = nodeInfo;
+    localStorage.setItem('currentChain', JSON.stringify(nodeInfo));
+    Cookies.set('aelf_ca_ci', contract_address + chain_id);
+  }
+  // TODO: turn to 404 page.
+}
+
+getNodesInfo();
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const pathKey = router.asPath.split('/')[2];

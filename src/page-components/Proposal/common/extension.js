@@ -2,11 +2,11 @@
  * @file NightElfCheck
  * @author zhouminghui
  */
-import AElfBridge from 'aelf-bridge';
+import dynamic from 'next/dynamic';
+const AElfBridge = dynamic(() => import('aelf-bridge'), { ssr: false });
 import Promise from 'core-js-pure/actual/promise';
 // import { getPublicKeyFromObject } from 'utils/utils';
-import dynamic from 'next/dynamic';
-const { getPublicKeyFromObject } = dynamic(() => import('page-components/Proposal/common/wallet'), { ssr: false });
+import { getPublicKeyFromObject } from 'page-components/Proposal/common/wallet';
 import contants from './constants';
 
 const { viewer, APP_NAME, DEFAUT_RPCSERVER } = contants;
@@ -33,9 +33,6 @@ export default class Extension {
     this.elfType = null; // extension app
     this.account = null;
 
-    // this.isExist = new Promise(resolve => {
-    //   resolve(true);
-    // });
     this.isExist = Promise.any([this.isExtensionExist(), this.isAelfBridgeExist()])
       .then((first) => first)
       .catch(() => false);

@@ -17,6 +17,10 @@ export const store = configureStore({
     proposalSelect: proposalSelectReducer,
     proposalModify: proposalModifyReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

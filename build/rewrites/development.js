@@ -4,14 +4,14 @@ module.exports = [
   //   destination: 'http://192.168.67.187:8068/api/:path*',
   // },
   {
-    source: '/cms/:path*',
-    has: [
-      {
-        type: 'host',
-        value: 'explorer-test.aelf.io',
-      },
-    ],
-    destination: 'https://explorer-test.aelf.io/cms/:path*',
+    source: '/:path*',
+    // has: [
+    //   {
+    //     type: 'host',
+    //     value: 'explorer-test.aelf.io',
+    //   },
+    // ],
+    destination: 'https://explorer-test.aelf.io/:path*',
   },
   {
     source: '/api/:path*',
