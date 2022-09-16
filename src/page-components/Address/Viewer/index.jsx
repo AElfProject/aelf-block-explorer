@@ -54,7 +54,7 @@ const Viewer = (props) => {
       editor.revealLine(position.lineNumber);
       editor.setScrollTop(position.top);
     } else {
-      const monacoEditor = monaco.editor.create(editorEl.current, {
+      const monacoEditor = monaco?.editor.create(editorEl.current, {
         lineNumbers: 'on',
         readOnly: isReadOnly,
         language,
