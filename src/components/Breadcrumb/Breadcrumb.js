@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { withRouter } from "../../routes/utils";
 import { Breadcrumb } from "antd";
+import { withRouter } from "../../routes/utils";
 
 import "./breadcrumb.styles.less";
 import addressFormat from "../../utils/addressFormat";
@@ -11,7 +11,7 @@ const NO_BREADCRUMB_PAGES = [
   "/vote",
   "/proposal",
   "/address",
-  "/contract",
+  "/contracts",
   "/token",
 ];
 const noBreadcrumb = (pathname) => {
@@ -43,7 +43,7 @@ const BREADCRUMB_NAME_MAP = {
   "/vote": "Vote",
   "/resource": "Resource",
   "/resourceDetail": "Resource Detail List",
-  "/contract": "Contract",
+  "/contracts": "Contract",
   "/proposal": "Proposal",
   "/token": "Token",
   myvote: "My Vote",
@@ -127,8 +127,8 @@ const BREADCRUMB_NAMES_TATE = {
       ],
     },
     contract: {
-      url: ["/contract"],
-      name: [BREADCRUMB_NAME_MAP["/contract"]],
+      url: ["/contracts"],
+      name: [BREADCRUMB_NAME_MAP["/contracts"]],
     },
     proposal: {
       url: ["/proposal", false],
@@ -208,6 +208,7 @@ class BrowserBreadcrumb extends Component {
       const STATE =
         BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState];
 
+      // todo
       if (!STATE) {
         this.props.navigate("/");
         return;
@@ -297,7 +298,8 @@ class BrowserBreadcrumb extends Component {
       || pathname.includes('/block/')
       || pathname.includes('/search-invalid')
       || pathname.includes('/search-failed')
-      || pathname.includes('/accounts')) {
+      || pathname.includes('/accounts')
+      || pathname.includes('/contracts')) {
       return <></>
     }
 

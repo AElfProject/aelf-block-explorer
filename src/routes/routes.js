@@ -22,6 +22,7 @@ const ResourceDetail = lazy(() =>
   import("../pages/ResourceDetail/ResourceDetail")
 );
 const Accounts = lazy(() => import("../pages/Accounts/Accounts"));
+const Contracts = lazy(() => import("../pages/Contracts/Contracts"));
 const AddressDetail = lazy(() => import("../pages/AddressDetail/AddressDetail"));
 const Token = lazy(() => import("../pages/Token"));
 const SearchFailed = lazy(() => import("../pages/SearchFailed/SearchFailed"));
@@ -51,6 +52,7 @@ export const PageRouter = () =>
       // { path: "/contract", element: <Accounts /> },
       { path: "/address/:address", element: <AddressDetail /> },
       { path: "/address/:address/:codeHash", element: <AddressDetail /> },
+      { path: "/contracts", element: <Contracts /> },
       { path: "*", element: <Navigate to='/' /> },
     ])
   );

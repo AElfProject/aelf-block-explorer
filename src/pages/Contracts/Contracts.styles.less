@@ -1,0 +1,116 @@
+.contracts-page-container {
+  h2 {
+    font-size: 18px;
+    font-family: "Roboto Bold";
+    font-weight: 400;
+    margin-bottom: 16px;
+    color: @cloud-burst;
+  }
+
+  .before-table {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    .left {
+      display: flex;
+      flex-direction: column;
+      row-gap: 2px;
+      p {
+        font-family: "Roboto";
+        height: 22px;
+        line-height: 22px;
+        color: @scorpion;
+        font-size: 14px;
+      }
+    }
+  }
+  table {
+    .ant-tag {
+      display: flex;
+      justify-content: center;
+      border: none;
+      padding: 2px 0;
+      width: 60px;
+      line-height: 20px;
+      font-size: 12px;
+      &.user {
+        background: #e6f8f0;
+        color: @jade;
+      }
+      &.system {
+        background: #fef6e7;
+        color: @sun;
+      }
+    }
+  }
+  .after-table {
+    margin-top: 16px;
+    .ant-pagination-options {
+      position: absolute;
+      border: none;
+      left: 0;
+      margin-left: 0;
+      &::before,
+      &::after {
+        font-size: 14px;
+        margin-right: 8px;
+        line-height: 32px;
+      }
+      &::before {
+        content: "Show";
+      }
+      &::after {
+        content: "records";
+      }
+      .ant-select-selector {
+        padding: 0 23px 0 9px;
+        .ant-select-selection-item {
+          padding-right: 5px;
+        }
+      }
+    }
+  }
+}
+
+.contracts-page-container.mobile {
+  .before-table {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    .left {
+      p {
+        height: fit-content;
+      }
+    }
+    .right {
+      display: flex;
+      padding-top: 16px;
+    }
+  }
+  .after-table {
+    display: flex;
+    .ant-pagination {
+      height: 76px;
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .ant-pagination-options {
+      display: flex;
+      border: none;
+      align-items: center;
+      top: 0;
+      &::before {
+        content: "Show";
+        font-size: 14px;
+        margin-right: 8px;
+      }
+      &::after {
+        content: "records";
+        font-size: 14px;
+        margin-left: 8px;
+      }
+    }
+  }
+}

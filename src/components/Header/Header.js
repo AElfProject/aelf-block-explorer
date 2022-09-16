@@ -279,8 +279,8 @@ class BrowserHeader extends PureComponent {
               <Menu.Item key='/accounts'>
                 <Link to='/accounts'>Top Accounts</Link>
               </Menu.Item>
-              <Menu.Item key='/contract'>
-                <Link to='/contract'>Contracts</Link>
+              <Menu.Item key='/contracts'>
+                <Link to='/contracts'>Contracts</Link>
               </Menu.Item>
             </SubMenu>
           </>

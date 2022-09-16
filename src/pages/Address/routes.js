@@ -10,7 +10,7 @@ export const AddressRouter = [
   //   path: "/address/:address/:symbol",
   //   element: <AccountInfo />,
   // },
-  { path: "/contract", element: <ContractList /> },
+  // { path: "/contract", element: <ContractList /> },
   // { path: "/contract/:address", element: <ContractInfo /> },
   // { path: "/contract/:address/:codeHash", element: <ContractInfo /> },
   { path: "/token", element: <TokenList /> },

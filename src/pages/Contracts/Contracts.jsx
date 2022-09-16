@@ -1,18 +1,16 @@
 import React, { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import { Pagination, Table } from "antd";
-import { useDebounce, useEffectOnce } from "react-use";
+import { useDebounce } from "react-use";
 import useMobile from "../../hooks/useMobile";
 import TableLayer from "../../components/TableLayer/TableLayer";
 import { get } from "../../utils";
-import { defaultAElfInstance, getContract } from "../../common/utils";
-import { getContractAddress } from "../Proposal/common/utils";
 import getColumn from "./columnConfig";
 
-import "./Accounts.styles.less";
-import { VIEWER_ACCOUNT_LIST } from "../../api/url";
+import "./Contracts.styles.less";
+import { VIEWER_CONTRACTS_LIST } from "../../api/url";
 
-export default function Accounts() {
+export default function Contracts() {
   const isMobile = useMobile();
 
   const [dataLoading, setDataLoading] = useState(true);
@@ -20,7 +18,6 @@ export default function Accounts() {
   const [pageSize, setPageSize] = useState(50);
   const [dataSource, setDataSource] = useState(undefined);
   const [actualTotal, setActualTotal] = useState(0);
-  const [totalELF, setTotalELF] = useState(0);
 
   const total = useMemo(() => {
     if (actualTotal > 1000) return 1000;
@@ -30,17 +27,15 @@ export default function Accounts() {
   const columns = useMemo(() => {
     return getColumn({
       isMobile,
-      preTotal: Number(pageSize) * (pageIndex - 1),
     });
   }, [isMobile, pageIndex, pageSize]);
 
-  const fetchAccountList = useCallback(async () => {
+  const fetchContractList = useCallback(async () => {
     setDataSource(false);
     setDataLoading(true);
-    const result = await get(VIEWER_ACCOUNT_LIST, {
+    const result = await get(VIEWER_CONTRACTS_LIST, {
       pageSize,
       pageNum: pageIndex,
-      symbol: "ELF",
     });
     if (result.code === 0) {
       const { data } = result;
@@ -60,25 +55,9 @@ export default function Accounts() {
     [pageSize]
   );
 
-  useEffectOnce(() => {
-    const fetchData = async () => {
-      const token = await getContract(
-        defaultAElfInstance,
-        getContractAddress("Token")
-      );
-      const result = await token.GetTokenInfo.call({
-        symbol: "ELF",
-      });
-      if (result) {
-        setTotalELF(result.supply);
-      }
-    };
-    fetchData();
-  });
-
   useDebounce(
     () => {
-      fetchAccountList();
+      fetchContractList();
     },
     1000,
     [pageIndex, pageSize]
@@ -87,20 +66,19 @@ export default function Accounts() {
   return (
     <div
       className={clsx(
-        "accounts-page-container basic-container-new",
+        "contracts-page-container basic-container-new",
         isMobile && "mobile"
       )}
     >
-      <h2>Top Accounts</h2>
+      <h2>Contracts</h2>
       <div>
         <div className="before-table">
           <div className="left">
             <p>
-              More than {">"} {Number(actualTotal).toLocaleString()} accounts by
-              ELF balance found{" "}
-              {`(${Number(totalELF / 100000000).toLocaleString()} ELF)`}
+              More than {">"} {Number(actualTotal).toLocaleString()} verified
+              contracts found ELF balance found
             </p>
-            <p>(Showing the top 1000 accounts only)</p>
+            <p>(Showing the last 1000 verified contracts only)</p>
           </div>
           <div className="right">
             <Pagination
