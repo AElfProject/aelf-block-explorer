@@ -34,6 +34,7 @@ export default ({ isMobile, preTotal }) => {
     {
       title: "Transfers",
       dataIndex: "count",
+      align: "right",
       width: isMobile ? 76 : 100,
     },
   ];
