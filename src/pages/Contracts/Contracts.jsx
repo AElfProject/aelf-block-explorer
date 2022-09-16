@@ -76,7 +76,7 @@ export default function Contracts() {
           <div className="left">
             <p>
               More than {">"} {Number(actualTotal).toLocaleString()} verified
-              contracts found ELF balance found
+              contracts found
             </p>
             <p>(Showing the last 1000 verified contracts only)</p>
           </div>
