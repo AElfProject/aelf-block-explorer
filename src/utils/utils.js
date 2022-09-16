@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce';
 import Decimal from 'decimal.js';
 import { aelf } from './axios';
 import config from 'constants/config/config';
-import { API_PATH } from 'page-components/Proposal/common/constants';
+import { API_PATH } from 'constants/viewerApi';
 import { request } from './request';
 import constants from 'page-components/Proposal/common/constants';
 import dynamic from 'next/dynamic';

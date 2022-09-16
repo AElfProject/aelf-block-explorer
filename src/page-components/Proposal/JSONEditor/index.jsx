@@ -12,7 +12,7 @@ const JSONEditor = (props) => {
   const editorEl = useRef(null);
   const monaco = useMonaco();
   useEffect(() => {
-    const monacoEditor = monaco.editor.create(editorEl.current, {
+    const monacoEditor = monaco?.editor.create(editorEl.current, {
       lineNumbers: 'on',
       language: type,
       value,
@@ -24,7 +24,7 @@ const JSONEditor = (props) => {
     return () => {
       monacoEditor.dispose();
     };
-  }, []);
+  }, [monaco]);
 
   useEffect(() => {
     if (editor) {
