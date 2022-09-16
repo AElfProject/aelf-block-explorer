@@ -2,7 +2,8 @@ import AElf from 'aelf-sdk';
 import debounce from 'lodash.debounce';
 import Decimal from 'decimal.js';
 import { aelf } from './axios';
-import config from '../constants/config/config';
+import config from 'constants/config/config';
+import { API_PATH } from 'page-components/Proposal/common/constants';
 import { request } from './request';
 import constants from 'page-components/Proposal/common/constants';
 import dynamic from 'next/dynamic';
@@ -250,7 +251,7 @@ const defaultAElfInstance = new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCS
 export async function getBalances(address, search = '') {
   try {
     const balances = await request(
-      config.API_PATH.GET_BALANCES_BY_ADDRESS,
+      API_PATH.GET_BALANCES_BY_ADDRESS,
       {
         address,
         search,
@@ -277,7 +278,7 @@ export async function getBalances(address, search = '') {
 export async function getTokenAllInfo(symbol) {
   try {
     const info = await request(
-      config.API_PATH.GET_TOKEN_INFO,
+      API_PATH.GET_TOKEN_INFO,
       {
         symbol,
       },
@@ -299,7 +300,7 @@ export async function getTokenList(search = '') {
   let tokens;
   try {
     const { list = [] } = await request(
-      config.API_PATH.GET_TOKEN_LIST,
+      API_PATH.GET_TOKEN_LIST,
       {
         search,
       },
@@ -337,7 +338,7 @@ export const getContractNames = async () => {
   let res = {};
   try {
     res = await request(
-      config.API_PATH.GET_ALL_CONTRACT_NAME,
+      API_PATH.GET_ALL_CONTRACT_NAME,
       {},
       {
         method: 'GET',
@@ -470,44 +471,44 @@ export const isPhoneCheck = () => {
   return phoneCheckResult;
 };
 
-export async function _redirectPageToIframeMode() {
-  console.log('RELOAD_ENV', process.env.RELOAD_ENV, process.env.NODE_ENV);
-  // if (process.env.RELOAD_ENV !== 'reload') {
-  //   return;
-  // }
-  // if (process.env.NODE_ENV !== 'production') {
-  //   console.log('window.location.href reload');
-  // }
-
-  if (!window.frameElement) {
-    if (window.location.href.match('contract')) {
-      window.location.href = `/contract?#${window.location.href}`;
-      // } else if (window.location.href.match('proposalsDetail')) {
-      //   window.location.href = `/viewer/proposal.html?#${window.location.href}`;
-    } else if (window.location.href.match('proposal')) {
-      window.location.href = `/proposal?#${window.location.href}`;
-    } else if (window.location.href.match('address')) {
-      window.location.href = `/address?#${window.location.href}`;
-    }
-  }
-}
-
-export async function redirectPageToIframeMode() {
-  if (isPhoneCheck()) {
-    try {
-      const detail = await walletInstance.isExist;
-      if (!detail) {
-        _redirectPageToIframeMode();
-      }
-    } catch (e) {
-      _redirectPageToIframeMode();
-    }
-  } else {
-    _redirectPageToIframeMode();
-  }
-}
-
 export const omitString = (input, start = 8, end = 8) => {
   if (!input) return '';
   return `${input.slice(0, start)}...${input.slice(-end)}`;
 };
+
+import JSZip from 'jszip';
+
+function addFileOrFolder(zip, files) {
+  files.forEach((file) => {
+    const { name } = file;
+    if (Array.isArray(file.files) && file.files.length > 0) {
+      addFileOrFolder(zip.folder(name), file.files);
+    } else {
+      const content = atob(file.content);
+      zip.file(name, content);
+    }
+  });
+}
+
+export const getZip = (files) => {
+  const zip = new JSZip();
+  addFileOrFolder(zip, files);
+  return zip.generateAsync({
+    type: 'blob',
+  });
+};
+
+export const detectMobileBrowser = () => {
+  if (typeof window !== 'undefined') {
+    return !!(
+      navigator.userAgent.match(/Android/i) ||
+      navigator.userAgent.match(/webOS/i) ||
+      navigator.userAgent.match(/iPhone/i) ||
+      navigator.userAgent.match(/iPod/i) ||
+      navigator.userAgent.match(/BlackBerry/i) ||
+      navigator.userAgent.match(/Windows Phone/i)
+    );
+  }
+};
+
+export const useSearchParams = (search, key) => new URLSearchParams(search).get(key);

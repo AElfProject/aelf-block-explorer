@@ -96,7 +96,9 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
         <div className="table-footer">
           {isMobile && (
             <Link href="/txs">
-              View All Txns <IconFont type="right2" />
+              <>
+                View All Txns <IconFont type="right2" />
+              </>
             </Link>
           )}
         </div>

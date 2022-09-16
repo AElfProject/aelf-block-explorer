@@ -29,6 +29,9 @@ export const API_PATH = {
   GET_TOKEN_INFO: '/api/viewer/tokenInfo',
   GET_EVENT_LIST: '/api/viewer/eventList',
   GET_TRANSFER_LIST: '/api/viewer/transferList',
+  GET_LIST: '/api/viewer/list',
+  GET_FILES: '/api/viewer/getFile',
+  GET_HISTORY: '/api/viewer/history',
 };
 export default {
   ...config,

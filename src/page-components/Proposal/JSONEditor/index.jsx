@@ -4,18 +4,13 @@
  */
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { useMonaco } from '@monaco-editor/react';
 
 const JSONEditor = (props) => {
-  const {
-    value,
-    type,
-    onBlur,
-    ...rest
-  } = props;
+  const { value, type, onBlur, ...rest } = props;
   const [editor, setEditor] = useState(null);
   const editorEl = useRef(null);
-
+  const monaco = useMonaco();
   useEffect(() => {
     const monacoEditor = monaco.editor.create(editorEl.current, {
       lineNumbers: 'on',
@@ -40,12 +35,7 @@ const JSONEditor = (props) => {
     }
   }, [type, value]);
 
-  return (
-    <div
-      {...rest}
-      ref={editorEl}
-    />
-  );
+  return <div {...rest} ref={editorEl} />;
 };
 
 JSONEditor.propTypes = {

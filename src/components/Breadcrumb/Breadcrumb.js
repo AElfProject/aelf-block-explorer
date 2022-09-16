@@ -187,7 +187,9 @@ class BrowserBreadcrumb extends Component {
           {isCurrentTitle ? (
             <span className={isCurrentTitle ? 'current-title' : ''}>{breadcrumbTitle}</span>
           ) : (
-            <Link href={url}> {breadcrumbTitle} </Link>
+            <Link href={url}>
+              <>{breadcrumbTitle}</>
+            </Link>
           )}
         </Breadcrumb.Item>
       );

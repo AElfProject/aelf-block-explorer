@@ -1,5 +1,6 @@
 import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from './config/config';
 import Link from 'next/link';
+import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import addressFormat from '../utils/addressFormat';
@@ -7,8 +8,15 @@ import Dividends from '../components/Dividends';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { removeAElfPrefix } from '../utils/utils';
 dayjs.extend(relativeTime);
-
 import BigNumber from 'bignumber.js';
+
+// for address
+const globalConfig = {
+  isMobile: false,
+};
+export const GlobalContext = React.createContext(globalConfig);
+export const Contracts = React.createContext({});
+
 // todo: Use the variable in less instead
 export const PRIMARY_COLOR = '#266CD3';
 
@@ -90,7 +98,10 @@ const BLOCKS_LIST_COLUMNS = [
     width: 60,
     render: (text: string, row: any) =>
       !isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
-        <Link href={`/txs/block?${row.block_hash}`}> {row.tx_count} </Link>
+        <Link href={`/txs/block?${row.block_hash}`}>
+          {' '}
+          <>{row.tx_count}</>{' '}
+        </Link>
       ) : (
         row.tx_count
       ),
