@@ -2,9 +2,11 @@
  * @file wallet related
  * @author atom-yang
  */
+import dynamic from 'next/dynamic';
+// const Extension = dynamic(() => import('./extension'), { ssr: false });
 import Extension from './extension';
 
-const WALLET_TYPE = {
+let WALLET_TYPE = {
   EXTENSION: Extension,
 };
 
@@ -38,8 +40,14 @@ export class Wallet {
   }
 }
 
-const walletInstance = new Wallet({
-  walletType: 'EXTENSION',
-});
+let walletInstance = null;
+export function walletInstanceSingle() {
+  if (!walletInstance) {
+    walletInstance = new Wallet({
+      walletType: 'EXTENSION',
+    });
+  }
+  return walletInstance;
+}
 
 export default walletInstance;

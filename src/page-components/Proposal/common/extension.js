@@ -3,7 +3,7 @@
  * @author zhouminghui
  */
 import dynamic from 'next/dynamic';
-const AElfBridge = dynamic(() => import('aelf-bridge'), { ssr: false });
+import AElfBridge from 'aelf-bridge';
 import Promise from 'core-js-pure/actual/promise';
 // import { getPublicKeyFromObject } from 'utils/utils';
 import { getPublicKeyFromObject } from 'page-components/Proposal/common/wallet';

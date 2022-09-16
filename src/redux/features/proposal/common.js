@@ -6,7 +6,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import AElf from 'aelf-sdk';
 import { message } from 'antd';
 import { arrayToMap } from 'page-components/Proposal/common/utils';
-import walletInstance from 'page-components/Proposal/common/wallet';
+import walletInstance, { walletInstanceSingle } from 'page-components/Proposal/common/wallet';
 import constants, { LOG_STATUS } from 'page-components/Proposal/common/constants';
 
 // check is exist
@@ -22,7 +22,7 @@ export const checkWalletIsExist = () => async (dispatch) => {
     payload: {},
   });
   try {
-    const detail = await walletInstance.isExist;
+    const detail = await walletInstanceSingle().isExist;
     dispatch({
       type: CHECK_WALLET_EXIST.LOG_IN_SUCCESS,
       payload: {
@@ -53,7 +53,7 @@ export const logIn = () => async (dispatch) => {
         payload: {},
       });
     }, 8000);
-    const detail = await walletInstance.login();
+    const detail = await walletInstanceSingle().login();
     localStorage.setItem('currentWallet', JSON.stringify({ ...detail, timestamp: new Date().valueOf() }));
     clearTimeout(timer);
     dispatch({
@@ -63,6 +63,7 @@ export const logIn = () => async (dispatch) => {
       },
     });
   } catch (e) {
+    console.log(e, 'e');
     localStorage.removeItem('currentWallet');
     message.warn((e.errorMessage || {}).message || 'night ELF is locked!');
     dispatch({
@@ -81,7 +82,7 @@ export const logOut = (address) => async (dispatch) => {
     payload: {},
   });
   try {
-    await walletInstance.logout(address);
+    await walletInstanceSingle().logout(address);
     dispatch({
       type: LOG_OUT_ACTIONS.LOG_OUT_SUCCESS,
       payload: {},
