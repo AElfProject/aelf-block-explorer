@@ -18,6 +18,9 @@ export default ({ isMobile }) => {
       dataIndex: "contractName",
       ellipsis: true,
       width: isMobile ? 126 : 220,
+      render(name) {
+        return name === "-1" ? "-" : name;
+      },
     },
     {
       title: "Type",
