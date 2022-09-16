@@ -5,7 +5,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import AElf from 'aelf-sdk';
 import Decimal from 'decimal.js';
-import { Link, useHistory } from 'react-router-dom';
+import Link from 'next/link';
 import ReactIf from 'react-if';
 import { useSelector } from 'react-redux';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -19,6 +19,7 @@ import {
   rand16Num,
 } from 'page-components/Proposal/common/utils';
 import { getTokenList, getContract, sleep } from 'utils/utils';
+import { useRouter } from 'next/router';
 require('./index.less');
 
 const { Switch: ConditionSwitch, Case } = ReactIf;
@@ -331,7 +332,7 @@ const FORM_INITIAL = {
 };
 
 const CreateOrganization = () => {
-  const history = useHistory();
+  const router = useRouter();
   const [form] = Form.useForm();
   const { validateFields } = form;
   const common = useSelector((state) => state.common);
@@ -376,7 +377,7 @@ const CreateOrganization = () => {
       });
       showTransactionResult(result);
       await sleep(2000);
-      history.push('/organizations');
+      router.push('/proposal/organizations');
     } catch (e) {
       console.error(e);
       message.error((e.errorMessage || {}).message || e.message || 'Please input the required form field');
@@ -402,7 +403,7 @@ const CreateOrganization = () => {
       <div className="create-organization-header">
         <div className="create-organization-header-title">Create Organization</div>
         <div className="create-organization-header-action">
-          <Link to="/organizations">&lt;Back to Organization List</Link>
+          <Link href="/proposal/organizations">&lt;Back to Organization List</Link>
         </div>
       </div>
       <Divider />

@@ -3,10 +3,14 @@
  * @author zhouminghui
  */
 import dynamic from 'next/dynamic';
-import AElfBridge from 'aelf-bridge';
+let AElfBridge = null;
+if (typeof window !== 'undefined') {
+  AElfBridge = require('aelf-bridge');
+}
+
 import Promise from 'core-js-pure/actual/promise';
 // import { getPublicKeyFromObject } from 'utils/utils';
-import { getPublicKeyFromObject } from 'page-components/Proposal/common/wallet';
+import { getPublicKeyFromObject } from 'utils/utils';
 import contants from './constants';
 
 const { viewer, APP_NAME, DEFAUT_RPCSERVER } = contants;

@@ -21,6 +21,12 @@ import config from 'constants/config/config';
 // import '../utils/vconsole';
 initAxios();
 
+const ROUTES_DEFAULT: any = {
+  apply: '/proposal/proposals',
+  myProposals: '/proposal/proposals',
+  createOrganizations: '/proposal/organizations',
+};
+
 function SafeHydrate({ children }) {
   return <div suppressHydrationWarning={true}>{typeof window === 'undefined' ? null : children}</div>;
 }
@@ -51,7 +57,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const pathKey = router.asPath.split('/')[2];
   const flag = PROPOSAL_URL.includes(pathKey);
-  // debugger;
+  pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
     // <SafeHydrate>
     // <NoSSR>

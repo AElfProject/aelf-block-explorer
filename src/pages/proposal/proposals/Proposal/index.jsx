@@ -5,7 +5,7 @@
 import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { CheckCircleOutlined, CloseCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { Button, Card, Tag, Divider } from 'antd';
 import constants, {
@@ -92,7 +92,7 @@ const Proposal = (props) => {
         }>
         <div className="proposal-list-item-id">
           <div className="gap-right-large">
-            <Link to={`/proposal/proposalsDetail/${proposalId}`} className="text-ellipsis">
+            <Link href={`/proposal/proposalsDetail/${proposalId}`} className="text-ellipsis">
               {proposalId}
             </Link>
             {CONTRACT_TEXT_MAP[contractMethod] ? (

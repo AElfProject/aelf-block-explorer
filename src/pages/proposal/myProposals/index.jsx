@@ -4,17 +4,17 @@
  */
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import moment from 'moment';
 import { Tooltip, Menu, message, Tabs, Tag, Row, Col } from 'antd';
 import List from './List';
 import constants, { ACTIONS_COLOR_MAP, API_PATH, STATUS_COLOR_MAP } from 'page-components/Proposal/common/constants';
-import { omitString, removePrefixOrSuffix, sendHeight } from '../../../../common/utils';
-import config from '../../../../common/config';
-import OrgAddress from '../../components/OrgAddress';
-import { request } from '../../../../common/request';
+import { omitString, removePrefixOrSuffix, sendHeight } from 'utils/utils';
+import config from 'constants/viewerApi';
+import OrgAddress from 'page-components/Proposal/OrgAddress';
+import { request } from 'utils/request';
 
-import './index.less';
+require('./index.less');
 
 const { SubMenu, Item: MenuItem } = Menu;
 const { TabPane } = Tabs;
@@ -42,7 +42,7 @@ const LIST_TABS = {
         ellipsis: true,
         render(text) {
           return (
-            <Link to={`/proposalsDetail/${text}`}>
+            <Link href={`/proposal/proposalsDetail/${text}`}>
               <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
@@ -172,7 +172,7 @@ const LIST_TABS = {
         ellipsis: true,
         render(text) {
           return (
-            <Link to={`/proposalsDetail/${text}`}>
+            <Link href={`/proposal/proposalsDetail/${text}`}>
               <Tooltip title={text} placement="topLeft">
                 {omitString(text)}
               </Tooltip>
@@ -262,6 +262,10 @@ const MyProposal = () => {
 
   function fetch(apiParams, menuKey) {
     const apiPath = LIST_TABS[menuKey].api;
+    setResult({
+      list: [],
+      total: 0,
+    });
     setParams({
       ...params,
       loading: true,
@@ -271,15 +275,15 @@ const MyProposal = () => {
     })
       .then((res) => {
         const { list, total } = res;
-        setResult({
-          list,
-          total,
-        });
         setParams({
           ...params,
           ...apiParams,
           currentMenu: menuKey,
           loading: false,
+        });
+        setResult({
+          list,
+          total,
         });
         sendHeight(400);
       })

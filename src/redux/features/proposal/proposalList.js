@@ -15,23 +15,29 @@ export const GET_PROPOSALS_LIST = arrayToMap([
 ]);
 
 export const getProposals = (params) => async (dispatch) => {
-  dispatch({
-    type: GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_START,
-    payload: params,
-  });
+  dispatch(
+    proposalsAction({
+      type: GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_START,
+      payload: params,
+    }),
+  );
   try {
     const result = await request(API_PATH.GET_PROPOSAL_LIST, params, {
       method: 'GET',
     });
-    dispatch({
-      type: GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_SUCCESS,
-      payload: result,
-    });
+    dispatch(
+      proposalsAction({
+        type: GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_SUCCESS,
+        payload: result,
+      }),
+    );
   } catch (e) {
-    dispatch({
-      type: GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_FAIL,
-      payload: {},
-    });
+    dispatch(
+      proposalsAction({
+        type: GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_FAIL,
+        payload: {},
+      }),
+    );
   }
 };
 
@@ -53,7 +59,8 @@ export const initialState = {
   status: LOADING_STATUS.LOADING,
 };
 
-export const getProposalList = (state = initialState, { type, payload }) => {
+export const getProposalList = (state = initialState, { payload: payloadObj }) => {
+  const { type, payload } = payloadObj;
   switch (type) {
     case GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_START:
       return {
@@ -90,5 +97,6 @@ export const proposalsSlice = createSlice({
     proposals: getProposalList,
   },
 });
+export const proposalsAction = proposalsSlice.actions.proposals;
 
 export default proposalsSlice.reducer;

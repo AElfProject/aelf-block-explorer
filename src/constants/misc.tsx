@@ -70,7 +70,7 @@ const BLOCKS_LIST_COLUMNS = [
     ellipsis: true,
     render(text: string) {
       return (
-        <Link title={`${SYMBOL}_${text}_${CHAIN_ID}`} to={`/address/${text}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
+        <Link title={`${SYMBOL}_${text}_${CHAIN_ID}`} href={`/address/${text}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
       );
     },
   },

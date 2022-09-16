@@ -5,7 +5,6 @@
 import type { AppProps } from 'next/app';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
 import useUseLocation from 'react-use/lib/useLocation';
 import { useSelector, useDispatch } from 'react-redux';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -13,11 +12,12 @@ import { Tabs, Popover } from 'antd';
 import { logIn, LOG_IN_ACTIONS } from 'redux/features/proposal/common';
 import LogButton from 'page-components/Proposal/Log';
 import { LOG_STATUS } from 'constants/info';
-const walletInstance = dynamic(() => import('page-components/Proposal/common/wallet'), { ssr: false });
+import { walletInstanceSingle } from 'page-components/Proposal/common/wallet';
 import Plugin from 'components/plugin';
 import Rules from 'page-components/Proposal/Rules';
 import { isPhoneCheck } from 'utils/deviceCheck';
 import { sendMessage } from 'utils/utils';
+import { commonAction } from 'redux/features/proposal/common';
 
 const { TabPane } = Tabs;
 
@@ -40,17 +40,18 @@ export const RouterComponent = (options) => {
   const router = useRouter();
   const logStatus = useSelector((state) => state.common.logStatus);
   const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus, options]);
-
   const target = useMemo(() => {
     if (isLogged) {
       return options.target;
     }
-    router.replace(options.default);
+    if (options.default) {
+      router.replace(options.default);
+    }
   }, [isLogged, options]);
   return target;
 };
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = (pageProps: AppProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const logStatus = useSelector((state) => state.common.logStatus);
@@ -68,37 +69,45 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [href]);
 
   useEffect(() => {
-    walletInstance.isExist
-      ?.then((result) => {
+    walletInstanceSingle()
+      .isExist?.then((result) => {
         const wallet = JSON.parse(localStorage.getItem('currentWallet'));
         const timeDiff = wallet ? new Date().valueOf() - Number(wallet.timestamp) : 15 * 60 * 1000;
 
         setIsExist(result);
         if (!result) {
-          dispatch({
-            type: LOG_IN_ACTIONS.LOG_IN_FAILED,
-            payload: {},
-          });
-        } else if (typeof walletInstance.proxy.elfInstance.getExtensionInfo === 'function') {
-          walletInstance.getExtensionInfo().then((info) => {
-            if (!info.locked) {
-              dispatch(logIn());
-            } else {
-              localStorage.removeItem('currentWallet');
-              dispatch({
-                type: LOG_IN_ACTIONS.LOG_IN_FAILED,
-                payload: {},
-              });
-            }
-          });
+          dispatch(
+            commonAction({
+              type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+              payload: {},
+            }),
+          );
+        } else if (typeof walletInstanceSingle().proxy.elfInstance.getExtensionInfo === 'function') {
+          walletInstanceSingle()
+            .getExtensionInfo()
+            .then((info) => {
+              if (!info.locked) {
+                dispatch(logIn());
+              } else {
+                localStorage.removeItem('currentWallet');
+                dispatch(
+                  commonAction({
+                    type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+                    payload: {},
+                  }),
+                );
+              }
+            });
         } else if (timeDiff < 15 * 60 * 1000) {
           dispatch(logIn());
         } else {
           localStorage.removeItem('currentWallet');
-          dispatch({
-            type: LOG_IN_ACTIONS.LOG_IN_FAILED,
-            payload: {},
-          });
+          dispatch(
+            commonAction({
+              type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+              payload: {},
+            }),
+          );
         }
       })
       .catch(() => {
@@ -132,8 +141,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         {isLogged && <TabPane tab="My Proposals" key="myProposals" />}
       </Tabs>
       <div className="proposal-container">
-        <Component {...pageProps} />
-        {/* <RouterComponent target={<Component {...pageProps} />} default="/proposal/proposals"></RouterComponent> */}
+        <RouterComponent target={<pageProps.Component {...pageProps} />} default={pageProps.default}></RouterComponent>
       </div>
     </div>
   );

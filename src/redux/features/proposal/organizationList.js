@@ -15,23 +15,30 @@ export const GET_ORGANIZATIONS_LIST = arrayToMap([
 ]);
 
 export const getOrganizations = (params) => async (dispatch) => {
-  dispatch({
-    type: GET_ORGANIZATIONS_LIST.GET_ORGANIZATIONS_LIST_START,
-    payload: params,
-  });
+  dispatch(
+    organizationsAction({
+      type: GET_ORGANIZATIONS_LIST.GET_ORGANIZATIONS_LIST_START,
+      payload: params,
+    }),
+  );
   try {
     const result = await request(API_PATH.GET_ORGANIZATIONS, params, {
       method: 'GET',
     });
-    dispatch({
-      type: GET_ORGANIZATIONS_LIST.GET_ORGANIZATIONS_LIST_SUCCESS,
-      payload: result,
-    });
+    dispatch(
+      organizationsAction({
+        type: GET_ORGANIZATIONS_LIST.GET_ORGANIZATIONS_LIST_SUCCESS,
+        payload: result,
+      }),
+    );
   } catch (e) {
-    dispatch({
-      type: GET_ORGANIZATIONS_LIST.GET_ORGANIZATIONS_LIST_FAIL,
-      payload: {},
-    });
+    console.log(e);
+    dispatch(
+      organizationsAction({
+        type: GET_ORGANIZATIONS_LIST.GET_ORGANIZATIONS_LIST_FAIL,
+        payload: {},
+      }),
+    );
   }
 };
 
@@ -51,7 +58,8 @@ const initialState = {
   loadingStatus: LOADING_STATUS.LOADING,
 };
 
-export const getOrganization = (state = initialState, { type, payload }) => {
+export const getOrganization = (state = initialState, { payload: payloadObj }) => {
+  const { type, payload } = payloadObj;
   switch (type) {
     case GET_ORGANIZATIONS_LIST.GET_ORGANIZATIONS_LIST_START:
       return {
@@ -85,5 +93,7 @@ export const organizationsSlice = createSlice({
     organizations: getOrganization,
   },
 });
+
+export const organizationsAction = organizationsSlice.actions.organizations;
 
 export default organizationsSlice.reducer;
