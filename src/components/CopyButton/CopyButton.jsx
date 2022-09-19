@@ -7,7 +7,7 @@ export default function CopyButton({ value = undefined, onClick = undefined }) {
   const handleCopy = () => {
     try {
       copy(value);
-      message.success("Copied Successfully!");
+      message.success("Copied Successfully");
     } catch (e) {
       message.error("Copy failed, please copy by yourself.");
     }

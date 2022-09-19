@@ -6,7 +6,7 @@ export default ({ prices, isMobile }) => {
     {
       title: "Token Name",
       dataIndex: "symbol",
-      width: isMobile ? 94 : 360,
+      width: isMobile ? 94 : 376,
       render(symbol) {
         return symbol ? <Link to={`/token/${symbol}`}>{symbol}</Link> : "-";
       },
@@ -14,7 +14,7 @@ export default ({ prices, isMobile }) => {
     {
       title: "Balance",
       dataIndex: "balance",
-      width: isMobile ? 90 : 340,
+      width: isMobile ? 90 : 356,
       render(balance) {
         return Number(balance).toLocaleString();
       },
@@ -22,7 +22,7 @@ export default ({ prices, isMobile }) => {
     {
       title: "Token Price",
       dataIndex: "symbol",
-      width: isMobile ? 70 : 284,
+      width: isMobile ? 70 : 300,
       render(symbol) {
         if ((symbol, prices))
           return prices[symbol]
@@ -35,7 +35,7 @@ export default ({ prices, isMobile }) => {
       title: "Value in USD",
       dataIndex: "symbol",
       align: "right",
-      width: isMobile ? 70 : 120,
+      width: isMobile ? 70 : 136,
       render(symbol, record) {
         if ((symbol, prices))
           return prices[symbol]
