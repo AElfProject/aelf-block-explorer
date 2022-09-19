@@ -5,7 +5,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { useParams, useNavigate, Redirect } from 'react-router-dom';
 import { Tag, Button, Divider, PageHeader, Skeleton, Result, Row, Col, Tabs, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 import { ACTIONS_ICON_MAP } from '../ProposalList/Proposal';
@@ -18,17 +17,17 @@ import constants, {
   STATUS_COLOR_MAP,
   PROPOSAL_STATUS_CAPITAL,
 } from 'page-components/Proposal/common/constants';
-import { request } from '../../../../common/request';
+import { request } from 'common/request';
 import VoteData from './VoteData';
 import VoteDetail from './VoteDetail';
 import OrganizationCard from './OrganizationCard';
 import ContractDetail from './ContractDetail';
-import config from '../../../../common/config';
-import './index.less';
-import { getContractAddress, sendTransaction } from '../../common/utils';
-import ApproveTokenModal from '../../components/ApproveTokenModal';
+import config from 'constants/viewerApi';
+require('./index.less');
+import { getContractAddress, sendTransaction } from 'page-components/Proposal/common/utils';
+import ApproveTokenModal from 'page-components/Proposal/ApproveTokenModal';
 import { isPhoneCheck, sendHeight, validateURL } from '../../../../common/utils';
-import { PRIMARY_COLOR } from '../../page-components/Proposal/common/constants';
+import { PRIMARY_COLOR } from 'constants';
 
 const { viewer } = config;
 const { Title } = Typography;
@@ -97,8 +96,8 @@ Extra.propTypes = {
 };
 
 const ProposalDetail = () => {
-  const { proposalId = '' } = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const { proposalId = '' } = router.query;
   const common = useSelector((state) => state.common);
   const [visible, setVisible] = useState(false);
   const { logStatus, aelf, wallet, currentWallet, isALLSettle } = common;
@@ -111,7 +110,7 @@ const ProposalDetail = () => {
     loadingStatus: LOADING_STATUS.LOADING,
   });
   if (!proposalId) {
-    return <Redirect to="/proposals" />;
+    router.replace('/proposals');
   }
   useEffect(() => {
     getData(currentWallet, proposalId)
@@ -165,7 +164,7 @@ const ProposalDetail = () => {
   };
 
   function goBack() {
-    navigate(-1);
+    router.back();
   }
 
   async function handleApprove() {
@@ -197,7 +196,7 @@ const ProposalDetail = () => {
       {info.loadingStatus === LOADING_STATUS.SUCCESS ? (
         <>
           <PageHeader
-            onBack={navigate.length > 1 ? goBack : null}
+            onBack={window.history.length > 1 ? goBack : null}
             title="Proposal Detail"
             subTitle={<CountDown time={expiredTime} status={status} />}
             tags={

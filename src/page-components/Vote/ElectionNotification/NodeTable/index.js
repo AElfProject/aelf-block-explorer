@@ -7,7 +7,7 @@
  * @Description: file content
  */
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Table, Button, Input, Tooltip } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -166,7 +166,7 @@ class NodeTable extends PureComponent {
         // ellipsis: true,
         render: (text, record) => (
           <Tooltip title={text}>
-            <Link to={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}>{text}</Link>
+            <Link href={{ pathname: '/vote/team', search: `pubkey=${record.pubkey}` }}>{text}</Link>
           </Tooltip>
         ),
         ...this.getColumnSearchProps('name'),

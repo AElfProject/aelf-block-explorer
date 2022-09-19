@@ -1,0 +1,68 @@
+@import 'assets/theme/color.less';
+.resource-wallet {
+  a {
+    color: @primary-blue;
+  }
+  .resource-wallet-header {
+    display: flex;
+    align-items: center;
+  }
+  .resource-wallet-address {
+    margin: 16px 0;
+    padding: 0 0 8px 0;
+    border-bottom: 1px solid @borderColor;
+    word-break: break-word;
+  }
+  .ant-divider.ant-divider-horizontal {
+    margin: 8px 0;
+  }
+  &-address {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    &-name {
+      font-weight: bold;
+      flex-grow: 1;
+      line-height: 32px;
+    }
+    &-update {
+      display: flex;
+      align-items: center;
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+    &-update:hover,
+    &-update:active,
+    &-update:focus {
+      color: @hoverColor;
+    }
+  }
+  &-operation-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    .ant-btn > .anticon {
+      line-height: 0;
+    }
+  }
+  &-info {
+    .ant-row {
+      .ant-col {
+        margin-bottom: 25px;
+      }
+      .last-col {
+        margin-bottom: 0;
+      }
+    }
+    &-name {
+      color: @cusBlack;
+      width: 180px;
+      display: inline-block;
+    }
+    .balance {
+      font-weight: bold;
+      color: @textContext;
+    }
+  }
+}

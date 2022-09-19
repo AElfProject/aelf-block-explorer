@@ -1,0 +1,72 @@
+@import 'assets/theme/color.less';
+.App .resource-body.basic-container {
+  //padding-top: 50px;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: transparent;
+}
+
+.resource-money-market {
+  padding-top: 38px;
+}
+
+@media screen and (max-width: 992px) {
+  .resource-wallet {
+    margin: 20px;
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .resource-money-market {
+    padding-top: 0;
+  }
+}
+
+.resource-icon {
+  color: @primary-blue;
+  font-size: 26px;
+  margin-right: 12px;
+}
+
+.resource-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: @textContext;
+}
+
+.resource-block {
+  //padding: 30px 50px;
+  background-color: @bgBlankWhite;
+}
+
+.resource-header {
+  border-bottom: 1px solid @borderColor;
+  padding: 20px 57px 18px 57px;
+}
+
+.resource-sub-container {
+  padding: 0 57px;
+}
+
+.resource-blank {
+  height: 25px;
+  width: 25px;
+}
+.resource-pc-note {
+  text-align: center;
+  color: @bgMain;
+  padding-top: 16px;
+  font-size: 14px;
+}
+
+.text-ellipse {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 768px) {
+  .resource-sub-container {
+    padding: 0;
+  }
+}

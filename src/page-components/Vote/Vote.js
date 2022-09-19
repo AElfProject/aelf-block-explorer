@@ -415,18 +415,15 @@ class VoteContainer extends Component {
     // todo: Consider to get the contract separately
     return Promise.all(
       contractsNeedToLoadFromExt.map(({ contractAddrValName, contractNickname }) => {
-        debugger;
         return nightElf?.chain
           ?.contractAt(config[contractAddrValName], wallet)
           .then((res) => {
-            debugger;
             this.setState({
               [contractNickname]: res,
             });
           })
           .catch((e) => {
             console.log(e);
-            debugger;
           });
       }),
     );
@@ -663,7 +660,6 @@ class VoteContainer extends Component {
 
           // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
           nightElf.chain.getChainStatus().then(() => {
-            debugger;
             this.loginPlugin().then(() => {
               resolve();
             });
@@ -1178,7 +1174,6 @@ class VoteContainer extends Component {
       voteToRedeem,
       redeemOneVoteModalVisible,
       shouldRefreshElectionNotifiStatis,
-      shouldJudgeIsCurrentCandidate,
       isPluginLock,
       dividendLoading,
       voteConfirmLoading,
