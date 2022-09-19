@@ -39,7 +39,7 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
         [
           'Block',
           <div className="value-block">
-            <Link to={`/block/${info.BlockNumber}`} title={info.BlockNumber}>
+            <Link href={`/block/${info.BlockNumber}`} title={info.BlockNumber}>
               {info.BlockNumber}
             </Link>
             {lastHeight ? (
@@ -76,7 +76,7 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
           'From',
           <div className="value-address">
             <div>
-              <Link to={`/address/${info.Transaction.From}`} title={addressFormat(info.Transaction.From)}>
+              <Link href={`/address/${info.Transaction.From}`} title={addressFormat(info.Transaction.From)}>
                 {addressFormat(info.Transaction.From)}
               </Link>
               <CopyButton value={addressFormat(info.Transaction.From)} />
@@ -87,7 +87,7 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
           'Interacted With(To)',
           <div className="value-address">
             <div>
-              <Link to={`/contract/${info.Transaction.To}`} title={addressFormat(info.Transaction.To)}>
+              <Link href={`/contract/${info.Transaction.To}`} title={addressFormat(info.Transaction.To)}>
                 {addressFormat(info.Transaction.To)}
               </Link>
               <CopyButton value={addressFormat(info.Transaction.To)} />

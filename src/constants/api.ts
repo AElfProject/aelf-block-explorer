@@ -1,3 +1,4 @@
+import { get } from 'utils/axios';
 const BASE_URL = 'https://explorer-test.aelf.io/chain/api/';
 const BASE_URL_TDVW = 'https://explorer-test-tdvw.aelf.io/chain/api/';
 const ALL_BLOCKS_API_URL = '/all/blocks';
@@ -21,7 +22,19 @@ const RESOURCE_RECORDS = '/resource/records';
 const SOCKET_URL = '/socket';
 const SOCKET_URL_NEW = '/new-socket';
 const BASIC_INFO = '/chain-info';
-
+export const fetchCurrentMinerList = (contract) => contract.GetCurrentMinerList.call();
+export const fetchCurrentMinerPubkeyList = (contract) => contract.GetCurrentMinerPubkeyList.call();
+export const getAllTeamDesc = () =>
+  get('/vote/getAllTeamDesc', {
+    isActive: true,
+  });
+export const getTeamDesc = (publicKey) =>
+  get('/vote/getTeamDesc', {
+    publicKey,
+  });
+export const fetchPageableCandidateInformation = (contract, payload) =>
+  contract.GetPageableCandidateInformation.call(payload);
+export const fetchElectorVoteWithRecords = (contract, payload) => contract.GetElectorVoteWithRecords.call(payload);
 export {
   BASE_URL,
   BASE_URL_TDVW,
