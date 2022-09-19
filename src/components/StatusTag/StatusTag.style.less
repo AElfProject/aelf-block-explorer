@@ -1,0 +1,19 @@
+@import 'assets/theme/color.less';
+.status-tag {
+  color: currentColor;
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  &.status-success {
+    color: @jade;
+  }
+  &.status-failed {
+    color: @sunset-orange;
+  }
+  &.status-pending {
+    color: @sun;
+  }
+  &.status-notexisted {
+    color: @silver;
+  }
+}
