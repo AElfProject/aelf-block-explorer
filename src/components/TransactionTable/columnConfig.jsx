@@ -1,16 +1,21 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable camelcase */
 import { Spin, Tag, Tooltip } from "antd";
-import { useState } from "react";
-import Dividends from "../../components/Dividends";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Dividends from "../Dividends";
 import { aelf } from "../../utils";
-import { Link } from "react-router-dom";
 import addressFormat from "../../utils/addressFormat";
 import { getFormattedDate } from "../../utils/timeUtils";
-import StatusTag from "../../components/StatusTag/StatusTag";
-import IconFont from "../../components/IconFont";
+import StatusTag from "../StatusTag/StatusTag";
+import IconFont from "../IconFont";
 import { isPhoneCheck } from "../../utils/deviceCheck";
 
 const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
-  const { quantity = 0, decimals, block_height } = info;
+  const nav = useNavigate();
+  const { quantity = 0, block_height } = info;
   const [confirmations, setConfirmations] = useState(0);
   const [lastBlockLoading, setLastBlockLoading] = useState(true);
   aelf.chain.getChainStatus().then(({ LastIrreversibleBlockHeight }) => {
@@ -25,7 +30,7 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
     } else if (quantity <= 9) {
       amount = `0.0000000${quantity}`;
     } else {
-      amount = quantity / Math.pow(10, 8);
+      amount = quantity / 10 ** 8;
     }
   }
 
@@ -33,7 +38,11 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
     <div className="previewer-card">
       <div className="title">
         <span>Additional Info</span>
-        <a onClick={() => (location.href = `/tx/${text}`)}>
+        <a
+          onClick={() => {
+            nav(`/tx/${text}`);
+          }}
+        >
           See more Details <IconFont type="chakangengduojiantou" />
         </a>
       </div>
@@ -45,7 +54,7 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
         <div className="block">
           <p className="label">Block:</p>
           <div>
-            <a onClick={() => (location.href = `/block/${info.block_height}`)}>
+            <a onClick={() => nav(`/block/${info.block_height}`)}>
               {info.block_height}
             </a>
             {!lastBlockLoading ? (
@@ -174,7 +183,7 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="fee">
-            <Dividends dividends={JSON.parse(text)} />
+            <Dividends dividends={JSON.parse(text || "{}")} />
           </div>
         );
       },

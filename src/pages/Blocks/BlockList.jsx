@@ -12,6 +12,7 @@ import ColumnConfig from "./columnConfig";
 
 import "./BlockList.styles.less";
 import TableLayer from "../../components/TableLayer/TableLayer";
+
 export default function BlockList() {
   const { pathname = "" } = useLocation();
   const isMobile = useMobile();
@@ -39,12 +40,12 @@ export default function BlockList() {
   }, [pathname]);
 
   const fetch = useCallback(
-    async (pageIndex) => {
+    async (page) => {
       setDataLoading(true);
       setDataSource(undefined);
       const data = await get(api, {
         order: "desc",
-        page: pageIndex - 1,
+        page: page - 1,
         limit: pageSize,
       });
 

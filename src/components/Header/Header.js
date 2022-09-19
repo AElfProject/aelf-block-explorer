@@ -1,26 +1,27 @@
+/* eslint-disable camelcase */
 /**
  * @file
  * @author huangzongzhe
  */
-/* eslint-disable fecs-camelcase */
 import React, { PureComponent } from "react";
 import { Menu, Drawer, Divider } from "antd";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import clsx from "clsx";
 
 import "./header.styles.less";
 import { getPathnameFirstSlash } from "@utils/urlUtils";
 import { setIsSmallScreen } from "@actions/common";
+import { MenuOutlined } from "@ant-design/icons";
 import Search from "../Search/Search";
 import ChainSelect from "../ChainSelect/ChainSelect";
-import config, { CHAIN_ID, NETWORK_TYPE } from "../../../config/config";
+import config, { NETWORK_TYPE } from "../../../config/config";
 import CHAIN_STATE from "../../../config/configCMS.json";
 import { isPhoneCheck } from "../../utils/deviceCheck";
 import HeaderTop from "./HeaderTop";
 import IconFont from "../IconFont";
 import NetSelect from "../NetSelect/NetSelect";
 import { getCMSDelayRequest } from "../../utils/getCMS";
-import { MenuOutlined } from "@ant-design/icons";
 
 const networkList = [
   {
@@ -56,16 +57,35 @@ class BrowserHeader extends PureComponent {
       showMobileMenu: false,
       chainList: CHAINS_LIST,
       current:
-        location.pathname === "/"
+        window.location.pathname === "/"
           ? "/home"
-          : getPathnameFirstSlash(location.pathname),
+          : getPathnameFirstSlash(window.location.pathname),
     };
     this.isPhone = isPhoneCheckWithWindow();
     this.handleResize = this.handleResize.bind(this);
   }
 
+  // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
+
+
+  componentDidMount() {
+    this.setSeleted();
+    this.handleResize();
+    this.fetchChainList();
+
+    window.addEventListener("scroll", this.handleScroll.bind(this));
+    window.addEventListener("resize", this.handleResize);
+  }
+
+
+
+  componentWillUnmount() {
+    clearInterval(this.timerInterval);
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
   getSearchStatus() {
-    const { pathname } = location;
+    const { pathname } = window.location;
     let showSearch = false;
     if (pathname === "/" && document.body.offsetWidth > 768) {
       const { scrollTop } = document.documentElement;
@@ -83,10 +103,9 @@ class BrowserHeader extends PureComponent {
     return showSearch;
   }
 
-  // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
   setSeleted() {
     this.timerInterval = setInterval(() => {
-      let pathname = `/${location.pathname.split("/")[1]}`;
+      let pathname = `/${window.location.pathname.split("/")[1]}`;
       const { current } = this.state;
       pathname = pathname === "/" ? "/home" : pathname;
       const whiteList = [
@@ -101,7 +120,7 @@ class BrowserHeader extends PureComponent {
 
       if (target && current !== target[1]) {
         // white list
-        pathname = target[1];
+        [pathname] = target;
         this.setState({
           current: pathname,
           showSearch,
@@ -118,52 +137,6 @@ class BrowserHeader extends PureComponent {
         });
       }
     }, this.interval);
-  }
-
-  componentDidMount() {
-    this.setSeleted();
-    this.handleResize();
-    this.fetchChainList();
-
-    window.addEventListener("scroll", this.handleScroll.bind(this));
-    window.addEventListener("resize", this.handleResize);
-  }
-
-  // fetch chain list by network
-  async fetchChainList() {
-    const data = await getCMSDelayRequest(0);
-    if (data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at)
-      this.setState({
-        chainList: data.chainItem,
-      });
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerInterval);
-    window.removeEventListener("scroll", this.handleScroll);
-  }
-
-  handleScroll() {
-    if (location.pathname === "/") {
-      const showSearch = this.getSearchStatus();
-
-      if (showSearch !== this.state.showSearch) {
-        this.setState({
-          showSearch,
-        });
-      }
-    }
-  }
-
-  handleResize() {
-    const { setIsSmallScreen, isSmallScreen } = this.props;
-    const { offsetWidth } = document.body;
-
-    const newIsMobile = offsetWidth <= 768;
-
-    if (newIsMobile !== isSmallScreen) {
-      setIsSmallScreen(newIsMobile);
-    }
   }
 
   handleClick = (e) => {
@@ -178,6 +151,47 @@ class BrowserHeader extends PureComponent {
       });
     }, this.interval);
   };
+
+  handleResize() {
+    const { setIsSmallScreen: mySetIsSmallScreen, isSmallScreen } = this.props;
+    const { offsetWidth } = document.body;
+
+    const newIsMobile = offsetWidth <= 768;
+
+    if (newIsMobile !== isSmallScreen) {
+      mySetIsSmallScreen(newIsMobile);
+    }
+  }
+
+  handleScroll() {
+    if (window.location.pathname === "/") {
+      const showSearch = this.getSearchStatus();
+
+      const { showSearch: stateShowSearch } = this.state
+
+      if (showSearch !== stateShowSearch) {
+        this.setState({
+          showSearch,
+        });
+      }
+    }
+  }
+
+  // fetch chain list by network
+  async fetchChainList() {
+    const data = await getCMSDelayRequest(0);
+    if (data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at)
+      this.setState({
+        chainList: data.chainItem,
+      });
+  }
+
+  toggleMenu() {
+    const { showMobileMenu } = this.state
+    this.setState({
+      showMobileMenu: !showMobileMenu,
+    });
+  }
 
   renderPhoneMenu() {
     const networkHTML = networkList.map((item) => {
@@ -205,6 +219,7 @@ class BrowserHeader extends PureComponent {
   }
 
   renderMenu(menuMode, showMenu = true) {
+    const { current } = this.state
     const nodeInfo = JSON.parse(localStorage.getItem("currentChain"));
     const { chain_id } = nodeInfo;
 
@@ -233,7 +248,7 @@ class BrowserHeader extends PureComponent {
       <Menu
         style={{ minWidth: 0, flex: "auto" }}
         onClick={this.handleClick}
-        selectedKeys={[this.state.current]}
+        selectedKeys={[current]}
         mode={menuMode}
         key='navbar'
         className={menuClass}
@@ -287,7 +302,7 @@ class BrowserHeader extends PureComponent {
         </SubMenu>
 
         <Menu.Item key='/token'>
-          <Link to='/token'>Token</Link>
+          <Link to='/tokens'>Token</Link>
         </Menu.Item>
         <SubMenu
           key='GOVERNANCE'
@@ -324,12 +339,6 @@ class BrowserHeader extends PureComponent {
     );
   }
 
-  toggleMenu() {
-    this.setState({
-      showMobileMenu: !this.state.showMobileMenu,
-    });
-  }
-
   renderMobileMore() {
     return (
       <div
@@ -346,12 +355,13 @@ class BrowserHeader extends PureComponent {
   }
 
   renderDrawerMenu(menuMode, showMenu = true) {
+    const { chainList } = this.state
     return (
       <Drawer
         getContainer={false}
         visible={showMenu}
         placement='right'
-        width={"80%"}
+        width="80%"
         closable={false}
         className={`header-drawer-menu-wrapper ${NETWORK_TYPE === "MAIN" ? "header-main-drawer-menu-wrapper" : ""
           }`}
@@ -370,7 +380,7 @@ class BrowserHeader extends PureComponent {
           </>
         }
       >
-        <NetSelect chainList={this.state.chainList} />
+        <NetSelect chainList={chainList} />
         {this.renderMenu(menuMode, showMenu)}
       </Drawer>
     );
@@ -379,55 +389,48 @@ class BrowserHeader extends PureComponent {
   render() {
     const menuMode = this.isPhone ? "inline" : "horizontal";
     const mobileMoreHTML = this.isPhone ? this.renderMobileMore() : "";
-    console.log(this.isPhone, "==this.isPhone");
+    const { showMobileMenu, showSearch, chainList } = this.state
+
     let menuHtml;
     if (this.isPhone) {
-      menuHtml = this.renderDrawerMenu(menuMode, this.state.showMobileMenu);
+      menuHtml = this.renderDrawerMenu(menuMode, showMobileMenu);
     } else {
       menuHtml = this.renderMenu(menuMode);
     }
 
-    const headerClass = this.isPhone
-      ? "header-container header-container-mobile"
-      : "header-container";
-    const networkClass = this.isPhone
-      ? NETWORK_TYPE === "MAIN"
-        ? " header-main-container-mobile"
-        : ""
-      : NETWORK_TYPE === "MAIN"
-        ? " header-main-container"
-        : "";
-    const onlyMenu = this.state.showSearch ? "" : "only-menu ";
-    const isMainNet = NETWORK_TYPE === "MAIN" ? "main-net" : "test-net";
+    const isMain = NETWORK_TYPE === "MAIN"
+    const headerClass = clsx('header-container', this.isPhone && 'header-container-mobile');
+
+    const networkClass = clsx(isMain && `header-main-container${this.isPhone ? '-mobile' : ''}`)
+
+    const onlyMenu = showSearch ? "" : "only-menu ";
+    const isMainNet = isMain ? "main-net" : "test-net";
 
     return (
-      <div className={"header-fixed-container " + onlyMenu + isMainNet}>
+      <div className={`header-fixed-container ${onlyMenu}${isMainNet}`}>
         <div>
           {!this.isPhone && (
             <HeaderTop
-              showSearch={this.state.showSearch}
-              headerClass={headerClass}
+              showSearch={showSearch}
+              headerClass={clsx(headerClass)}
               menuMode={menuMode}
               networkList={networkList}
             />
           )}
-          <div className={headerClass + networkClass}>
+          <div className={clsx(headerClass, networkClass)}>
             {mobileMoreHTML}
 
             <nav
-              className={
-                "header-navbar " +
-                (NETWORK_TYPE === "MAIN" ? "header-main-navbar" : "")
-              }
+              className={clsx('header-navbar', isMain && "header-main-navbar")}
             >
               {menuHtml}
-              {this.isPhone && this.state.showSearch && (
+              {this.isPhone && showSearch && (
                 <div className='search-mobile-container'>
                   <Search />
                 </div>
               )}
               {!this.isPhone && (
-                <ChainSelect chainList={this.state.chainList} />
+                <ChainSelect chainList={chainList} />
               )}
             </nav>
           </div>
