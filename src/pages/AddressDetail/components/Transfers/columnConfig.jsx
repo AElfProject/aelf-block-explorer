@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
@@ -17,7 +19,7 @@ const getColumnConfig = ({
   return [
     {
       title: "Txn Hash",
-      width: isMobile ? 149 : 174,
+      width: isMobile ? 149 : 206,
       ellipsis,
       dataIndex: "txId",
       className: "color-blue",
@@ -27,7 +29,7 @@ const getColumnConfig = ({
     },
     {
       dataIndex: "time",
-      width: isMobile ? 156 : 162,
+      width: isMobile ? 156 : 190,
       title: (
         <div className="time" onClick={handleFormatChange}>
           {timeFormat} <IconFont type="change" />
@@ -57,11 +59,11 @@ const getColumnConfig = ({
     {
       title: "Interacted With (To )",
       dataIndex: "to",
-      width: isMobile ? 140 : 126,
+      width: isMobile ? 140 : 224,
       ellipsis,
       className: "color-blue",
       render(to) {
-        return <Link to={`/address/${to}`}>{`ELF_${to}_${CHAIN_ID}`}</Link>;
+        return <Link className="to" to={`/address/${to}`}>{`ELF_${to}_${CHAIN_ID}`}</Link>;
       },
     },
     {
@@ -70,6 +72,7 @@ const getColumnConfig = ({
       width: isMobile ? 96 : 150,
       render(amount, record) {
         const num = Number(amount);
+        // eslint-disable-next-line eqeqeq
         if (num == num.toFixed(2))
           return `${Number(amount).toFixed(2)} ${record.symbol}`;
         return (
@@ -82,6 +85,7 @@ const getColumnConfig = ({
     {
       title: "Txn Fee",
       dataIndex: "txFee",
+      align: "right",
       width: isMobile ? 96 : 120,
       render(fee) {
         return <Dividends dividends={fee} />;

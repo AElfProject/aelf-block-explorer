@@ -111,7 +111,7 @@ export default function Holders() {
           columns={columns}
           loading={dataLoading}
           dataSource={dataSource}
-          rowKey="id"
+          rowKey="owner"
           pagination={false}
         />
       </TableLayer>
