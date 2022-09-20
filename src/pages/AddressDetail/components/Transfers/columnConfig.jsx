@@ -63,7 +63,12 @@ const getColumnConfig = ({
       ellipsis,
       className: "color-blue",
       render(to) {
-        return <Link className="to" to={`/address/${to}`}>{`ELF_${to}_${CHAIN_ID}`}</Link>;
+        return (
+          <Link
+            className="to"
+            to={`/address/${to}`}
+          >{`ELF_${to}_${CHAIN_ID}`}</Link>
+        );
       },
     },
     {
@@ -76,7 +81,7 @@ const getColumnConfig = ({
         if (num == num.toFixed(2))
           return `${Number(amount).toFixed(2)} ${record.symbol}`;
         return (
-          <Tooltip title={`${Number(amount)} ${record.symbol}`}>
+          <Tooltip title={`${amount} ${record.symbol}`}>
             {`${Number(amount).toFixed(2)} ${record.symbol}`}
           </Tooltip>
         );
