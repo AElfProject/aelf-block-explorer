@@ -120,7 +120,8 @@ class BrowserHeader extends PureComponent {
 
       if (target && current !== target[1]) {
         // white list
-        [pathname] = target;
+        [, pathname] = target;
+        console.log('first')
         this.setState({
           current: pathname,
           showSearch,
