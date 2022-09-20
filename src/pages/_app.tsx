@@ -56,7 +56,7 @@ getNodesInfo();
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const pathKey = router.asPath.split('/')[2];
-  const flag = PROPOSAL_URL.includes(pathKey);
+  const flag = router.asPath.split('/')[1] === 'proposal' && PROPOSAL_URL.includes(pathKey);
   pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
     // <SafeHydrate>

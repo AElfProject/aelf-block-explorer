@@ -21,9 +21,8 @@ const CHAINS_LINK_NAMES = {
 const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
 const APPNAME = 'explorer.aelf.io';
 const commonPrivateKey = '0000000000000000000000000000000000000000000000000000000000000001';
-//const DEFAUTRPCSERVER = `${location?.protocol}//${location?.host}/chain`;
-const DEFAUTRPCSERVER = `/chain`;
-
+// const DEFAUTRPCSERVER = typeof window !== 'undefined' ? `${window?.location?.protocol}//${window?.location?.host}/chain` : '/chain';
+const DEFAUTRPCSERVER = `https://explorer-test.aelf.io/chain`;
 module.exports = {
   DEFAUTRPCSERVER,
   commonPrivateKey,

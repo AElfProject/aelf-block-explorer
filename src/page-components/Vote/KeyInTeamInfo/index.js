@@ -357,7 +357,7 @@ class KeyInTeamInfo extends PureComponent {
             ...submitValues,
           }).then((res) => {
             if (+res.code === 0) {
-              this.props.navigate(`/vote/team?pubkey=${publicKey}`);
+              this.props.router.push(`/vote/team?pubkey=${publicKey}`);
             } else {
               message.error(res.msg);
             }
@@ -371,7 +371,7 @@ class KeyInTeamInfo extends PureComponent {
   }
 
   handleBack() {
-    this.props.navigate(-1);
+    this.props.router.back();
   }
 
   render() {

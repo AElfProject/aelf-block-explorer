@@ -17,7 +17,7 @@ import { thousandsCommaWithDecimal } from 'utils/formater';
 import getContractAddress from 'utils/getContractAddress';
 import DownloadPlugins from 'components/DownloadPlugins/DownloadPlugins';
 import config, { APPNAME, schemeIds } from 'constants/config/config';
-import { aelf } from 'utils/utils';
+import { aelf } from 'utils/axios';
 import contractsStore from 'redux/features/vote/contracts';
 import Decimal from 'decimal.js';
 import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from 'constants/config/config';
@@ -54,6 +54,7 @@ const voteConfirmFormItemLayout = {
 };
 
 class VoteContainer extends Component {
+  debugger
   constructor(props) {
     super(props);
     this.state = {

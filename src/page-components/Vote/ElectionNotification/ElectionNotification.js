@@ -326,7 +326,7 @@ class ElectionNotification extends PureComponent {
               getStateJudgment(status, transactionId);
               judgeCurrentUserIsCandidate();
               if (status === txStatusInUpperCase.mined) {
-                this.props.navigate(`/vote/apply/keyin?pubkey=${currentWallet && currentWallet.pubkey}`);
+                this.props.router.push(`/vote/apply/keyin?pubkey=${currentWallet && currentWallet.pubkey}`);
               }
             } catch (e) {
               console.log(e);
