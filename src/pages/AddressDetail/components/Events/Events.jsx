@@ -25,14 +25,15 @@ export default function Events() {
     () => [
       {
         title: "Txn Hash",
-        width: 176,
+        width: 192,
         ellipsis: true,
         dataIndex: "txId",
+        className: 'color-blue',
         render(txId) {
           return <Link to={`/tx/${txId}`}>{txId}</Link>;
         },
       },
-      { title: "Method", width: 180, ellipsis: true, dataIndex: "name" },
+      { title: "Method", width: 196, ellipsis: true, dataIndex: "name" },
       {
         title: "Logs",
         dataIndex: "data",
