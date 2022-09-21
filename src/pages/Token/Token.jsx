@@ -24,7 +24,7 @@ export default function Token() {
     if (result?.symbol === symbol) {
       setTokenInfo(result);
     } else {
-      nav("/search-failed");
+      nav(`/search-invalid/${symbol}`);
     }
   }, [symbol]);
 

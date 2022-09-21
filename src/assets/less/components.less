@@ -94,6 +94,16 @@
 .ant-tabs {
   color: @scorpion;
 }
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-nav-wrap {
+  &::after {
+    width: 40px;
+    box-shadow: inset -32px 0px 24px 0px rgba(255, 255, 255, 0.71);
+  }
+  &::before {
+    width: 40px;
+    box-shadow: inset 32px 0px 24px 0px rgba(255, 255, 255, 0.71);
+  }
+}
 .ant-tabs-bottom > .ant-tabs-nav,
 .ant-tabs-bottom > div > .ant-tabs-nav,
 .ant-tabs-top > .ant-tabs-nav,
