@@ -1,7 +1,7 @@
 const withLess = require('next-with-less');
 const path = require('path');
 const withAntdLess = require('next-plugin-antd-less');
-const { NEXT_PUBLIC_CSS_APP_PREFIX, NEXT_PUBLIC_BUNDLE_ANALYZER } = process.env;
+const { NEXT_PUBLIC_CSS_APP_PREFIX, NEXT_PUBLIC_BUNDLE_ANALYZER, NEXT_PUBLIC_CSS_EXAMPLE_PREFIX } = process.env;
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: NEXT_PUBLIC_BUNDLE_ANALYZER === 'true',
 });
@@ -22,7 +22,6 @@ const {
 } = require('./util.js');
 
 const copies = [];
-
 module.exports = [
   [withBundleAnalyzer],
   [
@@ -31,10 +30,10 @@ module.exports = [
       lessLoaderOptions: {
         lessOptions: {
           javascriptEnabled: true,
-          modifyVars: {
-            '@app-prefix': NEXT_PUBLIC_CSS_APP_PREFIX,
+          modifyVars: Object.assign(getLessVariables(path.resolve(ROOT, 'src/assets/theme/color.less')), {
+            '@app-prefix': NEXT_PUBLIC_CSS_EXAMPLE_PREFIX,
             '@ant-prefix': NEXT_PUBLIC_CSS_APP_PREFIX,
-          },
+          }),
         },
       },
       images: {
@@ -66,6 +65,21 @@ module.exports = [
               },
             ],
           },
+          // {
+          //   test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          //   use: [
+          //     {
+          //       loader: 'babel-loader',
+          //     },
+          //     {
+          //       loader: '@svgr/webpack',
+          //       options: {
+          //         babel: false,
+          //         icon: true,
+          //       },
+          //     },
+          //   ],
+          // },
         );
         config.plugins.push(
           // new HtmlWebpackPlugin({
