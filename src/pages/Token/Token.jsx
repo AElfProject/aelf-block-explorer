@@ -20,7 +20,9 @@ export default function Token() {
   const [tokenInfo, setTokenInfo] = useState(undefined);
   const [price, setPrice] = useState(0);
   const fetchTokenInfo = useCallback(async () => {
-    const result = await getTokenAllInfo(symbol);
+    const result = await getTokenAllInfo(symbol).catch(() => {
+      nav("/search-failed");
+    });
     if (result?.symbol === symbol) {
       setTokenInfo(result);
     } else {
