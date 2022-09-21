@@ -44,7 +44,7 @@ export const PageRouter = () =>
       { path: "/vote/*", element: <VotePage /> },
       { path: "/resource", element: <Resource /> },
       { path: "/resourceDetail/:id", element: <ResourceDetail /> },
-      { path: "/tokens", element: <Tokens /> },
+      { path: "/token", element: <Tokens /> },
       { path: "/token/:symbol", element: <TokenInfo /> },
       { path: "/search-invalid/:string", element: <SearchInvalid /> },
       { path: "/search-invalid/*", element: <SearchInvalid /> },

@@ -302,7 +302,7 @@ class BrowserHeader extends PureComponent {
         </SubMenu>
 
         <Menu.Item key='/token'>
-          <Link to='/tokens'>Token</Link>
+          <Link to='/token'>Token</Link>
         </Menu.Item>
         <SubMenu
           key='GOVERNANCE'

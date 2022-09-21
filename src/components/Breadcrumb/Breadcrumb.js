@@ -12,7 +12,7 @@ const NO_BREADCRUMB_PAGES = [
   "/proposal",
   "/address",
   "/contracts",
-  "/tokens",
+  "/token",
 ];
 const noBreadcrumb = (pathname) => {
   const isMainPage = pathname === "/";
@@ -45,7 +45,7 @@ const BREADCRUMB_NAME_MAP = {
   "/resourceDetail": "Resource Detail List",
   "/contracts": "Contract",
   "/proposal": "Proposal",
-  "/tokens": "Token",
+  "/token": "Token",
   myvote: "My Vote",
   '/search-invalid': ''
 };
@@ -135,8 +135,8 @@ const BREADCRUMB_NAMES_TATE = {
       name: ["Proposal"],
     },
     token: {
-      url: ["/tokens", false],
-      name: [BREADCRUMB_NAME_MAP["/tokens"]],
+      url: ["/token", false],
+      name: [BREADCRUMB_NAME_MAP["/token"]],
     },
   },
 };
@@ -300,7 +300,6 @@ class BrowserBreadcrumb extends Component {
       || pathname.includes('/search-failed')
       || pathname.includes('/accounts')
       || pathname.includes('/contracts')
-      || pathname.includes('/tokens')
       || pathname.includes('/token')) {
       return <></>
     }
