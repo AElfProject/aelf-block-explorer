@@ -49,7 +49,7 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
       <div className="bottom">
         <div className="status">
           <p className="label">Status:</p>
-          <StatusTag status={info.tx_status} />
+          <StatusTag status={info.tx_status || "MINED"} />
         </div>
         <div className="block">
           <p className="label">Block:</p>
