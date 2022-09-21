@@ -300,6 +300,7 @@ class BrowserBreadcrumb extends Component {
       || pathname.includes('/search-failed')
       || pathname.includes('/accounts')
       || pathname.includes('/contracts')
+      || pathname.includes('/contract')
       || pathname.includes('/token')) {
       return <></>
     }
