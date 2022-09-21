@@ -52,6 +52,7 @@ export const PageRouter = () =>
       { path: "/accounts", element: <Accounts /> },
       // { path: "/contract", element: <Accounts /> },
       { path: "/address/:address", element: <AddressDetail /> },
+      { path: "/contract/:address", element: <AddressDetail /> },
       { path: "/address/:address/:codeHash", element: <AddressDetail /> },
       { path: "/contracts", element: <Contracts /> },
       { path: "*", element: <Navigate to='/' /> },
