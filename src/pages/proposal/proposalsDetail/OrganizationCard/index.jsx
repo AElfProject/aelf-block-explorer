@@ -5,8 +5,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Card, Row, Col } from 'antd';
-import { getOrganizationLeftInfo, getCircleValues } from '../../OrganizationList/Organization';
-import constants, { organizationInfoPropTypes } from '../page-components/Proposal/common/constants';
+import { getOrganizationLeftInfo, getCircleValues } from '../../organizations/Organization';
+import constants, { organizationInfoPropTypes } from 'page-components/Proposal/common/constants';
 
 const { proposalActions } = constants;
 

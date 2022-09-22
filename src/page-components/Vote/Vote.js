@@ -54,7 +54,6 @@ const voteConfirmFormItemLayout = {
 };
 
 class VoteContainer extends Component {
-  debugger
   constructor(props) {
     super(props);
     this.state = {

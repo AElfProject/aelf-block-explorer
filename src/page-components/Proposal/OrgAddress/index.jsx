@@ -9,7 +9,8 @@ import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import config from 'constants/viewerApi';
 import { setCurrentOrg } from 'redux/features/proposal/proposalDetail';
-import './index.less';
+import { proposalModifyAction } from 'redux/features/proposal/proposalModify';
+require('./index.less');
 
 const OrgAddress = (props) => {
   const dispatch = useDispatch();
@@ -17,10 +18,12 @@ const OrgAddress = (props) => {
   const { orgAddress, proposalType } = props;
   function handleClick() {
     dispatch(
-      setCurrentOrg({
-        orgAddress,
-        proposalType,
-      }),
+      proposalModifyAction(
+        setCurrentOrg({
+          orgAddress,
+          proposalType,
+        }),
+      ),
     );
     router.push(`/proposal/apply/${orgAddress}`);
   }

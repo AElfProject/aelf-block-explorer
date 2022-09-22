@@ -5,6 +5,9 @@
 import { message } from 'antd';
 import moment from 'moment';
 import constants from './constants';
+import { request } from 'utils/request';
+import { API_PATH } from 'constants/viewerApi';
+import { deserializeLog } from 'utils/utils';
 
 const { viewer } = constants;
 
@@ -213,4 +216,62 @@ export const commonFilter = (input, option) => option.props.children.toLowerCase
 
 export function getCsrfToken() {
   return document.cookie.replace(/(?:(?:^|.*;\s*)csrfToken\s*\=\s*([^;]*).*$)|^.*$/, '$1');
+}
+
+export async function updateContractName(wallet, currentWallet, params) {
+  const signedParams = await getSignParams(wallet, currentWallet);
+  if (Object.keys(signedParams).length > 0) {
+    return request(
+      API_PATH.UPDATE_CONTRACT_NAME,
+      {
+        ...params,
+        ...signedParams,
+      },
+      {
+        headers: {
+          'x-csrf-token': getCsrfToken(),
+        },
+      },
+    );
+  }
+  throw new Error('get signature failed');
+}
+
+export async function addContractName(wallet, currentWallet, params) {
+  const signedParams = await getSignParams(wallet, currentWallet);
+  if (Object.keys(signedParams).length > 0) {
+    return request(
+      API_PATH.ADD_CONTRACT_NAME,
+      {
+        ...params,
+        ...signedParams,
+      },
+      {
+        headers: {
+          'x-csrf-token': getCsrfToken(),
+        },
+      },
+    );
+  }
+  throw new Error('get signature failed');
+}
+
+export async function getDeserializeLog(aelf, txId, logName) {
+  if (!txId) throw new Error('Transaction failed. Please reinitiate this step.');
+  const txResult = await getTxResult(aelf, txId ?? '');
+  if (txResult.Status === 'MINED') {
+    const { Logs = [] } = txResult;
+    const log = (Logs || []).filter((v) => v.Name === logName);
+    if (log.length === 0) {
+      return;
+    }
+    const result = await deserializeLog(log[0], log[0].Name, log[0].Address);
+    // eslint-disable-next-line consistent-return
+    return result;
+  }
+}
+
+export function getContractURL(address) {
+  // eslint-disable-next-line max-len
+  return `${window.location.protocol}//${window.location.host}/contract/${address}`;
 }

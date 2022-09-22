@@ -5,8 +5,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Card } from 'antd';
-import VoteChart from '../../../components/VoteChart';
-import constants, { organizationInfoPropTypes } from '../page-components/Proposal/common/constants';
+import VoteChart from 'page-components/Proposal/VoteChart';
+import constants, { organizationInfoPropTypes } from 'page-components/Proposal/common/constants';
 
 const { proposalStatus, proposalTypes } = constants;
 

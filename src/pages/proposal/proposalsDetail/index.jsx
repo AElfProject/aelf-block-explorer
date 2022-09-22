@@ -7,7 +7,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Tag, Button, Divider, PageHeader, Skeleton, Result, Row, Col, Tabs, Typography } from 'antd';
 import { useSelector } from 'react-redux';
-import { ACTIONS_ICON_MAP } from '../ProposalList/Proposal';
+import { ACTIONS_ICON_MAP } from '../proposals/Proposal';
 import constants, {
   ACTIONS_COLOR_MAP,
   API_PATH,
@@ -17,7 +17,7 @@ import constants, {
   STATUS_COLOR_MAP,
   PROPOSAL_STATUS_CAPITAL,
 } from 'page-components/Proposal/common/constants';
-import { request } from 'common/request';
+import { request } from 'utils/request';
 import VoteData from './VoteData';
 import VoteDetail from './VoteDetail';
 import OrganizationCard from './OrganizationCard';
@@ -26,8 +26,10 @@ import config from 'constants/viewerApi';
 require('./index.less');
 import { getContractAddress, sendTransaction } from 'page-components/Proposal/common/utils';
 import ApproveTokenModal from 'page-components/Proposal/ApproveTokenModal';
-import { isPhoneCheck, sendHeight, validateURL } from '../../../../common/utils';
+import { isPhoneCheck } from 'utils/deviceCheck';
+import { sendHeight, validateURL } from 'utils/utils';
 import { PRIMARY_COLOR } from 'constants';
+import { useRouter } from 'next/router';
 
 const { viewer } = config;
 const { Title } = Typography;
