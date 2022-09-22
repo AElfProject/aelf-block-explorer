@@ -1,4 +1,5 @@
 import React from "react";
+import { numberFormatter } from "../../../utils/formater";
 
 export default function Overview({ elfBalance, prices }) {
   return (
@@ -8,16 +9,16 @@ export default function Overview({ elfBalance, prices }) {
         <p>
           <span className="label">Balance</span>
           <span className="value">
-            {elfBalance ? `${Number(elfBalance).toLocaleString()} ELF` : "-"}
+            {elfBalance ? `${numberFormatter(elfBalance)} ELF` : "-"}
           </span>
         </p>
         <p>
           <span className="label">Value in USD</span>
           <span className="value">
             {elfBalance && prices.ELF
-              ? `$${(prices.ELF * elfBalance).toLocaleString()}(@ $${
-                  prices.ELF
-                }/ELF)`
+              ? `$${numberFormatter(
+                  prices.ELF * elfBalance
+                )}(@ $${numberFormatter(prices.ELF)}/ELF)`
               : "-"}
           </span>
         </p>

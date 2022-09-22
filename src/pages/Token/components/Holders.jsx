@@ -7,6 +7,7 @@ import TableLayer from "../../../components/TableLayer/TableLayer";
 import AddressLink from "../../../components/AddressLink";
 import { get } from "../../../utils";
 import { VIEWER_ACCOUNT_LIST } from "../../../api/url";
+import { numberFormatter } from "../../../utils/formater";
 
 export default function Holders() {
   const isMobile = useMobile();
@@ -51,7 +52,7 @@ export default function Holders() {
         width: isMobile ? 156 : 280,
         dataIndex: "balance",
         render(balance) {
-          return `${balance} ELF`;
+          return `${numberFormatter(balance)} ELF`;
         },
       },
       {

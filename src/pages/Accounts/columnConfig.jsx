@@ -1,5 +1,6 @@
 import React from "react";
 import AddressLink from "../../components/AddressLink";
+import { numberFormatter } from "../../utils/formater";
 
 export default ({ isMobile, preTotal }) => {
   return [
@@ -16,6 +17,7 @@ export default ({ isMobile, preTotal }) => {
       dataIndex: "owner",
       width: isMobile ? 216 : 320,
       ellipsis: true,
+      className: "color-blue",
       render: (address) => <AddressLink address={address} />,
     },
     {
@@ -23,7 +25,7 @@ export default ({ isMobile, preTotal }) => {
       dataIndex: "balance",
       width: isMobile ? 156 : 300,
       render(balance, record) {
-        return `${Number(balance).toLocaleString()} ${record.symbol}`;
+        return `${numberFormatter(balance)} ${record.symbol}`;
       },
     },
     {

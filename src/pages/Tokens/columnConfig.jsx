@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { numberFormatter } from "../../utils/formater";
 
 const getColumnConfig = (isMobile, preTotal) => {
   return [
@@ -24,7 +25,7 @@ const getColumnConfig = (isMobile, preTotal) => {
       dataIndex: "totalSupply",
       width: isMobile ? 156 : 230,
       render(totalSupply, record) {
-        return `${totalSupply} ${record.symbol}`;
+        return `${numberFormatter(totalSupply)} ${record.symbol}`;
       },
     },
     {
@@ -32,7 +33,7 @@ const getColumnConfig = (isMobile, preTotal) => {
       dataIndex: "supply",
       width: isMobile ? 156 : 260,
       render(supply, record) {
-        return `${supply} ${record.symbol}`;
+        return `${numberFormatter(supply)} ${record.symbol}`;
       },
     },
     {

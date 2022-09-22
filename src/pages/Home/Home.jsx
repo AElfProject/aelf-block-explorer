@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useCallback } from "react";
-import { useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import TPSChart from "../../components/TPSChart/TPSChart";
 import {
   ALL_BLOCKS_API_URL,
@@ -16,15 +14,16 @@ import Search from "./components/Search";
 import useMobile from "../../hooks/useMobile";
 import { CHAIN_ID } from "../../../config/config.json";
 
+import "./home.styles.less";
+import { initSocket } from "./socket";
+import { NETWORK_TYPE } from "../../../config/config";
+
 const PAGE_SIZE = 25;
 
 const TokenIcon = require("../../assets/images/tokenLogo.png");
 
 let blockHeight = 0;
 
-import "./home.styles.less";
-import { initSocket } from "./socket";
-import { NETWORK_TYPE } from "../../../config/config";
 export default function Home() {
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
@@ -105,13 +104,13 @@ export default function Home() {
 
   const initBlock = useCallback(async () => {
     const blocksResult = await fetch(ALL_BLOCKS_API_URL);
-    const blocks = blocksResult.blocks;
+    const { blocks } = blocksResult;
     setBlocks(blocks);
   }, []);
 
   const initTxs = useCallback(async () => {
     const TXSResult = await fetch(ALL_TXS_API_URL);
-    const transactions = TXSResult.transactions;
+    const { transactions } = TXSResult;
     const totalTransactions = TXSResult.total;
     setTransactions(transactions);
     setLocalTransactions(totalTransactions);
@@ -189,9 +188,9 @@ export default function Home() {
 
   return (
     <div
-      className={
-        "home-container basic-container-new " + (isMobile ? "mobile" : "")
-      }
+      className={`home-container basic-container-new ${
+        isMobile ? "mobile" : ""
+      }`}
     >
       <section className="banner-section">
         <h2>AELF Explorer</h2>
@@ -200,7 +199,7 @@ export default function Home() {
           <div className="price-info">
             <img src={TokenIcon} />
             <span className="price">$ {price.USD}</span>
-            <span className={"range " + (range >= 0 ? "rise" : "fall")}>
+            <span className={`range ${range >= 0 ? "rise" : "fall"}`}>
               {range >= 0 ? "+" : ""}
               {range.toFixed(2)}%
             </span>

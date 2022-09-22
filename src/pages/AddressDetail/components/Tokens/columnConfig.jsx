@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import React from "react";
+import { numberFormatter } from "../../../../utils/formater";
 
 export default ({ prices, isMobile }) => {
   return [
@@ -16,9 +17,7 @@ export default ({ prices, isMobile }) => {
       dataIndex: "balance",
       width: isMobile ? 90 : 356,
       render(balance) {
-        return Number(balance).toLocaleString(undefined, {
-          maximumFractionDigits: 8,
-        });
+        return numberFormatter(balance);
       },
     },
     {
@@ -27,9 +26,7 @@ export default ({ prices, isMobile }) => {
       width: isMobile ? 70 : 300,
       render(symbol) {
         if ((symbol, prices))
-          return prices[symbol]
-            ? `$${Number(prices[symbol]).toLocaleString()}`
-            : "-";
+          return prices[symbol] ? `$${numberFormatter(prices[symbol])}` : "-";
         return "-";
       },
     },
@@ -41,7 +38,7 @@ export default ({ prices, isMobile }) => {
       render(symbol, record) {
         if ((symbol, prices))
           return prices[symbol]
-            ? `$${(prices[symbol] * Number(record.balance)).toLocaleString()}`
+            ? `$${numberFormatter(prices[symbol] * record.balance)}`
             : "-";
         return "-";
       },

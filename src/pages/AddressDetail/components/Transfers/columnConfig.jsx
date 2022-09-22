@@ -3,11 +3,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import { Tag, Tooltip } from "antd";
+import { Tag } from "antd";
 import { CHAIN_ID } from "../../../../constants";
 import Dividends from "../../../../components/Dividends";
 import IconFont from "../../../../components/IconFont";
 import { getFormattedDate } from "../../../../utils/timeUtils";
+import { numberFormatter } from "../../../../utils/formater";
 
 const getColumnConfig = ({
   address,
@@ -76,15 +77,7 @@ const getColumnConfig = ({
       dataIndex: "amount",
       width: isMobile ? 96 : 150,
       render(amount, record) {
-        const num = Number(amount);
-        // eslint-disable-next-line eqeqeq
-        if (num == num.toFixed(2))
-          return `${Number(amount).toFixed(2)} ${record.symbol}`;
-        return (
-          <Tooltip title={`${amount} ${record.symbol}`}>
-            {`${Number(amount).toFixed(2)} ${record.symbol}`}
-          </Tooltip>
-        );
+        return `${numberFormatter(amount)} ${record.symbol}`;
       },
     },
     {

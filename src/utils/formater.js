@@ -10,8 +10,16 @@ import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from "@src/constants";
 
 const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
-  return (value + "").replace(reg, "$&,");
+  return (`${value}`).replace(reg, "$&,");
 };
+
+const numberFormatter = (number) => {
+  const num = Number(number)
+  if (Number.isNaN(num)) {
+    return number
+  }
+  return num.toLocaleString(undefined, { maximumFractionDigits: 8 })
+}
 
 const addUrlPrefix = (url) => `https://${url}`;
 
@@ -42,6 +50,7 @@ const centerEllipsis = (str) => {
 
 export {
   thousandsComma,
+  numberFormatter,
   addUrlPrefix,
   removeUrlPrefix,
   thousandsCommaWithDecimal,
