@@ -10,13 +10,15 @@ const AddressLink = (props) => {
   const { address, suffix } = props;
 
   return (
-    <Link
-      to={`/address/${address}`}
-      title={`ELF_${address}_${config.viewer.chainId}`}
-    >
-      {`ELF_${address}_${config.viewer.chainId}`}
+    <div>
+      <Link
+        to={`/address/${address}`}
+        title={`ELF_${address}_${config.viewer.chainId}`}
+      >
+        {`ELF_${address}_${config.viewer.chainId}`}
+      </Link>
       {suffix}
-    </Link>
+    </div>
   );
 };
 

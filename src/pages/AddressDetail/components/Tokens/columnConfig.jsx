@@ -16,7 +16,9 @@ export default ({ prices, isMobile }) => {
       dataIndex: "balance",
       width: isMobile ? 90 : 356,
       render(balance) {
-        return Number(balance).toLocaleString();
+        return Number(balance).toLocaleString(undefined, {
+          maximumFractionDigits: 8,
+        });
       },
     },
     {
@@ -41,7 +43,6 @@ export default ({ prices, isMobile }) => {
           return prices[symbol]
             ? `$${(prices[symbol] * Number(record.balance)).toLocaleString()}`
             : "-";
-
         return "-";
       },
     },
