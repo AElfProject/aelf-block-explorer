@@ -1,0 +1,56 @@
+.proposal-list {
+  &-list {
+    min-height: 200px;
+  }
+  &-filter {
+    .ant-form-item {
+      display: flex;
+      flex-flow: row wrap;
+
+      &-label {
+        min-width: 140px;
+      }
+
+      &-control-wrapper {
+        min-width: 140px;
+      }
+
+      .ant-input-search {
+        width: 360px;
+      }
+    }
+
+    &-form {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+
+      &-select {
+        .sub-title {
+          font-size: 14px;
+          line-height: 32px;
+          font-weight: 700;
+          color: #000;
+          height: 32px;
+        }
+
+        display: flex;
+        flex-flow: row nowrap;
+
+        .ant-select {
+          width: 100px;
+        }
+      }
+
+      &-input {
+        max-width: 400px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .proposal-list-filter-form {
+    flex-flow: column;
+  }
+}

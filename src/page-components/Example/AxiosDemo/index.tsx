@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button } from 'antd';
 import useAxios from 'axios-hooks';
-import { API, useAxiosTDVW } from '../../../utils/axios';
+import { API, useAxiosTDVW } from 'utils/axios';
 export default function AxiosDemo() {
   const [{ data: autoData, loading: autoLoading, error: autoError }] = useAxios(API.GET.BLOCK_HEIGHT);
   const [{ data: manualData, loading: manualLoading, error: manualError }, manualExecute] = useAxios(

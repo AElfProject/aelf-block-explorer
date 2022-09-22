@@ -1,0 +1,102 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-10-23 16:09:44
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-09 17:57:00
+ * @Description: file content
+ */
+@import 'assets/theme/color.less';
+
+.statistical-data {
+  &-container {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 0;
+    padding: 40px 30px;
+    .ant-statistic {
+      text-align: center;
+      .ant-statistic-title {
+        color: @textContextLight;
+        margin-bottom: 40px;
+      }
+      .ant-statistic-content {
+        color: @textContext;
+        .ant-statistic-content-value-decimal {
+          font-size: 16px;
+        }
+      }
+    }
+    .ant-row {
+      .ant-col {
+        text-align: center;
+      }
+    }
+
+    .anticon {
+      position: absolute;
+      right: 2%;
+      top: 20%;
+      color: #ccc;
+    }
+    &.inline-style {
+      .ant-statistic {
+        // todo: The reason to set fixed height here:
+        // todo: It's hard to realize the horizontal arragement with vertical align center in current mode. If you have to, try flex with the selector :before
+        height: 60px;
+        line-height: 60px;
+        .ant-statistic-title {
+          display: inline;
+        }
+        .ant-statistic-content {
+          display: inline;
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+  // &-words {
+  //   color: #999;
+  //   font-size: 16px;
+  // }
+  // &-number {
+  //   color: #fff;
+  //   font-size: 35px;
+  // }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .statistical-data-container {
+    flex-direction: column;
+    padding: 20px;
+    flex-wrap: wrap;
+    .ant-statistic {
+      overflow: hidden;
+      margin-bottom: 15px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .ant-statistic-title {
+        margin-bottom: 10px;
+      }
+    }
+
+    // todo: Use a more compatible to handle the case in mobile device
+    &.inline-style {
+      flex-direction: row;
+      .ant-statistic {
+        min-width: 33.33%; // Use min-width to handle the case numebr is too big
+        height: auto;
+        line-height: inherit;
+        .ant-statistic-title {
+          display: block;
+          white-space: nowrap;
+        }
+        .ant-statistic-content {
+          display: block;
+        }
+      }
+    }
+  }
+}

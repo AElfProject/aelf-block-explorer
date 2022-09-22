@@ -1,1 +1,455 @@
-//@import '~antd/dist/antd.less';
+@import '../assets/theme/color.less';
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-07 18:46:20
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-09 16:46:38
+ * @Description: file content
+ */
+// todo: use variable instead
+.ant-modal .ant-modal-content {
+  background: @bgWhite;
+
+  .ant-modal-header {
+    background: @bgWhite;
+    text-align: center;
+    border: none;
+    padding: 0 50px;
+    line-height: 50px;
+
+    .ant-modal-title {
+      font-size: 16px;
+      font-weight: bold;
+      border-bottom: 1px solid @borderColor;
+      padding: 40px 0 20px;
+    }
+  }
+
+  .ant-modal-close {
+    color: @tipColor;
+  }
+}
+
+/* text relative style */
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+/* text relative style end */
+
+.card-header-icon {
+  color: @primary-color;
+  margin-right: 12px;
+}
+
+.text-ellipsis__simple {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.common-header-submenu {
+  .ant-menu {
+    margin-left: -10px;
+  }
+}
+
+// .ant-menu-submenu-placement-rightTop is the third layer
+.common-header-submenu,
+.ant-menu-submenu-placement-rightTop {
+  .ant-menu {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .ant-menu-item:not(:last-child) {
+    margin: 0;
+  }
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    margin: 0;
+    color: @scorpion !important;
+    a {
+      color: @scorpion !important;
+    }
+    &:hover {
+      background-color: #f6f7fa;
+      width: 100%;
+    }
+  }
+  .ant-menu-item,
+  .ant-menu-submenu > .ant-menu-submenu-title {
+    height: 44px;
+    line-height: 44px;
+  }
+  .ant-menu-item-selected,
+  .ant-menu-submenu-selected {
+    color: @mariner !important;
+    background-color: @headerbgColor4 !important;
+    a {
+      color: inherit !important;
+    }
+    .ant-menu-submenu-title {
+      color: @mariner !important;
+      background-color: @headerbgColor4 !important;
+    }
+  }
+  .ant-menu-submenu-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .ant-menu-submenu-expand-icon {
+      transform: rotate(-90deg);
+      font-size: 12px;
+      margin-right: 10px;
+      top: auto;
+    }
+  }
+}
+
+.common-select-wrapper {
+  .ant-select-selection-item {
+    color: @textContext3;
+    font-size: 14px;
+  }
+  .ant-select-selection:hover {
+    border-color: @border-color1;
+  }
+  &.ant-select-open,
+  &.ant-select-focused {
+    .ant-select-selection {
+      border-color: @border-color1;
+      box-shadow: none;
+      &:focus {
+        border-color: @border-color1;
+      }
+    }
+  }
+}
+
+.common-select-option-wrapper {
+  &.ant-select-dropdown-menu-item-selected {
+    font-weight: 400;
+    color: @hoverColor1;
+    background-color: #fff;
+  }
+  &.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: @hoverBg;
+  }
+}
+
+.contract-viewer-header {
+  margin-bottom: 24px;
+}
+
+.contract-viewer-header-desc {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+
+.contract-viewer-header-desc-item {
+  color: #000;
+  display: inline-block;
+}
+
+.contract-viewer-header-desc-item > div {
+  display: inline-block;
+}
+
+.contract-viewer-header-desc-item:first-child {
+  margin-right: 60px;
+}
+
+.reader {
+  background-color: #fff;
+  min-width: 1160px;
+}
+
+.reader .contract-reader {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  height: 832px;
+}
+
+.reader .contract-reader .contract-viewer-file-tree {
+  width: 250px;
+  overflow-x: scroll;
+}
+
+.reader .contract-reader .contract-viewer-file-tree::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+  background: rgba(0, 0, 0, 0);
+}
+
+.reader .contract-reader .contract-viewer-file-tree:hover::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px hsla(0, 0%, 39.2%, 0.4);
+  border-radius: 10px;
+}
+
+.reader .contract-reader .contract-viewer-file-tree:hover::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.reader .contract-reader .contract-viewer-monaco {
+  min-width: 910px;
+}
+
+.reader .contract-reader .contract-viewer-monaco-code {
+  height: 800px;
+}
+
+.reader .contract-history {
+  margin-top: 80px;
+}
+
+.reader .contract-history .ant-steps-item-content {
+  width: auto;
+}
+
+.reader .contract-history .ant-steps-item-content .description-item {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.reader .contract-history .ant-steps-item-content .description-item span:first-child {
+  display: inline-block;
+  width: 120px;
+}
+
+.token-list-select {
+  min-width: 300px;
+}
+
+.gap-left {
+  margin-left: 10px;
+}
+
+.gap-top {
+  margin-top: 10px;
+}
+
+.gap-right {
+  margin-right: 10px;
+}
+
+.gap-bottom {
+  margin-bottom: 10px;
+}
+
+.gap-left-small {
+  margin-left: 8px;
+}
+
+.gap-top-small {
+  margin-top: 8px;
+}
+
+.gap-right-small {
+  margin-right: 8px;
+}
+
+.gap-bottom-small {
+  margin-bottom: 8px;
+}
+
+.gap-left-large {
+  margin-left: 16px;
+}
+
+.gap-top-large {
+  margin-top: 16px;
+}
+
+.gap-right-large {
+  margin-right: 16px;
+}
+
+.gap-bottom-large {
+  margin-bottom: 16px;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+.sub-title {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #000;
+}
+
+.text-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 576px) {
+  .text-ellipsis {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
+  }
+
+  .proposal-detail .gap-bottom-large span,
+  .proposal-detail .gap-bottom-small .card-list-desc-item,
+  .proposal-detail .gap-bottom-small span {
+    display: block;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.main-color {
+  color: #266cd3;
+}
+
+.small-tip {
+  font-size: 14px;
+  color: #666;
+}
+
+.warning-text {
+  float: right;
+  font-size: 14px;
+  font-weight: 700;
+  color: #d34a64;
+}
+
+pre.view-params {
+  background-color: #eee;
+  max-height: 220px;
+  border-radius: 5px;
+  overflow: auto;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  margin-bottom: 0;
+}
+
+.main-container {
+  background-color: #fff;
+  min-width: 1160px;
+}
+
+.spin-container {
+  min-height: 500px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.contract-viewer {
+  background-color: #fff;
+  min-width: 1160px;
+}
+
+.address-bread {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background: #fff;
+}
+
+.address-bread .breadcrumb-title > h2 {
+  display: inline-block;
+}
+
+.address-bread .ant-breadcrumb span {
+  font-size: 16px;
+}
+
+.address-bread .sub-title {
+  color: #666;
+  font-size: 16px;
+  font-weight: 200;
+}
+
+.address-bread-divider.ant-divider {
+  margin-top: 5px;
+  margin-left: -2%;
+  width: 104%;
+}
+
+.contract-list {
+  min-width: 1160px;
+}
+
+.contract-list-search > h2 {
+  display: inline-block;
+}
+
+.contract-list-search-input {
+  float: right;
+  width: 300px;
+}
+
+.contract-list-pagination {
+  text-align: right;
+  margin-top: 24px;
+}
+
+.contract-list-total {
+  color: #000;
+}
+
+.address-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+.address-container .ant-typography {
+  margin-bottom: 0;
+}
+
+.address-container .address-qrcode {
+  margin-left: 8px;
+}
+
+.address-container .address-qrcode:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,123 @@
+@import 'assets/theme/color.less';
+.search-invalid {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  margin: 0 auto !important;
+  justify-content: center;
+  padding-top: 0px !important;
+  min-height: calc(100vh - 108px);
+  padding-bottom: 108px !important;
+  img {
+    width: 240px;
+    height: 150px;
+    margin-bottom: 16px;
+  }
+  h3 {
+    line-height: 32px;
+    color: @cloud-burst;
+    font-size: 24px;
+    font-family: 'Roboto Bold';
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .tip {
+    color: @scorpion;
+    line-height: 22px;
+    margin-bottom: 12px;
+    span {
+      margin-left: 8px;
+      color: @mine-shaft;
+      font-family: 'Roboto Medium';
+    }
+  }
+  .warning {
+    background-color: #fef6e7;
+    color: @sun;
+    padding: 9px 22px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .new-search {
+    position: relative;
+    background: white;
+    display: flex;
+    align-items: center;
+    width: 728px;
+    padding: 4px;
+    border: 1.6px solid @mariner;
+    border-radius: 6px;
+    margin-bottom: 32px;
+    .ant-select {
+      min-width: 107px;
+      height: 24px;
+      * {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      .ant-select-selection {
+        border: none;
+        border-radius: 0;
+        border-right: 1px solid @border-color2;
+        height: 24px;
+        .ant-select-selection-selected-value {
+          line-height: 22px;
+        }
+      }
+    }
+    .ant-select-dropdown {
+      top: 54px !important;
+    }
+    .ant-input {
+      border: none;
+      &:focus {
+        box-shadow: none;
+      }
+    }
+    .ant-btn {
+      width: 56px;
+      height: 40px;
+    }
+  }
+  .back-btn {
+    color: @mariner;
+    .anticon {
+      transform: rotate(180deg);
+      margin-right: 10px;
+    }
+  }
+}
+.search-invalid.mobile {
+  padding: 0 32px 56px !important;
+  min-height: calc(100vh - 56px);
+
+  img {
+    margin-bottom: 8px;
+  }
+  h3 {
+    font-style: 18px;
+    line-height: 28px;
+    margin-bottom: 24px;
+  }
+  .tip {
+    width: 100%;
+    margin-bottom: 16px;
+    span {
+      display: inline-block;
+      margin: 8px 0 0;
+      word-break: break-all;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+  }
+  .warning {
+    width: 100%;
+    margin-bottom: 32px;
+  }
+  .new-search {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+}

@@ -1,46 +1,390 @@
-@import '~antd/dist/antd.variable.less';
-@import '/src/assets/theme/customize.less';
-@import '/src/assets/theme/common-class.less';
-@import '/src/assets/theme/constants.less';
-@import '/src/assets/theme/color.less';
-@import '/src/assets/theme/font.less';
-html,
-body {
-  padding: 0;
-  margin: 0;
-  // font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-  //   Helvetica Neue, sans-serif;
-  // background: url('../assets/images/bg.svg') no-repeat;
-  background-color: @bg-1;
-  color: @font-2;
-  .font-family-regular();
-}
+@import '../assets/theme/color.less';
+@import './common.less';
+@import './antd.less';
 
-a {
-  color: @font-1;
-  text-decoration: none;
-}
+#__next {
+  position: relative;
+  min-height: 100vh;
+  background: @bgBlankGrey;
+  display: flex;
+  flex-direction: column;
 
-* {
-  box-sizing: border-box;
-}
-.page-component {
-  overflow: scroll;
-  height: calc(100vh - @header-height - @footer-height);
-  background-image: none;
-}
-.bg-body {
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 2200px 1350px;
-}
-@media screen and (max-width: @md-width) {
-  .page-component {
-    background-repeat: no-repeat;
-    background-position: right top;
-    background-size: 240px 240px;
+  .breadcrumb-container {
+    background-color: @breadcrumbColor;
   }
-  .bg-body {
-    background-image: none;
+  .basic-container {
+    max-width: @maxWidth;
+    margin: auto;
+    padding: 20px 30px 0 30px;
+  }
+
+  .basic-container-new {
+    max-width: @maxWidth;
+    margin: 0 auto 80px auto;
+    padding: 24px 0 0;
+  }
+
+  .basic-container-white {
+    background: @bgBlankWhite;
+    margin: 0 auto 62px auto;
+    padding: 20px 20px 0 20px;
+  }
+
+  .basic-bottom-blank {
+    height: 64px;
+    width: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .basic-container-white {
+      background: @bgBlankWhite;
+      margin: auto;
+      padding: 20px 20px 0 20px;
+    }
+    .basic-container-new {
+      background: @athens-gray;
+      margin: auto;
+      padding: 24px 20px 80px 20px;
+    }
+    .basic-container {
+      padding: 8px;
+    }
+    .basic-bottom-blank {
+      height: 16px;
+      width: 10px;
+    }
+
+    .ant-pagination-total-text {
+      display: block;
+    }
+    .ant-table-pagination.ant-pagination {
+      padding: 8px;
+    }
+  }
+}
+// rewriter antd tabs style end
+
+// rewriter antd tabs style
+.ant-tabs-top > .ant-tabs-nav:before {
+  border-bottom-color: @border-color2;
+}
+// rewriter antd tabs style end
+
+// rewriter ant table style
+thead {
+  th {
+    font-family: 'Roboto-Medium';
+    font-weight: 400;
+    &.ant-table-column-has-sorters:hover {
+      background-color: #efeff0 !important;
+    }
+  }
+}
+tbody {
+  tr {
+    color: @textContext;
+    //background: rgba(57, 0, 57, 0.1) !important;
+    background: @bgBlankWhite !important;
+    td {
+      color: @scorpion;
+      border: none;
+    }
+  }
+  tr:hover {
+    background: @bgBlankGrey !important;
+    td {
+      background: none !important;
+    }
+  }
+  a {
+    color: @linkMain;
+  }
+}
+
+.ant-table-pagination.ant-pagination {
+  color: @textContext;
+  width: 100%;
+  text-align: center;
+  background: @bgBlankWhite !important;
+  margin: 0;
+  padding: 32px 0 24px 0;
+}
+
+.ant-pagination-item-link {
+  background: none !important;
+  color: @textContext !important;
+}
+
+.ant-pagination-item:hover {
+  background: rgba(82, 163, 214, 0.2);
+}
+
+.ant-pagination-item-active {
+  border: none !important;
+  background: @primary-blue !important;
+}
+.ant-pagination-item-active:hover {
+  background: @primary-blue;
+  opacity: 0.8;
+}
+.ant-pagination-item-active a {
+  color: #fff !important;
+}
+.ant-pagination-item-active a:hover {
+  color: #fff !important;
+}
+.ant-pagination-item-active:hover a {
+  color: #fff;
+}
+.ant-pagination-item-active:focus a {
+  color: #fff;
+}
+.ant-pagination-item-ellipsis {
+  color: @fontColorLightPurple !important;
+}
+.ant-pagination-item-link-icon {
+  color: @fontColorLightPurple !important;
+}
+
+.ant-pagination-options-quick-jumper input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid @borderColor;
+  color: @textContext;
+  width: 63px;
+  height: 26px;
+
+  outline: none;
+  &:hover,
+  &:focus {
+    border: 1px solid @blueInputFocus;
+    box-shadow: none;
+  }
+}
+
+.ant-table-small {
+  border: none;
+}
+
+.ant-spin-dot-item {
+  background: @bgMain;
+}
+// rewriter ant table style end
+
+a:hover {
+  color: @hoverColor1 !important;
+}
+
+.ant-input:focus {
+  box-shadow: 0 0 0 2px rgba(38, 108, 211, 0.2);
+}
+input {
+  outline-color: @blueInputFocus;
+}
+.ant-pagination-options-size-changer {
+  &.ant-select {
+    margin-right: 8px;
+  }
+}
+@media screen and (max-width: 768px) {
+  #__next {
+    background: @athens-gray;
+  }
+  .ant-pagination {
+    display: inherit;
+  }
+}
+
+@media (max-width: 1200px) {
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 1050px) {
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    padding: 0 6px;
+  }
+}
+
+@font-face {
+  font-family: 'Roboto Bold';
+  src: url('../assets/fonts/Roboto-Bold-3.ttf');
+  font-weight: 600;
+}
+@font-face {
+  font-family: 'Roboto Medium';
+  src: url('../assets/fonts/Roboto-Medium-12.ttf');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'Roboto-Medium';
+  src: url('../assets/fonts/Roboto-Medium-12.ttf');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('../assets/fonts/Roboto-Regular-14.ttf');
+  font-weight: 400;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+body {
+  font-family: @font-sets;
+  margin: 0;
+  padding: 0;
+}
+
+.hide {
+  display: none !important;
+  visibility: hidden;
+  height: 0;
+}
+
+.ant-list-split .ant-list-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.tip-color {
+  color: @tipColor;
+}
+
+.buy-color {
+  color: @buyColor;
+}
+
+.sell-color {
+  color: @sellColor;
+}
+
+// todo: Instead the style code used in page Vote
+.modal-form-item {
+  font-size: 14px;
+  text-align: center;
+  color: #000;
+  background: #fff;
+  height: 34px;
+  line-height: 34px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+// todo: We can also realize the function using HOC, but it's seems that using css is better
+
+@media (max-width: @smallScreenWidth) {
+  .has-mask-on-mobile {
+    position: relative;
+    &:before {
+      content: 'View More On The PC';
+      position: absolute;
+      z-index: 100;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // todo: Make the filter work
+      // filter: blur(5px);
+      // &:after {
+      //   content: '';
+      //   width: 100%;
+      //   height: 100%;
+      //   position: absolute;
+      //   left: 0;
+      //   top: 0;
+      //   background: inherit;
+      //   // filter: blur(2px);
+      //   z-index: 101;
+      // }
+      // .mobile-mask-text {
+      //   color: #fff;
+      //   z-index: 102;
+      // }
+    }
+  }
+}
+
+.ant-btn-round.ant-btn-sm {
+  height: 20px;
+  padding: 0 10px;
+  font-size: 12px;
+  border-radius: 20px;
+  background-color: #4285f4; // todo: Centralized manage antd's theme color
+}
+
+.update-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 20px;
+  &:hover,
+  &:focus {
+    background: none;
+    border: none;
+    &:after {
+      display: none; // Remove antd's default style
+    }
+  }
+  &:focus {
+    color: #ccc;
+  }
+  &:hover {
+    color: @primary-color;
+  }
+}
+
+.ant-tooltip-inner {
+  color: #ccc;
+}
+
+// todo: Use css to unify the modal's style
+// modal style
+.md-modal {
+  width: 640px;
+}
+
+/* header menu rewrite start */
+.ant-menu-item:active,
+.ant-menu-submenu-title:active {
+  background: @bgBlankWhite;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background: none;
+}
+
+.ant-menu-item-selected,
+.ant-menu-item-selected > a,
+.ant-menu-item-selected > a:hover {
+  color: @hoverColor;
+}
+
+.ant-menu-submenu-inline > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow:before {
+  background: @hoverColor;
+}
+
+.ant-menu-submenu-inline > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow:after {
+  background: @hoverColor;
+}
+/* header menu rewrite end */
+
+.ant-menu-horizontal:not(.ant-menu-dark) {
+  .ant-menu-item-active:after,
+  .ant-menu-item-open:after,
+  .ant-menu-item-selected:after,
+  .ant-menu-item:hover:after,
+  .ant-menu-submenu-active:after,
+  .ant-menu-submenu-open:after,
+  .ant-menu-submenu-selected:after,
+  .ant-menu-submenu:hover:after {
+    border-bottom: 2px solid transparent; // because antd v4 default has a blue border bottom
   }
 }
