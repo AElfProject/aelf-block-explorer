@@ -66,6 +66,7 @@
     "prop-types": "^15.7.2",
     "qrcode.react": "^1.0.1",
     "query-string": "^5.1.1",
+    "rc-menu": "7.5.5",
     "react": "^18.2.0",
     "react-circular-progressbar": "^2.0.3",
     "react-datepicker": "^4.5.0",
