@@ -37,12 +37,12 @@ export default function Overview({ tokenInfo = {}, price = 0 }) {
       {
         title: "Contract",
         value: (
-          <>
+          <div>
             <AddressLink
               address={contractAddress}
               suffix={<CopyButton value={contractAddress} />}
             />
-          </>
+          </div>
         ),
       },
       {
