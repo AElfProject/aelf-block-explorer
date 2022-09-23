@@ -42,14 +42,14 @@ export const RouterComponent = (options) => {
   const logStatus = useSelector((state) => state.common.logStatus);
   const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus, options]);
   const target = useMemo(() => {
-    // if (options.default) {
-    //   if (isLogged) {
-    //     return options.target;
-    //   }
-    //   router.replace(options.default);
-    // } else {
-    return options.target;
-    // }
+    if (options.default) {
+      if (isLogged) {
+        return options.target;
+      }
+      router.replace(options.default);
+    } else {
+      return options.target;
+    }
   }, [isLogged, options]);
   return target;
 };

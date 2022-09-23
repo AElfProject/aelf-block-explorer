@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Divider, Breadcrumb } from 'antd';
 import { If, Then, Else } from 'react-if';
-import './index.less';
+require('./index.less');
 
 const Bread = (props) => {
   const { title, subTitle, breads } = props;

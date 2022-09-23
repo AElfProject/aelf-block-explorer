@@ -101,11 +101,11 @@ class Search extends PureComponent {
 
     if (isAElfAddress(value)) {
       const address = AElf.utils.encodeAddressRep(AElf.utils.decodeAddressRep(value));
-      this.SEARCHRULES.address(address, this.props.navigate);
+      this.SEARCHRULES.address(address, this.props.router.push);
     } else if (isTxid.includes(length)) {
-      this.SEARCHRULES.transaction(value, this.props.navigate);
+      this.SEARCHRULES.transaction(value, this.props.router.push);
     } else {
-      this.SEARCHRULES.blockHeight(value, this.props.navigate) ||
+      this.SEARCHRULES.blockHeight(value, this.props.router.push) ||
         (location.href = '/search-invalid/' + ((e.target && e.target.value) || e.searchValue));
     }
   };

@@ -47,7 +47,9 @@ async function getNodesInfo() {
   // TODO: turn to 404 page.
 }
 
-getNodesInfo();
+if (typeof window !== 'undefined') {
+  getNodesInfo();
+}
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const pathKey = router.asPath.split('/')[2];

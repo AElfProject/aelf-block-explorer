@@ -9,7 +9,7 @@ import { withRouter } from 'next/router';
 
 function Search(props) {
   const [value, setValue] = useState('');
-  const { navigate } = props;
+  const navigate = props.router.push;
 
   const searchRules = useMemo(
     () => ({
