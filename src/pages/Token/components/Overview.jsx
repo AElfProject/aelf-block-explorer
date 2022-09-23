@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { useParams } from "react-router";
 import AddressLink from "../../../components/AddressLink";
 import CopyButton from "../../../components/CopyButton/CopyButton";
+import { numberFormatter } from "../../../utils/formater";
 
 export default function Overview({ tokenInfo = {}, price = 0 }) {
   const { symbol } = useParams();
@@ -16,14 +17,14 @@ export default function Overview({ tokenInfo = {}, price = 0 }) {
       decimals = 0,
     } = tokenInfo;
     return [
-      { title: "Price", value: `$${price}` },
+      { title: "Price", value: `$${numberFormatter(price)}` },
       {
         title: "Total Supply",
-        value: `${Number(totalSupply).toLocaleString()} ${symbol}`,
+        value: `${numberFormatter(totalSupply)} ${symbol}`,
       },
       {
         title: "Circulating Supply",
-        value: `${Number(supply).toLocaleString()} ${symbol}`,
+        value: `${numberFormatter(supply)} ${symbol}`,
       },
       {
         title: "Holders",
