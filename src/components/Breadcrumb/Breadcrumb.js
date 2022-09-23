@@ -236,8 +236,7 @@ class BrowserBreadcrumb extends Component {
   }
 
   render() {
-    const { location } = this.props;
-    const { pathname } = this.props.router;
+    const { pathname } = window.location;
 
     if (
       DO_NOT_DISPLAY_PATH.includes(pathname) ||

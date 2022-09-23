@@ -35,7 +35,7 @@ import { contractsNeedToLoad, FROM_WALLET, FROM_EXPIRED_VOTES, FROM_ACTIVE_VOTES
 import getCurrentWallet from 'utils/getCurrentWallet';
 import publicKeyToAddress from 'utils/publicKeyToAddress';
 import { getAllTeamDesc } from 'constants/api';
-import { getFormatedLockTime, handleCannotVote } from './utils';
+import { getFormatedLockTime } from './utils';
 import getAllTokens from 'utils/getAllTokens';
 import { getPublicKeyFromObject } from 'utils/getPublicKey';
 import addressFormat from 'utils/addressFormat';
@@ -586,8 +586,6 @@ class VoteContainer extends Component {
     this.judgeANodeIsCandidate(targetPublicKey).then((res) => {
       if (res) {
         this.setState({ voteType }, this.handleVoteClick.bind(this, ele));
-      } else {
-        handleCannotVote();
       }
     });
   }
