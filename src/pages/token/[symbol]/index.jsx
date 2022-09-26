@@ -12,6 +12,7 @@ import { getTokenAllInfo, sendHeight } from 'utils/utils';
 require('styles/common.less');
 import Bread from 'page-components/Address/Bread';
 import HolderList from 'page-components/Address/HolderList';
+import withNoSSR from 'utils/withNoSSR';
 require('./index.less');
 const { Content } = Layout;
 
@@ -98,4 +99,4 @@ const TokenInfo = () => {
   );
 };
 
-export default React.memo(TokenInfo);
+export default React.memo(withNoSSR(TokenInfo));

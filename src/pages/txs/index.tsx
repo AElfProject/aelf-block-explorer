@@ -1,2 +1,3 @@
 import Txs from 'page-components/Txs/TransactionList';
-export default Txs;
+import withNoSSR from 'utils/withNoSSR';
+export default withNoSSR(Txs);

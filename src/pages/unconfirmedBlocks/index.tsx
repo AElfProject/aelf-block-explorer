@@ -1,2 +1,3 @@
 import Blocks from 'page-components/Blocks';
-export default Blocks;
+import withNoSSR from 'utils/withNoSSR';
+export default withNoSSR(Blocks);

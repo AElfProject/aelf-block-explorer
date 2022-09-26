@@ -34,7 +34,7 @@ export default class TPSChart extends React.Component {
 
   componentDidMount() {
     this.hadRenderedOnce = true;
-    this.getTpsData();
+    // this.getTpsData();
   }
 
   async getTpsData() {

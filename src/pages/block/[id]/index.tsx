@@ -1,2 +1,3 @@
 import BlockDetail from 'page-components/BlockDetail/BlockDetail';
-export default BlockDetail;
+import withNoSSR from 'utils/withNoSSR';
+export default withNoSSR(BlockDetail);

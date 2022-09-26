@@ -25,6 +25,7 @@ import {
   useReleaseCodeCheckedContractAction,
 } from './utils.callback';
 import ContractProposalModal from './ContractProposalModal';
+import withNoSSR from 'utils/withNoSSR';
 
 const { TabPane } = Tabs;
 
@@ -321,4 +322,4 @@ const CreateProposal = () => {
   );
 };
 
-export default CreateProposal;
+export default withNoSSR(CreateProposal);

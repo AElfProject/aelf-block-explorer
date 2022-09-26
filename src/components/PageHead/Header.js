@@ -2,7 +2,6 @@
  * @file
  * @author huangzongzhe
  */
-/* eslint-disable fecs-camelcase */
 import React, { PureComponent } from 'react';
 import { Drawer, Divider } from 'antd';
 import Menu, { SubMenu, Item as MenuItem } from 'rc-menu';
@@ -22,6 +21,7 @@ import IconFont from '../IconFont';
 import NetSelect from '../NetSelect/NetSelect';
 import { getCMSDelayRequest } from 'utils/getCMS';
 import { MenuOutlined } from '@ant-design/icons';
+import withNoSSR from 'utils/withNoSSR';
 
 const networkList = [
   {
@@ -100,11 +100,6 @@ class BrowserHeader extends PureComponent {
       if (target && current !== target[1]) {
         // white list
         pathname = target[1];
-        this.setState({
-          current: pathname,
-          showSearch,
-        });
-      } else if (!target) {
         this.setState({
           current: pathname,
           showSearch,
@@ -407,4 +402,4 @@ const mapDispatchToProps = (dispatch) => ({
   setIsSmallScreen: (isSmallScreen) => dispatch(setIsSmallScreen(isSmallScreen)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BrowserHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(withNoSSR(BrowserHeader));

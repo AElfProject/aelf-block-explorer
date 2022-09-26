@@ -70,6 +70,4 @@ const APP = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(APP), {
-  ssr: false,
-});
+export default APP;

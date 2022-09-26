@@ -12,6 +12,7 @@ import { sendHeight } from 'utils/utils';
 import Bread from 'page-components/Address/Bread';
 require('./index.less');
 import TableLayer from 'components/TableLayer/TableLayer';
+import withNoSSR from 'utils/withNoSSR';
 
 function getListColumn(preTotal) {
   return [
@@ -167,4 +168,4 @@ const TokenList = () => {
   );
 };
 
-export default React.memo(TokenList);
+export default React.memo(withNoSSR(TokenList));

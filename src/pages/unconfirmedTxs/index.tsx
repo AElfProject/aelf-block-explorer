@@ -1,2 +1,3 @@
 import UnconfirmedTxs from 'page-components/Txs/TransactionList';
-export default UnconfirmedTxs;
+import withNoSSR from 'utils/withNoSSR';
+export default withNoSSR(UnconfirmedTxs);

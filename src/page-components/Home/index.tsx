@@ -15,20 +15,32 @@ import useMobile from '../../hooks/useMobile';
 import { CHAIN_ID } from '../../constants/config/config.json';
 import TokenIcon from '../../assets/images/tokenLogo.png';
 import { initSocket } from './socket';
+import {
+  BasicInfo,
+  BlocksResult,
+  BlockItem,
+  TXSResultDto,
+  TXItem,
+  FormatBlockDto,
+  SocketTxItem,
+  SocketData,
+} from './types';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
 let blockHeight = 0;
 
-export default function Home() {
+export default function Home({ basicInfoData, blocksData, TXSData }) {
+  console.log(basicInfoData, blocksData, TXSData, 'props');
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
-  const [blocks, setBlocks] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const [blocks, setBlocks] = useState<BlockItem[]>([]);
+  const [transactions, setTransactions] = useState<TXItem[]>([]);
   const [reward, setReward] = useState({ ELF: 0 });
+  // type of BasicInfo.totalTxs not equal to TXSResultDto.total
   const [localTransactions, setLocalTransactions] = useState(0);
   const [localAccounts, setLocalAccounts] = useState(0);
-  const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(0);
+  const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState('0');
   const isMobile = useMobile();
   const latestSection = useMemo(
     () => <LatestInfo blocks={blocks} transactions={transactions} />,
@@ -43,15 +55,13 @@ export default function Home() {
   }, [price.USD, previousPrice.usd]);
 
   useEffect(() => {
-    // todo change this
-    // if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && isMobile) {
     if (CHAIN_ID === 'AELF' && isMobile) {
-      get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
+      get(ELF_REALTIME_PRICE_URL).then((price: any) => setPrice(price));
       get(HISTORY_PRICE, {
         token_id: 'aelf',
         vs_currencies: 'usd',
         date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
-      }).then((res) => {
+      }).then((res: any) => {
         if (!res.message) {
           setPreviousPrice(res);
         }
@@ -59,17 +69,18 @@ export default function Home() {
     }
   }, [isMobile]);
 
-  useEffect(() => {
-    const socket = initSocket(handleSocketData);
-    initBasicInfo();
-    initBlock();
-    initTxs();
-    return () => {
-      socket.close();
-    };
-  }, [initSocket]);
+  // csr only
+  // useEffect(() => {
+  //   const socket = initSocket(handleSocketData);
+  //   initBasicInfo();
+  //   initBlock();
+  //   initTxs();
+  //   return () => {
+  //     socket.close();
+  //   };
+  // }, [initSocket]);
 
-  const fetch = useCallback(async (url) => {
+  const fetch = useCallback(async (url: string) => {
     const res = await get(url, {
       page: 0,
       limit: PAGE_SIZE,
@@ -80,9 +91,9 @@ export default function Home() {
   }, []);
 
   const initBasicInfo = useCallback(async () => {
-    const result = await get(BASIC_INFO);
+    const result: BasicInfo = (await get(BASIC_INFO)) as BasicInfo;
 
-    const { height = 0, totalTxs, unconfirmedBlockHeight = 0, accountNumber = 0 } = result;
+    const { height = 0, totalTxs, unconfirmedBlockHeight = '0', accountNumber = 0 } = result;
     blockHeight = height;
     setLocalTransactions(totalTxs);
     setUnconfirmedBlockHeight(unconfirmedBlockHeight);
@@ -90,13 +101,13 @@ export default function Home() {
   }, []);
 
   const initBlock = useCallback(async () => {
-    const blocksResult = await fetch(ALL_BLOCKS_API_URL);
+    const blocksResult: BlocksResult = (await fetch(ALL_BLOCKS_API_URL)) as BlocksResult;
     const blocks = blocksResult.blocks;
     setBlocks(blocks);
   }, []);
 
   const initTxs = useCallback(async () => {
-    const TXSResult = await fetch(ALL_TXS_API_URL);
+    const TXSResult: TXSResultDto = (await fetch(ALL_TXS_API_URL)) as TXSResultDto;
     const transactions = TXSResult.transactions;
     const totalTransactions = TXSResult.total;
     setTransactions(transactions);
@@ -105,8 +116,15 @@ export default function Home() {
 
   const handleSocketData = useCallback(
     (
-      { list = [], height = 0, totalTxs, unconfirmedBlockHeight: unconfirmedHeight = 0, accountNumber = 0, dividends },
-      isFirst,
+      {
+        list = [],
+        height = 0,
+        totalTxs,
+        unconfirmedBlockHeight: unconfirmedHeight = '0',
+        accountNumber = 0,
+        dividends,
+      }: SocketData,
+      isFirst: boolean,
     ) => {
       let arr = list;
       if (!isFirst) {
@@ -115,23 +133,23 @@ export default function Home() {
         });
       }
       arr.sort((pre, next) => next.block.Header.Height - pre.block.Header.Height);
-      const new_transactions = arr.reduce((acc, i) => acc.concat(i.txs), []).map(transactionFormat);
+      const new_transactions = arr.reduce((acc: SocketTxItem[], i) => acc.concat(i.txs), []).map(transactionFormat);
       const new_blocks = arr.map((item) => formatBlock(item.block));
       blockHeight = height;
       setUnconfirmedBlockHeight(unconfirmedHeight);
       setTransactions((v) => {
-        const temp = Object.fromEntries([...new_transactions, ...v].map((item) => [item.tx_id, item]));
+        const temp: TXItem = Object.fromEntries([...new_transactions, ...v].map((item) => [item.tx_id, item]));
         return Object.entries(temp)
           .map((item) => item[1])
           .sort((a, b) => b.block_height - a.block_height)
-          .slice(0, 25);
+          .slice(0, 25) as TXItem[];
       });
       setBlocks((v) => {
         const temp = Object.fromEntries([...new_blocks, ...v].map((item) => [item.block_height, item]));
         return Object.entries(temp)
           .map((item) => item[1])
           .sort((a, b) => b.block_height - a.block_height)
-          .slice(0, 25);
+          .slice(0, 25) as BlockItem[];
       });
       setLocalAccounts(accountNumber);
       setLocalTransactions(totalTxs);
@@ -140,7 +158,7 @@ export default function Home() {
     [],
   );
 
-  const formatBlock = useCallback((block) => {
+  const formatBlock = useCallback((block: FormatBlockDto) => {
     const { BlockHash, Header, Body } = block;
     return {
       block_hash: BlockHash,
@@ -190,4 +208,14 @@ export default function Home() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  console.log(1);
+  const basicInfoData: BasicInfo = (await get(BASIC_INFO)) as BasicInfo;
+  const blocksData: BlocksResult = (await fetch(ALL_BLOCKS_API_URL)) as BlocksResult;
+  const TXSData: TXSResultDto = (await fetch(ALL_TXS_API_URL)) as TXSResultDto;
+  return {
+    props: { basicInfoData, blocksData, TXSData },
+  };
 }

@@ -5,6 +5,7 @@
 import React from 'react';
 import Bread from 'page-components/Address/Bread';
 import HolderList from 'page-components/Address/HolderList';
+import withNoSSR from 'utils/withNoSSR';
 require('./index.less');
 
 const AccountList = () => (
@@ -14,4 +15,4 @@ const AccountList = () => (
   </div>
 );
 
-export default React.memo(AccountList);
+export default React.memo(withNoSSR(AccountList));

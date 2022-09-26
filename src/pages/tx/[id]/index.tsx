@@ -1,2 +1,3 @@
 import TxsDetail from 'page-components/TxsDetail/TransactionDetail';
-export default TxsDetail;
+import withNoSSR from 'utils/withNoSSR';
+export default withNoSSR(TxsDetail);
