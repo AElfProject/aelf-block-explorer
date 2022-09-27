@@ -8,7 +8,7 @@
 import { configure } from 'axios-hooks';
 import LRU from 'lru-cache';
 import Axios from 'axios';
-import { BASE_URL, API, API_SCAN } from '../../constants/api';
+import { BASE_URL } from '../../constants/api';
 import { useAxiosTDVW } from './multipleHookInstances';
 import { interceptorsBind } from './utils';
 
@@ -32,9 +32,7 @@ export default function initAxios() {
   configure({ axios, cache });
 }
 
-export { useAxiosTDVW, API, API_SCAN };
-
-// import apisauce from './utils/apisauce';
+export { useAxiosTDVW };
 
 const api = create({
   baseURL: '/api',
@@ -61,6 +59,22 @@ const get = async (url: string, params?: any, config?: any) => {
   }
 
   httpErrorHandler(res.problem, res.problem);
+};
+
+const getSSR = async (url: string, params?: any, config?: any) => {
+  let host = 'https://explorer-test-main.aelf.io';
+  if (process.env.Vercel_URL) {
+    host = process.env.Vercel_URL;
+  }
+  const baseUrl = '/api';
+  const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
+  const res = await api.get(wholeUrl, params, config);
+  // console.log(res, 'res');
+  if (res.ok) {
+    return res.data;
+  } else {
+    return new Error(res.problem);
+  }
 };
 
 let CONTRACT_NAMES = {};
@@ -155,4 +169,15 @@ function isAElfAddress(address) {
   }
 }
 
-export { get, post, aelf, format, formatKey, transactionFormat, transactionInfo, getContractNames, isAElfAddress };
+export {
+  get,
+  post,
+  getSSR,
+  aelf,
+  format,
+  formatKey,
+  transactionFormat,
+  transactionInfo,
+  getContractNames,
+  isAElfAddress,
+};

@@ -110,3 +110,33 @@ export interface SocketData {
   totalTxs: number;
   unconfirmedBlockHeight: string;
 }
+
+export interface PriceDto {
+  USD: number;
+  [key: string]: string | number;
+}
+
+export interface PreviousPriceDto {
+  usd: number;
+  [key: string]: string | number;
+}
+export interface TpsDataDto {
+  own: any;
+  all: any;
+}
+export interface RewardDto {
+  ELF: number;
+  [key: string]: string | number;
+}
+export interface HomeProps {
+  mobilePrice: PriceDto;
+  mobilePrevPrice: PreviousPriceDto;
+  tpsData: TpsDataDto;
+  blockHeight: number;
+  rewardSSR: RewardDto;
+  localAccountsSSR: number;
+  unconfirmedBlockHeightSSR: number;
+  localTransactionsSSR: number;
+  transactionsSSR: TXItem[];
+  blocksSSR: BlockItem[];
+}

@@ -3,15 +3,26 @@
  * @author
  */
 
-let isPhoneChecked = false;
-let phoneCheckResult = null;
+let isPhoneChecked = false,
+  isPhoneCheckedSSR = false;
+let phoneCheckResult = null,
+  phoneCheckResultSSR = null;
+export const isPhoneCheckSSR = (ctx) => {
+  // 判断是否手机端访问
+  if (!isPhoneCheckedSSR) {
+    const userAgentInfo = ctx.req.headers['user-agent'].toLowerCase();
+    const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
+    isPhoneCheckedSSR = true;
+    phoneCheckResultSSR = agents.find((agent) => userAgentInfo.includes(agent));
+    return phoneCheckResultSSR;
+  }
+  return phoneCheckResultSSR;
+};
 export const isPhoneCheck = () => {
   // 判断是否手机端访问
   if (!isPhoneChecked) {
     const userAgentInfo = navigator.userAgent.toLowerCase();
-    const agents = ['android', 'iphone',
-      'symbianos', 'windows phone',
-      'ipad', 'ipod'];
+    const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
     isPhoneChecked = true;
     phoneCheckResult = agents.find((agent) => userAgentInfo.includes(agent));
     return phoneCheckResult;

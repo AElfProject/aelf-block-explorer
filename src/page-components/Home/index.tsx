@@ -12,7 +12,7 @@ import ChainInfo from './components/ChainInfo';
 import LatestInfo from './components/LatestInfo';
 import Search from './components/Search';
 import useMobile from '../../hooks/useMobile';
-import { CHAIN_ID } from '../../constants/config/config.json';
+import { CHAIN_ID } from '../../constants/config/config';
 import TokenIcon from '../../assets/images/tokenLogo.png';
 import { initSocket } from './socket';
 import {
@@ -24,29 +24,39 @@ import {
   FormatBlockDto,
   SocketTxItem,
   SocketData,
+  HomeProps,
 } from './types';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
-let blockHeight = 0;
 
-export default function Home({ basicInfoData, blocksData, TXSData }) {
-  console.log(basicInfoData, blocksData, TXSData, 'props');
-  const [price, setPrice] = useState({ USD: 0 });
-  const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
-  const [blocks, setBlocks] = useState<BlockItem[]>([]);
-  const [transactions, setTransactions] = useState<TXItem[]>([]);
-  const [reward, setReward] = useState({ ELF: 0 });
+export default function Home({
+  mobilePrice,
+  mobilePrevPrice,
+  tpsData,
+  blockHeight,
+  rewardSSR,
+  localAccountsSSR,
+  unconfirmedBlockHeightSSR,
+  localTransactionsSSR,
+  transactionsSSR,
+  blocksSSR,
+}: HomeProps) {
+  const [price, setPrice] = useState(mobilePrice || { USD: 0 });
+  const [previousPrice, setPreviousPrice] = useState(mobilePrevPrice || { usd: 0 });
+  const [blocks, setBlocks] = useState<BlockItem[]>(blocksSSR || []);
+  const [transactions, setTransactions] = useState<TXItem[]>(transactionsSSR || []);
+  const [reward, setReward] = useState(rewardSSR || { ELF: 0 });
   // type of BasicInfo.totalTxs not equal to TXSResultDto.total
-  const [localTransactions, setLocalTransactions] = useState(0);
-  const [localAccounts, setLocalAccounts] = useState(0);
-  const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState('0');
+  const [localTransactions, setLocalTransactions] = useState(localTransactionsSSR || 0);
+  const [localAccounts, setLocalAccounts] = useState(localAccountsSSR || 0);
+  const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(unconfirmedBlockHeightSSR || '0');
   const isMobile = useMobile();
   const latestSection = useMemo(
     () => <LatestInfo blocks={blocks} transactions={transactions} />,
     [blocks, transactions],
   );
-
+  // let blockHeight = basicInfoData.height;
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
       return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
@@ -70,15 +80,15 @@ export default function Home({ basicInfoData, blocksData, TXSData }) {
   }, [isMobile]);
 
   // csr only
-  // useEffect(() => {
-  //   const socket = initSocket(handleSocketData);
-  //   initBasicInfo();
-  //   initBlock();
-  //   initTxs();
-  //   return () => {
-  //     socket.close();
-  //   };
-  // }, [initSocket]);
+  useEffect(() => {
+    const socket = initSocket(handleSocketData);
+    initBasicInfo();
+    initBlock();
+    initTxs();
+    return () => {
+      socket.close();
+    };
+  }, [initSocket]);
 
   const fetch = useCallback(async (url: string) => {
     const res = await get(url, {
@@ -203,19 +213,9 @@ export default function Home({ basicInfoData, blocksData, TXSData }) {
         <section className="latest-section">{latestSection}</section>
         <section className="chart-section">
           <h3>Transactions Per Minute</h3>
-          <TPSChart />
+          <TPSChart own={tpsData.own} all={tpsData.all} />
         </section>
       </div>
     </div>
   );
-}
-
-export async function getServerSideProps(context) {
-  console.log(1);
-  const basicInfoData: BasicInfo = (await get(BASIC_INFO)) as BasicInfo;
-  const blocksData: BlocksResult = (await fetch(ALL_BLOCKS_API_URL)) as BlocksResult;
-  const TXSData: TXSResultDto = (await fetch(ALL_TXS_API_URL)) as TXSResultDto;
-  return {
-    props: { basicInfoData, blocksData, TXSData },
-  };
 }
