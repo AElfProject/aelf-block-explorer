@@ -1,11 +1,11 @@
 import React from 'react';
-import './index.less';
+require('./index.less');
 import PropTypes from 'prop-types';
 import { Button, message } from 'antd';
 import copy from 'copy-to-clipboard';
 import Link from 'next/link';
-import IconFont from '../../../../components/IconFont';
-import { omitString } from '../../../../common/utils';
+import IconFont from 'components/IconFont';
+import { omitString } from 'utils/utils';
 
 const CopylistItem = (props) => {
   const { label, value = '', href, isParentHref = false } = props;

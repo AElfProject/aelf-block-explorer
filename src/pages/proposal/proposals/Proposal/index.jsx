@@ -92,8 +92,8 @@ const Proposal = (props) => {
         }>
         <div className="proposal-list-item-id">
           <div className="gap-right-large">
-            <Link href={`/proposal/proposalsDetail/${proposalId}`} className="text-ellipsis">
-              {proposalId}
+            <Link href={`/proposal/proposalsDetail/${proposalId}`}>
+              <a className="text-ellipsis">{proposalId}</a>
             </Link>
             {CONTRACT_TEXT_MAP[contractMethod] ? (
               <Tag color={PRIMARY_COLOR}>{CONTRACT_TEXT_MAP[contractMethod]}</Tag>

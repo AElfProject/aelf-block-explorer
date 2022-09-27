@@ -12,13 +12,11 @@ import dynamic from 'next/dynamic';
 import { store } from '../redux/store';
 import { Provider as ReduxProvider } from 'react-redux';
 import initAxios from '../utils/axios';
-import NoSSR from 'react-no-ssr';
 import { useRouter } from 'next/router';
 const Provider = dynamic(import('hooks/Providers/ProviderBasic'), { ssr: false });
 import Cookies from 'js-cookie';
 import { get } from 'utils/axios';
 import config from 'constants/config/config';
-// import '../utils/vconsole';
 initAxios();
 
 const ROUTES_DEFAULT: any = {
@@ -27,10 +25,7 @@ const ROUTES_DEFAULT: any = {
   createOrganizations: '/proposal/organizations',
 };
 
-function SafeHydrate({ children }) {
-  return <div suppressHydrationWarning={true}>{typeof window === 'undefined' ? null : children}</div>;
-}
-const PROPOSAL_URL = ['proposals', 'proposalDetails', 'organizations', 'createOrganizations', 'apply', 'myProposals'];
+const PROPOSAL_URL = ['proposals', 'proposalsDetail', 'organizations', 'createOrganizations', 'apply', 'myProposals'];
 async function getNodesInfo() {
   const nodesInfoProvider = '/nodes/info';
   const nodesInfo = await get(nodesInfoProvider);
@@ -52,15 +47,15 @@ async function getNodesInfo() {
   // TODO: turn to 404 page.
 }
 
-getNodesInfo();
+if (typeof window !== 'undefined') {
+  getNodesInfo();
+}
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const pathKey = router.asPath.split('/')[2];
   const flag = router.asPath.split('/')[1] === 'proposal' && PROPOSAL_URL.includes(pathKey);
   pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
-    // <SafeHydrate>
-    // <NoSSR>
     <ReduxProvider store={store}>
       <PageHead />
       <Provider>
@@ -72,8 +67,6 @@ const APP = ({ Component, pageProps }: AppProps) => {
         <BrowserFooter />
       </Provider>
     </ReduxProvider>
-    // </NoSSR>
-    // </SafeHydrate>
   );
 };
 

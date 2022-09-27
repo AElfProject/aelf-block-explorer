@@ -8,7 +8,7 @@ import { Input, Button, Table, Pagination, message, Tag, Typography } from 'antd
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { If, Then } from 'react-if';
-import config from 'constants/viewApi';
+import config from 'constants/viewerApi';
 import { request } from 'utils/request';
 import Total from 'components/Total';
 import constants, {

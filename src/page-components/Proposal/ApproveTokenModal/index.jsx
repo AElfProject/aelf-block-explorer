@@ -8,7 +8,7 @@ import { Form, InputNumber, message, Modal, Button } from 'antd';
 import { getContractAddress, getTxResult, showTransactionResult } from 'page-components/Proposal/common/utils';
 import { getContract } from 'utils/utils';
 import constants from 'page-components/Proposal/common/constants';
-import './index.less';
+require('./index.less');
 
 const FormItem = Form.Item;
 

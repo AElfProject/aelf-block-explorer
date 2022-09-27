@@ -7,13 +7,10 @@ import PropTypes from 'prop-types';
 import { If, Then } from 'react-if';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Card, Divider, Tooltip, Row, Col, Tag } from 'antd';
-import { API_PATH } from '../page-components/Proposal/common/constants';
-import { request } from '../../../../../common/request';
-import config from '../../../../../common/config';
-import { base64ToHex } from '../../../common/utils';
-import { getContract } from '../../../../../common/utils';
-import { PRIMARY_COLOR } from '../../../page-components/Proposal/common/constants';
-import { getContractURL } from '../../../utils';
+import config, { API_PATH } from 'constants/viewerApi';
+import { request } from 'utils/request';
+import { base64ToHex, getContract, getContractURL } from 'page-components/Proposal/common/utils';
+import { PRIMARY_COLOR } from 'constants';
 const { viewer } = config;
 
 function getContractName(address) {

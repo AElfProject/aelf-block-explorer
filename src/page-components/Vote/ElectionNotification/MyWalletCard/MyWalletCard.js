@@ -155,7 +155,7 @@ export default class MyWalletCard extends PureComponent {
     if (!currentWallet || !currentWallet.address) {
       return false;
     }
-    return multiTokenContract.GetBalance.call({
+    return multiTokenContract?.GetBalance.call({
       symbol: SYMBOL,
       owner: currentWallet.address,
     })

@@ -18,15 +18,17 @@ const dispatchSelectList =
   ({ params, result }) =>
   (dispatch) => {
     try {
-      dispatch({
-        type: GET_PROPOSAL_SELECT_LIST.SET_PROPOSALS_SELECT_LIST_START,
-        payload: {
-          params,
-          list: result?.list ?? [],
-          total: result?.total ?? 0,
-          bpCount: result?.bpCount ?? 0,
-        },
-      });
+      dispatch(
+        proposalSelectAction({
+          type: GET_PROPOSAL_SELECT_LIST.SET_PROPOSALS_SELECT_LIST_START,
+          payload: {
+            params,
+            list: result?.list ?? [],
+            total: result?.total ?? 0,
+            bpCount: result?.bpCount ?? 0,
+          },
+        }),
+      );
     } catch (e) {
       dispatch({
         type: GET_PROPOSAL_SELECT_LIST.SET_PROPOSALS_LIST_FAIL,
@@ -44,7 +46,7 @@ export const getProposalSelectListWrap = async (dispatch, params) => {
 };
 
 export const destorySelectList = () => (dispatch) => {
-  dispatch(GET_PROPOSAL_SELECT_LIST.DESTORY);
+  dispatch(proposalSelectAction(GET_PROPOSAL_SELECT_LIST.DESTORY));
 };
 
 const { proposalTypes, proposalStatus } = constants;
@@ -65,7 +67,9 @@ const initialState = {
   isAll: false,
 };
 
-export const getProposalSelectList = (state = initialState, { type, payload }) => {
+export const getProposalSelectList = (state = initialState, { payload: payloadObj }) => {
+  const { type, payload } = payloadObj;
+
   switch (type) {
     case GET_PROPOSAL_SELECT_LIST.SET_PROPOSALS_SELECT_LIST_START:
       // const { list, params, total } = payload ?? {};
@@ -100,5 +104,6 @@ export const proposalSelectSlice = createSlice({
     proposalSelect: getProposalSelectList,
   },
 });
+export const proposalSelectAction = proposalSelectSlice.actions.proposalSelect;
 
 export default proposalSelectSlice.reducer;

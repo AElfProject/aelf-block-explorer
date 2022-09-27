@@ -33,11 +33,13 @@ function BlockDetail(props) {
 
     return (
       <span className="jump-link">
-        <a disabled={+blockHeight === 1} onClick={() => +blockHeight === 1 || router.push(prevLink)}>
+        <a disabled={+blockHeight === 1} onClick={() => +blockHeight === 1 || props.router.push(prevLink)}>
           <IconFont type="left" />
         </a>
         <Link href={nextLink}>
-          <IconFont style={{ transform: 'rotate(180deg)' }} type="left" />
+          <a>
+            <IconFont style={{ transform: 'rotate(180deg)' }} type="left" />
+          </a>
         </Link>
       </span>
     );

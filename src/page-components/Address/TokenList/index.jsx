@@ -4,19 +4,13 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Select,
-} from 'antd';
-import './index.less';
+import { Select } from 'antd';
+require('./index.less');
 
-const {
-  Option,
-} = Select;
+const { Option } = Select;
 
 const TokenList = (props) => {
-  const {
-    balances,
-  } = props;
+  const { balances } = props;
   function onFilter(input, option) {
     return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   }
@@ -26,23 +20,13 @@ const TokenList = (props) => {
       placeholder="Search Tokens"
       optionFilterProp="children"
       className="token-list-select"
-      filterOption={onFilter}
-    >
-      {
-        balances.map((b) => (
-          <Option
-            key={b.symbol}
-            value={b.symbol}
-          >
-            <span>
-              {b.symbol}
-            </span>
-            <span className="float-right">
-              {Number(b.balance).toLocaleString()}
-            </span>
-          </Option>
-        ))
-      }
+      filterOption={onFilter}>
+      {balances.map((b) => (
+        <Option key={b.symbol} value={b.symbol}>
+          <span>{b.symbol}</span>
+          <span className="float-right">{Number(b.balance).toLocaleString()}</span>
+        </Option>
+      ))}
     </Select>
   );
 };

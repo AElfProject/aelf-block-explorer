@@ -35,7 +35,7 @@ import { contractsNeedToLoad, FROM_WALLET, FROM_EXPIRED_VOTES, FROM_ACTIVE_VOTES
 import getCurrentWallet from 'utils/getCurrentWallet';
 import publicKeyToAddress from 'utils/publicKeyToAddress';
 import { getAllTeamDesc } from 'constants/api';
-import { getFormatedLockTime, handleCannotVote } from './utils';
+import { getFormatedLockTime } from './utils';
 import getAllTokens from 'utils/getAllTokens';
 import { getPublicKeyFromObject } from 'utils/getPublicKey';
 import addressFormat from 'utils/addressFormat';
@@ -54,7 +54,6 @@ const voteConfirmFormItemLayout = {
 };
 
 class VoteContainer extends Component {
-  debugger
   constructor(props) {
     super(props);
     this.state = {
@@ -587,8 +586,6 @@ class VoteContainer extends Component {
     this.judgeANodeIsCandidate(targetPublicKey).then((res) => {
       if (res) {
         this.setState({ voteType }, this.handleVoteClick.bind(this, ele));
-      } else {
-        handleCannotVote();
       }
     });
   }
@@ -979,7 +976,7 @@ class VoteContainer extends Component {
     return Promise.all([
       getAllTokens(),
       ...schemeIds.map((item) => {
-        return profitContractFromExt.GetProfitsMap.call({
+        return profitContractFromExt?.GetProfitsMap.call({
           beneficiary: currentWallet.address,
           schemeId: item.schemeId,
         });
@@ -1186,6 +1183,7 @@ class VoteContainer extends Component {
       [
         routePaths.electionNotifi,
         <ElectionNotification
+          key="ElectionNotification"
           multiTokenContract={multiTokenContract}
           voteContract={voteContract}
           electionContract={electionContract}
@@ -1211,6 +1209,7 @@ class VoteContainer extends Component {
       [
         routePaths.teamInfoKeyin,
         <KeyInTeamInfo
+          key="KeyInTeamInfo"
           electionContract={electionContract}
           currentWallet={currentWallet}
           nightElf={nightElf}
@@ -1221,6 +1220,7 @@ class VoteContainer extends Component {
       [
         routePaths.teamDetail,
         <TeamDetail
+          key="TeamDetail"
           consensusContract={consensusContract}
           electionContract={electionContract}
           currentWallet={currentWallet}
@@ -1229,6 +1229,7 @@ class VoteContainer extends Component {
       [
         routePaths.myVote,
         <MyVote
+          key="MyVote"
           electionContract={electionContract}
           handleVoteTypeChange={this.handleVoteTypeChange}
           currentWallet={currentWallet}
@@ -1239,6 +1240,7 @@ class VoteContainer extends Component {
 
     const secondaryLevelNav = this.renderSecondaryLevelNav();
     const component = path2Component.find((item) => window.location.pathname === item[0])[1];
+
     // todo: decouple
     // this.formGroup = generateFormGroup.call(this, { nodeAddress: null });
     return (

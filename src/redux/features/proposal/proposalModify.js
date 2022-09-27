@@ -7,7 +7,8 @@ import { SET_MODIFY_ORG_DETAIL } from './proposalDetail';
 
 const initialState = {};
 
-export const setModifyOrg = (state = initialState, { type, payload }) => {
+export const setModifyOrg = (state = initialState, { payload: payloadObj }) => {
+  const { type, payload } = payloadObj;
   switch (type) {
     case SET_MODIFY_ORG_DETAIL:
       return {
@@ -24,5 +25,6 @@ export const proposalModifySlice = createSlice({
     proposalModify: setModifyOrg,
   },
 });
+export const proposalModifyAction = proposalModifySlice.actions.proposalModify;
 
 export default proposalModifySlice.reducer;

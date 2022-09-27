@@ -20,7 +20,7 @@ import 'echarts/lib/component/dataZoom';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/toolbox';
 import 'echarts/lib/component/legend';
-import './ResourceCurrencyChart.less';
+require('./ResourceCurrencyChart.less');
 
 function calculateMA(dayCount, data) {
   const result = [];

@@ -63,6 +63,63 @@
 // .ant-menu-submenu-placement-rightTop is the third layer
 .common-header-submenu,
 .ant-menu-submenu-placement-rightTop {
+  .rc-menu-item:not(:last-child) {
+    margin: 0;
+  }
+  .rc-menu-vertical {
+    .rc-menu-submenu {
+      .rc-menu-submenu-title {
+        padding: 0 16px;
+      }
+    }
+    .rc-menu-item {
+      padding: 12px 16px;
+    }
+  }
+  .rc-menu-item,
+  .rc-menu-submenu-title {
+    margin: 0;
+    color: @scorpion !important;
+    a {
+      color: @scorpion !important;
+    }
+  }
+  .rc-menu-submenu-active {
+    .rc-menu-submenu-title {
+      background-color: #f6f7fa !important;
+      width: 100%;
+    }
+  }
+  .rc-menu-item-active {
+    background-color: #f6f7fa !important;
+    width: 100%;
+  }
+  .rc-menu-item-selected,
+  .rc-menu-submenu-selected {
+    color: @mariner !important;
+    background-color: @headerbgColor4 !important;
+    a {
+      color: inherit !important;
+    }
+    .rc-menu-submenu-title {
+      color: @mariner !important;
+      background-color: @headerbgColor4 !important;
+    }
+  }
+  .rc-menu-submenu-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 44px;
+    line-height: 44px;
+    .submenu-right-arrow {
+      transform: rotate(-90deg);
+      font-size: 12px;
+      margin-right: 10px;
+      top: auto;
+    }
+  }
+
   .ant-menu {
     padding-top: 4px;
     padding-bottom: 4px;
@@ -452,4 +509,11 @@ pre.view-params {
 
 .address-container .address-qrcode:hover {
   cursor: pointer;
+}
+.primary-color {
+  color: @primary-color;
+}
+
+p {
+  margin: 0;
 }

@@ -96,7 +96,7 @@ export default class StatisticalData extends PureComponent {
     return (
       <section style={style}>
         <Spin spinning={spinning}>
-          <section className={`${clsPrefix}-container card-container ${inline ? 'inline-style' : ''}`}>
+          <section className={`${clsPrefix}-container ${inline ? 'inline-style' : ''}`}>
             {tooltip ? (
               <Tooltip title={tooltip}>
                 <ExclamationCircleOutlined style={{ fontSize: 20 }} />

@@ -4,10 +4,11 @@
  */
 /* eslint-disable fecs-camelcase */
 import React, { PureComponent } from 'react';
-import { Menu, Drawer, Divider } from 'antd';
+import { Drawer, Divider } from 'antd';
+import Menu, { SubMenu, Item as MenuItem } from 'rc-menu';
 import Link from 'next/link';
 import { connect } from 'react-redux';
-import { withRouter } from 'next/router';
+require('rc-menu/assets/index.css');
 require('./header.styles.less');
 import { getPathnameFirstSlash } from 'utils/urlUtils';
 import { setIsSmallScreen } from 'redux/features/smallScreen/isSmallScreen';
@@ -36,7 +37,7 @@ const networkList = [
 ];
 
 const CHAINS_LIST = CHAIN_STATE.chainItem || [];
-const { SubMenu } = Menu;
+// const { SubMenu } = Menu;
 
 const WIDTH_BOUNDARY = 942;
 
@@ -183,15 +184,16 @@ class BrowserHeader extends PureComponent {
         classSelected = 'header-chain-selected';
       }
       return (
-        <Menu.Item key={item.netWorkType}>
+        <MenuItem key={item.netWorkType}>
           <a href={item.url} className={classSelected}>
             {item.title}
           </a>
-        </Menu.Item>
+        </MenuItem>
       );
     });
     return (
       <SubMenu
+        {...this.props}
         popupClassName="common-header-submenu"
         title={<span className="submenu-title-wrapper">Explorers</span>}
         className="aelf-submenu-container">
@@ -208,14 +210,14 @@ class BrowserHeader extends PureComponent {
     let resourceHTML = '';
     if (chain_id === config.MAINCHAINID) {
       voteHTML = (
-        <Menu.Item key="/vote">
+        <MenuItem key="/vote">
           <Link href="/vote">Vote</Link>
-        </Menu.Item>
+        </MenuItem>
       );
       resourceHTML = (
-        <Menu.Item key="/resource">
+        <MenuItem key="/resource">
           <Link href="/resource">Resource</Link>
-        </Menu.Item>
+        </MenuItem>
       );
     }
 
@@ -234,10 +236,11 @@ class BrowserHeader extends PureComponent {
         key="navbar"
         className={menuClass}
         expandIcon={<IconFont className="submenu-right-arrow" type="Down" />}>
-        <Menu.Item key="/home">
+        <MenuItem key="/home">
           <Link href="/">Home</Link>
-        </Menu.Item>
+        </MenuItem>
         <SubMenu
+          {...this.props}
           key="BLOCKCHAIN"
           popupClassName="common-header-submenu"
           popupOffset={[0, -7]}
@@ -248,42 +251,39 @@ class BrowserHeader extends PureComponent {
             </>
           }
           className="aelf-submenu-container">
-          <>
-            <SubMenu key="Block" title="Block" popupOffset={[0, -4]}>
-              <Menu.Item key="/blocks">
-                <Link href="/blocks">Blocks</Link>
-              </Menu.Item>
-              <Menu.Item key="/unconfirmedBlocks">
-                <Link href="/unconfirmedBlocks">Unconfirmed Blocks</Link>
-              </Menu.Item>
-            </SubMenu>
-          </>
-          <>
-            <SubMenu key="Transaction" title="Transaction">
-              <Menu.Item key="/txs">
-                <Link href="/txs">Transactions</Link>
-              </Menu.Item>
-              <Menu.Item key="/unconfirmedTxs">
-                <Link href="/unconfirmedTxs">Unconfirmed Transactions</Link>
-              </Menu.Item>
-            </SubMenu>
-          </>
-          <>
-            <SubMenu key="Address" title="Address">
-              <Menu.Item key="/address">
-                <Link href="/address">Accounts</Link>
-              </Menu.Item>
-              <Menu.Item key="/contract">
-                <Link href="/contract">Contracts</Link>
-              </Menu.Item>
-            </SubMenu>
-          </>
+          <SubMenu key="Block" title="Block" popupOffset={[0, -4]} {...this.props}>
+            <MenuItem key="/blocks">
+              <Link href="/blocks">Blocks</Link>
+            </MenuItem>
+            <MenuItem key="/unconfirmedBlocks">
+              <Link href="/unconfirmedBlocks">Unconfirmed Blocks</Link>
+            </MenuItem>
+          </SubMenu>
+
+          <SubMenu key="Transaction" title="Transaction" {...this.props}>
+            <MenuItem key="/txs">
+              <Link href="/txs">Transactions</Link>
+            </MenuItem>
+            <MenuItem key="/unconfirmedTxs">
+              <Link href="/unconfirmedTxs">Unconfirmed Transactions</Link>
+            </MenuItem>
+          </SubMenu>
+
+          <SubMenu key="Address" title="Address" {...this.props}>
+            <MenuItem key="/address">
+              <Link href="/address">Accounts</Link>
+            </MenuItem>
+            <MenuItem key="/contract">
+              <Link href="/contract">Contracts</Link>
+            </MenuItem>
+          </SubMenu>
         </SubMenu>
 
-        <Menu.Item key="/token">
+        <MenuItem key="/token">
           <Link href="/token">Token</Link>
-        </Menu.Item>
+        </MenuItem>
         <SubMenu
+          {...this.props}
           key="GOVERNANCE"
           popupOffset={[0, -7]}
           popupClassName="common-header-submenu"
@@ -294,20 +294,20 @@ class BrowserHeader extends PureComponent {
             </>
           }
           className="aelf-submenu-container">
-          <Menu.Item key="/proposal">
+          <MenuItem key="/proposal">
             <Link href="/proposal/proposals">Proposal</Link>
-          </Menu.Item>
+          </MenuItem>
           {voteHTML}
           {resourceHTML}
         </SubMenu>
         {isPhone && <Divider className="divider-mobile" />}
         {isPhone && this.renderPhoneMenu()}
         {isPhone && (
-          <Menu.Item key="/about">
+          <MenuItem key="/about">
             <a href="https://www.aelf.io/" target="_blank" rel="noopener noreferrer">
               About
             </a>
-          </Menu.Item>
+          </MenuItem>
         )}
       </Menu>
     );
