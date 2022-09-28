@@ -3,8 +3,9 @@ import { SOCKET_URL } from '../../../constants';
 import { SocketData } from '../types';
 
 export function initSocket(handleSocketData: any) {
+  const BUILD_ENDPOINT = process.argv[process.argv.indexOf('--CHAIN_ENDPOINT') + 1] || 'https://explorer-test.aelf.io';
   //todo: change to location.origin
-  const socket = io('https://explorer-test.aelf.io', {
+  const socket = io(BUILD_ENDPOINT, {
     path: SOCKET_URL,
     transports: ['websocket', 'polling'],
   });

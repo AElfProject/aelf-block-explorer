@@ -142,8 +142,10 @@ const handleSocketData = (
 };
 const initSocketSSR = async () => {
   return new Promise((resolve) => {
+    const BUILD_ENDPOINT =
+      process.argv[process.argv.indexOf('--CHAIN_ENDPOINT') + 1] || 'https://explorer-test.aelf.io';
     //todo: change to location.origin
-    const socket = io('https://explorer-test.aelf.io', {
+    const socket = io(BUILD_ENDPOINT, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
     });
@@ -171,8 +173,8 @@ const initSocketSSR = async () => {
 };
 export async function getServerSideProps(ctx) {
   await Promise.all([getPrice(ctx), initBasicInfo(), initBlock(), initTxs()]);
-
   const { data, isFirst } = (await initSocketSSR()) as any;
+
   handleSocketData(data, isFirst);
   const tpsData = await getSSR(TPS_LIST_API_URL, {
     start: startTime,

@@ -62,10 +62,7 @@ const get = async (url: string, params?: any, config?: any) => {
 };
 
 const getSSR = async (url: string, params?: any, config?: any) => {
-  let host = 'https://explorer-test-main.aelf.io';
-  if (process.env.Vercel_URL) {
-    host = process.env.Vercel_URL;
-  }
+  const host = process.argv[process.argv.indexOf('--CHAIN_ENDPOINT') + 1] || 'https://explorer-test.aelf.io';
   const baseUrl = '/api';
   const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
   const res = await api.get(wholeUrl, params, config);

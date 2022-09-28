@@ -34,7 +34,7 @@ export default class TPSChart extends React.Component {
 
   componentDidMount() {
     this.hadRenderedOnce = true;
-    // this.getTpsData();
+    this.getTpsData();
   }
 
   async getTpsData() {
@@ -134,7 +134,6 @@ export default class TPSChart extends React.Component {
         axisLine: {
           show: false,
           lineStyle: {
-            // color: '#C7B8CC'
             color: '#999',
           },
         },
@@ -147,7 +146,6 @@ export default class TPSChart extends React.Component {
         axisLine: {
           show: false,
           lineStyle: {
-            // color: '#C7B8CC'
             color: '#999',
           },
         },
@@ -179,8 +177,6 @@ export default class TPSChart extends React.Component {
           smooth: true,
           type: 'line',
           itemStyle: {
-            // color: '#D24CFF'
-            // color: '#666'
             opacity: 0,
           },
           areaStyle: {
