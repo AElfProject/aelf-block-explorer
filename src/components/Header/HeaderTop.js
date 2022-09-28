@@ -34,12 +34,15 @@ export default function HeaderTop({
   useEffect(() => {
     if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
       const d = new Date()
+      const day = d.getDate()
+      const month = d.getMonth()
+      const year = d.getFullYear()
       get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((res) => setPrice(res));
       get(HISTORY_PRICE, {
         token_id: "aelf",
         vs_currencies: "usd",
         date:
-          new Date(d.toLocaleDateString()).valueOf() - d.getTimezoneOffset() * 60000 -
+          new Date(`${year}/${month}/${day}`).valueOf() - d.getTimezoneOffset() * 60000 -
           24 * 3600 * 1000,
       }).then((res) => {
         if (!res.message) {
