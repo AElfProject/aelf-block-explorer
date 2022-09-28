@@ -27,7 +27,8 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
           </div>
           <div className="table-body">
             {blocks.map((block, index) => (
-              <div key={block.block_height} className="row">
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={`${block.block_height}_${index}`} className="row">
                 <p className="block">
                   <Link to={`/block/${block.block_height}`}>
                     {block.block_height}

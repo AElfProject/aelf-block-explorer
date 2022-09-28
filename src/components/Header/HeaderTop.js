@@ -35,7 +35,7 @@ export default function HeaderTop({
     if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
       const d = new Date()
       const day = d.getDate()
-      const month = d.getMonth()
+      const month = d.getMonth() + 1
       const year = d.getFullYear()
       get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: "USD,BTC,CNY" }).then((res) => setPrice(res));
       get(HISTORY_PRICE, {
