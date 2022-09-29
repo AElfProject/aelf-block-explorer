@@ -139,4 +139,5 @@ export interface HomeProps {
   localTransactionsSSR: number;
   transactionsSSR: TXItem[];
   blocksSSR: BlockItem[];
+  headers: any;
 }

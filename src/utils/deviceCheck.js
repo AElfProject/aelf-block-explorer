@@ -7,10 +7,10 @@ let isPhoneChecked = false,
   isPhoneCheckedSSR = false;
 let phoneCheckResult = null,
   phoneCheckResultSSR = null;
-export const isPhoneCheckSSR = (ctx) => {
+export const isPhoneCheckSSR = (headers) => {
   // 判断是否手机端访问
   if (!isPhoneCheckedSSR) {
-    const userAgentInfo = ctx.req.headers['user-agent'].toLowerCase();
+    const userAgentInfo = headers['user-agent'].toLowerCase();
     const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
     isPhoneCheckedSSR = true;
     phoneCheckResultSSR = agents.find((agent) => userAgentInfo.includes(agent));

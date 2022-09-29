@@ -37,7 +37,6 @@ const networkList = [
 ];
 
 const CHAINS_LIST = CHAIN_STATE.chainItem || [];
-// const { SubMenu } = Menu;
 
 const WIDTH_BOUNDARY = 942;
 

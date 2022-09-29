@@ -2,7 +2,7 @@ import withNoSSR from 'utils/withNoSSR';
 import Home from 'page-components/Home';
 // export default withNoSSR(Home);
 export default Home;
-
+import { NextPageContext } from 'next';
 import {
   BasicInfo,
   BlocksResult,
@@ -52,8 +52,8 @@ const fetch = async (url: string) => {
   });
   return res;
 };
-const getPrice = async (ctx) => {
-  const isMobile = isPhoneCheckSSR(ctx);
+const getPrice = async (ctx: NextPageContext) => {
+  const isMobile = isPhoneCheckSSR(ctx.req?.headers);
   if (CHAIN_ID === 'AELF' && isMobile) {
     mobilePrice = (await getSSR(ELF_REALTIME_PRICE_URL, {}, { onlyUrl: true })) as PriceDto;
     mobilePrevPrice = (await getSSR(HISTORY_PRICE, {
@@ -171,11 +171,13 @@ const initSocketSSR = async () => {
     socket.emit('getBlocksList');
   });
 };
-export async function getServerSideProps(ctx) {
+export const getServerSideProps = async (ctx: NextPageContext) => {
   await Promise.all([getPrice(ctx), initBasicInfo(), initBlock(), initTxs()]);
+  // console.log(11111);
   const { data, isFirst } = (await initSocketSSR()) as any;
-
+  // console.log(22222);
   handleSocketData(data, isFirst);
+  // console.log(33333);
   const tpsData = await getSSR(TPS_LIST_API_URL, {
     start: startTime,
     end: endTime,
@@ -193,6 +195,7 @@ export async function getServerSideProps(ctx) {
       localTransactionsSSR,
       transactionsSSR,
       blocksSSR,
+      headers: ctx.req?.headers,
     },
   };
-}
+};

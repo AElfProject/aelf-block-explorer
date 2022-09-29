@@ -1,12 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import Dividends from '../../../components/Dividends';
-import IconFont from '../../../components/IconFont';
-import useMobile from '../../../hooks/useMobile';
+import Dividends from 'components/Dividends';
+import IconFont from 'components/IconFont';
+import useMobile from 'hooks/useMobile';
 import { getFormattedDate } from 'utils/timeUtils';
 
-export default function LatestInfo({ blocks = [], transactions = [] }) {
-  const isMobile = useMobile();
+export default function LatestInfo({ blocks = [], transactions = [], ctx }) {
+  const isMobile = useMobile(ctx);
   return (
     <div className="latest-info">
       <div className="blocks">
@@ -29,7 +29,7 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
           </div>
           <div className="table-body">
             {blocks.map((block, index) => (
-              <div key={block.block_height} className="row">
+              <div key={`${block.block_height}_${index}`} className="row">
                 <p className="block">
                   <Link href={`/block/${block.block_height}`}>{block.block_height}</Link>
                 </p>

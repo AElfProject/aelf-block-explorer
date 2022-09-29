@@ -41,6 +41,7 @@ export default function Home({
   localTransactionsSSR,
   transactionsSSR,
   blocksSSR,
+  headers,
 }: HomeProps) {
   const [price, setPrice] = useState(mobilePrice || { USD: 0 });
   const [previousPrice, setPreviousPrice] = useState(mobilePrevPrice || { usd: 0 });
@@ -53,7 +54,7 @@ export default function Home({
   const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(unconfirmedBlockHeightSSR || '0');
   const isMobile = useMobile();
   const latestSection = useMemo(
-    () => <LatestInfo blocks={blocks} transactions={transactions} />,
+    () => <LatestInfo blocks={blocks} transactions={transactions} headers={headers} />,
     [blocks, transactions],
   );
   // let blockHeight = basicInfoData.height;
