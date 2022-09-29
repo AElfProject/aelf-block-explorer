@@ -4,9 +4,14 @@ import Dividends from 'components/Dividends';
 import IconFont from 'components/IconFont';
 import useMobile from 'hooks/useMobile';
 import { getFormattedDate } from 'utils/timeUtils';
-
-export default function LatestInfo({ blocks = [], transactions = [], ctx }) {
-  const isMobile = useMobile(ctx);
+import { BlockItem, TXItem } from '../types';
+interface PropsDto {
+  blocks: BlockItem[];
+  transactions: TXItem[];
+  headers: any;
+}
+export default function LatestInfo({ blocks = [], transactions = [], headers }: PropsDto) {
+  const isMobile = useMobile(headers);
   return (
     <div className="latest-info">
       <div className="blocks">

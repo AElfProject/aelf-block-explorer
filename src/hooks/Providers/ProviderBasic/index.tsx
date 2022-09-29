@@ -6,7 +6,10 @@ import { initLanguage } from 'assets/react-i18next';
 import { useLanguage } from 'assets/react-i18next/i18n-hook';
 import { ANTD_LOCAL } from 'assets/react-i18next/config';
 ConfigProvider.config({ prefixCls });
-initLanguage(localStorage);
+if (typeof window !== 'undefined') {
+  initLanguage(localStorage);
+}
+
 export default function ProviderBasic({ children }: { children: ReactNode }) {
   const { language } = useLanguage();
   return (

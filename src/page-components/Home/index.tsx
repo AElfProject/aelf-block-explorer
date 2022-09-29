@@ -57,7 +57,7 @@ export default function Home({
     () => <LatestInfo blocks={blocks} transactions={transactions} headers={headers} />,
     [blocks, transactions],
   );
-  // let blockHeight = basicInfoData.height;
+  blockHeight = blockHeight || 0;
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
       return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
@@ -81,15 +81,15 @@ export default function Home({
   }, [isMobile]);
 
   // csr only
-  useEffect(() => {
-    const socket = initSocket(handleSocketData);
-    initBasicInfo();
-    initBlock();
-    initTxs();
-    return () => {
-      socket.close();
-    };
-  }, [initSocket]);
+  // useEffect(() => {
+  //   const socket = initSocket(handleSocketData);
+  //   initBasicInfo();
+  //   initBlock();
+  //   initTxs();
+  //   return () => {
+  //     socket.close();
+  //   };
+  // }, [initSocket]);
 
   const fetch = useCallback(async (url: string) => {
     const res = await get(url, {
@@ -214,7 +214,7 @@ export default function Home({
         <section className="latest-section">{latestSection}</section>
         <section className="chart-section">
           <h3>Transactions Per Minute</h3>
-          <TPSChart own={tpsData.own} all={tpsData.all} />
+          <TPSChart own={tpsData?.own} all={tpsData?.all} />
         </section>
       </div>
     </div>

@@ -66,7 +66,7 @@ const getSSR = async (url: string, params?: any, config?: any) => {
   const baseUrl = '/api';
   const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
   const res = await api.get(wholeUrl, params, config);
-  // console.log(res, 'res');
+  console.log(res, 'res');
   if (res.ok) {
     return res.data;
   } else {

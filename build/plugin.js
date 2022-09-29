@@ -81,7 +81,8 @@ module.exports = [
           //   ],
           // },
         );
-        config.plugins.push(
+        config.plugins
+          .push
           // new HtmlWebpackPlugin({
           //   template: path.resolve(ROOT, './template.ejs'),
           //   filename: 'index.html',
@@ -95,13 +96,13 @@ module.exports = [
           // new MomentLocalesPlugin({
           //   localesToKeep: ['es-us', 'en-ca', 'zh-cn'],
           // }),
-          new CopyWebpackPlugin(copies),
-          new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-            'process.env.RELOAD_ENV': JSON.stringify(process.env.RELOAD_ENV),
-            'process.env.LOCALE': JSON.stringify(process.env.LOCALE || 'zh'),
-            PACKAGE_VERSION: JSON.stringify(process.env.npm_package_version),
-          }),
+          // new CopyWebpackPlugin(copies),
+          // new webpack.DefinePlugin({
+          //   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+          //   'process.env.RELOAD_ENV': JSON.stringify(process.env.RELOAD_ENV),
+          //   'process.env.LOCALE': JSON.stringify(process.env.LOCALE || 'zh'),
+          //   PACKAGE_VERSION: JSON.stringify(process.env.npm_package_version),
+          // }),
           // new MonacoWebpackPlugin({
           //   languages: ['xml', 'csharp', 'json'],
           //   features: [
@@ -119,10 +120,10 @@ module.exports = [
           //     'linesOperations',
           //   ],
           // }),
-          new webpack.ProvidePlugin({
-            process: 'process/browser',
-          }),
-        );
+          // new webpack.ProvidePlugin({
+          //   process: 'process/browser',
+          // }),
+          ();
         return config;
       },
     }),

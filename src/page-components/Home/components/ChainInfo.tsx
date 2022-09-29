@@ -1,7 +1,20 @@
 import React, { useMemo } from 'react';
 import IconFont from '../../../components/IconFont';
-
-export default function ChainInfo({ blockHeight, localTransactions, reward, unconfirmedBlockHeight, localAccounts }) {
+import { RewardDto } from '../types';
+interface PropsDto {
+  blockHeight: number;
+  localTransactions: number;
+  reward: RewardDto;
+  unconfirmedBlockHeight: number | string;
+  localAccounts: number;
+}
+export default function ChainInfo({
+  blockHeight,
+  localTransactions,
+  reward,
+  unconfirmedBlockHeight,
+  localAccounts,
+}: PropsDto) {
   const infoList = useMemo(
     () => [
       {
