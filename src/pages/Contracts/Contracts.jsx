@@ -75,10 +75,10 @@ export default function Contracts() {
         <div className="before-table">
           <div className="left">
             <p>
-              More than {">"} {Number(actualTotal).toLocaleString()} verified
-              contracts found
+              More than {">"} {Number(actualTotal).toLocaleString()} contracts
+              found
             </p>
-            <p>(Showing the last 1000 verified contracts only)</p>
+            <p>(Showing the last 1000 contracts only)</p>
           </div>
           <div className="right">
             <Pagination
