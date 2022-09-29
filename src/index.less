@@ -1,4 +1,26 @@
-@import './assets/less/_variables.less';
+@import "./assets/less/_variables.less";
+@import "./pages/Proposal/index.less";
+
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("./assets/fonts/Roboto-Bold-3.ttf");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Roboto Medium";
+  src: url("./assets/fonts/Roboto-Medium-12.ttf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Roboto-Medium";
+  src: url("./assets/fonts/Roboto-Medium-12.ttf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("./assets/fonts/Roboto-Regular-14.ttf");
+  font-weight: 400;
+}
 
 html,
 body,
@@ -52,7 +74,7 @@ body {
   .has-mask-on-mobile {
     position: relative;
     &:before {
-      content: 'View More On The PC';
+      content: "View More On The PC";
       position: absolute;
       z-index: 100;
       width: 100%;
@@ -112,11 +134,6 @@ body {
   }
 }
 
-.ant-table-thead > tr > th,
-.ant-table-tbody > tr > td {
-  white-space: nowrap;
-}
-
 .ant-tooltip-inner {
   color: #ccc;
 }
@@ -155,3 +172,16 @@ body {
   background: @hoverColor;
 }
 /* header menu rewrite end */
+
+.ant-menu-horizontal:not(.ant-menu-dark) {
+  .ant-menu-item-active:after,
+  .ant-menu-item-open:after,
+  .ant-menu-item-selected:after,
+  .ant-menu-item:hover:after,
+  .ant-menu-submenu-active:after,
+  .ant-menu-submenu-open:after,
+  .ant-menu-submenu-selected:after,
+  .ant-menu-submenu:hover:after {
+    border-bottom: 2px solid transparent; // because antd v4 default has a blue border bottom
+  }
+}

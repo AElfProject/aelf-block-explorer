@@ -1,12 +1,13 @@
-import React from 'react';
-import { Upload, Icon, Modal } from 'antd';
+import React from "react";
+import { Upload, Modal } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 }
 
@@ -15,29 +16,28 @@ export default class PicUpload extends React.Component {
     super(props);
     this.state = {
       previewVisible: false,
-      previewImage: '',
+      previewImage: "",
       fileList: [
         {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        }
-      ]
+          uid: "-1",
+          name: "image.png",
+          status: "done",
+          url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+        },
+      ],
     };
   }
 
   handleCancel = () => this.setState({ previewVisible: false });
 
-  handlePreview = async file => {
+  handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
 
     this.setState({
       previewImage: file.url || file.preview,
-      previewVisible: true
+      previewVisible: true,
     });
   };
 
@@ -47,7 +47,7 @@ export default class PicUpload extends React.Component {
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButton = (
       <div>
-        <Icon type='plus' />
+        <PlusOutlined />
         <div className='ant-upload-text'>Upload</div>
       </div>
     );
@@ -67,7 +67,7 @@ export default class PicUpload extends React.Component {
           footer={null}
           onCancel={this.handleCancel}
         >
-          <img alt='example' style={{ width: '100%' }} src={previewImage} />
+          <img alt='example' style={{ width: "100%" }} src={previewImage} />
         </Modal>
       </div>
     );

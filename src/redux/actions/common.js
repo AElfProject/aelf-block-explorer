@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-11-04 18:44:44
  * @Description: file content
  */
-export const setIsSmallScreen = isSmallScreen => ({
+export const setIsSmallScreen = (isSmallScreen) => ({
   type: 'SET_IS_SMALL_SCREEN',
-  payload: { isSmallScreen }
+  payload: { isSmallScreen },
 });

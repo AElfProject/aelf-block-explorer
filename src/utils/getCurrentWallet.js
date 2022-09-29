@@ -1,4 +1,4 @@
-import {getPublicKeyFromObject} from "./getPublicKey";
+import { getPublicKeyFromObject } from './getPublicKey';
 
 const getCurrentWallet = () => {
   let currentWallet = JSON.parse(localStorage.getItem('currentWallet'));
@@ -10,8 +10,8 @@ const getCurrentWallet = () => {
       name: null,
       pubKey: {
         x: null,
-        y: null
-      }
+        y: null,
+      },
     };
   }
   return currentWallet;

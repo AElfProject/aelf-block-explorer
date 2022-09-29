@@ -3,31 +3,34 @@
  * @author zhouminghui
  */
 
-import React, { PureComponent } from 'react';
-import { Table } from 'antd';
-import { get } from '../../utils';
+import React, { PureComponent } from "react";
+import { Table } from "antd";
+import { get } from "../../utils";
 import {
   RESOURCE_RECORDS,
   RESOURCE_DETAILS_COLUMN,
   PAGE_SIZE,
-  ELF_DECIMAL
-} from '../../constants';
-import './ResourceDetail.less';
+  ELF_DECIMAL,
+} from "../../constants";
+import "./ResourceDetail.less";
+import { withRouter } from "../../routes/utils";
+import TableLayer from "../../components/TableLayer/TableLayer";
 
 const page = 0;
-export default class ResourceDetail extends PureComponent {
+class ResourceDetail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
-      address: props.match.params.id || '',
+      address: props.params.id || "",
       data: null,
       pagination: {
         pageSize: PAGE_SIZE,
+        showSizeChanger: false,
         showQuickJumper: true,
         total: 0,
-        showTotal: total => `Total ${total} items`
-      }
+        showTotal: (total) => `Total ${total} items`,
+      },
     };
   }
 
@@ -36,17 +39,17 @@ export default class ResourceDetail extends PureComponent {
   }
 
   async getResourceDetail(PAGE_SIZE, page) {
-    let { address, pagination } = this.state;
+    const { address, pagination } = this.state;
     this.setState({
-      loading: true
+      loading: true,
     });
     const data = await get(RESOURCE_RECORDS, {
       limit: PAGE_SIZE,
-      page: page,
-      order: 'desc',
-      address
+      page,
+      order: "desc",
+      address,
     });
-    let records = data.records || [];
+    const records = data.records || [];
     records.map((item, index) => {
       item.key = index + page;
       item.resource = (+item.resource / ELF_DECIMAL).toFixed(8);
@@ -55,15 +58,15 @@ export default class ResourceDetail extends PureComponent {
     this.setState({
       data: records,
       pagination,
-      loading: false
+      loading: false,
     });
   }
 
-  handleTableChange = pagination => {
+  handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     this.setState({
-      pagination: pager
+      pagination: pager,
     });
 
     this.getResourceDetail(pagination.pageSize, pagination.current - 1);
@@ -74,15 +77,19 @@ export default class ResourceDetail extends PureComponent {
     const { handleTableChange } = this;
     return (
       <div className='transaction-details basic-container basic-container-white'>
-        <Table
-          columns={RESOURCE_DETAILS_COLUMN}
-          pagination={pagination}
-          dataSource={data}
-          loading={loading}
-          onChange={handleTableChange}
-          scroll={{ x: 1024 }}
-        />
+        <TableLayer>
+          <Table
+            showSorterTooltip={false}
+            columns={RESOURCE_DETAILS_COLUMN}
+            pagination={pagination}
+            dataSource={data}
+            loading={loading}
+            onChange={handleTableChange}
+            scroll={{ x: 1024 }}
+          />
+        </TableLayer>
       </div>
     );
   }
 }
+export default withRouter(ResourceDetail);

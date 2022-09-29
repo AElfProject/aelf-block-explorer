@@ -7,7 +7,8 @@
  * @Description: file content
  */
 import React, { PureComponent } from "react";
-import { Tooltip, Icon, Statistic, Spin } from "antd";
+import { Tooltip, Statistic, Spin } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 import "./index.less";
 
@@ -65,7 +66,7 @@ export default class StatisticalData extends PureComponent {
 
   renderList(arr) {
     return arr.map((item, index) => {
-      let number = item.num;
+      const number = item.num;
       if (item.isRender) {
         return item.num;
       }
@@ -74,7 +75,7 @@ export default class StatisticalData extends PureComponent {
           key={index}
           title={item.title}
           value={item.num || 0}
-          format="D day HH : mm : ss "
+          format='D day HH : mm : ss '
           onFinish={() => {
             this.handleFinish(item.id);
           }}
@@ -107,7 +108,7 @@ export default class StatisticalData extends PureComponent {
           >
             {tooltip ? (
               <Tooltip title={tooltip}>
-                <Icon style={{ fontSize: 20 }} type="exclamation-circle" />
+                <ExclamationCircleOutlined style={{ fontSize: 20 }} />
               </Tooltip>
             ) : null}
             {listHTML}

@@ -1,0 +1,144 @@
+// rewrite antd components style
+
+.ant-btn-default {
+  background-color: @mariner;
+  color: white;
+  border-radius: 2px;
+  border: 1px solid @mariner;
+  &:hover {
+    background-color: @blueHover;
+    color: white;
+    border: 1px solid @blueHover;
+  }
+  &[disabled] {
+    background-color: @wild-sand;
+    color: @silver;
+    border-color: currentColor;
+  }
+}
+.ant-btn-text {
+  background-color: transparent !important;
+  color: @mariner;
+  &:hover {
+    color: @blueHover;
+  }
+  &[disabled] {
+    color: @silver;
+  }
+}
+
+.ant-pagination {
+  display: flex;
+  position: relative;
+  justify-content: flex-end;
+  color: @scorpion;
+  font-size: 14px;
+  &-total-text {
+    span {
+      span {
+        margin-left: 5px;
+      }
+    }
+  }
+  .ant-pagination-item-ellipsis,
+  .ant-pagination-item-link-icon {
+    color: @alto !important;
+  }
+  .ant-pagination > li {
+    line-height: 32px;
+    min-width: 32px;
+    height: 32px;
+    border: @alto 1px solid;
+    border-radius: 2px;
+    .ant-pagination-item a:hover {
+      color: @bgHover;
+    }
+    &.ant-pagination-item-active {
+      border: @mariner 1px solid;
+    }
+    &.ant-pagination-jump-prev-custom-icon,
+    &.ant-pagination-jump-next-custom-icon {
+      border: none;
+    }
+  }
+  .ant-pagination-item-active:hover {
+    background-color: @bgHover;
+    opacity: 1;
+  }
+}
+
+.ant-pagination-item {
+  font-family: "Roboto" !important;
+  font-weight: 400;
+}
+
+.mobile .ant-pagination {
+  align-items: flex-end;
+}
+
+.ant-tabs-nav .ant-tabs-tab {
+  padding: 12px 0;
+  margin: 0 24px 0 0;
+}
+
+.ant-tag.unconfirmed {
+  width: 96px !important;
+  height: 24px !important;
+  font-size: 12px !important;
+  padding: 2px 8px 2px 18px !important;
+  color: @sunset-orange !important;
+  background: url("../../assets/images/bg_unconfirmed.png") no-repeat !important;
+  background-size: 96px 24px !important;
+}
+.ant-tag.confirmations {
+  padding: 2px 8px 2px 18px !important;
+  background-image: url("../../assets/images/bg_confirmed.png") !important;
+  background-repeat: no-repeat !important;
+  background-color: @athens-gray;
+  background-position: 0;
+  background-size: 179px 24px !important;
+}
+
+.ant-table-thead > tr > th {
+  padding: 14px 16px 10px 0 !important;
+  line-height: 20px;
+  font-size: 12px;
+}
+.ant-table-tbody > tr > td,
+.ant-table-thead > tr > th {
+  padding-left: 0 !important;
+  padding-right: 16px !important;
+  &:first-child {
+    padding-left: 16px !important;
+  }
+}
+.ant-table-column-sorter {
+  height: 20px;
+}
+
+.mobile {
+  .ant-table-tbody > tr > td,
+  .ant-table-thead > tr > th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+.ant-select-dropdown {
+  min-width: 120px;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.08),
+    0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+  .ant-select-dropdown-menu-item {
+    padding: 9px 16px;
+    color: @scorpion;
+  }
+  .ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+    background: #f6f7fa;
+  }
+  .ant-select-dropdown-menu-item-selected {
+    color: @mariner;
+    background: @headerbgColor4 !important;
+  }
+}

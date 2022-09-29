@@ -1,0 +1,46 @@
+.proposal-result-list {
+  &-item {
+    display: flex;
+    flex-flow: row nowrap;
+    .sub-title {
+      display: inline-block;
+      min-width: 180px;
+      text-align: right;
+    }
+    pre.proposal-result-list-item-value {
+      background-color: #eeeeee;
+      max-height: 220px;
+      border-radius: 5px;
+      overflow: auto;
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
+  }
+}
+.ant-modal-footer {
+  text-align: center;
+}
+.create-proposal-modal.ant-modal-wrap,
+.contract-proposal-modal.ant-modal-wrap {
+  .ant-modal {
+    .ant-modal-content {
+      .ant-modal-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f0f0f0;
+        .ant-modal-title {
+          padding: 0;
+          border-bottom: 0;
+          text-align: left;
+        }
+      }
+    }
+    .ant-modal-footer {
+      padding-bottom: 10px;
+      border-top: 1px solid #f0f0f0;
+      .ant-btn {
+        width: auto;
+        display: inline-block;
+      }
+    }
+  }
+}

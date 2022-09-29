@@ -1,0 +1,228 @@
+.tx-block-detail-container {
+  h2 {
+    font-family: "Roboto Bold";
+    color: @cloud-burst;
+    font-weight: 400;
+    font-size: 18px;
+  }
+  .ant-tag {
+    border: none;
+    padding: 1px 8px;
+    font-size: 14px;
+    background: @headerbgColor4;
+    color: @mariner;
+  }
+  textarea {
+    border-radius: 4px;
+    border: none;
+    background: @bgMenuItem;
+    padding: 8px 12px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 16px;
+    &:disabled {
+      color: @scorpion;
+      opacity: 1;
+      -webkit-text-fill-color: @scorpion;
+    }
+  }
+  .ant-tabs {
+    margin-top: 16px;
+    background: white;
+    .ant-tabs-nav-wrap {
+      padding: 1px 24px;
+    }
+  }
+  .overview-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    padding: 8px 140px 64px;
+    .wrap {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 16px;
+      border-bottom: 1px solid @border-color2;
+      row-gap: 16px;
+      &:last-of-type {
+        border: none;
+      }
+      .row {
+        display: flex;
+        line-height: 22px;
+        min-height: 22px;
+        column-gap: 24px;
+        .label {
+          min-width: 206px;
+          text-align: right;
+          color: @mine-shaft;
+          font-family: "Roboto-Medium";
+          font-size: 14px;
+        }
+        .value {
+          width: 100%;
+          color: @scorpion;
+          word-wrap: break-word;
+          overflow-wrap: anywhere;
+          .value-block {
+            a {
+              margin-right: 8px;
+            }
+            .ant-tag {
+              padding: 2px 8px;
+              font-size: 12px;
+              color: @scorpion;
+              background: @bgMenuItem;
+            }
+          }
+          .value-timestamp {
+            .anticon {
+              margin-right: 8px;
+            }
+          }
+          .value-address {
+            display: flex;
+            .anticon {
+              margin-left: 8px;
+            }
+            .ant-tag {
+              margin-left: 16px;
+            }
+          }
+        }
+      }
+    }
+    .show-more-btn {
+      display: flex;
+      padding: 0;
+      margin-left: 230px;
+      align-items: center;
+      width: fit-content;
+      &:focus,
+      &:hover {
+        color: @mariner !important;
+      }
+
+      &.less {
+        .anticon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+  .logs-container {
+    padding: 8px 140px 80px;
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      > div {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        .event-item {
+          margin-bottom: 0;
+        }
+      }
+    }
+    div.info {
+      display: flex;
+      align-items: center;
+      color: @scorpion;
+      overflow-wrap: anywhere;
+      word-wrap: break-word;
+      .label {
+        color: @mine-shaft;
+        text-align: right;
+        display: block;
+        min-width: 66px;
+        font-family: "Roboto-Medium";
+        font-size: 14px;
+        line-height: 22px;
+        height: 22px;
+        margin-right: 24px;
+      }
+      .copy-btn {
+        font-size: 16px;
+        margin-left: 10px;
+      }
+    }
+    .event-item {
+      margin-left: 90px;
+      textarea {
+        padding: 8px 12px;
+        color: @scorpion;
+        margin-bottom: 20px;
+      }
+    }
+    .no-data {
+      height: 351px;
+      padding-top: 140px;
+      text-align: center;
+      color: @silver;
+    }
+  }
+}
+
+.tx-block-detail-container.mobile {
+  padding-bottom: 32px !important;
+  .overview-container {
+    padding: 10px 16px;
+    .wrap {
+      row-gap: 24px;
+      .row {
+        flex-direction: column;
+        row-gap: 6px;
+        .label {
+          text-align: left;
+          color: @mine-shaft;
+        }
+        .value {
+          overflow-wrap: anywhere;
+          .value-address {
+            display: flex;
+            flex-direction: column;
+            .ant-tag {
+              width: fit-content;
+              margin: 0;
+              margin-top: 9px;
+            }
+          }
+          .value-timestamp {
+            align-items: baseline;
+            .anticon {
+              line-height: 22px;
+            }
+          }
+        }
+      }
+    }
+    .show-more-btn {
+      margin-left: 0;
+      margin-top: -8px;
+      margin-bottom: 54px;
+    }
+  }
+  .logs-container {
+    padding: 8px 16px;
+    div.info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      .label {
+        text-align: left;
+        color: @mine-shaft;
+      }
+    }
+    .event-list > div {
+      gap: 24px;
+      .info > div {
+        overflow-wrap: anywhere;
+      }
+    }
+    .event-item {
+      margin-left: 0;
+    }
+  }
+}

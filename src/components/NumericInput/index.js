@@ -20,7 +20,7 @@ function formatNumber(value) {
 }
 
 export default class NumericInput extends React.Component {
-  onChange = e => {
+  onChange = (e) => {
     const { value } = e.target;
     const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
     if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
@@ -42,7 +42,7 @@ export default class NumericInput extends React.Component {
   render() {
     const { value } = this.props;
     const title = value ? (
-      <span className='numeric-input-title'>
+      <span className="numeric-input-title">
         {value !== '-' ? formatNumber(value) : '-'}
       </span>
     ) : (
@@ -52,14 +52,14 @@ export default class NumericInput extends React.Component {
       <Tooltip
         trigger={['focus']}
         title={title}
-        placement='topLeft'
-        overlayClassName='numeric-input'
+        placement="topLeft"
+        overlayClassName="numeric-input"
       >
         <Input
           {...this.props}
           onChange={this.onChange}
           onBlur={this.onBlur}
-          placeholder='Input a number'
+          placeholder="Input a number"
           maxLength={25}
         />
       </Tooltip>

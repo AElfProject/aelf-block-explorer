@@ -8,22 +8,14 @@
  */
 import { get } from '@src/utils';
 
-export const getAllTeamDesc = () => {
-  return get('/vote/getAllTeamDesc', {
-    isActive: true
-  });
-};
+export const getAllTeamDesc = () => get('/vote/getAllTeamDesc', {
+  isActive: true,
+});
 
-export const getTeamDesc = publicKey => {
-  return get('/vote/getTeamDesc', {
-    publicKey
-  });
-};
+export const getTeamDesc = (publicKey) => get('/vote/getTeamDesc', {
+  publicKey,
+});
 
-export const fetchPageableCandidateInformation = (contract, payload) => {
-  return contract.GetPageableCandidateInformation.call(payload);
-};
+export const fetchPageableCandidateInformation = (contract, payload) => contract.GetPageableCandidateInformation.call(payload);
 
-export const fetchElectorVoteWithRecords = (contract, payload) => {
-  return contract.GetElectorVoteWithRecords.call(payload);
-};
+export const fetchElectorVoteWithRecords = (contract, payload) => contract.GetElectorVoteWithRecords.call(payload);

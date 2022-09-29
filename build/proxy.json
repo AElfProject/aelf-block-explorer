@@ -1,57 +1,72 @@
 [
   {
     "description": "aelf-contract-viewer运行的API，可本地运行或者代理到线上，只需要更改target",
-    "target": "http://192.168.197.42:7740",
-    "context": [
-      "/api/viewer",
-      "/api/proposal"
-    ],
-    "headers": {},
+    "target": "https://explorer-test.aelf.io",
+    "context": ["/api/viewer", "/api/proposal"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "target": "https://explorer-test.aelf.io/",
+    "context": ["/api/blockChain"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "pathRewrite": {
+      "^/api/blockChain": "/chain/api/blockChain"
+    },
     "changeOrigin": true,
     "secure": false
   },
   {
     "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
-    "target": "http://192.168.197.42:7101",
-    "context": [
-      "/api"
-    ],
-    "headers": {},
+    "target": "https://explorer-test.aelf.io",
+    "context": ["/api"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "target": "https://explorer-test.aelf.io",
+    "context": ["/cms"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
     "changeOrigin": true,
     "secure": false
   },
   {
     "description": "链节点，只需要更改target",
-    "target": "http://192.168.199.109:8002",
-    "context": [
-      "/chain"
-    ],
-    "pathRewrite": {
-      "^/chain": ""
+    "target": "https://explorer-test.aelf.io",
+    "context": ["/chain"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
     },
-    "headers": {},
     "changeOrigin": true,
     "secure": false
   },
   {
     "description": "不需要修改",
     "target": "https://api.huobi.pro",
-    "context": [
-      "/market"
-    ],
+    "context": ["/market"],
     "headers": {},
     "changeOrigin": true,
     "secure": false
   },
   {
     "description": "aelf-block-api运行的websocket服务，只需更改target",
-    "target": "ws://192.168.197.42:7101",
-    "context": [
-      "/socket"
-    ],
-    "headers": {},
+    "target": "wss://explorer-test.aelf.io",
+    "context": ["/socket"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
     "changeOrigin": true,
-    "ws": true,
     "secure": false
   }
 ]

@@ -6,7 +6,9 @@
  * @LastEditTime: 2019-09-19 21:02:29
  * @Description: file content
  */
-import { observable, action, configure, runInAction } from 'mobx';
+import {
+  observable, action, configure, runInAction,
+} from 'mobx';
 
 configure({ enforceActions: 'always' });
 

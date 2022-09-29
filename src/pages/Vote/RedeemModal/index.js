@@ -1,122 +1,124 @@
-import React, { PureComponent } from 'react';
-import { Modal, Form, Input, Button, Table } from 'antd';
+import React, { PureComponent } from "react";
+import { Modal, Form, Input, Button, Table } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 import {
   SYMBOL,
   SELECT_SOMETHING_TIP,
   NEED_PLUGIN_AUTHORIZE_TIP,
-  FEE_TIP
-} from '@src/constants';
-import {ELF_DECIMAL} from "../constants";
+  FEE_TIP,
+} from "@src/constants";
+import { ELF_DECIMAL } from "../constants";
+import TableLayer from "../../../components/TableLayer/TableLayer";
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 6 }
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 18 }
-  }
+    sm: { span: 18 },
+  },
 };
 
 const pagination = {
   showQuickJumper: true,
   total: 0,
-  showTotal: total => `Total ${total} items`,
-  pageSize: 3
+  showTotal: (total) => `Total ${total} items`,
+  pageSize: 3,
+  showSizeChanger: false,
 };
 
 function getColumns() {
   return [
     {
-      title: 'Vote Amount',
-      dataIndex: 'amount',
-      key: 'voteAmount',
-      defaultSortOrder: 'descend',
+      title: "Vote Amount",
+      dataIndex: "amount",
+      key: "voteAmount",
+      defaultSortOrder: "descend",
       sorter: (a, b) => a.amount - b.amount,
-      render: value => value / ELF_DECIMAL
+      render: (value) => value / ELF_DECIMAL,
     },
     {
-      title: 'Lock Time',
-      dataIndex: 'formatedLockTime',
-      key: 'lockTime',
-      sorter: (a, b) => a.lockTime - b.lockTime
+      title: "Lock Time",
+      dataIndex: "formatedLockTime",
+      key: "lockTime",
+      sorter: (a, b) => a.lockTime - b.lockTime,
     },
     {
-      title: 'Vote Time',
-      dataIndex: 'formatedVoteTime',
-      key: 'voteTime',
-      sorter: (a, b) => a.voteTimestamp.seconds - b.voteTimestamp.seconds
-    }
+      title: "Vote Time",
+      dataIndex: "formatedVoteTime",
+      key: "voteTime",
+      sorter: (a, b) => a.voteTimestamp.seconds - b.voteTimestamp.seconds,
+    },
   ];
 }
 
 class RedeemModal extends PureComponent {
+  formRef = React.createRef();
   constructor(props) {
     super(props);
     this.handleOk = this.handleOk.bind(this);
   }
 
-  getColumnSearchProps = dataIndex => ({
+  getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
       confirm,
-      clearFilters
+      clearFilters,
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={node => {
+          ref={(node) => {
             this.searchInput = node;
           }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e =>
+          onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
-          style={{ width: 188, marginBottom: 8, display: 'block' }}
+          style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
-          type="primary"
+          type='primary'
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon="search"
-          size="small"
+          icon='search'
+          size='small'
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
-          onClick={() => this.handleReset(clearFilters)}
-          size="small"
+          onClick={() => this.handleReset(clearFilters, confirm)}
+          size='small'
           style={{ width: 90 }}
         >
           Reset
         </Button>
       </div>
     ),
-    filterIcon: filtered => (
-      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: visible => {
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
       }
-    }
+    },
   });
 
   handleSearch = (selectedKeys, confirm) => {
     confirm();
   };
 
-  handleReset = clearFilters => {
+  handleReset = (clearFilters, confirm) => {
     clearFilters();
+    confirm();
   };
 
   generateVoteRedeemForm() {
@@ -127,103 +129,107 @@ class RedeemModal extends PureComponent {
       activeVoteRecordsForOneCandidate,
       currentWallet,
     } = this.props;
-    const { getFieldValue, setFieldsValue } = this.props.form;
 
-    const activeVoteAmountForOneCandidate = activeVoteRecordsForOneCandidate.reduce(
-      (total, current) => total + +current.amount,
-      0
-    );
+    const activeVoteAmountForOneCandidate =
+      activeVoteRecordsForOneCandidate.reduce(
+        (total, current) => total + +current.amount,
+        0
+      );
 
-    const redeemableVoteAmountForOneCandidate = redeemableVoteRecordsForOneCandidate.reduce(
-      (total, current) => total + +current.amount,
-      0
-    );
-
-    const redeemVoteSelectedRowKeys = getFieldValue(
-      'redeemVoteSelectedRowKeys'
+    const redeemableVoteAmountForOneCandidate =
+      redeemableVoteRecordsForOneCandidate.reduce(
+        (total, current) => total + +current.amount,
+        0
+      );
+    const redeemVoteSelectedRowKeys = this.formRef.current?.getFieldValue(
+      "redeemVoteSelectedRowKeys"
     );
 
     const columns = getColumns.call(this);
     const rowSelection = {
       selectedRowKeys: redeemVoteSelectedRowKeys,
-      onChange: value => {
-        setFieldsValue({
-          redeemVoteSelectedRowKeys: value
+      onChange: (value) => {
+        this.formRef.current?.setFieldsValue({
+          redeemVoteSelectedRowKeys: value,
         });
       },
       hideDefaultSelections: true,
-      type: 'radio'
+      type: "radio",
     };
 
     return {
       formItems: [
         {
-          label: 'Node Name',
+          label: "Node Name",
           render: (
-            <span className="form-item-value text-ellipsis">{nodeName}</span>
-          )
+            <span className='form-item-value text-ellipsis'>{nodeName}</span>
+          ),
         },
         {
-          label: 'Node Add',
+          label: "Node Add",
           render: (
-            <span className="form-item-value text-ellipsis">
-              {nodeAddress}
-            </span>
-          )
+            <span className='form-item-value text-ellipsis'>{nodeAddress}</span>
+          ),
         },
         {
-          label: 'Active Vote',
+          label: "Active Vote",
           render: (
-            <span className="form-item-value">
+            <span className='form-item-value'>
               {activeVoteAmountForOneCandidate} {SYMBOL}
             </span>
-          )
+          ),
         },
         {
-          label: 'Expired Vote',
+          label: "Expired Vote",
           render: (
-            <span className="form-item-value">
+            <span className='form-item-value'>
               {redeemableVoteAmountForOneCandidate} {SYMBOL}
             </span>
-          )
+          ),
         },
         {
-          label: 'Select Vote',
+          label: "Select Vote",
           render: (
-            <div>
+            <TableLayer>
               <Table
+                showSorterTooltip={false}
                 dataSource={redeemableVoteRecordsForOneCandidate}
                 columns={columns}
                 pagination={pagination}
-                rowKey={record => record.voteId}
+                rowKey={(record) => record.voteId}
                 rowSelection={rowSelection}
               />
-            </div>
+            </TableLayer>
           ),
           validator: {
             rules: [
               {
                 required: true,
-                message: SELECT_SOMETHING_TIP
-              }
+                message: SELECT_SOMETHING_TIP,
+              },
             ],
-            fieldDecoratorid: 'redeemVoteSelectedRowKeys'
-          }
+            fieldDecoratorid: "redeemVoteSelectedRowKeys",
+          },
         },
         {
-          label: 'Redeem To',
+          label: "Redeem To",
           render: (
-            <span className="form-item-value">
+            <span className='form-item-value'>
               {currentWallet && currentWallet.name}
             </span>
-          )
-        }
-      ]
+          ),
+        },
+      ],
     };
   }
 
   handleOk() {
-    const { handleRedeemConfirm, form, changeVoteState, setRedeemConfirmLoading } = this.props;
+    const {
+      handleRedeemConfirm,
+      form,
+      changeVoteState,
+      setRedeemConfirmLoading,
+    } = this.props;
 
     setRedeemConfirmLoading(true);
 
@@ -248,41 +254,51 @@ class RedeemModal extends PureComponent {
   }
 
   render() {
-    const { voteRedeemModalVisible, handleCancel, redeemConfirmLoading } = this.props;
-    const { getFieldDecorator } = this.props.form;
+    const { voteRedeemModalVisible, handleCancel, redeemConfirmLoading } =
+      this.props;
 
     const voteRedeemForm = this.generateVoteRedeemForm();
 
     return (
       <Modal
-        className="vote-redeem-modal"
-        title="Vote Redeem"
+        className='vote-redeem-modal'
+        title='Vote Redeem'
         visible={voteRedeemModalVisible}
         onOk={this.handleOk}
         confirmLoading={redeemConfirmLoading}
-        onCancel={handleCancel.bind(this, 'voteRedeemModalVisible')}
+        onCancel={handleCancel.bind(this, "voteRedeemModalVisible")}
         width={960}
         centered
         maskClosable
         keyboard
         destroyOnClose
       >
-        <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+        <Form
+          ref={this.formRef}
+          {...formItemLayout}
+          onSubmit={this.handleSubmit}
+        >
           {voteRedeemForm.formItems &&
-            voteRedeemForm.formItems.map(item => {
-              return (
-                <Form.Item label={item.label} key={item.label}>
-                  {item.validator
-                    ? getFieldDecorator(
-                        item.validator.fieldDecoratorid,
-                        item.validator
-                      )(item.render || <Input />)
-                    : item.render}
-                </Form.Item>
-              );
-            })}
+            voteRedeemForm.formItems.map((item) => (
+              <Form.Item
+                label={item.label}
+                key={item.label}
+                name={item.validator?.fieldDecoratorId}
+                ruels={item.validator?.rules}
+                initialValue={item.validator?.initialValue}
+                validateTrigger={item.validator?.validateTrigger}
+              >
+                (
+                {item.validator ? (
+                  <span>{item.render}</span> || <Input />
+                ) : (
+                  <span>{item.render}</span>
+                )}
+                )
+              </Form.Item>
+            ))}
         </Form>
-        <p className="tip-color" style={{ fontSize: 12 }}>
+        <p className='tip-color' style={{ fontSize: 12 }}>
           {FEE_TIP}
         </p>
         <p style={{ marginTop: 10 }}>{NEED_PLUGIN_AUTHORIZE_TIP}</p>
@@ -291,4 +307,4 @@ class RedeemModal extends PureComponent {
   }
 }
 
-export default Form.create()(RedeemModal);
+export default RedeemModal;

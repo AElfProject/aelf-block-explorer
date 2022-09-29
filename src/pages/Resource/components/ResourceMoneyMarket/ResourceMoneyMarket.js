@@ -24,7 +24,7 @@ export default class ResourceMoneyMarket extends PureComponent {
       loading: false,
       echartsLoading: false,
       realTimeTransactionLoading: false,
-      nightElf: this.props.nightElf
+      nightElf: this.props.nightElf,
     };
     this.getMenuClick = this.getMenuClick.bind(this);
     this.getEchartsLoading = this.getEchartsLoading.bind(this);
@@ -40,50 +40,50 @@ export default class ResourceMoneyMarket extends PureComponent {
       currentResourceSymbol: symbol,
       loading: true,
       realTimeTransactionLoading: true,
-      echartsLoading: true
+      echartsLoading: true,
     });
   }
 
   getEchartsLoading() {
     this.setState({
-      echartsLoading: false
+      echartsLoading: false,
     });
   }
 
   getRealTimeTransactionLoading() {
     this.setState({
-      realTimeTransactionLoading: false
+      realTimeTransactionLoading: false,
     });
   }
 
   static getDerivedStateFromProps(props, state) {
     if (props.contracts !== state.contracts) {
       return {
-        contracts: props.contracts
+        contracts: props.contracts,
       };
     }
 
     if (props.nightElf !== state.nightElf) {
       return {
-        nightElf: props.nightElf
+        nightElf: props.nightElf,
       };
     }
 
     if (props.currentWallet !== state.currentWallet) {
       return {
-        currentWallet: props.currentWallet
+        currentWallet: props.currentWallet,
       };
     }
 
     if (props.tokenContract !== state.tokenContract) {
       return {
-        tokenContract: props.tokenContract
+        tokenContract: props.tokenContract,
       };
     }
 
     if (props.tokenConverterContract !== state.tokenConverterContract) {
       return {
-        tokenConverterContract: props.tokenConverterContract
+        tokenConverterContract: props.tokenConverterContract,
       };
     }
 
@@ -96,7 +96,7 @@ export default class ResourceMoneyMarket extends PureComponent {
       currentWallet,
       contracts,
       tokenConverterContract,
-      tokenContract
+      tokenContract,
     } = this.state;
     const { realTimeTransactionLoading, echartsLoading, nightElf } = this.state;
     const {
@@ -104,46 +104,48 @@ export default class ResourceMoneyMarket extends PureComponent {
       onRefresh,
       endRefresh,
       appName,
-      loginAndInsertKeypairs
+      loginAndInsertKeypairs,
     } = this.props;
     let loading = true;
     if (!realTimeTransactionLoading && !echartsLoading) {
       loading = false;
     }
     const {
-      resourceTokens
+      resourceTokens,
     } = account;
-    const menuList = resourceTokens.map(v => v.symbol);
-    const currentIndex = resourceTokens.findIndex(v => v.symbol === currentResourceSymbol);
+    const menuList = resourceTokens.map((v) => v.symbol);
+    const currentIndex = resourceTokens.findIndex((v) => v.symbol === currentResourceSymbol);
 
     return (
-      <div className='resource-market-body resource-block'>
-        <Spin size='large' spinning={loading}>
-          <div className='resource-body'>
+      <div className="resource-market-body resource-block">
+        <Spin size="large" spinning={loading}>
+          <div className="resource-body">
             <ResourceCurrencyChart
-                list={menuList}
-                currentResourceType={currentResourceSymbol}
-                currentResourceIndex={currentIndex}
-                getMenuClick={this.getMenuClick}
-                getEchartsLoading={this.getEchartsLoading}
+              list={menuList}
+              currentResourceType={currentResourceSymbol}
+              currentResourceIndex={currentIndex}
+              getMenuClick={this.getMenuClick}
+              getEchartsLoading={this.getEchartsLoading}
             />
             <Row className="resource-sub-container">
-              {nightElf && <Col xxl={14} xl={24} lg={24}>
-                <ResourceTrading
-                  loginAndInsertKeypairs={loginAndInsertKeypairs}
-                  currentResourceType={currentResourceSymbol}
-                  currentResourceIndex={currentIndex}
-                  currentWallet={currentWallet}
-                  contracts={contracts}
-                  tokenConverterContract={tokenConverterContract}
-                  tokenContract={tokenContract}
-                  account={account}
-                  onRefresh={onRefresh}
-                  endRefresh={endRefresh}
-                  nightElf={nightElf}
-                  appName={appName}
-                />
-              </Col>}
+              {nightElf && (
+                <Col xxl={14} xl={24} lg={24}>
+                  <ResourceTrading
+                    loginAndInsertKeypairs={loginAndInsertKeypairs}
+                    currentResourceType={currentResourceSymbol}
+                    currentResourceIndex={currentIndex}
+                    currentWallet={currentWallet}
+                    contracts={contracts}
+                    tokenConverterContract={tokenConverterContract}
+                    tokenContract={tokenContract}
+                    account={account}
+                    onRefresh={onRefresh}
+                    endRefresh={endRefresh}
+                    nightElf={nightElf}
+                    appName={appName}
+                  />
+                </Col>
+              )}
               <Col xxl={{ span: 9, offset: 1 }} xl={24} lg={24}>
                 <RealTimeTransactions
                   type={currentResourceSymbol}

@@ -3,93 +3,92 @@
  * @author huangzongzhe
  */
 
-import React from 'react';
-import { Row, Col, Tag } from 'antd';
-import { isEmpty } from 'lodash';
-import {aelf, formatKey, get, getContractNames} from '../../utils';
-import addressFormat from '../../utils/addressFormat';
-import {
-  removeAElfPrefix,
-  getFee
-} from '../../utils/utils';
-import {
-  CONTRACT_VIEWER_URL,
-  TXS_INFO_API_URL
-} from '../../constants';
-
-import './txsdetail.styles.less';
-import {Link} from "react-router-dom";
-import Dividends from "../../components/Dividends";
+import React from "react";
+import { Row, Col, Tag } from "antd";
+import { isEmpty } from "lodash";
 import moment from "moment";
+import { aelf, formatKey, getContractNames } from "../../utils";
+import addressFormat from "../../utils/addressFormat";
+import { removeAElfPrefix, getFee } from "../../utils/utils";
+import { CONTRACT_VIEWER_URL } from "../../constants";
+
+import "./txsdetail.styles.less";
+import { Link } from "react-router-dom";
+import Dividends from "../../components/Dividends";
 import Events from "../../components/Events";
+import { withRouter } from "../../routes/utils";
 
 async function getInfoBackUp(transaction) {
-  const {
-    BlockNumber
-  } = transaction;
+  const { BlockNumber } = transaction;
   const block = await aelf.chain.getBlockByHeight(BlockNumber, false);
   const {
-    Header: {
-      Time
-    }
+    Header: { Time },
   } = block;
   return {
     ...(await getFee(transaction)),
-    time: Time
+    time: Time,
   };
 }
 
-export default class TxsDetailPage extends React.Component {
+class TxsDetailPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      txsId: props.match.params.id || '',
-      status: 'Pending',
+      txsId: props.params.id || "",
+      status: "Pending",
       chainStatus: {},
       blockHeight: -1,
-      from: '',
-      to: '',
-      blockHash: '',
-      contractName: '',
-      parsedResult: {}
+      from: "",
+      to: "",
+      blockHash: "",
+      contractName: "",
+      parsedResult: {},
     };
   }
 
-  fetchTxInfo = txsId => {
+  fetchTxInfo = (txsId) => {
     if (isEmpty(txsId)) {
       return;
     }
-    aelf.chain.getTxResult(txsId).then(result => {
-      this.setState({
-        result,
-        error: null
-      });
-      getInfoBackUp(result).then(backup => {
+    aelf.chain
+      .getTxResult(txsId)
+      .then((result) => {
         this.setState({
-          parsedResult: {
-            time: backup.time,
-            resources: backup.resources,
-            tx_fee: backup.fee
-          }
+          result,
+          error: null,
+        });
+        getInfoBackUp(result).then((backup) => {
+          this.setState({
+            parsedResult: {
+              time: backup.time,
+              resources: backup.resources,
+              tx_fee: backup.fee,
+            },
+          });
+        });
+        getContractNames()
+          .then((names) => {
+            let name = names[result.Transaction.To] || {};
+            name =
+              name && name.isSystemContract
+                ? removeAElfPrefix(name.contractName)
+                : name.contractName;
+            this.setState({
+              contractName: name || result.Transaction.To,
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((error) => {
+        this.setState({
+          result: {},
+          error,
         });
       });
-      getContractNames().then(names => {
-        let name = names[result.Transaction.To] || {};
-        name = name && name.isSystemContract ? removeAElfPrefix(name.contractName) : name.contractName;
-        this.setState({
-          contractName: name || result.Transaction.To
-        });
-      }).catch(e => {
-        console.log(e);
-      });
-    }).catch(error => {
-      this.setState({
-        result: {},
-        error
-      });
-    });
 
-    aelf.chain.getChainStatus().then(chainStatus => {
+    aelf.chain.getChainStatus().then((chainStatus) => {
       this.setState({
         chainStatus,
       });
@@ -97,27 +96,27 @@ export default class TxsDetailPage extends React.Component {
   };
 
   componentDidMount() {
-    const { params } = this.props.match;
+    const { params } = this.props;
     this.fetchTxInfo(params.id);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { params } = this.props.match;
-    if (prevProps.match.params.id !== params.id) {
+    const { params } = this.props;
+    if (prevProps.params.id !== params.id) {
       this.fetchTxInfo(params.id);
     }
   }
 
   renderStatus(value) {
     switch (value) {
-      case 'MINED':
-        return <Tag color="green">{value}</Tag>;
+      case "MINED":
+        return <Tag color='green'>{value}</Tag>;
         break;
-      case 'FAILED':
-        return <Tag color="red">{value}</Tag>;
+      case "FAILED":
+        return <Tag color='red'>{value}</Tag>;
         break;
-      case 'PENDING':
-        return <Tag color="orange">{value}</Tag>;
+      case "PENDING":
+        return <Tag color='orange'>{value}</Tag>;
         break;
       default:
         return <Tag>{value}</Tag>;
@@ -129,14 +128,16 @@ export default class TxsDetailPage extends React.Component {
     let jsonFormatted = value;
     try {
       jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
-    } catch(e) {}
+    } catch (e) {}
 
-    return <textarea
-      rows={rows}
-      value={jsonFormatted}
-      className='tx-block-code-like-content'
-      disabled>
-    </textarea>
+    return (
+      <textarea
+        rows={rows}
+        value={jsonFormatted}
+        className='tx-block-code-like-content'
+        disabled
+      />
+    );
   }
 
   renderLogs(logs) {
@@ -144,118 +145,121 @@ export default class TxsDetailPage extends React.Component {
     try {
       list = JSON.parse(logs);
     } catch (e) {
-      list =  [];
+      list = [];
     }
     if (Array.isArray(list) && list.length > 0) {
-      return <Events list={list} key={this.props.match.params.id} />;
-    } else {
-      return this.renderCodeLikeParams(list, 1);
+      return <Events list={list} key={this.props.params.id} />;
     }
+    return this.renderCodeLikeParams(list, 1);
   }
 
   renderCol(key, value) {
-    if (typeof value === 'object' && !React.isValidElement(value)) {
+    if (typeof value === "object" && !React.isValidElement(value)) {
       value = JSON.stringify(value);
     }
-    // console.log('txDetail key: ', key);
     let valueHTML = value;
-    const {LastIrreversibleBlockHeight} = this.state.chainStatus;
-    const {
-      contractName
-    } = this.state;
+    const { LastIrreversibleBlockHeight } = this.state.chainStatus;
+    const { contractName } = this.state;
     switch (key) {
-      case 'Status':
+      case "Status":
         valueHTML = this.renderStatus(value);
         break;
-      case 'Logs':
-        if (value !== 'null' && value) {
+      case "Logs":
+        if (value !== "null" && value) {
           valueHTML = this.renderLogs(value);
         }
         break;
-      case 'TransactionSize':
-        valueHTML = `${(value || '0').toLocaleString()} Bytes`;
+      case "TransactionSize":
+        valueHTML = `${(value || "0").toLocaleString()} Bytes`;
         break;
-      case 'Transaction_Params':
+      case "Transaction_Params":
         valueHTML = this.renderCodeLikeParams(value, 6);
         break;
-      case 'Transaction_From':
+      case "Transaction_From":
         valueHTML = addressFormat(value);
         break;
-      case 'Transaction_To':
-        valueHTML = (<Link
-            to={`/contract?#${decodeURIComponent(CONTRACT_VIEWER_URL + value)}`}
-            title={addressFormat(value)}
-        >
-          {
-            contractName ? contractName : addressFormat(value)
-          }
-        </Link>);
+      case "Transaction_To":
+        valueHTML = (
+          <Link to={`/contract/${value}`} title={addressFormat(value)}>
+            {contractName || addressFormat(value)}
+          </Link>
+        );
         break;
-      case 'Bloom':
+      case "Bloom":
         valueHTML = this.renderCodeLikeParams(value, 1);
         break;
-      case 'BlockNumber':
+      case "BlockNumber":
         if (!LastIrreversibleBlockHeight) {
           return valueHTML;
         }
         const confirmedBlocks = LastIrreversibleBlockHeight - value;
         const isIB = confirmedBlocks >= 0;
 
-        valueHTML = (<>
-          {value} {isIB
-            ? <Tag>{confirmedBlocks} Block Confirmations </Tag>
-            : (<Tag color='red'>Unconfirmed</Tag>)}
-          </>);
+        valueHTML = (
+          <>
+            {value}{" "}
+            {isIB ? (
+              <Tag>{confirmedBlocks} Block Confirmations </Tag>
+            ) : (
+              <Tag color='red'>Unconfirmed</Tag>
+            )}
+          </>
+        );
         break;
     }
 
     return (
       <Row className='tx-detail-row' key={key}>
         <Col
-          xs={24} sm={24} md={6} lg={6} xl={6} className='title'
-          style={{ height: 'auto' }}
+          xs={24}
+          sm={24}
+          md={6}
+          lg={6}
+          xl={6}
+          className='title'
+          style={{ height: "auto" }}
         >
           {formatKey(key)}
         </Col>
         <Col
-          style={{ height: 'auto', wordBreak: 'break-all' }}
-          xs={24} sm={24} md={18} lg={18} xl={18}
+          style={{ height: "auto", wordBreak: "break-all" }}
+          xs={24}
+          sm={24}
+          md={18}
+          lg={18}
+          xl={18}
         >
-          <div className="text-ellipsis">{valueHTML}</div>
+          <div className='text-ellipsis'>{valueHTML}</div>
         </Col>
-        {/* <Divider dashed style={{ marginTop: 10 }} /> */}
       </Row>
     );
   }
 
   renderCols(result = {}) {
-    const blackList = ['tx_trc', 'return'];
-    return Object.keys(result).filter(v => blackList.indexOf(v) < 0).map(key => {
-      const item = result[key];
-      if (item && typeof item === 'object' && key.toLowerCase() !== 'logs') {
-        return Object.keys(item).map(innerKey => {
-          return this.renderCol(`${key}_${innerKey}`, item[innerKey]);
-        });
-      }
-      return this.renderCol(key, item);
-    }).reduce((acc, v) => acc.concat(v), []);
+    const blackList = ["tx_trc", "return"];
+    return Object.keys(result)
+      .filter((v) => blackList.indexOf(v) < 0)
+      .map((key) => {
+        const item = result[key];
+        if (item && typeof item === "object" && key.toLowerCase() !== "logs") {
+          return Object.keys(item).map((innerKey) =>
+            this.renderCol(`${key}_${innerKey}`, item[innerKey])
+          );
+        }
+        return this.renderCol(key, item);
+      })
+      .reduce((acc, v) => acc.concat(v), []);
   }
 
   renderExtra() {
-    const {
-      parsedResult
-    } = this.state;
+    const { parsedResult } = this.state;
     if (Object.keys(parsedResult).length > 0) {
-      const {
-        time,
-        resources,
-        tx_fee
-      } = parsedResult;
+      const { time, resources, tx_fee } = parsedResult;
       return [
-          this.renderCol('Time', moment(time).format('YYYY-MM-DD  HH:mm:ss')),
-          this.renderCol('Transaction Fee', <Dividends dividends={tx_fee} />),
-          this.renderCol('Resources Fee', <Dividends dividends={resources} />)
-      ]
+        this.renderCol("Time", moment(time).format("YYYY-MM-DD  HH:mm:ss")),
+        this.renderCol("Transaction Fee", <Dividends dividends={tx_fee} />),
+        this.renderCol("Resources Fee", <Dividends dividends={resources} />),
+      ];
     }
     return null;
   }
@@ -270,10 +274,13 @@ export default class TxsDetailPage extends React.Component {
           <span className='title'>Overview</span>
         </div>
         <Row className='tx-block-detail-body'>
-          {colsHtml}
-          {this.renderExtra()}
+          <Col>
+            {colsHtml}
+            {this.renderExtra()}
+          </Col>
         </Row>
       </div>
     );
   }
 }
+export default withRouter(TxsDetailPage);

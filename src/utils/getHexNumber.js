@@ -4,5 +4,5 @@
 */
 
 export default function getHexNumber(num) {
-    return parseInt(num, 16);
+  return parseInt(num, 16);
 }

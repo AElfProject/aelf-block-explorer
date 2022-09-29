@@ -3,23 +3,23 @@
  * @author zhouminghui
  */
 
-import React, { PureComponent } from 'react';
-import { Row, Col, Divider } from 'antd';
-import moment from 'moment';
-import { connect } from 'react-redux';
+import React, { PureComponent } from "react";
+import { Row, Col, Divider } from "antd";
+import moment from "moment";
+import { connect } from "react-redux";
 
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import {
   SYMBOL,
   ELF_DECIMAL,
   ELF_PRECISION,
   TXSSTATUS,
-  REAL_TIME_FETCH_INTERVAL
-} from '@src/constants';
-import { thousandsCommaWithDecimal } from '@utils/formater';
-import { get } from '../../../../../utils';
-import { RESOURCE_REALTIME_RECORDS } from '../../../../../constants';
-import './RealTimeTransactions.less';
+  REAL_TIME_FETCH_INTERVAL,
+} from "@src/constants";
+import { thousandsCommaWithDecimal } from "@utils/formater";
+import { get } from "../../../../../utils";
+import { RESOURCE_REALTIME_RECORDS } from "../../../../../constants";
+import "./RealTimeTransactions.less";
 
 const fetchLimit = 20;
 const displayLimit = 5;
@@ -28,7 +28,7 @@ class RealTimeTransactions extends PureComponent {
     super(props);
     this.getResourceRealtimeRecordsTimer = null;
     this.state = {
-      recordsData: null
+      recordsData: null,
     };
   }
 
@@ -47,7 +47,8 @@ class RealTimeTransactions extends PureComponent {
     return (
       <Row className='table-head' type='flex' align='middle'>
         <Col span={6} offset={6}>
-          Average price({SYMBOL})
+          Average price(
+          {SYMBOL})
         </Col>
         <Col span={6}>Number</Col>
         <Col span={6}>Cumulative</Col>
@@ -56,13 +57,11 @@ class RealTimeTransactions extends PureComponent {
   }
 
   async getResourceRealtimeRecords() {
-    const {
-      type
-    } = this.props;
+    const { type } = this.props;
     try {
       const data = await get(RESOURCE_REALTIME_RECORDS, {
         limit: fetchLimit,
-        type
+        type,
       });
       // todo: move the logic to backend
       // todo: repeating code
@@ -74,13 +73,13 @@ class RealTimeTransactions extends PureComponent {
         .slice(0, displayLimit);
       // console.log('data', data);
       this.setState({
-        recordsData: data || []
+        recordsData: data || [],
       });
       this.props.getRealTimeTransactionLoading();
       this.getResourceRealtimeRecordsTimer = setTimeout(() => {
         this.getResourceRealtimeRecords();
       }, REAL_TIME_FETCH_INTERVAL);
-    } catch(error) {
+    } catch (error) {
       this.getResourceRealtimeRecordsTimer = setTimeout(() => {
         this.getResourceRealtimeRecords();
       }, REAL_TIME_FETCH_INTERVAL);
@@ -98,11 +97,7 @@ class RealTimeTransactions extends PureComponent {
       data = recordsData.soldRecords || [];
       return data.map((item, index) => {
         const date = this.formatDate(item.time);
-        let {
-            resource = 0,
-            elf = 0,
-            fee = 0
-        } = item;
+        let { resource = 0, elf = 0, fee = 0 } = item;
         resource /= ELF_DECIMAL;
         elf /= ELF_DECIMAL;
         fee /= ELF_DECIMAL;
@@ -114,9 +109,7 @@ class RealTimeTransactions extends PureComponent {
             <Col span={3} className='sell'>
               Sell
             </Col>
-            <Col span={5}>
-              {(elf / resource).toFixed(ELF_PRECISION)}
-            </Col>
+            <Col span={5}>{(elf / resource).toFixed(ELF_PRECISION)}</Col>
             <Col span={6}>{thousandsCommaWithDecimal(resource)}</Col>
             <Col span={6}>{thousandsCommaWithDecimal(elf - fee)}</Col>
           </Row>
@@ -129,7 +122,7 @@ class RealTimeTransactions extends PureComponent {
   formatDate(date) {
     const { isSmallScreen } = this.props;
 
-    const format = isSmallScreen ? 'HH:mm:ss' : 'HH:mm:ss.SSS';
+    const format = isSmallScreen ? "HH:mm:ss" : "HH:mm:ss.SSS";
     return moment(date).format(format);
   }
 
@@ -142,14 +135,10 @@ class RealTimeTransactions extends PureComponent {
       data = recordsData.buyRecords || [];
       return data.map((item, index) => {
         const date = this.formatDate(item.time);
-          let {
-              resource = 0,
-              elf = 0,
-              fee = 0
-          } = item;
-          resource /= ELF_DECIMAL;
-          elf /= ELF_DECIMAL;
-          fee /= ELF_DECIMAL;
+        let { resource = 0, elf = 0, fee = 0 } = item;
+        resource /= ELF_DECIMAL;
+        elf /= ELF_DECIMAL;
+        fee /= ELF_DECIMAL;
         return (
           <Row className='table-buy' type='flex' align='middle' key={index}>
             <Col span={4}>
@@ -158,9 +147,7 @@ class RealTimeTransactions extends PureComponent {
             <Col span={3} className='sell'>
               Buy
             </Col>
-            <Col span={5}>
-              {(elf / resource).toFixed(ELF_PRECISION)}
-            </Col>
+            <Col span={5}>{(elf / resource).toFixed(ELF_PRECISION)}</Col>
             <Col span={6}>{thousandsCommaWithDecimal(resource)}</Col>
             <Col span={6}>{thousandsCommaWithDecimal(elf + fee)}</Col>
           </Row>
@@ -176,9 +163,11 @@ class RealTimeTransactions extends PureComponent {
     return (
       <div className='real-time-transactions'>
         <Row>
-            <Col className="real-time-transactions-head">Real Time Transactions</Col>
+          <Col className='real-time-transactions-head'>
+            Real Time Transactions
+          </Col>
         </Row>
-        <Divider className="resource-buy-divider" />
+        <Divider className='resource-buy-divider' />
         <div className='real-time-transactions-body'>
           {tableHead}
           {sellInfo}
@@ -189,8 +178,8 @@ class RealTimeTransactions extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  ...state.common
+const mapStateToProps = (state) => ({
+  ...state.common,
 });
 
 export default connect(mapStateToProps)(RealTimeTransactions);
