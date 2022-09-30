@@ -246,7 +246,11 @@ class NodeTable extends PureComponent {
         key: "myVotes",
         width: 100,
         dataIndex: "myTotalVoteAmount",
-        sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount,
+        sorter: (a, b) => {
+          const myA = a.myTotalVoteAmount === '-' ? 0 : a.myTotalVoteAmount
+          const myB = b.myTotalVoteAmount === '-' ? 0 : b.myTotalVoteAmount
+          return myA - myB
+        },
         render: (value) => (value && value !== "-" ? value / ELF_DECIMAL : "-"),
       },
       {
@@ -368,8 +372,8 @@ class NodeTable extends PureComponent {
       getAllTeamDesc(),
       currentWallet && currentWallet.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: getPublicKeyFromObject(currentWallet.publicKey),
-          })
+          value: getPublicKeyFromObject(currentWallet.publicKey),
+        })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract),
     ])
@@ -479,9 +483,9 @@ class NodeTable extends PureComponent {
           totalActiveVotesAmount === 0
             ? 0
             : (
-                (item.obtainedVotesAmount / totalActiveVotesAmount) *
-                100
-              ).toFixed(2);
+              (item.obtainedVotesAmount / totalActiveVotesAmount) *
+              100
+            ).toFixed(2);
         return {
           ...item.candidateInformation,
           obtainedVotesAmount: item.obtainedVotesAmount,
@@ -554,7 +558,7 @@ class NodeTable extends PureComponent {
             pagination={pagination}
             rowKey={(record) => record.pubkey}
             scroll={{ x: 1024 }}
-            // size='middle'
+          // size='middle'
           />
         </TableLayer>
       </section>

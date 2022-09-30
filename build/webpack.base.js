@@ -156,6 +156,8 @@ const baseConfig = {
       chunks: isProdMode ? ["runtime.app", "vendors", "app"] : ["app"],
       name: "app",
       title: "AELF Block Explorer",
+      favicon: 'public/favicon.ico',
+      hash: true
     }),
     new webpack.ProvidePlugin({
       React: "react",

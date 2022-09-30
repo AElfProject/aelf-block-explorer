@@ -295,6 +295,15 @@
   }
 }
 .header-main-container-mobile {
+  .net-select-container {
+    .ant-select-selector {
+      background: transparent !important;
+      border-color: white !important;
+    }
+    .ant-select-selection-item {
+      color: white
+    };
+  }
   .aelf-logo-container {
     & > svg {
       width: 72px;
@@ -475,9 +484,30 @@
   .ant-menu-submenu-title {
     background-color: @headerbgColor1;
     color: @textContextWhite;
-    & > a {
+    & a {
       color: @textContextWhite;
     }
+  }
+
+  .net-select-container {
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      background: transparent !important;
+    }
+  }
+
+  .ant-menu-submenu-open {
+    > div > .ant-menu-submenu-expand-icon {
+      transform: rotate(180deg);
+      color: @mariner !important;
+    }
+  }
+  .ant-menu-submenu-active {
+    .ant-menu-submenu-expand-icon {
+      color: white;
+    }
+  }
+  .ant-menu-submenu-expand-icon {
+    color: white;
   }
 
   .ant-menu-inline {

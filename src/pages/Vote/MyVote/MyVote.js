@@ -116,7 +116,7 @@ export default class MyVote extends Component {
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
         // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
-        length: 5,
+        length: 20,
       }),
     ])
       .then((resArr) => {

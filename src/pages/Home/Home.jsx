@@ -195,7 +195,7 @@ export default function Home() {
       <section className="banner-section">
         <h2>AELF Explorer</h2>
         <Search />
-        {isMobile && (
+        {CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && isMobile && (
           <div className="price-info">
             <img src={TokenIcon} />
             <span className="price">$ {price.USD}</span>
