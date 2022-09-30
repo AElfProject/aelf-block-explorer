@@ -7,21 +7,34 @@ import { Drawer, Divider } from 'antd';
 import Menu, { SubMenu, Item as MenuItem } from 'rc-menu';
 import Link from 'next/link';
 import { connect } from 'react-redux';
-require('rc-menu/assets/index.css');
-require('./header.styles.less');
 import { getPathnameFirstSlash } from 'utils/urlUtils';
 import { setIsSmallScreen } from 'redux/features/smallScreen/isSmallScreen';
 import Search from '../Search/Search';
 import ChainSelect from '../ChainSelect/ChainSelect';
 import config, { NETWORK_TYPE } from 'constants/config/config';
 import CHAIN_STATE from 'constants/config/configCMS.json';
-import { isPhoneCheck } from 'utils/deviceCheck';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import HeaderTop from './HeaderTop';
 import IconFont from '../IconFont';
 import NetSelect from '../NetSelect/NetSelect';
 import { getCMSDelayRequest } from 'utils/getCMS';
 import { MenuOutlined } from '@ant-design/icons';
-import withNoSSR from 'utils/withNoSSR';
+import { withRouter, NextRouter } from 'next/router';
+require('rc-menu/assets/index.css');
+require('./header.styles.less');
+
+interface ChainListDto {
+  id: number;
+  chainId: string;
+  chainsLinkName: string;
+  chainsLink: string;
+}
+
+interface PropsDto {
+  router: NextRouter;
+  headers: any;
+  chainList: ChainListDto[];
+}
 
 const networkList = [
   {
@@ -40,42 +53,42 @@ const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 
 const WIDTH_BOUNDARY = 942;
 
-function isPhoneCheckWithWindow() {
-  const windowWidth = window.innerWidth;
-  return isPhoneCheck() || windowWidth <= WIDTH_BOUNDARY;
+// judge whether is phone
+function isPhoneCheckWithWindow(headers: any) {
+  if (typeof window !== 'undefined') {
+    const windowWidth = window.innerWidth;
+    return isPhoneCheck() || windowWidth <= WIDTH_BOUNDARY;
+  } else {
+    return isPhoneCheckSSR(headers);
+  }
 }
 
-class BrowserHeader extends PureComponent {
-  constructor(props) {
-    super();
+class BrowserHeader extends PureComponent<PropsDto, any> {
+  constructor(props: PropsDto) {
+    super(props);
+    console.log(props, 'props');
     this.timerInterval = null;
     this.interval = 300;
     this.showSearchTop = 330;
     this.state = {
       showSearch: this.getSearchStatus(),
       showMobileMenu: false,
-      chainList: CHAINS_LIST,
-      current: window.location.pathname === '/' ? '/home' : getPathnameFirstSlash(window.location.pathname),
+      chainList: props.chainList || CHAINS_LIST,
+      current: props.router.asPath === '/' ? '/home' : getPathnameFirstSlash(props.router.asPath),
     };
-    this.isPhone = isPhoneCheckWithWindow();
+    this.isPhone = isPhoneCheckWithWindow(props.headers);
     this.handleResize = this.handleResize.bind(this);
   }
 
   getSearchStatus() {
-    const { pathname } = window.location;
+    const pathname = this.props.router.asPath;
     let showSearch = false;
-    if (pathname === '/' && document.body.offsetWidth > 768) {
-      const { scrollTop } = document.documentElement;
-      if (scrollTop >= this.showSearchTop) {
-        showSearch = true;
-      } else {
-        showSearch = false;
-      }
-    } else {
-      showSearch = true;
-    }
+    // don't show search -> home page | search-*
+    // show search -> other pages
     if (pathname === '/' || pathname.includes('search-')) {
       showSearch = false;
+    } else {
+      showSearch = true;
     }
     return showSearch;
   }
@@ -83,7 +96,7 @@ class BrowserHeader extends PureComponent {
   // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
   setSeleted() {
     this.timerInterval = setInterval(() => {
-      let pathname = `/${window.location.pathname.split('/')[1]}`;
+      let pathname = `/${this.props.router.asPath.split('/')[1]}`;
       const { current } = this.state;
       pathname = pathname === '/' ? '/home' : pathname;
       const whiteList = [
@@ -150,9 +163,7 @@ class BrowserHeader extends PureComponent {
   handleResize() {
     const { setIsSmallScreen, isSmallScreen } = this.props;
     const { offsetWidth } = document.body;
-
     const newIsMobile = offsetWidth <= 768;
-
     if (newIsMobile !== isSmallScreen) {
       setIsSmallScreen(newIsMobile);
     }
@@ -189,7 +200,7 @@ class BrowserHeader extends PureComponent {
       <SubMenu
         {...this.props}
         popupClassName="common-header-submenu"
-        title={<span className="submenu-title-wrapper">Explorers</span>}
+        title={<div className="submenu-title-wrapper">Explorers</div>}
         className="aelf-submenu-container">
         {networkHTML}
       </SubMenu>
@@ -197,7 +208,13 @@ class BrowserHeader extends PureComponent {
   }
 
   renderMenu(menuMode, showMenu = true) {
-    const nodeInfo = JSON.parse(localStorage.getItem('currentChain'));
+    let nodeInfo;
+    if (typeof window !== 'undefined') {
+      nodeInfo = JSON.parse(localStorage.getItem('currentChain'));
+    } else {
+      nodeInfo = this.props.nodeInfo;
+    }
+
     const { chain_id } = nodeInfo;
 
     let voteHTML = '';
@@ -374,6 +391,7 @@ class BrowserHeader extends PureComponent {
               headerClass={headerClass}
               menuMode={menuMode}
               networkList={networkList}
+              headers={this.props.headers}
             />
           )}
           <div className={headerClass + networkClass}>
@@ -401,4 +419,4 @@ const mapDispatchToProps = (dispatch) => ({
   setIsSmallScreen: (isSmallScreen) => dispatch(setIsSmallScreen(isSmallScreen)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNoSSR(BrowserHeader));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BrowserHeader));

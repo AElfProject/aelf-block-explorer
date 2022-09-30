@@ -6,7 +6,6 @@ const config = require('./config.json');
 
 // the block chain URL this explorer is serving
 
-const BUILD_ENDPOINT = process.argv[process.argv.indexOf('--CHAIN_ENDPOINT') + 1];
 const MAINCHAINID = 'AELF';
 // MAIN TESTNET
 const NETWORK_TYPE = 'TESTNET';
@@ -34,6 +33,5 @@ module.exports = {
   CHAINS_LINK_NAMES,
   // The following variable are with suitable name
   WALLET_DOMAIN,
-  BUILD_ENDPOINT,
   ...config,
 };

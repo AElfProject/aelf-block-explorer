@@ -14,14 +14,14 @@ export default function ProviderBasic({ children }: { children: ReactNode }) {
   const { language } = useLanguage();
   return (
     <ConfigProvider autoInsertSpaceInButton={false} prefixCls={prefixCls} locale={ANTD_LOCAL[language]}>
-      <AElfReactProvider
+      {/* <AElfReactProvider
         appName="example"
         nodes={{
           AELF: { rpcUrl: 'https://explorer-test.aelf.io/chain', chainId: 'AELF' },
           tDVW: { rpcUrl: 'https://explorer-test-side02.aelf.io/chain', chainId: 'tDVW' },
-        }}>
-        {children}
-      </AElfReactProvider>
+        }}> */}
+      {children}
+      {/* </AElfReactProvider> */}
     </ConfigProvider>
   );
 }

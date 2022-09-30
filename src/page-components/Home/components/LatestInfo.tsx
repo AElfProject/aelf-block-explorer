@@ -5,13 +5,20 @@ import IconFont from 'components/IconFont';
 import useMobile from 'hooks/useMobile';
 import { getFormattedDate } from 'utils/timeUtils';
 import { BlockItem, TXItem } from '../types';
+import { isPhoneCheckSSR } from 'utils/deviceCheck';
 interface PropsDto {
   blocks: BlockItem[];
   transactions: TXItem[];
   headers: any;
 }
 export default function LatestInfo({ blocks = [], transactions = [], headers }: PropsDto) {
-  const isMobile = useMobile(headers);
+  let isMobile;
+  isMobile = useMobile();
+  if (typeof window !== 'undefined') {
+    // todo
+  } else {
+    isMobile = isPhoneCheckSSR(headers);
+  }
   return (
     <div className="latest-info">
       <div className="blocks">
@@ -38,7 +45,9 @@ export default function LatestInfo({ blocks = [], transactions = [], headers }: 
                 <p className="block">
                   <Link href={`/block/${block.block_height}`}>{block.block_height}</Link>
                 </p>
-                <p className="age">{getFormattedDate(block.time)}</p>
+                <p className="age" suppressHydrationWarning>
+                  {getFormattedDate(block.time)}
+                </p>
                 <Link href={`/block/${block.block_height}?tab=txns`} className="txns">
                   {block.tx_count}
                 </Link>
@@ -93,7 +102,9 @@ export default function LatestInfo({ blocks = [], transactions = [], headers }: 
                 <p className="to">
                   <Link href={`/address/${transactions.address_to}`}>{transactions.address_to}</Link>
                 </p>
-                <p className="age">{getFormattedDate(transactions.time)}</p>
+                <p className="age" suppressHydrationWarning>
+                  {getFormattedDate(transactions.time)}
+                </p>
               </div>
             ))}
           </div>

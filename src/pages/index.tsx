@@ -44,8 +44,8 @@ let mobilePrice: PriceDto = { USD: 0 },
   transactionsSSR: TXItem[] = [],
   blocksSSR: BlockItem[] = [];
 
-const fetch = async (url: string) => {
-  const res = await getSSR(url, {
+const fetch = async (ctx: NextPageContext, url: string) => {
+  const res = await getSSR(ctx, url, {
     page: 0,
     limit: PAGE_SIZE,
     order: 'desc',
@@ -55,32 +55,32 @@ const fetch = async (url: string) => {
 const getPrice = async (ctx: NextPageContext) => {
   const isMobile = isPhoneCheckSSR(ctx.req?.headers);
   if (CHAIN_ID === 'AELF' && isMobile) {
-    mobilePrice = (await getSSR(ELF_REALTIME_PRICE_URL, {}, { onlyUrl: true })) as PriceDto;
-    mobilePrevPrice = (await getSSR(HISTORY_PRICE, {
+    mobilePrice = (await getSSR(ctx, ELF_REALTIME_PRICE_URL, {}, { onlyUrl: true })) as PriceDto;
+    mobilePrevPrice = (await getSSR(ctx, HISTORY_PRICE, {
       token_id: 'aelf',
       vs_currencies: 'usd',
       date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
     })) as PreviousPriceDto;
   }
 };
-const initBasicInfo = async () => {
+const initBasicInfo = async (ctx: NextPageContext) => {
   const {
     height = 0,
     totalTxs,
     unconfirmedBlockHeight = '0',
     accountNumber = 0,
-  } = (await getSSR(BASIC_INFO)) as BasicInfo;
+  } = (await getSSR(ctx, BASIC_INFO)) as BasicInfo;
   blockHeight = height;
   localTransactionsSSR = totalTxs;
   unconfirmedBlockHeightSSR = unconfirmedBlockHeight;
   localAccountsSSR = accountNumber;
 };
-const initBlock = async () => {
-  const blocksData: BlocksResult = (await fetch(ALL_BLOCKS_API_URL)) as BlocksResult;
+const initBlock = async (ctx: NextPageContext) => {
+  const blocksData: BlocksResult = (await fetch(ctx, ALL_BLOCKS_API_URL)) as BlocksResult;
   blocksSSR = blocksData.blocks;
 };
-const initTxs = async () => {
-  const TXSData: TXSResultDto = (await fetch(ALL_TXS_API_URL)) as TXSResultDto;
+const initTxs = async (ctx: NextPageContext) => {
+  const TXSData: TXSResultDto = (await fetch(ctx, ALL_TXS_API_URL)) as TXSResultDto;
   transactionsSSR = TXSData.transactions;
   localTransactionsSSR = TXSData.total;
 };
@@ -140,16 +140,15 @@ const handleSocketData = (
   localTransactionsSSR = totalTxs;
   rewardSSR = typeof dividends === 'string' ? JSON.parse(dividends) : dividends || {};
 };
-const initSocketSSR = async () => {
+// init socket from server side
+const initSocketSSR = async (ctx: NextPageContext) => {
   return new Promise((resolve) => {
-    const BUILD_ENDPOINT =
-      process.argv[process.argv.indexOf('--CHAIN_ENDPOINT') + 1] || 'https://explorer-test.aelf.io';
-    //todo: change to location.origin
+    // use test host which is set in .env.local when in local env
+    const BUILD_ENDPOINT = process.env.BUILD_ENDPOINT || ctx.req?.headers.host;
     const socket = io(BUILD_ENDPOINT, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
     });
-
     socket.on('reconnect_attempt', () => {
       socket.io.opts.transports = ['polling', 'websocket'];
     });
@@ -158,7 +157,6 @@ const initSocketSSR = async () => {
         throw new Error("can't connect to socket");
       }
     });
-
     let isFirst = true;
     socket.on('getBlocksList', (data: SocketData) => {
       if (isFirst) {
@@ -172,13 +170,10 @@ const initSocketSSR = async () => {
   });
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
-  await Promise.all([getPrice(ctx), initBasicInfo(), initBlock(), initTxs()]);
-  // console.log(11111);
-  const { data, isFirst } = (await initSocketSSR()) as any;
-  // console.log(22222);
+  await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
+  const { data, isFirst } = (await initSocketSSR(ctx)) as any;
   handleSocketData(data, isFirst);
-  // console.log(33333);
-  const tpsData = await getSSR(TPS_LIST_API_URL, {
+  const tpsData = await getSSR(ctx, TPS_LIST_API_URL, {
     start: startTime,
     end: endTime,
     interval: interval,

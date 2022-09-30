@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { isPhoneCheck, isPhoneCheckSSR } from '../utils/deviceCheck';
+import { isPhoneCheck } from '../utils/deviceCheck';
 
-export default function useMobile(ctx) {
+export default function useMobile() {
   const [isMobile, setIsMobile] = useState(false);
-  if (ctx) {
-    isPhoneCheckSSR(ctx);
-  }
+
+  // cannot use location as dependency
   useEffect(() => {
     setIsMobile(isPhoneCheck());
-  }, [location]);
+  }, []);
+
   return !!isMobile;
 }

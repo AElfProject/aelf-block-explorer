@@ -1,24 +1,24 @@
 import { NextComponentType, NextPageContext } from 'next';
-
-require('../styles/globals.less');
-require('../styles/common.less');
-require('../styles/antd.less');
+import dynamic from 'next/dynamic';
 import HeaderBlank from 'components/PageHead/HeaderBlank';
 import BrowserFooter from 'components/Footer/Footer';
-import BrowserBreadcrumb from 'components/Breadcrumb/Breadcrumb';
+const BrowserBreadcrumb = dynamic(() => import('components/Breadcrumb/Breadcrumb'), { ssr: false });
 import Container from 'components/Container/Container';
 import PageHead from 'components/PageHead/Header';
 import ProposalApp from './_proposalApp';
-import dynamic from 'next/dynamic';
 import { store } from '../redux/store';
 import { Provider as ReduxProvider } from 'react-redux';
 import initAxios from '../utils/axios';
 import { useRouter } from 'next/router';
 import Provider from 'hooks/Providers/ProviderBasic';
 import Cookies from 'js-cookie';
-import { get } from 'utils/axios';
+import { get, getSSR } from 'utils/axios';
 import config from 'constants/config/config';
-
+import { getCMSDelayRequestSSR } from 'utils/getCMS';
+import CHAIN_STATE from 'constants/config/configCMS.json';
+require('../styles/globals.less');
+require('../styles/common.less');
+require('../styles/antd.less');
 type AppProps = {
   pageProps: any;
   Component: NextComponentType<NextPageContext, any, any> & { layoutProps: any };
@@ -47,17 +47,13 @@ const ROUTES_DEFAULT: RouteDefaultDto = {
   myProposals: '/proposal/proposals',
   createOrganizations: '/proposal/organizations',
 };
-
 const PROPOSAL_URL = ['proposals', 'proposalsDetail', 'organizations', 'createOrganizations', 'apply', 'myProposals'];
+const nodesInfoProvider = '/nodes/info';
 async function getNodesInfo() {
-  const nodesInfoProvider = '/nodes/info';
   const nodesInfo = (await get(nodesInfoProvider)) as NodesInfoDto;
-
   if (nodesInfo && nodesInfo.list) {
     const nodesInfoList = nodesInfo.list;
     localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
-
-    // todo: MAIN_CHAIN_ID CHAIN_ID
     const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
       if (item.chain_id === config.CHAIN_ID) {
         return item;
@@ -67,13 +63,27 @@ async function getNodesInfo() {
     localStorage.setItem('currentChain', JSON.stringify(nodeInfo));
     Cookies.set('aelf_ca_ci', contract_address + chain_id);
   }
-  // TODO: turn to 404 page.
 }
-
+async function getNodesInfoSSR(ctx: NextPageContext) {
+  const nodesInfo = (await getSSR(ctx, nodesInfoProvider)) as NodesInfoDto;
+  const nodesInfoList = nodesInfo?.list;
+  const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
+    if (item.chain_id === config.CHAIN_ID) {
+      return item;
+    }
+  })!;
+  return nodeInfo;
+}
 initAxios();
-
 if (typeof window !== 'undefined') {
   getNodesInfo();
+}
+
+async function fetchChainList(ctx: NextPageContext) {
+  const data = await getCMSDelayRequestSSR(0);
+  if (data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at) {
+    return data.chainItem;
+  }
 }
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -82,17 +92,29 @@ const APP = ({ Component, pageProps }: AppProps) => {
   pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
     <ReduxProvider store={store}>
-      <PageHead />
-      {/* <Provider> */}
-      <HeaderBlank />
-      <BrowserBreadcrumb />
-      <Container>
-        {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
-      </Container>
-      <BrowserFooter />
-      {/* </Provider> */}
+      <Provider>
+        <PageHead {...pageProps} />
+        <HeaderBlank />
+        <BrowserBreadcrumb />
+        <Container>
+          {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
+        </Container>
+        <BrowserFooter />
+      </Provider>
     </ReduxProvider>
   );
 };
-
+APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
+  const nodeInfo = getNodesInfoSSR(ctx);
+  const headers = ctx.req?.headers;
+  const chainList = null;
+  // const chainList = await fetchChainList(ctx);
+  return {
+    pageProps: {
+      nodeInfo,
+      headers,
+      chainList,
+    },
+  };
+};
 export default APP;

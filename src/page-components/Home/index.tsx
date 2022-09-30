@@ -26,6 +26,7 @@ import {
   SocketData,
   HomeProps,
 } from './types';
+import { isPhoneCheckSSR } from 'utils/deviceCheck';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
@@ -52,7 +53,13 @@ export default function Home({
   const [localTransactions, setLocalTransactions] = useState(localTransactionsSSR || 0);
   const [localAccounts, setLocalAccounts] = useState(localAccountsSSR || 0);
   const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(unconfirmedBlockHeightSSR || '0');
-  const isMobile = useMobile();
+  let isMobile: boolean;
+  isMobile = useMobile();
+  if (typeof window !== 'undefined') {
+    // todo
+  } else {
+    isMobile = isPhoneCheckSSR(headers);
+  }
   const latestSection = useMemo(
     () => <LatestInfo blocks={blocks} transactions={transactions} headers={headers} />,
     [blocks, transactions],
@@ -81,15 +88,15 @@ export default function Home({
   }, [isMobile]);
 
   // csr only
-  // useEffect(() => {
-  //   const socket = initSocket(handleSocketData);
-  //   initBasicInfo();
-  //   initBlock();
-  //   initTxs();
-  //   return () => {
-  //     socket.close();
-  //   };
-  // }, [initSocket]);
+  useEffect(() => {
+    const socket = initSocket(handleSocketData);
+    initBasicInfo();
+    initBlock();
+    initTxs();
+    return () => {
+      socket.close();
+    };
+  }, [initSocket]);
 
   const fetch = useCallback(async (url: string) => {
     const res = await get(url, {

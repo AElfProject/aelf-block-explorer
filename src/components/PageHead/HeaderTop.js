@@ -9,14 +9,20 @@ import useMobile from 'hooks/useMobile';
 import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from 'constants';
 import { get } from 'utils/axios';
 import TokenIcon from '../../assets/images/tokenLogo.png';
+import { isPhoneCheckSSR } from 'utils/deviceCheck';
 
 const { SubMenu, Item: MenuItem } = Menu;
 
-export default function HeaderTop({ headerClass, menuMode, networkList, showSearch }) {
-  const isMobile = useMobile();
+export default function HeaderTop({ headerClass, menuMode, networkList, showSearch, headers }) {
+  let isMobile;
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
-
+  isMobile = useMobile();
+  if (typeof window !== 'undefined') {
+    // todo
+  } else {
+    isMobile = isPhoneCheckSSR(headers);
+  }
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
       return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
