@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import Provider from 'hooks/Providers/ProviderBasic';
 import Cookies from 'js-cookie';
 import { get, getSSR } from 'utils/axios';
-import config from 'constants/config/config';
+import { CHAIN_ID, getConfig } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import CHAIN_STATE from 'constants/config/configCMS.json';
 require('../styles/globals.less');
@@ -42,6 +42,7 @@ interface NodesInfoDto {
 interface RouteDefaultDto {
   [key: string]: string;
 }
+let chainId = CHAIN_ID;
 const ROUTES_DEFAULT: RouteDefaultDto = {
   apply: '/proposal/proposals',
   myProposals: '/proposal/proposals',
@@ -55,7 +56,7 @@ async function getNodesInfo() {
     const nodesInfoList = nodesInfo.list;
     localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
     const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
-      if (item.chain_id === config.CHAIN_ID) {
+      if (item.chain_id === CHAIN_ID) {
         return item;
       }
     })!;
@@ -68,15 +69,11 @@ async function getNodesInfoSSR(ctx: NextPageContext) {
   const nodesInfo = (await getSSR(ctx, nodesInfoProvider)) as NodesInfoDto;
   const nodesInfoList = nodesInfo?.list;
   const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
-    if (item.chain_id === config.CHAIN_ID) {
+    if (item.chain_id === CHAIN_ID) {
       return item;
     }
   })!;
   return nodeInfo;
-}
-initAxios();
-if (typeof window !== 'undefined') {
-  getNodesInfo();
 }
 
 async function fetchChainList(ctx: NextPageContext) {
@@ -105,10 +102,16 @@ const APP = ({ Component, pageProps }: AppProps) => {
   );
 };
 APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
-  const nodeInfo = getNodesInfoSSR(ctx);
+  let nodeInfo, chainList;
   const headers = ctx.req?.headers;
-  const chainList = null;
-  // const chainList = await fetchChainList(ctx);
+  initAxios();
+  if (typeof window === 'undefined') {
+    chainId = getConfig(headers).CHAIN_ID;
+    nodeInfo = await getNodesInfoSSR(ctx);
+    // chainList = await fetchChainList(ctx);
+  } else {
+    getNodesInfo();
+  }
   return {
     pageProps: {
       nodeInfo,

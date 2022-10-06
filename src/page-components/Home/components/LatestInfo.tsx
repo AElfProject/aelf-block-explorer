@@ -5,7 +5,7 @@ import IconFont from 'components/IconFont';
 import useMobile from 'hooks/useMobile';
 import { getFormattedDate } from 'utils/timeUtils';
 import { BlockItem, TXItem } from '../types';
-import { isPhoneCheckSSR } from 'utils/deviceCheck';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 interface PropsDto {
   blocks: BlockItem[];
   transactions: TXItem[];
@@ -13,9 +13,8 @@ interface PropsDto {
 }
 export default function LatestInfo({ blocks = [], transactions = [], headers }: PropsDto) {
   let isMobile;
-  isMobile = useMobile();
   if (typeof window !== 'undefined') {
-    // todo
+    isMobile = isPhoneCheck();
   } else {
     isMobile = isPhoneCheckSSR(headers);
   }

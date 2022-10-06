@@ -1,17 +1,180 @@
-export const CHAIN_INFO = {
-  chainId: 'tDVW',
-  exploreUrl: 'https://explorer-test-tdvw.aelf.io/',
-  rpcUrl: 'http://192.168.67.204:8000',
-};
-
-export const TOKEN_CONTRACT = 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx';
-export const CROSS_CHAIN_CONTRACT = '2PC7Jhb5V6iZXxz8uQUWvWubYkAoCVhtRGSL7VhTWX85R8DBuN';
-
-const EXPAND_CONTRACTS: any = {};
-[TOKEN_CONTRACT].map((i) => {
-  EXPAND_CONTRACTS[i] = i;
-});
-
-export const CONTRACTS = {
-  ...EXPAND_CONTRACTS,
+export default {
+  SYMBOL: 'ELF',
+  CHAIN_ID: 'tDVW',
+  CONTRACTS: {
+    voteContractAddr: 'AElf.ContractNames.Vote',
+    electionContractAddr: 'AElf.ContractNames.Election',
+    profitContractAddr: 'AElf.ContractNames.Profit',
+    multiToken: 'AElf.ContractNames.Token',
+    dividends: 'AElf.ContractNames.Treasury',
+    consensusDPoS: 'AElf.ContractNames.Consensus',
+    tokenConverter: 'AElf.ContractNames.TokenConverter',
+    feeReceiverContract: 'AElf.ContractNames.Token',
+    parliamentContract: 'AElf.ContractNames.Parliament',
+    associationContract: 'AElf.ContractNames.Association',
+    referendumContract: 'AElf.ContractNames.Referendum',
+    crossChainContract: 'AElf.ContractNames.CrossChain',
+  },
+  schemeIds: [
+    {
+      type: 'Citizen Welfare',
+      schemeId: '32effe6aad9d6e529e884fc7cbca47bfb90c6236dab6e6c2e942e7483090d41b',
+    },
+    {
+      type: 'Backup Subsidy',
+      schemeId: '97c31794f133f3ca7e9c3b08e797398a245c220f7d00878c3ab1e3ef91af965c',
+    },
+    {
+      type: 'Welcome Reward',
+      schemeId: '976eafd3bbd8dddbaefb3513ace018a1adb5dc3a84fa82022787823c26887383',
+    },
+    {
+      type: 'Miner Basic Reward',
+      schemeId: '6da0ba4043fdf0dd966e2fa35402f58c1eb04f7cd718152e93f4559f230f1554',
+    },
+    {
+      type: 'Flexible Reward',
+      schemeId: 'f0d6ae7bd14592ef88c2448f8e80441f9dba1382614a27a3a186d165531ef510',
+    },
+  ],
+  voteContractAddr: null,
+  electionContractAddr: null,
+  profitContractAddr: 'tf238ARScVSfBRPKKgkwE36a35nMALLxu6oVCBMJ9CCNvs7F2',
+  multiToken: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+  dividends: null,
+  consensusDPoS: '2KPUA5wG78nnNmK9JsRWbFiEFUEfei9WKniZuKaVziDKZRwchM',
+  tokenConverter: null,
+  feeReceiverContract: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+  parliamentContract: 'vcv1qewcsFN2tVWqLuu7DJ5wVFA8YEx5FFgCQBb1jMCbAQHxV',
+  associationContract: 'MbWXHaAY5sGpngiep6RS2euSzMZ2vHoXgmrfjEn3D1kCc1wbJ',
+  referendumContract: '2cVQrFiXNaedBYmUrovmUV2jcF9Hf6AXbh12gWsD4P49NaX99y',
+  crossChainContract: '2PC7Jhb5V6iZXxz8uQUWvWubYkAoCVhtRGSL7VhTWX85R8DBuN',
+  genesisContract: '2UKQnHcQvhBT6X6ULtfnuh3b9PVRvVMEroHHkcK4YfcoH1Z1x2',
+  resourceTokens: [
+    {
+      symbol: 'WRITE',
+      decimals: 8,
+    },
+    {
+      symbol: 'READ',
+      decimals: 8,
+    },
+    {
+      symbol: 'STORAGE',
+      decimals: 8,
+    },
+    {
+      symbol: 'TRAFFIC',
+      decimals: 8,
+    },
+    {
+      symbol: 'CPU',
+      decimals: 8,
+    },
+    {
+      symbol: 'RAM',
+      decimals: 8,
+    },
+    {
+      symbol: 'DISK',
+      decimals: 8,
+    },
+    {
+      symbol: 'NET',
+      decimals: 8,
+    },
+  ],
+  wallet: {
+    privateKey: 'f6e512a3c259e5f9af981d7f99d245aa5bc52fe448495e0b0dd56e8406be6f71',
+  },
+  contracts: {
+    parliament: 'AElf.ContractNames.Parliament',
+    referendum: 'AElf.ContractNames.Referendum',
+    association: 'AElf.ContractNames.Association',
+    crossChain: 'AElf.ContractNames.CrossChain',
+    token: 'AElf.ContractNames.Token',
+  },
+  contractNames: [
+    'AElf.ContractNames.Election',
+    'AElf.ContractNames.Profit',
+    'AElf.ContractNames.Vote',
+    'AElf.ContractNames.Treasury',
+    'AElf.ContractNames.Token',
+    'AElf.ContractNames.TokenHolder',
+    'AElf.ContractNames.TokenConverter',
+    'AElf.ContractNames.Consensus',
+    'AElf.ContractNames.Parliament',
+    'AElf.ContractNames.CrossChain',
+    'AElf.ContractNames.Association',
+    'AElf.ContractNames.Configuration',
+    'AElf.ContractNames.Referendum',
+    'AElf.ContractNames.Economic',
+  ],
+  viewer: {
+    addressUrl: '/address',
+    txUrl: '/tx',
+    blockUrl: '/block',
+    chainId: 'tDVW',
+    contractAddress: [
+      {
+        contractName: 'Genesis',
+        description: 'contract Genesis',
+        contractAddress: '2UKQnHcQvhBT6X6ULtfnuh3b9PVRvVMEroHHkcK4YfcoH1Z1x2',
+      },
+      {
+        description: 'contract Token',
+        contractAddress: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+        contractName: 'Token',
+      },
+      {
+        description: 'contract Consensus',
+        contractAddress: '2KPUA5wG78nnNmK9JsRWbFiEFUEfei9WKniZuKaVziDKZRwchM',
+        contractName: 'Consensus.Dpos',
+      },
+      {
+        description: 'contract Profit',
+        contractAddress: 'tf238ARScVSfBRPKKgkwE36a35nMALLxu6oVCBMJ9CCNvs7F2',
+        contractName: 'Profit',
+      },
+      {
+        description: 'contract Parliament',
+        contractAddress: 'vcv1qewcsFN2tVWqLuu7DJ5wVFA8YEx5FFgCQBb1jMCbAQHxV',
+        contractName: 'Parliament',
+      },
+      {
+        description: 'contract Association',
+        contractAddress: 'MbWXHaAY5sGpngiep6RS2euSzMZ2vHoXgmrfjEn3D1kCc1wbJ',
+        contractName: 'Association',
+      },
+      {
+        description: 'contract Referendum',
+        contractAddress: '2cVQrFiXNaedBYmUrovmUV2jcF9Hf6AXbh12gWsD4P49NaX99y',
+        contractName: 'Referendum',
+      },
+      {
+        description: 'contract CrossChain',
+        contractAddress: '2PC7Jhb5V6iZXxz8uQUWvWubYkAoCVhtRGSL7VhTWX85R8DBuN',
+        contractName: 'CrossChain',
+      },
+    ],
+  },
+  constants: {
+    proposalTypes: {
+      PARLIAMENT: 'Parliament',
+      REFERENDUM: 'Referendum',
+      ASSOCIATION: 'Association',
+    },
+    proposalStatus: {
+      ALL: 'all',
+      PENDING: 'pending',
+      APPROVED: 'approved',
+      RELEASED: 'released',
+      EXPIRED: 'expired',
+    },
+    proposalActions: {
+      APPROVE: 'Approve',
+      REJECT: 'Reject',
+      ABSTAIN: 'Abstain',
+    },
+  },
 };

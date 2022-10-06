@@ -26,7 +26,7 @@ import {
   SocketData,
   HomeProps,
 } from './types';
-import { isPhoneCheckSSR } from 'utils/deviceCheck';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
@@ -54,9 +54,8 @@ export default function Home({
   const [localAccounts, setLocalAccounts] = useState(localAccountsSSR || 0);
   const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(unconfirmedBlockHeightSSR || '0');
   let isMobile: boolean;
-  isMobile = useMobile();
   if (typeof window !== 'undefined') {
-    // todo
+    isMobile = isPhoneCheck();
   } else {
     isMobile = isPhoneCheckSSR(headers);
   }
@@ -194,7 +193,7 @@ export default function Home({
 
   return (
     <div className={'home-container basic-container-new ' + (isMobile ? 'mobile' : '')}>
-      <section className="banner-section">
+      <div className="banner-section">
         <h2>AELF Explorer</h2>
         <Search />
         {isMobile && (
@@ -207,9 +206,9 @@ export default function Home({
             </span>
           </div>
         )}
-      </section>
+      </div>
       <div className="body-container">
-        <section className="info-section">
+        <div className="info-section">
           <ChainInfo
             blockHeight={blockHeight}
             localTransactions={localTransactions}
@@ -217,12 +216,12 @@ export default function Home({
             unconfirmedBlockHeight={unconfirmedBlockHeight}
             localAccounts={localAccounts}
           />
-        </section>
-        <section className="latest-section">{latestSection}</section>
-        <section className="chart-section">
+        </div>
+        <div className="latest-section">{latestSection}</div>
+        <div className="chart-section">
           <h3>Transactions Per Minute</h3>
           <TPSChart own={tpsData?.own} all={tpsData?.all} />
-        </section>
+        </div>
       </div>
     </div>
   );

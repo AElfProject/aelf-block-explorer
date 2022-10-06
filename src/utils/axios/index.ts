@@ -70,17 +70,15 @@ const get = async (url: string, params?: any, config?: any) => {
 };
 
 const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: any) => {
-  try {
-    const host = process.env.BUILD_ENDPOINT || ctx.req?.headers.host;
-    const baseUrl = '/api';
-    const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
-    const res = await api.get(wholeUrl, params, config);
-    console.log(res, 'res');
-    if (res.ok) {
-      return res.data;
-    }
-  } catch (e) {
-    throw Error();
+  const host = process.env.BUILD_ENDPOINT || ctx.req?.headers.host;
+  const baseUrl = '/api';
+  const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
+  const res = await api.get(wholeUrl, params, config);
+  console.log(res, 'res');
+  if (res.ok) {
+    return res.data;
+  } else {
+    throw new Error('getSSR');
   }
 };
 

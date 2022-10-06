@@ -1,6 +1,4 @@
-import withNoSSR from 'utils/withNoSSR';
 import Home from 'page-components/Home';
-// export default withNoSSR(Home);
 export default Home;
 import { NextPageContext } from 'next';
 import {
@@ -16,7 +14,7 @@ import {
   PreviousPriceDto,
   RewardDto,
 } from 'page-components/Home/types';
-import { CHAIN_ID } from 'constants/config/config';
+import { CHAIN_ID, getConfig } from 'constants/config/config';
 import { SOCKET_URL } from 'constants/index';
 import { isPhoneCheckSSR } from 'utils/deviceCheck';
 import { getSSR, transactionFormat } from 'utils/axios';
@@ -29,6 +27,7 @@ import {
   HISTORY_PRICE,
 } from 'constants/api';
 import io from 'socket.io-client';
+let chainId = CHAIN_ID;
 const PAGE_SIZE = 25;
 const interval = 60 * 1000; // 1 minute
 const delay = 5 * 60 * 1000; // 5 minute
@@ -53,36 +52,58 @@ const fetch = async (ctx: NextPageContext, url: string) => {
   return res;
 };
 const getPrice = async (ctx: NextPageContext) => {
-  const isMobile = isPhoneCheckSSR(ctx.req?.headers);
-  if (CHAIN_ID === 'AELF' && isMobile) {
-    mobilePrice = (await getSSR(ctx, ELF_REALTIME_PRICE_URL, {}, { onlyUrl: true })) as PriceDto;
-    mobilePrevPrice = (await getSSR(ctx, HISTORY_PRICE, {
-      token_id: 'aelf',
-      vs_currencies: 'usd',
-      date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
-    })) as PreviousPriceDto;
+  try {
+    const isMobile = isPhoneCheckSSR(ctx.req?.headers);
+    if (chainId === 'AELF' && isMobile) {
+      mobilePrice = (await getSSR(ctx, ELF_REALTIME_PRICE_URL, {}, { onlyUrl: true })) as PriceDto;
+      mobilePrevPrice = (await getSSR(ctx, HISTORY_PRICE, {
+        token_id: 'aelf',
+        vs_currencies: 'usd',
+        date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
+      })) as PreviousPriceDto;
+    }
+  } catch (e) {
+    // todo: unify error handle
+    mobilePrice = { USD: 0 };
+    mobilePrevPrice = { usd: 0 };
   }
 };
 const initBasicInfo = async (ctx: NextPageContext) => {
-  const {
-    height = 0,
-    totalTxs,
-    unconfirmedBlockHeight = '0',
-    accountNumber = 0,
-  } = (await getSSR(ctx, BASIC_INFO)) as BasicInfo;
-  blockHeight = height;
-  localTransactionsSSR = totalTxs;
-  unconfirmedBlockHeightSSR = unconfirmedBlockHeight;
-  localAccountsSSR = accountNumber;
+  try {
+    const {
+      height = 0,
+      totalTxs,
+      unconfirmedBlockHeight = '0',
+      accountNumber = 0,
+    } = (await getSSR(ctx, BASIC_INFO)) as BasicInfo;
+    blockHeight = height;
+    localTransactionsSSR = totalTxs;
+    unconfirmedBlockHeightSSR = unconfirmedBlockHeight;
+    localAccountsSSR = accountNumber;
+  } catch (e) {
+    blockHeight = 0;
+    localTransactionsSSR = 0;
+    unconfirmedBlockHeightSSR = '0';
+    localAccountsSSR = 0;
+  }
 };
 const initBlock = async (ctx: NextPageContext) => {
-  const blocksData: BlocksResult = (await fetch(ctx, ALL_BLOCKS_API_URL)) as BlocksResult;
-  blocksSSR = blocksData.blocks;
+  try {
+    const blocksData: BlocksResult = (await fetch(ctx, ALL_BLOCKS_API_URL)) as BlocksResult;
+    blocksSSR = blocksData.blocks;
+  } catch (e) {
+    blocksSSR = [];
+  }
 };
 const initTxs = async (ctx: NextPageContext) => {
-  const TXSData: TXSResultDto = (await fetch(ctx, ALL_TXS_API_URL)) as TXSResultDto;
-  transactionsSSR = TXSData.transactions;
-  localTransactionsSSR = TXSData.total;
+  try {
+    const TXSData: TXSResultDto = (await fetch(ctx, ALL_TXS_API_URL)) as TXSResultDto;
+    transactionsSSR = TXSData.transactions;
+    localTransactionsSSR = TXSData.total;
+  } catch (e) {
+    transactionsSSR = [];
+    localTransactionsSSR = 0;
+  }
 };
 const formatBlock = (block: FormatBlockDto) => {
   const { BlockHash, Header, Body } = block;
@@ -170,6 +191,10 @@ const initSocketSSR = async (ctx: NextPageContext) => {
   });
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  // get chain info config
+  const headers = ctx.req?.headers;
+  chainId = getConfig(headers).CHAIN_ID;
+  // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
   const { data, isFirst } = (await initSocketSSR(ctx)) as any;
   handleSocketData(data, isFirst);
@@ -190,7 +215,7 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
       localTransactionsSSR,
       transactionsSSR,
       blocksSSR,
-      headers: ctx.req?.headers,
+      headers,
     },
   };
 };

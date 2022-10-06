@@ -2,14 +2,14 @@ import AElf from 'aelf-sdk';
 import debounce from 'lodash.debounce';
 import Decimal from 'decimal.js';
 import { aelf } from './axios';
-import config from 'constants/config/config';
+const config = require('constants/config/config');
 import { API_PATH } from 'constants/viewerApi';
 import { request } from './request';
 import constants from 'page-components/Proposal/common/constants';
 import dynamic from 'next/dynamic';
 const walletInstance = dynamic(() => import('page-components/Proposal/common/wallet'), { ssr: false });
 
-const resourceDecimals = config.resourceTokens.reduce(
+const resourceDecimals = config?.resourceTokens?.reduce(
   (acc, v) => ({
     ...acc,
     [v.symbol]: v.decimals,
@@ -30,12 +30,12 @@ const TOKEN_DECIMALS = {
 };
 let tokenContract = null;
 
-export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(config.commonPrivateKey);
+export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(config?.commonPrivateKey);
 
 export async function getTokenDecimal(symbol) {
   let decimal;
   if (!tokenContract) {
-    tokenContract = await aelf.chain.contractAt(config.multiToken, FAKE_WALLET);
+    tokenContract = await aelf.chain.contractAt(config?.multiToken, FAKE_WALLET);
   }
   if (!TOKEN_DECIMALS[symbol]) {
     try {
@@ -225,11 +225,11 @@ export const removePrefixOrSuffix = (address) => {
   if (typeof result !== 'string' || !result) {
     return '';
   }
-  if (startsWith(result, 'ELF_')) {
+  if (result.startsWith('ELF_')) {
     [, result] = result.split('ELF_');
   }
-  if (endsWith(result, `_${config.viewer.chainId}`)) {
-    [result] = result.split(`_${config.viewer.chainId}`);
+  if (result.endsWith(`_${config?.viewer.chainId}`)) {
+    [result] = result.split(`_${config?.viewer.chainId}`);
   }
   if (/_/.test(result)) {
     [result] = result.split('_').sort((a, b) => b.length || 0 - a.length || 0);
@@ -237,7 +237,7 @@ export const removePrefixOrSuffix = (address) => {
   return result;
 };
 
-const fakeWallet = AElf.wallet.getWalletByPrivateKey(config.commonPrivateKey);
+const fakeWallet = AElf.wallet.getWalletByPrivateKey(config?.commonPrivateKey);
 
 const DEFAUT_RPCSERVER =
   typeof window !== 'undefined'
@@ -425,7 +425,9 @@ export async function deserializeLog(log, name, address) {
     try {
       dataType = service.lookupType(name);
       break;
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
   const serializedData = [...(Indexed || [])];
   if (NonIndexed) {

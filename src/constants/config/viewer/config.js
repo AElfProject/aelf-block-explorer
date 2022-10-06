@@ -1,5 +1,11 @@
 /* eslint-disable global-require */
-const queriedConfig = require('./config.json');
+const queriedConfig = require('../../platform/AELF').default;
+if (typeof window !== 'undefined') {
+  const host = location.host;
+  if (host.includes('tDVW')) {
+    config = require('../../platform/tDVW').default;
+  }
+}
 
 let config = {};
 
@@ -11,5 +17,5 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
   ...queriedConfig,
-  ...config
+  ...config,
 };

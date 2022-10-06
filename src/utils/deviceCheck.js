@@ -14,7 +14,6 @@ export const isPhoneCheckSSR = (headers) => {
     const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
     isPhoneCheckedSSR = true;
     phoneCheckResultSSR = agents.find((agent) => userAgentInfo.includes(agent));
-    return phoneCheckResultSSR;
   }
   return phoneCheckResultSSR;
 };
@@ -25,7 +24,6 @@ export const isPhoneCheck = () => {
     const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
     isPhoneChecked = true;
     phoneCheckResult = agents.find((agent) => userAgentInfo.includes(agent));
-    return phoneCheckResult;
   }
   return phoneCheckResult;
 };

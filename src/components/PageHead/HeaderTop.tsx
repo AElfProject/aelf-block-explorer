@@ -5,21 +5,19 @@ require('./HeaderTop.styles.less');
 import { CHAIN_ID, NETWORK_TYPE } from 'constants/config/config';
 import Search from '../Search/Search';
 import Svg from '../Svg/Svg';
-import useMobile from 'hooks/useMobile';
-import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from 'constants';
+import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from 'constants/api';
 import { get } from 'utils/axios';
 import TokenIcon from '../../assets/images/tokenLogo.png';
-import { isPhoneCheckSSR } from 'utils/deviceCheck';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 
 const { SubMenu, Item: MenuItem } = Menu;
 
 export default function HeaderTop({ headerClass, menuMode, networkList, showSearch, headers }) {
-  let isMobile;
+  let isMobile: boolean;
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
-  isMobile = useMobile();
   if (typeof window !== 'undefined') {
-    // todo
+    isMobile = isPhoneCheck();
   } else {
     isMobile = isPhoneCheckSSR(headers);
   }

@@ -54,7 +54,7 @@ const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 const WIDTH_BOUNDARY = 942;
 
 // judge whether is phone
-function isPhoneCheckWithWindow(headers: any) {
+function isPhoneCheckWithWindow(headers?: any) {
   if (typeof window !== 'undefined') {
     const windowWidth = window.innerWidth;
     return isPhoneCheck() || windowWidth <= WIDTH_BOUNDARY;
@@ -66,7 +66,6 @@ function isPhoneCheckWithWindow(headers: any) {
 class BrowserHeader extends PureComponent<PropsDto, any> {
   constructor(props: PropsDto) {
     super(props);
-    console.log(props, 'props');
     this.timerInterval = null;
     this.interval = 300;
     this.showSearchTop = 330;
@@ -416,7 +415,7 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
 const mapStateToProps = (state) => ({ ...state.common });
 
 const mapDispatchToProps = (dispatch) => ({
-  setIsSmallScreen: (isSmallScreen) => dispatch(setIsSmallScreen(isSmallScreen)),
+  setIsSmallScreen: (isSmallScreen: boolean) => dispatch(setIsSmallScreen(isSmallScreen)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BrowserHeader));
