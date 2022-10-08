@@ -5,7 +5,7 @@
 export let config: any; // = require('../platform/AELF').default;
 if (typeof window !== 'undefined') {
   const host = location.host;
-  if (host.includes('tDVW')) {
+  if (host.includes('tDVW') || host.includes('side02')) {
     config = require('../platform/tDVW').default;
   } else {
     config = require('../platform/AELF').default;
@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
 }
 export const getConfig = (headers: any) => {
   const host = headers.host;
-  if (host.includes('tDVW')) {
+  if (host.includes('tDVW') || host.includes('side02')) {
     config = require('../platform/tDVW').default;
   } else {
     config = require('../platform/AELF').default;
