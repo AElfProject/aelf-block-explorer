@@ -334,7 +334,7 @@ class TeamDetail extends PureComponent {
                 <p>{data.intro}</p>
               </Then>
               <Else>
-                <div className="vote-team-detail-empty">The team didn't fill the introduction.</div>
+                <div className="vote-team-detail-empty">The team didn&apos;t fill the introduction.</div>
               </Else>
             </If>
           </div>
@@ -349,7 +349,7 @@ class TeamDetail extends PureComponent {
               <Then>
                 <div className="vote-team-detail-social-network">
                   {(data.socials || []).map((item) => (
-                    <div className="vote-team-detail-social-network-item">
+                    <div className="vote-team-detail-social-network-item" key={item.url}>
                       <span className="vote-team-detail-social-network-item-title">{item.type}</span>
                       <span className="vote-team-detail-social-network-item-url">
                         :&nbsp;
@@ -362,7 +362,7 @@ class TeamDetail extends PureComponent {
                 </div>
               </Then>
               <Else>
-                <span className="vote-team-detail-empty">The team didn't fill the social contacts.</span>
+                <span className="vote-team-detail-empty">The team didn&apos;t fill the social contacts.</span>
               </Else>
             </If>
           </div>

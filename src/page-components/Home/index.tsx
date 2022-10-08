@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useContext } from 'react';
 import TPSChart from '../../components/TPSChart/TPSChart';
 import {
   ALL_BLOCKS_API_URL,
@@ -7,12 +7,11 @@ import {
   ELF_REALTIME_PRICE_URL,
   HISTORY_PRICE,
 } from '../../constants';
+import { AppContext } from 'pages/_app';
 import { get, transactionFormat } from 'utils/axios';
 import ChainInfo from './components/ChainInfo';
 import LatestInfo from './components/LatestInfo';
 import Search from './components/Search';
-import useMobile from '../../hooks/useMobile';
-import { CHAIN_ID } from '../../constants/config/config';
 import TokenIcon from '../../assets/images/tokenLogo.png';
 import { initSocket } from './socket';
 import {
@@ -44,6 +43,7 @@ export default function Home({
   blocksSSR,
   headers,
 }: HomeProps) {
+  const { CHAIN_ID } = useContext(AppContext);
   const [price, setPrice] = useState(mobilePrice || { USD: 0 });
   const [previousPrice, setPreviousPrice] = useState(mobilePrevPrice || { usd: 0 });
   const [blocks, setBlocks] = useState<BlockItem[]>(blocksSSR || []);

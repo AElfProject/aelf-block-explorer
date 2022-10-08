@@ -22,7 +22,7 @@ function Search(props: PropsDto) {
           block_hash: val,
         };
 
-        const blockInfo = await get(TXS_BLOCK_API_URL, getTxsOption);
+        const blockInfo: any = await get(TXS_BLOCK_API_URL, getTxsOption);
         const isBlock = blockInfo.transactions && blockInfo.transactions.length;
         searchRules[isBlock ? 'block' : 'transaction'](val);
       },

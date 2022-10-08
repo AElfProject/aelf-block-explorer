@@ -9,18 +9,11 @@
 // todo: maybe useless if contract change a lot in the future
 import moment from 'moment';
 
-export function filterUserVoteRecordsForOneCandidate(
-  usersActiveVoteRecords,
-  theCandidate,
-) {
-  return usersActiveVoteRecords.filter(
-    (votingRecord) => votingRecord.candidate === theCandidate,
-  );
+export function filterUserVoteRecordsForOneCandidate(usersActiveVoteRecords, theCandidate) {
+  return usersActiveVoteRecords.filter((votingRecord) => votingRecord.candidate === theCandidate);
 }
 
-export function computeUserRedeemableVoteAmountForOneCandidate(
-  userVoteRecordsForOneCandidate,
-) {
+export function computeUserRedeemableVoteAmountForOneCandidate(userVoteRecordsForOneCandidate) {
   const userRedeemableVoteAmountForOneCandidate = userVoteRecordsForOneCandidate
     .filter((record) => record.unlockTimestamp.seconds <= moment().unix())
     .reduce((total, current) => total + +current.amount, 0);

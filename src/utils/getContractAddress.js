@@ -19,7 +19,7 @@ import {
 import { aelf } from 'utils/axios';
 
 export default function getContractAddress() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const wallet = AElf.wallet.getWalletByPrivateKey(commonPrivateKey);
     aelf.chain.getChainStatus((error, result) => {
       const output = {

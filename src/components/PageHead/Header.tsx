@@ -2,7 +2,7 @@
  * @file
  * @author huangzongzhe
  */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Drawer, Divider } from 'antd';
 import Menu, { SubMenu, Item as MenuItem } from 'rc-menu';
 import Link from 'next/link';
@@ -20,6 +20,8 @@ import NetSelect from '../NetSelect/NetSelect';
 import { getCMSDelayRequest } from 'utils/getCMS';
 import { MenuOutlined } from '@ant-design/icons';
 import { withRouter, NextRouter } from 'next/router';
+import { MenuMode } from 'rc-menu/lib/interface';
+import { MenuMode as AntdMenuMode } from 'antd/lib/menu';
 require('rc-menu/assets/index.css');
 require('./header.styles.less');
 
@@ -34,6 +36,9 @@ interface PropsDto {
   router: NextRouter;
   headers: any;
   chainList: ChainListDto[];
+  nodeInfo: any;
+  setIsSmallScreen: any;
+  isSmallScreen: boolean;
 }
 
 const networkList = [
@@ -63,7 +68,12 @@ function isPhoneCheckWithWindow(headers?: any) {
   }
 }
 
-class BrowserHeader extends PureComponent<PropsDto, any> {
+class BrowserHeader extends Component<PropsDto, any> {
+  timerInterval: any;
+  interval: number;
+  showSearchTop: number;
+  isPhone: boolean;
+  timerTimeout: any;
   constructor(props: PropsDto) {
     super(props);
     this.timerInterval = null;
@@ -168,7 +178,7 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
     }
   }
 
-  handleClick = (e) => {
+  handleClick = (e: any) => {
     clearTimeout(this.timerTimeout);
     this.timerTimeout = setTimeout(() => {
       const { isSmallScreen } = this.props;
@@ -206,18 +216,18 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
     );
   }
 
-  renderMenu(menuMode, showMenu = true) {
+  renderMenu(menuMode: MenuMode | AntdMenuMode, showMenu = true) {
     let nodeInfo;
     if (typeof window !== 'undefined') {
-      nodeInfo = JSON.parse(localStorage.getItem('currentChain'));
+      nodeInfo = JSON.parse(localStorage.getItem('currentChain') as string);
     } else {
       nodeInfo = this.props.nodeInfo;
     }
 
     const { chain_id } = nodeInfo;
 
-    let voteHTML = '';
-    let resourceHTML = '';
+    let voteHTML: any = '';
+    let resourceHTML: any = '';
     if (chain_id === config.MAINCHAINID) {
       voteHTML = (
         <MenuItem key="/vote">
@@ -331,14 +341,14 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
 
   renderMobileMore() {
     return (
-      <div className={`header-navbar-mobile-more ${NETWORK_TYPE === 'MAIN' ? 'header-navbar-main-mobile-more' : ''}`}>
-        <IconFont type={NETWORK_TYPE === 'MAIN' ? 'aelf' : 'aelf-test'} className="aelf-logo-container" />
+      <div className={`header-navbar-mobile-more ${''}`}>
+        <IconFont type={'aelf-test'} className="aelf-logo-container" />
         <MenuOutlined onClick={() => this.toggleMenu()} />
       </div>
     );
   }
 
-  renderDrawerMenu(menuMode, showMenu = true) {
+  renderDrawerMenu(menuMode: AntdMenuMode, showMenu = true) {
     return (
       <Drawer
         getContainer={false}
@@ -346,11 +356,11 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
         placement="right"
         width={'80%'}
         closable={false}
-        className={`header-drawer-menu-wrapper ${NETWORK_TYPE === 'MAIN' ? 'header-main-drawer-menu-wrapper' : ''}`}
+        className={`header-drawer-menu-wrapper ${''}`}
         onClose={() => this.toggleMenu()}
         title={
           <>
-            <IconFont type={NETWORK_TYPE === 'MAIN' ? 'aelf' : 'aelf-test'} className="aelf-logo-container" />
+            <IconFont type={'aelf-test'} className="aelf-logo-container" />
             <IconFont type="ErrorClose" className="close-icon" onClick={() => this.toggleMenu()} />
           </>
         }>
@@ -361,7 +371,7 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
   }
 
   render() {
-    const menuMode = this.isPhone ? 'inline' : 'horizontal';
+    const menuMode: AntdMenuMode = this.isPhone ? 'inline' : 'horizontal';
     const mobileMoreHTML = this.isPhone ? this.renderMobileMore() : '';
     let menuHtml;
     if (this.isPhone) {
@@ -371,15 +381,9 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
     }
 
     const headerClass = this.isPhone ? 'header-container header-container-mobile' : 'header-container';
-    const networkClass = this.isPhone
-      ? NETWORK_TYPE === 'MAIN'
-        ? ' header-main-container-mobile'
-        : ''
-      : NETWORK_TYPE === 'MAIN'
-      ? ' header-main-container'
-      : '';
+    const networkClass = this.isPhone ? '' : '';
     const onlyMenu = this.state.showSearch ? '' : 'only-menu ';
-    const isMainNet = NETWORK_TYPE === 'MAIN' ? 'main-net' : 'test-net';
+    const isMainNet = 'test-net';
 
     return (
       <div className={'header-fixed-container ' + onlyMenu + isMainNet}>
@@ -396,7 +400,7 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
           <div className={headerClass + networkClass}>
             {mobileMoreHTML}
 
-            <nav className={'header-navbar ' + (NETWORK_TYPE === 'MAIN' ? 'header-main-navbar' : '')}>
+            <nav className={'header-navbar'}>
               {menuHtml}
               {this.isPhone && this.state.showSearch && (
                 <div className="search-mobile-container">
@@ -412,9 +416,9 @@ class BrowserHeader extends PureComponent<PropsDto, any> {
   }
 }
 
-const mapStateToProps = (state) => ({ ...state.common });
+const mapStateToProps = (state: any) => ({ ...state.common });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: any) => ({
   setIsSmallScreen: (isSmallScreen: boolean) => dispatch(setIsSmallScreen(isSmallScreen)),
 });
 

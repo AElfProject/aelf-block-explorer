@@ -15,10 +15,7 @@ export default function getStateJudgment(status, hash) {
       Message.error(`Transaction ID: ${hash}`, 10);
       break;
     case 'PENDING':
-      Message.info(
-        'The transaction is in progress. Please query the transaction ID',
-        10,
-      );
+      Message.info('The transaction is in progress. Please query the transaction ID', 10);
       Message.info(`Transaction ID: ${hash}`, 10);
       break;
     case 'MINED':

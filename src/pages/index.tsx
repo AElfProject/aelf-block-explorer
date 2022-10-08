@@ -14,7 +14,7 @@ import {
   PreviousPriceDto,
   RewardDto,
 } from 'page-components/Home/types';
-import { CHAIN_ID, getConfig } from 'constants/config/config';
+import config, { getConfig } from 'constants/config/config';
 import { SOCKET_URL } from 'constants/index';
 import { isPhoneCheckSSR } from 'utils/deviceCheck';
 import { getSSR, transactionFormat } from 'utils/axios';
@@ -27,7 +27,7 @@ import {
   HISTORY_PRICE,
 } from 'constants/api';
 import io from 'socket.io-client';
-let chainId = CHAIN_ID;
+let chainId = config.CHAIN_ID;
 const PAGE_SIZE = 25;
 const interval = 60 * 1000; // 1 minute
 const delay = 5 * 60 * 1000; // 5 minute

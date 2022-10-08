@@ -22,19 +22,20 @@ const RESOURCE_RECORDS = '/resource/records';
 const SOCKET_URL = '/socket';
 const SOCKET_URL_NEW = '/new-socket';
 const BASIC_INFO = '/chain-info';
-export const fetchCurrentMinerList = (contract) => contract.GetCurrentMinerList.call();
-export const fetchCurrentMinerPubkeyList = (contract) => contract.GetCurrentMinerPubkeyList.call();
+export const fetchCurrentMinerList = (contract: any) => contract.GetCurrentMinerList.call();
+export const fetchCurrentMinerPubkeyList = (contract: any) => contract.GetCurrentMinerPubkeyList.call();
 export const getAllTeamDesc = () =>
   get('/vote/getAllTeamDesc', {
     isActive: true,
   });
-export const getTeamDesc = (publicKey) =>
+export const getTeamDesc = (publicKey: any) =>
   get('/vote/getTeamDesc', {
     publicKey,
   });
-export const fetchPageableCandidateInformation = (contract, payload) =>
+export const fetchPageableCandidateInformation = (contract: any, payload: any) =>
   contract.GetPageableCandidateInformation.call(payload);
-export const fetchElectorVoteWithRecords = (contract, payload) => contract.GetElectorVoteWithRecords.call(payload);
+export const fetchElectorVoteWithRecords = (contract: any, payload: any) =>
+  contract.GetElectorVoteWithRecords.call(payload);
 export {
   BASE_URL,
   BASE_URL_TDVW,

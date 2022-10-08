@@ -19,31 +19,24 @@ import GetAmountToPayFromReturn from './GetAmountToPayFromReturn';
 
 import getResourceConverter from './getResourceConverter';
 
-export default function getEstimatedValueELF(
-  type,
-  pidRes,
-  tokenConverterContract,
-  tokenContract,
-) {
+export default function getEstimatedValueELF(type, pidRes, tokenConverterContract, tokenContract) {
   return new Promise((resolve, reject) => {
-    getResourceConverter(type, tokenConverterContract, tokenContract).then(
-      (result) => {
-        if (result) {
-          if (result.resourceBalance.dividedBy(1e8).toNumber() >= Math.abs(pidRes)) {
-            const resCont = Math.abs(pidRes) || 0;
-            const elfPayout = GetAmountToPayFromReturn(
-              result.elfBalance,
-              result.tokenWeight,
-              result.resourceBalance,
-              result.resourceWeight,
-              resCont,
-            );
-            resolve(elfPayout);
-          } else {
-            reject('There are not so many resources.');
-          }
+    getResourceConverter(type, tokenConverterContract, tokenContract).then((result) => {
+      if (result) {
+        if (result.resourceBalance.dividedBy(1e8).toNumber() >= Math.abs(pidRes)) {
+          const resCont = Math.abs(pidRes) || 0;
+          const elfPayout = GetAmountToPayFromReturn(
+            result.elfBalance,
+            result.tokenWeight,
+            result.resourceBalance,
+            result.resourceWeight,
+            resCont,
+          );
+          resolve(elfPayout);
+        } else {
+          reject('There are not so many resources.');
         }
-      },
-    );
+      }
+    });
   });
 }

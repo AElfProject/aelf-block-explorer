@@ -2,20 +2,16 @@
  * @file dividend
  * @author atom-yang
  */
-import React from "react";
-import { Dropdown, Button, Menu } from "antd";
-import { If, Then, Else } from "react-if";
-import { DownOutlined } from "@ant-design/icons";
+import React from 'react';
+import { Dropdown, Button, Menu } from 'antd';
+import { If, Then, Else } from 'react-if';
+import { DownOutlined } from '@ant-design/icons';
 
 const Dividends = (props) => {
   const { dividends, defaultSymbol, useButton = true, ...rest } = props;
   const keys = Object.keys(dividends);
   const defaultKey =
-    defaultSymbol !== undefined
-      ? defaultSymbol
-      : dividends.ELF !== undefined
-      ? "ELF"
-      : keys[0] || "ELF";
+    defaultSymbol !== undefined ? defaultSymbol : dividends.ELF !== undefined ? 'ELF' : keys[0] || 'ELF';
   return (
     <If condition={keys.length > 1}>
       <Then>
@@ -29,8 +25,7 @@ const Dividends = (props) => {
               ))}
             </Menu>
           }
-          {...rest}
-        >
+          {...rest}>
           {useButton ? (
             <Button>
               {dividends[defaultKey] || 0}&nbsp;{defaultKey}

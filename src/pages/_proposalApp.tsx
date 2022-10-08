@@ -2,7 +2,7 @@
  * @file App container
  * @author atom-yang
  */
-import type { AppProps } from 'next/app';
+import { NextComponentType, NextPageContext } from 'next';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import useUseLocation from 'react-use/lib/useLocation';
@@ -20,7 +20,23 @@ import { sendMessage } from 'utils/utils';
 import { commonAction } from 'redux/features/proposal/common';
 require('./proposal.styles.less');
 
+type AppProps = {
+  pageProps: any;
+  default: string;
+  Component: NextComponentType<NextPageContext, any, any> & { layoutProps: any };
+};
+
 const { TabPane } = Tabs;
+
+interface StateDto {
+  isSmallScreen: boolean;
+  aelf: any;
+  logStatus: string;
+  isALLSettle: boolean;
+  loading: boolean;
+  wallet: any;
+  currentWallet: any;
+}
 
 const ROUTES_UNDER_TABS = {
   proposals: ['proposals', 'proposalDetails'],
@@ -39,7 +55,7 @@ function useRouteMatch(path) {
 
 export const RouterComponent = (options) => {
   const router = useRouter();
-  const logStatus = useSelector((state) => state.common.logStatus);
+  const logStatus = useSelector((state: { common: StateDto }) => state.common.logStatus);
   const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus, options]);
   const target = useMemo(() => {
     if (options.default) {
@@ -57,7 +73,7 @@ export const RouterComponent = (options) => {
 const App = (pageProps: AppProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const logStatus = useSelector((state) => state.common.logStatus);
+  const logStatus = useSelector((state: { common: any }) => state.common.logStatus);
   const [isExist, setIsExist] = useState(true);
   const { pathname } = window.location;
   const tabKey = useRouteMatch(pathname);
@@ -74,7 +90,7 @@ const App = (pageProps: AppProps) => {
   useEffect(() => {
     walletInstanceSingle()
       .isExist?.then((result) => {
-        const wallet = JSON.parse(localStorage.getItem('currentWallet'));
+        const wallet = JSON.parse(localStorage.getItem('currentWallet') as string);
         const timeDiff = wallet ? new Date().valueOf() - Number(wallet.timestamp) : 15 * 60 * 1000;
 
         setIsExist(result);

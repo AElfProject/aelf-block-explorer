@@ -1,5 +1,5 @@
-import { Skeleton } from "antd";
-import React from "react";
+import { Skeleton } from 'antd';
+import React from 'react';
 
 export default function CustomSkeleton({ children, loading }) {
   return (

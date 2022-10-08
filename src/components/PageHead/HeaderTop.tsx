@@ -1,18 +1,27 @@
 import { Menu } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import IconFont from '../IconFont';
-require('./HeaderTop.styles.less');
-import { CHAIN_ID, NETWORK_TYPE } from 'constants/config/config';
+import { NETWORK_TYPE } from 'constants/config/config';
 import Search from '../Search/Search';
 import Svg from '../Svg/Svg';
 import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from 'constants/api';
 import { get } from 'utils/axios';
 import TokenIcon from '../../assets/images/tokenLogo.png';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { PriceDto } from './types';
+import { AppContext } from 'pages/_app';
+require('./HeaderTop.styles.less');
 
 const { SubMenu, Item: MenuItem } = Menu;
-
-export default function HeaderTop({ headerClass, menuMode, networkList, showSearch, headers }) {
+interface PropsDto {
+  headerClass: string;
+  menuMode: any;
+  networkList: any[];
+  showSearch: boolean;
+  headers: any;
+}
+export default function HeaderTop({ headerClass, menuMode, networkList, showSearch, headers }: PropsDto) {
+  const { CHAIN_ID } = useContext(AppContext);
   let isMobile: boolean;
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
@@ -31,12 +40,12 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
   useEffect(() => {
     //todo change this
     if (CHAIN_ID === 'AELF' && !isMobile) {
-      get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price));
+      get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price as PriceDto));
       get(HISTORY_PRICE, {
         token_id: 'aelf',
         vs_currencies: 'usd',
         date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
-      }).then((res) => {
+      }).then((res: any) => {
         if (!res.message) {
           setPreviousPrice(res);
         }
@@ -44,16 +53,19 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
     }
   }, [isMobile]);
 
-  const menuClick = useCallback((item) => {
-    const filter = networkList.filter((network) => network.netWorkType === item.key);
-    if (filter.length) window.location = filter[0].url;
-  }, []);
+  const menuClick = useCallback(
+    (item: any) => {
+      const filter = networkList.filter((network) => network.netWorkType === item.key);
+      if (filter.length) window.location = filter[0].url;
+    },
+    [networkList],
+  );
 
   return (
-    <div className={`header-container-top${NETWORK_TYPE === 'MAIN' ? ' header-container-main-top' : ''}`}>
+    <div className={`header-container-top`}>
       <div className={headerClass}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Svg icon={NETWORK_TYPE === 'MAIN' ? 'main_logo' : 'test_logo'} className="aelf-logo-container" />
+          <Svg icon={'test_logo'} className="aelf-logo-container" />
           {range !== '-' && (
             <div className="price-container">
               <img src={TokenIcon} />

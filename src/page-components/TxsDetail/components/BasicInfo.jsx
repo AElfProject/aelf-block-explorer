@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import { Spin, Tag } from 'antd';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
@@ -29,7 +30,6 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
     });
     return value;
   }, [parsedLogs]);
-
   const baseInfo = useMemo(
     () =>
       info &&

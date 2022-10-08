@@ -1,4 +1,4 @@
-import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from './config/config';
+import config, { DEFAUTRPCSERVER } from './config/config';
 import Link from 'next/link';
 import React from 'react';
 import dayjs from 'dayjs';
@@ -9,7 +9,7 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { removeAElfPrefix } from '../utils/utils';
 dayjs.extend(relativeTime);
 import BigNumber from 'bignumber.js';
-
+const { SYMBOL, CHAIN_ID } = config;
 // for address
 const globalConfig = {
   isMobile: false,

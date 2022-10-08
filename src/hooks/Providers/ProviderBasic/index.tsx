@@ -9,7 +9,6 @@ ConfigProvider.config({ prefixCls });
 if (typeof window !== 'undefined') {
   initLanguage(localStorage);
 }
-
 export default function ProviderBasic({ children }: { children: ReactNode }) {
   const { language } = useLanguage();
   return (

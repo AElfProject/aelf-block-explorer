@@ -102,6 +102,7 @@ class CandidateApplyModal extends PureComponent {
         },
       }),
     ];
+    // eslint-disable-next-line react/display-name
     const TooltipInput = forwardRef((props, ref) => {
       return (
         <>

@@ -113,20 +113,6 @@ export default class AelfBridgeCheck {
     contractInstances = {};
   }
 
-  static async getContractInstance(inputInitParams) {
-    const { contractAddress } = inputInitParams;
-
-    if (!accountInfo) {
-      throw Error('Please login');
-    }
-    const { address } = JSON.parse(accountInfo.detail);
-
-    if (contractInstances[contractAddress + address]) {
-      return contractInstances[contractAddress + address];
-    }
-    return await NightElfCheck.initContractInstance(inputInitParams);
-  }
-
   // singleton to get, new to init
   static async initContractInstance(inputInitParams) {
     const { contractAddress } = inputInitParams;

@@ -471,7 +471,9 @@ class VoteModal extends Component {
                     checked={voteType === form.type}
                     value={form.type}
                     style={{ marginRight: 10 }}
-                    onChange={() => {}}
+                    onChange={() => {
+                      // no content
+                    }}
                   />
                   <label htmlFor={form.label}>{form.label}</label>
                 </span>

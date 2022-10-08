@@ -4,15 +4,11 @@
  */
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Tree,
-} from 'antd';
+import { Tree } from 'antd';
 
 function addKeyForTree(files = [], parentKey = '', splitChar = '#') {
   return files.map((file) => {
-    const {
-      name,
-    } = file;
+    const { name } = file;
     const newKey = `${parentKey}${name}`;
     if (Array.isArray(file.files) && file.files.length > 0) {
       return {
@@ -42,21 +38,13 @@ function renderTreeNode(item) {
   return {
     title: item.name,
     key: item.key,
-    children: (Array.isArray(item.files) && item.files.length > 0)
-      && item.files.map(renderTreeNode),
+    children: Array.isArray(item.files) && item.files.length > 0 && item.files.map(renderTreeNode),
   };
 }
 
 const FileTree = (props) => {
-  const {
-    files = [],
-    onChange,
-  } = props;
-  const {
-    filesWithKey,
-    firstFileKey,
-    firstDirectory,
-  } = useMemo(() => {
+  const { files = [], onChange } = props;
+  const { filesWithKey, firstFileKey, firstDirectory } = useMemo(() => {
     const filesHandled = addKeyForTree(files);
     const firstKey = getFirstFile(filesHandled);
     return {
@@ -86,10 +74,12 @@ const FileTree = (props) => {
 };
 
 FileTree.propTypes = {
-  files: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    files: PropTypes.arrayOf(PropTypes.object),
-  })).isRequired,
+  files: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      files: PropTypes.arrayOf(PropTypes.object),
+    }),
+  ).isRequired,
   onChange: PropTypes.func.isRequired,
 };
 

@@ -13,9 +13,10 @@ import { useRouter } from 'next/router';
 import Provider from 'hooks/Providers/ProviderBasic';
 import Cookies from 'js-cookie';
 import { get, getSSR } from 'utils/axios';
-import { CHAIN_ID, getConfig } from 'constants/config/config';
+import config, { getConfig } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import CHAIN_STATE from 'constants/config/configCMS.json';
+import { createContext, useContext } from 'react';
 require('../styles/globals.less');
 require('../styles/common.less');
 require('../styles/antd.less');
@@ -42,7 +43,8 @@ interface NodesInfoDto {
 interface RouteDefaultDto {
   [key: string]: string;
 }
-let chainId = CHAIN_ID;
+let chainConfig = config;
+export const AppContext: any = createContext({});
 const ROUTES_DEFAULT: RouteDefaultDto = {
   apply: '/proposal/proposals',
   myProposals: '/proposal/proposals',
@@ -56,7 +58,7 @@ async function getNodesInfo() {
     const nodesInfoList = nodesInfo.list;
     localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
     const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
-      if (item.chain_id === CHAIN_ID) {
+      if (item.chain_id === chainConfig.CHAIN_ID) {
         return item;
       }
     })!;
@@ -69,7 +71,7 @@ async function getNodesInfoSSR(ctx: NextPageContext) {
   const nodesInfo = (await getSSR(ctx, nodesInfoProvider)) as NodesInfoDto;
   const nodesInfoList = nodesInfo?.list;
   const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
-    if (item.chain_id === CHAIN_ID) {
+    if (item.chain_id === chainConfig.CHAIN_ID) {
       return item;
     }
   })!;
@@ -89,15 +91,17 @@ const APP = ({ Component, pageProps }: AppProps) => {
   pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
     <ReduxProvider store={store}>
-      <Provider>
-        <PageHead {...pageProps} />
-        <HeaderBlank />
-        <BrowserBreadcrumb />
-        <Container>
-          {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
-        </Container>
-        <BrowserFooter />
-      </Provider>
+      <AppContext.Provider value={pageProps.chainConfig}>
+        <Provider>
+          <PageHead {...pageProps} />
+          <HeaderBlank />
+          <BrowserBreadcrumb />
+          <Container>
+            {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
+          </Container>
+          <BrowserFooter />
+        </Provider>
+      </AppContext.Provider>
     </ReduxProvider>
   );
 };
@@ -106,14 +110,16 @@ APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
   const headers = ctx.req?.headers;
   initAxios();
   if (typeof window === 'undefined') {
-    chainId = getConfig(headers).CHAIN_ID;
+    chainConfig = getConfig(headers);
+    // console.log(chainConfig, 'chainConfig');
     nodeInfo = await getNodesInfoSSR(ctx);
-    // chainList = await fetchChainList(ctx);
+    chainList = await fetchChainList(ctx);
   } else {
     getNodesInfo();
   }
   return {
     pageProps: {
+      chainConfig,
       nodeInfo,
       headers,
       chainList,

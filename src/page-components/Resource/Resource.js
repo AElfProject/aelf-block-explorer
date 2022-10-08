@@ -222,6 +222,7 @@ class Resource extends Component {
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {
+      // eslint-disable-next-line react/jsx-key
       downloadPlugins = [this.getDownloadPluginsHTML(), <div className="resource-blank" />];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();

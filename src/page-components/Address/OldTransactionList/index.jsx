@@ -16,10 +16,7 @@ function formatParams(params) {
 }
 
 function formatResponse(data) {
-  const {
-    total = 0,
-    transactions = [],
-  } = data;
+  const { total = 0, transactions = [] } = data;
   return {
     total,
     list: transactions.map((item) => ({
@@ -35,13 +32,13 @@ function formatResponse(data) {
 }
 
 const OldTransactionList = (props) => {
-  const {
-    owner,
-    api,
-  } = props;
-  const freezeParams = useMemo(() => ({
-    address: owner,
-  }), [owner]);
+  const { owner, api } = props;
+  const freezeParams = useMemo(
+    () => ({
+      address: owner,
+    }),
+    [owner],
+  );
   return (
     <TransactionList
       owner={owner}

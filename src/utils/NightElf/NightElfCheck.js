@@ -22,7 +22,7 @@ export default class NightElfCheck {
       }, 5000);
       resovleTemp = resolve;
     });
-    document.addEventListener('NightElf', (result) => {
+    document.addEventListener('NightElf', () => {
       resovleTemp(true);
     });
   }

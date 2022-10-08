@@ -16,4 +16,7 @@ module.exports = {
     },
   },
   resolve: {},
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
