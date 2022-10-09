@@ -1,7 +1,7 @@
 import { Menu } from 'antd';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import IconFont from '../IconFont';
-import { NETWORK_TYPE } from 'constants/config/config';
+import config, { NETWORK_TYPE } from 'constants/config/config';
 import Search from '../Search/Search';
 import Svg from '../Svg/Svg';
 import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from 'constants/api';
@@ -9,7 +9,6 @@ import { get } from 'utils/axios';
 import TokenIcon from '../../assets/images/tokenLogo.png';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { PriceDto } from './types';
-import { AppContext } from 'pages/_app';
 require('./HeaderTop.styles.less');
 
 const { SubMenu, Item: MenuItem } = Menu;
@@ -21,7 +20,7 @@ interface PropsDto {
   headers: any;
 }
 export default function HeaderTop({ headerClass, menuMode, networkList, showSearch, headers }: PropsDto) {
-  const { CHAIN_ID } = useContext(AppContext);
+  const { CHAIN_ID } = config;
   let isMobile: boolean;
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });

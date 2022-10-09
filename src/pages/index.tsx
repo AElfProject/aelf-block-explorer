@@ -14,7 +14,7 @@ import {
   PreviousPriceDto,
   RewardDto,
 } from 'page-components/Home/types';
-import config, { getConfig } from 'constants/config/config';
+import config from 'constants/config/config';
 import { SOCKET_URL } from 'constants/index';
 import { isPhoneCheckSSR } from 'utils/deviceCheck';
 import { getSSR, transactionFormat } from 'utils/axios';
@@ -193,7 +193,7 @@ const initSocketSSR = async (ctx: NextPageContext) => {
 export const getServerSideProps = async (ctx: NextPageContext) => {
   // get chain info config
   const headers = ctx.req?.headers;
-  chainId = getConfig(headers).CHAIN_ID;
+  chainId = config.CHAIN_ID;
   // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
   const { data, isFirst } = (await initSocketSSR(ctx)) as any;

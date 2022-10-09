@@ -1,70 +1,5 @@
 // need it to prevent flashing
-// @import '~antd/dist/antd.css';
 @import 'assets/theme/color.less';
-// .@{app-prefix}-btn {
-//   height: 40px;
-//   border-radius: 6px;
-//   font-family: PingFangSC-Regular, sans-serif;
-// }
-// .@{app-prefix}-btn-default {
-//   color: @font-1;
-//   border-color: @border-2;
-//   &:hover {
-//     background: @bg-8;
-//   }
-//   &:focus {
-//     background: @bg-11;
-//   }
-//   &:disabled {
-//     background: @bg-7;
-//     border-color: @border-1;
-//     color: @font-3;
-//   }
-// }
-// .@{app-prefix}-btn-primary {
-//   &:disabled {
-//     background: @primary-color;
-//     border-color: @primary-color;
-//     color: #fff;
-//     opacity: 0.5;
-//   }
-//   &:hover {
-//     background: @bg-12;
-//   }
-// }
-// .@{app-prefix}-btn[disabled] {
-//   &:hover {
-//     background: @primary-color;
-//     border-color: @primary-color;
-//     color: #fff;
-//     opacity: 0.5;
-//   }
-// }
-// .@{app-prefix}-divider-vertical {
-//   border-color: @border-1;
-// }
-// .@{app-prefix}-message-notice {
-//   .@{app-prefix}-message-notice-content {
-//     padding: 24px 18px;
-//     border-radius: 12px;
-//     line-height: 14px;
-//     box-shadow: 0 5px 24px 4px rgb(0 0 0 / 5%), 0 3px 10px 0 rgb(0 0 0 / 8%), 0 1px 16px -2px rgb(0 0 0 / 8%);
-//   }
-// }
-// .@{app-prefix}-message-notice:first-child {
-//   padding-top: 104px;
-// }
-
-// .@{app-prefix}-input {
-//   &::placeholder {
-//     color: @font-10;
-//   }
-// }
-// .@{app-prefix}-input,
-// .@{app-prefix}-input-affix-wrapper {
-//   border-color: @border-1;
-// }
-
 // rewrite antd components style
 
 .ant-btn-default {
@@ -80,7 +15,7 @@
   &[disabled] {
     background-color: @wild-sand;
     color: @silver;
-    border-color: currentColor;
+    border-color: currentcolor;
   }
 }
 .ant-btn-text {
@@ -135,7 +70,7 @@
 }
 
 .ant-pagination-item {
-  font-family: 'Roboto' !important;
+  font-family: 'Roboto', sans-serif !important;
   font-weight: 400;
 }
 
@@ -195,7 +130,7 @@
   min-width: 120px;
   border-radius: 4px;
   background-color: white;
-  box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 16px 0 rgb(0 0 0 / 8%), 0 4px 8px 0 rgb(0 0 0 / 8%);
   .ant-select-dropdown-menu-item {
     padding: 9px 16px;
     color: @scorpion;
@@ -208,9 +143,17 @@
     background: @headerbgColor4 !important;
   }
 }
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  color: @mariner;
+  background-color: @headerbgColor4;
+}
+
+.ant-select-item {
+  color: @scorpion;
+}
 .rc-menu-submenu-popup {
   z-index: 1050;
-  background: rgba(0, 0, 0, 0);
+  background: rgb(0 0 0 / 0%);
   border-radius: 2px;
   box-shadow: none;
   transform-origin: 0 0;

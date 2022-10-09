@@ -2,7 +2,7 @@
  * @file config
  * @author atom-yang
  */
-import config from './config/viewer/config.json';
+import config from './config/viewer/config';
 export const API_PATH = {
   GET_ALL_CONTRACTS: '/api/viewer/allContracts',
   GET_PROPOSAL_LIST: '/api/proposal/list',

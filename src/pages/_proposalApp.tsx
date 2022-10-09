@@ -75,7 +75,7 @@ const App = (pageProps: AppProps) => {
   const dispatch = useDispatch();
   const logStatus = useSelector((state: { common: any }) => state.common.logStatus);
   const [isExist, setIsExist] = useState(true);
-  const { pathname } = window.location;
+  const { pathname } = router;
   const tabKey = useRouteMatch(pathname);
   const { href } = useUseLocation();
 

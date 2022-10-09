@@ -3,8 +3,8 @@
  * @author huangzongzhe
  */
 import React, { Component } from 'react';
-import { AppContext } from 'pages/_app';
 import { Select } from 'antd';
+import config from 'constants/config/config';
 require('./ChainSelect.styles.less');
 
 const { Option } = Select;
@@ -31,7 +31,7 @@ export default class ChainSelect extends Component {
   }
 
   render() {
-    const defaultValue = AppContext._currentValue.CHAIN_ID;
+    const defaultValue = config.CHAIN_ID;
     const optionsHTML = this.renderOptions();
 
     return (

@@ -2,7 +2,10 @@
  * @file config.js
  * @author huangzongzhe
  */
-export let config: any; // = require('../platform/AELF').default;
+// only used in server
+export let config: any =
+  process.env.CHAIN_ID === 'AELF' ? require('../platform/AELF').default : require('../platform/tDVW').default;
+// only used in client
 if (typeof window !== 'undefined') {
   const host = location.host;
   if (host.includes('tDVW') || host.includes('side02')) {
@@ -11,15 +14,6 @@ if (typeof window !== 'undefined') {
     config = require('../platform/AELF').default;
   }
 }
-export const getConfig = (headers: any) => {
-  const host = headers.host;
-  if (host.includes('tDVW') || host.includes('side02')) {
-    config = require('../platform/tDVW').default;
-  } else {
-    config = require('../platform/AELF').default;
-  }
-  return config;
-};
 // the block chain URL this explorer is serving
 
 export const MAINCHAINID = 'AELF';
@@ -40,7 +34,6 @@ export const DEFAUTRPCSERVER =
   typeof window !== 'undefined' ? `${window?.location?.protocol}//${window?.location?.host}/chain` : '/chain';
 // const DEFAUTRPCSERVER = `https://explorer-test.aelf.io/chain`;
 module.exports = {
-  getConfig,
   DEFAUTRPCSERVER,
   commonPrivateKey,
   MAINCHAINID,
@@ -54,7 +47,6 @@ module.exports = {
 };
 
 export default {
-  getConfig,
   DEFAUTRPCSERVER,
   commonPrivateKey,
   MAINCHAINID,

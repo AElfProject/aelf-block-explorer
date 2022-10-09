@@ -7,7 +7,6 @@ import {
   ELF_REALTIME_PRICE_URL,
   HISTORY_PRICE,
 } from '../../constants';
-import { AppContext } from 'pages/_app';
 import { get, transactionFormat } from 'utils/axios';
 import ChainInfo from './components/ChainInfo';
 import LatestInfo from './components/LatestInfo';
@@ -26,6 +25,7 @@ import {
   HomeProps,
 } from './types';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import config, { NETWORK_TYPE } from 'constants/config/config';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
@@ -43,7 +43,7 @@ export default function Home({
   blocksssr: blocksSSR,
   headers,
 }: HomeProps) {
-  const { CHAIN_ID } = useContext(AppContext);
+  const { CHAIN_ID } = config;
   const [price, setPrice] = useState(mobilePrice || { USD: 0 });
   const [previousPrice, setPreviousPrice] = useState(mobilePrevPrice || { usd: 0 });
   const [blocks, setBlocks] = useState<BlockItem[]>(blocksSSR || []);
@@ -196,7 +196,7 @@ export default function Home({
       <div className="banner-section">
         <h2>AELF Explorer</h2>
         <Search />
-        {isMobile && (
+        {CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && isMobile && (
           <div className="price-info">
             <img src={TokenIcon} />
             <span className="price">$ {price.USD}</span>

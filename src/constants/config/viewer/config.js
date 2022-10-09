@@ -1,12 +1,6 @@
 /* eslint-disable global-require */
-const queriedConfig = require('../../platform/AELF').default;
-if (typeof window !== 'undefined') {
-  const host = location.host;
-  if (host.includes('tDVW')) {
-    config = require('../../platform/tDVW').default;
-  }
-}
-
+let queriedConfig =
+  process.env.CHAIN_ID === 'AELF' ? require('../../platform/AELF').default : require('../../platform/tDVW').default;
 let config = {};
 
 if (process.env.NODE_ENV === 'production') {

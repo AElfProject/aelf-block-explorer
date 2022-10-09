@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev:AELF": "CHAIN_ID='AELF' next dev",
+    "dev:tDVW": "CHAIN_ID='tDVW' next dev",
+    "build:AELF": "CHAIN_ID='AELF' next build",
+    "build:tDVW": "CHAIN_ID='tDVW' next build",
     "start": "next start",
     "lint": "next lint",
     "dev:analyze": "PORT=4000 ANALYZE=true next dev",
