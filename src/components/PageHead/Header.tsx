@@ -146,7 +146,7 @@ class BrowserHeader extends Component<PropsDto, any> {
   // fetch chain list by network
   async fetchChainList() {
     const data = await getCMSDelayRequest(0);
-    if (data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at)
+    if (data && data.chainItem)
       this.setState({
         chainList: data.chainItem,
       });

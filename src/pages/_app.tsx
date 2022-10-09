@@ -15,7 +15,6 @@ import Cookies from 'js-cookie';
 import { get, getSSR } from 'utils/axios';
 import config from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
-import CHAIN_STATE from 'constants/config/configCMS.json';
 
 require('../styles/globals.less');
 require('../styles/common.less');
@@ -78,7 +77,7 @@ async function getNodesInfoSSR(ctx: NextPageContext) {
 
 async function fetchChainList(ctx: NextPageContext) {
   const data = await getCMSDelayRequestSSR(0);
-  if (data && data.chainItem && data.updated_at !== CHAIN_STATE.updated_at) {
+  if (data && data.chainItem) {
     return data.chainItem;
   }
 }
