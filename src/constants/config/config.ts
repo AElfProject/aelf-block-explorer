@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
 
 export const MAINCHAINID = 'AELF';
 // MAIN TESTNET
-export const NETWORK_TYPE = 'TESTNET';
+export const NETWORK_TYPE = 'TESTNET' as string;
 // ChainId: AELF
 // ChainId: tDVV(AElf public chain)
 export const CHAINS_LINK = {
