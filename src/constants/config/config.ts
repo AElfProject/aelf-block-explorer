@@ -14,10 +14,9 @@ if (typeof window !== 'undefined') {
     config = require('../platform/AELF').default;
   }
 }
-// the block chain URL this explorer is serving
 
 export const MAINCHAINID = 'AELF';
-// MAIN TESTNET
+// change handly: MAIN TESTNET
 export const NETWORK_TYPE = 'TESTNET' as string;
 // ChainId: AELF
 // ChainId: tDVV(AElf public chain)

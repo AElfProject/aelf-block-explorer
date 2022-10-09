@@ -38,12 +38,16 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
 
   useEffect(() => {
     //todo change this
-    if (CHAIN_ID === 'AELF' && !isMobile) {
+    if (CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && !isMobile) {
+      const d = new Date();
+      const day = d.getDate();
+      const month = d.getMonth() + 1;
+      const year = d.getFullYear();
       get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price as PriceDto));
       get(HISTORY_PRICE, {
         token_id: 'aelf',
         vs_currencies: 'usd',
-        date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
+        date: new Date(`${year}/${month}/${day}`).valueOf() - 24 * 3600 * 1000,
       }).then((res: any) => {
         if (!res.message) {
           setPreviousPrice(res);

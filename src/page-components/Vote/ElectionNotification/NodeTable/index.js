@@ -216,7 +216,11 @@ class NodeTable extends PureComponent {
         key: 'myVotes',
         width: 100,
         dataIndex: 'myTotalVoteAmount',
-        sorter: (a, b) => a.myTotalVoteAmount - b.myTotalVoteAmount,
+        sorter: (a, b) => {
+          const myA = a.myTotalVoteAmount === '-' ? 0 : a.myTotalVoteAmount;
+          const myB = b.myTotalVoteAmount === '-' ? 0 : b.myTotalVoteAmount;
+          return myA - myB;
+        },
         render: (value) => (value && value !== '-' ? value / ELF_DECIMAL : '-'),
       },
       {
