@@ -12,9 +12,9 @@ import { Card, Row, Select, Col, Divider } from 'antd';
 import config from 'constants/viewerApi';
 import Circle from 'page-components/Proposal/Circle';
 import constants, { LOG_STATUS, organizationInfoPropTypes } from 'page-components/Proposal/common/constants';
-require('./index.less');
 import { isPhoneCheck } from 'utils/deviceCheck';
-import { PRIMARY_COLOR } from 'page-components/Proposal/common/constants';
+import { PRIMARY_COLOR } from 'constants';
+require('./index.less');
 
 const { viewer } = config;
 

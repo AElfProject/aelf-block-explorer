@@ -65,6 +65,7 @@ const MY_VOTE_DATA_TIP =
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
 const FAILED_MESSAGE_DISPLAY_TIME = 20; // seconds
+const SHORTEST_LOCK_TIME = 90; // day
 export {
   LOG_STATUS,
   LOADING_STATUS,
@@ -101,4 +102,5 @@ export {
   RESOURCE_OPERATE_LIMIT,
   FEE_RATE,
   FAILED_MESSAGE_DISPLAY_TIME,
+  SHORTEST_LOCK_TIME,
 };

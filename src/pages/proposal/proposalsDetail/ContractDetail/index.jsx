@@ -9,8 +9,9 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Card, Divider, Tooltip, Row, Col, Tag } from 'antd';
 import config, { API_PATH } from 'constants/viewerApi';
 import { request } from 'utils/request';
-import { base64ToHex, getContract, getContractURL } from 'page-components/Proposal/common/utils';
+import { base64ToHex, getContractURL } from 'page-components/Proposal/common/utils';
 import { PRIMARY_COLOR } from 'constants';
+import { getContract } from 'utils/utils';
 const { viewer } = config;
 
 function getContractName(address) {

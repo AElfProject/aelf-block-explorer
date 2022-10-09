@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-12-10 01:01:54
  * @Description: file content
  */
-import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from 'constants/info';
+import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from 'constants';
 
 const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;

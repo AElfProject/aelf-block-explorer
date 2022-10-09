@@ -12,7 +12,7 @@ import Decimal from 'decimal.js';
 import { message } from 'antd';
 import moment from 'moment';
 import StatisticalData from 'components/StatisticalData/';
-import { ELECTION_NOTIFI_DATA_TIP, txStatusInUpperCase, UNKNOWN_ERROR_TIP, ELF_DECIMAL } from 'constants/info';
+import { ELECTION_NOTIFI_DATA_TIP, txStatusInUpperCase, UNKNOWN_ERROR_TIP, ELF_DECIMAL } from 'constants';
 import { aelf } from 'utils/axios';
 import getStateJudgment from 'utils/getStateJudgment';
 import NodeTable from './NodeTable';

@@ -9,7 +9,7 @@
 import React, { PureComponent, forwardRef } from 'react';
 import AElf from 'aelf-sdk';
 import { Form, Input, Modal, Tooltip } from 'antd';
-import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from 'constants/info';
+import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from 'constants';
 import { ELECTION_MORTGAGE_NUM_STR, HARDWARE_ADVICE } from 'page-components/Vote/constants';
 import getCurrentWallet from 'utils/getCurrentWallet';
 require('./CandidateApplyModal.style.less');

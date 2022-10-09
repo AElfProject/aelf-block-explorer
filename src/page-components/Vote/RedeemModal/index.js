@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Modal, Form, Input, Button, Table } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
-import { SYMBOL, SELECT_SOMETHING_TIP, NEED_PLUGIN_AUTHORIZE_TIP, FEE_TIP } from 'constants/info';
+import { SYMBOL, SELECT_SOMETHING_TIP, NEED_PLUGIN_AUTHORIZE_TIP, FEE_TIP } from 'constants';
 import { ELF_DECIMAL } from 'constants/misc';
 import TableLayer from 'components/TableLayer/TableLayer';
 

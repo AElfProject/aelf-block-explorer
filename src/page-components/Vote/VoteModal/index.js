@@ -13,7 +13,7 @@ import {
   INTEGER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
   FEE_TIP,
-} from 'constants/info';
+} from 'constants';
 import { FROM_WALLET, FROM_EXPIRED_VOTES, FROM_ACTIVE_VOTES } from 'page-components/Vote/constants';
 import { thousandsCommaWithDecimal } from 'utils/formater';
 require('./index.less');
