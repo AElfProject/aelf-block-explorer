@@ -1,10 +1,14 @@
-@import './assets/less/theme.less';
-@import './assets/less/common.less';
+@import "./assets/less/theme.less";
+@import "./assets/less/common.less";
+@import "./assets/less/components.less";
+@import "./assets/less/custom.less";
 
 .App {
   position: relative;
   min-height: 100vh;
   background: @bgBlankGrey;
+  display: flex;
+  flex-direction: column;
   //background: url('./assets/images/bg_purple_darker@1x.jpg');
   //background-size: cover;
   //padding-bottom: @footerHeight; // Ugly code
@@ -24,6 +28,12 @@
     padding: 20px 30px 0 30px;
   }
 
+  .basic-container-new {
+    max-width: @maxWidth;
+    margin: 0 auto 80px auto;
+    padding: 24px 0 0;
+  }
+
   .basic-container-white {
     background: @bgBlankWhite;
     margin: 0 auto 62px auto;
@@ -41,6 +51,11 @@
       margin: auto;
       padding: 20px 20px 0 20px;
     }
+    .basic-container-new {
+      background: @athens-gray;
+      margin: auto;
+      padding: 24px 20px 80px 20px;
+    }
     .basic-container {
       padding: 8px;
     }
@@ -55,18 +70,24 @@
     .ant-table-pagination.ant-pagination {
       padding: 8px;
     }
-
   }
 }
+// rewriter antd tabs style end
+
+// rewriter antd tabs style
+.ant-tabs-top > .ant-tabs-nav:before {
+  border-bottom-color: @border-color2;
+}
+// rewriter antd tabs style end
 
 // rewriter ant table style
 thead {
   th {
-    border: none !important;
-    color: @textContext !important;
-    border-radius: 0 !important;
-    //background: rgba(57, 0, 57, 0.3) !important;
-    background: @bgBlankGrey !important;
+    font-family: "Roboto-Medium";
+    font-weight: 400;
+    &.ant-table-column-has-sorters:hover {
+      background-color: #efeff0 !important;
+    }
   }
 }
 tbody {
@@ -75,8 +96,8 @@ tbody {
     //background: rgba(57, 0, 57, 0.1) !important;
     background: @bgBlankWhite !important;
     td {
-      color: @textContext;
-      border-bottom: 1px solid @borderColor !important;
+      color: @scorpion;
+      border: none;
     }
   }
   tr:hover {
@@ -101,20 +122,7 @@ tbody {
 
 .ant-pagination-item-link {
   background: none !important;
-  border: none !important;
   color: @textContext !important;
-}
-
-.ant-pagination-item {
-  border: none;
-  background: @bgBlankGrey;
-  height: 26px;
-  min-width: 26px;
-  line-height: 26px;
-  a {
-    //color: @fontColorLightPurple;
-    color: @cusBlack;
-  }
 }
 
 .ant-pagination-item:hover {
@@ -122,15 +130,15 @@ tbody {
 }
 
 .ant-pagination-item-active {
-  border: none;
-  background: @primary-blue;
+  border: none !important;
+  background: @primary-blue !important;
 }
 .ant-pagination-item-active:hover {
   background: @primary-blue;
   opacity: 0.8;
 }
 .ant-pagination-item-active a {
-  color: #fff;
+  color: #fff !important;
 }
 .ant-pagination-item-active a:hover {
   color: #fff !important;
@@ -180,25 +188,32 @@ a:hover {
   box-shadow: 0 0 0 2px rgba(38, 108, 211, 0.2);
 }
 input {
-  outline-color: @blueInputFocus
+  outline-color: @blueInputFocus;
 }
-
-
-@media screen and (max-width: 768px){
+.ant-pagination-options-size-changer {
+  &.ant-select {
+    margin-right: 8px;
+  }
+}
+@media screen and (max-width: 768px) {
   .App {
-    background: @bgBlankWhite;
+    background: @athens-gray;
+  }
+  .ant-pagination {
+    display: inherit;
   }
 }
 
 @media (max-width: 1200px) {
-  .ant-menu-item, .ant-menu-submenu-title{
+  .ant-menu-item,
+  .ant-menu-submenu-title {
     padding: 0 10px;
   }
 }
 
 @media (max-width: 1050px) {
-  .ant-menu-item, .ant-menu-submenu-title{
+  .ant-menu-item,
+  .ant-menu-submenu-title {
     padding: 0 6px;
   }
 }
-

@@ -25,31 +25,31 @@ export default function getEstimatedValueRes(
   sellResource,
   tokenConverterContract,
   tokenContract,
-  switchMode
+  switchMode,
 ) {
   return getResourceConverter(type, tokenConverterContract, tokenContract).then(
-      result => {
-        if (result) {
-          let elfPayout = null;
-          if (switchMode) {
-            elfPayout = GetReturnFromPaid(
-                result.elfBalance,
-                result.tokenWeight,
-                result.resourceBalance,
-                result.resourceWeight,
-                sellResource
-            );
-          } else {
-            elfPayout = GetReturnFromPaid(
-                result.resourceBalance,
-                result.resourceWeight,
-                result.elfBalance,
-                result.tokenWeight,
-                sellResource
-            );
-          }
-          return elfPayout;
+    (result) => {
+      if (result) {
+        let elfPayout = null;
+        if (switchMode) {
+          elfPayout = GetReturnFromPaid(
+            result.elfBalance,
+            result.tokenWeight,
+            result.resourceBalance,
+            result.resourceWeight,
+            sellResource,
+          );
+        } else {
+          elfPayout = GetReturnFromPaid(
+            result.resourceBalance,
+            result.resourceWeight,
+            result.elfBalance,
+            result.tokenWeight,
+            sellResource,
+          );
         }
+        return elfPayout;
       }
+    },
   );
 }

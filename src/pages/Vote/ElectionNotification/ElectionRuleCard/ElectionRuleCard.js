@@ -6,30 +6,30 @@
  * @LastEditTime: 2020-01-08 15:44:44
  * @Description: file content
  */
-import React, { memo } from 'react';
-import { withRouter } from 'react-router';
-import { Button, Icon } from 'antd';
+import React, { memo } from "react";
+import { withRouter } from "../../../../routes/utils";
+import { Button, Icon } from "antd";
 
-import './ElectionRuleCard.style.less';
-import { isPhoneCheck } from '@utils/deviceCheck';
+import "./ElectionRuleCard.style.less";
+import { FileTextFilled } from "@ant-design/icons";
 import Svg from "../../../../components/Svg/Svg";
+import { useNavigate } from "react-router";
 
 function ElectionRuleCard(props) {
+  const navigate = useNavigate();
   const { isCandidate, displayApplyModal, currentWallet, quitElection } = props;
 
   const onClick = () => {
     if (isCandidate) {
-      const { history } = props;
-      history.push({
-        pathname: '/vote/apply/keyin',
-        search: `pubkey=${currentWallet && currentWallet.pubkey}`,
-      });
+      navigate(
+        `/vote/apply/keyin?pubkey=${currentWallet && currentWallet.pubkey}`
+      );
     } else {
       displayApplyModal();
     }
   };
 
-  const renderBtn = () => {
+  const renderBtn = () => (
     // const isPhone = isPhoneCheck();
     // let btnHtml = null;
     // if (!isPhone)
@@ -48,39 +48,32 @@ function ElectionRuleCard(props) {
     //     </div>
     //   );
     // return btnHtml;
-    return (
-      <div className="btn-group">
-        <Button
-          // disabled="true"
-          type="primary"
-          className="apply-to-be-a-node-btn"
-          onClick={onClick}
-        >
-          {isCandidate
-            ? 'Modify team information'
-            : 'Become a candidate node'}
-        </Button>
-        {isCandidate &&
-          <div className="quit-button" onClick={quitElection}>
-            Quit <Svg
-            icon="quit"
-            className="quit-logo"
-          />
-          </div>
-        }
-      </div>
-    );
-  };
+    <div className='btn-group'>
+      <Button
+        // disabled="true"
+        type='primary'
+        className='apply-to-be-a-node-btn'
+        onClick={onClick}
+      >
+        {isCandidate ? "Modify team information" : "Become a candidate node"}
+      </Button>
+      {isCandidate && (
+        <div className='quit-button' onClick={quitElection}>
+          Quit <Svg icon='quit' className='quit-logo' />
+        </div>
+      )}
+    </div>
+  );
   const btnHtml = renderBtn();
 
   return (
-    <section className="election-rule-card">
-      <h2 className="election-header-title">
-        <Icon type="file-text" theme="filled" className="card-header-icon" />
+    <section className='election-rule-card'>
+      <h2 className='election-header-title'>
+        <FileTextFilled className='card-header-icon' />
         Node Election
       </h2>
-      <div className="election-container">
-        <p className="election-intro">
+      <div className='election-container'>
+        <p className='election-intro'>
           Every token holder has the opportunity to become a BP node. However,
           in order to make our networks and communities operate more smoothly
           and effectively, we have developed a set of standards and regulations

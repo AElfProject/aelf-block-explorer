@@ -11,20 +11,18 @@ import moment from 'moment';
 
 export function filterUserVoteRecordsForOneCandidate(
   usersActiveVoteRecords,
-  theCandidate
+  theCandidate,
 ) {
   return usersActiveVoteRecords.filter(
-    votingRecord => votingRecord.candidate === theCandidate
+    (votingRecord) => votingRecord.candidate === theCandidate,
   );
 }
 
 export function computeUserRedeemableVoteAmountForOneCandidate(
-  userVoteRecordsForOneCandidate
+  userVoteRecordsForOneCandidate,
 ) {
   const userRedeemableVoteAmountForOneCandidate = userVoteRecordsForOneCandidate
-    .filter(record => record.unlockTimestamp.seconds <= moment().unix())
-    .reduce((total, current) => {
-      return total + +current.amount;
-    }, 0);
+    .filter((record) => record.unlockTimestamp.seconds <= moment().unix())
+    .reduce((total, current) => total + +current.amount, 0);
   return userRedeemableVoteAmountForOneCandidate;
 }

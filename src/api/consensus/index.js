@@ -7,10 +7,6 @@
  * @Description: the api of consensus contract
  */
 // todo: Can be removed later
-export const fetchCurrentMinerList = contract => {
-  return contract.GetCurrentMinerList.call();
-};
+export const fetchCurrentMinerList = (contract) => contract.GetCurrentMinerList.call();
 
-export const fetchCurrentMinerPubkeyList = contract => {
-  return contract.GetCurrentMinerPubkeyList.call();
-};
+export const fetchCurrentMinerPubkeyList = (contract) => contract.GetCurrentMinerPubkeyList.call();

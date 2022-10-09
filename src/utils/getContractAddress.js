@@ -14,7 +14,7 @@ import {
   tokenConverter,
   electionContractAddr,
   voteContractAddr,
-  profitContractAddr
+  profitContractAddr,
 } from '@config/config';
 import { aelf } from '../utils';
 
@@ -32,7 +32,7 @@ export default function getContractAddress() {
         voteContractAddr,
         electionContractAddr,
 
-        profitContractAddr
+        profitContractAddr,
       };
       resolve(output);
     });

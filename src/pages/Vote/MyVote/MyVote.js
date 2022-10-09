@@ -1,20 +1,21 @@
-import React, { Component } from "react";
-import moment from "moment";
+import React, { Component } from 'react';
+import moment from 'moment';
 
-import StatisticalData from "@components/StatisticalData/";
-import { ELF_DECIMAL, myVoteStatistData } from "../constants";
-import MyVoteRecord from "./MyVoteRecords";
-import { getAllTeamDesc, fetchPageableCandidateInformation } from "@api/vote";
-import publicKeyToAddress from "@utils/publicKeyToAddress";
-import { RANK_NOT_EXISTED_SYMBOL } from "@src/pages/Vote/constants";
-import { MY_VOTE_DATA_TIP } from "@src/constants";
-import NightElfCheck from "../../../utils/NightElfCheck";
-import getLogin from "../../../utils/getLogin";
-import { Button, Spin } from "antd";
-import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
-import addressFormat from "../../../utils/addressFormat";
+import StatisticalData from '@components/StatisticalData/';
+import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
+import publicKeyToAddress from '@utils/publicKeyToAddress';
+import { RANK_NOT_EXISTED_SYMBOL } from '@src/pages/Vote/constants';
+import { MY_VOTE_DATA_TIP } from '@src/constants';
+import { Button, Spin } from 'antd';
+import NightElfCheck from '../../../utils/NightElfCheck';
+import getLogin from '../../../utils/getLogin';
+import MyVoteRecord from './MyVoteRecords';
+import { ELF_DECIMAL, myVoteStatistData } from '../constants';
+import { getPublicKeyFromObject } from '../../../utils/getPublicKey';
+import addressFormat from '../../../utils/addressFormat';
 
-import "./MyVote.style.less";
+import './MyVote.style.less';
+
 export default class MyVote extends Component {
   constructor(props) {
     super(props);
@@ -53,13 +54,14 @@ export default class MyVote extends Component {
       this.fetchTableDataAndStatistData();
     }
   }
+
   getCurrentWallet() {
     NightElfCheck.getInstance()
       .check.then((ready) => {
         const nightElf = NightElfCheck.getAelfInstanceByExtension();
         getLogin(
           nightElf,
-          { file: "MyVote.js" },
+          { file: 'MyVote.js' },
           (result) => {
             if (result.error) {
               this.setState({
@@ -83,7 +85,7 @@ export default class MyVote extends Component {
               });
             }
           },
-          false
+          false,
         );
       })
       .catch((error) => {
@@ -114,15 +116,15 @@ export default class MyVote extends Component {
       fetchPageableCandidateInformation(electionContract, {
         start: 0,
         // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
-        length: 5,
+        length: 20,
       }),
     ])
       .then((resArr) => {
-        console.log("resArr", resArr);
+        console.log('resArr', resArr);
         this.processData(resArr);
       })
       .catch((err) => {
-        console.error("err", "fetchTableDataAndStatistData", err);
+        console.error('err', 'fetchTableDataAndStatistData', err);
       });
   }
 
@@ -154,7 +156,7 @@ export default class MyVote extends Component {
     // assign rank
     myVoteRecords.forEach((record) => {
       const foundedNode = allNodeInfo.find(
-        (item) => item.candidateInformation.pubkey === record.candidate
+        (item) => item.candidateInformation.pubkey === record.candidate,
       );
       if (foundedNode === undefined) {
         // rank: used to sort
@@ -169,21 +171,21 @@ export default class MyVote extends Component {
     const myTotalVotesAmount = electorVotes.allVotedVotesAmount;
     withdrawableVoteAmount = withdrawableVoteRecords.reduce(
       (total, current) => total + +current.amount,
-      0
+      0,
     );
     console.log({
       myTotalVotesAmount,
-      withdrawableVoteAmount: withdrawableVoteAmount,
+      withdrawableVoteAmount,
     });
     this.processStatistData(
-      "myTotalVotesAmount",
-      "num",
-      myTotalVotesAmount / ELF_DECIMAL
+      'myTotalVotesAmount',
+      'num',
+      myTotalVotesAmount / ELF_DECIMAL,
     );
     this.processStatistData(
-      "withdrawableVotesAmount",
-      "num",
-      withdrawableVoteAmount / ELF_DECIMAL
+      'withdrawableVotesAmount',
+      'num',
+      withdrawableVoteAmount / ELF_DECIMAL,
     );
     this.processTableData(myVoteRecords, allTeamInfo);
   }
@@ -194,9 +196,9 @@ export default class MyVote extends Component {
     const tableData = myVoteRecords;
     tableData.forEach((record) => {
       const teamInfo = allTeamInfo.find(
-        (team) => team.public_key === record.candidate
+        (team) => team.public_key === record.candidate,
       );
-      console.log("teamInfo", teamInfo);
+      console.log('teamInfo', teamInfo);
       if (teamInfo === undefined) {
         record.address = publicKeyToAddress(record.candidate);
         record.name = addressFormat(record.address);
@@ -204,27 +206,27 @@ export default class MyVote extends Component {
         record.name = teamInfo.name;
       }
       if (record.isWithdrawn) {
-        record.type = "Redeem";
+        record.type = 'Redeem';
         record.operationTime = moment
           .unix(record.withdrawTimestamp.seconds)
-          .format("YYYY-MM-DD HH:mm:ss");
+          .format('YYYY-MM-DD HH:mm:ss');
       } else if (record.isChangeTarget) {
-        record.type = "Switch Vote";
+        record.type = 'Switch Vote';
         record.operationTime = moment
           .unix(record.voteTimestamp.seconds)
-          .format("YYYY-MM-DD HH:mm:ss");
+          .format('YYYY-MM-DD HH:mm:ss');
       } else {
-        record.type = "Vote";
+        record.type = 'Vote';
         record.operationTime = moment
           .unix(record.voteTimestamp.seconds)
-          .format("YYYY-MM-DD HH:mm:ss");
+          .format('YYYY-MM-DD HH:mm:ss');
       }
-      record.status = "Success";
-      console.log("record.lockTime", record.lockTime);
+      record.status = 'Success';
+      console.log('record.lockTime', record.lockTime);
       const start = moment.unix(record.voteTimestamp.seconds);
       const end = moment.unix(record.unlockTimestamp.seconds);
       record.formattedLockTime = end.from(start, true);
-      record.formattedUnlockTime = end.format("YYYY-MM-DD HH:mm:ss");
+      record.formattedUnlockTime = end.format('YYYY-MM-DD HH:mm:ss');
       record.isRedeemable = record.unlockTimestamp.seconds <= moment().unix();
     });
     // todo: withdrawn's timestamp
@@ -236,10 +238,11 @@ export default class MyVote extends Component {
   }
 
   processStatistData(key, param, value) {
-    let { statistData } = this.state;
+    const { statistData } = this.state;
     this.setState({
       statistData: {
-        ...statistData, [key]: {
+        ...statistData,
+        [key]: {
           ...(statistData[key] || {}),
           [param]: value
         }

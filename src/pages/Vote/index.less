@@ -90,13 +90,23 @@ button {
       line-height: 22px;
       padding: 12px 0;
       margin-right: 32px;
-      &.ant-menu-item-selected {
-        border-color: #266CD3 !important;
+      &-selected:after {
+        left: 0;
+        right: 0;
+        border-bottom: 2px solid #266cd3 !important; // need underline
+        transition: 0.3s;
       }
-      &:hover {
-        border-color: transparent;
+      &-active:after,
+      &-open:after,
+      &:hover:after {
+        border-bottom: 2px solid transparent;
+        transition: 0.3s;
       }
     }
+  }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    white-space: nowrap;
   }
 }
 
@@ -156,11 +166,9 @@ button {
 .ant-modal {
   text-align: center;
   overflow: hidden;
-  color: #fff;
   &.plugin-lock-modal {
     .ant-modal-body {
       padding: 50px;
-      color: #fff;
     }
     .ant-modal-footer {
       .ant-btn:first-child {
@@ -241,6 +249,7 @@ button {
 
 // todo: Consider to using a more proper name to instead table-btn
 .table-btn {
+  line-height: 1;
   border: none;
   width: 78px;
   height: 26px;
@@ -262,6 +271,12 @@ button {
 
 // todo: Consider to write the code myself rather than modify antd's component
 // todo: Move the code to asset/less/common.less
+// .vote-modal,
+// .vote-redeem-modal,
+// .apply-node-modal,
+// .dividend-modal,
+// .vote-confirm-modal,
+// .plugin-lock-modal {
 .ant-modal {
   .ant-form {
     width: 70%;
@@ -333,15 +348,24 @@ button {
     }
   }
 }
+// }
 
 // todo: Limit the work range to certain item such as the Calendar inner Modal
-.ant-calendar-picker-container {
-  .ant-calendar {
+.ant-picker-dropdown {
+  .ant-picker-date-panel {
     width: 450px;
+    .ant-picker-header,
+    .ant-picker-content {
+      width: 100%;
+    }
 
-    .ant-calendar-disabled-cell.ant-calendar-selected-day
-      .ant-calendar-date::before {
-      left: 18px;
+    .ant-calendar-disabled-cell {
+      &.ant-calendar-selected-day,
+      &.ant-calendar-today {
+        .ant-calendar-date::before {
+          left: 18px;
+        }
+      }
     }
   }
 }

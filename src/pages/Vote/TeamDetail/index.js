@@ -1,58 +1,49 @@
-import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { If, Then, Else } from 'react-if';
-import {
-  Row,
-  Col,
-  Button,
-  Avatar,
-  Tag,
-  Typography,
-  message,
-  Icon
-} from 'antd';
-import queryString from 'query-string';
+import React, { PureComponent } from "react";
+import { Link } from "react-router-dom";
+import { If, Then, Else } from "react-if";
+import { Row, Col, Button, Avatar, Tag, Typography, message, Icon } from "antd";
+import queryString from "query-string";
+import { EditOutlined, TeamOutlined } from "@ant-design/icons";
 
-import StatisticalData from '@components/StatisticalData/';
-import { getTeamDesc, fetchElectorVoteWithRecords } from '@api/vote';
-import { fetchCurrentMinerPubkeyList } from '@api/consensus';
+import StatisticalData from "@components/StatisticalData/";
+import { getTeamDesc, fetchElectorVoteWithRecords } from "@api/vote";
+import { fetchCurrentMinerPubkeyList } from "@api/consensus";
 import {
   FROM_WALLET,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
-} from '@src/pages/Vote/constants';
-import publicKeyToAddress from '@utils/publicKeyToAddress';
-import getCurrentWallet from '@utils/getCurrentWallet';
+  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
+} from "@src/pages/Vote/constants";
+import publicKeyToAddress from "@utils/publicKeyToAddress";
+import getCurrentWallet from "@utils/getCurrentWallet";
 import {
   filterUserVoteRecordsForOneCandidate,
-  computeUserRedeemableVoteAmountForOneCandidate
-} from '@utils/voteUtils';
-import './index.less';
-import {ELF_DECIMAL} from "../constants";
+  computeUserRedeemableVoteAmountForOneCandidate,
+} from "@utils/voteUtils";
+import "./index.less";
+import { ELF_DECIMAL } from "../constants";
 import addressFormat from "../../../utils/addressFormat";
 
 const { Paragraph } = Typography;
 
-const clsPrefix = 'team-detail';
+const clsPrefix = "team-detail";
 
-const ellipsis = {rows: 1};
+const ellipsis = { rows: 1 };
 
 class TeamDetail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       data: {},
-      candidateAddress: '',
-      formattedAddress: '',
+      candidateAddress: "",
+      formattedAddress: "",
       isBP: false,
-      rank: '-',
-      terms: '-',
-      totalVotes: '-',
-      votedRate: '-',
-      producedBlocks: '-',
+      rank: "-",
+      terms: "-",
+      totalVotes: "-",
+      votedRate: "-",
+      producedBlocks: "-",
       userRedeemableVoteAmountForOneCandidate: 0,
       hasAuth: false,
-      isCandidate: true
+      isCandidate: true,
     };
 
     this.teamPubkey = queryString.parse(window.location.search).pubkey;
@@ -73,7 +64,7 @@ class TeamDetail extends PureComponent {
 
     if (currentWallet) {
       this.setState({
-        hasAuth: currentWallet.pubkey === this.teamPubkey
+        hasAuth: currentWallet.pubkey === this.teamPubkey,
       });
     }
   }
@@ -92,7 +83,7 @@ class TeamDetail extends PureComponent {
     if (prevProps.currentWallet !== currentWallet) {
       this.setState(
         {
-          hasAuth: currentWallet.pubkey === this.teamPubkey
+          hasAuth: currentWallet.pubkey === this.teamPubkey,
         },
         this.fetchCandidateInfo
       );
@@ -101,13 +92,13 @@ class TeamDetail extends PureComponent {
 
   fetchData() {
     getTeamDesc(this.teamPubkey)
-      .then(res => {
+      .then((res) => {
         if (res.code !== 0) {
           return;
         }
         this.setState({ data: res.data });
       })
-      .catch(err => message.error(err));
+      .catch((err) => message.error(err));
   }
 
   fetchDataFromElectionContract() {
@@ -120,21 +111,21 @@ class TeamDetail extends PureComponent {
 
     electionContract.GetPageableCandidateInformation.call({
       start: 0,
-      length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // give a number large enough to make sure that we get all the nodes
+      length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL, // give a number large enough to make sure that we get all the nodes
       // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
     })
-      .then(res => this.processAllCandidateInfo(res.value))
-      .catch(err => {
+      .then((res) => this.processAllCandidateInfo(res.value))
+      .catch((err) => {
         console.error(err);
       });
   }
 
   processAllCandidateInfo(allCandidateInfo) {
     const candidateVotesArr = allCandidateInfo
-      .map(item => item.obtainedVotesAmount)
+      .map((item) => item.obtainedVotesAmount)
       .sort((a, b) => b - a);
     const currentCandidate = allCandidateInfo.find(
-      item => item.candidateInformation.pubkey === this.teamPubkey
+      (item) => item.candidateInformation.pubkey === this.teamPubkey
     );
 
     const candidateAddress = publicKeyToAddress(this.teamPubkey);
@@ -143,7 +134,7 @@ class TeamDetail extends PureComponent {
     if (!currentCandidate) {
       this.setState({
         isCandidate: false,
-        formattedAddress
+        formattedAddress,
       });
       return;
     }
@@ -171,7 +162,7 @@ class TeamDetail extends PureComponent {
       votedRate,
       producedBlocks,
       candidateAddress,
-      formattedAddress
+      formattedAddress,
     });
   }
 
@@ -181,15 +172,15 @@ class TeamDetail extends PureComponent {
     const currentWallet = getCurrentWallet();
 
     fetchElectorVoteWithRecords(electionContract, {
-      value: currentWallet.pubKey
+      value: currentWallet.pubKey,
     })
-      .then(res => {
+      .then((res) => {
         this.computeUserRedeemableVoteAmountForOneCandidate(
           res.activeVotingRecords
         );
       })
-      .catch(err => {
-        console.error('fetchElectorVoteWithRecords', err);
+      .catch((err) => {
+        console.error("fetchElectorVoteWithRecords", err);
       });
   }
 
@@ -198,11 +189,12 @@ class TeamDetail extends PureComponent {
       usersActiveVotingRecords,
       this.teamPubkey
     );
-    const userRedeemableVoteAmountForOneCandidate = computeUserRedeemableVoteAmountForOneCandidate(
-      userVoteRecordsForOneCandidate
-    );
+    const userRedeemableVoteAmountForOneCandidate =
+      computeUserRedeemableVoteAmountForOneCandidate(
+        userVoteRecordsForOneCandidate
+      );
     this.setState({
-      userRedeemableVoteAmountForOneCandidate
+      userRedeemableVoteAmountForOneCandidate,
     });
   }
 
@@ -210,15 +202,15 @@ class TeamDetail extends PureComponent {
     const { consensusContract } = this.props;
 
     fetchCurrentMinerPubkeyList(consensusContract)
-      .then(res => {
+      .then((res) => {
         if (res.pubkeys.indexOf(this.teamPubkey) !== -1) {
           this.setState({
-            isBP: true
+            isBP: true,
           });
         }
       })
-      .catch(err => {
-        console.error('fetchCurrentMinerPubkeyList', err);
+      .catch((err) => {
+        console.error("fetchCurrentMinerPubkeyList", err);
       });
   }
 
@@ -227,37 +219,37 @@ class TeamDetail extends PureComponent {
 
     return {
       rank: {
-        title: 'Rank',
-        num: rank
+        title: "Rank",
+        num: rank,
       },
       terms: {
-        title: 'Terms',
-        num: terms
+        title: "Terms",
+        num: terms,
       },
       totalVotes: {
-        title: 'Total Vote',
-        num: totalVotes
+        title: "Total Vote",
+        num: totalVotes,
       },
       votedRate: {
-        title: 'Voted Rate',
-        num: `${votedRate}%`
+        title: "Voted Rate",
+        num: `${votedRate}%`,
       },
       producedBlocks: {
-        title: 'Produced Blocks',
-        num: producedBlocks
-      }
+        title: "Produced Blocks",
+        num: producedBlocks,
+      },
     };
   }
 
   renderTopTeamInfo() {
-    const { isSmallScreen } = this.props;
+    const isSmallScreen = document.body.offsetWidth < 768;
     const {
       formattedAddress,
       isBP,
       userRedeemableVoteAmountForOneCandidate,
       hasAuth,
       data,
-      isCandidate
+      isCandidate,
     } = this.state;
 
     const avatarSize = isSmallScreen ? 50 : 150;
@@ -265,48 +257,44 @@ class TeamDetail extends PureComponent {
     return (
       <section className={`${clsPrefix}-header card-container`}>
         <Row>
-          <Col
-            md={18}
-            sm={24}
-            xs={24}
-            className="card-container-left"
-          >
+          <Col md={18} sm={24} xs={24} className='card-container-left'>
             <Row className={`${clsPrefix}-team-avatar-info`}>
-              <Col
-                md={6}
-                sm={6}
-                xs={6}
-                className="team-avatar-container"
-              >
+              <Col md={6} sm={6} xs={6} className='team-avatar-container'>
                 {data.avatar ? (
-                  <Avatar shape="square" size={avatarSize} src={data.avatar} />
+                  <Avatar shape='square' size={avatarSize} src={data.avatar} />
                 ) : (
-                  <Avatar shape="square" size={avatarSize}>
+                  <Avatar shape='square' size={avatarSize}>
                     U
                   </Avatar>
                 )}
               </Col>
-              <Col
-                className={`${clsPrefix}-team-info`}
-                md={18}
-                sm={18}
-                xs={18}
-              >
+              <Col className={`${clsPrefix}-team-info`} md={18} sm={18} xs={18}>
                 <h5 className={`${clsPrefix}-node-name ellipsis`}>
                   {data.name ? data.name : formattedAddress}
-                  <Tag color="#f50">{isBP ? 'BP' : (isCandidate ? 'Candidate' : 'Quited')}</Tag>
+                  <Tag color='#f50'>
+                    {isBP ? "BP" : isCandidate ? "Candidate" : "Quited"}
+                  </Tag>
                 </h5>
-                <Paragraph ellipsis={{rows: 1}}>
-                  Location: {data.location || '-'}
+                <Paragraph ellipsis={{ rows: 1 }}>
+                  Location: {data.location || "-"}
                 </Paragraph>
-                <Paragraph copyable={{ text: formattedAddress }} ellipsis={ellipsis}>
+                <Paragraph
+                  copyable={{ text: formattedAddress }}
+                  ellipsis={ellipsis}
+                >
                   Address: {formattedAddress}
                 </Paragraph>
                 <If condition={!!data.officialWebsite}>
                   <Then>
                     <Paragraph ellipsis={ellipsis}>
                       Official Website:&nbsp;
-                      <a href={data.officialWebsite} target="_blank" rel="noreferrer noopener">{data.officialWebsite}</a>
+                      <a
+                        href={data.officialWebsite}
+                        target='_blank'
+                        rel='noreferrer noopener'
+                      >
+                        {data.officialWebsite}
+                      </a>
                     </Paragraph>
                   </Then>
                 </If>
@@ -314,16 +302,22 @@ class TeamDetail extends PureComponent {
                   <Then>
                     <Paragraph ellipsis={ellipsis}>
                       Email:&nbsp;
-                      <a href={`mailto:${data.mail}`} target="_blank" rel="noreferrer noopener">{data.mail}</a>
+                      <a
+                        href={`mailto:${data.mail}`}
+                        target='_blank'
+                        rel='noreferrer noopener'
+                      >
+                        {data.mail}
+                      </a>
                     </Paragraph>
                   </Then>
                 </If>
                 {hasAuth ? (
-                  <Button type="primary" shape="round" className="edit-btn">
+                  <Button type='primary' shape='round' className='edit-btn'>
                     <Link
                       to={{
-                        pathname: '/vote/apply/keyin',
-                        search: `pubkey=${this.teamPubkey}`
+                        pathname: "/vote/apply/keyin",
+                        search: `pubkey=${this.teamPubkey}`,
                       }}
                     >
                       Edit
@@ -333,17 +327,13 @@ class TeamDetail extends PureComponent {
               </Col>
             </Row>
           </Col>
-          <Col
-            md={6}
-            xs={0}
-            className="card-container-right"
-          >
+          <Col md={6} xs={0} className='card-container-right'>
             <Button
-              className="table-btn vote-btn"
-              type="primary"
-              shape="round"
+              className='table-btn vote-btn'
+              type='primary'
+              shape='round'
               disabled={!isCandidate}
-              data-role="vote"
+              data-role='vote'
               data-shoulddetectlock
               data-votetype={FROM_WALLET}
               data-nodeaddress={formattedAddress}
@@ -353,10 +343,10 @@ class TeamDetail extends PureComponent {
               Vote
             </Button>
             <Button
-              className="table-btn redeem-btn"
-              type="primary"
-              shape="round"
-              data-role="redeem"
+              className='table-btn redeem-btn'
+              type='primary'
+              shape='round'
+              data-role='redeem'
               data-shoulddetectlock
               data-nodeaddress={formattedAddress}
               data-targetpublickey={this.teamPubkey}
@@ -382,45 +372,55 @@ class TeamDetail extends PureComponent {
         {topTeamInfo}
         <StatisticalData data={staticsData} inline />
         <section className={`${clsPrefix}-intro card-container`}>
-          <h5 className="card-header">
-            <Icon type="edit" className="card-header-icon" />
+          <h5 className='card-header'>
+            <EditOutlined className='card-header-icon' />
             Introduction
           </h5>
-          <div className="card-content">
+          <div className='card-content'>
             <If condition={!!data.intro}>
               <Then>
                 <p>{data.intro}</p>
               </Then>
               <Else>
-                <div className="vote-team-detail-empty">The team didn't fill the introduction.</div>
+                <div className='vote-team-detail-empty'>
+                  The team didn't fill the introduction.
+                </div>
               </Else>
             </If>
           </div>
         </section>
         <section className={`${clsPrefix}-social-network card-container`}>
-          <h5 className="card-header">
-            <Icon type="team" className="card-header-icon" />
+          <h5 className='card-header'>
+            <TeamOutlined className='card-header-icon' />
             Social Network
           </h5>
-          <div className="card-content">
+          <div className='card-content'>
             <If condition={!!(data.socials && data.socials.length > 0)}>
               <Then>
-                <div className="vote-team-detail-social-network">
-                  {
-                    (data.socials || []).map(item => (
-                        <div className="vote-team-detail-social-network-item">
-                          <span className="vote-team-detail-social-network-item-title">{item.type}</span>
-                          <span className="vote-team-detail-social-network-item-url">
-                            :&nbsp;
-                            <a href={item.url} target="_blank" rel="noreferrer noopener">{item.url}</a>
-                          </span>
-                        </div>
-                    ))
-                  }
+                <div className='vote-team-detail-social-network'>
+                  {(data.socials || []).map((item) => (
+                    <div className='vote-team-detail-social-network-item'>
+                      <span className='vote-team-detail-social-network-item-title'>
+                        {item.type}
+                      </span>
+                      <span className='vote-team-detail-social-network-item-url'>
+                        :&nbsp;
+                        <a
+                          href={item.url}
+                          target='_blank'
+                          rel='noreferrer noopener'
+                        >
+                          {item.url}
+                        </a>
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </Then>
               <Else>
-                <span className="vote-team-detail-empty">The team didn't fill the social contacts.</span>
+                <span className='vote-team-detail-empty'>
+                  The team didn't fill the social contacts.
+                </span>
               </Else>
             </If>
           </div>
@@ -430,6 +430,4 @@ class TeamDetail extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({ ...state.common });
-
-export default connect(mapStateToProps)(TeamDetail);
+export default TeamDetail;

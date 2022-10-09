@@ -26,22 +26,28 @@
       line-height: 32px;
     }
     &-update {
-      color: @bgMain;
+      display: flex;
+      align-items: center;
       &:last-child {
         padding-right: 0;
       }
     }
-    &-update:hover, &-update:active, &-update:focus {
+    &-update:hover,
+    &-update:active,
+    &-update:focus {
       color: @hoverColor;
     }
   }
-  &-operation-container{
+  &-operation-container {
     flex-grow: 1;
     display: flex;
     justify-content: flex-end;
+    .ant-btn > .anticon {
+      line-height: 0;
+    }
   }
   &-info {
-    .ant-row-flex {
+    .ant-row {
       .ant-col {
         margin-bottom: 25px;
       }
@@ -56,7 +62,7 @@
     }
     .balance {
       font-weight: bold;
-      color: @textContext
+      color: @textContext;
     }
   }
 }

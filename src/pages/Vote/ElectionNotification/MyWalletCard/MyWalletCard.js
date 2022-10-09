@@ -9,7 +9,7 @@
 import React, { PureComponent } from "react";
 import { Button, Icon, message, Spin } from "antd";
 import moment from "moment";
-
+import { SyncOutlined, WalletFilled, LogoutOutlined } from "@ant-design/icons";
 import "./MyWalletCard.less";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { ELF_DECIMAL, SYMBOL } from "@src/constants";
@@ -85,7 +85,7 @@ export default class MyWalletCard extends PureComponent {
           (result) => {
             console.log("getCurrentWallet: ", result);
             if (result.error) {
-              localStorage.removeItem('currentWallet');
+              localStorage.removeItem("currentWallet");
               // message.warn(result.message || result.errorMessage.message);
             } else {
               const wallet = JSON.parse(result.detail);
@@ -320,14 +320,14 @@ export default class MyWalletCard extends PureComponent {
       {
         type: "Claimable profit",
         value: (
-          <Dividends className="wallet-dividends" dividends={dividends.total} />
+          <Dividends className='wallet-dividends' dividends={dividends.total} />
         ),
         extra: (
           <Button
-            type="primary"
-            size="small"
-            shape="round"
-            className={"my-wallet-card-body-wallet-content-withdraw-btn"}
+            type='primary'
+            size='small'
+            shape='round'
+            className='my-wallet-card-body-wallet-content-withdraw-btn'
             onClick={handleDividendClick}
           >
             Claim
@@ -349,33 +349,36 @@ export default class MyWalletCard extends PureComponent {
     ];
 
     return (
-      <section className="my-wallet-card">
+      <section className='my-wallet-card'>
         <Spin spinning={loading}>
-          <div className="my-wallet-card-header">
-            <h2 className="my-wallet-card-header-title">
-              <Icon type="wallet" theme="filled" className="card-header-icon" />
+          <div className='my-wallet-card-header'>
+            <h2 className='my-wallet-card-header-title'>
+              <WalletFilled className='card-header-icon' />
               My Wallet
             </h2>
             {!this.isPhone && currentWallet && currentWallet.name && (
               <Button
+                type="text"
                 className="my-wallet-card-header-sync-btn update-btn"
                 disabled={!(currentWallet && currentWallet.address)}
                 onClick={this.extensionLogout}
               >
                 Logout
-                <Icon type="logout" />
+                <LogoutOutlined className='card-header-icon' />
               </Button>
             )}
             <Button
+              type="text"
               className="my-wallet-card-header-sync-btn update-btn"
               disabled={!(currentWallet && currentWallet.address)}
               onClick={this.handleUpdateWalletClick}
             >
               Refresh
-              <Icon type="sync" spin={loading} />
+              <SyncOutlined spin={loading} />
             </Button>
             {!(currentWallet && currentWallet.address) && (
               <Button
+                type="text"
                 className="my-wallet-card-header-sync-btn update-btn"
                 onClick={() => this.getCurrentWallet(false)}
               >
@@ -383,51 +386,49 @@ export default class MyWalletCard extends PureComponent {
               </Button>
             )}
           </div>
-          <div className="my-wallet-card-body-wallet-title">
+          <div className='my-wallet-card-body-wallet-title'>
             {isPhoneCheck() ? (
               <>
                 <div>
-                  <span className="my-wallet-card-body-wallet-title-key">
+                  <span className='my-wallet-card-body-wallet-title-key'>
                     Name:{" "}
                   </span>
-                  <span className="primary-color">{currentWallet.name}</span>
+                  <span className='primary-color'>{currentWallet.name}</span>
                 </div>
                 <div>
-                  <span className="my-wallet-card-body-wallet-title-key">
+                  <span className='my-wallet-card-body-wallet-title-key'>
                     Address:{" "}
                   </span>
-                  <span className="primary-color">
+                  <span className='primary-color'>
                     {currentWallet.formattedAddress}
                   </span>
                 </div>
               </>
             ) : (
               <>
-                <span className="my-wallet-card-body-wallet-title-key">
+                <span className='my-wallet-card-body-wallet-title-key'>
                   Name:{" "}
                 </span>
-                <span className="primary-color">{currentWallet.name}</span>
-                <span className="my-wallet-card-body-wallet-title-blank" />
-                <span className="my-wallet-card-body-wallet-title-key">
+                <span className='primary-color'>{currentWallet.name}</span>
+                <span className='my-wallet-card-body-wallet-title-blank' />
+                <span className='my-wallet-card-body-wallet-title-key'>
                   Address:{" "}
                 </span>
-                <span className="primary-color">
+                <span className='primary-color'>
                   {currentWallet.formattedAddress}
                 </span>
               </>
             )}
           </div>
-          <div className="my-wallet-card-body">
-            <ul className="my-wallet-card-body-wallet-content">
-              {walletItems.map((item, index) => {
-                return (
-                  <li key={index}>
-                    <span className="item-type">{item.type}:</span>
-                    <span className="item-value">{item.value}</span>
-                    <span className="item-extra">{item.extra}</span>
-                  </li>
-                );
-              })}
+          <div className='my-wallet-card-body'>
+            <ul className='my-wallet-card-body-wallet-content'>
+              {walletItems.map((item, index) => (
+                <li key={index}>
+                  <span className='item-type'>{item.type}:</span>
+                  <span className='item-value'>{item.value}</span>
+                  <span className='item-extra'>{item.extra}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </Spin>

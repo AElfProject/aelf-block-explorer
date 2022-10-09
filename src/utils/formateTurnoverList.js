@@ -4,5 +4,5 @@
 */
 
 export default function formateTurnoverList(input) {
-    return input;
+  return input;
 }

@@ -1,7 +1,8 @@
-import { Icon } from 'antd';
-const ICON_FONT_URL = 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/svg_17168_9.ad816d74e8215cba802d93fd482385cf.js';
+import { createFromIconfontCN } from '@ant-design/icons';
 
-const IconFont = Icon.createFromIconfontCN({
+const ICON_FONT_URL = 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/svg_17168_29.a3c68a67d6e75d15ca3969bd9b1a9448.js';
+
+const IconFont = createFromIconfontCN({
   scriptUrl: ICON_FONT_URL,
 });
 export default IconFont;

@@ -1,15 +1,15 @@
-import { Select } from "antd";
-import React, { useCallback } from "react";
-import "./NetSelect.style.less";
-import { CHAIN_ID } from "../../../config/config";
-import IconFont from "../IconFont";
+import { Select } from 'antd';
+import React, { useCallback } from 'react';
+import './NetSelect.style.less';
+import { CHAIN_ID } from '../../../config/config';
+import IconFont from '../IconFont';
 
 const { Option } = Select;
 
 export default function NetSelect({ chainList }) {
   const selectChange = useCallback((val) => {
-    const chainInfo = chainList.find(item=> item.chainId === val);
-    if(chainInfo.chainsLink) window.location = chainInfo.chainsLink;
+    const chainInfo = chainList.find((item) => item.chainId === val);
+    if (chainInfo.chainsLink) window.location = chainInfo.chainsLink;
   }, []);
   return (
     <div className="net-select-wrapper">

@@ -23,11 +23,11 @@ export default function getEstimatedValueELF(
   type,
   pidRes,
   tokenConverterContract,
-  tokenContract
+  tokenContract,
 ) {
   return new Promise((resolve, reject) => {
     getResourceConverter(type, tokenConverterContract, tokenContract).then(
-      result => {
+      (result) => {
         if (result) {
           if (result.resourceBalance.dividedBy(1e8).toNumber() >= Math.abs(pidRes)) {
             const resCont = Math.abs(pidRes) || 0;
@@ -43,7 +43,7 @@ export default function getEstimatedValueELF(
             reject('There are not so many resources.');
           }
         }
-      }
+      },
     );
   });
 }

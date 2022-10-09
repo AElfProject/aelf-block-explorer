@@ -9,16 +9,16 @@ import React, { Component } from "react";
 import { message } from "antd";
 import { connect } from "react-redux";
 
-import { aelf } from '../../utils';
-import { APPNAME, resourceTokens } from '../../../config/config';
-import DownloadPlugins from '../../components/DownloadPlugins/DownloadPlugins';
-import ResourceAElfWallet from './components/ResourceAElfWallet/ResourceAElfWallet';
-import NightElfCheck from '../../utils/NightElfCheck';
-import getContractAddress from '../../utils/getContractAddress.js';
-import ResourceMoneyMarket from './components/ResourceMoneyMarket/ResourceMoneyMarket';
-import getLogin from '../../utils/getLogin';
-import { isPhoneCheck } from '../../utils/deviceCheck';
-import './Resource.less';
+import { aelf } from "../../utils";
+import { APPNAME, resourceTokens } from "../../../config/config";
+import DownloadPlugins from "../../components/DownloadPlugins/DownloadPlugins";
+import ResourceAElfWallet from "./components/ResourceAElfWallet/ResourceAElfWallet";
+import NightElfCheck from "../../utils/NightElfCheck";
+import getContractAddress from "../../utils/getContractAddress.js";
+import ResourceMoneyMarket from "./components/ResourceMoneyMarket/ResourceMoneyMarket";
+import getLogin from "../../utils/getLogin";
+import { isPhoneCheck } from "../../utils/deviceCheck";
+import "./Resource.less";
 
 const appName = APPNAME;
 class Resource extends Component {
@@ -33,26 +33,26 @@ class Resource extends Component {
       showDownloadPlugins: false,
       showWallet: false,
       currentBalance: 0,
-      resourceTokens: resourceTokens.map(v => ({ ...v, balance: 0 })),
+      resourceTokens: resourceTokens.map((v) => ({ ...v, balance: 0 })),
       loading: false,
-      nightElf: null
+      nightElf: null,
     };
     this.walletRef = null;
   }
 
   componentDidMount() {
-    getContractAddress().then(result => {
+    getContractAddress().then((result) => {
       this.setState({
-        contracts: result
+        contracts: result,
       });
       if (!result.chainInfo) {
         message.error(
-          'The chain has stopped or cannot be connected to the chain. Please check your network or contact us.',
+          "The chain has stopped or cannot be connected to the chain. Please check your network or contact us.",
           10
         );
         return;
       }
-      this.getContract(result)
+      this.getContract(result);
     });
 
     NightElfCheck.getInstance()
@@ -64,27 +64,26 @@ class Resource extends Component {
               nightElf,
             });
             if (nightElf.getExtensionInfo) {
-              nightElf.getExtensionInfo().then(info => {
+              nightElf.getExtensionInfo().then((info) => {
                 if (!info.locked) {
-                  nightElf.chain
-                    .getChainStatus()
-                    .then((result) => {
-                      this.loginAndInsertKeyPairs(result);
-                    })
-                } else {
-                  localStorage.removeItem('currentWallet')
-                }
-              })
-            } else {
-              let wallet = JSON.parse(localStorage.getItem('currentWallet'))
-              if (wallet && (new Date().valueOf() - Number(wallet.timestamp)) < 15 * 60 * 1000) {
-                nightElf.chain
-                  .getChainStatus()
-                  .then((result) => {
+                  nightElf.chain.getChainStatus().then((result) => {
                     this.loginAndInsertKeyPairs(result);
-                  })
+                  });
+                } else {
+                  localStorage.removeItem("currentWallet");
+                }
+              });
+            } else {
+              let wallet = JSON.parse(localStorage.getItem("currentWallet"));
+              if (
+                wallet &&
+                new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
+              ) {
+                nightElf.chain.getChainStatus().then((result) => {
+                  this.loginAndInsertKeyPairs(result);
+                });
               } else {
-                localStorage.removeItem('currentWallet')
+                localStorage.removeItem("currentWallet");
               }
             }
           }
@@ -98,21 +97,17 @@ class Resource extends Component {
   }
 
   getContract(result) {
-    aelf.chain.contractAt(
-      result.multiToken,
-      result.wallet,
-      (error, result) => {
-        this.setState({
-          tokenContract: result
-        });
-      }
-    );
+    aelf.chain.contractAt(result.multiToken, result.wallet, (error, result) => {
+      this.setState({
+        tokenContract: result,
+      });
+    });
     aelf.chain.contractAt(
       result.tokenConverter,
       result.wallet,
       (error, result) => {
         this.setState({
-          tokenConverterContract: result
+          tokenConverterContract: result,
         });
       }
     );
@@ -120,29 +115,38 @@ class Resource extends Component {
 
   loginAndInsertKeyPairs = (useLock = true, toastMessage = true) => {
     const { nightElf } = this.state;
-    const getLoginPayload = {
-      appName,
-      connectChain: this.connectChain
-    };
 
-    getLogin(nightElf, getLoginPayload, result => {
-      if (result && result.error === 0) {
-        localStorage.setItem('currentWallet', JSON.stringify({ ...JSON.parse(result.detail), timestamp: new Date().valueOf() }))
-        const wallet = JSON.parse(result.detail);
-        this.getNightElfKeyPair(wallet);
-        toastMessage && message.success('Login success!!', 3);
-      } else {
-        this.loginFailed()
-      }
-    }, useLock);
-  }
+    getLogin(
+      nightElf,
+      {},
+      (result) => {
+        if (result && result.error === 0) {
+          localStorage.setItem(
+            "currentWallet",
+            JSON.stringify({
+              ...JSON.parse(result.detail),
+              timestamp: new Date().valueOf(),
+            })
+          );
+          const wallet = JSON.parse(result.detail);
+          nightElf.chain.getChainStatus(() => {
+            this.getNightElfKeyPair(wallet);
+          })
+          toastMessage && message.success("Login success!!", 3);
+        } else {
+          this.loginFailed();
+        }
+      },
+      useLock
+    );
+  };
 
   loginFailed(result) {
     this.setState({
-      showWallet: false
+      showWallet: false,
     });
     const warningStr =
-      ((result && result.error === 200010)
+      (result && result.error === 200010
         ? "Please Login."
         : result && result.errorMessage.message) ||
       "Please check your NightELF browser extension.";
@@ -151,19 +155,22 @@ class Resource extends Component {
 
   getNightElfKeyPair(wallet) {
     if (wallet) {
-      localStorage.setItem('currentWallet', JSON.stringify({ ...wallet, timestamp: new Date().valueOf() }));
+      localStorage.setItem(
+        "currentWallet",
+        JSON.stringify({ ...wallet, timestamp: new Date().valueOf() })
+      );
       this.setState({
         currentWallet: wallet,
-        showWallet: true
+        showWallet: true,
       });
     }
   }
 
   getCurrentBalance = (value) => {
     this.setState({
-      currentBalance: value
+      currentBalance: value,
     });
-  }
+  };
 
   getDownloadPluginsHTML() {
     return <DownloadPlugins />;
@@ -174,21 +181,21 @@ class Resource extends Component {
       this.walletRef.refreshWalletInfo();
     }, 2000);
     this.setState({
-      loading: true
+      loading: true,
     });
   }
 
   endRefresh() {
     this.setState({
-      loading: false
+      loading: false,
     });
   }
 
   getResource = (resource) => {
     this.setState({
-      resourceTokens: resource.map(v => ({ ...v }))
+      resourceTokens: resource.map((v) => ({ ...v })),
     });
-  }
+  };
 
   resourceAElfWalletHtml() {
     const {
@@ -196,11 +203,11 @@ class Resource extends Component {
       tokenConverterContract,
       currentWallet,
       resourceTokens,
-      currentBalance
+      currentBalance,
     } = this.state;
     return (
       <ResourceAElfWallet
-        title="AELF Wallet"
+        title='AELF Wallet'
         ref={(wallet) => {
           this.walletRef = wallet;
         }}
@@ -226,15 +233,18 @@ class Resource extends Component {
       tokenContract,
       tokenConverterContract,
       nightElf,
-      resourceTokens
+      resourceTokens,
     } = this.state;
-    let account = {
+    const account = {
       balance: currentBalance,
-      resourceTokens
+      resourceTokens,
     };
     let downloadPlugins = null;
     if (showDownloadPlugins) {
-      downloadPlugins = [this.getDownloadPluginsHTML(), <div className='resource-blank' />];
+      downloadPlugins = [
+        this.getDownloadPluginsHTML(),
+        <div className='resource-blank' />,
+      ];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
     const isPhone = isPhoneCheck();
@@ -263,8 +273,8 @@ class Resource extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  ...state.common
+const mapStateToProps = (state) => ({
+  ...state.common,
 });
 
 export default connect(mapStateToProps)(Resource);
