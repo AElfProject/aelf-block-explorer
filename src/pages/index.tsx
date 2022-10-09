@@ -205,16 +205,16 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   });
   return {
     props: {
-      mobilePrice,
-      mobilePrevPrice,
-      tpsData,
-      blockHeight,
-      rewardSSR,
-      localAccountsSSR,
-      unconfirmedBlockHeightSSR,
-      localTransactionsSSR,
-      transactionsSSR,
-      blocksSSR,
+      mobileprice: mobilePrice,
+      mobileprevprice: mobilePrevPrice,
+      tpsdata: tpsData,
+      blockheight: blockHeight,
+      rewardssr: rewardSSR,
+      localaccountsssr: localAccountsSSR,
+      unconfirmedblockheightssr: unconfirmedBlockHeightSSR,
+      localtransactionsssr: localTransactionsSSR,
+      transactionsssr: transactionsSSR,
+      blocksssr: blocksSSR,
       headers,
     },
   };

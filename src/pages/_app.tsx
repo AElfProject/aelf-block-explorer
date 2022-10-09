@@ -1,8 +1,7 @@
 import { NextComponentType, NextPageContext } from 'next';
-import dynamic from 'next/dynamic';
 import HeaderBlank from 'components/PageHead/HeaderBlank';
 import BrowserFooter from 'components/Footer/Footer';
-const BrowserBreadcrumb = dynamic(() => import('components/Breadcrumb/Breadcrumb'), { ssr: false });
+import BrowserBreadcrumb from 'components/Breadcrumb/Breadcrumb';
 import Container from 'components/Container/Container';
 import PageHead from 'components/PageHead/Header';
 import ProposalApp from './_proposalApp';
@@ -16,7 +15,7 @@ import { get, getSSR } from 'utils/axios';
 import config, { getConfig } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import CHAIN_STATE from 'constants/config/configCMS.json';
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 require('../styles/globals.less');
 require('../styles/common.less');
 require('../styles/antd.less');
@@ -91,7 +90,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
   pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
     <ReduxProvider store={store}>
-      <AppContext.Provider value={pageProps.chainConfig}>
+      <AppContext.Provider value={pageProps.chainconfig}>
         <Provider>
           <PageHead {...pageProps} />
           <HeaderBlank />
@@ -119,10 +118,10 @@ APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
   }
   return {
     pageProps: {
-      chainConfig,
-      nodeInfo,
+      chainconfig: chainConfig,
+      nodeinfo: nodeInfo,
       headers,
-      chainList,
+      chainlist: chainList,
     },
   };
 };

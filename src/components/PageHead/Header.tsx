@@ -35,8 +35,8 @@ interface ChainListDto {
 interface PropsDto {
   router: NextRouter;
   headers: any;
-  chainList: ChainListDto[];
-  nodeInfo: any;
+  chainlist: ChainListDto[];
+  nodeinfo: any;
   setIsSmallScreen: any;
   isSmallScreen: boolean;
 }
@@ -82,7 +82,7 @@ class BrowserHeader extends Component<PropsDto, any> {
     this.state = {
       showSearch: this.getSearchStatus(),
       showMobileMenu: false,
-      chainList: props.chainList || CHAINS_LIST,
+      chainList: props.chainlist || CHAINS_LIST,
       current: props.router.asPath === '/' ? '/home' : getPathnameFirstSlash(props.router.asPath),
     };
     this.isPhone = isPhoneCheckWithWindow(props.headers);
@@ -221,7 +221,7 @@ class BrowserHeader extends Component<PropsDto, any> {
     if (typeof window !== 'undefined') {
       nodeInfo = JSON.parse(localStorage.getItem('currentChain') as string);
     } else {
-      nodeInfo = this.props.nodeInfo;
+      nodeInfo = this.props.nodeinfo;
     }
 
     const { chain_id } = nodeInfo;

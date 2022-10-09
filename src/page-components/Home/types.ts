@@ -129,15 +129,15 @@ export interface RewardDto {
   [key: string]: string | number;
 }
 export interface HomeProps {
-  mobilePrice: PriceDto;
-  mobilePrevPrice: PreviousPriceDto;
-  tpsData: TpsDataDto;
-  blockHeight: number;
-  rewardSSR: RewardDto;
-  localAccountsSSR: number;
-  unconfirmedBlockHeightSSR: number;
-  localTransactionsSSR: number;
-  transactionsSSR: TXItem[];
-  blocksSSR: BlockItem[];
+  mobileprice: PriceDto;
+  mobileprevprice: PreviousPriceDto;
+  tpsdata: TpsDataDto;
+  blockheight: number;
+  rewardssr: RewardDto;
+  localaccountsssr: number;
+  unconfirmedblockheightssr: number;
+  localtransactionsssr: number;
+  transactionsssr: TXItem[];
+  blocksssr: BlockItem[];
   headers: any;
 }

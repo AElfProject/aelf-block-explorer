@@ -31,16 +31,16 @@ require('./Home.styles.less');
 const PAGE_SIZE = 25;
 
 export default function Home({
-  mobilePrice,
-  mobilePrevPrice,
-  tpsData,
-  blockHeight,
-  rewardSSR,
-  localAccountsSSR,
-  unconfirmedBlockHeightSSR,
-  localTransactionsSSR,
-  transactionsSSR,
-  blocksSSR,
+  mobileprice: mobilePrice,
+  mobileprevprice: mobilePrevPrice,
+  tpsdata: tpsData,
+  blockheight: blockHeight,
+  rewardssr: rewardSSR,
+  localaccountsssr: localAccountsSSR,
+  unconfirmedblockheightssr: unconfirmedBlockHeightSSR,
+  localtransactionsssr: localTransactionsSSR,
+  transactionsssr: transactionsSSR,
+  blocksssr: blocksSSR,
   headers,
 }: HomeProps) {
   const { CHAIN_ID } = useContext(AppContext);
