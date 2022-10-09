@@ -56,13 +56,12 @@ const networkList = [
 
 const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 
-const WIDTH_BOUNDARY = 942;
-
 // judge whether is phone
 function isPhoneCheckWithWindow(headers?: any) {
   if (typeof window !== 'undefined') {
-    const windowWidth = window.innerWidth;
-    return isPhoneCheck() || windowWidth <= WIDTH_BOUNDARY;
+    // cannot compare innerWidth with 942
+    // as it will cause that server is different to client.
+    return isPhoneCheck();
   } else {
     return isPhoneCheckSSR(headers);
   }
