@@ -62,7 +62,15 @@ const BREADCRUMB_NAME_MAP: {
   '/search-invalid': '',
 };
 
-const DO_NOT_DISPLAY_PATH = ['/transaction-list', '/txs', '/unconfirmedTxs', '/tx/', '/blocks', '/unconfirmedBlocks'];
+const DO_NOT_DISPLAY_PATH = [
+  '/_error',
+  '/transaction-list',
+  '/txs',
+  '/unconfirmedTxs',
+  '/tx/',
+  '/blocks',
+  '/unconfirmedBlocks',
+];
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
@@ -190,7 +198,7 @@ class BrowserBreadcrumb extends Component<PropsDto> {
 
       const STATE = BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState as PathSnippetDto];
 
-      if (!STATE) {
+      if (typeof window !== 'undefined' && !STATE) {
         this.props.router.push('/');
         return;
       }
@@ -259,7 +267,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
 
   render() {
     const { pathname } = this.props.router;
-
     if (
       DO_NOT_DISPLAY_PATH.includes(pathname) ||
       pathname.includes('/tx/') ||
