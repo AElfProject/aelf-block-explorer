@@ -162,10 +162,10 @@ const handleSocketData = (
   rewardSSR = typeof dividends === 'string' ? JSON.parse(dividends) : dividends || {};
 };
 // init socket from server side
-const initSocketSSR = async (ctx: NextPageContext) => {
+const initSocketSSR = async () => {
   return new Promise((resolve) => {
     // use test host which is set in .env.local when in local env
-    const BUILD_ENDPOINT = process.env.BUILD_ENDPOINT || ctx.req?.headers.host;
+    const BUILD_ENDPOINT = process.env.BUILD_ENDPOINT;
     const socket = io(BUILD_ENDPOINT, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
@@ -196,7 +196,7 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   chainId = config.CHAIN_ID;
   // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  const { data, isFirst } = (await initSocketSSR(ctx)) as any;
+  const { data, isFirst } = (await initSocketSSR()) as any;
   handleSocketData(data, isFirst);
   const tpsData = await getSSR(ctx, TPS_LIST_API_URL, {
     start: startTime,

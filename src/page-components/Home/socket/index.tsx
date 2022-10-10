@@ -3,9 +3,7 @@ import { SOCKET_URL } from '../../../constants';
 import { SocketData } from '../types';
 
 export function initSocket(handleSocketData: any) {
-  const BUILD_ENDPOINT = 'https://explorer-test.aelf.io';
-  //todo: change to location.origin
-  const socket = io(BUILD_ENDPOINT, {
+  const socket = io(location.origin, {
     path: SOCKET_URL,
     transports: ['websocket', 'polling'],
   });
