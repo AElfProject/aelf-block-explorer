@@ -1,5 +1,6 @@
 import { Menu } from 'antd';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import clsx from 'clsx';
 import IconFont from '../IconFont';
 import config, { NETWORK_TYPE } from 'constants/config/config';
 import Search from '../Search/Search';
@@ -65,10 +66,10 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
   );
 
   return (
-    <div className={`header-container-top`}>
+    <div className={clsx('header-container-top', NETWORK_TYPE === 'MAIN' && 'header-container-main-top')}>
       <div className={headerClass}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Svg icon={'test_logo'} className="aelf-logo-container" />
+          <Svg icon={NETWORK_TYPE === 'MAIN' ? 'main_logo' : 'test_logo'} className="aelf-logo-container" />
           {range !== '-' && (
             <div className="price-container">
               <img src={TokenIcon} />

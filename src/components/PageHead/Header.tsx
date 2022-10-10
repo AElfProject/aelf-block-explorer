@@ -340,8 +340,8 @@ class BrowserHeader extends Component<PropsDto, any> {
 
   renderMobileMore() {
     return (
-      <div className={`header-navbar-mobile-more ${''}`}>
-        <IconFont type={'aelf-test'} className="aelf-logo-container" />
+      <div className={`header-navbar-mobile-more ${NETWORK_TYPE === 'MAIN' ? 'header-navbar-main-mobile-more' : ''}`}>
+        <IconFont type={NETWORK_TYPE === 'MAIN' ? 'aelf' : 'aelf-test'} className="aelf-logo-container" />
         <MenuOutlined onClick={() => this.toggleMenu()} />
       </div>
     );
@@ -355,11 +355,11 @@ class BrowserHeader extends Component<PropsDto, any> {
         placement="right"
         width={'80%'}
         closable={false}
-        className={`header-drawer-menu-wrapper ${''}`}
+        className={`header-drawer-menu-wrapper ${NETWORK_TYPE === 'MAIN' ? 'header-main-drawer-menu-wrapper' : ''}`}
         onClose={() => this.toggleMenu()}
         title={
           <>
-            <IconFont type={'aelf-test'} className="aelf-logo-container" />
+            <IconFont type={NETWORK_TYPE === 'MAIN' ? 'aelf' : 'aelf-test'} className="aelf-logo-container" />
             <IconFont type="ErrorClose" className="close-icon" onClick={() => this.toggleMenu()} />
           </>
         }>
@@ -380,9 +380,15 @@ class BrowserHeader extends Component<PropsDto, any> {
     }
 
     const headerClass = this.isPhone ? 'header-container header-container-mobile' : 'header-container';
-    const networkClass = this.isPhone ? '' : '';
+    const networkClass = this.isPhone
+      ? NETWORK_TYPE === 'MAIN'
+        ? ' header-main-container-mobile'
+        : ''
+      : NETWORK_TYPE === 'MAIN'
+      ? ' header-main-container'
+      : '';
     const onlyMenu = this.state.showSearch ? '' : 'only-menu ';
-    const isMainNet = 'test-net';
+    const isMainNet = NETWORK_TYPE === 'MAIN' ? 'main-net' : 'test-net';
 
     return (
       <div className={'header-fixed-container ' + onlyMenu + isMainNet}>
@@ -399,7 +405,7 @@ class BrowserHeader extends Component<PropsDto, any> {
           <div className={headerClass + networkClass}>
             {mobileMoreHTML}
 
-            <nav className={'header-navbar'}>
+            <nav className={'header-navbar ' + (NETWORK_TYPE === 'MAIN' ? 'header-main-navbar' : '')}>
               {menuHtml}
               {this.isPhone && this.state.showSearch && (
                 <div className="search-mobile-container">

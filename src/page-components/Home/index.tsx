@@ -72,7 +72,7 @@ export default function Home({
   }, [price.USD, previousPrice.usd]);
 
   useEffect(() => {
-    if (CHAIN_ID === 'AELF' && isMobile) {
+    if (CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && isMobile) {
       get(ELF_REALTIME_PRICE_URL).then((price: any) => setPrice(price));
       get(HISTORY_PRICE, {
         token_id: 'aelf',
