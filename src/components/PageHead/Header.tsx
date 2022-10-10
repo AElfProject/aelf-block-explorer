@@ -223,7 +223,7 @@ class BrowserHeader extends Component<PropsDto, any> {
       nodeInfo = this.props.nodeinfo;
     }
 
-    const { chain_id } = nodeInfo;
+    const { chain_id } = nodeInfo || {};
 
     let voteHTML: any = '';
     let resourceHTML: any = '';
