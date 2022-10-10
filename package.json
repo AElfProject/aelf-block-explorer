@@ -8,6 +8,7 @@
     "build:AELF": "CHAIN_ID='AELF' next build",
     "build:tDVW": "CHAIN_ID='tDVW' next build",
     "start": "next start",
+    "pm2:start": "pm2 start npm --name \"next-blog-2\" -- start",
     "lint": "next lint",
     "dev:analyze": "PORT=4000 ANALYZE=true next dev",
     "prepare": "husky install"
