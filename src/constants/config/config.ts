@@ -8,7 +8,7 @@ export let config: any =
 // only used in client
 if (typeof window !== 'undefined') {
   const host = location.host;
-  if (host.includes('tDVW') || host.includes('side02')) {
+  if (host.includes('tdvw') || host.includes('side02')) {
     config = require('../platform/tDVW').default;
   } else {
     config = require('../platform/AELF').default;

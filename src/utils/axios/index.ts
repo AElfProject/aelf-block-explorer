@@ -74,11 +74,11 @@ const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: 
   const baseUrl = '/api';
   const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
   const res = await api.get(wholeUrl, params, config);
-  console.log(res, 'res');
+  // console.log(res, 'res');
   if (res.ok) {
     return res.data;
   } else {
-    throw new Error(res.toString());
+    throw new Error(res.originalError.toString());
   }
 };
 
