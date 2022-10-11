@@ -56,17 +56,6 @@ const networkList = [
 
 const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 
-// judge whether is phone
-function isPhoneCheckWithWindow(headers?: any) {
-  if (typeof window !== 'undefined') {
-    // cannot compare innerWidth with 942
-    // as it will cause that server is different to client.
-    return isPhoneCheck();
-  } else {
-    return isPhoneCheckSSR(headers);
-  }
-}
-
 class BrowserHeader extends Component<PropsDto, any> {
   timerInterval: any;
   interval: number;
@@ -84,7 +73,7 @@ class BrowserHeader extends Component<PropsDto, any> {
       chainList: props.chainlist || CHAINS_LIST,
       current: props.router.asPath === '/' ? '/home' : getPathnameFirstSlash(props.router.asPath),
     };
-    this.isPhone = isPhoneCheckWithWindow(props.headers);
+    this.isPhone = !!isPhoneCheckSSR(props.headers);
     this.handleResize = this.handleResize.bind(this);
   }
 
@@ -134,6 +123,7 @@ class BrowserHeader extends Component<PropsDto, any> {
   }
 
   componentDidMount() {
+    this.isPhone = !!isPhoneCheck();
     this.setSeleted();
     this.handleResize();
     this.fetchChainList();
@@ -241,7 +231,6 @@ class BrowserHeader extends Component<PropsDto, any> {
     }
 
     const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
-    const isPhone = isPhoneCheckWithWindow();
 
     return (
       // Add style to solve not responsive collapse in Flex layout
@@ -266,7 +255,7 @@ class BrowserHeader extends Component<PropsDto, any> {
           title={
             <>
               <span className="submenu-title-wrapper">Blockchain</span>
-              {!isPhone && <IconFont className="submenu-arrow" type="Down" />}
+              {!this.isPhone && <IconFont className="submenu-arrow" type="Down" />}
             </>
           }
           className="aelf-submenu-container">
@@ -309,7 +298,7 @@ class BrowserHeader extends Component<PropsDto, any> {
           title={
             <>
               <span className="submenu-title-wrapper">Governance</span>
-              {!isPhone && <IconFont className="submenu-arrow" type="Down" />}
+              {!this.isPhone && <IconFont className="submenu-arrow" type="Down" />}
             </>
           }
           className="aelf-submenu-container">
@@ -319,9 +308,9 @@ class BrowserHeader extends Component<PropsDto, any> {
           {voteHTML}
           {resourceHTML}
         </SubMenu>
-        {isPhone && <Divider className="divider-mobile" />}
-        {isPhone && this.renderPhoneMenu()}
-        {isPhone && (
+        {this.isPhone && <Divider className="divider-mobile" />}
+        {this.isPhone && this.renderPhoneMenu()}
+        {this.isPhone && (
           <MenuItem key="/about">
             <a href="https://www.aelf.io/" target="_blank" rel="noopener noreferrer">
               About

@@ -53,12 +53,7 @@ export default function Home({
   const [localTransactions, setLocalTransactions] = useState(localTransactionsSSR || 0);
   const [localAccounts, setLocalAccounts] = useState(localAccountsSSR || 0);
   const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(unconfirmedBlockHeightSSR || '0');
-  let isMobile: boolean;
-  if (typeof window !== 'undefined') {
-    isMobile = isPhoneCheck();
-  } else {
-    isMobile = isPhoneCheckSSR(headers);
-  }
+  let isMobile = !!isPhoneCheckSSR(headers);
   const latestSection = useMemo(
     () => <LatestInfo blocks={blocks} transactions={transactions} headers={headers} />,
     [blocks, transactions],
@@ -70,7 +65,9 @@ export default function Home({
     }
     return 0;
   }, [price.USD, previousPrice.usd]);
-
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   useEffect(() => {
     if (CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && isMobile) {
       get(ELF_REALTIME_PRICE_URL).then((price: any) => setPrice(price));

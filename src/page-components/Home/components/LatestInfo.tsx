@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Dividends from 'components/Dividends';
 import IconFont from 'components/IconFont';
-import useMobile from 'hooks/useMobile';
 import { getFormattedDate } from 'utils/timeUtils';
 import { BlockItem, TXItem } from '../types';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
@@ -12,12 +11,11 @@ interface PropsDto {
   headers: any;
 }
 export default function LatestInfo({ blocks = [], transactions = [], headers }: PropsDto) {
-  let isMobile;
-  if (typeof window !== 'undefined') {
-    isMobile = isPhoneCheck();
-  } else {
-    isMobile = isPhoneCheckSSR(headers);
-  }
+  let isMobile = !!isPhoneCheckSSR(headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
+
   return (
     <div className="latest-info">
       <div className="blocks">

@@ -22,14 +22,12 @@ interface PropsDto {
 }
 export default function HeaderTop({ headerClass, menuMode, networkList, showSearch, headers }: PropsDto) {
   const { CHAIN_ID } = config;
-  let isMobile: boolean;
+  let isMobile = !!isPhoneCheckSSR(headers);
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
-  if (typeof window !== 'undefined') {
-    isMobile = isPhoneCheck();
-  } else {
-    isMobile = isPhoneCheckSSR(headers);
-  }
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
       return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
