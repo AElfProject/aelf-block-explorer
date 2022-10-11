@@ -101,12 +101,16 @@ const APP = ({ Component, pageProps }: AppProps) => {
   );
 };
 APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
+  const time = new Date().getTime();
   let nodeInfo, chainList;
   const headers = ctx.req?.headers;
   initAxios();
   if (typeof window === 'undefined') {
+    console.log(new Date().getTime() - time, '=========app=====1');
     nodeInfo = await getNodesInfoSSR(ctx);
-    chainList = await fetchChainList(ctx);
+    console.log(new Date().getTime() - time, '=========app=====2');
+    // chainList = await fetchChainList(ctx);
+    console.log(new Date().getTime() - time, '=========app=====3');
   } else {
     getNodesInfo();
   }

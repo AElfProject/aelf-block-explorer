@@ -13,6 +13,7 @@ import {
   PriceDto,
   PreviousPriceDto,
   RewardDto,
+  TpsDataDto,
 } from 'page-components/Home/types';
 import config from 'constants/config/config';
 import { SOCKET_URL } from 'constants/index';
@@ -191,18 +192,32 @@ const initSocketSSR = async () => {
   });
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  const time = new Date().getTime();
   // get chain info config
   const headers = ctx.req?.headers;
   chainId = config.CHAIN_ID;
+  let tpsData;
   // fetch interface
+  console.log(new Date().getTime() - time, '=========home=====1');
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  const { data, isFirst } = (await initSocketSSR()) as any;
-  handleSocketData(data, isFirst);
-  const tpsData = await getSSR(ctx, TPS_LIST_API_URL, {
-    start: startTime,
-    end: endTime,
-    interval: interval,
-  });
+  console.log(new Date().getTime() - time, '=========home=====2');
+  // const { data, isFirst } = (await initSocketSSR()) as any;
+  // console.log(new Date().getTime() - time, '=========home=====3');
+  // handleSocketData(data, isFirst);
+  try {
+    tpsData = (await getSSR(ctx, TPS_LIST_API_URL, {
+      start: startTime,
+      end: endTime,
+      interval: interval,
+    })) as TpsDataDto;
+  } catch (e) {
+    tpsData = {
+      own: [],
+      all: [],
+    };
+  }
+
+  console.log(new Date().getTime() - time, '=========home=====4');
   return {
     props: {
       mobileprice: mobilePrice,

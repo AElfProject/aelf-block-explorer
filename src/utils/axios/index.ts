@@ -5,7 +5,6 @@
  * Please get more config follow this URL https://www.npmjs.com/package/axios-hooks#useaxiosurlconfig-options
  * 2. Please invoke axiosInit before any usages of the useAxios hook
  */
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 import { configure } from 'axios-hooks';
 import LRU from 'lru-cache';
 import Axios from 'axios';
