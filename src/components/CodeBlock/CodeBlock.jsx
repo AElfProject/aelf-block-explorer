@@ -5,7 +5,7 @@ export default function CodeBlock({ value, rows = 8 }) {
   try {
     jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
   } catch (e) {
-    throw new Error(e);
+    // do nothing
   }
 
   return <textarea rows={rows} value={jsonFormatted} className="tx-block-code-like-content" disabled />;

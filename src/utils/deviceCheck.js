@@ -4,6 +4,7 @@
  */
 
 export const isPhoneCheckSSR = (headers) => {
+  if (!headers) return false;
   // 判断是否手机端访问
   const userAgentInfo = headers['user-agent'].toLowerCase();
   const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];

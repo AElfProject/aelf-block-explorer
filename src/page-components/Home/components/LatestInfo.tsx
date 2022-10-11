@@ -23,9 +23,9 @@ export default function LatestInfo({ blocks = [], transactions = [], headers }: 
           <h3>Latest Blocks</h3>
           {isMobile || (
             <Link href="/blocks">
-              <>
+              <a>
                 View All Blocks <IconFont type="right2" />
-              </>
+              </a>
             </Link>
           )}
         </div>
@@ -74,9 +74,9 @@ export default function LatestInfo({ blocks = [], transactions = [], headers }: 
           <h3>Latest Transactions</h3>
           {isMobile || (
             <Link href="/txs">
-              <>
+              <a>
                 View All Txns <IconFont type="right2" />
-              </>
+              </a>
             </Link>
           )}
         </div>
