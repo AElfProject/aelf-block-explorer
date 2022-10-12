@@ -265,12 +265,6 @@ class NodeTable extends PureComponent {
       },
     ];
 
-    // todo: Realize it using css
-    // Hide operations on mobile
-    // if (isSmallScreen) {
-    //   nodeListCols.pop();
-    // }
-
     nodeListCols.forEach((item) => {
       item.align = 'center';
     });

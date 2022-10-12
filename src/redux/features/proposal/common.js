@@ -117,7 +117,6 @@ export const logOut = (address) => async (dispatch) => {
 const { DEFAUT_RPCSERVER } = constants;
 
 export const initialState = {
-  isSmallScreen: false,
   aelf: new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCSERVER)),
   logStatus: LOG_STATUS.LOG_OUT,
   isALLSettle: false,
@@ -171,8 +170,6 @@ const common = (state = initialState, { payload: payloadObj }) => {
         ...state,
         loading: false,
       };
-    case 'SET_IS_SMALL_SCREEN':
-      return { ...state, isSmallScreen: payload.isSmallScreen };
     default:
       return state;
   }

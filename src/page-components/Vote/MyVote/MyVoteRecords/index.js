@@ -198,7 +198,7 @@ class MyVoteRecords extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  ...state.common,
+  ...state.smallScreen,
 });
 
 export default connect(mapStateToProps)(MyVoteRecords);

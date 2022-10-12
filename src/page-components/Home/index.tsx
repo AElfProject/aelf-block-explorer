@@ -195,11 +195,16 @@ export default function Home({
     <div className={'home-container basic-container-new ' + (isMobile ? 'mobile' : '')}>
       <div className="banner-section">
         {isMobile ? (
-          <Image src={BannerMobile} layout="fill" objectFit="contain" objectPosition={'0 top'} priority></Image>
+          <Image
+            src={BannerMobile}
+            layout="fill"
+            objectFit="contain"
+            objectPosition={'0 top'}
+            priority
+            alt="Picture of the banner mobile"></Image>
         ) : (
-          <Image src={BannerPc} layout="fill" objectFit="contain" priority></Image>
+          <Image src={BannerPc} layout="fill" objectFit="contain" priority alt="Picture of the banner"></Image>
         )}
-
         <h2>AELF Explorer</h2>
         <Search />
         {CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && isMobile && (

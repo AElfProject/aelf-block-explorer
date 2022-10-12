@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export interface SmallScreenState {
+export interface ISmallScreenState {
   isSmallScreen: boolean;
 }
 
-const initialState: SmallScreenState = {
+const initialState: ISmallScreenState = {
   isSmallScreen: false,
 };
 
@@ -13,7 +13,9 @@ export const smallScreenSlice = createSlice({
   initialState,
   reducers: {
     ['SET_IS_SMALL_SCREEN']: (state, { payload: payloadObj }) => {
-      return payloadObj.payload.isSmallScreen;
+      return {
+        isSmallScreen: payloadObj.payload.isSmallScreen,
+      };
     },
   },
 });

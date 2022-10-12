@@ -157,7 +157,7 @@ export default class ResourceBuy extends Component {
         help: '',
       },
     });
-
+    if (!input) return;
     input = input.target && (input.target.value || +input.target.value === 0) ? input.target.value : input;
     input = +input;
     input = input > rawBuyNumMax ? rawBuyNumMax : input;

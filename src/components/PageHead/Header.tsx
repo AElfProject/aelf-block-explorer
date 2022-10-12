@@ -25,17 +25,17 @@ import { MenuMode as AntdMenuMode } from 'antd/lib/menu';
 require('rc-menu/assets/index.css');
 require('./header.styles.less');
 
-interface ChainListDto {
+interface IChainListDto {
   id: number;
   chainId: string;
   chainsLinkName: string;
   chainsLink: string;
 }
 
-interface PropsDto {
+interface IProps {
   router: NextRouter;
   headers: any;
-  chainlist: ChainListDto[];
+  chainlist: IChainListDto[];
   nodeinfo: any;
   setIsSmallScreen: any;
   isSmallScreen: boolean;
@@ -56,13 +56,13 @@ const networkList = [
 
 const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 
-class BrowserHeader extends Component<PropsDto, any> {
+class BrowserHeader extends Component<IProps, any> {
   timerInterval: any;
   interval: number;
   showSearchTop: number;
   isPhone: boolean;
   timerTimeout: any;
-  constructor(props: PropsDto) {
+  constructor(props: IProps) {
     super(props);
     this.timerInterval = null;
     this.interval = 300;
@@ -171,6 +171,7 @@ class BrowserHeader extends Component<PropsDto, any> {
     clearTimeout(this.timerTimeout);
     this.timerTimeout = setTimeout(() => {
       const { isSmallScreen } = this.props;
+
       if (isSmallScreen) {
         this.toggleMenu();
       }
@@ -230,7 +231,7 @@ class BrowserHeader extends Component<PropsDto, any> {
       );
     }
 
-    const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu  aelf-menu-hidden';
+    const menuClass = showMenu ? 'aelf-menu' : 'aelf-menu aelf-menu-hidden';
 
     return (
       // Add style to solve not responsive collapse in Flex layout
@@ -410,10 +411,12 @@ class BrowserHeader extends Component<PropsDto, any> {
   }
 }
 
-const mapStateToProps = (state: any) => ({ ...state.common });
+const mapStateToProps = (state: any) => ({ ...state.smallScreen });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  setIsSmallScreen: (isSmallScreen: boolean) => dispatch(setIsSmallScreen(isSmallScreen)),
+  setIsSmallScreen: (isSmallScreen: boolean) => {
+    dispatch(setIsSmallScreen(isSmallScreen));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BrowserHeader));

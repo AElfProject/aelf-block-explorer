@@ -28,8 +28,7 @@ type AppProps = {
 
 const { TabPane } = Tabs;
 
-interface StateDto {
-  isSmallScreen: boolean;
+interface IStateDto {
   aelf: any;
   logStatus: string;
   isALLSettle: boolean;
@@ -55,7 +54,7 @@ function useRouteMatch(path) {
 
 export const RouterComponent = (options) => {
   const router = useRouter();
-  const logStatus = useSelector((state: { common: StateDto }) => state.common.logStatus);
+  const logStatus = useSelector((state: { common: IStateDto }) => state.common.logStatus);
   const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus, options]);
   const target = useMemo(() => {
     if (options.default) {

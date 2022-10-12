@@ -202,7 +202,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
         this.props.router.push('/');
         return;
       }
-
       const breadcrumbTitle: string = STATE.name[index] ? STATE.name[index] : BREADCRUMB_NAME_MAP[item];
 
       const url = (
@@ -266,19 +265,24 @@ class BrowserBreadcrumb extends Component<PropsDto> {
   }
 
   render() {
-    const { pathname } = this.props.router;
+    const pathname = this.props.router.asPath;
+    // I don't know why /new-socket can reach here
     if (
       DO_NOT_DISPLAY_PATH.includes(pathname) ||
       pathname.includes('/tx/') ||
       pathname.includes('/txs') ||
       pathname.includes('/block/') ||
       pathname.includes('/search-invalid') ||
-      pathname.includes('/search-failed')
+      pathname.includes('/search-failed') ||
+      pathname.includes('new-socket')
     ) {
       return <></>;
     }
-    // asPath has search
-    const reloadUrl = this.props.router.asPath;
+    let reloadUrl = pathname;
+    if (typeof window !== 'undefined') {
+      reloadUrl += location.search;
+    }
+
     const className = noBreadcrumb(pathname) ? 'breadcrumb' : 'breadcrumb hide';
     const pathSnippets: string[] = pathname.split('/').filter((i) => i);
 

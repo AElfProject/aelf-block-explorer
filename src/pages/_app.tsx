@@ -15,6 +15,7 @@ import Cookies from 'js-cookie';
 import { get, getSSR } from 'utils/axios';
 import config from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
+import Head from 'next/head';
 
 require('../styles/globals.less');
 require('../styles/common.less');
@@ -88,6 +89,10 @@ const APP = ({ Component, pageProps }: AppProps) => {
   pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
     <ReduxProvider store={store}>
+      <Head>
+        <title>AELF Block Explorer</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"></meta>
+      </Head>
       <Provider>
         <PageHead {...pageProps} />
         <HeaderBlank />
