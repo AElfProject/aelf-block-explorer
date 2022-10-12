@@ -1,10 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NETWORK_TYPE } from 'constants/config/config';
-
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import Image from 'next/image';
+import BgFooter from 'assets/images/bg_footer.png';
+import BgFooterTest from 'assets/images/bg_footer_test.png';
+import BgFooterMobile from 'assets/images/bg_footer_mobile.png';
+import BgFooterMobileTest from 'assets/images/bg_footer_mobile_test.png';
 require('./footer.styles.less');
 
-const BrowserFooter = () => {
+interface IProps {
+  headers: any;
+}
+const BrowserFooter = ({ headers }: IProps) => {
   const { pathname } = useRouter();
   const [isNoFooter, setIsNoFooter] = useState(false);
   const NO_FOOTER_LIST = useMemo(() => ['search-invalid', 'search-failed'], []);
@@ -12,11 +20,27 @@ const BrowserFooter = () => {
     const firstPathName = pathname.split('/')[1];
     setIsNoFooter(NO_FOOTER_LIST.includes(firstPathName));
   }, [pathname]);
-
+  let isMobile = !!isPhoneCheckSSR(headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   return isNoFooter ? (
     <></>
   ) : (
     <section className={'footer ' + (NETWORK_TYPE === 'MAIN' ? 'main' : 'test')}>
+      {/* should add the priority property to the image that will be 
+      the Largest Contentful Paint (LCP) element for each page */}
+      {isMobile ? (
+        NETWORK_TYPE === 'MAIN' ? (
+          <Image src={BgFooterMobile} layout="fill" priority></Image>
+        ) : (
+          <Image src={BgFooterMobileTest} layout="fill" priority></Image>
+        )
+      ) : NETWORK_TYPE === 'MAIN' ? (
+        <Image src={BgFooter} layout="fill" priority></Image>
+      ) : (
+        <Image src={BgFooterTest} layout="fill" priority></Image>
+      )}
       <div className="footer-container">
         <div className="left">
           <div className="top">

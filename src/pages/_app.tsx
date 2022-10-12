@@ -95,7 +95,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
         <Container>
           {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
         </Container>
-        <BrowserFooter />
+        <BrowserFooter {...pageProps} />
       </Provider>
     </ReduxProvider>
   );
@@ -106,11 +106,8 @@ APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
   const headers = ctx.req?.headers;
   initAxios();
   if (typeof window === 'undefined') {
-    console.log(new Date().getTime() - time, '=========app=====1');
     nodeInfo = await getNodesInfoSSR(ctx);
-    console.log(new Date().getTime() - time, '=========app=====2');
     // chainList = await fetchChainList(ctx);
-    console.log(new Date().getTime() - time, '=========app=====3');
   } else {
     getNodesInfo();
   }

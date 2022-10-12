@@ -1,9 +1,8 @@
 @import 'assets/theme/color.less';
 .footer {
+  position: relative;
   &.test {
-    background: url('../../assets/images/bg_footer_test.png') no-repeat center;
     background-color: white;
-    background-size: 1440px;
     color: @mine-shaft;
     a {
       color: @scorpion;
@@ -21,7 +20,8 @@
         .bottom {
           .powered-by {
             border: 1px solid @alto;
-            background: url('../../assets/images/footer_aelf_test.png') no-repeat;
+            background-image: url('../../assets/images/footer_aelf_test.png');
+            background-repeat: no-repeat;
             background-size: 32px 28px;
             background-position: 13px center;
             color: @scorpion;
@@ -40,7 +40,6 @@
   }
 
   text-align: center;
-  background: url('../../assets/images/bg_footer.png') no-repeat center;
   background-color: #1d2a51;
   background-size: 1440px;
   color: #fff;
@@ -97,7 +96,8 @@
           border: 1px solid rgb(255 255 255 / 60%);
           border-radius: 4px;
           color: white;
-          background: url('../../assets/images/footer_aelf.png') no-repeat;
+          background-image: url('../../assets/images/footer_aelf.png');
+          background-repeat: no-repeat;
           background-size: 32px 28px;
           background-position: 13px center;
         }
@@ -159,14 +159,9 @@
   .footer {
     height: 490px;
     padding: 32px 24px;
-    background: url('../../assets/images/bg_footer_mobile.png') no-repeat;
     background-color: #1d2a51;
-    background-position: right top;
-    background-size: 375px;
     &.test {
-      background: url('../../assets/images/bg_footer_mobile_test.png') no-repeat right;
       background-color: white;
-      background-size: 375px;
       color: @mine-shaft;
       a {
         color: @scorpion;
@@ -201,7 +196,6 @@
     }
     .footer-container {
       display: flex;
-      position: static;
       flex-direction: column;
       padding: 0;
       gap: 40px;

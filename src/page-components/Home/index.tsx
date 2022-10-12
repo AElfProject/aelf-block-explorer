@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo, useContext } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import TPSChart from '../../components/TPSChart/TPSChart';
 import {
   ALL_BLOCKS_API_URL,
@@ -26,6 +26,9 @@ import {
 } from './types';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import config, { NETWORK_TYPE } from 'constants/config/config';
+import Image from 'next/image';
+import BannerPc from 'assets/images/banner_pc.png';
+import BannerMobile from 'assets/images/banner_mobile.png';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
@@ -191,6 +194,12 @@ export default function Home({
   return (
     <div className={'home-container basic-container-new ' + (isMobile ? 'mobile' : '')}>
       <div className="banner-section">
+        {isMobile ? (
+          <Image src={BannerMobile} layout="fill" objectFit="contain" objectPosition={'0 top'} priority></Image>
+        ) : (
+          <Image src={BannerPc} layout="fill" objectFit="contain" priority></Image>
+        )}
+
         <h2>AELF Explorer</h2>
         <Search />
         {CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && isMobile && (

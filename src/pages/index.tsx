@@ -192,17 +192,13 @@ const initSocketSSR = async () => {
   });
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
-  const time = new Date().getTime();
   // get chain info config
   const headers = ctx.req?.headers;
   chainId = config.CHAIN_ID;
   let tpsData;
   // fetch interface
-  console.log(new Date().getTime() - time, '=========home=====1');
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  console.log(new Date().getTime() - time, '=========home=====2');
   // const { data, isFirst } = (await initSocketSSR()) as any;
-  // console.log(new Date().getTime() - time, '=========home=====3');
   // handleSocketData(data, isFirst);
   try {
     tpsData = (await getSSR(ctx, TPS_LIST_API_URL, {
@@ -216,8 +212,6 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
       all: [],
     };
   }
-
-  console.log(new Date().getTime() - time, '=========home=====4');
   return {
     props: {
       mobileprice: mobilePrice,
