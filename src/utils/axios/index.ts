@@ -77,7 +77,7 @@ const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: 
   if (res.ok) {
     return res.data;
   } else {
-    throw new Error(res.originalError.toString());
+    throw new Error(JSON.stringify(res));
   }
 };
 
