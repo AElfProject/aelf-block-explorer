@@ -110,7 +110,7 @@ export default function HeaderTop({
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                About
+                About-Grayscale
               </a>
             </MenuItem>
           </Menu>
