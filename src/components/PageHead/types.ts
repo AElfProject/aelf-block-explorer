@@ -1,9 +1,9 @@
-export interface PriceDto {
+export interface IPriceDto {
   USD: number;
   [key: string]: string | number;
 }
 
-export interface PreviousPriceDto {
+export interface IPreviousPriceDto {
   usd: number;
   [key: string]: string | number;
 }

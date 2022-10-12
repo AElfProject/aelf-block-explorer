@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import { SOCKET_URL } from '../../../constants';
-import { SocketData } from '../types';
+import { ISocketData } from '../types';
 
 export function initSocket(handleSocketData: any) {
   const socket = io(location.origin, {
@@ -18,7 +18,7 @@ export function initSocket(handleSocketData: any) {
   });
 
   let isFirst = true;
-  socket.on('getBlocksList', (data: SocketData) => {
+  socket.on('getBlocksList', (data: ISocketData) => {
     if (isFirst) {
       handleSocketData(data, true);
       isFirst = false;

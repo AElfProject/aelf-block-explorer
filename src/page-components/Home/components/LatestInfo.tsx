@@ -3,14 +3,14 @@ import Link from 'next/link';
 import Dividends from 'components/Dividends';
 import IconFont from 'components/IconFont';
 import { getFormattedDate } from 'utils/timeUtils';
-import { BlockItem, TXItem } from '../types';
+import { IBlockItem, ITXItem } from '../types';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
-interface PropsDto {
-  blocks: BlockItem[];
-  transactions: TXItem[];
+interface IProps {
+  blocks: IBlockItem[];
+  transactions: ITXItem[];
   headers: any;
 }
-export default function LatestInfo({ blocks = [], transactions = [], headers }: PropsDto) {
+export default function LatestInfo({ blocks = [], transactions = [], headers }: IProps) {
   let isMobile = !!isPhoneCheckSSR(headers);
   useEffect(() => {
     isMobile = !!isPhoneCheck();
@@ -62,9 +62,9 @@ export default function LatestInfo({ blocks = [], transactions = [], headers }: 
         <div className="table-footer">
           {isMobile && (
             <Link href="/blocks">
-              <>
+              <a>
                 View All Blocks <IconFont type="right2" />
-              </>
+              </a>
             </Link>
           )}
         </div>
@@ -109,9 +109,9 @@ export default function LatestInfo({ blocks = [], transactions = [], headers }: 
         <div className="table-footer">
           {isMobile && (
             <Link href="/txs">
-              <>
+              <a>
                 View All Txns <IconFont type="right2" />
-              </>
+              </a>
             </Link>
           )}
         </div>

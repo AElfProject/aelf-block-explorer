@@ -335,7 +335,6 @@ class VoteModal extends Component {
       // For old wallet app. We can not receive close event
       setVoteConfirmLoading(false);
     }, 60 * 1000);
-
     this.formRef.current.validateFields(formItemsNeedToValidate).then(
       (values) => {
         changeVoteState(values, () => {

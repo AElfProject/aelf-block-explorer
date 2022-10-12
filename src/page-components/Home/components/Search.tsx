@@ -6,10 +6,10 @@ import { get, isAElfAddress } from '../../../utils/axios';
 import { useMemo } from 'react';
 import { TXS_BLOCK_API_URL } from '../../../constants';
 import { withRouter, NextRouter } from 'next/router';
-interface PropsDto {
+interface IProps {
   router: NextRouter;
 }
-function Search(props: PropsDto) {
+function Search(props: IProps) {
   const [value, setValue] = useState('');
   const navigate = props.router.push;
 

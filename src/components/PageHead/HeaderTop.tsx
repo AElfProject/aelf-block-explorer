@@ -9,7 +9,7 @@ import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from 'constants/api';
 import { get } from 'utils/axios';
 import TokenIcon from '../../assets/images/tokenLogo.png';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
-import { PriceDto } from './types';
+import { IPriceDto } from './types';
 require('./HeaderTop.styles.less');
 
 const { SubMenu, Item: MenuItem } = Menu;
@@ -42,7 +42,7 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
       const day = d.getDate();
       const month = d.getMonth() + 1;
       const year = d.getFullYear();
-      get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price as PriceDto));
+      get(ELF_REALTIME_PRICE_URL).then((price) => setPrice(price as IPriceDto));
       get(HISTORY_PRICE, {
         token_id: 'aelf',
         vs_currencies: 'usd',

@@ -14,15 +14,15 @@ import Search from './components/Search';
 import TokenIcon from '../../assets/images/tokenLogo.png';
 import { initSocket } from './socket';
 import {
-  BasicInfo,
-  BlocksResult,
-  BlockItem,
-  TXSResultDto,
-  TXItem,
-  FormatBlockDto,
-  SocketTxItem,
-  SocketData,
-  HomeProps,
+  IBasicInfo,
+  IBlocksResult,
+  IBlockItem,
+  ITXSResultDto,
+  ITXItem,
+  IFormatBlockDto,
+  ISocketTxItem,
+  ISocketData,
+  IHomeProps,
 } from './types';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import config, { NETWORK_TYPE } from 'constants/config/config';
@@ -45,12 +45,12 @@ export default function Home({
   transactionsssr: transactionsSSR,
   blocksssr: blocksSSR,
   headers,
-}: HomeProps) {
+}: IHomeProps) {
   const { CHAIN_ID } = config;
   const [price, setPrice] = useState(mobilePrice || { USD: 0 });
   const [previousPrice, setPreviousPrice] = useState(mobilePrevPrice || { usd: 0 });
-  const [blocks, setBlocks] = useState<BlockItem[]>(blocksSSR || []);
-  const [transactions, setTransactions] = useState<TXItem[]>(transactionsSSR || []);
+  const [blocks, setBlocks] = useState<IBlockItem[]>(blocksSSR || []);
+  const [transactions, setTransactions] = useState<ITXItem[]>(transactionsSSR || []);
   const [reward, setReward] = useState(rewardSSR || { ELF: 0 });
   // type of BasicInfo.totalTxs not equal to TXSResultDto.total
   const [localTransactions, setLocalTransactions] = useState(localTransactionsSSR || 0);
@@ -108,7 +108,7 @@ export default function Home({
   }, []);
 
   const initBasicInfo = useCallback(async () => {
-    const result: BasicInfo = (await get(BASIC_INFO)) as BasicInfo;
+    const result: IBasicInfo = (await get(BASIC_INFO)) as IBasicInfo;
 
     const { height = 0, totalTxs, unconfirmedBlockHeight = '0', accountNumber = 0 } = result;
     blockHeight = height;
@@ -118,13 +118,13 @@ export default function Home({
   }, []);
 
   const initBlock = useCallback(async () => {
-    const blocksResult: BlocksResult = (await fetch(ALL_BLOCKS_API_URL)) as BlocksResult;
+    const blocksResult: IBlocksResult = (await fetch(ALL_BLOCKS_API_URL)) as IBlocksResult;
     const blocks = blocksResult.blocks;
     setBlocks(blocks);
   }, []);
 
   const initTxs = useCallback(async () => {
-    const TXSResult: TXSResultDto = (await fetch(ALL_TXS_API_URL)) as TXSResultDto;
+    const TXSResult: ITXSResultDto = (await fetch(ALL_TXS_API_URL)) as ITXSResultDto;
     const transactions = TXSResult.transactions;
     const totalTransactions = TXSResult.total;
     setTransactions(transactions);
@@ -140,7 +140,7 @@ export default function Home({
         unconfirmedBlockHeight: unconfirmedHeight = '0',
         accountNumber = 0,
         dividends,
-      }: SocketData,
+      }: ISocketData,
       isFirst: boolean,
     ) => {
       let arr = list;
@@ -150,23 +150,23 @@ export default function Home({
         });
       }
       arr.sort((pre, next) => next.block.Header.Height - pre.block.Header.Height);
-      const new_transactions = arr.reduce((acc: SocketTxItem[], i) => acc.concat(i.txs), []).map(transactionFormat);
+      const new_transactions = arr.reduce((acc: ISocketTxItem[], i) => acc.concat(i.txs), []).map(transactionFormat);
       const new_blocks = arr.map((item) => formatBlock(item.block));
       blockHeight = height;
       setUnconfirmedBlockHeight(unconfirmedHeight);
       setTransactions((v) => {
-        const temp: TXItem = Object.fromEntries([...new_transactions, ...v].map((item) => [item.tx_id, item]));
+        const temp: ITXItem = Object.fromEntries([...new_transactions, ...v].map((item) => [item.tx_id, item]));
         return Object.entries(temp)
           .map((item) => item[1])
           .sort((a, b) => b.block_height - a.block_height)
-          .slice(0, 25) as TXItem[];
+          .slice(0, 25) as ITXItem[];
       });
       setBlocks((v) => {
         const temp = Object.fromEntries([...new_blocks, ...v].map((item) => [item.block_height, item]));
         return Object.entries(temp)
           .map((item) => item[1])
           .sort((a, b) => b.block_height - a.block_height)
-          .slice(0, 25) as BlockItem[];
+          .slice(0, 25) as IBlockItem[];
       });
       setLocalAccounts(accountNumber);
       setLocalTransactions(totalTxs);
@@ -175,7 +175,7 @@ export default function Home({
     [],
   );
 
-  const formatBlock = useCallback((block: FormatBlockDto) => {
+  const formatBlock = useCallback((block: IFormatBlockDto) => {
     const { BlockHash, Header, Body } = block;
     return {
       block_hash: BlockHash,

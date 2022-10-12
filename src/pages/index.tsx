@@ -2,18 +2,18 @@ import Home from 'page-components/Home';
 export default Home;
 import { NextPageContext } from 'next';
 import {
-  BasicInfo,
-  BlocksResult,
-  BlockItem,
-  TXSResultDto,
-  TXItem,
-  FormatBlockDto,
-  SocketTxItem,
-  SocketData,
-  PriceDto,
-  PreviousPriceDto,
-  RewardDto,
-  TpsDataDto,
+  IBasicInfo,
+  IBlocksResult,
+  IBlockItem,
+  ITXSResultDto,
+  ITXItem,
+  IFormatBlockDto,
+  ISocketTxItem,
+  ISocketData,
+  IPriceDto,
+  IPreviousPriceDto,
+  IRewardDto,
+  ITpsDataDto,
 } from 'page-components/Home/types';
 import config from 'constants/config/config';
 import { SOCKET_URL } from 'constants/index';
@@ -34,15 +34,15 @@ const interval = 60 * 1000; // 1 minute
 const delay = 5 * 60 * 1000; // 5 minute
 const endTime = new Date().getTime() - delay;
 const startTime = endTime - 60 * 60 * 3 * 1000;
-let mobilePrice: PriceDto = { USD: 0 },
-  mobilePrevPrice: PreviousPriceDto = { usd: 0 },
+let mobilePrice: IPriceDto = { USD: 0 },
+  mobilePrevPrice: IPreviousPriceDto = { usd: 0 },
   blockHeight = 0,
-  rewardSSR: RewardDto = { ELF: 0 },
+  rewardSSR: IRewardDto = { ELF: 0 },
   localAccountsSSR = 0,
   unconfirmedBlockHeightSSR = '0',
   localTransactionsSSR = 0,
-  transactionsSSR: TXItem[] = [],
-  blocksSSR: BlockItem[] = [];
+  transactionsSSR: ITXItem[] = [],
+  blocksSSR: IBlockItem[] = [];
 
 const fetch = async (ctx: NextPageContext, url: string) => {
   const res = await getSSR(ctx, url, {
@@ -56,12 +56,12 @@ const getPrice = async (ctx: NextPageContext) => {
   try {
     const isMobile = isPhoneCheckSSR(ctx.req?.headers);
     if (chainId === 'AELF' && isMobile) {
-      mobilePrice = (await getSSR(ctx, ELF_REALTIME_PRICE_URL, {}, { onlyUrl: true })) as PriceDto;
+      mobilePrice = (await getSSR(ctx, ELF_REALTIME_PRICE_URL, {}, { onlyUrl: true })) as IPriceDto;
       mobilePrevPrice = (await getSSR(ctx, HISTORY_PRICE, {
         token_id: 'aelf',
         vs_currencies: 'usd',
         date: new Date(new Date().toLocaleDateString()).valueOf() - 24 * 3600 * 1000,
-      })) as PreviousPriceDto;
+      })) as IPreviousPriceDto;
     }
   } catch (e) {
     // todo: unify error handle
@@ -76,7 +76,7 @@ const initBasicInfo = async (ctx: NextPageContext) => {
       totalTxs,
       unconfirmedBlockHeight = '0',
       accountNumber = 0,
-    } = (await getSSR(ctx, BASIC_INFO)) as BasicInfo;
+    } = (await getSSR(ctx, BASIC_INFO)) as IBasicInfo;
     blockHeight = height;
     localTransactionsSSR = totalTxs;
     unconfirmedBlockHeightSSR = unconfirmedBlockHeight;
@@ -90,7 +90,7 @@ const initBasicInfo = async (ctx: NextPageContext) => {
 };
 const initBlock = async (ctx: NextPageContext) => {
   try {
-    const blocksData: BlocksResult = (await fetch(ctx, ALL_BLOCKS_API_URL)) as BlocksResult;
+    const blocksData: IBlocksResult = (await fetch(ctx, ALL_BLOCKS_API_URL)) as IBlocksResult;
     blocksSSR = blocksData.blocks;
   } catch (e) {
     blocksSSR = [];
@@ -98,7 +98,7 @@ const initBlock = async (ctx: NextPageContext) => {
 };
 const initTxs = async (ctx: NextPageContext) => {
   try {
-    const TXSData: TXSResultDto = (await fetch(ctx, ALL_TXS_API_URL)) as TXSResultDto;
+    const TXSData: ITXSResultDto = (await fetch(ctx, ALL_TXS_API_URL)) as ITXSResultDto;
     transactionsSSR = TXSData.transactions;
     localTransactionsSSR = TXSData.total;
   } catch (e) {
@@ -106,7 +106,7 @@ const initTxs = async (ctx: NextPageContext) => {
     localTransactionsSSR = 0;
   }
 };
-const formatBlock = (block: FormatBlockDto) => {
+const formatBlock = (block: IFormatBlockDto) => {
   const { BlockHash, Header, Body } = block;
   return {
     block_hash: BlockHash,
@@ -130,7 +130,7 @@ const handleSocketData = (
     unconfirmedBlockHeight: unconfirmedHeight = '0',
     accountNumber = 0,
     dividends,
-  }: SocketData,
+  }: ISocketData,
   isFirst?: boolean,
 ) => {
   let arr = list;
@@ -140,23 +140,23 @@ const handleSocketData = (
     });
   }
   arr.sort((pre, next) => next.block.Header.Height - pre.block.Header.Height);
-  const new_transactions = arr.reduce((acc: SocketTxItem[], i) => acc.concat(i.txs), []).map(transactionFormat);
+  const new_transactions = arr.reduce((acc: ISocketTxItem[], i) => acc.concat(i.txs), []).map(transactionFormat);
   const new_blocks = arr.map((item) => formatBlock(item.block));
   blockHeight = height;
   unconfirmedBlockHeightSSR = unconfirmedHeight;
   transactionsSSR = (function (v) {
-    const temp: TXItem = Object.fromEntries([...new_transactions, ...v].map((item) => [item.tx_id, item]));
+    const temp: ITXItem = Object.fromEntries([...new_transactions, ...v].map((item) => [item.tx_id, item]));
     return Object.entries(temp)
       .map((item) => item[1])
       .sort((a, b) => b.block_height - a.block_height)
-      .slice(0, 25) as TXItem[];
+      .slice(0, 25) as ITXItem[];
   })(transactionsSSR);
   blocksSSR = (function (v) {
     const temp = Object.fromEntries([...new_blocks, ...v].map((item) => [item.block_height, item]));
     return Object.entries(temp)
       .map((item) => item[1])
       .sort((a, b) => b.block_height - a.block_height)
-      .slice(0, 25) as BlockItem[];
+      .slice(0, 25) as IBlockItem[];
   })(blocksSSR);
   localAccountsSSR = accountNumber;
   localTransactionsSSR = totalTxs;
@@ -180,7 +180,7 @@ const initSocketSSR = async () => {
       }
     });
     let isFirst = true;
-    socket.on('getBlocksList', (data: SocketData) => {
+    socket.on('getBlocksList', (data: ISocketData) => {
       if (isFirst) {
         isFirst = false;
         resolve({ data, isFirst: true });
@@ -205,7 +205,7 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
       start: startTime,
       end: endTime,
       interval: interval,
-    })) as TpsDataDto;
+    })) as ITpsDataDto;
   } catch (e) {
     tpsData = {
       own: [],

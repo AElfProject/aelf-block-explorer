@@ -1,10 +1,10 @@
-export interface BasicInfo {
+export interface IBasicInfo {
   height: number;
   totalTxs: number;
   unconfirmedBlockHeight: string;
   accountNumber: number;
 }
-export interface BlockItem {
+export interface IBlockItem {
   block_hash: string;
   block_height: number;
   chain_id: string;
@@ -19,11 +19,11 @@ export interface BlockItem {
   tx_count: number;
   tx_fee: string;
 }
-export interface BlocksResult {
-  blocks: BlockItem[];
+export interface IBlocksResult {
+  blocks: IBlockItem[];
   total: number;
 }
-export interface TXItem {
+export interface ITXItem {
   address_from: string;
   address_to: string;
   block_hash: string;
@@ -40,15 +40,15 @@ export interface TXItem {
   tx_id: string;
   tx_status: string;
 }
-export interface TXSResultDto {
-  transactions: TXItem[];
+export interface ITXSResultDto {
+  transactions: ITXItem[];
   total: number;
 }
-interface FormatBlockBodyDto {
+interface IFormatBlockBodyDto {
   TransactionsCount: number;
   Transactions: string[];
 }
-interface FormatBlockHeaderDto {
+interface IFormatBlockHeaderDto {
   PreviousBlockHash: string;
   MerkleTreeRootOfTransactions: string;
   Bloom: string;
@@ -60,18 +60,18 @@ interface FormatBlockHeaderDto {
   SignerPubkey: string;
   Time: string;
 }
-interface DividendDto {
+interface IDividendDto {
   ELF: number;
 }
-export interface FormatBlockDto {
+export interface IFormatBlockDto {
   BlockHash: string;
   BlockSize: number;
-  Body: FormatBlockBodyDto;
-  Header: FormatBlockHeaderDto;
-  dividend: DividendDto;
+  Body: IFormatBlockBodyDto;
+  Header: IFormatBlockHeaderDto;
+  dividend: IDividendDto;
   miner: string;
 }
-interface SocketTransactionItem {
+interface ISocketTransactionItem {
   From: string;
   MethodName: string;
   Params: string;
@@ -80,7 +80,7 @@ interface SocketTransactionItem {
   Signature: string;
   To: string;
 }
-export interface SocketTxItem {
+export interface ISocketTxItem {
   BlockHash: string;
   BlockNumber: number;
   Bloom: string;
@@ -88,56 +88,56 @@ export interface SocketTxItem {
   Logs: string[];
   ReturnValue: string;
   Status: string;
-  Transaction: SocketTransactionItem;
+  Transaction: ISocketTransactionItem;
   TransactionId: string;
   TransactionSize: number;
   fee: object;
   time: string;
 }
 
-export interface SocketBlocksList {
-  block: FormatBlockDto;
-  txs: SocketTxItem[];
+export interface ISocketBlocksList {
+  block: IFormatBlockDto;
+  txs: ISocketTxItem[];
 }
 
-export interface SocketData {
+export interface ISocketData {
   accountNumber: number;
   allChainAccount: number;
   allChainTxs: number;
-  dividends: DividendDto;
+  dividends: IDividendDto;
   height: number;
-  list: SocketBlocksList[];
+  list: ISocketBlocksList[];
   totalTxs: number;
   unconfirmedBlockHeight: string;
 }
 
-export interface PriceDto {
+export interface IPriceDto {
   USD: number;
   [key: string]: string | number;
 }
 
-export interface PreviousPriceDto {
+export interface IPreviousPriceDto {
   usd: number;
   [key: string]: string | number;
 }
-export interface TpsDataDto {
+export interface ITpsDataDto {
   own: any;
   all: any;
 }
-export interface RewardDto {
+export interface IRewardDto {
   ELF: number;
   [key: string]: string | number;
 }
-export interface HomeProps {
-  mobileprice: PriceDto;
-  mobileprevprice: PreviousPriceDto;
-  tpsdata: TpsDataDto;
+export interface IHomeProps {
+  mobileprice: IPriceDto;
+  mobileprevprice: IPreviousPriceDto;
+  tpsdata: ITpsDataDto;
   blockheight: number;
-  rewardssr: RewardDto;
+  rewardssr: IRewardDto;
   localaccountsssr: number;
   unconfirmedblockheightssr: number;
   localtransactionsssr: number;
-  transactionsssr: TXItem[];
-  blocksssr: BlockItem[];
+  transactionsssr: ITXItem[];
+  blocksssr: IBlockItem[];
   headers: any;
 }

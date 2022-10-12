@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import IconFont from '../../../components/IconFont';
-import { RewardDto } from '../types';
-interface PropsDto {
+import { IRewardDto } from '../types';
+interface IProps {
   blockHeight: number;
   localTransactions: number;
-  reward: RewardDto;
+  reward: IRewardDto;
   unconfirmedBlockHeight: number | string;
   localAccounts: number;
 }
@@ -14,7 +14,7 @@ export default function ChainInfo({
   reward,
   unconfirmedBlockHeight,
   localAccounts,
-}: PropsDto) {
+}: IProps) {
   const infoList = useMemo(
     () => [
       {
