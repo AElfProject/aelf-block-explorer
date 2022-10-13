@@ -331,7 +331,7 @@ class BrowserHeader extends PureComponent {
               target='_blank'
               rel='noopener noreferrer'
             >
-              {NETWORK_TYPE === 'TESTNET' ? 'About-Grayscale' : 'About'}
+              About
             </a>
           </Menu.Item>
         )}

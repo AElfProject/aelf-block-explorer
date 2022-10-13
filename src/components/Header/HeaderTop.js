@@ -110,7 +110,7 @@ export default function HeaderTop({
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                {NETWORK_TYPE === "TESTNET" ? 'About-Grayscale' : 'About'}
+                About
               </a>
             </MenuItem>
           </Menu>
