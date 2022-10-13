@@ -1,10 +1,10 @@
-import { Button, Input } from 'antd';
+import { Button, Input, message } from 'antd';
 import React, { useState } from 'react';
 import { useCallback } from 'react';
 import IconFont from '../../../components/IconFont';
 import { get, isAElfAddress } from '../../../utils/axios';
 import { useMemo } from 'react';
-import { TXS_BLOCK_API_URL } from '../../../constants';
+import { INPUT_ZERO_TIP, TXS_BLOCK_API_URL } from '../../../constants';
 import { withRouter, NextRouter } from 'next/router';
 interface IProps {
   router: NextRouter;
@@ -68,7 +68,6 @@ function Search(props: IProps) {
   const handleSearch = useCallback(() => {
     let tempValue = value.trim();
     if (!tempValue) return;
-
     if (tempValue.indexOf('_') > 0) {
       tempValue = tempValue.split('_')[1];
     }
@@ -83,6 +82,7 @@ function Search(props: IProps) {
       return;
     }
     if (+tempValue === 0) {
+      message.error(INPUT_ZERO_TIP);
       location.href = '/search-invalid/' + tempValue;
       return;
     }

@@ -4,7 +4,9 @@
  */
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Tree } from 'antd';
+import Tree from 'rc-tree';
+import { MinusSquareOutlined, PlusSquareOutlined, FileOutlined } from '@ant-design/icons';
+require('rc-tree/assets/index.css');
 
 function addKeyForTree(files = [], parentKey = '', splitChar = '#') {
   return files.map((file) => {
@@ -60,15 +62,30 @@ const FileTree = (props) => {
     onChange(selectedKey[0].split('#'));
   };
   const treeData = useMemo(() => filesWithKey.map((v) => renderTreeNode(v)), [filesWithKey]);
+  const renderSwitcherIcon = (props) => {
+    console.log(props);
+    const { expanded, isLeaf } = props;
+    if (isLeaf) {
+      return <FileOutlined className={`rc-switcher-line-icon`} />;
+    }
+    return expanded ? (
+      <MinusSquareOutlined className="rc-switcher-line-icon" />
+    ) : (
+      <PlusSquareOutlined className="rc-switcher-line-icon" />
+    );
+  };
   return (
     <Tree
       showLine
+      showIcon={false}
+      prefixCls="ant-tree"
       autoExpandParent
       defaultSelectedKeys={firstFileKey}
       defaultExpandedKeys={firstDirectory}
       onSelect={onSelect}
       className="contract-viewer-file-tree"
       treeData={treeData}
+      switcherIcon={renderSwitcherIcon}
     />
   );
 };
@@ -82,5 +99,4 @@ FileTree.propTypes = {
   ).isRequired,
   onChange: PropTypes.func.isRequired,
 };
-
 export default FileTree;
