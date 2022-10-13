@@ -12,6 +12,7 @@ const fs = require("fs");
 const config = require("./config");
 
 const isProdMode = process.env.NODE_ENV === "production";
+const isTestNet = process.env.NET_TYPE === "TESTNET";
 
 const ROOT = path.resolve(__dirname, "..");
 
@@ -66,6 +67,7 @@ module.exports = {
   PUBLIC_PATH,
   OUTPUT_PATH,
   isProdMode,
+  isTestNet,
   // ENTRIES
   getLessVariables,
 };

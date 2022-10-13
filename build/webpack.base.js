@@ -16,14 +16,12 @@ const {
   ROOT,
   OUTPUT_PATH,
   isProdMode,
+  isTestNet,
   // ENTRIES,
   // PAGES,
   PUBLIC_PATH,
   getLessVariables,
 } = require("./util");
-const { NETWORK_TYPE } = require("../config/config")
-
-const isTestNet = NETWORK_TYPE === 'TESTNET'
 
 const copies = [];
 
