@@ -9,6 +9,7 @@ import Svg from "../Svg/Svg";
 import useMobile from "../../hooks/useMobile";
 import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from "../../constants";
 import { get } from "../../utils";
+import { isTestNet } from "../../../build/util";
 
 const TokenIcon = require("../../assets/images/tokenLogo.png");
 
@@ -110,7 +111,7 @@ export default function HeaderTop({
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                About
+                {isTestNet ? 'About-Grayscale' : 'About'}
               </a>
             </MenuItem>
           </Menu>

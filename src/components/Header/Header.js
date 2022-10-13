@@ -22,6 +22,7 @@ import HeaderTop from "./HeaderTop";
 import IconFont from "../IconFont";
 import NetSelect from "../NetSelect/NetSelect";
 import { getCMSDelayRequest } from "../../utils/getCMS";
+import { isTestNet } from "../../../build/util";
 
 const networkList = [
   {
@@ -331,7 +332,7 @@ class BrowserHeader extends PureComponent {
               target='_blank'
               rel='noopener noreferrer'
             >
-              About
+              {isTestNet ? 'About-Grayscale' : 'About'}
             </a>
           </Menu.Item>
         )}
