@@ -21,6 +21,9 @@ const {
   PUBLIC_PATH,
   getLessVariables,
 } = require("./util");
+const { NETWORK_TYPE } = require("../config/config")
+
+const isTestNet = NETWORK_TYPE === 'TESTNET'
 
 const copies = [];
 
@@ -156,7 +159,7 @@ const baseConfig = {
       chunks: isProdMode ? ["runtime.app", "vendors", "app"] : ["app"],
       name: "app",
       title: "AELF Block Explorer",
-      favicon: 'public/favicon.ico',
+      favicon: isTestNet ? 'public/favicon.test.ico' : 'public/favicon.main.ico',
       hash: true
     }),
     new webpack.ProvidePlugin({
