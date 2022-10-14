@@ -226,7 +226,6 @@ class RedeemModal extends PureComponent {
   handleOk() {
     const {
       handleRedeemConfirm,
-      form,
       changeVoteState,
       setRedeemConfirmLoading,
     } = this.props;
@@ -237,20 +236,19 @@ class RedeemModal extends PureComponent {
       // For old wallet app. We can not receive close event
       setRedeemConfirmLoading(false);
     }, 60 * 1000);
-
-    form.validateFields((err, values) => {
-      if (err) {
-        setRedeemConfirmLoading(false);
-        return;
-      }
-      const { redeemVoteSelectedRowKeys } = values;
+    const redeemVoteSelectedRowKeys = this.formRef.current?.getFieldValue(
+      "redeemVoteSelectedRowKeys"
+    )
+    if (redeemVoteSelectedRowKeys) {
       changeVoteState(
-        { redeemVoteSelectedRowKeys: [redeemVoteSelectedRowKeys] },
+        { redeemVoteSelectedRowKeys },
         () => {
           handleRedeemConfirm();
         }
       );
-    });
+    } else {
+      setRedeemConfirmLoading(false);
+    }
   }
 
   render() {
@@ -288,13 +286,11 @@ class RedeemModal extends PureComponent {
                 initialValue={item.validator?.initialValue}
                 validateTrigger={item.validator?.validateTrigger}
               >
-                (
                 {item.validator ? (
                   <span>{item.render}</span> || <Input />
                 ) : (
                   <span>{item.render}</span>
                 )}
-                )
               </Form.Item>
             ))}
         </Form>
