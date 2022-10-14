@@ -288,13 +288,11 @@ class RedeemModal extends PureComponent {
                 initialValue={item.validator?.initialValue}
                 validateTrigger={item.validator?.validateTrigger}
               >
-                (
                 {item.validator ? (
                   <span>{item.render}</span> || <Input />
                 ) : (
                   <span>{item.render}</span>
                 )}
-                )
               </Form.Item>
             ))}
         </Form>
