@@ -52,7 +52,7 @@ export default function Holders() {
         width: isMobile ? 156 : 280,
         dataIndex: "balance",
         render(balance) {
-          return `${numberFormatter(balance)} ELF`;
+          return `${numberFormatter(balance)} ${symbol}`;
         },
       },
       {
