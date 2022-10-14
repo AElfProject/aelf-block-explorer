@@ -30,7 +30,9 @@ export const WALLET_DOMAIN = 'https://wallet-test.aelf.io/';
 export const APPNAME = 'explorer.aelf.io';
 export const commonPrivateKey = '0000000000000000000000000000000000000000000000000000000000000001';
 export const DEFAUTRPCSERVER =
-  typeof window !== 'undefined' ? `${window?.location?.protocol}//${window?.location?.host}/chain` : '/chain';
+  typeof window !== 'undefined'
+    ? `${window?.location?.protocol}//${window?.location?.host}/chain`
+    : `${process.env.BUILD_ENDPOINT}/chain`;
 // const DEFAUTRPCSERVER = `https://explorer-test.aelf.io/chain`;
 module.exports = {
   DEFAUTRPCSERVER,

@@ -62,7 +62,7 @@ const get = async (url: string, params?: any, config?: any) => {
     ...config,
   });
   if (res.ok) {
-    return res.data;
+    return res.data as any;
   }
 
   httpErrorHandler(res.problem, res.problem);
@@ -75,7 +75,7 @@ const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: 
   const res = await api.get(wholeUrl, params, config);
   // console.log(res, 'res');
   if (res.ok) {
-    return res.data;
+    return res.data as any;
   } else {
     throw new Error(JSON.stringify(res));
   }

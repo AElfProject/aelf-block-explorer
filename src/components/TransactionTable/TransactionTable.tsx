@@ -6,15 +6,20 @@ import { get } from 'utils/axios';
 import TableLayer from '../TableLayer/TableLayer';
 import ColumnConfig from './columnConfig';
 require('./TransactionTable.styles.less');
-export default function TransactionTable({ dataLoading, dataSource }) {
+export default function TransactionTable({ dataLoading, dataSource, headers }) {
   const [price, setPrice] = useState(0);
   const [timeFormat, setTimeFormat] = useState('Age');
 
   const columns = useMemo(
     () =>
-      ColumnConfig(timeFormat, price, () => {
-        setTimeFormat(timeFormat === 'Age' ? 'Date Time' : 'Age');
-      }),
+      ColumnConfig(
+        timeFormat,
+        price,
+        () => {
+          setTimeFormat(timeFormat === 'Age' ? 'Date Time' : 'Age');
+        },
+        headers,
+      ),
     [timeFormat, price],
   );
 

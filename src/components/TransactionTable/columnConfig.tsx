@@ -7,7 +7,7 @@ import addressFormat from 'utils/addressFormat';
 import { getFormattedDate } from 'utils/timeUtils';
 import StatusTag from 'components/StatusTag/StatusTag';
 import IconFont from 'components/IconFont';
-import { isPhoneCheck } from 'utils/deviceCheck';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 
 const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
   const { quantity = 0, decimals, block_height } = info;
@@ -25,7 +25,7 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
     } else if (quantity <= 9) {
       amount = `0.0000000${quantity}`;
     } else {
-      amount = quantity / Math.pow(10, 8);
+      amount = '' + quantity / Math.pow(10, 8);
     }
   }
 
@@ -47,7 +47,7 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
           <div>
             <a onClick={() => (location.href = `/block/${info.block_height}`)}>{info.block_height}</a>
             {!lastBlockLoading ? (
-              <Tag className={confirmations < 0 && 'unconfirmed'}>
+              <Tag className={confirmations < 0 ? 'unconfirmed' : ''}>
                 {confirmations >= 0 ? `${confirmations} Block Confirmations` : 'Unconfirmed'}
               </Tag>
             ) : (
@@ -71,8 +71,11 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
   );
 };
 
-export default (timeFormat, price, handleFormatChange) => {
-  const isMobile = isPhoneCheck();
+export default (timeFormat, price, handleFormatChange, headers) => {
+  let isMobile = !!isPhoneCheckSSR(headers);
+  if (typeof window !== 'undefined') {
+    isMobile = !!isPhoneCheck();
+  }
   return [
     {
       dataIndex: 'tx_id',

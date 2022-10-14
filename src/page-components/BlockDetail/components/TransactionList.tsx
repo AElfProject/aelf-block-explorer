@@ -1,12 +1,16 @@
 import { Pagination } from 'antd';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import TransactionTable from 'components/TransactionTable/TransactionTable';
-import useMobile from 'hooks/useMobile';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { Itx } from '../types';
 
-export default function TransactionList({ allData = [] }) {
+export default function TransactionList({ allData = [], headers }: { allData: Itx[]; headers: any }) {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const isMobile = useMobile();
+  let isMobile = !!isPhoneCheckSSR(headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   const dataSource = useMemo(() => {
     return allData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [pageIndex, pageSize, allData]);
@@ -19,7 +23,7 @@ export default function TransactionList({ allData = [] }) {
   );
   return (
     <div>
-      <TransactionTable dataLoading={!allData.length} dataSource={dataSource} />
+      <TransactionTable dataLoading={!allData.length} dataSource={dataSource} headers={headers} />
       <div className="after-table">
         <Pagination
           showLessItems={isMobile}

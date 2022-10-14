@@ -2,7 +2,7 @@ import { Tag, Tabs, Button } from 'antd';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import IconFont from 'components/IconFont';
 import { BLOCK_INFO_API_URL } from 'constants/api';
-import useMobile from 'hooks/useMobile';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { getContractNames } from 'utils/utils';
 import { get, aelf } from 'utils/axios';
 import BasicInfo from './components/BasicInfo';
@@ -12,19 +12,23 @@ import Link from 'next/link';
 import { useDebounce } from 'react-use';
 import CustomSkeleton from 'components/CustomSkeleton/CustomSkeleton';
 import { withRouter } from 'next/router';
+import { IProps, IRes, ITransactions, Itx } from './types';
 require('./BlockDetail.styles.less');
-
 const { TabPane } = Tabs;
-function BlockDetail(props) {
-  const [pageId, setPageId] = useState(undefined);
-  const [blockHeight, setBlockHeight] = useState(undefined);
-  const [blockInfo, setBlockInfo] = useState(undefined);
-  const [transactionList, setTransactionList] = useState([]);
+
+function BlockDetail(props: IProps) {
+  const [pageId, setPageId] = useState(props.pageidssr);
+  const [blockHeight, setBlockHeight] = useState(props.blockheightssr);
+  const [blockInfo, setBlockInfo] = useState(props.blockinfossr);
+  const [transactionList, setTransactionList] = useState(props.txslistssr || []);
   const [retryBlockInfoCount, setRetryBlockInfoCount] = useState(0);
-  const [bestChainHeight, setBestChainHeight] = useState(undefined);
+  const [bestChainHeight, setBestChainHeight] = useState(props.bestchainheightssr);
   const [showExtensionInfo, setShowExtensionInfo] = useState(false);
-  const [activeKey, setActiveKey] = useState('overview');
-  const isMobile = useMobile();
+  const [activeKey, setActiveKey] = useState(props.activekeyssr || 'overview');
+  let isMobile = !!isPhoneCheckSSR(props.headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   const retryBlockInfoLimit = 2;
 
   const jumpLink = useMemo(() => {
@@ -33,7 +37,7 @@ function BlockDetail(props) {
 
     return (
       <span className="jump-link">
-        <a disabled={+blockHeight === 1} onClick={() => +blockHeight === 1 || props.router.push(prevLink)}>
+        <a onClick={() => +blockHeight === 1 || props.router.push(prevLink)}>
           <IconFont type="left" />
         </a>
         <Link href={nextLink}>
@@ -71,8 +75,8 @@ function BlockDetail(props) {
     [pageId],
   );
 
-  const merge = useCallback((data = [], contractNames) => {
-    return (data || []).map((item) => ({
+  const merge = useCallback((data: Itx[] | never[] = [], contractNames) => {
+    return (data || []).map((item: Itx) => ({
       ...item,
       contractName: contractNames[item.address_to],
     }));
@@ -84,24 +88,24 @@ function BlockDetail(props) {
       .then((result) => {
         return result;
       })
-      .catch((error) => {
+      .catch((_) => {
         location.href = '/search-failed';
       });
   }, [aelf]);
 
-  const getTxsList = useCallback(
-    async (blockHash, page) => {
-      let getTxsOption = {
+  const getTxsList: (blockHash: string, page?: number) => Promise<ITransactions> = useCallback(
+    async (blockHash, page?) => {
+      const getTxsOption = {
         limit: 1000,
         page: page || 0,
         order: 'asc',
         block_hash: blockHash,
       };
 
-      let data = await get('/block/transactions', getTxsOption).catch((error) => {
+      let data: ITransactions = (await get('/block/transactions', getTxsOption).catch((error) => {
         console.log('>>>>error', error);
         location.href = '/search-failed';
-      });
+      })) as ITransactions;
       const contractNames = await getContractNames().catch((error) => {
         console.log('>>>>error', error);
         location.href = '/search-failed';
@@ -123,9 +127,9 @@ function BlockDetail(props) {
         });
         const { BlockHash: blockHash } = result;
         const { transactions = [] } = blockHash
-          ? await getTxsList(blockHash).catch((error) => {
+          ? ((await getTxsList(blockHash).catch((error) => {
               location.href = '/search-failed';
-            })
+            })) as ITransactions)
           : {};
         return { blockInfo: result, transactionList: transactions };
       } catch (err) {
@@ -163,21 +167,22 @@ function BlockDetail(props) {
 
     let result;
     let blockHeight;
-    let txsList = [];
+    let txsList: Itx[] = [];
     let error;
-    if (parseInt(input, 10) == input) {
+    // todo: fix
+    if (parseInt('' + input, 10) == input) {
       blockHeight = input;
       if (blockHeight > BestChainHeight) {
         location.href = '/search-invalid/' + blockHeight;
       } else {
         const data = await getDataFromHeight(input);
         result = data.blockInfo;
-        txsList = data.transactionList;
+        txsList = data.transactionList!;
       }
     } else {
       const data = await getDataFromHash(input);
       result = data.blockInfo;
-      txsList = data.transactionList;
+      txsList = data.transactionList!;
       error = txsList.length ? '' : 'Not Found';
       blockHeight = result.Header.Height;
     }
@@ -187,7 +192,7 @@ function BlockDetail(props) {
     get(BLOCK_INFO_API_URL, {
       height: blockHeight,
     })
-      .then((res = { miner: '', dividends: '' }) => {
+      .then((res: IRes = { miner: '', dividends: '' }) => {
         if (result) {
           const { Header: header } = result;
           setBlockInfo({
@@ -218,7 +223,7 @@ function BlockDetail(props) {
       .catch((error) => {
         location.href = '/search-failed';
       });
-    // Dismiss manually and asynchronously
+    // if block is new and cannot txsList is null
     if ((!txsList || !txsList.length) && blockHeight <= BestChainHeight + 6) {
       if (retryBlockInfoCount >= retryBlockInfoLimit) {
         return;
@@ -259,7 +264,7 @@ function BlockDetail(props) {
         </TabPane>
         <TabPane tab="Transactions" key="transactions">
           <div className="transactions-container">
-            <TransactionList allData={transactionList} />
+            <TransactionList allData={transactionList} headers={props.headers} />
           </div>
         </TabPane>
       </Tabs>
