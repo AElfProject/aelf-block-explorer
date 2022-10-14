@@ -2,41 +2,45 @@ import { Pagination, Table } from 'antd';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
 import { ALL_BLOCKS_API_URL, ALL_UNCONFIRMED_BLOCKS_API_URL } from 'constants/api';
-import useMobile from 'hooks/useMobile';
 import { get } from 'utils/axios';
 import ColumnConfig from './columnConfig';
 import { useRouter } from 'next/router';
+import TableLayer from 'components/TableLayer/TableLayer';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { IBlocksResult } from 'page-components/Home/types';
 
 require('./BlockList.styles.less');
-import TableLayer from 'components/TableLayer/TableLayer';
-export default function BlockList() {
+
+interface IProps {
+  headers: any;
+  allssr: number;
+  datasourcessr: any;
+}
+export default function BlockList({ allssr: allSSR, datasourcessr: dataSourceSSR, headers }: IProps) {
   const { pathname = '' } = useRouter();
-  const isMobile = useMobile();
   const [timeFormat, setTimeFormat] = useState('Age');
-  const [all, setAll] = useState(0);
-  const [dataSource, setDataSource] = useState(undefined);
+  const [all, setAll] = useState(allSSR);
+  const [dataSource, setDataSource] = useState(dataSourceSSR);
   const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-
+  // judge whether is confirmed
   const pageTitle = useMemo(() => (pathname.includes('unconfirmed') ? 'Unconfirmed Blocks' : 'Blocks'), [pathname]);
-
   const isConfirmed = useMemo(() => pathname.includes('unconfirmed'), [pathname]);
-
   const api = useMemo(() => {
     return pathname.indexOf('unconfirmed') === -1 ? ALL_BLOCKS_API_URL : ALL_UNCONFIRMED_BLOCKS_API_URL;
   }, [pathname]);
-
+  // judge whether is mobile
+  let isMobile = !!isPhoneCheckSSR(headers);
   const fetch = useCallback(
     async (pageIndex) => {
       setDataLoading(true);
       setDataSource(undefined);
-      const data = await get(api, {
+      const data: IBlocksResult = (await get(api, {
         order: 'desc',
         page: pageIndex - 1,
         limit: pageSize,
-      });
-
+      })) as IBlocksResult;
       setAll(data ? data.total : 0);
       setDataLoading(false);
       setDataSource(data && data.blocks.length ? data.blocks : null);
@@ -45,9 +49,11 @@ export default function BlockList() {
   );
 
   useEffect(() => {
+    isMobile = !!isPhoneCheck();
     if (pageIndex === 1) {
       fetch(pageIndex);
     } else {
+      // unconfirmed -> confirmed
       setPageIndex(1);
     }
   }, [pathname]);
@@ -70,9 +76,13 @@ export default function BlockList() {
 
   const columns = useMemo(
     () =>
-      ColumnConfig(timeFormat, () => {
-        setTimeFormat(timeFormat === 'Age' ? 'Date Time' : 'Age');
-      }),
+      ColumnConfig(
+        timeFormat,
+        () => {
+          setTimeFormat(timeFormat === 'Age' ? 'Date Time' : 'Age');
+        },
+        headers,
+      ),
     [timeFormat],
   );
 
@@ -97,7 +107,7 @@ export default function BlockList() {
             />
           </div>
         </div>
-        <TableLayer className="block-table">
+        <TableLayer className="block-table" headers={headers}>
           <Table
             loading={dataLoading}
             columns={columns}

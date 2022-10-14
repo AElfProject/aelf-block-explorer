@@ -433,19 +433,6 @@ export function sleep(timeout = 1000) {
   });
 }
 
-let isPhoneChecked = false;
-let phoneCheckResult = null;
-export const isPhoneCheck = () => {
-  if (!isPhoneChecked) {
-    const userAgentInfo = navigator.userAgent.toLowerCase();
-    const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
-    isPhoneChecked = true;
-    phoneCheckResult = agents.find((agent) => userAgentInfo.includes(agent));
-    return phoneCheckResult;
-  }
-  return phoneCheckResult;
-};
-
 export const omitString = (input, start = 8, end = 8) => {
   if (!input) return '';
   return `${input.slice(0, start)}...${input.slice(-end)}`;

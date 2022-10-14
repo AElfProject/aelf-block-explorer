@@ -3,10 +3,13 @@ import Link from 'next/link';
 import { getFormattedDate } from 'utils/timeUtils';
 import IconFont from 'components/IconFont';
 import { SYMBOL, CHAIN_ID } from 'constants/misc';
-import { isPhoneCheck } from 'utils/deviceCheck';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 
-export default (timeFormat, handleFormatChange) => {
-  const isMobile = isPhoneCheck();
+export default (timeFormat, handleFormatChange, headers) => {
+  let isMobile = !!isPhoneCheckSSR(headers);
+  if (typeof window !== 'undefined') {
+    isMobile = !!isPhoneCheck();
+  }
   return [
     {
       dataIndex: 'block_height',
@@ -31,7 +34,9 @@ export default (timeFormat, handleFormatChange) => {
         </div>
       ),
       render: (text) => {
-        return <div>{getFormattedDate(text, timeFormat)}</div>;
+        // time in client is different to in server
+        // so we have to use suppressHydrationWarning to stop the warning
+        return <div suppressHydrationWarning>{getFormattedDate(text, timeFormat)}</div>;
       },
     },
     {

@@ -1,3 +1,3 @@
-import Blocks from 'page-components/Blocks';
-import withNoSSR from 'utils/withNoSSR';
-export default withNoSSR(Blocks);
+import UnConfirmedBlock from '../blocks';
+export default UnConfirmedBlock;
+export { getServerSideProps } from '../blocks';

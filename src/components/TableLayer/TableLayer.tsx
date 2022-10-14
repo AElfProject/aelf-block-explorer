@@ -1,9 +1,12 @@
-import React from 'react';
-import useMobile from 'hooks/useMobile';
+import React, { useEffect } from 'react';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 
 require('./TableLayer.styles.less');
 export default function TableLayer({ children, className = '', ...props }) {
-  const isMobile = useMobile();
+  let isMobile = !!isPhoneCheckSSR(props.headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   return (
     <div className={'table-layer ' + (isMobile ? 'mobile ' : '') + className} {...props}>
       <div className="table-layer-block" />
