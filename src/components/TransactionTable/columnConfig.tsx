@@ -133,7 +133,7 @@ export default (timeFormat, price, handleFormatChange, headers) => {
       ),
       width: isMobile ? 140 : 162,
       render: (text) => {
-        return <div>{getFormattedDate(text, timeFormat)}</div>;
+        return <div suppressHydrationWarning>{getFormattedDate(text, timeFormat)}</div>;
       },
     },
     {

@@ -11,10 +11,13 @@ require('./TransactionList.style.less');
 
 export default function TransactionList({ headers }) {
   const router = useRouter();
-  const { pathname = '' } = router;
-  const search = router.asPath.indexOf('?') !== -1 ? router.asPath.substring(router.asPath.indexOf('?')) : undefined;
+  const { pathname = '', asPath } = router;
+  const search = asPath.indexOf('?') !== -1 ? asPath.substring(asPath.indexOf('?')) : undefined;
   let isMobile = !!isPhoneCheckSSR(headers);
   useEffect(() => {
+    if (search) {
+      router.push(`/block/${search.slice(1)}?tab=txns`);
+    }
     isMobile = !!isPhoneCheck();
   }, []);
 
@@ -46,12 +49,7 @@ export default function TransactionList({ headers }) {
     async (page = 1) => {
       setDataSource(undefined);
       setDataLoading(true);
-      let url;
-      if (search) {
-        url = TXS_BLOCK_API_URL;
-      } else {
-        url = pathname.indexOf('unconfirmed') === -1 ? ALL_TXS_API_URL : ALL_UNCONFIRMED_TXS_API_URL;
-      }
+      const url = pathname.indexOf('unconfirmed') === -1 ? ALL_TXS_API_URL : ALL_UNCONFIRMED_TXS_API_URL;
       const data = await get(url, {
         order: 'desc',
         page: page - 1,
@@ -114,7 +112,7 @@ export default function TransactionList({ headers }) {
             />
           </div>
         </div>
-        <TransactionTable dataLoading={dataLoading} dataSource={dataSource} />
+        <TransactionTable dataLoading={dataLoading} dataSource={dataSource} headers={headers} />
         <div className="after-table">
           <Pagination
             showLessItems={isMobile}

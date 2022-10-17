@@ -65,20 +65,10 @@ const BREADCRUMB_NAME_MAP: {
 const DO_NOT_DISPLAY_PATH = [
   'new-socket',
   '/_error',
+  '/transaction-list',
+  '/unconfirmedTxs',
   '/blocks',
   '/unconfirmedBlocks',
-  '/block/',
-  '/transaction-list',
-  '/txs',
-  '/unconfirmedTxs',
-  '/tx/',
-  '/accounts',
-  '/contracts',
-  // if someone add path '/contract' to favourite
-  '/contract',
-  '/token',
-  '/search-invalid',
-  '/search-failed',
 ];
 
 // Notice: we need register the route in Breadcurmb.js.
@@ -277,9 +267,20 @@ class BrowserBreadcrumb extends Component<PropsDto> {
   }
 
   render() {
-    const pathname = this.props.router.asPath;
-
-    if (DO_NOT_DISPLAY_PATH.includes(pathname)) {
+    const pathname = this.props.router.asPath.split('?')[0];
+    // if someone add path '/contract' to favourite
+    if (
+      DO_NOT_DISPLAY_PATH.includes(pathname) ||
+      pathname.includes('/tx/') ||
+      pathname.includes('/txs') ||
+      pathname.includes('/block/') ||
+      pathname.includes('/search-invalid') ||
+      pathname.includes('/search-failed') ||
+      pathname.includes('/accounts') ||
+      pathname.includes('/contracts') ||
+      pathname.includes('/contract') ||
+      pathname.includes('/token')
+    ) {
       return <></>;
     }
     let reloadUrl = pathname;
@@ -289,7 +290,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
 
     const className = noBreadcrumb(pathname) ? 'breadcrumb' : 'breadcrumb hide';
     const pathSnippets: string[] = pathname.split('/').filter((i) => i);
-
     const firstBreadcrumbItem = this.getFirstBreadcrumbItem();
     const extraBreadcrumbItems = this.getExtraBreadcrumbItems(pathSnippets, reloadUrl);
     const breadcrumbItems = ([] as JSX.Element[]).concat(firstBreadcrumbItem, extraBreadcrumbItems);
