@@ -197,7 +197,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
       }
 
       const STATE = BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState as PathSnippetDto];
-
       if (typeof window !== 'undefined' && !STATE) {
         this.props.router.push('/');
         return;

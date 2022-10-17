@@ -37,6 +37,8 @@ export default class ChainSelect extends Component {
     return (
       <div className="chain-select-container">
         <Select
+          aria-label="chainSelect"
+          aria-expanded="false"
           className="chain-select common-select-wrapper"
           defaultValue={defaultValue}
           onChange={(v) => this.changeChain(v)}>

@@ -99,7 +99,7 @@ function Search(props: IProps) {
         onChange={handleInput}
         onPressEnter={handleSearch}
       />
-      <Button type="primary" onClick={handleSearch}>
+      <Button type="primary" onClick={handleSearch} aria-label="Search">
         <IconFont type="Search" />
       </Button>
     </div>

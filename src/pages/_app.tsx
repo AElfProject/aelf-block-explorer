@@ -13,7 +13,7 @@ import initAxios from '../utils/axios';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import { get, getSSR } from 'utils/axios';
-import config from 'constants/config/config';
+import config, { NETWORK_TYPE } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import Head from 'next/head';
 
@@ -87,11 +87,21 @@ const APP = ({ Component, pageProps }: AppProps) => {
   const pathKey = router.asPath.split('/')[2];
   const flag = router.asPath.split('/')[1] === 'proposal' && PROPOSAL_URL.includes(pathKey);
   pageProps.default = ROUTES_DEFAULT[pathKey];
+
   return (
     <ReduxProvider store={store}>
       <Head>
         <title>AELF Block Explorer</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"></meta>
+        {/* favicon is different in test and main */}
+        {NETWORK_TYPE === 'MAIN' ? (
+          <link rel="shortcut icon" href="/favicon_main.ico" />
+        ) : (
+          <link rel="shortcut icon" href="/favicon_test.ico" />
+        )}
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5"></meta>
+        <meta
+          name="description"
+          content="aelf explorer enables users to keep track of all the on-chain activities on aelf network, including real-time block data, transaction history, addresses, proposals, election results, etc."></meta>
       </Head>
       <Provider>
         <PageHead {...pageProps} />

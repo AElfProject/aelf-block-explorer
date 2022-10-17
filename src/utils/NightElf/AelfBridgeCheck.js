@@ -38,16 +38,12 @@ export default class AelfBridgeCheck {
         }
       });
       setTimeout(() => {
-        // console.log('NightElfCheck.getInstance() setTimeout', false);
         reject({
           error: 200001,
           message: 'timeout, please use AELF Wallet APP or open the page in PC',
         });
       }, 3000);
     });
-    // document.addEventListener('NightElf', result => {
-    //   resovleTemp(true);
-    // });
   }
 
   static getInstance() {
