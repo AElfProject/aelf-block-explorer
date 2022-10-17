@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import addressFormat from '../utils/addressFormat';
 import Dividends from '../components/Dividends';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { removeAElfPrefix } from '../utils/utils';
+import { removeAElfPrefix } from 'utils/utils';
 dayjs.extend(relativeTime);
 import BigNumber from 'bignumber.js';
 const { SYMBOL, CHAIN_ID } = config;
@@ -97,7 +97,7 @@ const BLOCKS_LIST_COLUMNS = [
     key: 'tx_count ',
     width: 60,
     render: (text: string, row: any) =>
-      !isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
+      !Number.isNaN(+row.tx_count) && +row.tx_count !== 0 ? (
         <Link href={`/txs/block?${row.block_hash}`}>
           {' '}
           <>{row.tx_count}</>{' '}
@@ -202,7 +202,8 @@ const ALL_TXS_LIST_COLUMNS = [
         } else if (row.quantity <= 9) {
           amount = `0.0000000${row.quantity}`;
         } else {
-          amount = '' + row.quantity / Math.pow(10, row.decimals);
+          // ** is same as Math.pow
+          amount = '' + row.quantity / 10 ** row.decimals;
         }
       }
       if (row.symbol) {
@@ -279,7 +280,7 @@ const RESOURCE_DETAILS_COLUMN = [
       elf /= ELF_DECIMAL;
       fee /= ELF_DECIMAL;
       price = ((method === 'Buy' ? elf + fee : elf - fee) / resource).toFixed(ELF_PRECISION);
-      price = isNaN(+price) ? '-' : price;
+      price = Number.isNaN(+price) ? '-' : price;
       return price;
     },
   },

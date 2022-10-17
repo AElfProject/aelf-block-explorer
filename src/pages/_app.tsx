@@ -20,6 +20,7 @@ import Head from 'next/head';
 require('../styles/globals.less');
 require('../styles/common.less');
 require('../styles/antd.less');
+require('../styles/custom.less');
 type AppProps = {
   pageProps: any;
   Component: NextComponentType<NextPageContext, any, any> & { layoutProps: any };

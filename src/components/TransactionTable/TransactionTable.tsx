@@ -24,7 +24,7 @@ export default function TransactionTable({ dataLoading, dataSource, headers }) {
   );
 
   useEffectOnce(() => {
-    get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((price) => setPrice(price));
+    get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((res) => setPrice(res));
   });
   return (
     <TableLayer className="transaction-table">

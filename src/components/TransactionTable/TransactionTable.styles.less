@@ -7,7 +7,7 @@
     width: calc(100% - 32px);
     thead {
       th {
-        font-family: 'Roboto-Medium';
+        font-family: 'Roboto-Medium', sans-serif;
         background: @bgBlankWhite !important;
         border-bottom: @border-color2 1px solid !important;
         font-weight: 400;
@@ -111,26 +111,23 @@
     }
   }
 }
-.mobile {
-  .transaction-table {
-    padding: 0 0 10px;
-    background: transparent !important;
-    overflow-x: scroll;
-    .ant-table-wrapper {
-      min-width: 968px;
-    }
+.mobile.transaction-table {
+  padding: 0 0 10px;
+  overflow-x: scroll;
+  .ant-table-wrapper {
+    min-width: 968px;
   }
 }
 
 .transaction-tooltip {
   .ant-tooltip-content {
     width: 337.5px;
-    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 16px 0 rgb(0 0 0 / 8%), 0 4px 8px 0 rgb(0 0 0 / 8%);
     .ant-tooltip-inner {
       padding: 0 !important;
       background-color: white;
     }
-    .ant-tooltip-arrow:before {
+    .ant-tooltip-arrow::before {
       background-color: white;
     }
   }
@@ -144,7 +141,7 @@
       padding: 11px 20px 11px 22px;
       border-bottom: 1px solid @border-color2;
       font-size: 14px;
-      font-family: 'Roboto-Medium';
+      font-family: 'Roboto-Medium', sans-serif;
       line-height: 22px;
       color: @mine-shaft;
       a {
@@ -213,6 +210,6 @@
   }
   .ant-tooltip-content {
     width: 100%;
-    box-shadow: 0px 0px 100000px 100000px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 100000px 100000px rgb(0 0 0 / 60%);
   }
 }

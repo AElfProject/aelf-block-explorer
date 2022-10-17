@@ -26,7 +26,7 @@ type PathSnippetDto =
   | 'resourceDetail';
 
 // if you want to hide the Breadcrumb
-const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contract', '/token'];
+const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contracts', '/token'];
 const noBreadcrumb = (pathname: string) => {
   const isMainPage = pathname === '/';
   return NO_BREADCRUMB_PAGES.filter((item) => pathname.includes(item)).length === 0 && !isMainPage;
@@ -55,21 +55,30 @@ const BREADCRUMB_NAME_MAP: {
   '/vote': 'Vote',
   '/resource': 'Resource',
   '/resourceDetail': 'Resource Detail List',
-  '/contract': 'Contract',
+  '/contracts': 'Contract',
   '/proposal': 'Proposal',
   '/token': 'Token',
   myvote: 'My Vote',
   '/search-invalid': '',
 };
-
+// I don't know why /new-socket can reach here
 const DO_NOT_DISPLAY_PATH = [
+  'new-socket',
   '/_error',
+  '/blocks',
+  '/unconfirmedBlocks',
+  '/block/',
   '/transaction-list',
   '/txs',
   '/unconfirmedTxs',
   '/tx/',
-  '/blocks',
-  '/unconfirmedBlocks',
+  '/accounts',
+  '/contracts',
+  // if someone add path '/contract' to favourite
+  '/contract',
+  '/token',
+  '/search-invalid',
+  '/search-failed',
 ];
 
 // Notice: we need register the route in Breadcurmb.js.
@@ -109,6 +118,10 @@ const BREADCRUMB_NAMES_TATE = {
       url: ['/txs', false],
       name: [BREADCRUMB_NAME_MAP['/unconfirmedTxs'], BREADCRUMB_NAME_MAP['/unconfirmedTx']],
     },
+    accounts: {
+      url: ['/txs', false],
+      name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/address']],
+    },
     address: {
       url: ['/txs', false],
       name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/address']],
@@ -130,8 +143,8 @@ const BREADCRUMB_NAMES_TATE = {
       name: [BREADCRUMB_NAME_MAP['/resource'], BREADCRUMB_NAME_MAP['/resourceDetail']],
     },
     contract: {
-      url: ['/contract'],
-      name: [BREADCRUMB_NAME_MAP['/contract']],
+      url: ['/contracts'],
+      name: [BREADCRUMB_NAME_MAP['/contracts']],
     },
     proposal: {
       url: ['/proposal', false],
@@ -265,16 +278,8 @@ class BrowserBreadcrumb extends Component<PropsDto> {
 
   render() {
     const pathname = this.props.router.asPath;
-    // I don't know why /new-socket can reach here
-    if (
-      DO_NOT_DISPLAY_PATH.includes(pathname) ||
-      pathname.includes('/tx/') ||
-      pathname.includes('/txs') ||
-      pathname.includes('/block/') ||
-      pathname.includes('/search-invalid') ||
-      pathname.includes('/search-failed') ||
-      pathname.includes('new-socket')
-    ) {
+
+    if (DO_NOT_DISPLAY_PATH.includes(pathname)) {
       return <></>;
     }
     let reloadUrl = pathname;

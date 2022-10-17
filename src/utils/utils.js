@@ -219,7 +219,7 @@ const DEFAUT_RPCSERVER =
       : `${window.location.protocol}//${window.location.host}`
     : '';
 
-const defaultAElfInstance = new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCSERVER));
+export const defaultAElfInstance = new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCSERVER));
 
 export async function getBalances(address, search = '') {
   try {

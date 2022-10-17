@@ -8,9 +8,11 @@ import { getFormattedDate } from 'utils/timeUtils';
 import StatusTag from 'components/StatusTag/StatusTag';
 import IconFont from 'components/IconFont';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { useRouter } from 'next/router';
 
 const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
-  const { quantity = 0, decimals, block_height } = info;
+  const { quantity = 0, block_height } = info;
+  const nav = useRouter().push;
   const [confirmations, setConfirmations] = useState(0);
   const [lastBlockLoading, setLastBlockLoading] = useState(true);
   aelf.chain.getChainStatus().then(({ LastIrreversibleBlockHeight }) => {
@@ -25,7 +27,7 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
     } else if (quantity <= 9) {
       amount = `0.0000000${quantity}`;
     } else {
-      amount = '' + quantity / Math.pow(10, 8);
+      amount = '' + quantity / 10 ** 8;
     }
   }
 
@@ -33,19 +35,19 @@ const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
     <div className="previewer-card">
       <div className="title">
         <span>Additional Info</span>
-        <a onClick={() => (location.href = `/tx/${text}`)}>
+        <a onClick={() => nav(`/tx/${text}`)}>
           See more Details <IconFont type="chakangengduojiantou" />
         </a>
       </div>
       <div className="bottom">
         <div className="status">
           <p className="label">Status:</p>
-          <StatusTag status={info.tx_status} />
+          <StatusTag status={info.tx_status || 'MINED'} />
         </div>
         <div className="block">
           <p className="label">Block:</p>
           <div>
-            <a onClick={() => (location.href = `/block/${info.block_height}`)}>{info.block_height}</a>
+            <a onClick={() => nav(`/block/${info.block_height}`)}>{info.block_height}</a>
             {!lastBlockLoading ? (
               <Tag className={confirmations < 0 ? 'unconfirmed' : ''}>
                 {confirmations >= 0 ? `${confirmations} Block Confirmations` : 'Unconfirmed'}
@@ -156,7 +158,7 @@ export default (timeFormat, price, handleFormatChange, headers) => {
       render: (text) => {
         return (
           <div className="address">
-            <Link href={`/contract/${text}`} title={addressFormat(text)}>
+            <Link href={`/address/${text}`} title={addressFormat(text)}>
               {text}
             </Link>
           </div>
@@ -170,7 +172,7 @@ export default (timeFormat, price, handleFormatChange, headers) => {
       render: (text) => {
         return (
           <div className="fee">
-            <Dividends dividends={JSON.parse(text)} />
+            <Dividends dividends={JSON.parse(text || '{}')} />
           </div>
         );
       },

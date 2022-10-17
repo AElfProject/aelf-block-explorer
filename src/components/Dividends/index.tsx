@@ -6,6 +6,7 @@ import React from 'react';
 import { Dropdown, Button, Menu } from 'antd';
 import { If, Then, Else } from 'react-if';
 import { DownOutlined } from '@ant-design/icons';
+import { numberFormatter } from 'utils/formater';
 
 const Dividends = (props) => {
   const { dividends, defaultSymbol, useButton = true, ...rest } = props;
@@ -41,7 +42,7 @@ const Dividends = (props) => {
       </Then>
       <Else>
         <div {...rest}>
-          {dividends[defaultKey] || 0}&nbsp;{defaultKey}
+          {numberFormatter(dividends[defaultKey]) || 0}&nbsp;{defaultKey}
         </div>
       </Else>
     </If>

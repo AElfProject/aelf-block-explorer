@@ -4,16 +4,19 @@ import { ALL_TXS_API_URL, ALL_UNCONFIRMED_TXS_API_URL, TXS_BLOCK_API_URL } from 
 import { getContractNames } from 'utils/utils';
 import { get } from 'utils/axios';
 import { useDebounce } from 'react-use';
-import useMobile from 'hooks/useMobile';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import TransactionTable from 'components/TransactionTable/TransactionTable';
 import { useRouter } from 'next/router';
 require('./TransactionList.style.less');
 
-export default function TransactionList() {
+export default function TransactionList({ headers }) {
   const router = useRouter();
   const { pathname = '' } = router;
   const search = router.asPath.indexOf('?') !== -1 ? router.asPath.substring(router.asPath.indexOf('?')) : undefined;
-  const isMobile = useMobile();
+  let isMobile = !!isPhoneCheckSSR(headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
 
   const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
@@ -24,10 +27,9 @@ export default function TransactionList() {
   const total = useMemo(() => {
     if (actualTotal > 500000) return 500000;
     return actualTotal;
-  });
+  }, [actualTotal]);
 
   const isUnconfirmed = useMemo(() => pathname.includes('unconfirmed'), [pathname]);
-
   const pageTitle = useMemo(() => {
     return isUnconfirmed ? 'Unconfirmed Transactions' : 'Transactions';
   }, [isUnconfirmed]);

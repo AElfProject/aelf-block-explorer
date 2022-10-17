@@ -12,7 +12,13 @@ const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
   return (value + '').replace(reg, '$&,');
 };
-
+const numberFormatter = (number) => {
+  const num = Number(number);
+  if (Number.isNaN(num)) {
+    return number;
+  }
+  return num.toLocaleString(undefined, { maximumFractionDigits: 8 });
+};
 const addUrlPrefix = (url) => `https://${url}`;
 
 const removeUrlPrefix = (url) => url.replace(/^https:\/\//, '');
@@ -40,4 +46,4 @@ const centerEllipsis = (str) => {
   return str && `${str.slice(0, 10)}...${str.slice(str.length - 10)}`;
 };
 
-export { thousandsComma, addUrlPrefix, removeUrlPrefix, thousandsCommaWithDecimal, centerEllipsis };
+export { thousandsComma, numberFormatter, addUrlPrefix, removeUrlPrefix, thousandsCommaWithDecimal, centerEllipsis };
