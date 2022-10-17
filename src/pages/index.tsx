@@ -1,4 +1,5 @@
-import Home from 'page-components/Home';
+import dynamic from 'next/dynamic';
+const Home = dynamic(import('page-components/Home'));
 export default Home;
 import { NextPageContext } from 'next';
 import {
@@ -28,6 +29,7 @@ import {
   HISTORY_PRICE,
 } from 'constants/api';
 import io from 'socket.io-client';
+
 let chainId = config.CHAIN_ID;
 const PAGE_SIZE = 25;
 const interval = 60 * 1000; // 1 minute
