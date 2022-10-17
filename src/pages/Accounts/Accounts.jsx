@@ -96,11 +96,10 @@ export default function Accounts() {
         <div className="before-table">
           <div className="left">
             <p>
-              More than {">"} {Number(actualTotal).toLocaleString()} accounts by
-              ELF balance found{" "}
-              {`(${Number(totalELF / 100000000).toLocaleString()} ELF)`}
+              A total of {">"} {Number(actualTotal).toLocaleString()} accounts
+              found {`(${Number(totalELF / 100000000).toLocaleString()} ELF)`}
             </p>
-            <p>(Showing the top 1000 accounts only)</p>
+            <p>(Showing the top 1,000 accounts only)</p>
           </div>
           <div className="right">
             <Pagination
