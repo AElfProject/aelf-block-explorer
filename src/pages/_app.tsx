@@ -6,7 +6,6 @@ const BrowserBreadcrumb = dynamic(() => import('components/Breadcrumb/Breadcrumb
 const Container = dynamic(() => import('components/Container/Container'));
 const PageHead = dynamic(() => import('components/PageHead/Header'));
 const ProposalApp = dynamic(() => import('./_proposalApp'), { ssr: false });
-const Provider = dynamic(() => import('hooks/Providers/ProviderBasic'));
 import { store } from '../redux/store';
 import { Provider as ReduxProvider } from 'react-redux';
 import initAxios from '../utils/axios';
@@ -14,13 +13,24 @@ import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import { get, getSSR } from 'utils/axios';
 import config, { NETWORK_TYPE } from 'constants/config/config';
+import { ConfigProvider } from 'antd';
+import { prefixCls } from 'constants/misc';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import Head from 'next/head';
-import 'antd/dist/antd.variable.min.css';
+// as style is broken on build but works on dev env with next-plugin-antd-less
+// need require antd less dc
+require('antd/dist/antd.variable.less');
 require('../styles/globals.less');
 require('../styles/common.less');
 require('../styles/antd.less');
 require('../styles/custom.less');
+
+ConfigProvider.config({
+  prefixCls,
+  theme: {
+    primaryColor: '#266cd3',
+  },
+});
 type AppProps = {
   pageProps: any;
   Component: NextComponentType<NextPageContext, any, any> & { layoutProps: any };
@@ -104,7 +114,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
           name="description"
           content="aelf explorer enables users to keep track of all the on-chain activities on aelf network, including real-time block data, transaction history, addresses, proposals, election results, etc."></meta>
       </Head>
-      <Provider>
+      <ConfigProvider autoInsertSpaceInButton={false} prefixCls={prefixCls}>
         <PageHead {...pageProps} />
         <HeaderBlank />
         <BrowserBreadcrumb />
@@ -112,7 +122,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
           {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
         </Container>
         <BrowserFooter {...pageProps} />
-      </Provider>
+      </ConfigProvider>
     </ReduxProvider>
   );
 };
