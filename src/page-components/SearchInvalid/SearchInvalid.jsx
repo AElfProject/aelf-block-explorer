@@ -24,7 +24,7 @@ function SearchInvalid() {
       <p className="warning">Sorry! This is an invalid search string.</p>
       <Search />
       <Link href="/" className="back-btn">
-        <a>
+        <a className="back-btn">
           <IconFont type="right2" />
           Back Home
         </a>

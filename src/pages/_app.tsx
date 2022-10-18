@@ -27,9 +27,6 @@ require('../styles/custom.less');
 
 ConfigProvider.config({
   prefixCls,
-  theme: {
-    primaryColor: '#266cd3',
-  },
 });
 type AppProps = {
   pageProps: any;
