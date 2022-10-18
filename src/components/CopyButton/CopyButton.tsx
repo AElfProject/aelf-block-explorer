@@ -3,7 +3,7 @@ import copy from 'copy-to-clipboard';
 import { message } from 'antd';
 import IconFont from '../IconFont';
 
-export default function CopyButton({ value = undefined, onClick = undefined }) {
+export default function CopyButton({ value = '', onClick = undefined }) {
   const handleCopy = () => {
     try {
       copy(value);
