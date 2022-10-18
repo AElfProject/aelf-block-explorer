@@ -16,7 +16,7 @@ import { get, getSSR } from 'utils/axios';
 import config, { NETWORK_TYPE } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import Head from 'next/head';
-
+import 'antd/dist/antd.variable.min.css';
 require('../styles/globals.less');
 require('../styles/common.less');
 require('../styles/antd.less');

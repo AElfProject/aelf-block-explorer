@@ -49,9 +49,11 @@ const getTxsList = async (ctx, blockHash) => {
 };
 const getDataFromHeight = async (ctx, blockHeight) => {
   try {
-    const result = await aelf.chain.getBlockByHeight(blockHeight, false).catch((error) => {
-      redirectRes = '/search-failed';
-    });
+    const result =
+      (await aelf.chain.getBlockByHeight(blockHeight, false).catch((error) => {
+        console.log(error, '======');
+        redirectRes = '/search-failed';
+      })) || {};
     const { BlockHash: blockHash } = result;
     const { transactions = [] } = blockHash
       ? await getTxsList(ctx, blockHash).catch((error) => {
@@ -152,11 +154,11 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   const { id, tab } = ctx.query;
   const activeKey = tab === 'txns' ? 'transactions' : 'overview';
   await fetchBlockInfo(ctx, id);
-  //   console.log(id, activeKey);
-  //   console.log(bestChainHeightSSR, 'bestChainHeightSSR');
-  //   console.log(blockHeightSSR, 'blockHeightSSR');
-  //   console.log(txsListSSR, 'txsListSSR');
-  //   console.log(blockInfoSSR, 'blockInfoSSR');
+  console.log(id, activeKey);
+  console.log(bestChainHeightSSR, 'bestChainHeightSSR');
+  console.log(blockHeightSSR, 'blockHeightSSR');
+  console.log(txsListSSR, 'txsListSSR');
+  console.log(blockInfoSSR, 'blockInfoSSR');
   if (redirectRes) {
     return {
       redirect: {

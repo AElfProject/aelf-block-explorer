@@ -19,6 +19,8 @@ module.exports = [
             '@app-prefix': NEXT_PUBLIC_CSS_EXAMPLE_PREFIX,
             '@ant-prefix': NEXT_PUBLIC_CSS_APP_PREFIX,
           }),
+          lessVarsFilePath: 'src/assets/theme/color.less', // optional
+          lessVarsFilePathAppendToEndOfContent: false, // optional
         },
       },
       images: {
