@@ -53,7 +53,7 @@ api.addResponseTransform((res) => {
     if (res.data.code === /^2\d{2}$/) return res.data;
   }
 });
-
+console.log(RPCSERVER, 'RPCSERVER');
 const aelf = new AElf(new AElf.providers.HttpProvider(RPCSERVER, 60000));
 
 const get = async (url: string, params?: any, config?: any) => {
