@@ -1,14 +1,7 @@
 // enum NETWORK_TYPE: MAIN | TEST
 import axios from 'axios';
 import { NETWORK_TYPE } from 'constants/config/config';
-
-export const sleep = (time) =>
-  new Promise((resolve) => {
-    const ids = setTimeout(() => {
-      clearTimeout(ids);
-      resolve('sleep');
-    }, time);
-  });
+import { sleep } from './utils';
 
 // get cms data in server side
 export async function getCMSDelayRequestSSR(ctx, delay = 5000) {

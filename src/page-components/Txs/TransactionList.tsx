@@ -1,15 +1,16 @@
 import { Pagination } from 'antd';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { ALL_TXS_API_URL, ALL_UNCONFIRMED_TXS_API_URL, TXS_BLOCK_API_URL } from 'constants/api';
+import { ALL_TXS_API_URL, ALL_UNCONFIRMED_TXS_API_URL } from 'constants/api';
 import { getContractNames } from 'utils/utils';
 import { get } from 'utils/axios';
 import { useDebounce } from 'react-use';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import TransactionTable from 'components/TransactionTable/TransactionTable';
 import { useRouter } from 'next/router';
+import { IProps, ITxs } from './types';
 require('./TransactionList.style.less');
 
-export default function TransactionList({ headers }) {
+export default function TransactionList({ actualtotalssr = 0, datasourcessr, headers }: IProps) {
   const router = useRouter();
   const { pathname = '', asPath } = router;
   const search = asPath.indexOf('?') !== -1 ? asPath.substring(asPath.indexOf('?')) : undefined;
@@ -24,8 +25,8 @@ export default function TransactionList({ headers }) {
   const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-  const [dataSource, setDataSource] = useState(undefined);
-  const [actualTotal, setActualTotal] = useState(0);
+  const [dataSource, setDataSource] = useState(datasourcessr);
+  const [actualTotal, setActualTotal] = useState(actualtotalssr);
 
   const total = useMemo(() => {
     if (actualTotal > 500000) return 500000;
@@ -37,7 +38,7 @@ export default function TransactionList({ headers }) {
     return isUnconfirmed ? 'Unconfirmed Transactions' : 'Transactions';
   }, [isUnconfirmed]);
 
-  const merge = (data = {}, contractNames) => {
+  const merge = (data: ITxs = {}, contractNames) => {
     const { transactions = [] } = data;
     return (transactions || []).map((item) => ({
       ...item,
@@ -47,7 +48,7 @@ export default function TransactionList({ headers }) {
 
   const fetch = useCallback(
     async (page = 1) => {
-      setDataSource(undefined);
+      setDataSource([]);
       setDataLoading(true);
       const url = pathname.indexOf('unconfirmed') === -1 ? ALL_TXS_API_URL : ALL_UNCONFIRMED_TXS_API_URL;
       const data = await get(url, {

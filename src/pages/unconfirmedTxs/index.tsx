@@ -1,3 +1,3 @@
-import UnconfirmedTxs from 'page-components/Txs/TransactionList';
-import withNoSSR from 'utils/withNoSSR';
-export default withNoSSR(UnconfirmedTxs);
+import UnConfirmedTxs from '../txs';
+export default UnConfirmedTxs;
+export { getServerSideProps } from '../txs';

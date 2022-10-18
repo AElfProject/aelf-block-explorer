@@ -5,6 +5,7 @@ import { aelf } from './axios';
 const config = require('constants/config/config');
 import { API_PATH } from 'constants/viewerApi';
 import { request } from './request';
+import { NextPageContext } from 'next';
 
 const resourceDecimals = config?.resourceTokens?.reduce(
   (acc, v) => ({
@@ -15,7 +16,7 @@ const resourceDecimals = config?.resourceTokens?.reduce(
 );
 
 export const rand16Num = (len = 0) => {
-  const result = [];
+  const result: string[] = [];
   for (let i = 0; i < len; i += 1) {
     result.push('0123456789abcdef'.charAt(Math.floor(Math.random() * 16)));
   }
@@ -25,7 +26,7 @@ export const rand16Num = (len = 0) => {
 const TOKEN_DECIMALS = {
   ELF: 8,
 };
-let tokenContract = null;
+let tokenContract: any = null;
 
 export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(config?.commonPrivateKey);
 
@@ -84,17 +85,6 @@ export function deserializeLogs(logs) {
   return Promise.all(logs.map((log) => deserializeLog(log)));
 }
 
-export function getOmittedStr(str = '', front = 8, rear = 4) {
-  const strArr = [...str];
-
-  const { length } = str;
-  if (length > front + rear) {
-    strArr.splice(front, length - rear - front, '...');
-    return strArr.join('');
-  }
-  return str;
-}
-
 const { ellipticEc } = AElf.wallet;
 
 export function getPublicKeyFromObject(publicKey) {
@@ -111,17 +101,13 @@ export async function innerHeight(minHeight = 400, time = 0, timeout = 500, maxT
     return '100vh';
   }
   try {
-    const height = document.querySelector('#app').clientHeight;
+    const height = document.querySelector('__next')?.clientHeight;
     if (height && height > minHeight) {
       return `${height + 100}px`;
     }
     throw new Error('invalid');
   } catch (e) {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, timeout);
-    });
+    await sleep(timeout);
     return innerHeight(minHeight, currentTime);
   }
 }
@@ -304,14 +290,20 @@ export async function getTokenList(search = '') {
 }
 
 let CONTRACT_NAMES = {};
-export const getContractNames = async () => {
+export const getContractNames = async (ctx?: NextPageContext) => {
   if (Object.keys(CONTRACT_NAMES).length > 0) {
     return CONTRACT_NAMES;
   }
-  let res = {};
+  let res: IAllContractName = {},
+    url = API_PATH.GET_ALL_CONTRACT_NAME;
+  // ssr
+  if (typeof window === 'undefined') {
+    const host = process.env.BUILD_ENDPOINT || ctx?.req?.headers.host;
+    url = `${host}${url}`;
+  }
   try {
     res = await request(
-      API_PATH.GET_ALL_CONTRACT_NAME,
+      url,
       {},
       {
         method: 'GET',
@@ -320,8 +312,8 @@ export const getContractNames = async () => {
   } catch (e) {
     return CONTRACT_NAMES;
   }
-  const { list } = res || {};
-  CONTRACT_NAMES = (list || []).reduce(
+  const { list = [] } = res;
+  CONTRACT_NAMES = list.reduce(
     (acc, v) => ({
       ...acc,
       [v.address]: v,
@@ -389,7 +381,7 @@ function decodeBase64(str) {
   return buffer;
 }
 
-export async function deserializeLog(log, name, address) {
+export async function deserializeLog(log, name?, address?) {
   const { Indexed = [], NonIndexed } = log;
   let dataType;
   const contract = await getContract(defaultAElfInstance, address);
@@ -427,11 +419,13 @@ export async function deserializeLog(log, name, address) {
   return result;
 }
 
-export function sleep(timeout = 1000) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), timeout);
+export const sleep = (time) =>
+  new Promise((resolve) => {
+    const ids = setTimeout(() => {
+      clearTimeout(ids);
+      resolve('sleep');
+    }, time);
   });
-}
 
 export const omitString = (input, start = 8, end = 8) => {
   if (!input) return '';
@@ -439,6 +433,7 @@ export const omitString = (input, start = 8, end = 8) => {
 };
 
 import JSZip from 'jszip';
+import { IAllContractName } from 'page-components/Txs/types';
 
 function addFileOrFolder(zip, files) {
   files.forEach((file) => {
