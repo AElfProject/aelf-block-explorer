@@ -32,7 +32,7 @@ export const commonPrivateKey = '00000000000000000000000000000000000000000000000
 export const DEFAUTRPCSERVER =
   typeof window !== 'undefined'
     ? `${window?.location?.protocol}//${window?.location?.host}/chain`
-    : `${process.env.BUILD_ENDPOINT}/chain`;
+    : `${process.env.BUILD_ENDPOINT_CHAIN}/chain`;
 // const DEFAUTRPCSERVER = `https://explorer-test.aelf.io/chain`;
 module.exports = {
   DEFAUTRPCSERVER,
