@@ -1,2 +1,3 @@
 import Resource from 'page-components/Resource/Resource';
-export default Resource;
+import withNoSSR from 'utils/withNoSSR';
+export default withNoSSR(Resource);

@@ -8,7 +8,7 @@ import { Decimal } from 'decimal.js';
 import config from 'constants/config/config';
 
 export default function getResourceBalance(tokenContract, type) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     tokenContract.GetBalance.call({ symbol: type, owner: config.tokenConverter }, (error, result) => {
       if (result) {
         const resourceBalance = {

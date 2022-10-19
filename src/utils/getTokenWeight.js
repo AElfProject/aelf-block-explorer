@@ -8,7 +8,7 @@ import { Decimal } from 'decimal.js';
 import { SYMBOL } from 'constants';
 
 export default function getTokenWeight(tokenConverterContract) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     tokenConverterContract.GetPairConnector.call({ symbol: SYMBOL }, (error, result) => {
       const tokenWeight = {
         tokenWeight: new Decimal(result.weight) || 0,

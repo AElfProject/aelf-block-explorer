@@ -2,7 +2,7 @@
  * @file getTokenBalance.js
  * @author zhouminghui
  * @description get token balance
-*/
+ */
 import { Decimal } from 'decimal.js';
 
 export default function getTokenBalance(tokenConverterContract, type) {

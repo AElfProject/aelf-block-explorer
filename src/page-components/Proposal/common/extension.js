@@ -2,14 +2,12 @@
  * @file NightElfCheck
  * @author zhouminghui
  */
-import dynamic from 'next/dynamic';
 let AElfBridge = null;
 if (typeof window !== 'undefined') {
   AElfBridge = require('aelf-bridge');
 }
 
 import Promise from 'core-js-pure/actual/promise';
-// import { getPublicKeyFromObject } from 'utils/utils';
 import { getPublicKeyFromObject } from 'utils/utils';
 import contants from './constants';
 

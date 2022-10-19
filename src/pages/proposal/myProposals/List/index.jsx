@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Pagination, Input } from 'antd';
 import Total from 'components/Total';
+import TableLayer from 'components/TableLayer/TableLayer';
 
 const { Search } = Input;
 
@@ -29,16 +30,9 @@ const List = (props) => {
         onChange={searchChange}
         onSearch={onSearch}
       />
-      <div className="my-proposal-content-list">
-        <Table
-          dataSource={list}
-          columns={tableColumns}
-          loading={loading}
-          pagination={false}
-          rowKey={rowKey}
-          // scroll={{ x: 1300 }}
-        />
-      </div>
+      <TableLayer className="my-proposal-content-list">
+        <Table dataSource={list} columns={tableColumns} loading={loading} pagination={false} rowKey={rowKey} />
+      </TableLayer>
       <Pagination
         className="float-right gap-top"
         showQuickJumper

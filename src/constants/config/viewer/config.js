@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
-const queriedConfig = require('./config.json');
-
+let queriedConfig =
+  process.env.CHAIN_ID === 'AELF' ? require('../../platform/AELF').default : require('../../platform/tDVW').default;
 let config = {};
 
 if (process.env.NODE_ENV === 'production') {
@@ -11,5 +11,5 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
   ...queriedConfig,
-  ...config
+  ...config,
 };

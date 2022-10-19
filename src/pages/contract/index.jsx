@@ -13,6 +13,7 @@ require('./index.less');
 import { removePrefixOrSuffix, removeAElfPrefix, sendHeight } from 'utils/utils';
 import Bread from 'page-components/Address/Bread';
 import TableLayer from 'components/TableLayer/TableLayer';
+import withNoSSR from 'utils/withNoSSR';
 
 const { Search } = Input;
 
@@ -31,7 +32,7 @@ const ListColumn = [
           </Tooltip>
         </Link>
       ) : (
-        <>'-'</>
+        <>&apos;-&apos;</>
       ),
   },
   {
@@ -191,4 +192,4 @@ const ContractList = () => {
   );
 };
 
-export default React.memo(ContractList);
+export default React.memo(withNoSSR(ContractList));

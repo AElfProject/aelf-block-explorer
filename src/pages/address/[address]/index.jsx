@@ -16,6 +16,7 @@ require('styles/common.less');
 import Bread from 'page-components/Address/Bread';
 import TransferList from 'page-components/Address/TransferList';
 require('./index.less');
+import withNoSSR from 'utils/withNoSSR';
 
 const { Paragraph } = Typography;
 const { Content } = Layout;
@@ -50,7 +51,9 @@ async function getHeaderColumns(address, symbol) {
                       }}
                     />
                   ),
-                  onOk() {},
+                  onOk() {
+                    // no content
+                  },
                 });
               }}
             />
@@ -131,4 +134,4 @@ const AccountInfo = () => {
   );
 };
 
-export default React.memo(AccountInfo);
+export default React.memo(withNoSSR(AccountInfo));

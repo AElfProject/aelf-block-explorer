@@ -171,7 +171,7 @@ class RealTimeTransactions extends PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  ...state.common,
+  ...state.smallScreen,
 });
 
 export default connect(mapStateToProps)(RealTimeTransactions);

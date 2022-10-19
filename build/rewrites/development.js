@@ -8,18 +8,18 @@ module.exports = [
     // has: [
     //   {
     //     type: 'host',
-    //     value: 'explorer-test.aelf.io',
+    //     value: 'explorer-test-main.aelf.io',
     //   },
     // ],
     destination: 'https://explorer-test.aelf.io/cms/:path*',
   },
   {
-    source: '/api/:path*',
-    destination: 'https://explorer-test.aelf.io/api/:path*',
-  },
-  {
     source: '/api/blockChain',
     destination: 'https://explorer-test.aelf.io/chain/api/blockChain',
+  },
+  {
+    source: '/api/:path*',
+    destination: 'https://explorer-test.aelf.io/api/:path*',
   },
   {
     source: '/chain/:path*',

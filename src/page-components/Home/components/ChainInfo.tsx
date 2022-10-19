@@ -1,7 +1,20 @@
 import React, { useMemo } from 'react';
 import IconFont from '../../../components/IconFont';
-
-export default function ChainInfo({ blockHeight, localTransactions, reward, unconfirmedBlockHeight, localAccounts }) {
+import { IRewardDto } from '../types';
+interface IProps {
+  blockHeight: number;
+  localTransactions: number;
+  reward: IRewardDto;
+  unconfirmedBlockHeight: number | string;
+  localAccounts: number;
+}
+export default function ChainInfo({
+  blockHeight,
+  localTransactions,
+  reward,
+  unconfirmedBlockHeight,
+  localAccounts,
+}: IProps) {
   const infoList = useMemo(
     () => [
       {
@@ -45,8 +58,8 @@ export default function ChainInfo({ blockHeight, localTransactions, reward, unco
             <IconFont type={item.icon} />
           </div>
           <div className="right">
-            <p className="label">{item.label}</p>
-            <p className="value">{item.value}</p>
+            <div className="label">{item.label}</div>
+            <div className="value">{item.value}</div>
           </div>
         </div>
       ))}

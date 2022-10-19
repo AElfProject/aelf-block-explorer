@@ -215,6 +215,7 @@ export async function getTxResult(aelf, txId, times = 0, delay = 3000, timeLimit
 export const commonFilter = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
 export function getCsrfToken() {
+  // eslint-disable-next-line no-useless-escape
   return document.cookie.replace(/(?:(?:^|.*;\s*)csrfToken\s*\=\s*([^;]*).*$)|^.*$/, '$1');
 }
 

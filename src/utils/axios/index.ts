@@ -8,17 +8,21 @@
 import { configure } from 'axios-hooks';
 import LRU from 'lru-cache';
 import Axios from 'axios';
-import { BASE_URL, API, API_SCAN } from '../../constants/api';
+import { BASE_URL } from '../../constants/api';
 import { useAxiosTDVW } from './multipleHookInstances';
 import { interceptorsBind } from './utils';
-
+import { NextPageContext } from 'next';
 import { notification } from 'antd';
 import { create } from 'apisauce';
 import AElf from 'aelf-sdk';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 import { RPCSERVER } from '../../constants';
-
+const https = require('https');
+// At request level
+const agent = new https.Agent({
+  rejectUnauthorized: false,
+});
 // Please invoke axiosInit before any usages of the useAxios hook
 export default function initAxios() {
   const axios = Axios.create({
@@ -32,9 +36,7 @@ export default function initAxios() {
   configure({ axios, cache });
 }
 
-export { useAxiosTDVW, API, API_SCAN };
-
-// import apisauce from './utils/apisauce';
+export { useAxiosTDVW };
 
 const api = create({
   baseURL: '/api',
@@ -55,12 +57,28 @@ api.addResponseTransform((res) => {
 const aelf = new AElf(new AElf.providers.HttpProvider(RPCSERVER, 60000));
 
 const get = async (url: string, params?: any, config?: any) => {
-  const res = await api.get(url, params, config);
+  const res = await api.get(url, params, {
+    httpsAgent: agent,
+    ...config,
+  });
   if (res.ok) {
     return res.data;
   }
 
   httpErrorHandler(res.problem, res.problem);
+};
+
+const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: any) => {
+  const host = process.env.BUILD_ENDPOINT || ctx.req?.headers.host;
+  const baseUrl = '/api';
+  const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
+  const res = await api.get(wholeUrl, params, config);
+  // console.log(res, 'res');
+  if (res.ok) {
+    return res.data;
+  } else {
+    throw new Error(JSON.stringify(res));
+  }
 };
 
 let CONTRACT_NAMES = {};
@@ -155,4 +173,15 @@ function isAElfAddress(address) {
   }
 }
 
-export { get, post, aelf, format, formatKey, transactionFormat, transactionInfo, getContractNames, isAElfAddress };
+export {
+  get,
+  post,
+  getSSR,
+  aelf,
+  format,
+  formatKey,
+  transactionFormat,
+  transactionInfo,
+  getContractNames,
+  isAElfAddress,
+};

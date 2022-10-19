@@ -23,8 +23,9 @@ import {
   useCallbackAssem,
   useReleaseApprovedContractAction,
   useReleaseCodeCheckedContractAction,
-} from './utils.callback';
+} from '../../../page-components/Proposal/utils.callback';
 import ContractProposalModal from './ContractProposalModal';
+import withNoSSR from 'utils/withNoSSR';
 
 const { TabPane } = Tabs;
 
@@ -321,4 +322,4 @@ const CreateProposal = () => {
   );
 };
 
-export default CreateProposal;
+export default withNoSSR(CreateProposal);

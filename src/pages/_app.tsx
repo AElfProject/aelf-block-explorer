@@ -1,54 +1,86 @@
-import type { AppProps } from 'next/app';
-require('../styles/globals.less');
-require('../styles/common.less');
-require('../styles/antd.less');
+import { NextComponentType, NextPageContext } from 'next';
 import HeaderBlank from 'components/PageHead/HeaderBlank';
 import BrowserFooter from 'components/Footer/Footer';
 import BrowserBreadcrumb from 'components/Breadcrumb/Breadcrumb';
 import Container from 'components/Container/Container';
 import PageHead from 'components/PageHead/Header';
-import ProposalApp from './_proposalApp';
 import dynamic from 'next/dynamic';
+const ProposalApp = dynamic(() => import('./_proposalApp'), { ssr: false });
 import { store } from '../redux/store';
 import { Provider as ReduxProvider } from 'react-redux';
 import initAxios from '../utils/axios';
 import { useRouter } from 'next/router';
-const Provider = dynamic(import('hooks/Providers/ProviderBasic'), { ssr: false });
+import Provider from 'hooks/Providers/ProviderBasic';
 import Cookies from 'js-cookie';
-import { get } from 'utils/axios';
+import { get, getSSR } from 'utils/axios';
 import config from 'constants/config/config';
-initAxios();
+import { getCMSDelayRequestSSR } from 'utils/getCMS';
+import Head from 'next/head';
 
-const ROUTES_DEFAULT: any = {
+require('../styles/globals.less');
+require('../styles/common.less');
+require('../styles/antd.less');
+type AppProps = {
+  pageProps: any;
+  Component: NextComponentType<NextPageContext, any, any> & { layoutProps: any };
+};
+interface NodesInfoItem {
+  api_domain: string;
+  api_ip: string;
+  chain_id: string;
+  contract_address: string;
+  create_time: string;
+  id: number;
+  owner: string;
+  rpc_domain: string;
+  rpc_ip: string;
+  status: number;
+  token_name: string;
+}
+interface NodesInfoDto {
+  list: NodesInfoItem[];
+}
+interface RouteDefaultDto {
+  [key: string]: string;
+}
+const ROUTES_DEFAULT: RouteDefaultDto = {
   apply: '/proposal/proposals',
   myProposals: '/proposal/proposals',
   createOrganizations: '/proposal/organizations',
 };
-
 const PROPOSAL_URL = ['proposals', 'proposalsDetail', 'organizations', 'createOrganizations', 'apply', 'myProposals'];
+const nodesInfoProvider = '/nodes/info';
 async function getNodesInfo() {
-  const nodesInfoProvider = '/nodes/info';
-  const nodesInfo = await get(nodesInfoProvider);
-
+  const nodesInfo = (await get(nodesInfoProvider)) as NodesInfoDto;
   if (nodesInfo && nodesInfo.list) {
     const nodesInfoList = nodesInfo.list;
     localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
-
-    // todo: MAIN_CHAIN_ID CHAIN_ID
-    const nodeInfo = nodesInfoList.find((item) => {
+    const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
       if (item.chain_id === config.CHAIN_ID) {
         return item;
       }
-    });
+    })!;
     const { contract_address, chain_id } = nodeInfo;
     localStorage.setItem('currentChain', JSON.stringify(nodeInfo));
     Cookies.set('aelf_ca_ci', contract_address + chain_id);
   }
-  // TODO: turn to 404 page.
+}
+async function getNodesInfoSSR(ctx: NextPageContext) {
+  const nodesInfo = (await getSSR(ctx, nodesInfoProvider)) as NodesInfoDto;
+  const nodesInfoList = nodesInfo?.list;
+  const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
+    if (item.chain_id === config.CHAIN_ID) {
+      return item;
+    }
+  })!;
+  return nodeInfo;
 }
 
-if (typeof window !== 'undefined') {
-  getNodesInfo();
+async function fetchChainList(ctx: NextPageContext) {
+  const data = await getCMSDelayRequestSSR(0);
+  if (data && data.chainItem) {
+    return data.chainItem;
+  }
 }
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -57,19 +89,39 @@ const APP = ({ Component, pageProps }: AppProps) => {
   pageProps.default = ROUTES_DEFAULT[pathKey];
   return (
     <ReduxProvider store={store}>
-      <PageHead />
+      <Head>
+        <title>AELF Block Explorer</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"></meta>
+      </Head>
       <Provider>
+        <PageHead {...pageProps} />
         <HeaderBlank />
         <BrowserBreadcrumb />
         <Container>
           {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
         </Container>
-        <BrowserFooter />
+        <BrowserFooter {...pageProps} />
       </Provider>
     </ReduxProvider>
   );
 };
-
-export default dynamic(() => Promise.resolve(APP), {
-  ssr: false,
-});
+APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
+  const time = new Date().getTime();
+  let nodeInfo, chainList;
+  const headers = ctx.req?.headers;
+  initAxios();
+  if (typeof window === 'undefined') {
+    nodeInfo = await getNodesInfoSSR(ctx);
+    // chainList = await fetchChainList(ctx);
+  } else {
+    getNodesInfo();
+  }
+  return {
+    pageProps: {
+      nodeinfo: nodeInfo,
+      headers,
+      chainlist: chainList,
+    },
+  };
+};
+export default APP;

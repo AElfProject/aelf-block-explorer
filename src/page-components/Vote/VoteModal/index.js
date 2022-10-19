@@ -13,7 +13,7 @@ import {
   INTEGER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
   FEE_TIP,
-} from 'constants/info';
+} from 'constants';
 import { FROM_WALLET, FROM_EXPIRED_VOTES, FROM_ACTIVE_VOTES } from 'page-components/Vote/constants';
 import { thousandsCommaWithDecimal } from 'utils/formater';
 require('./index.less');
@@ -335,7 +335,6 @@ class VoteModal extends Component {
       // For old wallet app. We can not receive close event
       setVoteConfirmLoading(false);
     }, 60 * 1000);
-
     this.formRef.current.validateFields(formItemsNeedToValidate).then(
       (values) => {
         changeVoteState(values, () => {
@@ -471,7 +470,9 @@ class VoteModal extends Component {
                     checked={voteType === form.type}
                     value={form.type}
                     style={{ marginRight: 10 }}
-                    onChange={() => {}}
+                    onChange={() => {
+                      // no content
+                    }}
                   />
                   <label htmlFor={form.label}>{form.label}</label>
                 </span>

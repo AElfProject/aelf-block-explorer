@@ -20,36 +20,28 @@ import getResourceConverter from './getResourceConverter';
  * @param {Object} tokenContract
  *
  */
-export default function getEstimatedValueRes(
-  type,
-  sellResource,
-  tokenConverterContract,
-  tokenContract,
-  switchMode,
-) {
-  return getResourceConverter(type, tokenConverterContract, tokenContract).then(
-    (result) => {
-      if (result) {
-        let elfPayout = null;
-        if (switchMode) {
-          elfPayout = GetReturnFromPaid(
-            result.elfBalance,
-            result.tokenWeight,
-            result.resourceBalance,
-            result.resourceWeight,
-            sellResource,
-          );
-        } else {
-          elfPayout = GetReturnFromPaid(
-            result.resourceBalance,
-            result.resourceWeight,
-            result.elfBalance,
-            result.tokenWeight,
-            sellResource,
-          );
-        }
-        return elfPayout;
+export default function getEstimatedValueRes(type, sellResource, tokenConverterContract, tokenContract, switchMode) {
+  return getResourceConverter(type, tokenConverterContract, tokenContract).then((result) => {
+    if (result) {
+      let elfPayout = null;
+      if (switchMode) {
+        elfPayout = GetReturnFromPaid(
+          result.elfBalance,
+          result.tokenWeight,
+          result.resourceBalance,
+          result.resourceWeight,
+          sellResource,
+        );
+      } else {
+        elfPayout = GetReturnFromPaid(
+          result.resourceBalance,
+          result.resourceWeight,
+          result.elfBalance,
+          result.tokenWeight,
+          sellResource,
+        );
       }
-    },
-  );
+      return elfPayout;
+    }
+  });
 }

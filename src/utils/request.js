@@ -16,12 +16,9 @@ const defaultRequestOptions = {
 
 const http = axios.create(defaultRequestOptions);
 
-const needPurify = (rawData) => (isObject(rawData) && !Array.isArray(rawData));
-const purify = (rawData) => (needPurify(rawData)
-  ? omitBy((value) => value === null
-    || value === undefined
-    || value === '')(rawData)
-  : rawData);
+const needPurify = (rawData) => isObject(rawData) && !Array.isArray(rawData);
+const purify = (rawData) =>
+  needPurify(rawData) ? omitBy((value) => value === null || value === undefined || value === '')(rawData) : rawData;
 
 /**
  * @desc 处理xhr status 200,但是数据status不为200的情况
@@ -59,7 +56,7 @@ const makeRequestConfig = (url, params, { headers = {}, ...extraOptions }) => {
   } else if (config.method.toUpperCase() === 'POST') {
     config.data = data;
   } else {
-    throw new Error(`don\'t support http method ${config.method.toUpperCase()}`);
+    throw new Error(`don't support http method ${config.method.toUpperCase()}`);
   }
 
   return config;
@@ -71,5 +68,5 @@ const makeRequestConfig = (url, params, { headers = {}, ...extraOptions }) => {
  * @param {Object} params 参数
  * @param {Object} extraOptions 额外的参数
  */
-export const request = (url, params, extraOptions = {}) => http.request(makeRequestConfig(url, params, extraOptions))
-  .then((res) => handleInvalidError(res), handleRequestError);
+export const request = (url, params, extraOptions = {}) =>
+  http.request(makeRequestConfig(url, params, extraOptions)).then((res) => handleInvalidError(res), handleRequestError);

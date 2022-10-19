@@ -20,6 +20,7 @@ require('./index.less');
 import Bread from 'page-components/Address/Bread';
 import EventList from 'page-components/Address/EventList';
 import TransferList from 'page-components/Address/TransferList';
+import withNoSSR from 'utils/withNoSSR';
 
 const { Paragraph } = Typography;
 const { Content } = Layout;
@@ -120,4 +121,4 @@ const ContractInfo = () => {
   );
 };
 
-export default React.memo(ContractInfo);
+export default React.memo(withNoSSR(ContractInfo));

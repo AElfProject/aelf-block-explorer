@@ -24,8 +24,8 @@ export default class TPSChart extends React.Component {
     this.interval = 60 * 1000; // 1 minute
     this.delay = 5 * 60 * 1000; // 5 minute
     this.state = {
-      ownList: [],
-      allList: [],
+      ownList: props.own || [],
+      allList: props.all || [],
     };
     this.hadRenderedOnce = false;
     this.getTpsDataTimer = null;
@@ -134,7 +134,6 @@ export default class TPSChart extends React.Component {
         axisLine: {
           show: false,
           lineStyle: {
-            // color: '#C7B8CC'
             color: '#999',
           },
         },
@@ -147,7 +146,6 @@ export default class TPSChart extends React.Component {
         axisLine: {
           show: false,
           lineStyle: {
-            // color: '#C7B8CC'
             color: '#999',
           },
         },
@@ -179,8 +177,6 @@ export default class TPSChart extends React.Component {
           smooth: true,
           type: 'line',
           itemStyle: {
-            // color: '#D24CFF'
-            // color: '#666'
             opacity: 0,
           },
           areaStyle: {

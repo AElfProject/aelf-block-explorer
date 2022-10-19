@@ -1,4 +1,4 @@
-import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from './config/config';
+import config, { DEFAUTRPCSERVER } from './config/config';
 import Link from 'next/link';
 import React from 'react';
 import dayjs from 'dayjs';
@@ -9,7 +9,7 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { removeAElfPrefix } from '../utils/utils';
 dayjs.extend(relativeTime);
 import BigNumber from 'bignumber.js';
-
+const { SYMBOL, CHAIN_ID } = config;
 // for address
 const globalConfig = {
   isMobile: false,
@@ -35,7 +35,7 @@ export const prefixCls = process.env.NEXT_PUBLIC_CSS_APP_PREFIX;
 
 export const MaxUint256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
-const LOWER_SYMBOL = SYMBOL.toLocaleLowerCase();
+const LOWER_SYMBOL = SYMBOL?.toLocaleLowerCase();
 const PAGE_SIZE = 25;
 // todo: remove ELF_DECIMAL
 const ELF_DECIMAL = 100000000;
@@ -297,10 +297,9 @@ const RESOURCE_DETAILS_COLUMN = [
     render: (text: string, row: any) => {
       const { method } = row;
       let { elf, fee } = row;
-      let actualNumber;
       elf /= ELF_DECIMAL;
       fee /= ELF_DECIMAL;
-      actualNumber = (method === 'Buy' ? elf + fee : elf - fee).toFixed(ELF_PRECISION);
+      const actualNumber = (method === 'Buy' ? elf + fee : elf - fee).toFixed(ELF_PRECISION);
       return actualNumber;
     },
   },
@@ -324,6 +323,7 @@ const RESOURCE_DETAILS_COLUMN = [
 ];
 
 export {
+  RESOURCE_DETAILS_COLUMN,
   PAGE_SIZE,
   RPCSERVER,
   BLOCKS_LIST_COLUMNS,

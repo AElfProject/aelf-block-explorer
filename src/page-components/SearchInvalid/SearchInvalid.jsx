@@ -24,10 +24,10 @@ function SearchInvalid() {
       <p className="warning">Sorry! This is an invalid search string.</p>
       <Search />
       <Link href="/" className="back-btn">
-        <>
+        <a>
           <IconFont type="right2" />
           Back Home
-        </>
+        </a>
       </Link>
     </div>
   );

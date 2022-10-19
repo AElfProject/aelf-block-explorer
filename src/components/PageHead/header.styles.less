@@ -10,10 +10,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
-  //box-shadow: 0 2px 10px rgba(151,164,175,.1);
   box-shadow: 0 3px 6px 0 rgb(0 0 0 / 8%);
-  //background-color: rgba(0, 0, 0, 0.5);
   background-color: @bgBlankWhite;
   height: fit-content;
   font-family: @font-header-sets;
@@ -402,6 +399,15 @@
   }
 }
 .header-main-container-mobile {
+  .net-select-container {
+    .ant-select-selector {
+      background: transparent !important;
+      border-color: white !important;
+    }
+    .ant-select-selection-item {
+      color: white;
+    }
+  }
   .aelf-logo-container {
     & > svg {
       width: 72px;
@@ -454,7 +460,6 @@
       align-items: center;
     }
     .ant-menu-inline .ant-menu-submenu .ant-menu-inline {
-      // .ant-menu-item-selected {}
       width: 130%;
       margin-left: -32px;
       padding-left: 0;
@@ -639,11 +644,30 @@
   .ant-menu-submenu-title {
     background-color: @headerbgColor1;
     color: @textContextWhite;
-    & > a {
+    & a {
       color: @textContextWhite;
     }
   }
+  .net-select-container {
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      background: transparent !important;
+    }
+  }
 
+  .ant-menu-submenu-open {
+    > div > .ant-menu-submenu-expand-icon {
+      transform: rotate(180deg);
+      color: @mariner !important;
+    }
+  }
+  .ant-menu-submenu-active {
+    .ant-menu-submenu-expand-icon {
+      color: white;
+    }
+  }
+  .ant-menu-submenu-expand-icon {
+    color: white;
+  }
   .ant-menu-inline {
     .ant-menu-submenu-selected {
       & > .ant-menu-submenu-title {

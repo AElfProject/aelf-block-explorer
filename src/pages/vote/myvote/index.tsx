@@ -1,2 +1,3 @@
 import VotePage from 'page-components/Vote/Vote';
-export default VotePage;
+import withNoSSR from 'utils/withNoSSR';
+export default withNoSSR(VotePage);

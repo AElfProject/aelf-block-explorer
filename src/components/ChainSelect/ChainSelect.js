@@ -3,15 +3,14 @@
  * @author huangzongzhe
  */
 import React, { Component } from 'react';
-
 import { Select } from 'antd';
+import config from 'constants/config/config';
 require('./ChainSelect.styles.less');
-import { CHAIN_ID } from '../../constants';
 
 const { Option } = Select;
 export default class ChainSelect extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   changeChain(chainId) {
@@ -32,7 +31,7 @@ export default class ChainSelect extends Component {
   }
 
   render() {
-    const defaultValue = CHAIN_ID;
+    const defaultValue = config.CHAIN_ID;
     const optionsHTML = this.renderOptions();
 
     return (

@@ -2,7 +2,7 @@
  * @file Viewer
  * @author atom-yang
  */
-import React, { useEffect, useState, lazy, Suspense, useContext } from 'react';
+import React, { useEffect, useState, Suspense, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -20,9 +20,8 @@ import { GlobalContext } from 'constants/misc';
 require('./index.less');
 import { LinkIcon, CodeIcon } from 'assets/icons/addressIcon';
 import AddressLink from 'page-components/Address/AddressLink';
-// import Viewer from 'page-components/Address/Viewer'
-const Viewer = lazy(() => import(/* webpackChunkName: "viewer" */ 'page-components/Address/Viewer'));
-
+import dynamic from 'next/dynamic';
+const Viewer = dynamic(() => import('page-components/Address/Viewer'), { suspense: true });
 function getDefaultFile(files = [], names = [], index = 0, path = '') {
   const filtered = files.filter((v) => v.name === names[index]);
   if (filtered.length === 0) {

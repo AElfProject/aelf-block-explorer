@@ -9,9 +9,9 @@ import { NO_AUTHORIZATION_ERROR_TIP, UNLOCK_PLUGIN_TIP } from 'constants/info';
 import getCurrentWallet from 'utils/getCurrentWallet';
 import { urlRegExp } from 'page-components/Vote/constants';
 import { addUrlPrefix, removeUrlPrefix } from 'utils/formater';
-require('./index.less');
 import { getPublicKeyFromObject } from 'utils/getPublicKey';
 import { LockTwoTone } from '@ant-design/icons';
+require('./index.less');
 
 const { TextArea } = Input;
 
@@ -227,9 +227,9 @@ class KeyInTeamInfo extends PureComponent {
                   {...TeamInfoFormItemLayout}
                   onSubmit={this.handleSubmit}>
                   {teamInfoKeyInForm.formItems &&
-                    teamInfoKeyInForm.formItems.map((item) => {
+                    teamInfoKeyInForm.formItems.map((item, index) => {
                       return (
-                        <div>
+                        <div key={`${item.label}_${index}`}>
                           {item.validator ? (
                             <Form.Item
                               label={item.label}

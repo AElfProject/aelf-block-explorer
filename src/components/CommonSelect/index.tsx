@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import IconFont from 'components/IconFont';
 import React from 'react';
 import styles from './styles.module.less';
-export default function CommonSelect({ className, popupClassName, ...props }: SelectProps) {
+export default function CommonSelect({ className, popupClassName, ...props }: any) {
   return (
     <Select
       clearIcon={<IconFont onClick={(e) => e.stopPropagation()} type="ErrorClose" />}

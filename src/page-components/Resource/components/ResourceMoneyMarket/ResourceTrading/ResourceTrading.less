@@ -22,7 +22,7 @@
       width: auto;
       .ant-input-number {
         width: 100%;
-        color: #333333;
+        color: #333;
       }
     }
   }
@@ -112,15 +112,14 @@
 
 .modal-display-box {
   .ant-modal-content {
+    text-align: center;
     .ant-modal-header {
       color: @textContext;
       text-align: center;
-      border-bottom: 1px solid #e8e8e8;
       padding: 0 24px;
 
       .ant-modal-title {
         color: @textContext;
-        font-size: 28px;
         line-height: 50px;
       }
     }
@@ -135,7 +134,7 @@
   z-index: 100;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgb(0 0 0 / 70%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,11 +161,12 @@
   &::placeholder {
     color: #bfbfbf;
   }
+
   width: 100%;
   height: 28px;
   line-height: 28px;
   border: 1px solid #d9d9d9;
-  padding: 0 8px 0 8px;
+  padding: 0 8px;
   border-radius: 3px;
-  -webkit-appearance: none;
+  appearance: none;
 }
