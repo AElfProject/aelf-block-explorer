@@ -51,7 +51,6 @@ const NO_AUTHORIZATION_ERROR_TIP = "Sorry, you temporarily don't has the authori
 const INPUT_SOMETHING_TIP = 'Sorry, you should input something';
 const INTEGER_TIP = 'It can only be integer';
 const UNLOCK_PLUGIN_TIP = 'Your plugin has beed locked, please unlock and refresh the page';
-const GET_TIP = 'It can only be integer';
 const ALREADY_BEEN_CURRENT_CANDIDATE_TIP = 'You already been candidate';
 const NOT_CURRENT_CANDIDATE_TIP =
   'Sorry, the node is not current candidate \n Please refresh the page then choose another node to vote.';
@@ -69,7 +68,6 @@ const SHORTEST_LOCK_TIME = 90; // day
 export {
   LOG_STATUS,
   LOADING_STATUS,
-  GET_TIP,
   TXSSTATUS,
   txStatusInUpperCase,
   IE_ADVICE,

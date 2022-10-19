@@ -10,7 +10,7 @@ import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from 'constants';
 
 const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
-  return (value + '').replace(reg, '$&,');
+  return `${value}`.replace(reg, '$&,');
 };
 const numberFormatter = (number) => {
   const num = Number(number);

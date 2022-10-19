@@ -9,7 +9,7 @@ import { request } from 'utils/request';
 import config from 'constants/viewerApi';
 import Total from 'components/Total';
 import { sendHeight } from 'utils/utils';
-import AddressLink from '../AddressLink';
+import AddressLink from '../../../components/AddressLink';
 import TableLayer from 'components/TableLayer/TableLayer';
 
 function getListColumn(preTotal) {

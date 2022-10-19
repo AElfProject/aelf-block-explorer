@@ -1,11 +1,11 @@
 module.exports = [
   {
-    source: '/api/blockChain',
-    destination: 'https://explorer-test.aelf.io/chain/api/blockChain',
-  },
-  {
     source: '/api/:path*',
     destination: 'https://explorer-test.aelf.io/api/:path*',
+  },
+  {
+    source: '/api/blockChain/:path*',
+    destination: 'https://explorer-test.aelf.io/chain/api/blockChain/:path*',
   },
   {
     source: '/cms/:path*',

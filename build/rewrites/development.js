@@ -13,13 +13,14 @@ module.exports = [
     // ],
     destination: 'https://explorer-test.aelf.io/cms/:path*',
   },
-  {
-    source: '/api/blockChain',
-    destination: 'https://explorer-test.aelf.io/chain/api/blockChain',
-  },
+
   {
     source: '/api/:path*',
     destination: 'https://explorer-test.aelf.io/api/:path*',
+  },
+  {
+    source: '/api/blockChain',
+    destination: 'https://explorer-test.aelf.io/chain/api/blockChain',
   },
   {
     source: '/chain/:path*',

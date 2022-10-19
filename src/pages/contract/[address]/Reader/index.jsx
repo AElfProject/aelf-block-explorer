@@ -19,7 +19,7 @@ import config, { API_PATH } from 'constants/viewerApi';
 import { GlobalContext } from 'constants/misc';
 require('./index.less');
 import { LinkIcon, CodeIcon } from 'assets/icons/addressIcon';
-import AddressLink from 'page-components/Address/AddressLink';
+import AddressLink from 'components/AddressLink';
 import dynamic from 'next/dynamic';
 const Viewer = dynamic(() => import('page-components/Address/Viewer'), { suspense: true });
 function getDefaultFile(files = [], names = [], index = 0, path = '') {

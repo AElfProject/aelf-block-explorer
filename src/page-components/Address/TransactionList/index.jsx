@@ -12,7 +12,7 @@ import config from 'constants/viewerApi';
 import { getContractNames, removeAElfPrefix, sendHeight } from 'utils/utils';
 import Total from 'components/Total';
 import Dividends from 'components/Dividends';
-import AddressLink from '../AddressLink';
+import AddressLink from '../../../components/AddressLink';
 import TableLayer from 'components/TableLayer/TableLayer';
 
 function getTableColumns(contractNames, ownerAddress) {

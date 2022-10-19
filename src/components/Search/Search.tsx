@@ -3,19 +3,32 @@
  * @author huangzongzhe
  */
 import React, { PureComponent } from 'react';
-import AElf from 'aelf-sdk';
 import { NextRouter, withRouter } from 'next/router';
-import { isAElfAddress, get } from 'utils/axios';
 import { Input } from 'antd';
 import IconFont from '../IconFont';
+import { getHandleSearch } from 'utils/search';
 require('./search.styles.less');
 
 interface IProps {
   router: NextRouter;
 }
-class Search extends PureComponent<IProps> {
-  state = {
-    content: '',
+class Search extends PureComponent<
+  IProps,
+  {
+    content: string;
+  }
+> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      content: '',
+    };
+  }
+
+  handleSearch = () => {
+    const navigate = this.props.router.push;
+    const { content } = this.state;
+    getHandleSearch(navigate, content)();
   };
   userNameInput;
   emitEmpty = () => {
@@ -31,87 +44,6 @@ class Search extends PureComponent<IProps> {
     });
   };
 
-  SEARCHRULES = {
-    address: (value, navigate) => {
-      this.setState({
-        content: '',
-      });
-      navigate(`/address/${value}`);
-    },
-    transaction: async (value, navigate) => {
-      const getTxsOption = {
-        limit: 1,
-        page: 0,
-        block_hash: value,
-      };
-
-      const blockInfo = await get('/block/transactions', getTxsOption);
-      const isBlock = blockInfo.transactions && blockInfo.transactions.length;
-      this.setState({
-        content: '',
-      });
-      if (isBlock) {
-        navigate(`/block/${value}`);
-      } else {
-        navigate(`/tx/${value}`);
-      }
-    },
-    blockHeight: (value, navigate) => {
-      const number = parseInt(value, 10);
-      if (number == value) {
-        this.setState({
-          content: '',
-        });
-        navigate(`/block/${value}`);
-        return true;
-      }
-      return false;
-    },
-  };
-
-  handleSearch = (e) => {
-    let value = (e.target && e.target.value) || e.searchValue || '';
-    value = value.trim();
-    if (!value.trim()) {
-      return;
-    }
-
-    if (value.indexOf('_') > 0) {
-      value = value.split('_')[1];
-    }
-
-    // AElf.utils;
-    // value = ;
-
-    const { length } = value;
-    const isTxid = [64];
-
-    // address.length === 38/66 && address.match(/^0x/)
-    // search
-    // 0. 0x
-    // 1. transaction 66
-    // 2. block   66
-    // 3. address length=38
-    if (`${value}`.startsWith('-')) {
-      location.href = '/search-invalid/' + ((e.target && e.target.value) || e.searchValue);
-      return;
-    }
-    if (+value === 0) {
-      location.href = '/search-invalid/' + ((e.target && e.target.value) || e.searchValue);
-      return;
-    }
-
-    if (isAElfAddress(value)) {
-      const address = AElf.utils.encodeAddressRep(AElf.utils.decodeAddressRep(value));
-      this.SEARCHRULES.address(address, this.props.router.push);
-    } else if (isTxid.includes(length)) {
-      this.SEARCHRULES.transaction(value, this.props.router.push);
-    } else {
-      this.SEARCHRULES.blockHeight(value, this.props.router.push) ||
-        (location.href = '/search-invalid/' + ((e.target && e.target.value) || e.searchValue));
-    }
-  };
-
   render() {
     const { content } = this.state;
     return (
@@ -124,13 +56,7 @@ class Search extends PureComponent<IProps> {
           ref={(node) => (this.userNameInput = node)}
           onPressEnter={this.handleSearch}
         />
-        <span
-          className="search-icon-container"
-          onClick={() =>
-            this.handleSearch({
-              searchValue: this.state.content,
-            })
-          }>
+        <span className="search-icon-container" onClick={this.handleSearch}>
           <IconFont type="Search" />
         </span>
       </div>

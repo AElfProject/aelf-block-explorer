@@ -7,6 +7,7 @@ import { Drawer, Divider } from 'antd';
 import Menu, { SubMenu, Item as MenuItem } from 'rc-menu';
 import Link from 'next/link';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 import { getPathnameFirstSlash } from 'utils/urlUtils';
 import { setIsSmallScreen } from 'redux/features/smallScreen/isSmallScreen';
 import Search from '../Search/Search';
@@ -99,7 +100,7 @@ class BrowserHeader extends Component<IProps, any> {
       const whiteList = [
         ['/block', 'Block'],
         ['/tx', 'Transaction'],
-        ['/address', '/address'],
+        ['/address', 'Address'],
         ['/vote', '/vote'],
         ['/voteold', '/vote'],
       ];
@@ -108,7 +109,7 @@ class BrowserHeader extends Component<IProps, any> {
 
       if (target && current !== target[1]) {
         // white list
-        pathname = target[1];
+        [, pathname] = target;
         this.setState({
           current: pathname,
           showSearch,
@@ -149,8 +150,8 @@ class BrowserHeader extends Component<IProps, any> {
   handleScroll() {
     if (window.location.pathname === '/') {
       const showSearch = this.getSearchStatus();
-
-      if (showSearch !== this.state.showSearch) {
+      const { showSearch: stateShowSearch } = this.state;
+      if (showSearch !== stateShowSearch) {
         this.setState({
           showSearch,
         });
@@ -207,6 +208,7 @@ class BrowserHeader extends Component<IProps, any> {
   }
 
   renderMenu(menuMode: MenuMode | AntdMenuMode, showMenu = true) {
+    const { current } = this.state;
     let nodeInfo;
     if (typeof window !== 'undefined') {
       nodeInfo = JSON.parse(localStorage.getItem('currentChain') as string);
@@ -240,7 +242,7 @@ class BrowserHeader extends Component<IProps, any> {
       <Menu
         style={{ minWidth: 0, flex: 'auto' }}
         onClick={this.handleClick}
-        selectedKeys={[this.state.current]}
+        selectedKeys={[current]}
         mode={menuMode}
         key="navbar"
         className={menuClass}
@@ -279,11 +281,11 @@ class BrowserHeader extends Component<IProps, any> {
           </SubMenu>
 
           <SubMenu key="Address" title="Address" {...this.props}>
-            <MenuItem key="/address">
-              <Link href="/address">Accounts</Link>
+            <MenuItem key="/accounts">
+              <Link href="/accounts">Top Accounts</Link>
             </MenuItem>
-            <MenuItem key="/contract">
-              <Link href="/contract">Contracts</Link>
+            <MenuItem key="/contracts">
+              <Link href="/contracts">Contracts</Link>
             </MenuItem>
           </SubMenu>
         </SubMenu>
@@ -323,8 +325,9 @@ class BrowserHeader extends Component<IProps, any> {
   }
 
   toggleMenu() {
+    const { showMobileMenu } = this.state;
     this.setState({
-      showMobileMenu: !this.state.showMobileMenu,
+      showMobileMenu: !showMobileMenu,
     });
   }
 
@@ -338,6 +341,7 @@ class BrowserHeader extends Component<IProps, any> {
   }
 
   renderDrawerMenu(menuMode: AntdMenuMode, showMenu = true) {
+    const { chainList } = this.state;
     return (
       <Drawer
         getContainer={false}
@@ -353,7 +357,7 @@ class BrowserHeader extends Component<IProps, any> {
             <IconFont type="ErrorClose" className="close-icon" onClick={() => this.toggleMenu()} />
           </>
         }>
-        <NetSelect chainList={this.state.chainList} />
+        <NetSelect chainList={chainList} />
         {this.renderMenu(menuMode, showMenu)}
       </Drawer>
     );
@@ -362,47 +366,43 @@ class BrowserHeader extends Component<IProps, any> {
   render() {
     const menuMode: AntdMenuMode = this.isPhone ? 'inline' : 'horizontal';
     const mobileMoreHTML = this.isPhone ? this.renderMobileMore() : '';
+    const { showMobileMenu, showSearch, chainList } = this.state;
     let menuHtml;
     if (this.isPhone) {
-      menuHtml = this.renderDrawerMenu(menuMode, this.state.showMobileMenu);
+      menuHtml = this.renderDrawerMenu(menuMode, showMobileMenu);
     } else {
       menuHtml = this.renderMenu(menuMode);
     }
 
-    const headerClass = this.isPhone ? 'header-container header-container-mobile' : 'header-container';
-    const networkClass = this.isPhone
-      ? NETWORK_TYPE === 'MAIN'
-        ? ' header-main-container-mobile'
-        : ''
-      : NETWORK_TYPE === 'MAIN'
-      ? ' header-main-container'
-      : '';
-    const onlyMenu = this.state.showSearch ? '' : 'only-menu ';
-    const isMainNet = NETWORK_TYPE === 'MAIN' ? 'main-net' : 'test-net';
+    const isMain = NETWORK_TYPE === 'MAIN';
+    const headerClass = clsx('header-container', this.isPhone && 'header-container-mobile');
+    const networkClass = clsx(isMain && `header-main-container${this.isPhone ? '-mobile' : ''}`);
+    const onlyMenu = showSearch ? '' : 'only-menu ';
+    const isMainNet = isMain ? 'main-net' : 'test-net';
 
     return (
-      <div className={'header-fixed-container ' + onlyMenu + isMainNet}>
+      <div className={`header-fixed-container ${onlyMenu}${isMainNet}`}>
         <div>
           {!this.isPhone && (
             <HeaderTop
-              showSearch={this.state.showSearch}
-              headerClass={headerClass}
+              showSearch={showSearch}
+              headerClass={clsx(headerClass)}
               menuMode={menuMode}
               networkList={networkList}
               headers={this.props.headers}
             />
           )}
-          <div className={headerClass + networkClass}>
+          <div className={clsx(headerClass, networkClass)}>
             {mobileMoreHTML}
 
-            <nav className={'header-navbar ' + (NETWORK_TYPE === 'MAIN' ? 'header-main-navbar' : '')}>
+            <nav className={clsx('header-navbar', isMain && 'header-main-navbar')}>
               {menuHtml}
-              {this.isPhone && this.state.showSearch && (
+              {this.isPhone && showSearch && (
                 <div className="search-mobile-container">
                   <Search />
                 </div>
               )}
-              {!this.isPhone && <ChainSelect chainList={this.state.chainList} />}
+              {!this.isPhone && <ChainSelect chainList={chainList} />}
             </nav>
           </div>
         </div>

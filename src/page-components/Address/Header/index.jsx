@@ -8,7 +8,7 @@ import { If, Then } from 'react-if';
 import { Tag, Divider, Tooltip } from 'antd';
 import { LinkIcon } from 'assets/icons/addressIcon';
 require('./index.less');
-import AddressLink from '../AddressLink';
+import AddressLink from '../../../components/AddressLink';
 
 const Header = (props) => {
   const { author, isSystemContract, contractName } = props;

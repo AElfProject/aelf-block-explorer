@@ -8,7 +8,7 @@ import moment from 'moment';
 import TransactionList from '../TransactionList';
 import config from 'constants/viewerApi';
 import Dividends from 'components/Dividends';
-import AddressLink from '../AddressLink';
+import AddressLink from '../../../components/AddressLink';
 
 function getColumns(contractNames, ownerAddress) {
   return [
