@@ -9,7 +9,7 @@ interface Transaction {
 }
 export interface IInfo {
   TransactionId: string;
-  Status: string;
+  Status: 'MINED' | 'FAILED' | 'PENDING';
   Logs: any[];
   Bloom: string;
   BlockNumber: number;

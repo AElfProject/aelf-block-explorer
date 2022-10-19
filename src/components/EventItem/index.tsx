@@ -41,7 +41,7 @@ const EventItem = (props) => {
     <div className="event-item gap-bottom">
       <TextArea
         readOnly
-        rows="6"
+        rows={6}
         spellCheck={false}
         value={JSON.stringify(result, null, 2)}
         className="event-item-text-area gap-bottom"

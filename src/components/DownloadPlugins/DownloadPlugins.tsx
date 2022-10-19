@@ -3,11 +3,13 @@
  * @author zhouminghui yangpeiyang
  */
 
-import React, { PureComponent } from 'react';
+import React, { CSSProperties, PureComponent } from 'react';
 import { Row, Col } from 'antd';
 require('./DownloadPlugins.less');
-
-export default class DownloadPlugins extends PureComponent {
+interface IProps {
+  style?: CSSProperties;
+}
+export default class DownloadPlugins extends PureComponent<IProps> {
   getDownload() {
     console.log('下载');
   }

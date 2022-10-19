@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import IconFont from '../IconFont/index';
 
 require('./StatusTag.style.less');
-export default function StatusTag({ status }) {
+
+export default function StatusTag({ status }: { status: 'MINED' | 'FAILED' | 'PENDING' }) {
   const statusObj = useMemo(
     () => ({
       MINED: 'Success',

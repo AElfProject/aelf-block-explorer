@@ -9,13 +9,13 @@
 import React, { PureComponent } from 'react';
 import { Tooltip, Statistic, Spin } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { IProps, IState } from './types';
 require('./index.less');
 
 const { Countdown } = Statistic;
 const clsPrefix = 'statistical-data';
 
 const arrFormate = function (arr) {
-  // const arr = new Array(arrInput);
   switch (arr.length) {
     case 4:
       // eslint-disable-next-line no-return-assign, no-param-reassign
@@ -29,11 +29,11 @@ const arrFormate = function (arr) {
   return arr;
 };
 
-export default class StatisticalData extends PureComponent {
+export default class StatisticalData extends PureComponent<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
-      arr: null,
+      arr: [],
     };
   }
 
@@ -44,7 +44,7 @@ export default class StatisticalData extends PureComponent {
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { data } = this.props;
 
     if (prevProps.data !== data) {
@@ -57,7 +57,7 @@ export default class StatisticalData extends PureComponent {
   handleFinish(id) {
     const { arr } = this.state;
     // todo: limit the data's type to object
-    const countdown = arr.find((item) => item.id === id);
+    const countdown = arr.find((item) => item.id === id)!;
     countdown.num = Date.now() + countdown.resetTime;
     this.setState({ arr: [...arr] });
     // todo: update the current term number at the same time
@@ -86,7 +86,7 @@ export default class StatisticalData extends PureComponent {
   }
 
   render() {
-    const { spinning, style, tooltip, inline } = this.props;
+    const { spinning = false, style, tooltip, inline } = this.props;
     const { arr } = this.state;
     if (!arr) return null;
 
@@ -109,7 +109,3 @@ export default class StatisticalData extends PureComponent {
     );
   }
 }
-
-StatisticalData.defaultProps = {
-  spinning: false,
-};

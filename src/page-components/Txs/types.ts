@@ -12,7 +12,7 @@ interface ITx {
   tx_fee: string;
   resources: string;
   quantity: number;
-  tx_status: string;
+  tx_status: 'MINED' | 'FAILED' | 'PENDING';
   time: string;
   contractName?: string;
 }

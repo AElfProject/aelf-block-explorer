@@ -4,18 +4,20 @@
  */
 import React, { PureComponent } from 'react';
 import AElf from 'aelf-sdk';
-import { withRouter } from 'next/router';
+import { NextRouter, withRouter } from 'next/router';
 import { isAElfAddress, get } from 'utils/axios';
-import { Input, message } from 'antd';
-import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import IconFont from '../../components/IconFont';
+import { Input } from 'antd';
+import IconFont from '../IconFont';
 require('./search.styles.less');
 
-class Search extends PureComponent {
+interface IProps {
+  router: NextRouter;
+}
+class Search extends PureComponent<IProps> {
   state = {
     content: '',
   };
-
+  userNameInput;
   emitEmpty = () => {
     this.userNameInput.focus();
     this.setState({
@@ -55,7 +57,7 @@ class Search extends PureComponent {
       }
     },
     blockHeight: (value, navigate) => {
-      let number = parseInt(value, 10);
+      const number = parseInt(value, 10);
       if (number == value) {
         this.setState({
           content: '',
