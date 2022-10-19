@@ -22,7 +22,7 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
             Timestamp: (
               <div className="value-timestamp">
                 <IconFont type="Time" />
-                <span>
+                <span suppressHydrationWarning>
                   {getFormattedDate(basicInfo.timestamp)}({moment(basicInfo.timestamp).format('MMM-DD-YYYY hh:mm:SS A')}
                   )
                 </span>

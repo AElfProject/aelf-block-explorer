@@ -58,7 +58,7 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
           'Timestamp',
           <div className="value-timestamp">
             <IconFont type="Time" />
-            <span>
+            <span suppressHydrationWarning>
               {getFormattedDate(info.time)}({moment(info.time).format('MMM-DD-YYYY hh:mm:SS A')})
             </span>
           </div>,
