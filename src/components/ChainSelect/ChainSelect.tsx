@@ -2,20 +2,28 @@
  * @file ToolBar.js
  * @author huangzongzhe
  */
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Select } from 'antd';
 import config from 'constants/config/config';
 require('./ChainSelect.styles.less');
-
+interface IChainList {
+  id: number;
+  chainId: string;
+  chainsLinkName: string;
+  chainsLink: string;
+}
+interface IProps {
+  chainList: IChainList[];
+}
 const { Option } = Select;
-export default class ChainSelect extends Component {
+export default class ChainSelect extends Component<IProps> {
   constructor(props) {
     super(props);
   }
 
   changeChain(chainId) {
-    const chainInfo = this.props.chainList.find((item) => item.chainId === chainId);
-    if (chainInfo.chainsLink) window.location = chainInfo.chainsLink;
+    const chainInfo = this.props.chainList.find((item) => item.chainId === chainId)!;
+    if (chainInfo.chainsLink) window.location.href = chainInfo.chainsLink;
   }
 
   renderOptions() {

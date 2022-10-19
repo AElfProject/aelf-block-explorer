@@ -61,7 +61,7 @@ const BREADCRUMB_NAME_MAP: {
   myvote: 'My Vote',
   '/search-invalid': '',
 };
-// I don't know why /new-socket can reach here
+// TODO: I don't know why /new-socket can reach here
 const DO_NOT_DISPLAY_PATH = [
   'new-socket',
   '/_error',
