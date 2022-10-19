@@ -38,14 +38,14 @@ export default function TokenTag({ values, isDone, price }) {
 
   useEffect(() => {
     const container = document.querySelector('.tags-container');
-    const height = container.clientHeight;
+    const height = container?.clientHeight || 0;
     if (height > 96) {
       setHasMore(true);
     }
     if (!isDone && !loadingFlag) {
       const flag = setTimeout(() => {
         setForceDone(true);
-      }, 5000);
+      }, 5000) as any;
       setLoadingFlag(flag);
     }
   }, [values]);
@@ -77,7 +77,7 @@ export default function TokenTag({ values, isDone, price }) {
       {hasMore && (
         <Button type="link" onClick={() => setShowMore(!showMore)}>
           {!showMore ? 'More' : 'Less'}
-          <IconFont className={!showMore && 'more'} type="shouqijiantou" />
+          <IconFont className={!showMore ? 'more' : ''} type="shouqijiantou" />
         </Button>
       )}
     </div>

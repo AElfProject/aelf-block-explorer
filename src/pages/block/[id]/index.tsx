@@ -14,8 +14,7 @@ const getChainStatus = async () => {
     .then((result) => {
       return result;
     })
-    .catch((e) => {
-      console.error(e);
+    .catch((_) => {
       return {};
     });
 };

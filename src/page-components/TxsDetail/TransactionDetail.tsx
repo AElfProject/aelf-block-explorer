@@ -12,20 +12,23 @@ import ExtensionInfo from './components/ExtensionInfo';
 import BasicInfo from './components/BasicInfo';
 import CodeBlock from 'components/CodeBlock/CodeBlock';
 import IconFont from 'components/IconFont';
-import useMobile from 'hooks/useMobile';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { useCallback } from 'react';
 import CustomSkeleton from 'components/CustomSkeleton/CustomSkeleton';
 import { withRouter } from 'next/router';
 
 function TransactionDetail(props) {
   const { id } = props.router.query;
-  const [lastHeight, setLastHeight] = useState(undefined);
-  const [info, setInfo] = useState(undefined);
-  const [contractName, setContractName] = useState('');
-  const [parsedLogs, setParsedLogs] = useState([]);
+  const [lastHeight, setLastHeight] = useState(props.lastheightssr);
+  const [info, setInfo] = useState(props.infossr);
+  const [contractName, setContractName] = useState(props.contractnamessr || '');
+  const [parsedLogs, setParsedLogs] = useState(props.parselogssr || []);
   const [showExtensionInfo, setShowExtensionInfo] = useState(false);
   const [activeKey, setActiveKey] = useState('overview');
-  const isMobile = useMobile();
+  let isMobile = !!isPhoneCheckSSR(props.headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
 
   const hasLogs = useMemo(() => {
     if (info) {
@@ -43,13 +46,12 @@ function TransactionDetail(props) {
   useEffect(() => {
     setShowExtensionInfo(false);
     setActiveKey('overview');
-    setInfo(undefined);
     aelf.chain
       .getChainStatus()
       .then(({ LastIrreversibleBlockHeight }) => {
         setLastHeight(LastIrreversibleBlockHeight);
       })
-      .catch((error) => {
+      .catch((_) => {
         location.href = '/search-failed';
       });
     aelf.chain
@@ -61,8 +63,8 @@ function TransactionDetail(props) {
           getData(res);
         }
       })
-      .catch((e) => {
-        getData(e);
+      .catch((_) => {
+        location.href = '/search-failed';
       });
   }, [id]);
 
@@ -110,12 +112,16 @@ function TransactionDetail(props) {
           const name = isSystemContract ? removeAElfPrefix(contractName) : contractName;
           setContractName(name || res.Transaction.To);
         })
-        .catch((error) => {
+        .catch((_) => {
           location.href = '/search-failed';
         });
-      getInfoBackUp(res).then((backup) => {
-        setInfo({ ...res, ...backup });
-      });
+      getInfoBackUp(res)
+        .then((backup) => {
+          setInfo({ ...res, ...backup });
+        })
+        .catch((_) => {
+          setInfo(undefined);
+        });
     },
     [getContractNames, getInfoBackUp],
   );
