@@ -44,7 +44,7 @@ const BrowserFooter = ({ headers }: IProps) => {
       <div className="footer-container">
         <div className="left">
           <div className="top">
-            <h4>AELF Explorer</h4>
+            <h1>AELF Explorer</h1>
             <p className="description">Decentralized Cloud Computing Blockchain Network</p>
           </div>
           <div className="bottom">
