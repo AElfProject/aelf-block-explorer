@@ -8,34 +8,47 @@ import config from 'constants/config/config';
 import QrCode from './components/QrCode/QrCode';
 import { get, getContractNames } from 'utils/axios';
 import { TOKEN_PRICE, VIEWER_BALANCES, VIEWER_GET_FILE, VIEWER_HISTORY } from 'constants/viewerApi';
-import useMobile from 'hooks/useMobile';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import CommonTabPane from './components/CommonTabPane';
 import Overview from './components/Overview';
 import ContractTabPane from './components/ContractTabPane';
 import { isAddress } from 'utils/utils';
 import { useRouter } from 'next/router';
+import { IBalance } from './types';
 require('./index.less');
-export default function AddressDetail() {
+export default function AddressDetail({
+  balancesssr: balancesSSR,
+  pricesssr: pricesSSR,
+  contractinfossr: contractinfoSSR,
+  contracthistoryssr: contracthistorySSR,
+  headers,
+}) {
   const router = useRouter();
   const nav = router.push;
-  const { address, codeHash } = router.query;
-  const isMobile = useMobile();
+  const { address, codeHash } = router.query as { address: string; codeHash: string };
+  let isMobile = !!isPhoneCheckSSR(headers);
   const [activeKey, setActiveKey] = useState('tokens');
   const [contracts, setContracts] = useState({});
-  const [prices, setPrices] = useState({});
-  const [balances, setBalances] = useState([]);
-  const [tokensLoading, setTokensLoading] = useState(true);
-  const [contractInfo, setContractInfo] = useState(undefined);
-  const [contractHistory, setContractHistory] = useState(undefined);
+  const [prices, setPrices] = useState(pricesSSR || {});
+  const [balances, setBalances] = useState(balancesSSR || []);
+  const [tokensLoading, setTokensLoading] = useState(false);
+  const [contractInfo, setContractInfo] = useState(contractinfoSSR);
+  const [contractHistory, setContractHistory] = useState(contracthistorySSR);
 
-  const isCA = useMemo(() => !!contracts[address], [contracts, address]);
+  const isCA = useMemo(() => !!contracts[address as string], [contracts, address]);
 
-  const elfBalance = useMemo(() => balances.find((item) => item.symbol === 'ELF')?.balance, [balances]);
+  const elfBalance = useMemo(() => {
+    const temp: IBalance = balances.find((item: IBalance) => item.symbol === 'ELF')!;
+    return temp?.balance;
+  }, [balances]);
 
   const pageTitle = useMemo(() => {
     return isCA ? 'Contract' : 'Address';
   }, [isCA]);
 
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   const fetchBalances = useCallback(async () => {
     setTokensLoading(true);
     const result = await get(VIEWER_BALANCES, { address });
@@ -50,16 +63,16 @@ export default function AddressDetail() {
   const fetchPrice = useCallback(async () => {
     if (balances.length) {
       setPrices({});
-      await Promise.allSettled(balances.map((item) => get(TOKEN_PRICE, { fsym: item.symbol, tsyms: 'USD' }))).then(
-        (res) => {
-          setTokensLoading(false);
-          res.forEach(({ value: item }) => {
-            if (item && item.USD) {
-              setPrices((v) => ({ ...v, [item.symbol]: item.USD }));
-            }
-          });
-        },
-      );
+      await Promise.allSettled(
+        balances.map((item: IBalance) => get(TOKEN_PRICE, { fsym: item.symbol, tsyms: 'USD' })),
+      ).then((res: any) => {
+        setTokensLoading(false);
+        res.forEach(({ value: item }) => {
+          if (item && item.USD) {
+            setPrices((v) => ({ ...v, [item.symbol]: item.USD }));
+          }
+        });
+      });
     } else {
       setTokensLoading(false);
     }
@@ -134,7 +147,7 @@ export default function AddressDetail() {
       <Overview prices={prices} elfBalance={elfBalance} />
       <section className="more-info">
         <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
-          {CommonTabPane({ balances, prices, tokensLoading, address }).map(({ children, ...props }) => (
+          {CommonTabPane({ balances, prices, tokensLoading, address, headers }).map(({ children, ...props }) => (
             <Tabs.TabPane key={props.key} tab={props.tab}>
               {children}
             </Tabs.TabPane>

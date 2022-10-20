@@ -1,9 +1,13 @@
 import Link from 'next/link';
 import React from 'react';
 import { numberFormatter } from 'utils/formater';
-
+import { ColumnType } from 'antd/es/table';
+interface IRecord {
+  balance?: string;
+  symbol: string;
+}
 export default ({ prices, isMobile }) => {
-  return [
+  const column: ColumnType<IRecord>[] = [
     {
       title: 'Token Name',
       dataIndex: 'symbol',
@@ -25,7 +29,7 @@ export default ({ prices, isMobile }) => {
       dataIndex: 'symbol',
       width: isMobile ? 70 : 300,
       render(symbol) {
-        if ((symbol, prices)) return prices[symbol] ? `$${numberFormatter(prices[symbol])}` : '-';
+        if (symbol && prices) return prices[symbol] ? `$${numberFormatter(prices[symbol])}` : '-';
         return '-';
       },
     },
@@ -35,9 +39,10 @@ export default ({ prices, isMobile }) => {
       align: 'right',
       width: isMobile ? 70 : 136,
       render(symbol, record) {
-        if ((symbol, prices)) return prices[symbol] ? `$${numberFormatter(prices[symbol] * record.balance)}` : '-';
+        if (symbol && prices) return prices[symbol] ? `$${numberFormatter(prices[symbol] * +record.balance!)}` : '-';
         return '-';
       },
     },
   ];
+  return column;
 };

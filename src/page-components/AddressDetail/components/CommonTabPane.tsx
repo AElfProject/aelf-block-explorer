@@ -3,12 +3,12 @@ import Tokens from './Tokens/Tokens';
 import Transactions from './Transactions/Transactions';
 import Transfers from './Transfers/Transfers';
 
-export default function CommonTabPane({ balances, prices, tokensLoading, address }) {
+export default function CommonTabPane({ balances, prices, tokensLoading, address, headers }) {
   return [
     {
       key: 'tokens',
       tab: 'Tokens',
-      children: <Tokens balances={balances} prices={prices} dataLoading={tokensLoading} />,
+      children: <Tokens balances={balances} prices={prices} dataLoading={tokensLoading} headers={headers} />,
     },
     {
       key: 'transactions',

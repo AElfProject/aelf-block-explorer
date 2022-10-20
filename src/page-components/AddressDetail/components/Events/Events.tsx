@@ -20,7 +20,7 @@ export default function Events() {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [dataSource, setDataSource] = useState(undefined);
-
+  console.log(dataSource, 'dataSource');
   const columns = useMemo(
     () => [
       {

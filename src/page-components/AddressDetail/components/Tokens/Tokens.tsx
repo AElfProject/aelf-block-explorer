@@ -1,12 +1,12 @@
 import { Table } from 'antd';
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import TableLayer from 'components/TableLayer/TableLayer';
-import useMobile from 'hooks/useMobile';
 import getColumn from './columnConfig';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 require('./Tokens.styles.less');
 
-export default function Tokens({ balances, prices, dataLoading }) {
-  const isMobile = useMobile();
+export default function Tokens({ balances, prices, dataLoading, headers }) {
+  let isMobile = !!isPhoneCheckSSR(headers);
   const columns = useMemo(() => {
     return getColumn({ prices, isMobile });
   }, [prices]);
@@ -16,6 +16,10 @@ export default function Tokens({ balances, prices, dataLoading }) {
     const other = balances.filter((i) => i.symbol !== 'ELF');
     return [elf, ...other];
   }, [balances]);
+
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
 
   return (
     <div className="tokens-container tokens-pane">
