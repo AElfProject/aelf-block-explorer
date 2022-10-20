@@ -5,9 +5,7 @@
 import PropTypes from 'prop-types';
 import AElf from 'aelf-sdk';
 import config from 'constants/viewerApi';
-
 const { constants, viewer, wallet } = config;
-
 export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(wallet.privateKey);
 
 export const API_PATH = {
@@ -93,18 +91,15 @@ export const PROPOSAL_STATUS_CAPITAL = {
   [proposalStatus.EXPIRED]: 'Expired',
   [proposalStatus.RELEASED]: 'Released',
 };
-
+const RPCSERVER_HOST =
+  typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : process.env.BUILD_ENDPOINT;
+const DEFAUT_RPCSERVER = process.env.NODE_ENV === 'production' ? `${RPCSERVER_HOST}/chain` : `${RPCSERVER_HOST}`;
 export default {
   ...constants,
   proposalStatus: {
     ...proposalStatus,
   },
   viewer,
-  DEFAUT_RPCSERVER:
-    typeof window !== 'undefined'
-      ? process.env.NODE_ENV === 'production'
-        ? `${window?.location?.protocol}//${window?.location?.host}/chain`
-        : `${window?.location?.protocol}//${window?.location?.host}`
-      : '',
+  DEFAUT_RPCSERVER,
   APP_NAME: 'explorer.aelf.io',
 };

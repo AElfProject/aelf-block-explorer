@@ -39,10 +39,13 @@ export default function Accounts() {
       pageNum: pageIndex,
       symbol: 'ELF',
     });
-    if (result.code === 0) {
+    if (result?.code === 0) {
       const { data } = result;
       setActualTotal(data.total);
       setDataSource(data.list);
+      setDataLoading(false);
+    } else {
+      // when error
       setDataLoading(false);
     }
   }, [pageSize, pageIndex]);
@@ -63,6 +66,7 @@ export default function Accounts() {
       const result = await token.GetTokenInfo.call({
         symbol: 'ELF',
       });
+
       if (result) {
         setTotalELF(result.supply);
       }

@@ -15,6 +15,15 @@ const resourceDecimals = config?.resourceTokens?.reduce(
   {},
 );
 
+export function isAddress(value) {
+  if (/[\u4e00-\u9fa5]/.test(value)) return false;
+  try {
+    return !!AElf.utils.base58.decode(value);
+  } catch {
+    return false;
+  }
+}
+
 export const rand16Num = (len = 0) => {
   const result: string[] = [];
   for (let i = 0; i < len; i += 1) {
@@ -198,12 +207,9 @@ export const removePrefixOrSuffix = (address) => {
 
 const fakeWallet = AElf.wallet.getWalletByPrivateKey(config?.commonPrivateKey);
 
-const DEFAUT_RPCSERVER =
-  typeof window !== 'undefined'
-    ? process.env.NODE_ENV === 'production'
-      ? `${window.location.protocol}//${window.location.host}/chain`
-      : `${window.location.protocol}//${window.location.host}`
-    : '';
+const RPCSERVER_HOST =
+  typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : process.env.BUILD_ENDPOINT;
+const DEFAUT_RPCSERVER = process.env.NODE_ENV === 'production' ? `${RPCSERVER_HOST}/chain` : `${RPCSERVER_HOST}`;
 
 export const defaultAElfInstance = new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCSERVER));
 
