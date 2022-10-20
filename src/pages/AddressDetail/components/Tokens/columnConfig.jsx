@@ -25,7 +25,7 @@ export default ({ prices, isMobile }) => {
       dataIndex: "symbol",
       width: isMobile ? 70 : 300,
       render(symbol) {
-        if ((symbol, prices))
+        if (symbol && prices)
           return prices[symbol] ? `$${numberFormatter(prices[symbol])}` : "-";
         return "-";
       },
@@ -36,7 +36,7 @@ export default ({ prices, isMobile }) => {
       align: "right",
       width: isMobile ? 70 : 136,
       render(symbol, record) {
-        if ((symbol, prices))
+        if (symbol && prices)
           return prices[symbol]
             ? `$${numberFormatter(prices[symbol] * record.balance)}`
             : "-";
