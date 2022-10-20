@@ -212,7 +212,6 @@ const RPCSERVER_HOST =
 const DEFAUT_RPCSERVER = process.env.NODE_ENV === 'production' ? `${RPCSERVER_HOST}/chain` : `${RPCSERVER_HOST}`;
 
 export const defaultAElfInstance = new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCSERVER));
-
 export async function getBalances(address, search = '') {
   try {
     const balances = await request(

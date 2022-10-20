@@ -1,9 +1,16 @@
 import React from 'react';
 import AddressLink from 'components/AddressLink';
 import { numberFormatter } from 'utils/formater';
-
+import { ColumnsType } from 'antd/lib/table';
+interface IRecord {
+  balance: string;
+  count: boolean;
+  owner: string;
+  percentage: string;
+  symbol: string;
+}
 export default ({ isMobile, preTotal }) => {
-  return [
+  const columns: ColumnsType<IRecord> = [
     {
       title: 'Rank',
       dataIndex: 'id',
@@ -40,4 +47,5 @@ export default ({ isMobile, preTotal }) => {
       width: isMobile ? 76 : 100,
     },
   ];
+  return columns;
 };
