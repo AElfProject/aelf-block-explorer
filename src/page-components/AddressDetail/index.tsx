@@ -50,6 +50,7 @@ export default function AddressDetail({
     isMobile = !!isPhoneCheck();
   }, []);
   const fetchBalances = useCallback(async () => {
+    setTokensLoading(true);
     const result = await get(VIEWER_BALANCES, { address });
     if (result?.code === 0) {
       const { data } = result;
@@ -101,13 +102,13 @@ export default function AddressDetail({
     }
   }, [address, codeHash]);
 
-  useEffect(() => {
-    fetchBalances();
-  }, [fetchBalances]);
+  // useEffect(() => {
+  //   fetchBalances();
+  // }, [fetchBalances]);
 
-  useEffect(() => {
-    fetchPrice();
-  }, [balances]);
+  // useEffect(() => {
+  //   fetchPrice();
+  // }, [balances]);
 
   useEffect(() => {
     if (isCA) {
@@ -119,16 +120,16 @@ export default function AddressDetail({
     }
   }, [isCA, fetchFile]);
 
-  useEffectOnce(() => {
-    getContractNames().then((res) => setContracts(res));
-  });
+  // useEffectOnce(() => {
+  //   getContractNames().then((res) => setContracts(res));
+  // });
 
-  useEffect(() => {
-    const res = isAddress(address);
-    if (!res) {
-      nav(`/search-invalid/${address}`);
-    }
-  }, [address]);
+  // useEffect(() => {
+  //   const res = isAddress(address);
+  //   if (!res) {
+  //     nav(`/search-invalid/${address}`);
+  //   }
+  // }, [address]);
 
   return (
     <div className={clsx('address-detail-page-container basic-container-new', isMobile && 'mobile')}>

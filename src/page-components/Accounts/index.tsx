@@ -61,19 +61,19 @@ export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, h
   useEffect(() => {
     isMobile = !!isPhoneCheck();
   }, []);
-  useEffectOnce(() => {
-    const fetchData = async () => {
-      const token = await getContract(defaultAElfInstance, getContractAddress('Token'));
-      const result = await token.GetTokenInfo.call({
-        symbol: 'ELF',
-      });
+  // useEffectOnce(() => {
+  //   const fetchData = async () => {
+  //     const token = await getContract(defaultAElfInstance, getContractAddress('Token'));
+  //     const result = await token.GetTokenInfo.call({
+  //       symbol: 'ELF',
+  //     });
 
-      if (result) {
-        setTotalELF(result.supply);
-      }
-    };
-    fetchData();
-  });
+  //     if (result) {
+  //       setTotalELF(result.supply);
+  //     }
+  //   };
+  //   fetchData();
+  // });
 
   useDebounce(
     () => {
@@ -118,7 +118,7 @@ export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, h
             total={total}
             pageSizeOptions={['25', '50', '100']}
             onChange={handlePageChange}
-            onShowSizeChange={(current, size) => handlePageChange(1, size)}
+            onShowSizeChange={(_, size) => handlePageChange(1, size)}
           />
         </div>
       </div>

@@ -6,7 +6,7 @@ import { get } from 'utils/axios';
 import TableLayer from '../TableLayer/TableLayer';
 import ColumnConfig from './columnConfig';
 require('./TransactionTable.styles.less');
-export default function TransactionTable({ dataLoading, dataSource, headers }) {
+export default function TransactionTable({ dataLoading, dataSource, headers = undefined }) {
   const [price, setPrice] = useState(0);
   const [timeFormat, setTimeFormat] = useState('Age');
 
