@@ -14,12 +14,12 @@ import CopyButton from 'components/CopyButton/CopyButton';
 import TokenTag from './TokenTags/TokenTags';
 import IconFont from 'components/IconFont';
 
-export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contractName }) {
-  const [price, setPrice] = useState({ USD: 0 });
+export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contractName, tokenPrice, decimals }) {
+  const [price, setPrice] = useState(tokenPrice || { USD: 0 });
 
   const values = useMemo(() => {
     let value = {};
-    const obj = Object.fromEntries(parsedLogs.map((item, index) => [index + '-' + item.symbol, Number(item.amount)]));
+    const obj = Object.fromEntries(parsedLogs.map((item, index) => [`${index}-${item.symbol}`, Number(item.amount)]));
     Object.keys(obj).forEach((key) => {
       const symbol = key.split('-')[1];
       if (value[symbol]) {
@@ -30,6 +30,7 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
     });
     return value;
   }, [parsedLogs]);
+
   const baseInfo = useMemo(
     () =>
       info &&
@@ -103,7 +104,10 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
     () =>
       info &&
       values && [
-        ['Value', parsedLogs.length ? <TokenTag values={values} isDone={isDone} price={price} /> : '-'],
+        [
+          'Value',
+          parsedLogs.length ? <TokenTag values={values} isDone={isDone} price={price} decimals={decimals} /> : '-',
+        ],
         ['Transaction Fee', <Dividends dividends={info.fee} />],
         ['Resources Fee', <Dividends dividends={info.resources} />],
       ],
@@ -120,8 +124,8 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
   );
 
   useEffectOnce(() => {
-    get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((price) => {
-      setPrice(price);
+    get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((res) => {
+      setPrice(res);
     });
   });
 
@@ -131,7 +135,7 @@ export default function BasicInfo({ info, parsedLogs, isDone, lastHeight, contra
         <div key={item[0]} className={`wrap ${item[0]}`}>
           {(item[1] || []).map((list, index) => {
             return (
-              <div key={index} className="row">
+              <div key={list[0]} className="row">
                 <p className="label">{list[0]} : </p>
                 <div className="value">{list[1] || '-'}</div>
               </div>

@@ -90,6 +90,19 @@ export async function getFee(transaction) {
   };
 }
 
+const CONTRACT_PROTOS = {};
+async function getProto(address) {
+  if (!CONTRACT_PROTOS[address]) {
+    try {
+      const file = await aelf.chain.getContractFileDescriptorSet(address);
+      CONTRACT_PROTOS[address] = AElf.pbjs.Root.fromDescriptor(file);
+    } catch (e) {
+      return null;
+    }
+  }
+  return CONTRACT_PROTOS[address];
+}
+
 export function deserializeLogs(logs) {
   return Promise.all(logs.map((log) => deserializeLog(log)));
 }
@@ -386,24 +399,18 @@ function decodeBase64(str) {
   return buffer;
 }
 
-export async function deserializeLog(log, name?, address?) {
-  const { Indexed = [], NonIndexed } = log;
-  let dataType;
-  const contract = await getContract(defaultAElfInstance, address);
-  // eslint-disable-next-line no-restricted-syntax
-  for (const service of contract.services) {
-    try {
-      dataType = service.lookupType(name);
-      break;
-    } catch (e) {
-      console.error(e);
-    }
+export async function deserializeLog(log) {
+  const { Indexed = [], NonIndexed, Name, Address } = log;
+  const proto = await getProto(Address);
+  if (!proto) {
+    return {};
   }
   const serializedData = [...(Indexed || [])];
   if (NonIndexed) {
     serializedData.push(NonIndexed);
   }
-  let result = serializedData.reduce((acc, v) => {
+  const dataType = proto.lookupType(Name);
+  let deserializeLogResult = serializedData.reduce((acc, v) => {
     let deserialize = dataType.decode(decodeBase64(v));
     deserialize = dataType.toObject(deserialize, {
       enums: String, // enums as string names
@@ -419,9 +426,14 @@ export async function deserializeLog(log, name?, address?) {
       ...deserialize,
     };
   }, {});
-  result = AElf.utils.transform.transform(dataType, result, AElf.utils.transform.OUTPUT_TRANSFORMERS);
-  result = AElf.utils.transform.transformArrayToMap(dataType, result);
-  return result;
+  // eslint-disable-next-line max-len
+  deserializeLogResult = AElf.utils.transform.transform(
+    dataType,
+    deserializeLogResult,
+    AElf.utils.transform.OUTPUT_TRANSFORMERS,
+  );
+  deserializeLogResult = AElf.utils.transform.transformArrayToMap(dataType, deserializeLogResult);
+  return deserializeLogResult;
 }
 
 export const sleep = (time) =>

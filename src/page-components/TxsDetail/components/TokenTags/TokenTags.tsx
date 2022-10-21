@@ -5,17 +5,16 @@ import IconFont from 'components/IconFont';
 import { get } from 'utils/axios';
 import { useEffectOnce } from 'react-use';
 import { VIEWER_GET_ALL_TOKENS } from 'constants/api';
-export default function TokenTag({ values, isDone, price }) {
+export default function TokenTag({ values, isDone, price, decimals: decimalsSSR }) {
   const [showMore, setShowMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const [decimals, setDecimals] = useState({});
+  const [decimals, setDecimals] = useState(decimalsSSR || {});
   const [loadingFlag, setLoadingFlag] = useState(undefined);
   const [forceDone, setForceDone] = useState(false);
 
   const elfFirst = useMemo(() => {
     const keys = Object.keys(values);
     const withoutELF = keys.filter((key) => key !== 'ELF');
-
     if (keys.length === withoutELF.length) {
       return keys;
     }

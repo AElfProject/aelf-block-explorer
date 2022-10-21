@@ -1,8 +1,10 @@
 import TxsDetail from 'page-components/TxsDetail/TransactionDetail';
 import { NextPageContext } from 'next';
-import { aelf } from 'utils/axios';
+import { aelf, getSSR } from 'utils/axios';
 import { getContractNames, deserializeLog, getFee, removeAElfPrefix } from 'utils/utils';
 import { IInfo } from 'page-components/TxsDetail/types';
+import { ELF_REALTIME_PRICE_URL, VIEWER_GET_ALL_TOKENS } from 'constants/api';
+
 let redirectRes, contractNameSSR;
 const getLastHeight = async () => {
   return aelf.chain
@@ -58,22 +60,46 @@ const getParseLog = async (info: IInfo) => {
   const logs: any[] = [];
   if (Logs.length) {
     const arr = Logs.filter((item) => item.Name === 'Transferred');
-    return arr.forEach((item, index) => {
-      deserializeLog(item).then((res) => {
-        logs.push({ ...res, key: arr[index].Name + arr[index].Address });
-        return [...logs];
-      });
-    });
+    for (const item of arr) {
+      const res = await deserializeLog(item);
+      logs.push({ ...res, key: item.Name + item.Address });
+    }
+    return [...logs];
   } else {
     return [];
   }
 };
+// used in tokenTags
+const getDecimal = async (ctx) => {
+  const result = await getSSR(ctx, VIEWER_GET_ALL_TOKENS, {
+    pageSize: 5000,
+    pageNum: 1,
+  });
+  const { data = { list: [] } } = result;
+  const { list } = data;
+  return Object.fromEntries(list.map((item) => [item.symbol, item.decimals]));
+};
+
+const getTokenPrice = async (ctx) => {
+  return getSSR(ctx, ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((res) => {
+    return res;
+  });
+};
+
 export const getServerSideProps = async (ctx: NextPageContext) => {
   const headers = ctx.req?.headers;
   const { id } = ctx.query;
-  const lastHeight = await getLastHeight();
-  const info = await getTxResult(id);
-  const parseLog = await getParseLog(info);
+  let lastHeight, info, tokenPrice, decimals;
+  await Promise.allSettled([getLastHeight(), getTxResult(id), getTokenPrice(ctx)]).then((result: any) => {
+    lastHeight = result[0].value;
+    info = result[1].value;
+    tokenPrice = result[2].value;
+  });
+
+  const parsedLogs = await getParseLog(info);
+  if (info && parsedLogs) {
+    decimals = await getDecimal(ctx);
+  }
   if (redirectRes) {
     return {
       redirect: {
@@ -89,8 +115,10 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
     props: {
       lastheightssr: lastHeight,
       infossr: JSON.parse(JSON.stringify(info)),
-      parselogssr: JSON.parse(JSON.stringify(parseLog)),
+      parsedlogsssr: parsedLogs || [],
       contractnamessr: contractNameSSR,
+      tokenpricessr: tokenPrice || { USD: 0 },
+      decimalsssr: decimals || {},
       headers,
     },
   };

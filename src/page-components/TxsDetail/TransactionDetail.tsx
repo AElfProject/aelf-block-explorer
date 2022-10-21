@@ -2,10 +2,7 @@ import { Button, Tabs } from 'antd';
 import React, { useMemo, useState } from 'react';
 import { aelf } from 'utils/axios';
 import { getContractNames, deserializeLog, getFee, removeAElfPrefix } from '../../utils/utils';
-
-const { TabPane } = Tabs;
-
-require('./TransactionDetail.styles.less');
+import { ILog } from './types';
 import Events from 'components/Events';
 import { useEffect } from 'react';
 import ExtensionInfo from './components/ExtensionInfo';
@@ -16,13 +13,15 @@ import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { useCallback } from 'react';
 import CustomSkeleton from 'components/CustomSkeleton/CustomSkeleton';
 import { withRouter } from 'next/router';
+require('./TransactionDetail.styles.less');
+const { TabPane } = Tabs;
 
 function TransactionDetail(props) {
   const { id } = props.router.query;
   const [lastHeight, setLastHeight] = useState(props.lastheightssr);
   const [info, setInfo] = useState(props.infossr);
   const [contractName, setContractName] = useState(props.contractnamessr || '');
-  const [parsedLogs, setParsedLogs] = useState(props.parselogssr || []);
+  const [parsedLogs, setParsedLogs] = useState(props.parsedlogsssr || []);
   const [showExtensionInfo, setShowExtensionInfo] = useState(false);
   const [activeKey, setActiveKey] = useState('overview');
   let isMobile = !!isPhoneCheckSSR(props.headers);
@@ -69,19 +68,22 @@ function TransactionDetail(props) {
   }, [id]);
 
   useEffect(() => {
-    const { Logs = [] } = info || {};
-    const logs = [...parsedLogs];
-    if (Logs.length) {
-      const arr = Logs.filter((item) => item.Name === 'Transferred');
-      arr.forEach((item, index) => {
-        deserializeLog(item).then((res) => {
-          logs.push({ ...res, key: arr[index].Name + arr[index].Address });
-          setParsedLogs([...logs]);
-        });
-      });
-    } else {
-      setParsedLogs([]);
-    }
+    // make useEffect async
+    const changeParsedLogs = async () => {
+      const { Logs = [] } = info || {};
+      const logs: ILog[] = [];
+      if (Logs.length) {
+        const arr = Logs.filter((item) => item.Name === 'Transferred');
+        for (const item of arr) {
+          const res = await deserializeLog(item);
+          logs.push({ ...res, key: item.Name + item.Address });
+        }
+        setParsedLogs([...logs]);
+      } else {
+        setParsedLogs([]);
+      }
+    };
+    changeParsedLogs();
   }, [info]);
 
   const logIsAllParsed = useMemo(() => {
@@ -141,6 +143,8 @@ function TransactionDetail(props) {
                     isDone={logIsAllParsed}
                     lastHeight={lastHeight}
                     contractName={contractName}
+                    tokenPrice={props.tokenpricessr}
+                    decimals={props.decimalsssr}
                   />
                   <ExtensionInfo transaction={info} show={showExtensionInfo} />
                   <Button

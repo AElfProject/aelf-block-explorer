@@ -50,7 +50,6 @@ export default function AddressDetail({
     isMobile = !!isPhoneCheck();
   }, []);
   const fetchBalances = useCallback(async () => {
-    setTokensLoading(true);
     const result = await get(VIEWER_BALANCES, { address });
     if (result?.code === 0) {
       const { data } = result;
@@ -62,17 +61,21 @@ export default function AddressDetail({
 
   const fetchPrice = useCallback(async () => {
     if (balances.length) {
-      setPrices({});
       await Promise.allSettled(
         balances.map((item: IBalance) => get(TOKEN_PRICE, { fsym: item.symbol, tsyms: 'USD' })),
-      ).then((res: any) => {
-        setTokensLoading(false);
-        res.forEach(({ value: item }) => {
-          if (item && item.USD) {
-            setPrices((v) => ({ ...v, [item.symbol]: item.USD }));
-          }
-        });
-      });
+      ).then(
+        (res: any) => {
+          setTokensLoading(false);
+          res.forEach(({ value: item }) => {
+            if (item && item.USD) {
+              setPrices((v) => ({ ...v, [item.symbol]: item.USD }));
+            }
+          });
+        },
+        () => {
+          setPrices({});
+        },
+      );
     } else {
       setTokensLoading(false);
     }

@@ -22,3 +22,10 @@ export interface IInfo {
   resources: any;
   time: string;
 }
+export interface ILog {
+  amount: string;
+  from: string;
+  key: string;
+  symbol: string;
+  to: string;
+}
