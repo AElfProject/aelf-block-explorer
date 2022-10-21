@@ -4,6 +4,7 @@ import { BLOCK_INFO_API_URL } from 'constants/api';
 import { getSSR, aelf } from 'utils/axios';
 import { getContractNames } from 'utils/utils';
 import { Itx, IRes } from 'page-components/BlockDetail/types';
+import { ELF_REALTIME_PRICE_URL } from 'constants/api';
 let bestChainHeightSSR, blockHeightSSR, txsListSSR, blockInfoSSR;
 let redirectRes: string;
 let retryBlockInfoCount = 0;
@@ -147,16 +148,18 @@ const fetchBlockInfo = async (ctx, id) => {
     }, 0);
   }
 };
+const getPrice = async (ctx) => {
+  return getSSR(ctx, ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((res) => res);
+};
 export const getServerSideProps = async (ctx: NextPageContext) => {
   const headers = ctx.req?.headers;
   const { id, tab } = ctx.query;
   const activeKey = tab === 'txns' ? 'transactions' : 'overview';
   await fetchBlockInfo(ctx, id);
-  // console.log(id, activeKey);
-  // console.log(bestChainHeightSSR, 'bestChainHeightSSR');
-  // console.log(blockHeightSSR, 'blockHeightSSR');
-  // console.log(txsListSSR, 'txsListSSR');
-  // console.log(blockInfoSSR, 'blockInfoSSR');
+  const price = 0;
+  // if (tab === 'txns') {
+  //   price = await getPrice(ctx);
+  // }
   if (redirectRes) {
     return {
       redirect: {
@@ -173,8 +176,9 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
       activekeyssr: activeKey,
       bestchainheightssr: bestChainHeightSSR,
       blockheightssr: blockHeightSSR,
-      txslistssr: JSON.parse(JSON.stringify(txsListSSR)),
+      txslistssr: txsListSSR,
       blockinfossr: blockInfoSSR,
+      pricessr: price,
       headers,
     },
   };

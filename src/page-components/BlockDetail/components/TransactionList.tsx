@@ -4,7 +4,15 @@ import TransactionTable from 'components/TransactionTable/TransactionTable';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { Itx } from '../types';
 
-export default function TransactionList({ allData = [], headers }: { allData: Itx[]; headers: any }) {
+export default function TransactionList({
+  allData = [],
+  headers,
+  price,
+}: {
+  allData: Itx[];
+  headers: any;
+  price: object;
+}) {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   let isMobile = !!isPhoneCheckSSR(headers);
@@ -23,7 +31,7 @@ export default function TransactionList({ allData = [], headers }: { allData: It
   );
   return (
     <div>
-      <TransactionTable dataLoading={!allData.length} dataSource={dataSource} headers={headers} />
+      <TransactionTable dataLoading={!allData.length} dataSource={dataSource} headers={headers} price={price} />
       <div className="after-table">
         <Pagination
           showLessItems={isMobile}
@@ -33,7 +41,7 @@ export default function TransactionList({ allData = [], headers }: { allData: It
           total={allData.length}
           pageSizeOptions={['10', '25', '50', '100']}
           onChange={handlePageChange}
-          onShowSizeChange={(current, size) => handlePageChange(1, size)}
+          onShowSizeChange={(_, size) => handlePageChange(1, size)}
         />
       </div>
     </div>

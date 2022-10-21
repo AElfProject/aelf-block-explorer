@@ -57,4 +57,5 @@ export interface IProps {
   blockinfossr?: IBlockInfo;
   headers: any;
   router: NextRouter;
+  pricessr: object;
 }

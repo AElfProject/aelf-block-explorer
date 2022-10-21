@@ -169,7 +169,6 @@ function BlockDetail(props: IProps) {
     let blockHeight;
     let txsList: Itx[] = [];
     let error;
-    // todo: fix
     if (parseInt('' + input, 10) == input) {
       blockHeight = input;
       if (blockHeight > BestChainHeight) {
@@ -220,7 +219,7 @@ function BlockDetail(props: IProps) {
           location.href = '/search-invalid/' + pageId;
         }
       })
-      .catch((error) => {
+      .catch((_) => {
         location.href = '/search-failed';
       });
     // if block is new and cannot txsList is null
@@ -264,7 +263,7 @@ function BlockDetail(props: IProps) {
         </TabPane>
         <TabPane tab="Transactions" key="transactions">
           <div className="transactions-container">
-            <TransactionList allData={transactionList} headers={props.headers} />
+            <TransactionList allData={transactionList} headers={props.headers} price={props.pricessr} />
           </div>
         </TabPane>
       </Tabs>
