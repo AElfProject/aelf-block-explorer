@@ -9,7 +9,7 @@ import BasicInfo from './components/BasicInfo';
 import ExtensionInfo from './components/ExtensionInfo';
 import TransactionList from './components/TransactionList';
 import Link from 'next/link';
-import { useDebounce } from 'react-use';
+import { useDebounce, useUpdateEffect } from 'react-use';
 import CustomSkeleton from 'components/CustomSkeleton/CustomSkeleton';
 import { withRouter } from 'next/router';
 import { IProps, IRes, ITransactions, Itx } from './types';
@@ -49,7 +49,7 @@ function BlockDetail(props: IProps) {
     );
   }, [blockHeight]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     const { query } = props.router;
     const { id } = query;
     if (id !== pageId) {
@@ -57,9 +57,10 @@ function BlockDetail(props: IProps) {
       setBlockInfo(undefined);
       setShowExtensionInfo(false);
     }
-    setActiveKey('overview');
-    if (location.search && location.search.includes('tab=txns')) {
+    if (location.search?.includes('tab=txns')) {
       setActiveKey('transactions');
+    } else {
+      setActiveKey('overview');
     }
   }, [props]);
 
@@ -168,7 +169,6 @@ function BlockDetail(props: IProps) {
     let result;
     let blockHeight;
     let txsList: Itx[] = [];
-    let error;
     if (parseInt('' + input, 10) == input) {
       blockHeight = input;
       if (blockHeight > BestChainHeight) {
@@ -182,7 +182,6 @@ function BlockDetail(props: IProps) {
       const data = await getDataFromHash(input);
       result = data.blockInfo;
       txsList = data.transactionList!;
-      error = txsList.length ? '' : 'Not Found';
       blockHeight = result.Header.Height;
     }
     setBlockHeight(blockHeight);

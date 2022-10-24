@@ -156,10 +156,10 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   const { id, tab } = ctx.query;
   const activeKey = tab === 'txns' ? 'transactions' : 'overview';
   await fetchBlockInfo(ctx, id);
-  const price = 0;
-  // if (tab === 'txns') {
-  //   price = await getPrice(ctx);
-  // }
+  let price = 0;
+  if (tab === 'txns') {
+    price = await getPrice(ctx);
+  }
   if (redirectRes) {
     return {
       redirect: {
