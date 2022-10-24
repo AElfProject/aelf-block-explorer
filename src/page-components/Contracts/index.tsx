@@ -1,24 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { Pagination, Table } from 'antd';
-import { useDebounce, useEffectOnce } from 'react-use';
-import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { useDebounce } from 'react-use';
 import TableLayer from 'components/TableLayer/TableLayer';
-import { get } from 'utils/axios/index';
-import { defaultAElfInstance, getContract } from 'utils/utils';
-import { getContractAddress } from 'page-components/Proposal/common/utils';
+import { get } from 'utils/axios';
 import getColumn from './columnConfig';
-import { VIEWER_ACCOUNT_LIST } from 'constants/viewerApi';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { VIEWER_CONTRACTS_LIST } from 'constants/viewerApi';
 require('./index.less');
-export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, headers }) {
-  let isMobile = !!isPhoneCheckSSR(headers);
+
+export default function Contracts({ actualtotalssr, datasourcessr, headers }) {
   const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [dataSource, setDataSource] = useState(datasourcessr);
   const [actualTotal, setActualTotal] = useState(actualtotalssr || 0);
-  const [totalELF, setTotalELF] = useState(totalelfssr || 0);
-
+  let isMobile = !!isPhoneCheckSSR(headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   const total = useMemo(() => {
     if (actualTotal > 1000) return 1000;
     return actualTotal;
@@ -27,15 +27,13 @@ export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, h
   const columns = useMemo(() => {
     return getColumn({
       isMobile,
-      preTotal: Number(pageSize) * (pageIndex - 1),
     });
   }, [isMobile, pageIndex, pageSize]);
 
-  const fetchAccountList = useCallback(async () => {
-    const result = await get(VIEWER_ACCOUNT_LIST, {
+  const fetchContractList = useCallback(async () => {
+    const result = await get(VIEWER_CONTRACTS_LIST, {
       pageSize,
       pageNum: pageIndex,
-      symbol: 'ELF',
     });
     if (result.code === 0) {
       const { data } = result;
@@ -58,43 +56,25 @@ export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, h
     },
     [pageSize],
   );
-  useEffect(() => {
-    isMobile = !!isPhoneCheck();
-  }, []);
-
-  useEffectOnce(() => {
-    const fetchData = async () => {
-      const token = await getContract(defaultAElfInstance, getContractAddress('Token'));
-      const result = await token.GetTokenInfo.call({
-        symbol: 'ELF',
-      });
-
-      if (result) {
-        setTotalELF(result.supply);
-      }
-    };
-    fetchData();
-  });
 
   useDebounce(
     () => {
-      fetchAccountList();
+      fetchContractList();
     },
     1000,
     [pageIndex, pageSize],
   );
 
   return (
-    <div className={clsx('accounts-page-container basic-container-new', isMobile && 'mobile')}>
-      <h2>Top Accounts</h2>
+    <div className={clsx('contracts-page-container basic-container-new', isMobile && 'mobile')}>
+      <h2>Contracts</h2>
       <div>
         <div className="before-table">
           <div className="left">
             <p>
-              A total of {'>'} {Number(actualTotal).toLocaleString()} accounts found{' '}
-              {`(${Number(totalELF / 100000000).toLocaleString()} ELF)`}
+              A total of {'>'} {Number(actualTotal).toLocaleString()} contracts found
             </p>
-            <p>(Showing the top 1,000 accounts only)</p>
+            <p>(Showing the last 1,000 contracts only)</p>
           </div>
           <div className="right">
             <Pagination
