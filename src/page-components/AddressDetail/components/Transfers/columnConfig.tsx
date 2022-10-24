@@ -9,9 +9,19 @@ import Dividends from 'components/Dividends';
 import IconFont from 'components/IconFont';
 import { getFormattedDate } from 'utils/timeUtils';
 import { numberFormatter } from 'utils/formater';
+import { ColumnsType } from 'antd/lib/table';
 const { CHAIN_ID } = config;
+interface IRecord {
+  title: string;
+  dataIndex: string;
+  ellipsis: boolean;
+  width: number;
+  render(name: any): any;
+  align?: 'left' | 'right' | 'middle';
+  symbol: string;
+}
 const getColumnConfig = ({ address, isMobile, timeFormat, handleFormatChange, ellipsis = true }) => {
-  return [
+  const columnConfig: ColumnsType<IRecord> = [
     {
       title: 'Txn Hash',
       width: isMobile ? 149 : 206,
@@ -77,6 +87,7 @@ const getColumnConfig = ({ address, isMobile, timeFormat, handleFormatChange, el
       },
     },
   ];
+  return columnConfig;
 };
 
 export default getColumnConfig;

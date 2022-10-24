@@ -7,10 +7,10 @@ import React, { CSSProperties, MouseEventHandler, PureComponent } from 'react';
 import svgList from 'assets/svgs';
 
 interface IProps {
-  style: CSSProperties;
+  style?: CSSProperties;
   className: string;
   icon: string;
-  click: MouseEventHandler;
+  click?: MouseEventHandler;
 }
 export default class Svg extends PureComponent<IProps> {
   constructor(props) {
