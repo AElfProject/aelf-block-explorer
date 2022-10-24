@@ -3,7 +3,7 @@ import { SOCKET_URL } from '../../../constants';
 import { ISocketData } from '../types';
 
 export function initSocket(handleSocketData: any) {
-  const socket = io(location.origin, {
+  const socket = io(window.location.origin, {
     path: SOCKET_URL,
     transports: ['websocket', 'polling'],
   });
