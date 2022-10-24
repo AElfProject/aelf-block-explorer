@@ -3,7 +3,7 @@ import Contract from './Contract/Contract';
 import Events from './Events/Events';
 import History from './History/History';
 
-export default function ContractTabPane({ contractInfo, contractHistory, address, codeHash, activeKey }) {
+export default function ContractTabPane({ contractInfo, contractHistory, address, codeHash, activeKey, headers }) {
   return [
     {
       key: 'contract',
@@ -14,6 +14,7 @@ export default function ContractTabPane({ contractInfo, contractHistory, address
           codeHash={codeHash}
           history={contractHistory}
           isShow={activeKey === 'contract'}
+          headers={headers}
         />
       ),
     },

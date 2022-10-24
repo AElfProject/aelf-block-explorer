@@ -1,9 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { ChangeEvent, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Tree from 'rc-tree';
+import { MinusSquareOutlined, PlusSquareOutlined, FileOutlined } from '@ant-design/icons';
+import { IFile } from 'page-components/AddressDetail/types';
 require('rc-tree/assets/index.css');
 
-function addKeyForTree(files = [], parentKey = '', splitChar = '#') {
+interface IProps {
+  files: IFile[];
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
+function addKeyForTree(files: IFile[] = [], parentKey = '', splitChar = '#') {
   return files.map((file) => {
     const { name } = file;
     const newKey = `${parentKey}${name}`;
@@ -21,7 +27,7 @@ function addKeyForTree(files = [], parentKey = '', splitChar = '#') {
   });
 }
 
-function getFirstFile(files = []) {
+function getFirstFile(files: IFile[] = []) {
   if (files.length === 0) {
     return '';
   }
@@ -39,7 +45,19 @@ function renderTreeNode(item) {
   };
 }
 
-const FileTree = (props) => {
+const renderSwitcherIcon = (props) => {
+  const { expanded, isLeaf } = props;
+  if (isLeaf) {
+    return <FileOutlined className={`rc-switcher-line-icon`} />;
+  }
+  return expanded ? (
+    <MinusSquareOutlined className="rc-switcher-line-icon" />
+  ) : (
+    <PlusSquareOutlined className="rc-switcher-line-icon" />
+  );
+};
+
+const FileTree = (props: IProps) => {
   const { files = [], onChange } = props;
   const { filesWithKey, firstFileKey, firstDirectory } = useMemo(() => {
     const filesHandled = addKeyForTree(files);
@@ -59,6 +77,7 @@ const FileTree = (props) => {
   const treeData = useMemo(() => filesWithKey.map((v) => renderTreeNode(v)), [filesWithKey]);
   return (
     <Tree
+      prefixCls="ant-tree"
       showLine
       autoExpandParent
       defaultSelectedKeys={firstFileKey}
@@ -66,6 +85,7 @@ const FileTree = (props) => {
       onSelect={onSelect}
       className="contract-viewer-file-tree"
       treeData={treeData}
+      switcherIcon={renderSwitcherIcon}
     />
   );
 };

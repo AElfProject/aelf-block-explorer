@@ -1,3 +1,7 @@
+/*
+it wants to access the document object, and it requires browser environment.
+Basically you just need to avoid running that part out of browser environment
+*/
 import React, { useEffect, useState, useRef } from 'react';
 import copy from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
@@ -5,7 +9,15 @@ import { message } from 'antd';
 import { useMonaco } from '@monaco-editor/react';
 import { useEffectOnce } from 'react-use';
 import CopyButton from 'components/CopyButton/CopyButton';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 require('./index.less');
+
+interface IProps {
+  content: string;
+  isShow: boolean;
+  name: string;
+  path: string;
+}
 const languageDetector = [
   {
     language: 'csharp',
@@ -27,26 +39,23 @@ function getLanguage(name) {
 
 const positions = {};
 
-const Viewer = (props) => {
+const Viewer = (props: IProps) => {
   const monaco = useMonaco();
-  const [editor, setEditor] = useState(null);
+  const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
   const [isReadOnly] = useState(true);
   const editorEl = useRef(null);
   const { content, name, path, isShow } = props;
-  useEffectOnce(() => () => editor && editor.dispose());
+  useEffectOnce(() => () => editor?.dispose());
   useEffect(() => {
     const language = getLanguage(name);
-    const { [path]: position = { lineNumber: 1, column: 1, top: 1 } } = positions;
+    const { [path]: position = { lineNumber: 1, column: 1, top: 1 } } = positions as any;
     if (editor) {
-      editor.updateOptions({
-        language,
-      });
       editor.setValue(window.atob(content));
       editor.setPosition(position);
       editor.revealLine(position.lineNumber);
       editor.setScrollTop(position.top);
     } else {
-      const monacoEditor = monaco?.editor.create(editorEl.current, {
+      const monacoEditor = monaco?.editor.create(editorEl.current!, {
         lineNumbers: 'on',
         readOnly: isReadOnly,
         language,
@@ -63,7 +72,7 @@ const Viewer = (props) => {
         };
       }
     };
-  }, [path, isShow, editorEl]);
+  }, [path, isShow, editorEl, monaco]);
   useEffect(() => {
     if (editor) {
       editor.updateOptions({
@@ -75,7 +84,7 @@ const Viewer = (props) => {
 
   const handleCopy = () => {
     try {
-      copy(editor.getValue());
+      copy(editor?.getValue() as string);
       message.success('Copied!');
     } catch (e) {
       message.error('Copy failed, please copy by yourself.');

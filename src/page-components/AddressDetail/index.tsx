@@ -19,21 +19,23 @@ require('./index.less');
 export default function AddressDetail({
   balancesssr: balancesSSR,
   pricesssr: pricesSSR,
-  contractinfossr: contractinfoSSR,
-  contracthistoryssr: contracthistorySSR,
+  contractinfossr: contractInfoSSR,
+  contracthistoryssr: contractHistorySSR,
+  activekeyssr: activeKeySSR,
+  contractsssr: contractsSSR,
   headers,
 }) {
   const router = useRouter();
   const nav = router.push;
   const { address, codeHash } = router.query as { address: string; codeHash: string };
   let isMobile = !!isPhoneCheckSSR(headers);
-  const [activeKey, setActiveKey] = useState('tokens');
-  const [contracts, setContracts] = useState({});
+  const [activeKey, setActiveKey] = useState(activeKeySSR || 'tokens');
+  const [contracts, setContracts] = useState(contractsSSR || {});
   const [prices, setPrices] = useState(pricesSSR || {});
   const [balances, setBalances] = useState(balancesSSR || []);
   const [tokensLoading, setTokensLoading] = useState(false);
-  const [contractInfo, setContractInfo] = useState(contractinfoSSR);
-  const [contractHistory, setContractHistory] = useState(contracthistorySSR);
+  const [contractInfo, setContractInfo] = useState(contractInfoSSR);
+  const [contractHistory, setContractHistory] = useState(contractHistorySSR);
 
   const isCA = useMemo(() => !!contracts[address as string], [contracts, address]);
 
@@ -110,26 +112,26 @@ export default function AddressDetail({
   //   fetchPrice();
   // }, [balances]);
 
-  useEffect(() => {
-    if (isCA) {
-      fetchFile();
-      fetchHistory();
-      setActiveKey('contract');
-    } else {
-      setActiveKey('tokens');
-    }
-  }, [isCA, fetchFile]);
+  // useEffect(() => {
+  //   if (isCA) {
+  //     fetchFile();
+  //     fetchHistory();
+  //     setActiveKey('contract');
+  //   } else {
+  //     setActiveKey('tokens');
+  //   }
+  // }, [isCA, fetchFile]);
 
   // useEffectOnce(() => {
   //   getContractNames().then((res) => setContracts(res));
   // });
 
-  // useEffect(() => {
-  //   const res = isAddress(address);
-  //   if (!res) {
-  //     nav(`/search-invalid/${address}`);
-  //   }
-  // }, [address]);
+  useEffect(() => {
+    const res = isAddress(address);
+    if (!res) {
+      nav(`/search-invalid/${address}`);
+    }
+  }, [address]);
 
   return (
     <div className={clsx('address-detail-page-container basic-container-new', isMobile && 'mobile')}>
@@ -163,6 +165,7 @@ export default function AddressDetail({
               address,
               codeHash,
               activeKey,
+              headers,
             }).map(({ children, ...props }) => (
               <Tabs.TabPane key={props.key} tab={props.tab}>
                 {children}

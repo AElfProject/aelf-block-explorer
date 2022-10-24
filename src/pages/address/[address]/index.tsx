@@ -65,9 +65,11 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   const prices = (await fetchPrice(ctx, balances)) || {};
   let contractHistory = null;
   let contractInfo = null;
+  let activeKey = 'tokens';
   if (isCA) {
     contractInfo = await fetchFile(ctx, address, codeHash);
     contractHistory = await fetchHistory(ctx, address);
+    activeKey = 'contract';
   }
   if (redirectRes) {
     return {
@@ -83,6 +85,8 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
       pricesssr: prices,
       contractinfossr: JSON.parse(JSON.stringify(contractInfo)),
       contracthistoryssr: JSON.parse(JSON.stringify(contractHistory)),
+      contractsssr: contracts,
+      activekeyssr: activeKey,
       headers,
     },
   };

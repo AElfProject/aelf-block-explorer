@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
-import useMobile from 'hooks/useMobile';
 import Reader from '../Reader/Reader';
 import SaveAsFile from 'components/Save';
-
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 require('./Contract.styles.less');
 
 export default function Contract({
@@ -11,8 +10,12 @@ export default function Contract({
   codeHash,
   history,
   isShow,
+  headers,
 }) {
-  const isMobile = useMobile();
+  let isMobile = !!isPhoneCheckSSR(headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
   return (
     <div className={clsx('contract-pane', isMobile && 'mobile')}>
       <section className="contract-info">
@@ -34,7 +37,7 @@ export default function Contract({
         </p>
       </section>
       <section className="contract-code">
-        <Reader contractInfo={contractInfo} isShow={isShow} />
+        <Reader contractInfo={contractInfo} isShow={isShow} headers={headers} />
       </section>
     </div>
   );

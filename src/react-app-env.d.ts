@@ -1,6 +1,7 @@
 /// <reference types="react-scripts" />
 interface Window {
   NightElf?: any;
+  editor?: editor.IStandaloneCodeEditor | undefined;
 }
 // 声明没有ts文件的第三方SDK
 declare module 'aelf-sdk';

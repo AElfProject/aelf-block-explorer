@@ -4,10 +4,11 @@ import { Skeleton, Alert } from 'antd';
 import { sendHeight } from 'utils/utils';
 import FileTree from '../FileTree';
 import Viewer from '../Viewer/Viewer';
-import useMobile from 'hooks/useMobile';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { IFile, IViewerConfig } from 'page-components/AddressDetail/types';
 require('./index.less');
 
-function getDefaultFile(files = [], names = [], index = 0, path = '') {
+function getDefaultFile(files: IFile[] = [], names: string[] = [], index = 0, path = '') {
   const filtered = files.filter((v) => v.name === names[index]);
   if (filtered.length === 0) {
     return {};
@@ -61,17 +62,21 @@ const fetchingStatusMap = {
   SUCCESS: 'success',
 };
 
-const Reader = ({ contractInfo, isShow }) => {
-  const isMobile = useMobile();
-  const [files, setFiles] = useState([]);
-  const [fetchingStatus, setFetchingStatus] = useState(fetchingStatusMap.FETCHING);
-  const [viewerConfig, setViewerConfig] = useState({});
+const Reader = ({ contractInfo, isShow, headers }) => {
+  let isMobile = !!isPhoneCheckSSR(headers);
+  useEffect(() => {
+    isMobile = !!isPhoneCheck();
+  }, []);
+  const contractToFiles = handleFiles(contractInfo);
+  const [files, setFiles] = useState(contractToFiles.result);
+  // const [fetchingStatus, setFetchingStatus] = useState(fetchingStatusMap.FETCHING);
+  const [viewerConfig, setViewerConfig] = useState<IViewerConfig>(contractToFiles.defaultFile);
   useEffect(() => {
     if (contractInfo.files) {
       const { result, defaultFile } = handleFiles(contractInfo);
       setFiles(result);
       setViewerConfig(defaultFile);
-      setFetchingStatus(fetchingStatusMap.SUCCESS);
+      // setFetchingStatus(fetchingStatusMap.SUCCESS);
     }
     sendHeight(500);
   }, [contractInfo]);
@@ -87,8 +92,6 @@ const Reader = ({ contractInfo, isShow }) => {
 
   return (
     <div className="reader">
-      {/* <Switch> */}
-      {/* <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}> */}
       <>
         <If condition={isMobile}>
           <Then>
@@ -96,14 +99,14 @@ const Reader = ({ contractInfo, isShow }) => {
           </Then>
         </If>
         <div className="contract-reader">
-          <Switch>
-            <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}>
-              <FileTree files={files} onChange={onFileChange} />
-            </Case>
+          {/* <Switch>
+            <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}> */}
+          <FileTree files={files} onChange={onFileChange} />
+          {/* </Case>
             <Case condition={fetchingStatus === fetchingStatusMap.FETCHING}>
               <Skeleton active paragraph={sketchParagraph} />
             </Case>
-          </Switch>
+          </Switch> */}
           <Viewer
             content={viewerConfig.content || ''}
             name={viewerConfig.name || ''}

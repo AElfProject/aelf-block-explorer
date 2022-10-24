@@ -1,6 +1,5 @@
 import { Pagination, Spin, Table } from 'antd';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useDebounce } from 'react-use';
 import clsx from 'clsx';
@@ -12,15 +11,25 @@ import { get } from 'utils/axios';
 
 require('./Events.styles.less');
 
-export default function Events() {
-  const { address } = useRouter().query;
+interface IData {
+  Indexed: string[];
+  NonIndexed: string;
+}
+interface IDataSource {
+  address: string;
+  data: IData;
+  id: number;
+  name: string;
+  txId: string;
+}
+export default function Events(props) {
+  const { address } = props;
   const isMobile = useMobile();
   const [total, setTotal] = useState(0);
   const [dataLoading, setDataLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [dataSource, setDataSource] = useState(undefined);
-  console.log(dataSource, 'dataSource');
+  const [dataSource, setDataSource] = useState<IDataSource[]>([]);
   const columns = useMemo(
     () => [
       {
@@ -59,7 +68,7 @@ export default function Events() {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      setDataSource(undefined);
+      setDataSource([]);
       setDataLoading(true);
       setPageIndex(size === pageSize ? page : 1);
       setPageSize(size);
@@ -121,7 +130,7 @@ export default function Events() {
           total={total}
           pageSizeOptions={['10', '25', '50', '100']}
           onChange={handlePageChange}
-          onShowSizeChange={(current, size) => handlePageChange(1, size)}
+          onShowSizeChange={(_, size) => handlePageChange(1, size)}
         />
       </div>
     </div>
