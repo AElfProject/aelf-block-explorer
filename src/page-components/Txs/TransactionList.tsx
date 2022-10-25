@@ -14,12 +14,13 @@ export default function TransactionList({ actualtotalssr = 0, datasourcessr, hea
   const router = useRouter();
   const { pathname = '', asPath } = router;
   const search = asPath.indexOf('?') !== -1 ? asPath.substring(asPath.indexOf('?')) : undefined;
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
     if (search) {
       router.push(`/block/${search.slice(1)}?tab=txns`);
     }
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
 
   const [dataLoading, setDataLoading] = useState(false);

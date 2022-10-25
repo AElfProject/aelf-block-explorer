@@ -15,9 +15,10 @@ export default function TransactionList({
 }) {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   const dataSource = useMemo(() => {
     return allData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);

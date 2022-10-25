@@ -25,9 +25,10 @@ function BlockDetail(props: IProps) {
   const [bestChainHeight, setBestChainHeight] = useState(props.bestchainheightssr);
   const [showExtensionInfo, setShowExtensionInfo] = useState(false);
   const [activeKey, setActiveKey] = useState(props.activekeyssr || 'overview');
-  let isMobile = !!isPhoneCheckSSR(props.headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(props.headers));
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   const retryBlockInfoLimit = 2;
 

@@ -15,9 +15,10 @@ export default function Contracts({ actualtotalssr, datasourcessr, headers }) {
   const [pageSize, setPageSize] = useState(50);
   const [dataSource, setDataSource] = useState(datasourcessr);
   const [actualTotal, setActualTotal] = useState(actualtotalssr || 0);
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   const total = useMemo(() => {
     if (actualTotal > 1000) return 1000;

@@ -63,9 +63,10 @@ const fetchingStatusMap = {
 };
 
 const Reader = ({ contractInfo, isShow, headers }) => {
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   const contractToFiles = handleFiles(contractInfo);
   const [files, setFiles] = useState(contractToFiles.result);

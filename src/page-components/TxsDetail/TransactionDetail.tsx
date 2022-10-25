@@ -24,9 +24,10 @@ function TransactionDetail(props) {
   const [parsedLogs, setParsedLogs] = useState(props.parsedlogsssr || []);
   const [showExtensionInfo, setShowExtensionInfo] = useState(false);
   const [activeKey, setActiveKey] = useState('overview');
-  let isMobile = !!isPhoneCheckSSR(props.headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(props.headers));
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
 
   const hasLogs = useMemo(() => {

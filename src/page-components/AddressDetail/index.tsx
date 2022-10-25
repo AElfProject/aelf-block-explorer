@@ -28,7 +28,7 @@ export default function AddressDetail({
   const router = useRouter();
   const nav = router.push;
   const { address, codeHash } = router.query as { address: string; codeHash: string };
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
   const [activeKey, setActiveKey] = useState(activeKeySSR || 'tokens');
   const [contracts, setContracts] = useState(contractsSSR || {});
   const [prices, setPrices] = useState(pricesSSR || {});
@@ -49,7 +49,7 @@ export default function AddressDetail({
   }, [isCA]);
 
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   const fetchBalances = useCallback(async () => {
     setTokensLoading(true);

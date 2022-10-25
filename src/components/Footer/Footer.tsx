@@ -16,13 +16,15 @@ const BrowserFooter = ({ headers }: IProps) => {
   const { pathname } = useRouter();
   const [isNoFooter, setIsNoFooter] = useState(false);
   const NO_FOOTER_LIST = useMemo(() => ['search-invalid', 'search-failed'], []);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
     const firstPathName = pathname.split('/')[1];
     setIsNoFooter(NO_FOOTER_LIST.includes(firstPathName));
   }, [pathname]);
-  let isMobile = !!isPhoneCheckSSR(headers);
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   return isNoFooter ? (
     <></>

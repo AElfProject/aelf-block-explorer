@@ -1,13 +1,17 @@
 import Link from 'next/link';
 import React from 'react';
 import { numberFormatter } from 'utils/formater';
-import { ColumnType } from 'antd/es/table';
+import { ColumnsType } from 'antd/es/table';
 interface IRecord {
+  title: string;
+  dataIndex: string;
+  width: number;
   balance?: string;
-  symbol: string;
+  render: (prop: any) => void;
+  align?: 'left' | 'right' | 'center';
 }
 export default ({ prices, isMobile }) => {
-  const column: ColumnType<IRecord>[] = [
+  const column: ColumnsType<IRecord> = [
     {
       title: 'Token Name',
       dataIndex: 'symbol',

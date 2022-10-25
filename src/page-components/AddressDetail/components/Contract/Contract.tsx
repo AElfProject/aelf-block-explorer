@@ -1,20 +1,38 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Reader from '../Reader/Reader';
 import SaveAsFile from 'components/Save';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 require('./Contract.styles.less');
 
+interface IContractInfo {
+  contractName: string;
+  files: string;
+  address: string;
+  version: string;
+}
+interface IHistory {
+  codeHash: string;
+  version: string;
+}
+interface IProps {
+  contractInfo?: IContractInfo;
+  codeHash?: string;
+  history?: IHistory[];
+  isShow: boolean;
+  headers: any;
+}
 export default function Contract({
   contractInfo = { contractName: '-', files: '', address: '-', version: '-' },
   codeHash,
   history,
   isShow,
   headers,
-}) {
-  let isMobile = !!isPhoneCheckSSR(headers);
+}: IProps) {
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   return (
     <div className={clsx('contract-pane', isMobile && 'mobile')}>

@@ -16,8 +16,8 @@ interface IRecord {
   dataIndex: string;
   ellipsis: boolean;
   width: number;
-  render(name: any): any;
-  align?: 'left' | 'right' | 'middle';
+  render(prop: any): any;
+  align?: 'left' | 'right' | 'center';
   symbol: string;
 }
 const getColumnConfig = ({ address, isMobile, timeFormat, handleFormatChange, ellipsis = true }) => {

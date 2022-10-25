@@ -10,7 +10,7 @@ interface IRecord {
   ellipsis: boolean;
   width: number;
   render(name: any): any;
-  align?: 'left' | 'right' | 'middle';
+  align?: 'left' | 'right' | 'center';
 }
 export default ({ isMobile }) => {
   const columns: ColumnsType<IRecord> = [

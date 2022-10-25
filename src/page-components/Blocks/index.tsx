@@ -24,14 +24,14 @@ export default function BlockList({ allssr: allSSR, datasourcessr: dataSourceSSR
   const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
   // judge whether is confirmed
   const pageTitle = useMemo(() => (pathname.includes('unconfirmed') ? 'Unconfirmed Blocks' : 'Blocks'), [pathname]);
   const isConfirmed = useMemo(() => pathname.includes('unconfirmed'), [pathname]);
   const api = useMemo(() => {
     return pathname.indexOf('unconfirmed') === -1 ? ALL_BLOCKS_API_URL : ALL_UNCONFIRMED_BLOCKS_API_URL;
   }, [pathname]);
-  // judge whether is mobile
-  let isMobile = !!isPhoneCheckSSR(headers);
+
   const fetch = useCallback(
     async (pageIndex) => {
       setDataLoading(true);
@@ -49,7 +49,7 @@ export default function BlockList({ allssr: allSSR, datasourcessr: dataSourceSSR
   );
 
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
     if (pageIndex === 1) {
       fetch(pageIndex);
     } else {

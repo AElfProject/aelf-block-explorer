@@ -11,7 +11,7 @@ import getColumn from './columnConfig';
 import { VIEWER_ACCOUNT_LIST } from 'constants/viewerApi';
 require('./index.less');
 export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, headers }) {
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
   const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -59,7 +59,7 @@ export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, h
     [pageSize],
   );
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
 
   useEffectOnce(() => {
