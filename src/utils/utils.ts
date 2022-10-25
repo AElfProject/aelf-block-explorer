@@ -252,10 +252,15 @@ export async function getBalances(address, search = '') {
   }
 }
 
-export async function getTokenAllInfo(symbol) {
+export async function getTokenAllInfo(symbol, ctx?: NextPageContext) {
+  let url = API_PATH.GET_TOKEN_INFO;
+  if (typeof window === 'undefined') {
+    const host = process.env.BUILD_ENDPOINT || ctx?.req?.headers.host;
+    url = `${host}${url}`;
+  }
   try {
     const info = await request(
-      API_PATH.GET_TOKEN_INFO,
+      url,
       {
         symbol,
       },

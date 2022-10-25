@@ -1,30 +1,31 @@
 import { Pagination } from 'antd';
-import React, { useCallback, useState } from 'react';
-import { useParams } from 'react-router';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useDebounce } from 'react-use';
 import { VIEWER_TOKEN_TX_LIST } from 'constants/viewerApi';
-import TransactionTable from '../../../components/TransactionTable/TransactionTable';
-import useMobile from '../../../hooks/useMobile';
+import TransactionTable from 'components/TransactionTable/TransactionTable';
+import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { get } from 'utils/axios';
+import { useRouter } from 'next/router';
 
-export default function Transactions() {
-  const isMobile = useMobile();
-  const { symbol } = useParams();
-  const [dataLoading, setDataLoading] = useState(true);
+export default function Transactions({ dataSource: dataSourceSSR, actualTotal: actualTotalSSR, headers }) {
+  const { symbol } = useRouter().query;
+  const [dataLoading, setDataLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-  const [dataSource, setDataSource] = useState(undefined);
-  const [actualTotal, setActualTotal] = useState(0);
+  const [dataSource, setDataSource] = useState(dataSourceSSR);
+  const [actualTotal, setActualTotal] = useState(actualTotalSSR || 0);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
+  useEffect(() => {
+    setIsMobile(!!isPhoneCheck());
+  }, []);
 
   const fetchTransactions = useCallback(async () => {
-    setDataLoading(true);
-    setDataSource(undefined);
     const result = await get(VIEWER_TOKEN_TX_LIST, {
       symbol,
       pageSize,
       pageNum: pageIndex,
     });
-    setDataLoading(false);
     if (result.code === 0) {
       setDataSource(
         result.data.list.map((item) => ({
@@ -37,12 +38,15 @@ export default function Transactions() {
         })),
       );
       setActualTotal(result.data.total);
+    } else {
+      setDataSource(undefined);
     }
+    setDataLoading(false);
   }, [symbol, pageIndex, pageSize]);
 
   const handlePageChange = useCallback(
     (page, size) => {
-      setDataSource(false);
+      setDataSource(undefined);
       setDataLoading(true);
       setPageIndex(size === pageSize ? page : 1);
       setPageSize(size);

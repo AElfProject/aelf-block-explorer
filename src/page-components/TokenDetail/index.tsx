@@ -13,12 +13,18 @@ import { useRouter } from 'next/router';
 
 require('./index.less');
 
-export default function Token({ headers }) {
+export default function Token({
+  tokeninfossr: tokenInfoSSR,
+  pricessr: priceSSR,
+  datasourcessr: dataSourceSSR,
+  actual_total_ssr: actualTotalSSR,
+  headers,
+}) {
   const router = useRouter();
   const { symbol } = router.query;
   const nav = router.push;
-  const [tokenInfo, setTokenInfo] = useState(undefined);
-  const [price, setPrice] = useState(0);
+  const [tokenInfo, setTokenInfo] = useState(tokenInfoSSR);
+  const [price, setPrice] = useState(priceSSR || 0);
   const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
 
   useEffect(() => {
@@ -57,7 +63,7 @@ export default function Token({ headers }) {
       <section className="more-info">
         <Tabs>
           <Tabs.TabPane tab="Transactions" key="transactions">
-            <Transactions />
+            <Transactions dataSource={dataSourceSSR} actualTotal={actualTotalSSR} headers={headers} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Holders" key="holders">
             <Holders />

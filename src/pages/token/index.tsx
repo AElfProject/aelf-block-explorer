@@ -1,8 +1,7 @@
 import { NextPageContext } from 'next';
-import dynamic from 'next/dynamic';
 import { getSSR } from 'utils/axios';
 import { VIEWER_GET_ALL_TOKENS } from 'constants/api';
-const Tokens = dynamic(import('page-components/Tokens/Tokens'));
+import Tokens from 'page-components/Tokens/Tokens';
 const fetchData = async (ctx) => {
   const result = await getSSR(ctx, VIEWER_GET_ALL_TOKENS, {
     pageSize: 50,

@@ -1,6 +1,5 @@
-import dynamic from 'next/dynamic';
 import { NextPageContext } from 'next';
-const Txs = dynamic(import('page-components/Txs/TransactionList'));
+import Txs from 'page-components/Txs/TransactionList';
 import { ALL_TXS_API_URL, ALL_UNCONFIRMED_TXS_API_URL } from 'constants/api';
 import { getSSR } from 'utils/axios';
 import { getContractNames } from 'utils/utils';

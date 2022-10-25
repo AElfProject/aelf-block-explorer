@@ -1,12 +1,13 @@
 import { Skeleton } from 'antd';
 import React, { useMemo } from 'react';
-import { useParams } from 'react-router';
 import AddressLink from 'components/AddressLink';
 import CopyButton from 'components/CopyButton/CopyButton';
 import { numberFormatter } from 'utils/formater';
+import { useRouter } from 'next/router';
+import { IOverviewProps } from '../types';
 
-export default function Overview({ tokenInfo = {}, price = 0 }) {
-  const { symbol } = useParams();
+export default function Overview({ tokenInfo = {}, price = 0 }: IOverviewProps) {
+  const { symbol } = useRouter().query;
   const overviewList = useMemo(() => {
     const { totalSupply = 0, supply = 0, holders = 0, transfers = '0', contractAddress = '', decimals = 0 } = tokenInfo;
     return [

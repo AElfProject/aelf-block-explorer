@@ -1,5 +1,4 @@
-import dynamic from 'next/dynamic';
-const Home = dynamic(import('page-components/Home'));
+import Home from 'page-components/Home';
 export default Home;
 import { NextPageContext } from 'next';
 import {
