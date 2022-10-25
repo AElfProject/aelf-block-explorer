@@ -3,12 +3,13 @@ import React from 'react';
 import { numberFormatter } from 'utils/formater';
 import { ColumnsType } from 'antd/es/table';
 interface IRecord {
-  title: string;
-  dataIndex: string;
-  width: number;
+  title?: string;
+  dataIndex?: string;
+  width?: number;
   balance?: string;
-  render: (prop: any) => void;
+  render?: (prop: any) => void;
   align?: 'left' | 'right' | 'center';
+  symbol?: string;
 }
 export default ({ prices, isMobile }) => {
   const column: ColumnsType<IRecord> = [

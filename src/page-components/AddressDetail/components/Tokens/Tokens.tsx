@@ -30,7 +30,7 @@ export default function Tokens({ balances, prices, dataLoading, headers }) {
           loading={dataLoading}
           dataSource={sortedArr}
           columns={columns}
-          rowKey={(record = { symbol: 'ELF' }) => record.symbol}
+          rowKey={(record = { symbol: 'ELF' }) => record.symbol!}
           pagination={false}
         />
       </TableLayer>
