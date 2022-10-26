@@ -23,7 +23,6 @@ async function getConfig() {
     const contractAddress = await zeroContract.GetContractAddressByName.call(AElf.utils.sha256(name)).catch((e) =>
       console.error(e, 'e'),
     );
-    console.log(key, name, contractAddress);
     result[key] = contractAddress;
     if (name === 'AElf.ContractNames.Token') {
       const contract = await aelf.chain.contractAt(contractAddress, wallet);
@@ -179,7 +178,7 @@ async function getContractAddress() {
     ],
   };
   const ViewerConfigUrl = 'src/constants/config/viewer/config.json';
-  const originResult = JSON.parse(fs.readFileSync(path.resolve(__dirname, ViewerConfigUrl)).toString());
+  const originResult = JSON.parse(fs.readFileSync(path.resolve(ViewerConfigUrl)).toString());
   result = {
     ...originResult,
     viewer: {
@@ -187,7 +186,7 @@ async function getContractAddress() {
       ...result,
     },
   };
-  fs.writeFileSync(path.resolve(__dirname, ViewerConfigUrl), `${JSON.stringify(result, null, 2)}\n`);
+  fs.writeFileSync(path.resolve(ViewerConfigUrl), `${JSON.stringify(result, null, 2)}\n`);
 }
 // getConfig();
 Promise.all([getCMS(), getConfig(), getContractAddress()]).catch(console.error);
