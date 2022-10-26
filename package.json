@@ -3,13 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:AELF": "CHAIN_ID='AELF' next dev",
-    "dev:tDVW": "CHAIN_ID='tDVW' next dev",
+    "dev": "next dev",
     "beforeBuild": "node scripts/queryConfig.js",
-    "build:AELF": "CHAIN_ID='AELF' next build",
-    "build:tDVW": "CHAIN_ID='tDVW' next build",
-    "start:AELF": "CHAIN_ID='AELF' next start",
-    "start:tDVW": "CHAIN_ID='tDVW' next start",
+    "build": "next build",
+    "start": " next start",
     "lint": "next lint",
     "dev:analyze": "PORT=4000 ANALYZE=true next dev",
     "prepare": "husky install"
