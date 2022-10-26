@@ -19,10 +19,7 @@ async function getConfig() {
   result.CHAIN_ID = ChainId;
   const zeroContract = await aelf.chain.contractAt(GenesisContractAddress, wallet);
   for (const [key, name] of Object.entries(CONTRACTS)) {
-    console.log(1);
-    const contractAddress = await zeroContract.GetContractAddressByName.call(AElf.utils.sha256(name)).catch((e) =>
-      console.error(e, 'e'),
-    );
+    const contractAddress = await zeroContract.GetContractAddressByName.call(AElf.utils.sha256(name));
     result[key] = contractAddress;
     if (name === 'AElf.ContractNames.Token') {
       const contract = await aelf.chain.contractAt(contractAddress, wallet);
