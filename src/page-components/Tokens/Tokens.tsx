@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Pagination, Table } from 'antd';
-import { useDebounce } from 'react-use';
+import { useDebounce, useUpdateEffect } from 'react-use';
 import clsx from 'clsx';
 import TableLayer from 'components/TableLayer/TableLayer';
 import getColumnConfig from './columnConfig';
@@ -51,13 +51,9 @@ export default function Tokens({ actualtotalssr: actualTotalSSR, datasourcessr: 
     setIsMobile(!!isPhoneCheck());
   }, []);
 
-  useDebounce(
-    () => {
-      fetchData();
-    },
-    300,
-    [pageIndex, pageSize],
-  );
+  useUpdateEffect(() => {
+    fetchData();
+  }, [pageIndex, pageSize]);
 
   return (
     <div className={clsx('tokens-page-container basic-container-new', isMobile && 'mobile')}>

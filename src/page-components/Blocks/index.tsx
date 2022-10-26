@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import TableLayer from 'components/TableLayer/TableLayer';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { IBlocksResult } from 'page-components/Home/types';
+import { useUpdateEffect } from 'react-use';
 
 require('./BlockList.styles.less');
 
@@ -50,23 +51,23 @@ export default function BlockList({ allssr: allSSR, datasourcessr: dataSourceSSR
     [api, pageSize],
   );
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     setIsMobile(!!isPhoneCheck());
     if (pageIndex === 1) {
+      setDataLoading(true);
+      setDataSource(undefined);
       fetch(pageIndex);
     } else {
       // unconfirmed -> confirmed
+      setDataLoading(true);
+      setDataSource(undefined);
       setPageIndex(1);
     }
   }, [pathname]);
 
-  useDebounce(
-    () => {
-      fetch(pageIndex);
-    },
-    300,
-    [pageIndex, pageSize],
-  );
+  useUpdateEffect(() => {
+    fetch(pageIndex);
+  }, [pageIndex, pageSize]);
 
   const handlePageChange = useCallback(
     (page, size) => {
@@ -128,7 +129,7 @@ export default function BlockList({ allssr: allSSR, datasourcessr: dataSourceSSR
             total={all}
             pageSizeOptions={['25', '50', '100']}
             onChange={handlePageChange}
-            onShowSizeChange={(current, size) => handlePageChange(1, size)}
+            onShowSizeChange={(_, size) => handlePageChange(1, size)}
           />
         </div>
       </div>

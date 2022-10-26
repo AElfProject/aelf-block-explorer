@@ -10,6 +10,7 @@ import Holders from './components/Holders';
 import Contract from './components/Contract';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { useRouter } from 'next/router';
+import { useUpdateEffect } from 'react-use';
 
 require('./index.less');
 
@@ -49,7 +50,7 @@ export default function Token({
     }
   }, [symbol]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     fetchTokenInfo();
     fetchPrice();
   }, [fetchPrice, fetchTokenInfo]);

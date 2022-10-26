@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import React, { useMemo, useState } from 'react';
-import { useEffectOnce } from 'react-use';
+import { useEffectOnce, useUpdateEffect } from 'react-use';
 import { ELF_REALTIME_PRICE_URL } from 'constants/api';
 import { get } from 'utils/axios';
 import TableLayer from '../TableLayer/TableLayer';
@@ -23,7 +23,7 @@ export default function TransactionTable({ dataLoading, dataSource, price: price
     [timeFormat, price],
   );
 
-  useEffectOnce(() => {
+  useUpdateEffect(() => {
     get(ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((res) => setPrice(res));
   });
   return (

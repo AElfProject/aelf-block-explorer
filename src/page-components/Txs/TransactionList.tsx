@@ -3,7 +3,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { ALL_TXS_API_URL, ALL_UNCONFIRMED_TXS_API_URL } from 'constants/api';
 import { getContractNames } from 'utils/utils';
 import { get } from 'utils/axios';
-import { useDebounce } from 'react-use';
+import { useDebounce, useUpdateEffect } from 'react-use';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import TransactionTable from 'components/TransactionTable/TransactionTable';
 import { useRouter } from 'next/router';
@@ -67,7 +67,7 @@ export default function TransactionList({ actualtotalssr = 0, datasourcessr, hea
       }
       setDataLoading(false);
     },
-    [pathname, get, getContractNames, merge, pageSize],
+    [pathname, pageSize],
   );
 
   const handlePageChange = useCallback(
@@ -79,21 +79,21 @@ export default function TransactionList({ actualtotalssr = 0, datasourcessr, hea
     [pageSize],
   );
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (pageIndex === 1) {
+      setDataLoading(true);
+      setDataSource([]);
       fetch(pageIndex);
     } else {
+      setDataLoading(true);
+      setDataSource([]);
       setPageIndex(1);
     }
   }, [pathname]);
 
-  useDebounce(
-    () => {
-      fetch(pageIndex);
-    },
-    300,
-    [pageIndex, pageSize],
-  );
+  useUpdateEffect(() => {
+    fetch(pageIndex);
+  }, [pageIndex, pageSize]);
 
   return (
     <div className={`txs-page-container basic-container-new ${isMobile ? 'mobile' : ''}`} key="body">
@@ -127,7 +127,7 @@ export default function TransactionList({ actualtotalssr = 0, datasourcessr, hea
             total={total}
             pageSizeOptions={['25', '50', '100']}
             onChange={handlePageChange}
-            onShowSizeChange={(current, size) => handlePageChange(1, size)}
+            onShowSizeChange={(_, size) => handlePageChange(1, size)}
           />
         </div>
       </div>

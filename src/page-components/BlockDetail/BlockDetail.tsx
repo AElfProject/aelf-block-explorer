@@ -65,17 +65,13 @@ function BlockDetail(props: IProps) {
     }
   }, [props]);
 
-  useDebounce(
-    () => {
-      try {
-        fetchBlockInfo();
-      } catch (error) {
-        console.log('>>>error', error);
-      }
-    },
-    1000,
-    [pageId],
-  );
+  useUpdateEffect(() => {
+    try {
+      fetchBlockInfo();
+    } catch (error) {
+      console.log('>>>error', error);
+    }
+  }, [pageId]);
 
   const merge = useCallback((data: Itx[] | never[] = [], contractNames) => {
     return (data || []).map((item: Itx) => ({
