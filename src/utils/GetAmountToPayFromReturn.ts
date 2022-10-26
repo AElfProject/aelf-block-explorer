@@ -38,7 +38,7 @@ export default function GetAmountToPayFromReturn(
   // x^y = exp(y*ln(x))
   const x = bt.div(bt.minus(a));
   const y = wt.div(wf);
-  return Decimal.exp(y * Decimal.ln(x))
+  return Decimal.exp(y * (Decimal.ln(x) as any))
     .minus(1)
     .times(bf)
     .toNumber();

@@ -29,7 +29,7 @@ export default function GetReturnFromPaid(
   const x = bf.div(bf.add(a));
   const y = wf.div(wt);
   return new Decimal(1)
-    .minus(Decimal.exp(y * Decimal.ln(x)))
+    .minus(Decimal.exp(y * (Decimal.ln(x) as any)))
     .times(bt)
     .toNumber();
 }

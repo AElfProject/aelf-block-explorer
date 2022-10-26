@@ -10,8 +10,8 @@ const isPhone = typeof window !== 'undefined' ? isMobile(window.navigator).phone
 
 // todo: there are three place that has the same payload in contractChange, getLogin, can I optimize it?
 let getLoginLock = false;
-let getLoginQueue = [];
-let getLoginTimer = null;
+let getLoginQueue: any[] = [];
+let getLoginTimer: ReturnType<typeof setTimeout> | null = null;
 export default function getLogin(nightElf, payload, callback, useLock = true) {
   getLoginQueue.push({
     nightElf,
@@ -27,7 +27,7 @@ export default function getLogin(nightElf, payload, callback, useLock = true) {
   }, 200);
 }
 
-function nightELFLogin(useLock) {
+function nightELFLogin(useLock?) {
   if ((getLoginQueue.length <= 0 || getLoginLock) && useLock) {
     return;
   }

@@ -5,7 +5,7 @@
  */
 
 import { Decimal } from 'decimal.js';
-import { SYMBOL } from 'constants';
+import { SYMBOL } from 'constants/index';
 
 export default function getTokenWeight(tokenConverterContract) {
   return new Promise((resolve) => {

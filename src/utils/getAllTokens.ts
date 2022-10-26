@@ -4,7 +4,7 @@
  */
 import { get } from 'utils/axios';
 
-let tokens = [];
+let tokens: any[] = [];
 let lastTimestamp = new Date().valueOf();
 const TIME_EXPIRED = 10 * 60 * 1000;
 const API_PATH = '/proposal/tokenList';

@@ -15,7 +15,7 @@ export function isBeforeToday(time) {
   return flag;
 }
 
-export function getFormattedDate(date, type) {
+export function getFormattedDate(date, type?) {
   if (date) {
     if (type === 'Date Time') {
       return moment(date).format('YYYY-MM-DD HH:mm:SS');

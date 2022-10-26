@@ -5,21 +5,22 @@
 
 import { DEFAUTRPCSERVER } from 'constants/config/config';
 
-let AElfBridge = null;
+let AElfBridge: any = null;
 if (typeof window !== 'undefined') {
   AElfBridge = require('aelf-bridge');
 }
 import { getObjectPublicKeyFromString, getPublicKeyFromObject } from '../getPublicKey';
 
 const HTTP_PROVIDER = DEFAUTRPCSERVER;
-let aelfBridgeInstance = null;
+let aelfBridgeInstance: any = null;
 // let aelfInstanceByExtension = null;
-let aelfInstanceByBridge = null;
+let aelfInstanceByBridge: any = null;
 let contractInstances = {};
 
-let accountInfo = null;
+let accountInfo: any = null;
 
 export default class AelfBridgeCheck {
+  check;
   constructor() {
     // let resovleTemp = null;
     this.check = new Promise((resolve, reject) => {
