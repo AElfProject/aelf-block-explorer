@@ -189,5 +189,5 @@ async function getContractAddress() {
   };
   fs.writeFileSync(path.resolve(__dirname, ViewerConfigUrl), `${JSON.stringify(result, null, 2)}\n`);
 }
-getConfig();
-// Promise.all([getCMS(), getConfig(), getContractAddress()]).catch(console.error);
+// getConfig();
+Promise.all([getCMS(), getConfig(), getContractAddress()]).catch(console.error);
