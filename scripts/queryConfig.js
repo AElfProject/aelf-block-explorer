@@ -25,19 +25,19 @@ async function getConfig() {
     );
     console.log(key, name, contractAddress);
     result[key] = contractAddress;
-    // if (name === 'AElf.ContractNames.Token') {
-    //   const contract = await aelf.chain.contractAt(contractAddress, wallet);
-    //   const { symbol } = await contract.GetNativeTokenInfo.call();
-    //   let resourceTokens = await contract.GetResourceTokenInfo.call();
-    //   resourceTokens = Array.isArray(resourceTokens.value)
-    //     ? resourceTokens.value.map(({ symbol, decimals }) => ({
-    //         symbol,
-    //         decimals,
-    //       }))
-    //     : [];
-    //   result.SYMBOL = symbol;
-    //   result.resourceTokens = resourceTokens;
-    // }
+    if (name === 'AElf.ContractNames.Token') {
+      const contract = await aelf.chain.contractAt(contractAddress, wallet);
+      const { symbol } = await contract.GetNativeTokenInfo.call();
+      let resourceTokens = await contract.GetResourceTokenInfo.call();
+      resourceTokens = Array.isArray(resourceTokens.value)
+        ? resourceTokens.value.map(({ symbol, decimals }) => ({
+            symbol,
+            decimals,
+          }))
+        : [];
+      result.SYMBOL = symbol;
+      result.resourceTokens = resourceTokens;
+    }
   }
 
   if (result.electionContractAddr) {
