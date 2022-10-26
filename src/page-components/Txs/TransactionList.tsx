@@ -49,27 +49,30 @@ export default function TransactionList({ actualtotalssr = 0, datasourcessr, hea
 
   const fetch = useCallback(
     async (page = 1) => {
-      setDataSource([]);
-      setDataLoading(true);
-      const url = pathname.indexOf('unconfirmed') === -1 ? ALL_TXS_API_URL : ALL_UNCONFIRMED_TXS_API_URL;
-      const data = await get(url, {
-        order: 'desc',
-        page: page - 1,
-        limit: pageSize,
-        block_hash: (search && search.slice(1)) || undefined,
-      });
-      const contractNames = await getContractNames();
+      try {
+        const url = pathname.indexOf('unconfirmed') === -1 ? ALL_TXS_API_URL : ALL_UNCONFIRMED_TXS_API_URL;
+        const data = await get(url, {
+          order: 'desc',
+          page: page - 1,
+          limit: pageSize,
+          block_hash: (search && search.slice(1)) || undefined,
+        });
+        const contractNames = await getContractNames();
 
-      setActualTotal(data ? data.total || data.transactions.length : 0);
-      const transactions = merge(data, contractNames);
+        setActualTotal(data ? data.total || data.transactions.length : 0);
+        const transactions = merge(data, contractNames);
+        setDataSource(transactions);
+      } catch {
+        setDataSource([]);
+      }
       setDataLoading(false);
-      setDataSource(transactions);
     },
     [pathname, get, getContractNames, merge, pageSize],
   );
 
   const handlePageChange = useCallback(
     (page, size) => {
+      setDataLoading(true);
       setPageIndex(size === pageSize ? page : 1);
       setPageSize(size);
     },

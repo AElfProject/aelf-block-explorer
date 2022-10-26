@@ -34,16 +34,18 @@ export default function BlockList({ allssr: allSSR, datasourcessr: dataSourceSSR
 
   const fetch = useCallback(
     async (pageIndex) => {
-      setDataLoading(true);
-      setDataSource(undefined);
-      const data: IBlocksResult = (await get(api, {
-        order: 'desc',
-        page: pageIndex - 1,
-        limit: pageSize,
-      })) as IBlocksResult;
-      setAll(data ? data.total : 0);
+      try {
+        const data: IBlocksResult = (await get(api, {
+          order: 'desc',
+          page: pageIndex - 1,
+          limit: pageSize,
+        })) as IBlocksResult;
+        setAll(data ? data.total : 0);
+        setDataSource(data && data.blocks.length ? data.blocks : null);
+      } catch {
+        setDataSource(undefined);
+      }
       setDataLoading(false);
-      setDataSource(data && data.blocks.length ? data.blocks : null);
     },
     [api, pageSize],
   );
@@ -68,6 +70,7 @@ export default function BlockList({ allssr: allSSR, datasourcessr: dataSourceSSR
 
   const handlePageChange = useCallback(
     (page, size) => {
+      setDataLoading(true);
       setPageIndex(size === pageSize ? page : 1);
       setPageSize(size);
     },

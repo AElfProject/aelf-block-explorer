@@ -2,11 +2,19 @@
  * @file 请求方法
  * @author atom-yang
  */
-import axios from 'axios';
+import axios, { Method } from 'axios';
 import { omitBy } from 'lodash/fp';
 import { isObject } from 'lodash';
 
-const defaultRequestOptions = {
+interface IRequestOptions {
+  url?: string;
+  headers: any;
+  withCredentials: boolean;
+  method: Method;
+  params?: any;
+  data?: any;
+}
+const defaultRequestOptions: IRequestOptions = {
   headers: {
     'Content-Type': 'application/json;charset=utf-8',
   },

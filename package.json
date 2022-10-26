@@ -5,6 +5,7 @@
   "scripts": {
     "dev:AELF": "CHAIN_ID='AELF' next dev",
     "dev:tDVW": "CHAIN_ID='tDVW' next dev",
+    "beforeBuild": "node scripts/queryConfig.js",
     "build:AELF": "CHAIN_ID='AELF' next build",
     "build:tDVW": "CHAIN_ID='tDVW' next build",
     "start:AELF": "CHAIN_ID='AELF' next start",

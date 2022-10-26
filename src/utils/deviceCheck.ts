@@ -20,7 +20,7 @@ export const isPhoneCheck = () => {
 };
 
 let isIPhoneChecked = false;
-let iPhoneCheckResult = null;
+let iPhoneCheckResult;
 export const isIPhone = () => {
   // 判断是否手机端访问
   if (!isIPhoneChecked) {
@@ -31,8 +31,4 @@ export const isIPhone = () => {
     return iPhoneCheckResult;
   }
   return iPhoneCheckResult;
-};
-
-export const isAndroid = () => {
-  // TODO:
 };

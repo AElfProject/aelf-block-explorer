@@ -4,11 +4,12 @@
  */
 import { DEFAUTRPCSERVER, APPNAME } from 'constants/config/config';
 
-let nightElfInstance = null;
+let nightElfInstance: any = null;
 let aelfInstanceByExtension = null;
 export default class NightElfCheck {
+  check;
   constructor() {
-    let resovleTemp = null;
+    let resovleTemp: any = null;
     this.check = new Promise((resolve, reject) => {
       if (window.NightElf) {
         console.log('There is nightelf');

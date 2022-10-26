@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-12-10 01:01:54
  * @Description: file content
  */
-import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from 'constants';
+import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from 'constants/index';
 
 const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
@@ -27,8 +27,9 @@ function getProcessedValue(value, hasDecimal) {
   let decimalProcessedValue = value;
   const isSmallNumber = value < RESOURCE_OPERATE_LIMIT && value > 0;
   decimalProcessedValue = value.toFixed(isSmallNumber ? ELF_PRECISION : 2);
-
-  let [wholeNum, decimal] = `${decimalProcessedValue}`.split('.');
+  let wholeNum,
+    decimal = '';
+  [wholeNum, decimal] = `${decimalProcessedValue}`.split('.');
   wholeNum = thousandsComma(wholeNum);
   const processedValue = hasDecimal ? `${wholeNum}.${decimal}` : wholeNum;
   return processedValue;

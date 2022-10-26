@@ -27,7 +27,6 @@ const OrganizationList = () => {
   const { logStatus, isALLSettle, currentWallet } = common;
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(params.search);
-  // const { proposalType } = useParams();
 
   const fetchList = (param) => {
     dispatch(getOrganizations(param));
