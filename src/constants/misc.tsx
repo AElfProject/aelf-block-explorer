@@ -1,6 +1,6 @@
 import config, { DEFAUTRPCSERVER } from './config/config';
 import Link from 'next/link';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import addressFormat from '../utils/addressFormat';
@@ -9,6 +9,8 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { removeAElfPrefix } from 'utils/utils';
 dayjs.extend(relativeTime);
 import BigNumber from 'bignumber.js';
+import { AlignType, RenderedCell } from 'rc-table/lib/interface';
+import { ColumnsType } from 'antd/lib/table';
 const { SYMBOL, CHAIN_ID } = config;
 // for address
 const globalConfig = {
@@ -237,7 +239,14 @@ const ADDRESS_INFO_COLUMN = [
   },
 ];
 
-const RESOURCE_DETAILS_COLUMN = [
+const RESOURCE_DETAILS_COLUMN: ColumnsType<{
+  title: string;
+  dataIndex: string;
+  key: string;
+  align: AlignType;
+  ellipsis: boolean;
+  render: (text: string) => ReactNode | RenderedCell<any>;
+}> = [
   {
     title: 'Tx Id',
     dataIndex: 'tx_id',

@@ -3,16 +3,26 @@
  * @author zhouminghui
  */
 
-import React, { PureComponent } from 'react';
+import { PureComponent } from 'react';
 import { Table } from 'antd';
 import { get } from 'utils/axios';
-import { RESOURCE_RECORDS, RESOURCE_DETAILS_COLUMN, PAGE_SIZE, ELF_DECIMAL } from 'constants';
+import { RESOURCE_RECORDS, RESOURCE_DETAILS_COLUMN, PAGE_SIZE, ELF_DECIMAL } from 'constants/index';
 require('./ResourceDetail.less');
-import { withRouter } from 'next/router';
+import { NextRouter, withRouter } from 'next/router';
+import { PaginationProps } from 'antd';
 import TableLayer from 'components/TableLayer/TableLayer';
 
+interface IProps {
+  router: NextRouter;
+}
+interface IState {
+  address: string;
+  pagination: PaginationProps;
+  loading: boolean;
+  data: any;
+}
 const page = 0;
-class ResourceDetail extends PureComponent {
+class ResourceDetail extends PureComponent<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {

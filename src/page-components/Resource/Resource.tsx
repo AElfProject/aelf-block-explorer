@@ -19,8 +19,24 @@ import getLogin from 'utils/getLogin';
 import { isPhoneCheck } from 'utils/deviceCheck';
 require('./Resource.less');
 
+interface IState {
+  currentWallet: any;
+  contracts: any;
+  tokenContract: any;
+  tokenConverterContract: any;
+  showDownloadPlugins: boolean;
+  showWallet: boolean;
+  currentBalance: number;
+  resourceTokens: any;
+  loading: boolean;
+  nightElf: any;
+  appName?: string;
+}
+
 const appName = APPNAME;
-class Resource extends Component {
+class Resource extends Component<any, IState> {
+  informationTimer;
+  walletRef;
   constructor(props) {
     super(props);
     this.informationTimer;
@@ -40,7 +56,7 @@ class Resource extends Component {
   }
 
   componentDidMount() {
-    getContractAddress().then((result) => {
+    getContractAddress().then((result: any) => {
       this.setState({
         contracts: result,
       });
@@ -73,7 +89,7 @@ class Resource extends Component {
                 }
               });
             } else {
-              let wallet = JSON.parse(localStorage.getItem('currentWallet'));
+              const wallet = JSON.parse(localStorage.getItem('currentWallet')!);
               if (wallet && new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000) {
                 nightElf.chain.getChainStatus().then((result) => {
                   this.loginAndInsertKeyPairs(result);
@@ -133,7 +149,7 @@ class Resource extends Component {
     );
   };
 
-  loginFailed(result) {
+  loginFailed(result?) {
     this.setState({
       showWallet: false,
     });
@@ -185,7 +201,7 @@ class Resource extends Component {
   };
 
   resourceAElfWalletHtml() {
-    const { tokenContract, tokenConverterContract, currentWallet, resourceTokens, currentBalance } = this.state;
+    const { tokenContract, currentWallet, resourceTokens, currentBalance } = this.state;
     return (
       <ResourceAElfWallet
         title="AELF Wallet"
@@ -193,7 +209,6 @@ class Resource extends Component {
           this.walletRef = wallet;
         }}
         tokenContract={tokenContract}
-        tokenConverterContract={tokenConverterContract}
         currentWallet={currentWallet}
         getCurrentBalance={this.getCurrentBalance}
         getResource={this.getResource}
@@ -220,7 +235,7 @@ class Resource extends Component {
       balance: currentBalance,
       resourceTokens,
     };
-    let downloadPlugins = null;
+    let downloadPlugins: any = null;
     if (showDownloadPlugins) {
       // eslint-disable-next-line react/jsx-key
       downloadPlugins = [this.getDownloadPluginsHTML(), <div className="resource-blank" />];
@@ -230,7 +245,6 @@ class Resource extends Component {
     return (
       <div className="resource-body basic-container basic-container-white">
         {!isPhone && downloadPlugins}
-        {/*{isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}*/}
         {nightElf && resourceAElfWalletHtml}
         <div className="resource-money-market">
           <ResourceMoneyMarket

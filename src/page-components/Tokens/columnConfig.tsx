@@ -2,13 +2,14 @@ import React from 'react';
 import Link from 'next/link';
 import { numberFormatter } from 'utils/formater';
 import { ColumnsType } from 'antd/lib/table';
+import { AlignType } from 'rc-table/lib/interface';
 interface IRecord {
   title: string;
   dataIndex: string;
   width: number;
   render: (prop: any) => void;
   symbol?: string;
-  align?: 'left' | 'right' | 'center';
+  align?: AlignType;
 }
 const getColumnConfig = (isMobile, preTotal) => {
   const columnConfig: ColumnsType<IRecord> = [
