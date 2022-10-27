@@ -1,3 +1,11 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-26 17:52:33
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-27 11:32:05
+ * @FilePath: /aelf-block-explorer/src/page-components/ResourceDetail/ResourceDetail.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 /**
  * @file ResourceDetail
  * @author zhouminghui
@@ -8,21 +16,11 @@ import { Table } from 'antd';
 import { get } from 'utils/axios';
 import { RESOURCE_RECORDS, RESOURCE_DETAILS_COLUMN, PAGE_SIZE, ELF_DECIMAL } from 'constants/index';
 require('./ResourceDetail.less');
-import { NextRouter, withRouter } from 'next/router';
-import { PaginationProps } from 'antd';
+import { withRouter } from 'next/router';
 import TableLayer from 'components/TableLayer/TableLayer';
 
-interface IProps {
-  router: NextRouter;
-}
-interface IState {
-  address: string;
-  pagination: PaginationProps;
-  loading: boolean;
-  data: any;
-}
 const page = 0;
-class ResourceDetail extends PureComponent<IProps, IState> {
+class ResourceDetail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

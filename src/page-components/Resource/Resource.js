@@ -19,24 +19,8 @@ import getLogin from 'utils/getLogin';
 import { isPhoneCheck } from 'utils/deviceCheck';
 require('./Resource.less');
 
-interface IState {
-  currentWallet: any;
-  contracts: any;
-  tokenContract: any;
-  tokenConverterContract: any;
-  showDownloadPlugins: boolean;
-  showWallet: boolean;
-  currentBalance: number;
-  resourceTokens: any;
-  loading: boolean;
-  nightElf: any;
-  appName?: string;
-}
-
 const appName = APPNAME;
-class Resource extends Component<any, IState> {
-  informationTimer;
-  walletRef;
+class Resource extends Component {
   constructor(props) {
     super(props);
     this.informationTimer;
@@ -56,7 +40,7 @@ class Resource extends Component<any, IState> {
   }
 
   componentDidMount() {
-    getContractAddress().then((result: any) => {
+    getContractAddress().then((result) => {
       this.setState({
         contracts: result,
       });
@@ -89,7 +73,7 @@ class Resource extends Component<any, IState> {
                 }
               });
             } else {
-              const wallet = JSON.parse(localStorage.getItem('currentWallet')!);
+              const wallet = JSON.parse(localStorage.getItem('currentWallet'));
               if (wallet && new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000) {
                 nightElf.chain.getChainStatus().then((result) => {
                   this.loginAndInsertKeyPairs(result);
@@ -149,7 +133,7 @@ class Resource extends Component<any, IState> {
     );
   };
 
-  loginFailed(result?) {
+  loginFailed(result) {
     this.setState({
       showWallet: false,
     });
@@ -235,7 +219,7 @@ class Resource extends Component<any, IState> {
       balance: currentBalance,
       resourceTokens,
     };
-    let downloadPlugins: any = null;
+    let downloadPlugins = null;
     if (showDownloadPlugins) {
       // eslint-disable-next-line react/jsx-key
       downloadPlugins = [this.getDownloadPluginsHTML(), <div className="resource-blank" />];

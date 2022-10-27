@@ -1,18 +1,20 @@
-/**
- * @file
- * @author
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-26 14:52:14
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-27 11:04:31
+ * @FilePath: /aelf-block-explorer/src/utils/deviceCheck.ts
+ * @Description: judge if is phone
  */
 
 export const isPhoneCheckSSR = (headers) => {
   if (!headers) return false;
-  // 判断是否手机端访问
   const userAgentInfo = headers['user-agent'].toLowerCase();
   const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
   const phoneCheckResultSSR = agents.find((agent) => userAgentInfo.includes(agent));
   return phoneCheckResultSSR;
 };
 export const isPhoneCheck = () => {
-  // 判断是否手机端访问
   const userAgentInfo = navigator.userAgent.toLowerCase();
   const agents = ['android', 'iphone', 'symbianos', 'windows phone', 'ipad', 'ipod'];
   const phoneCheckResult = agents.find((agent) => userAgentInfo.includes(agent));
@@ -22,7 +24,6 @@ export const isPhoneCheck = () => {
 let isIPhoneChecked = false;
 let iPhoneCheckResult;
 export const isIPhone = () => {
-  // 判断是否手机端访问
   if (!isIPhoneChecked) {
     const userAgentInfo = navigator.userAgent.toLowerCase();
     const agents = ['iphone', 'ipad', 'ipod'];

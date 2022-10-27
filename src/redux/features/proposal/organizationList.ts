@@ -1,6 +1,10 @@
-/**
- * @file organization actions
- * @author atom-yang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-27 10:58:49
+ * @FilePath: /aelf-block-explorer/src/redux/features/proposal/organizationList.ts
+ * @Description: get organizations for organization page
  */
 import { createSlice } from '@reduxjs/toolkit';
 import { API_PATH } from 'constants/viewerApi';

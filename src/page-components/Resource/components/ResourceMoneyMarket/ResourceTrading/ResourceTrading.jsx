@@ -13,38 +13,8 @@ import ResourceBuyModal from './ResourceBuyModal/ResourceBuyModal';
 import ResourceSellModal from './ResourceSellModal/ResourceSellModal';
 import { isPhoneCheck } from 'utils/deviceCheck';
 require('./ResourceTrading.less');
-interface IProps {
-  currentWallet: any;
-  contracts: any;
-  nightElf: any;
-  account: any;
-  currentResourceType: string;
-  currentResourceIndex: number;
-  loginAndInsertKeypairs: any;
-  onRefresh: (prop: any) => void;
-}
-interface IState {
-  sellVisible: boolean;
-  buyVisible: boolean;
-  currentWallet: any;
-  contracts: any;
-  tokenContract: any;
-  tokenConverterContract: any;
-  SellELFValue: any;
-  buyElfValue: any;
-  nightElf: any;
-  buyNum: number | null;
-  buyFee: number;
-  buyInputLoading: boolean;
-  buyEstimateValueLoading: boolean;
-  sellNum: number | null;
-  sellFee: number;
-  sellEstimateValueLoading: boolean;
-  ELFValue: number;
-  maskClosable: boolean;
-}
-class ResourceTrading extends PureComponent<IProps, IState> {
-  isPhone;
+
+class ResourceTrading extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

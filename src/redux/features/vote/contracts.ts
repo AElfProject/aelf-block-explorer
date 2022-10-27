@@ -1,11 +1,12 @@
 /*
- * @Author: Alfred Yang
- * @Github: https://github.com/cat-walk
- * @Date: 2019-09-19 15:50:41
- * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-09-19 21:02:29
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-27 11:02:55
+ * @FilePath: /aelf-block-explorer/src/redux/features/vote/contracts.ts
  * @Description: file content
  */
+
 import { observable, action, configure } from 'mobx';
 
 configure({ enforceActions: 'always' });

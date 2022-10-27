@@ -1,7 +1,12 @@
-/**
- * @file common actions
- * @author atom-yang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-27 10:58:56
+ * @FilePath: /aelf-block-explorer/src/redux/features/proposal/common.ts
+ * @Description: login or logout for proposal page
  */
+
 import { createSlice } from '@reduxjs/toolkit';
 import AElf from 'aelf-sdk';
 import { message } from 'antd';
@@ -43,7 +48,7 @@ export const checkWalletIsExist = () => async (dispatch) => {
   }
 };
 
-// 登录
+// login status
 export const LOG_IN_ACTIONS = arrayToMap(['LOG_IN_START', 'LOG_IN_SUCCESS', 'LOG_IN_FAILED']);
 
 export const logIn = () => async (dispatch) => {
@@ -73,7 +78,7 @@ export const logIn = () => async (dispatch) => {
         },
       }),
     );
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     localStorage.removeItem('currentWallet');
     message.warn((e.errorMessage || {}).message || 'night ELF is locked!');
@@ -86,7 +91,7 @@ export const logIn = () => async (dispatch) => {
   }
 };
 
-// 登出
+// logout status
 export const LOG_OUT_ACTIONS = arrayToMap(['LOG_OUT_START', 'LOG_OUT_SUCCESS', 'LOG_OUT_FAILED']);
 
 export const logOut = (address) => async (dispatch) => {

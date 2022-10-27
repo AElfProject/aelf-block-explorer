@@ -15,21 +15,8 @@ import getLogin from 'utils/getLogin';
 import addressFormat from 'utils/addressFormat';
 import { isPhoneCheck } from 'utils/deviceCheck';
 import { WalletOutlined, SyncOutlined, LogoutOutlined } from '@ant-design/icons';
-interface IProps {
-  currentWallet: any;
-  tokenContract: any;
-  getCurrentBalance: (prop: any) => void;
-  getResource: (prop: any) => void;
-  title: string;
-  resourceTokens: any;
-  balance: any;
-  loginAndInsertKeyPairs: any;
-}
-interface IState {
-  loading: boolean;
-  isPhone: boolean;
-}
-export default class ResourceAElfWallet extends PureComponent<IProps, IState> {
+
+export default class ResourceAElfWallet extends PureComponent {
   defaultWallet;
   constructor(props) {
     super(props);

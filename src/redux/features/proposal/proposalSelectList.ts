@@ -1,7 +1,12 @@
-/**
- * @file organization actions
- * @author atom-yang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-27 11:01:45
+ * @FilePath: /aelf-block-explorer/src/redux/features/proposal/proposalSelectList.ts
+ * @Description: get proposal select list for proposalSearch page
  */
+
 import { createSlice } from '@reduxjs/toolkit';
 import { API_PATH } from 'constants/viewerApi';
 import { request } from 'utils/request';
