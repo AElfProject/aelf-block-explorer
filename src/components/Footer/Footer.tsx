@@ -34,14 +34,24 @@ const BrowserFooter = ({ headers }: IProps) => {
       the Largest Contentful Paint (LCP) element for each page */}
       {isMobile ? (
         NETWORK_TYPE === 'MAIN' ? (
-          <Image src={BgFooterMobile} layout="fill" priority alt="Picture of the footer mobile"></Image>
+          <Image
+            src={BgFooterMobile}
+            layout="fill"
+            objectFit="contain"
+            priority
+            alt="Picture of the footer mobile"></Image>
         ) : (
-          <Image src={BgFooterMobileTest} layout="fill" priority alt="Picture of the footer mobile test"></Image>
+          <Image
+            src={BgFooterMobileTest}
+            layout="fill"
+            objectFit="contain"
+            priority
+            alt="Picture of the footer mobile test"></Image>
         )
       ) : NETWORK_TYPE === 'MAIN' ? (
-        <Image src={BgFooter} layout="fill" priority alt="Picture of the footer"></Image>
+        <Image src={BgFooter} layout="fill" objectFit="contain" priority alt="Picture of the footer"></Image>
       ) : (
-        <Image src={BgFooterTest} layout="fill" priority alt="Picture of the footer test"></Image>
+        <Image src={BgFooterTest} layout="fill" objectFit="contain" priority alt="Picture of the footer test"></Image>
       )}
       <div className="footer-container">
         <div className="left">

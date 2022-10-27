@@ -13,6 +13,7 @@ import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import { useCallback } from 'react';
 import CustomSkeleton from 'components/CustomSkeleton/CustomSkeleton';
 import { withRouter } from 'next/router';
+import { useUpdateEffect } from 'react-use';
 require('./TransactionDetail.styles.less');
 const { TabPane } = Tabs;
 
@@ -43,7 +44,7 @@ function TransactionDetail(props) {
     return false;
   }, [info]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     setShowExtensionInfo(false);
     setActiveKey('overview');
     aelf.chain
@@ -68,7 +69,7 @@ function TransactionDetail(props) {
       });
   }, [id]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     // make useEffect async
     const changeParsedLogs = async () => {
       const { Logs = [] } = info || {};
