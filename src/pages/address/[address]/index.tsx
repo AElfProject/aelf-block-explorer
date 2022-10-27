@@ -1,11 +1,3 @@
-/*
- * @Author: AbigailDeng Abigail.deng@ienyan.com
- * @Date: 2022-10-24 15:19:08
- * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
- * @LastEditTime: 2022-10-27 14:51:58
- * @FilePath: /aelf-block-explorer/src/pages/address/[address]/index.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 const AddressDetail = dynamic(import('page-components/AddressDetail/index'));
 import { NextPageContext } from 'next';
 import { getSSR } from 'utils/axios';
