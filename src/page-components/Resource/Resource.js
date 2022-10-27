@@ -185,7 +185,7 @@ class Resource extends Component {
   };
 
   resourceAElfWalletHtml() {
-    const { tokenContract, currentWallet, resourceTokens, currentBalance } = this.state;
+    const { tokenContract, tokenConverterContract, currentWallet, resourceTokens, currentBalance } = this.state;
     return (
       <ResourceAElfWallet
         title="AELF Wallet"
@@ -193,6 +193,7 @@ class Resource extends Component {
           this.walletRef = wallet;
         }}
         tokenContract={tokenContract}
+        tokenConverterContract={tokenConverterContract}
         currentWallet={currentWallet}
         getCurrentBalance={this.getCurrentBalance}
         getResource={this.getResource}
@@ -229,6 +230,7 @@ class Resource extends Component {
     return (
       <div className="resource-body basic-container basic-container-white">
         {!isPhone && downloadPlugins}
+        {/*{isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}*/}
         {nightElf && resourceAElfWalletHtml}
         <div className="resource-money-market">
           <ResourceMoneyMarket

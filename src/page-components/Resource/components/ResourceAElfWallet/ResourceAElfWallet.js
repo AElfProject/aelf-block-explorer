@@ -17,7 +17,6 @@ import { isPhoneCheck } from 'utils/deviceCheck';
 import { WalletOutlined, SyncOutlined, LogoutOutlined } from '@ant-design/icons';
 
 export default class ResourceAElfWallet extends PureComponent {
-  defaultWallet;
   constructor(props) {
     super(props);
     this.defaultWallet = {
@@ -26,7 +25,7 @@ export default class ResourceAElfWallet extends PureComponent {
     };
     this.state = {
       loading: true,
-      isPhone: !!isPhoneCheck(),
+      isPhone: isPhoneCheck(),
     };
     this.refreshWalletInfo = this.refreshWalletInfo.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
@@ -36,10 +35,11 @@ export default class ResourceAElfWallet extends PureComponent {
     this.refreshWalletInfo();
   }
 
-  // TODO: make it stateless
-  // Data all passed in from the parent
-  componentDidUpdate(prevProps) {
+  // TODO: 组件要尽量无状态，这是个反模式
+  // 数据都从父组件传递进来。
+  componentDidUpdate(prevProps, prevState, snapshot) {
     const { currentWallet, tokenContract } = this.props;
+    // console.log('refreshWalletInfo update: ', tokenContract, currentWallet, prevProps.currentWallet, prevProps.tokenContract);
 
     if (currentWallet && tokenContract && !prevProps.tokenContract) {
       this.refreshWalletInfo();
@@ -223,7 +223,7 @@ export default class ResourceAElfWallet extends PureComponent {
             </Row>
 
             <div className="resource-wallet-info">
-              <Row align="middle">
+              <Row type="flex" align="middle">
                 <Col span={24}>
                   <span className="resource-wallet-info-name balance">Balance:</span>
                   <span className="resource-wallet-info-value">
