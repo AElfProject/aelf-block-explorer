@@ -72,11 +72,15 @@ const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: 
   const baseUrl = '/api';
   const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
   const res = await api.get(wholeUrl, params, config);
-  console.log(res, 'res');
+  // console.log(res, 'res');
   if (res.ok) {
     return res.data as any;
   } else {
-    throw new Error(`url: ${res.config?.url},problem :${res.problem}, status: ${res.status}`);
+    throw new Error(
+      `url: ${res.config?.url}, params: ${JSON.stringify(res.config?.params)},problem: ${res.problem}, status: ${
+        res.status
+      }`,
+    );
   }
 };
 

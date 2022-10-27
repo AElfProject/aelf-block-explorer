@@ -1,10 +1,11 @@
-import BlockDetail from 'page-components/BlockDetail/BlockDetail';
+const BlockDetail = dynamic(import('page-components/BlockDetail/BlockDetail'));
 import { NextPageContext } from 'next';
 import { BLOCK_INFO_API_URL } from 'constants/api';
 import { getSSR, aelf } from 'utils/axios';
 import { getContractNames } from 'utils/utils';
 import { Itx, IRes } from 'page-components/BlockDetail/types';
 import { ELF_REALTIME_PRICE_URL } from 'constants/api';
+import dynamic from 'next/dynamic';
 let bestChainHeightSSR, blockHeightSSR, txsListSSR, blockInfoSSR;
 let redirectRes: string;
 let retryBlockInfoCount = 0;

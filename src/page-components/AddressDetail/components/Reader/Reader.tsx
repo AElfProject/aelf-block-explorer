@@ -43,7 +43,7 @@ function handleFiles(data) {
   } catch (e) {
     result = data.files;
   } finally {
-    defaultFile = getDefaultFile(result, [result[0].name]);
+    defaultFile = getDefaultFile(result, [result[0]?.name]);
   }
   return {
     result,
@@ -70,14 +70,16 @@ const Reader = ({ contractInfo, isShow, headers }) => {
   }, []);
   const contractToFiles = handleFiles(contractInfo);
   const [files, setFiles] = useState(contractToFiles.result);
-  // const [fetchingStatus, setFetchingStatus] = useState(fetchingStatusMap.FETCHING);
+  const [fetchingStatus, setFetchingStatus] = useState(fetchingStatusMap.SUCCESS);
   const [viewerConfig, setViewerConfig] = useState<IViewerConfig>(contractToFiles.defaultFile);
   useEffect(() => {
     if (contractInfo.files) {
       const { result, defaultFile } = handleFiles(contractInfo);
       setFiles(result);
       setViewerConfig(defaultFile);
-      // setFetchingStatus(fetchingStatusMap.SUCCESS);
+      setFetchingStatus(fetchingStatusMap.SUCCESS);
+    } else {
+      setFetchingStatus(fetchingStatusMap.FETCHING);
     }
     sendHeight(500);
   }, [contractInfo]);
@@ -100,14 +102,14 @@ const Reader = ({ contractInfo, isShow, headers }) => {
           </Then>
         </If>
         <div className="contract-reader">
-          {/* <Switch>
-            <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}> */}
-          <FileTree files={files} onChange={onFileChange} />
-          {/* </Case>
+          <Switch>
+            <Case condition={fetchingStatus === fetchingStatusMap.SUCCESS}>
+              <FileTree files={files} onChange={onFileChange} />
+            </Case>
             <Case condition={fetchingStatus === fetchingStatusMap.FETCHING}>
               <Skeleton active paragraph={sketchParagraph} />
             </Case>
-          </Switch> */}
+          </Switch>
           <Viewer
             content={viewerConfig.content || ''}
             name={viewerConfig.name || ''}

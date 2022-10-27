@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Pagination, Table } from 'antd';
-import { useDebounce, useEffectOnce } from 'react-use';
+import { useDebounce, useEffectOnce, useUpdateEffect } from 'react-use';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
 import TableLayer from 'components/TableLayer/TableLayer';
 import { get } from 'utils/axios/index';
@@ -62,27 +62,23 @@ export default function Accounts({ totalelfssr, datasourcessr, actualtotalssr, h
     setIsMobile(!!isPhoneCheck());
   }, []);
 
-  useEffectOnce(() => {
-    const fetchData = async () => {
-      const token = await getContract(defaultAElfInstance, getContractAddress('Token'));
-      const result = await token.GetTokenInfo.call({
-        symbol: 'ELF',
-      });
+  // useEffectOnce(() => {
+  //   const fetchData = async () => {
+  //     const token = await getContract(defaultAElfInstance, getContractAddress('Token'));
+  //     const result = await token.GetTokenInfo.call({
+  //       symbol: 'ELF',
+  //     });
 
-      if (result) {
-        setTotalELF(result.supply);
-      }
-    };
-    fetchData();
-  });
+  //     if (result) {
+  //       setTotalELF(result.supply);
+  //     }
+  //   };
+  //   fetchData();
+  // });
 
-  useDebounce(
-    () => {
-      fetchAccountList();
-    },
-    1000,
-    [pageIndex, pageSize],
-  );
+  useUpdateEffect(() => {
+    fetchAccountList();
+  }, [pageIndex, pageSize]);
 
   return (
     <div className={clsx('accounts-page-container basic-container-new', isMobile && 'mobile')}>

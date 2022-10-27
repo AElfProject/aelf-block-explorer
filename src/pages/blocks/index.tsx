@@ -1,8 +1,9 @@
-import Blocks from 'page-components/Blocks';
+const Blocks = dynamic(import('page-components/Blocks'));
 import { NextPageContext } from 'next';
 import { ALL_BLOCKS_API_URL, ALL_UNCONFIRMED_BLOCKS_API_URL } from 'constants/api';
 import { getSSR } from 'utils/axios';
 import { IBlocksResult } from 'page-components/Home/types';
+import dynamic from 'next/dynamic';
 export const getServerSideProps = async (ctx: NextPageContext) => {
   const headers = ctx.req?.headers;
   const url = ctx.req?.url || '';

@@ -1,6 +1,5 @@
 import { Pagination, Table } from 'antd';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
 import { useDebounce } from 'react-use';
 import useMobile from 'hooks/useMobile';
 import TableLayer from 'components/TableLayer/TableLayer';
@@ -9,6 +8,7 @@ import { get } from 'utils/axios';
 import { VIEWER_ACCOUNT_LIST } from 'constants/viewerApi';
 import { numberFormatter } from 'utils/formater';
 import { ColumnsType } from 'antd/es/table';
+import { useRouter } from 'next/router';
 interface IRecord {
   title: string;
   width: number;
@@ -19,8 +19,9 @@ interface IRecord {
 }
 export default function Holders() {
   const isMobile = useMobile();
-  const nav = useNavigate();
-  const { symbol } = useParams();
+  const router = useRouter();
+  const nav = router.push;
+  const { symbol } = router.query;
   const [dataLoading, setDataLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);

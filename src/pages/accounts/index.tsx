@@ -1,9 +1,10 @@
-import Accounts from 'page-components/Accounts/index';
+const Accounts = dynamic(import('page-components/Accounts/index'));
 import { NextPageContext } from 'next';
 import { VIEWER_ACCOUNT_LIST } from 'constants/viewerApi';
 import { getSSR } from 'utils/axios';
 import { defaultAElfInstance, getContract } from 'utils/utils';
 import { getContractAddress } from 'page-components/Proposal/common/utils';
+import dynamic from 'next/dynamic';
 
 const fetchAccountList = async (ctx: NextPageContext) => {
   const result = await getSSR(ctx, VIEWER_ACCOUNT_LIST, {

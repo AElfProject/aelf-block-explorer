@@ -1,9 +1,10 @@
-import TxsDetail from 'page-components/TxsDetail/TransactionDetail';
+const TxsDetail = dynamic(import('page-components/TxsDetail/TransactionDetail'));
 import { NextPageContext } from 'next';
 import { aelf, getSSR } from 'utils/axios';
 import { getContractNames, deserializeLog, getFee, removeAElfPrefix } from 'utils/utils';
 import { IInfo } from 'page-components/TxsDetail/types';
 import { ELF_REALTIME_PRICE_URL, VIEWER_GET_ALL_TOKENS } from 'constants/api';
+import dynamic from 'next/dynamic';
 
 let redirectRes, contractNameSSR;
 const getLastHeight = async () => {

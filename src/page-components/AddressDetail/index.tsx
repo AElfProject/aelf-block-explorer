@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Tabs, Tooltip } from 'antd';
-import { useEffectOnce } from 'react-use';
+import { useEffectOnce, useUpdateEffect } from 'react-use';
 import CopyButton from 'components/CopyButton/CopyButton';
 import IconFont from 'components/IconFont';
 import config from 'constants/config/config';
@@ -104,23 +104,23 @@ export default function AddressDetail({
     }
   }, [address, codeHash]);
 
-  // useEffect(() => {
-  //   fetchBalances();
-  // }, [fetchBalances]);
+  useUpdateEffect(() => {
+    fetchBalances();
+  }, [fetchBalances]);
 
-  // useEffect(() => {
-  //   fetchPrice();
-  // }, [balances]);
+  useUpdateEffect(() => {
+    fetchPrice();
+  }, [balances]);
 
-  // useEffect(() => {
-  //   if (isCA) {
-  //     fetchFile();
-  //     fetchHistory();
-  //     setActiveKey('contract');
-  //   } else {
-  //     setActiveKey('tokens');
-  //   }
-  // }, [isCA, fetchFile]);
+  useUpdateEffect(() => {
+    if (isCA) {
+      fetchFile();
+      fetchHistory();
+      setActiveKey('contract');
+    } else {
+      setActiveKey('tokens');
+    }
+  }, [isCA, fetchFile]);
 
   // useEffectOnce(() => {
   //   getContractNames().then((res) => setContracts(res));

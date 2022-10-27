@@ -1,7 +1,8 @@
-import Contracts from 'page-components/Contracts/index';
+const Contracts = dynamic(import('page-components/Contracts/index'));
 import { NextPageContext } from 'next';
 import { getSSR } from 'utils/axios';
 import { VIEWER_CONTRACTS_LIST } from 'constants/viewerApi';
+import dynamic from 'next/dynamic';
 
 const fetchContractList = async (ctx) => {
   const result = await getSSR(ctx, VIEWER_CONTRACTS_LIST, {
