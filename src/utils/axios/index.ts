@@ -76,7 +76,7 @@ const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: 
   if (res.ok) {
     return res.data as any;
   } else {
-    throw new Error(`url: ${config.url},problem :${res.problem}, status: ${res.status}`);
+    throw new Error(`url: ${res.config?.url},problem :${res.problem}, status: ${res.status}`);
   }
 };
 
