@@ -24,7 +24,10 @@ function SearchInvalid() {
       <h3>Search not found !</h3>
       <p className="tip">
         Oops! The search string you entered was:{isMobile ? <br /> : " "}
-        <span>{string || pathname.replace("/search-invalid/", "")}</span>
+        <span>
+          {string ||
+            decodeURIComponent(pathname).replace("/search-invalid/", "")}
+        </span>
       </p>
       <p className="warning">Sorry! This is an invalid search string.</p>
       <Search />

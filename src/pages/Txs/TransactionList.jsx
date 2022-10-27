@@ -1,19 +1,17 @@
 import { Pagination } from "antd";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import "./TransactionList.style.less";
-import { useMemo } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import useLocation from "react-use/lib/useLocation";
+import { useDebounce } from "react-use";
 import {
   ALL_TXS_API_URL,
   ALL_UNCONFIRMED_TXS_API_URL,
   TXS_BLOCK_API_URL,
 } from "../../constants";
 import { get, getContractNames } from "../../utils";
-import { useCallback } from "react";
-import { useDebounce } from "react-use";
 import useMobile from "../../hooks/useMobile";
 import TransactionTable from "../../components/TransactionTable/TransactionTable";
+
+import "./TransactionList.style.less";
 
 export default function TransactionList() {
   const { pathname = "", search } = useLocation();

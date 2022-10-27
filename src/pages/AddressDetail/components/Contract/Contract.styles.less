@@ -1,0 +1,51 @@
+.contract-pane {
+  padding: 16px 24px 24px;
+  .contract-info {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+    > p {
+      display: flex;
+      gap: 16px;
+      .label {
+        display: inline-block;
+        width: 300px;
+        font-family: "Roboto Medium";
+        color: @mine-shaft;
+        button {
+          width: 24px;
+          height: 24px;
+          margin-left: 8px;
+          background: transparent;
+          color: @scorpion;
+          border: 1px solid @alto;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+  .contract-code {
+    margin-top: 16px;
+    .copy-btn {
+      width: 24px;
+      height: 24px;
+      border: 1px solid @alto;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+.contract-pane.mobile {
+  .contract-info {
+    gap: 24px;
+    > p {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+  .contract-code {
+    overflow: scroll;
+  }
+}

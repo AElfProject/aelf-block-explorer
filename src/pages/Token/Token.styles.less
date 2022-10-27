@@ -1,0 +1,102 @@
+.token-page-container {
+  h2 {
+    line-height: 28px;
+    font-size: 18px;
+    font-family: "Roboto-Bold";
+    color: @cloud-burst;
+    margin-bottom: 16px;
+    span {
+      color: @manatee;
+      margin-left: 8px;
+      font-family: "Roboto-Medium";
+    }
+  }
+  .overview {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    > p {
+      font-family: "Roboto-Medium";
+      padding: 13px 24px;
+      border-bottom: 1px solid @border-color2;
+    }
+    .content {
+      padding: 24px;
+      display: flex;
+      gap: 16px;
+      flex-direction: column;
+      .row {
+        display: flex;
+        gap: 16px;
+        .label {
+          display: inline-flex;
+          min-width: 300px;
+          color: @mine-shaft;
+          font-family: "Roboto Medium";
+        }
+        .value {
+          display: inline-flex;
+          align-items: center;
+          .copy-btn {
+            margin-left: 8px;
+          }
+        }
+      }
+    }
+  }
+  .more-info {
+    margin-top: 24px;
+    background: white;
+    border-radius: 8px;
+    .ant-tabs-nav-wrap {
+      padding-left: 24px;
+    }
+    .transactions-pane,
+    .holders-pane {
+      background: #f7f8f9;
+      .table-layer {
+        padding-top: 0;
+      }
+    }
+    .holders-pane {
+      .address {
+        color: @mariner;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    .contract-pane {
+      .reader {
+        min-width: 100%;
+      }
+    }
+  }
+}
+.token-page-container.mobile {
+  .overview {
+    > p {
+      padding-left: 16px;
+    }
+    .content {
+      padding: 24px 16px;
+      gap: 24px;
+      .row {
+        flex-direction: column;
+        gap: 6px;
+        .label {
+          min-width: none;
+        }
+        .value {
+          a {
+            display: inline;
+          }
+        }
+      }
+    }
+  }
+  .holders-pane {
+    .ant-table-wrapper {
+      min-width: 678px;
+    }
+  }
+}

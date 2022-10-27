@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import AElf from 'aelf-sdk';
 import Decimal from 'decimal.js';
 import { aelf } from '../utils';
@@ -7,6 +8,15 @@ const resourceDecimals = config.resourceTokens.reduce((acc, v) => ({
   ...acc,
   [v.symbol]: v.decimals,
 }), {});
+
+export function isAddress(value) {
+  if (/[\u4e00-\u9fa5]/.test(value)) return false
+  try {
+    return !!AElf.utils.base58.decode(value);
+  } catch {
+    return false;
+  }
+}
 
 export const rand16Num = (len = 0) => {
   const result = [];

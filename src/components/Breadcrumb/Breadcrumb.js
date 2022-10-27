@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { withRouter } from "../../routes/utils";
 import { Breadcrumb } from "antd";
+import { withRouter } from "../../routes/utils";
 
 import "./breadcrumb.styles.less";
 import addressFormat from "../../utils/addressFormat";
@@ -11,14 +11,14 @@ const NO_BREADCRUMB_PAGES = [
   "/vote",
   "/proposal",
   "/address",
-  "/contract",
+  "/contracts",
   "/token",
 ];
 const noBreadcrumb = (pathname) => {
   const isMainPage = pathname === "/";
   return (
     NO_BREADCRUMB_PAGES.filter((item) => pathname.includes(item)).length ===
-      0 && !isMainPage
+    0 && !isMainPage
   );
 };
 
@@ -43,7 +43,7 @@ const BREADCRUMB_NAME_MAP = {
   "/vote": "Vote",
   "/resource": "Resource",
   "/resourceDetail": "Resource Detail List",
-  "/contract": "Contract",
+  "/contracts": "Contract",
   "/proposal": "Proposal",
   "/token": "Token",
   myvote: "My Vote",
@@ -99,6 +99,10 @@ const BREADCRUMB_NAMES_TATE = {
         BREADCRUMB_NAME_MAP["/unconfirmedTx"],
       ],
     },
+    accounts: {
+      url: ["/txs", false],
+      name: [BREADCRUMB_NAME_MAP["/txs"], BREADCRUMB_NAME_MAP["/address"]],
+    },
     address: {
       url: ["/txs", false],
       name: [BREADCRUMB_NAME_MAP["/txs"], BREADCRUMB_NAME_MAP["/address"]],
@@ -123,8 +127,8 @@ const BREADCRUMB_NAMES_TATE = {
       ],
     },
     contract: {
-      url: ["/contract"],
-      name: [BREADCRUMB_NAME_MAP["/contract"]],
+      url: ["/contracts"],
+      name: [BREADCRUMB_NAME_MAP["/contracts"]],
     },
     proposal: {
       url: ["/proposal", false],
@@ -204,6 +208,7 @@ class BrowserBreadcrumb extends Component {
       const STATE =
         BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState];
 
+      // todo
       if (!STATE) {
         this.props.navigate("/");
         return;
@@ -217,7 +222,7 @@ class BrowserBreadcrumb extends Component {
         index === pathSnippets.length - 1
           ? STATE.url[index] || reloadUrl
           : STATE.url[index] ||
-            `/${pathSnippets.slice(0, index + 1).join("/")}`;
+          `/${pathSnippets.slice(0, index + 1).join("/")}`;
 
       console.log("breadcrumbTitle: ", breadcrumbTitle);
       const isCurrentTitle = this.checkLocation(breadcrumbTitle);
@@ -292,7 +297,11 @@ class BrowserBreadcrumb extends Component {
       || pathname.includes('/txs')
       || pathname.includes('/block/')
       || pathname.includes('/search-invalid')
-      || pathname.includes('/search-failed')) {
+      || pathname.includes('/search-failed')
+      || pathname.includes('/accounts')
+      || pathname.includes('/contracts')
+      || pathname.includes('/contract')
+      || pathname.includes('/token')) {
       return <></>
     }
 

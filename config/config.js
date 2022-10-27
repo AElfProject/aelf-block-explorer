@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /**
  * @file config.js
  * @author huangzongzhe

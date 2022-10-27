@@ -301,8 +301,8 @@
       border-color: white !important;
     }
     .ant-select-selection-item {
-      color: white
-    };
+      color: white;
+    }
   }
   .aelf-logo-container {
     & > svg {
@@ -460,6 +460,18 @@
   }
   .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
     background: none !important;
+    &.ant-menu-item {
+      a {
+        color: @primary-blue;
+      }
+    }
+  }
+  .ant-menu-sub {
+    .ant-menu-item-selected {
+      a {
+        color: white !important;
+      }
+    }
   }
   .common-select-wrapper {
     &.ant-select-open,

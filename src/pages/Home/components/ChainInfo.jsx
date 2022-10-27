@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import Dividends from "../../../components/Dividends";
 import IconFont from "../../../components/IconFont";
 
 export default function ChainInfo({
@@ -60,8 +59,8 @@ export default function ChainInfo({
             <IconFont type={item.icon} />
           </div>
           <div className="right">
-            <p className="label">{item.label}</p>
-            <p className="value">{item.value}</p>
+            <div className="label">{item.label}</div>
+            <div className="value">{item.value}</div>
           </div>
         </div>
       ))}
