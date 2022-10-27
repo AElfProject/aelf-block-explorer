@@ -122,9 +122,9 @@ export default function AddressDetail({
     }
   }, [isCA, fetchFile]);
 
-  // useEffectOnce(() => {
-  //   getContractNames().then((res) => setContracts(res));
-  // });
+  useEffectOnce(() => {
+    getContractNames().then((res) => setContracts(res));
+  });
 
   useEffect(() => {
     const res = isAddress(address);
