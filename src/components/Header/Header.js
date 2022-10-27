@@ -65,7 +65,7 @@ class BrowserHeader extends PureComponent {
     this.handleResize = this.handleResize.bind(this);
   }
 
-  // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
+  // TODO: Refactoring: Use observer patterns instead of loops
 
 
   componentDidMount() {
