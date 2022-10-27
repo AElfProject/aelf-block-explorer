@@ -460,8 +460,17 @@
   }
   .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
     background: none !important;
-    a {
-      color: @primary-blue !important;
+    &.ant-menu-item {
+      a {
+        color: @primary-blue ;
+      }
+    }
+  }
+  .ant-menu-sub {
+    .ant-menu-item-selected {
+      a {
+        color: white !important;
+      }
     }
   }
   .common-select-wrapper {
