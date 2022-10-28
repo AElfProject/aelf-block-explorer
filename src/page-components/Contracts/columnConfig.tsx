@@ -49,7 +49,7 @@ export default ({ isMobile }) => {
       align: 'right',
       dataIndex: 'updateTime',
       render(time) {
-        return moment(time).format('yyyy-MM-DD HH:mm:ss');
+        return <div suppressHydrationWarning>{moment(time).format('yyyy-MM-DD HH:mm:ss')}</div>;
       },
     },
   ];
