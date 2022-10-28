@@ -11,22 +11,22 @@ module.exports = [
     //     value: 'explorer-test-main.aelf.io',
     //   },
     // ],
-    destination: 'https://explorer-test.aelf.io/cms/:path*',
+    destination: 'http://10.147.20.67:8888/cms/:path*',
   },
   {
     source: '/api/blockChain/:path*',
-    destination: 'https://explorer-test.aelf.io/chain/api/blockChain/:path*',
+    destination: 'http://10.147.20.67:8888/chain/api/blockChain/:path*',
   },
   {
     source: '/api/:path*',
-    destination: 'https://explorer-test.aelf.io/api/:path*',
+    destination: 'http://10.147.20.67:8888/api/:path*',
   },
   {
     source: '/chain/:path*',
-    destination: 'https://explorer-test.aelf.io/chain/:path*',
+    destination: 'http://10.147.20.67:8888/chain/:path*',
   },
   {
     source: '/socket',
-    destination: 'https://explorer-test.aelf.io/socket',
+    destination: 'http://10.147.20.67:8888/socket',
   },
 ];
