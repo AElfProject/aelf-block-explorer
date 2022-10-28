@@ -11,10 +11,10 @@ const result = {
   ...config,
 };
 const aelf = new AElf(new AElf.providers.HttpProvider(host));
+const { ChainId, GenesisContractAddress } = await aelf.chain.getChainStatus();
 
 async function getConfig() {
   const wallet = AElf.wallet.getWalletByPrivateKey(mergedConfig.commonPrivateKey);
-  const { ChainId, GenesisContractAddress } = await aelf.chain.getChainStatus();
   const { CONTRACTS, schemeIds } = config;
   result.CHAIN_ID = ChainId;
   const zeroContract = await aelf.chain.contractAt(GenesisContractAddress, wallet);
@@ -138,7 +138,6 @@ const contractNames = [
 
 async function getContractAddress() {
   const wallet = AElf.wallet.createNewWallet();
-  const { ChainId, GenesisContractAddress } = await aelf.chain.getChainStatus();
   let result = {
     chainId: ChainId,
   };
@@ -185,5 +184,5 @@ async function getContractAddress() {
   };
   fs.writeFileSync(path.resolve(ViewerConfigUrl), `${JSON.stringify(result, null, 2)}\n`);
 }
-// getConfig();
+
 Promise.all([getCMS(), getConfig(), getContractAddress()]).catch(console.error);

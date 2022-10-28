@@ -130,59 +130,6 @@
     }
   }
 
-  // .ant-menu {
-  //   color: @textContext;
-  //   background: transparent;
-  //   border: none;
-
-  //   a:hover {
-  //     color: @hoverColor1 !important;
-  //   }
-
-  //   .ant-menu-item {
-  //     > a {
-  //       color: @textContext;
-  //     }
-  //     border-bottom: none;
-  //   }
-
-  //   .ant-menu-item-group-title {
-  //     color: @textContext;
-  //   }
-
-  //   .ant-menu-item-selected,
-  //   .ant-menu-item-active,
-  //   .ant-menu-submenu-active,
-  //   .ant-menu-submenu-selected {
-  //     border-bottom: none;
-  //     color: @hoverColor1;
-  //     > a {
-  //       border-bottom: none;
-  //       color: @hoverColor1 !important;
-  //     }
-  //     > a:hover {
-  //       color: @hoverColor1;
-  //     }
-  //   }
-  //   .ant-menu-item-active,
-  //   .ant-menu-submenu-active {
-  //     .submenu-arrow {
-  //       transform: rotateX(180deg);
-  //     }
-  //   }
-
-  //   .ant-menu-submenu-title:hover {
-  //     color: @hoverColor1;
-  //   }
-
-  //   .ant-menu-submenu-selected .ant-menu-submenu-title {
-  //     .submenu-title-wrapper {
-  //       display: inline-block;
-  //       border-bottom: none;
-  //     }
-  //   }
-  // }
-
   .header-navbar {
     display: flex;
     background: white;
@@ -192,47 +139,6 @@
     padding-left: 4px;
     padding-right: 24px;
   }
-
-  // .ant-menu-item,
-  // .ant-menu-submenu {
-  //   line-height: @line-height2;
-  //   transform: none;
-  //   border-bottom: none;
-  //   // padding: 0 10px !important;
-  //   &:hover {
-  //     color: @hoverColor1;
-  //     //border-bottom: 2px solid @hoverColor1;
-  //     border-bottom: none;
-  //   }
-  // }
-  // .ant-menu-item,
-  // .ant-menu-submenu-title,
-  // .ant-menu-submenu-inline {
-  //   transition: none;
-  // }
-  // .ant-menu-submenu {
-  //   transition: none;
-  // }
-
-  // .ant-menu-horizontal {
-  //   > .ant-menu-item {
-  //     > a {
-  //       display: inline-block;
-  //       color: @textContext;
-  //       border-bottom: none;
-  //     }
-  //   }
-  // }
-
-  // .ant-menu-horizontal {
-  //   > .ant-menu-item-selected {
-  //     > a {
-  //       display: inline-block;
-  //       color: @hoverColor1;
-  //       border-bottom: none;
-  //     }
-  //   }
-  // }
 
   .header-navbar-mobile-more {
     display: none;
@@ -617,9 +523,36 @@
   .net-select-container .ant-select-selection {
     border-color: @borderWhite;
   }
-  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected,
+
   .rc-menu:not(.rc-menu-horizontal) .rc-menu-item-selected {
     background: none !important;
+    &.rc-menu-item {
+      a {
+        color: @primary-blue;
+      }
+    }
+  }
+  .rc-menu-sub {
+    .rc-menu-item-selected {
+      a {
+        color: white !important;
+      }
+    }
+  }
+  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background: none !important;
+    &.ant-menu-item {
+      a {
+        color: @primary-blue;
+      }
+    }
+  }
+  .antmenu-sub {
+    .ant-menu-item-selected {
+      a {
+        color: white !important;
+      }
+    }
   }
   .common-select-wrapper {
     &.ant-select-open,

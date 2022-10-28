@@ -14,12 +14,14 @@ const getLastHeight = async () => {
       return LastIrreversibleBlockHeight;
     })
     .catch((_) => {
+      console.log(1);
       redirectRes = '/search-failed';
     });
 };
 const getInfoBackUp = async (transaction) => {
   const { BlockNumber } = transaction;
   const block = await aelf.chain.getBlockByHeight(BlockNumber, false).catch((_) => {
+    console.log(2);
     redirectRes = '/search-failed';
     return;
   });
@@ -33,6 +35,7 @@ const getInfoBackUp = async (transaction) => {
 };
 const getData = async (res) => {
   const names = await getContractNames().catch((_) => {
+    console.log(3);
     redirectRes = '/search-failed';
     return;
   });
@@ -53,6 +56,7 @@ const getTxResult = async (id) => {
       }
     })
     .catch((_) => {
+      console.log(4);
       redirectRes = '/search-failed';
     });
 };
