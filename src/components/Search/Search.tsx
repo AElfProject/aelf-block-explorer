@@ -1,7 +1,12 @@
-/**
- * @file Search.js
- * @author huangzongzhe
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-19 18:00:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:16:42
+ * @FilePath: /aelf-block-explorer/src/components/Search/Search.tsx
+ * @Description: search input
  */
+
 import React, { PureComponent } from 'react';
 import { NextRouter, withRouter } from 'next/router';
 import { Input } from 'antd';

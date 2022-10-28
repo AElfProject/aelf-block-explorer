@@ -1,6 +1,10 @@
-/**
- * @file ToolBar.js
- * @author huangzongzhe
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-19 11:19:10
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 14:53:08
+ * @FilePath: /aelf-block-explorer/src/components/ChainSelect/ChainSelect.tsx
+ * @Description: select main chain and side chain
  */
 import { Component } from 'react';
 import { Select } from 'antd';

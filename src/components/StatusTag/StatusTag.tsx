@@ -1,3 +1,12 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:18:40
+ * @FilePath: /aelf-block-explorer/src/components/StatusTag/StatusTag.tsx
+ * @Description: status tag
+ */
+
 import React, { useMemo } from 'react';
 import IconFont from '../IconFont/index';
 

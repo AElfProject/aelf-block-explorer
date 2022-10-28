@@ -1,8 +1,11 @@
-/**
- * @file
- * @author zhouminghui yangpeiyang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:03:45
+ * @FilePath: /aelf-block-explorer/src/components/DownloadPlugins/DownloadPlugins.tsx
+ * @Description: show `download and install NightElf browser extension` message
  */
-
 import React, { CSSProperties, PureComponent } from 'react';
 import { Row, Col } from 'antd';
 require('./DownloadPlugins.less');
@@ -18,7 +21,6 @@ export default class DownloadPlugins extends PureComponent<IProps> {
     const { style } = this.props;
     return (
       <div className="DownloadPlugins" style={style}>
-        {/* <div className='Tips'>为避免每次操作时填写私钥信息，你可以通过插件来使用这些工具（安装插件后仍然显示这些信息，请尝试刷新操作）</div> */}
         <div className="Tips">
           Please download and install NightElf browser extension. Please don’t forget to refresh the page : )
         </div>

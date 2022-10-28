@@ -1,3 +1,12 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-25 17:10:46
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:24:08
+ * @FilePath: /aelf-block-explorer/src/components/TPSChart/TPSChart.tsx
+ * @Description: tps chart used in home page and only for csr
+ */
+
 import React, { RefObject } from 'react';
 // import the core library.
 import ReactEchartsCore from 'echarts-for-react/lib/core';
@@ -92,7 +101,6 @@ export default class TPSChart extends React.Component<IProps, IState> {
     const ownData: (number | IDataItem)[] = [];
     const { length } = ownList;
     ownList.forEach((item, index) => {
-      // start or end ?
       const startTime = new Date(item.start);
 
       const hours = startTime.getHours();

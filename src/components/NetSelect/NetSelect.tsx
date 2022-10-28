@@ -1,3 +1,11 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 10:12:13
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:09:57
+ * @FilePath: /aelf-block-explorer/src/components/NetSelect/NetSelect.tsx
+ * @Description: select in header at right, choose main and test
+ */
 import { Select } from 'antd';
 import React, { useCallback } from 'react';
 import config from 'constants/config/config';

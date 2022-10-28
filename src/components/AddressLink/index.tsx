@@ -1,7 +1,12 @@
-/**
- * @author atom-yang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-20 13:39:34
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 14:36:49
+ * @FilePath: /aelf-block-explorer/src/components/AddressLink/index.tsx
+ * @Description: link to address
  */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import config from 'constants/viewerApi';

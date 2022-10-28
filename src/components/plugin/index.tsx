@@ -1,3 +1,12 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:14:56
+ * @FilePath: /aelf-block-explorer/src/components/plugin/index.tsx
+ * @Description: download plugin for proposal
+ */
+
 import React from 'react';
 import { Row, Col } from 'antd';
 require('./index.less');

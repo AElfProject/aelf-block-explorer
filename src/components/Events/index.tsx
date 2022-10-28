@@ -1,6 +1,10 @@
-/**
- * @file event item
- * @author atom-yang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:06:09
+ * @FilePath: /aelf-block-explorer/src/components/Events/index.tsx
+ * @Description: link to address url and can copy
  */
 import React from 'react';
 import PropTypes from 'prop-types';

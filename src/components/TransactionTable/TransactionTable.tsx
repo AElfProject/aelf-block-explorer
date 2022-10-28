@@ -1,3 +1,11 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-17 16:40:55
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:25:04
+ * @FilePath: /aelf-block-explorer/src/components/TransactionTable/TransactionTable.tsx
+ * @Description: transaction table
+ */
 import { Table } from 'antd';
 import React, { useMemo, useState } from 'react';
 import { useEffectOnce } from 'react-use';

@@ -1,6 +1,10 @@
-/**
- * @file dividend
- * @author atom-yang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-17 16:40:55
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:02:32
+ * @FilePath: /aelf-block-explorer/src/components/Dividends/index.tsx
+ * @Description: dividends
  */
 import React from 'react';
 import { Dropdown, Button, Menu } from 'antd';

@@ -1,11 +1,12 @@
 /*
- * @Author: Alfred Yang
- * @Github: https://github.com/cat-walk
- * @Date: 2019-09-09 18:52:15
- * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-10 17:00:44
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-29 17:14:01
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:17:36
+ * @FilePath: /aelf-block-explorer/src/components/StatisticalData/index.tsx
  * @Description: file content
  */
+
 import React, { PureComponent } from 'react';
 import { Tooltip, Statistic, Spin } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -56,11 +57,11 @@ export default class StatisticalData extends PureComponent<IProps, IState> {
 
   handleFinish(id) {
     const { arr } = this.state;
-    // todo: limit the data's type to object
+    // TODO: limit the data's type to object
     const countdown = arr.find((item) => item.id === id)!;
     countdown.num = Date.now() + countdown.resetTime;
     this.setState({ arr: [...arr] });
-    // todo: update the current term number at the same time
+    // TODO: update the current term number at the same time
   }
 
   renderList(arr) {

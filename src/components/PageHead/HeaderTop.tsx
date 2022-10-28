@@ -1,3 +1,11 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-25 13:48:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:14:42
+ * @FilePath: /aelf-block-explorer/src/components/PageHead/HeaderTop.tsx
+ * @Description: header container at top different in pc and mobile
+ */
 import { Menu } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
@@ -37,7 +45,6 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
   }, [price, previousPrice]);
 
   useEffect(() => {
-    //todo change this
     if (CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && !isMobile) {
       const d = new Date();
       const day = d.getDate();

@@ -1,7 +1,12 @@
-/**
- * @file
- * @author huangzongzhe
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-19 18:00:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:11:45
+ * @FilePath: /aelf-block-explorer/src/components/PageHead/Header.tsx
+ * @Description: header used in almost every page
  */
+
 import React, { Component } from 'react';
 import { Drawer, Divider } from 'antd';
 import Menu, { SubMenu, Item as MenuItem } from 'rc-menu';
@@ -91,7 +96,7 @@ class BrowserHeader extends Component<IProps, any> {
     return showSearch;
   }
 
-  // TODO: 有空的话，回头使用观察者重写一遍，所有跳转都触发Header检测。而不是这种循环。
+  // TODO: use the observer to check for availability
   setSeleted() {
     this.timerInterval = setInterval(() => {
       let pathname = `/${this.props.router.asPath.split('/')[1]}`;

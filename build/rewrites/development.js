@@ -11,7 +11,7 @@ module.exports = [
     //     value: 'explorer-test-main.aelf.io',
     //   },
     // ],
-    destination: 'http://10.147.20.67:8888/cms/:path*',
+    destination: 'https://explorer-test.aelf.io/cms/:path*',
   },
   {
     source: '/api/blockChain/:path*',

@@ -1,3 +1,12 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-19 18:00:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:16:12
+ * @FilePath: /aelf-block-explorer/src/components/Save/index.tsx
+ * @Description: save as file
+ */
+
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { saveAs } from 'file-saver';

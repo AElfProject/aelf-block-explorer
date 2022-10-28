@@ -1,3 +1,11 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-09-30 20:43:59
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:13:26
+ * @FilePath: /aelf-block-explorer/src/components/PageHead/HeaderBlank.tsx
+ * @Description: occupy position except to '/' and '/search-'
+ */
 import React, { Component } from 'react';
 import { withRouter, NextRouter } from 'next/router';
 require('./HeaderBlank.less');

@@ -166,7 +166,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
     const current = BREADCRUMB_NAMES_TATE.currentState;
     const { pathname } = this.props.router;
 
-    // hummm, stupid solution
     const inBlockDetail = current === 'block' && breadcrumbTitle === 'Block List';
     const inUnconfirmedBlock = current === 'unconfirmedBlock' && breadcrumbTitle === 'Unconfirmed Block List';
     const inTxList = current === 'txs' && breadcrumbTitle === 'Transaction List' && pathname !== '/txs';
@@ -192,7 +191,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
     return pathname.includes(current);
   }
 
-  // TODO: 如果没有收录，则不展示面包屑。
   getExtraBreadcrumbItems(pathSnippets: string[], reloadUrl: string) {
     return pathSnippets.map((item, index) => {
       if (index === 0) {
@@ -200,9 +198,12 @@ class BrowserBreadcrumb extends Component<PropsDto> {
       }
 
       const STATE = BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState as PathSnippetDto];
-      if (typeof window !== 'undefined' && !STATE) {
-        this.props.router.push('/');
-        return;
+      if (!STATE) {
+        if (typeof window !== 'undefined') {
+          this.props.router.push('/');
+        }
+        // if don't record url return empty array
+        return [];
       }
       const breadcrumbTitle: string = STATE.name[index] ? STATE.name[index] : BREADCRUMB_NAME_MAP[item];
 
@@ -268,7 +269,9 @@ class BrowserBreadcrumb extends Component<PropsDto> {
 
   render() {
     const pathname = this.props.router.asPath.split('?')[0];
-    // if someone add path '/contract' to favourite
+    // url list doesn't provide '/contract' now
+    // but if someone add path '/contract' to favourite
+    // so add '/contract' here for avoiding errors
     if (
       DO_NOT_DISPLAY_PATH.includes(pathname) ||
       pathname.includes('/tx/') ||

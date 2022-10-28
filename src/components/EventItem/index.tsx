@@ -1,6 +1,10 @@
-/**
- * @file event item
- * @author atom-yang
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-19 18:00:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:06:00
+ * @FilePath: /aelf-block-explorer/src/components/EventItem/index.tsx
+ * @Description: show event item, you can encode and decode
  */
 import React, { useState } from 'react';
 import { Button, message, Input } from 'antd';

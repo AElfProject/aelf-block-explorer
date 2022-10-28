@@ -1,3 +1,12 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-25 13:48:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:07:14
+ * @FilePath: /aelf-block-explorer/src/components/Footer/Footer.tsx
+ * @Description: footer used in almost every page and it's different between in main and test
+ */
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NETWORK_TYPE } from 'constants/config/config';
@@ -30,8 +39,6 @@ const BrowserFooter = ({ headers }: IProps) => {
     <></>
   ) : (
     <section className={'footer ' + (NETWORK_TYPE === 'MAIN' ? 'main' : 'test')}>
-      {/* should add the priority property to the image that will be 
-      the Largest Contentful Paint (LCP) element for each page */}
       {isMobile ? (
         NETWORK_TYPE === 'MAIN' ? (
           <Image
