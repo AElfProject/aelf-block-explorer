@@ -1,10 +1,7 @@
-import { Button, Input, message } from 'antd';
+import { Button, Input } from 'antd';
 import React, { useState } from 'react';
 import { useCallback } from 'react';
 import IconFont from '../../../components/IconFont';
-import { get, isAElfAddress } from '../../../utils/axios';
-import { useMemo } from 'react';
-import { INPUT_ZERO_TIP, TXS_BLOCK_API_URL } from '../../../constants';
 import { withRouter, NextRouter } from 'next/router';
 import { getHandleSearch } from 'utils/search';
 interface IProps {
@@ -15,7 +12,7 @@ function Search(props: IProps) {
   const navigate = props.router.push;
   const handleSearch = getHandleSearch(navigate, value);
 
-  const handleInput = useCallback((e: any) => {
+  const handleInput = useCallback((e) => {
     setValue(e.target.value);
   }, []);
 

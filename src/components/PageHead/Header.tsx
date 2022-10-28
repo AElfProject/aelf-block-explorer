@@ -2,12 +2,12 @@
  * @Author: AbigailDeng Abigail.deng@ienyan.com
  * @Date: 2022-10-19 18:00:07
  * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
- * @LastEditTime: 2022-10-28 15:11:45
+ * @LastEditTime: 2022-10-28 17:38:07
  * @FilePath: /aelf-block-explorer/src/components/PageHead/Header.tsx
  * @Description: header used in almost every page
  */
 
-import React, { Component } from 'react';
+import React, { Component, MouseEvent } from 'react';
 import { Drawer, Divider } from 'antd';
 import Menu, { SubMenu, Item as MenuItem } from 'rc-menu';
 import Link from 'next/link';
@@ -26,7 +26,7 @@ import NetSelect from '../NetSelect/NetSelect';
 import { getCMSDelayRequest } from 'utils/getCMS';
 import { MenuOutlined } from '@ant-design/icons';
 import { withRouter, NextRouter } from 'next/router';
-import { MenuMode } from 'rc-menu/lib/interface';
+import { MenuClickEventHandler, MenuMode } from 'rc-menu/lib/interface';
 import { MenuMode as AntdMenuMode } from 'antd/lib/menu';
 require('rc-menu/assets/index.css');
 require('./header.styles.less');
@@ -173,7 +173,7 @@ class BrowserHeader extends Component<IProps, any> {
     }
   }
 
-  handleClick = (e: any) => {
+  handleClick: MenuClickEventHandler = (e) => {
     clearTimeout(this.timerTimeout);
     this.timerTimeout = setTimeout(() => {
       const { isSmallScreen } = this.props;
