@@ -52,6 +52,7 @@ import { getPublicKeyFromObject } from "../../utils/getPublicKey";
 import addressFormat from "../../utils/addressFormat";
 import getLogin from "../../utils/getLogin";
 import { withRouter } from "../../routes/utils";
+import { base64ToHex } from "../Proposal/common/utils";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -589,16 +590,15 @@ class VoteContainer extends Component {
           return;
         }
         // todo: Maybe cause problem if the currentWallet is null
-        electionContract.GetCandidateInformation.call({
-          value: currentWallet.pubkey,
-        })
+        electionContract.GetManagedPubkeys.call(currentWallet.address)
           .then((res) => {
+            const { value = [] } = res || {}
             this.setState({
-              isCandidate: res.isCurrentCandidate,
+              isCandidate: res ? base64ToHex(value[0]).toLowerCase() : false,
             });
           })
           .catch((err) => {
-            console.error("GetCandidateInformation", err);
+            console.error("GetManagedPubkeys", err);
           });
       }
     );
@@ -642,9 +642,7 @@ class VoteContainer extends Component {
 
   judgeANodeIsCandidate(pubkey) {
     const { electionContract } = this.state;
-    return electionContract.GetCandidateInformation.call({
-      value: pubkey,
-    })
+    return electionContract.GetCandidateInformation.call({ value: pubkey })
       .then((res) => res.isCurrentCandidate)
       .catch((err) => {
         console.error("GetCandidateInformation", err);

@@ -290,16 +290,16 @@ class ElectionNotification extends PureComponent {
 
   quitElection() {
     const {
-      currentWallet,
       electionContractFromExt,
       checkExtensionLockStatus,
       judgeCurrentUserIsCandidate,
+      isCandidate,
     } = this.props;
 
     checkExtensionLockStatus().then(() => {
       electionContractFromExt
         .QuitElection({
-          value: currentWallet.pubkey,
+          value: isCandidate,
         })
         .then((res) => {
           if (res.error) {
@@ -367,8 +367,7 @@ class ElectionNotification extends PureComponent {
               judgeCurrentUserIsCandidate();
               if (status === txStatusInUpperCase.mined) {
                 this.props.navigate(
-                  `/vote/apply/keyin?pubkey=${
-                    currentWallet && currentWallet.pubkey
+                  `/vote/apply/keyin?pubkey=${currentWallet && currentWallet.pubkey
                   }`
                 );
               }
