@@ -16,6 +16,7 @@ import config, { NETWORK_TYPE } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import Head from 'next/head';
 import ProviderBasic from 'hooks/Providers/ProviderBasic';
+import { uploadPerformance } from 'utils/firebase-config';
 // as style is broken on build but works on dev env with next-plugin-antd-less
 // need require antd less dc
 require('antd/dist/antd.variable.less');
@@ -129,6 +130,7 @@ APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
     // chainList = await fetchChainList(ctx);
   } else {
     getNodesInfo();
+    uploadPerformance();
   }
   return {
     pageProps: {

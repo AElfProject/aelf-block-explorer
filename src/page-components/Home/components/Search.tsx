@@ -4,13 +4,20 @@ import { useCallback } from 'react';
 import IconFont from '../../../components/IconFont';
 import { withRouter, NextRouter } from 'next/router';
 import { getHandleSearch } from 'utils/search';
+import { setEvent } from 'utils/firebase-config';
 interface IProps {
   router: NextRouter;
 }
 function Search(props: IProps) {
   const [value, setValue] = useState('');
   const navigate = props.router.push;
-  const handleSearch = getHandleSearch(navigate, value);
+  const handleSearch = () => {
+    setEvent('search', {
+      page_title: 'home',
+      search_term: value,
+    });
+    getHandleSearch(navigate, value);
+  };
 
   const handleInput = useCallback((e) => {
     setValue(e.target.value);

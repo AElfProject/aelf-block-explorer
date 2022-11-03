@@ -5,6 +5,8 @@ import IconFont from 'components/IconFont';
 import { getFormattedDate } from 'utils/timeUtils';
 import { IBlockItem, ITXItem } from '../types';
 import { isPhoneCheck, isPhoneCheckSSR } from 'utils/deviceCheck';
+import { setEvent } from 'utils/firebase-config';
+import { useRouter } from 'next/router';
 interface IProps {
   blocks: IBlockItem[];
   transactions: ITXItem[];
@@ -12,11 +14,19 @@ interface IProps {
 }
 export default function LatestInfo({ blocks = [], transactions = [], headers }: IProps) {
   const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
-
   useEffect(() => {
     setIsMobile(!!isPhoneCheck());
   }, []);
-
+  const setLinkEvent = (name) => {
+    setEvent('select_content', {
+      content_type: 'link',
+      items: [
+        {
+          name,
+        },
+      ],
+    });
+  };
   return (
     <div className="latest-info">
       <div className="blocks">
@@ -24,7 +34,7 @@ export default function LatestInfo({ blocks = [], transactions = [], headers }: 
           <h3>Latest Blocks</h3>
           {isMobile || (
             <Link href="/blocks">
-              <a>
+              <a onClick={() => setLinkEvent('/blocks')}>
                 View All Blocks <IconFont type="right2" />
               </a>
             </Link>

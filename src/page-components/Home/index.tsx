@@ -29,6 +29,7 @@ import config, { NETWORK_TYPE } from 'constants/config/config';
 import Image from 'next/image';
 import BannerPc from 'assets/images/banner_pc.png';
 import BannerMobile from 'assets/images/banner_mobile.png';
+import { setEvent } from 'utils/firebase-config';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
@@ -70,6 +71,11 @@ export default function Home({
     return 0;
   }, [price.USD, previousPrice.usd]);
   useEffect(() => {
+    setEvent('page_view', {
+      page_location: window.location,
+      page_path: '/',
+      page_title: 'Home',
+    });
     setIsMobile(!!isPhoneCheck());
   }, []);
   useEffect(() => {
