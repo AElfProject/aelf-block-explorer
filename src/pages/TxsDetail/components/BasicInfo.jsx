@@ -77,7 +77,7 @@ export default function BasicInfo({
             <IconFont type="Time" />
             <span>
               {getFormattedDate(info.time)}(
-              {moment(info.time).format("MMM-DD-YYYY hh:mm:SS A")})
+              {moment(info.time).format("MMM-DD-YYYY hh:mm:ss A")})
             </span>
           </div>,
         ],

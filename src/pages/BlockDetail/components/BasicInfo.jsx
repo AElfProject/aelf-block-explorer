@@ -27,7 +27,7 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
                 <IconFont type="Time" />
                 <span>
                   {getFormattedDate(basicInfo.timestamp)}(
-                  {moment(basicInfo.timestamp).format("MMM-DD-YYYY hh:mm:SS A")}
+                  {moment(basicInfo.timestamp).format("MMM-DD-YYYY hh:mm:ss A")}
                   )
                 </span>
               </div>

@@ -110,7 +110,7 @@ export default class TradeChart extends React.Component {
       },
       xAxis: [
         {
-          data: reverse(data.map(({ ts }) => format(ts, 'HH:MM:ss'))),
+          data: reverse(data.map(({ ts }) => format(ts, 'HH:mm:ss'))),
         },
       ],
       yAxis: [
