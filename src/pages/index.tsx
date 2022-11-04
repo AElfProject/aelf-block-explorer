@@ -29,6 +29,7 @@ import {
 } from 'constants/api';
 import io from 'socket.io-client';
 import dynamic from 'next/dynamic';
+import { fetchWithCache } from 'utils/fetchWithCache';
 
 let chainId = config.CHAIN_ID;
 const PAGE_SIZE = 25;
@@ -200,8 +201,8 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   let tpsData;
   // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  // const { data, isFirst } = (await initSocketSSR()) as any;
-  // handleSocketData(data, isFirst);
+  const { data, isFirst } = (await fetchWithCache(ctx, 'socketData', initSocketSSR)) as any;
+  handleSocketData(data, isFirst);
   try {
     tpsData = (await getSSR(ctx, TPS_LIST_API_URL, {
       start: startTime,
