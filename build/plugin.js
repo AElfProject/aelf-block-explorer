@@ -26,6 +26,7 @@ module.exports = [
       images: {
         disableStaticImages: true,
       },
+      productionBrowserSourceMaps: true,
       webpack: function (config) {
         config.module.rules.push(
           {

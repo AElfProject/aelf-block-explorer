@@ -7,6 +7,7 @@ module.exports = {
     locales: ['en'],
     defaultLocale: 'en',
   },
+  productionBrowserSourceMaps: true,
   async rewrites() {
     return rewritesConfig;
   },
