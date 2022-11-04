@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAnalytics, logEvent } from 'firebase/analytics';
-import { getPerformance } from 'firebase/performance';
+import { initializePerformance, getPerformance, trace } from 'firebase/performance';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,13 +19,19 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+// app.automaticDataCollectionEnabled = true;
 let analytics;
 if (typeof window !== 'undefined') {
-  analytics = getAnalytics();
+  analytics = getAnalytics(app);
 }
 export const setEvent = (eventName: string, params?: object) => {
   logEvent(analytics, eventName, params);
 };
 export const uploadPerformance = () => {
-  getPerformance(app);
+  const perf = getPerformance(app);
+  // const perf = initializePerformance(app, {
+  //   dataCollectionEnabled: true,
+  //   instrumentationEnabled: true,
+  // });
+  console.log(perf);
 };

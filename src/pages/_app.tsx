@@ -10,13 +10,15 @@ import { store } from '../redux/store';
 import { Provider as ReduxProvider } from 'react-redux';
 import initAxios from '../utils/axios';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
-import { get, getSSR } from 'utils/axios';
+import { getSSR } from 'utils/axios';
 import config, { NETWORK_TYPE } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
 import Head from 'next/head';
 import ProviderBasic from 'hooks/Providers/ProviderBasic';
 import { uploadPerformance } from 'utils/firebase-config';
+import { getNodesInfo } from 'utils/getNodesInfo';
+import { fetchWithCache } from 'utils/fetchWithCache';
+import { useEffect } from 'react';
 // as style is broken on build but works on dev env with next-plugin-antd-less
 // need require antd less dc
 require('antd/dist/antd.variable.less');
@@ -55,21 +57,7 @@ const ROUTES_DEFAULT: RouteDefaultDto = {
 };
 const PROPOSAL_URL = ['proposals', 'proposalsDetail', 'organizations', 'createOrganizations', 'apply', 'myProposals'];
 const nodesInfoProvider = '/nodes/info';
-async function getNodesInfo() {
-  const nodesInfo = (await get(nodesInfoProvider)) as NodesInfoDto;
-  if (nodesInfo && nodesInfo.list) {
-    const nodesInfoList = nodesInfo.list;
-    localStorage.setItem('nodesInfo', JSON.stringify(nodesInfoList));
-    const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
-      if (item.chain_id === config.CHAIN_ID) {
-        return item;
-      }
-    })!;
-    const { contract_address, chain_id } = nodeInfo;
-    localStorage.setItem('currentChain', JSON.stringify(nodeInfo));
-    Cookies.set('aelf_ca_ci', contract_address + chain_id);
-  }
-}
+
 async function getNodesInfoSSR(ctx: NextPageContext) {
   const nodesInfo = (await getSSR(ctx, nodesInfoProvider)) as NodesInfoDto;
   const nodesInfoList = nodesInfo?.list;
@@ -81,17 +69,27 @@ async function getNodesInfoSSR(ctx: NextPageContext) {
   return nodeInfo;
 }
 
-async function fetchChainList(ctx: NextPageContext) {
+async function fetchChainList() {
   const data = await getCMSDelayRequestSSR(0);
   if (data && data.chainItem) {
     return data.chainItem;
   }
 }
+
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const pathKey = router.asPath.split('/')[2];
   const flag = router.asPath.split('/')[1] === 'proposal' && PROPOSAL_URL.includes(pathKey);
   pageProps.default = ROUTES_DEFAULT[pathKey];
+  initAxios();
+  // useEffect(() => {
+  //   getNodesInfo();
+  //   uploadPerformance();
+  // }, []);
+  if (typeof window !== 'undefined') {
+    getNodesInfo();
+    uploadPerformance();
+  }
 
   return (
     <ReduxProvider store={store}>
@@ -121,17 +119,13 @@ const APP = ({ Component, pageProps }: AppProps) => {
   );
 };
 APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
-  const time = new Date().getTime();
   let nodeInfo, chainList;
   const headers = ctx.req?.headers;
-  initAxios();
   if (typeof window === 'undefined') {
     nodeInfo = await getNodesInfoSSR(ctx);
-    // chainList = await fetchChainList(ctx);
-  } else {
-    getNodesInfo();
-    uploadPerformance();
+    chainList = await fetchWithCache(ctx, 'chainList', fetchChainList);
   }
+
   return {
     pageProps: {
       nodeinfo: nodeInfo,

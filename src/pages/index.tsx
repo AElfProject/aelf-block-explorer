@@ -29,6 +29,7 @@ import {
 } from 'constants/api';
 import io from 'socket.io-client';
 import dynamic from 'next/dynamic';
+import { fetchWithCache } from 'utils/fetchWithCache';
 
 let chainId = config.CHAIN_ID;
 const PAGE_SIZE = 25;
@@ -168,8 +169,9 @@ const handleSocketData = (
 const initSocketSSR = async () => {
   return new Promise((resolve) => {
     // use test host which is set in .env.local when in local env
-    const BUILD_ENDPOINT = process.env.BUILD_ENDPOINT;
-    const socket = io(BUILD_ENDPOINT, {
+    const BUILD_ENDPOINT_SOCKET = process.env.BUILD_ENDPOINT_SOCKET;
+
+    const socket = io(BUILD_ENDPOINT_SOCKET, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
     });
@@ -200,8 +202,8 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   let tpsData;
   // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  // const { data, isFirst } = (await initSocketSSR()) as any;
-  // handleSocketData(data, isFirst);
+  const { data, isFirst } = (await fetchWithCache(ctx, 'socketData', initSocketSSR)) as any;
+  handleSocketData(data, isFirst);
   try {
     tpsData = (await getSSR(ctx, TPS_LIST_API_URL, {
       start: startTime,

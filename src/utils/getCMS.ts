@@ -4,7 +4,7 @@ import { NETWORK_TYPE } from 'constants/config/config';
 import { sleep } from './utils';
 
 // get cms data in server side
-export async function getCMSDelayRequestSSR(ctx, delay = 5000) {
+export async function getCMSDelayRequestSSR(delay = 5000) {
   await sleep(delay);
   const host = process.env.BUILD_ENDPOINT_CMS;
   const res = await axios({
