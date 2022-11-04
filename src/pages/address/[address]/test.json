@@ -1,0 +1,192 @@
+{
+  "pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i": {
+    "isSystemContract": true,
+    "address": "pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i",
+    "contractName": "Genesis"
+  },
+  "2aoPatvMevjmhwsU1S9pkH2vnkNAuaiUaiU6JDroKNKe3fBQns": {
+    "isSystemContract": true,
+    "address": "2aoPatvMevjmhwsU1S9pkH2vnkNAuaiUaiU6JDroKNKe3fBQns",
+    "contractName": "AElf.ContractNames.Vote"
+  },
+  "2ZUgaDqWSh4aJ5s5Ker2tRczhJSNep4bVVfrRBRJTRQdMTbA5W": {
+    "isSystemContract": true,
+    "address": "2ZUgaDqWSh4aJ5s5Ker2tRczhJSNep4bVVfrRBRJTRQdMTbA5W",
+    "contractName": "AElf.ContractNames.Profit"
+  },
+  "NrVf8B7XUduXn1oGHZeF1YANFXEXAhvCymz2WPyKZt4DE2zSg": {
+    "isSystemContract": true,
+    "address": "NrVf8B7XUduXn1oGHZeF1YANFXEXAhvCymz2WPyKZt4DE2zSg",
+    "contractName": "AElf.ContractNames.Election"
+  },
+  "KNdM6U6PyPsgyena8rPHTbCoMrkrALhxAy1b8Qx2cgi4169xr": {
+    "isSystemContract": true,
+    "address": "KNdM6U6PyPsgyena8rPHTbCoMrkrALhxAy1b8Qx2cgi4169xr",
+    "contractName": "AElf.ContractNames.Treasury"
+  },
+  "2JT8xzjR5zJ8xnBvdgBZdSjfbokFSbF5hDdpUCbXeWaJfPDmsK": {
+    "isSystemContract": true,
+    "address": "2JT8xzjR5zJ8xnBvdgBZdSjfbokFSbF5hDdpUCbXeWaJfPDmsK",
+    "contractName": "AElf.ContractNames.Parliament"
+  },
+  "XyRN9VNabpBiVUFeX2t7ZUR2b3tWV7U31exufJ2AUepVb5t56": {
+    "isSystemContract": true,
+    "address": "XyRN9VNabpBiVUFeX2t7ZUR2b3tWV7U31exufJ2AUepVb5t56",
+    "contractName": "AElf.ContractNames.Association"
+  },
+  "NxSBGHE3zs85tpnX1Ns4awQUtFL8Dnr6Hux4C4E18WZsW4zzJ": {
+    "isSystemContract": true,
+    "address": "NxSBGHE3zs85tpnX1Ns4awQUtFL8Dnr6Hux4C4E18WZsW4zzJ",
+    "contractName": "AElf.ContractNames.Referendum"
+  },
+  "JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE": {
+    "isSystemContract": true,
+    "address": "JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE",
+    "contractName": "AElf.ContractNames.Token"
+  },
+  "2SQ9LeGZYSWmfJcYuQkDQxgd3HzwjamAaaL4Tge2eFSXw2cseq": {
+    "isSystemContract": true,
+    "address": "2SQ9LeGZYSWmfJcYuQkDQxgd3HzwjamAaaL4Tge2eFSXw2cseq",
+    "contractName": "AElf.ContractNames.CrossChain"
+  },
+  "2iQBrmFhk8HAxgDeL5fyupghzs7ZConf8KMyhkYZFSHnNsNQsn": {
+    "isSystemContract": true,
+    "address": "2iQBrmFhk8HAxgDeL5fyupghzs7ZConf8KMyhkYZFSHnNsNQsn",
+    "contractName": "AElf.ContractNames.Configuration"
+  },
+  "pGa4e5hNGsgkfjEGm72TEvbF7aRDqKBd4LuXtab4ucMbXLcgJ": {
+    "isSystemContract": true,
+    "address": "pGa4e5hNGsgkfjEGm72TEvbF7aRDqKBd4LuXtab4ucMbXLcgJ",
+    "contractName": "AElf.ContractNames.Consensus"
+  },
+  "SietKh9cArYub9ox6E4rU94LrzPad6TB72rCwe3X1jQ5m1C34": {
+    "isSystemContract": true,
+    "address": "SietKh9cArYub9ox6E4rU94LrzPad6TB72rCwe3X1jQ5m1C34",
+    "contractName": "AElf.ContractNames.TokenConverter"
+  },
+  "256MtWxt3dvxBUdh1XHjQeeSDm2SMR98gDQxLL4UXjwFDhzcAM": {
+    "isSystemContract": true,
+    "address": "256MtWxt3dvxBUdh1XHjQeeSDm2SMR98gDQxLL4UXjwFDhzcAM",
+    "contractName": "AElf.ContractNames.TokenHolder"
+  },
+  "cxZuMcWFE7we6CNESgh9Y4M6n7eM5JgFAgVMPrTNEv9wFEvQp": {
+    "isSystemContract": true,
+    "address": "cxZuMcWFE7we6CNESgh9Y4M6n7eM5JgFAgVMPrTNEv9wFEvQp",
+    "contractName": "AElf.ContractNames.Economic"
+  },
+  "2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS": {
+    "isSystemContract": false,
+    "address": "2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS",
+    "contractName": ""
+  },
+  "2WHXRoLRjbUTDQsuqR5CntygVfnDb125qdJkudev4kVNbLhTdG": {
+    "isSystemContract": false,
+    "address": "2WHXRoLRjbUTDQsuqR5CntygVfnDb125qdJkudev4kVNbLhTdG",
+    "contractName": ""
+  },
+  "2RHf2fxsnEaM3wb6N1yGqPupNZbcCY98LgWbGSFWmWzgEs5Sjo": {
+    "isSystemContract": false,
+    "address": "2RHf2fxsnEaM3wb6N1yGqPupNZbcCY98LgWbGSFWmWzgEs5Sjo",
+    "contractName": ""
+  },
+  "2NxwCPAGJr4knVdmwhb1cK7CkZw5sMJkRDLnT7E2GoDP2dy5iZ": {
+    "isSystemContract": false,
+    "address": "2NxwCPAGJr4knVdmwhb1cK7CkZw5sMJkRDLnT7E2GoDP2dy5iZ",
+    "contractName": ""
+  },
+  "sr4zX6E7yVVL7HevExVcWv2ru3HSZakhsJMXfzxzfpnXofnZw": {
+    "isSystemContract": false,
+    "address": "sr4zX6E7yVVL7HevExVcWv2ru3HSZakhsJMXfzxzfpnXofnZw",
+    "contractName": ""
+  },
+  "xsnQafDAhNTeYcooptETqWnYBksFGGXxfcQyJJ5tmu6Ak9ZZt": {
+    "isSystemContract": false,
+    "address": "xsnQafDAhNTeYcooptETqWnYBksFGGXxfcQyJJ5tmu6Ak9ZZt",
+    "contractName": ""
+  },
+  "2nyC8hqq3pGnRu8gJzCsTaxXB6snfGxmL2viimKXgEfYWGtjEh": {
+    "isSystemContract": false,
+    "address": "2nyC8hqq3pGnRu8gJzCsTaxXB6snfGxmL2viimKXgEfYWGtjEh",
+    "contractName": ""
+  },
+  "2u6Dd139bHvZJdZ835XnNKL5y6cxqzV9PEWD5fZdQXdFZLgevc": {
+    "isSystemContract": false,
+    "address": "2u6Dd139bHvZJdZ835XnNKL5y6cxqzV9PEWD5fZdQXdFZLgevc",
+    "contractName": ""
+  },
+  "DHo2K7oUXXq3kJRs1JpuwqBJP56gqoaeSKFfuvr9x8svf3vEJ": {
+    "isSystemContract": false,
+    "address": "DHo2K7oUXXq3kJRs1JpuwqBJP56gqoaeSKFfuvr9x8svf3vEJ",
+    "contractName": ""
+  },
+  "2hqsqJndRAZGzk96fsEvyuVBTAvoBjcuwTjkuyJffBPueJFrLa": {
+    "isSystemContract": false,
+    "address": "2hqsqJndRAZGzk96fsEvyuVBTAvoBjcuwTjkuyJffBPueJFrLa",
+    "contractName": ""
+  },
+  "SsSqZWLf7Dk9NWyWyvDwuuY5nzn5n99jiscKZgRPaajZP5p8y": {
+    "isSystemContract": false,
+    "address": "SsSqZWLf7Dk9NWyWyvDwuuY5nzn5n99jiscKZgRPaajZP5p8y",
+    "contractName": ""
+  },
+  "GwsSp1MZPmkMvXdbfSCDydHhZtDpvqkFpmPvStYho288fb7QZ": {
+    "isSystemContract": false,
+    "address": "GwsSp1MZPmkMvXdbfSCDydHhZtDpvqkFpmPvStYho288fb7QZ",
+    "contractName": ""
+  },
+  "225ajURvev5rgX8HnMJ8GjbPnRxUrCHoD7HUjhWQqewEJ5GAv1": {
+    "isSystemContract": false,
+    "address": "225ajURvev5rgX8HnMJ8GjbPnRxUrCHoD7HUjhWQqewEJ5GAv1",
+    "contractName": ""
+  },
+  "2M24EKAecggCnttZ9DUUMCXi4xC67rozA87kFgid9qEwRUMHTs": {
+    "isSystemContract": false,
+    "address": "2M24EKAecggCnttZ9DUUMCXi4xC67rozA87kFgid9qEwRUMHTs",
+    "contractName": ""
+  },
+  "2VTusxv6BN4SQDroitnWyLyQHWiwEhdWU76PPiGBqt5VbyF27J": {
+    "isSystemContract": false,
+    "address": "2VTusxv6BN4SQDroitnWyLyQHWiwEhdWU76PPiGBqt5VbyF27J",
+    "contractName": ""
+  },
+  "28PcLvP41ouUd6UNGsNRvKpkFTe6am34nPy4YPsWUJnZNwUvzM": {
+    "isSystemContract": false,
+    "address": "28PcLvP41ouUd6UNGsNRvKpkFTe6am34nPy4YPsWUJnZNwUvzM",
+    "contractName": ""
+  },
+  "2UM9eusxdRyCztbmMZadGXzwgwKfFdk8pF4ckw58D769ehaPSR": {
+    "isSystemContract": false,
+    "address": "2UM9eusxdRyCztbmMZadGXzwgwKfFdk8pF4ckw58D769ehaPSR",
+    "contractName": ""
+  },
+  "owZisaahpior7HEqfwCvbSEiMTEQxYGhEyBXacpuCNkeoCZd5": {
+    "isSystemContract": false,
+    "address": "owZisaahpior7HEqfwCvbSEiMTEQxYGhEyBXacpuCNkeoCZd5",
+    "contractName": ""
+  },
+  "2imqjpkCwnvYzfnr61Lp2XQVN2JU17LPkA9AZzmRZzV5LRRWmR": {
+    "isSystemContract": false,
+    "address": "2imqjpkCwnvYzfnr61Lp2XQVN2JU17LPkA9AZzmRZzV5LRRWmR",
+    "contractName": ""
+  },
+  "URyXBKB47QXW8TAXqJBGVt9edz2Ev5QzR6T2V6YV1hn14mVPp": {
+    "isSystemContract": false,
+    "address": "URyXBKB47QXW8TAXqJBGVt9edz2Ev5QzR6T2V6YV1hn14mVPp",
+    "contractName": ""
+  },
+  "iUY5CLwzU8L8vjVgH95vx3ZRuvD5d9hVK3EdPMVD8v9EaQT75": {
+    "isSystemContract": false,
+    "address": "iUY5CLwzU8L8vjVgH95vx3ZRuvD5d9hVK3EdPMVD8v9EaQT75",
+    "contractName": ""
+  },
+  "2dKF3svqDXrYtA5mYwKfADiHajo37mLZHPHVVuGbEDoD9jSgE8": {
+    "isSystemContract": false,
+    "address": "2dKF3svqDXrYtA5mYwKfADiHajo37mLZHPHVVuGbEDoD9jSgE8",
+    "contractName": ""
+  },
+  "ZYNkxNAzswRC8UeHc6bYMdRmbmLqYDPqZv7sE5d9WuJ5rRQEi": {
+    "isSystemContract": false,
+    "address": "ZYNkxNAzswRC8UeHc6bYMdRmbmLqYDPqZv7sE5d9WuJ5rRQEi",
+    "contractName": ""
+  }
+}

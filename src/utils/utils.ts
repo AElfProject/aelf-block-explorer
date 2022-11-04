@@ -323,6 +323,7 @@ export const getContractNames = async (ctx?: NextPageContext) => {
   if (typeof window === 'undefined') {
     const host = process.env.BUILD_ENDPOINT || ctx?.req?.headers.host;
     url = `${host}${url}`;
+    console.log(url, 'url');
   }
   try {
     res = await request(
