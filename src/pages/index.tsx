@@ -174,6 +174,8 @@ const initSocketSSR = async () => {
     const socket = io(BUILD_ENDPOINT_HOST, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
+      // set timeout 1.5s
+      timeout: '1500',
     });
     socket.on('reconnect_attempt', () => {
       socket.io.opts.transports = ['polling', 'websocket'];
@@ -202,8 +204,13 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   let tpsData;
   // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  const { data, isFirst } = (await fetchWithCache(ctx, 'socketData', initSocketSSR)) as any;
-  handleSocketData(data, isFirst);
+  try {
+    const { data, isFirst } = await fetchWithCache(ctx, 'socketData', initSocketSSR);
+    handleSocketData(data, isFirst);
+  } catch {
+    // error handle
+  }
+
   try {
     tpsData = (await getSSR(ctx, TPS_LIST_API_URL, {
       start: startTime,
