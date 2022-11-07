@@ -1,5 +1,13 @@
 module.exports = [
   {
+    source: '/api/viewer/:path*',
+    destination: 'http://127.0.0.1:7740/api/viewer/:path*',
+  },
+  {
+    source: '/api/proposal/:path*',
+    destination: 'http://127.0.0.1:7740/api/proposal/:path*',
+  },
+  {
     source: '/api/:path*',
     destination: 'http://127.0.0.1:7101/api/:path*',
   },
@@ -14,14 +22,6 @@ module.exports = [
   {
     source: '/cms/:path*',
     destination: 'http://103.61.39.232:1338/cms/:path*',
-  },
-  {
-    source: '/api/viewer/:path*',
-    destination: 'http://127.0.0.1:7740/api/viewer/:path*',
-  },
-  {
-    source: '/api/proposal/:path*',
-    destination: 'http://127.0.0.1:7740/api/proposal/:path*',
   },
   {
     source: '/chain/:path*',
