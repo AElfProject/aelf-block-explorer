@@ -167,7 +167,7 @@ const handleSocketData = (
 };
 // init socket from server side
 const initSocketSSR = async () => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // use test host which is set in .env.local when in local env
     const BUILD_ENDPOINT_HOST = process.env.BUILD_ENDPOINT_HOST;
 
@@ -195,6 +195,10 @@ const initSocketSSR = async () => {
       }
     });
     socket.emit('getBlocksList');
+    socket.io.on('reconnect_failed', () => {
+      console.log('timeout');
+      reject();
+    });
   });
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
