@@ -197,6 +197,11 @@ function getProdRewrite() {
     obj.destination = `${host}${ele}`;
     res.push(obj);
   });
+  const source = '/api/blockChain/:path*';
+  res.push({
+    source,
+    destination: `${host}/chain${source}`,
+  });
   const prodRewriteUrl = 'build/rewrites/production.js';
   fs.writeFileSync(path.resolve(prodRewriteUrl), `module.exports = ${JSON.stringify(res, null, 2)}\n`);
 }
