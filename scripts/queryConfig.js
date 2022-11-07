@@ -187,22 +187,4 @@ async function getContractAddress() {
   };
   fs.writeFileSync(path.resolve(ViewerConfigUrl), `${JSON.stringify(result, null, 2)}\n`);
 }
-function getProdRewrite() {
-  const host = process.env.HOST;
-  const pathArr = ['/api/:path*', '/cms/:path*', '/chain/:path*', '/socket'];
-  const res = [];
-  pathArr.forEach((ele) => {
-    let obj = {};
-    obj.source = ele;
-    obj.destination = `${host}${ele}`;
-    res.push(obj);
-  });
-  const source = '/api/blockChain/:path*';
-  res.unshift({
-    source,
-    destination: `${host}/chain${source}`,
-  });
-  const prodRewriteUrl = 'build/rewrites/production.js';
-  fs.writeFileSync(path.resolve(prodRewriteUrl), `module.exports = ${JSON.stringify(res, null, 2)}\n`);
-}
-Promise.all([getCMS(), getConfig(), getContractAddress(), getProdRewrite()]).catch(console.error);
+Promise.all([getCMS(), getConfig(), getContractAddress()]).catch(console.error);
