@@ -169,9 +169,9 @@ const handleSocketData = (
 const initSocketSSR = async () => {
   return new Promise((resolve) => {
     // use test host which is set in .env.local when in local env
-    const BUILD_ENDPOINT_SOCKET = process.env.BUILD_ENDPOINT_SOCKET;
+    const BUILD_ENDPOINT_HOST = process.env.BUILD_ENDPOINT_HOST;
 
-    const socket = io(BUILD_ENDPOINT_SOCKET, {
+    const socket = io(BUILD_ENDPOINT_HOST, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
     });

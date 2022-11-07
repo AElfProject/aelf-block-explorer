@@ -62,7 +62,6 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   const contracts = await getContractNames(ctx);
   // judge if contract or address
   const isCA = !!contracts[address as string];
-  console.log(JSON.stringify(contracts), address, isCA, 'xxx');
   const balances = await fetchBalances(ctx, address);
   const prices = (await fetchPrice(ctx, balances)) || {};
   let contractHistory = null;

@@ -31,22 +31,22 @@ module.exports = [
 
   {
     source: '/api/:path*',
-    destination: 'https://explorer-test-main.aelf.io/api/:path*',
+    destination: `${process.env.BUILD_ENDPOINT_HOST}/api/:path*`,
   },
   {
     source: '/api/blockChain/:path*',
-    destination: 'https://explorer-test-main.aelf.io/chain/api/blockChain/:path*',
+    destination: `${process.env.BUILD_ENDPOINT_HOST}/chain/api/blockChain/:path*`,
   },
   {
     source: '/cms/:path*',
-    destination: 'https://explorer-test-main.aelf.io/cms/:path*',
+    destination: `${process.env.BUILD_ENDPOINT_HOST}/cms/:path*`,
   },
   {
     source: '/chain/:path*',
-    destination: 'https://explorer-test-main.aelf.io/chain/:path*',
+    destination: `${process.env.BUILD_ENDPOINT_HOST}/chain/:path*`,
   },
   {
     source: '/socket',
-    destination: 'https://explorer-test-main.aelf.io/socket',
+    destination: `${process.env.BUILD_ENDPOINT_HOST}/socket`,
   },
 ];
