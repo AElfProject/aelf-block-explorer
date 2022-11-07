@@ -52,11 +52,13 @@ const getDataFromHeight = async (ctx, blockHeight) => {
   try {
     const result =
       (await aelf.chain.getBlockByHeight(blockHeight, false).catch((error) => {
+        console.log('>>>>error', error);
         redirectRes = '/search-failed';
       })) || {};
     const { BlockHash: blockHash } = result;
     const { transactions = [] } = blockHash
       ? await getTxsList(ctx, blockHash).catch((error) => {
+          console.log('>>>>error', error);
           redirectRes = '/search-failed';
         })
       : {};
@@ -74,6 +76,7 @@ const getDataFromHash = async (ctx, blockHash) => {
   }
   const { block_height: blockHeight } = transactions[0];
   const result = await aelf.chain.getBlockByHeight(blockHeight, false).catch((error) => {
+    console.log('>>>>error', error);
     redirectRes = '/search-failed';
   });
   return { blockInfo: result, transactionList: transactions };
@@ -135,7 +138,8 @@ const fetchBlockInfo = async (ctx, id) => {
         redirectRes = '/search-invalid/' + id;
       }
     })
-    .catch((_) => {
+    .catch((error) => {
+      console.log('>>>>error', error);
       redirectRes = '/search-failed';
     });
   // if block is new and cannot txsList is null
