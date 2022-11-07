@@ -170,12 +170,10 @@ const initSocketSSR = async () => {
   return new Promise((resolve, reject) => {
     // use test host which is set in .env.local when in local env
     const BUILD_ENDPOINT_HOST = process.env.BUILD_ENDPOINT_HOST;
-    console.log(BUILD_ENDPOINT_HOST, 'BUILD_ENDPOINT_HOST');
     const socket = io(BUILD_ENDPOINT_HOST, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
-      // set timeout 1.5s
-      timeout: '1500',
+      timeout: 1000,
     });
     socket.on('reconnect_attempt', () => {
       socket.io.opts.transports = ['polling', 'websocket'];
@@ -195,9 +193,8 @@ const initSocketSSR = async () => {
       }
     });
     socket.emit('getBlocksList');
-    socket.io.on('reconnect_failed', () => {
-      console.log('timeout');
-      reject();
+    socket.io.on('error', (error) => {
+      reject(error);
     });
   });
 };
