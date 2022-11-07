@@ -189,14 +189,7 @@ async function getContractAddress() {
 }
 function getProdRewrite() {
   const host = process.env.HOST;
-  const pathArr = [
-    '/api/:path*',
-    '/cms/:path*',
-    '/chain/:path*',
-    '/socket/:path*',
-    '/new-socket/:path*',
-    '/chain/:path*',
-  ];
+  const pathArr = ['/api/:path*', '/cms/:path*', '/socket', '/new-socket', '/chain/:path*'];
   const res = [];
   pathArr.forEach((ele) => {
     let obj = {};

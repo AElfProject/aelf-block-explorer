@@ -29,7 +29,6 @@ import config, { NETWORK_TYPE } from 'constants/config/config';
 import Image from 'next/image';
 import BannerPc from 'assets/images/banner_pc.png';
 import BannerMobile from 'assets/images/banner_mobile.png';
-import { getNodesInfo } from 'utils/getNodesInfo';
 require('./Home.styles.less');
 
 const PAGE_SIZE = 25;
