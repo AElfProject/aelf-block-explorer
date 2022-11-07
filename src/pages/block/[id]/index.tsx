@@ -111,6 +111,7 @@ const fetchBlockInfo = async (ctx, id) => {
     height: blockHeight,
   })
     .then((res: IRes = { miner: '', dividends: '' }) => {
+      console.log(result, 'result');
       if (result) {
         const { Header: header } = result;
         blockInfoSSR = {
