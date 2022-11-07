@@ -31,22 +31,22 @@ module.exports = [
 
   {
     source: '/api/:path*',
-    destination: 'https://explorer-test-tdvw.aelf.io/api/:path*',
+    destination: 'https://explorer-test-main.aelf.io/api/:path*',
   },
   {
     source: '/api/blockChain/:path*',
-    destination: 'https://explorer-test-tdvw.aelf.io/chain/api/blockChain/:path*',
+    destination: 'https://explorer-test-main.aelf.io/chain/api/blockChain/:path*',
   },
   {
     source: '/cms/:path*',
-    destination: 'https://explorer-test-tdvw.aelf.io/cms/:path*',
+    destination: 'https://explorer-test-main.aelf.io/cms/:path*',
   },
   {
     source: '/chain/:path*',
-    destination: 'https://explorer-test-tdvw.aelf.io/chain/:path*',
+    destination: 'https://explorer-test-main.aelf.io/chain/:path*',
   },
   {
     source: '/socket',
-    destination: 'https://explorer-test-tdvw.aelf.io/socket',
+    destination: 'https://explorer-test-main.aelf.io/socket',
   },
 ];
