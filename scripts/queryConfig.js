@@ -205,4 +205,4 @@ function getProdRewrite() {
   const prodRewriteUrl = 'build/rewrites/production.js';
   fs.writeFileSync(path.resolve(prodRewriteUrl), `module.exports = ${JSON.stringify(res, null, 2)}\n`);
 }
-Promise.all([getCMS(), getConfig(), getContractAddress()]).catch(console.error);
+Promise.all([getCMS(), getConfig(), getContractAddress(), getProdRewrite()]).catch(console.error);
