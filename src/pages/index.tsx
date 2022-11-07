@@ -202,8 +202,8 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   let tpsData;
   // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  // const { data, isFirst } = (await fetchWithCache(ctx, 'socketData', initSocketSSR)) as any;
-  // handleSocketData(data, isFirst);
+  const { data, isFirst } = (await fetchWithCache(ctx, 'socketData', initSocketSSR)) as any;
+  handleSocketData(data, isFirst);
   try {
     tpsData = (await getSSR(ctx, TPS_LIST_API_URL, {
       start: startTime,
