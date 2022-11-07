@@ -189,7 +189,7 @@ async function getContractAddress() {
 }
 function getProdRewrite() {
   const host = process.env.HOST;
-  const pathArr = ['/api/:path*', '/cms/:path*', '/socket', '/new-socket', '/chain/:path*'];
+  const pathArr = ['/api/:path*', '/cms/:path*', '/chain/:path*', '/socket'];
   const res = [];
   pathArr.forEach((ele) => {
     let obj = {};
@@ -198,7 +198,7 @@ function getProdRewrite() {
     res.push(obj);
   });
   const source = '/api/blockChain/:path*';
-  res.push({
+  res.unshift({
     source,
     destination: `${host}/chain${source}`,
   });
