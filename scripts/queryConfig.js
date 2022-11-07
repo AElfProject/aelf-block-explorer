@@ -11,6 +11,8 @@ const result = {
   ...config,
 };
 const aelf = new AElf(new AElf.providers.HttpProvider(host));
+const dotenv = require('dotenv');
+dotenv.config();
 
 async function getConfig() {
   const wallet = AElf.wallet.getWalletByPrivateKey(mergedConfig.commonPrivateKey);
@@ -185,5 +187,24 @@ async function getContractAddress() {
   };
   fs.writeFileSync(path.resolve(ViewerConfigUrl), `${JSON.stringify(result, null, 2)}\n`);
 }
-
-Promise.all([getCMS(), getConfig(), getContractAddress()]).catch(console.error);
+function getProdRewrite() {
+  const host = process.env.HOST;
+  const pathArr = [
+    '/api/:path*',
+    '/cms/:path*',
+    '/chain/:path*',
+    '/socket/:path*',
+    '/new-socket/:path*',
+    '/chain/:path*',
+  ];
+  const res = [];
+  pathArr.forEach((ele) => {
+    let obj = {};
+    obj.source = ele;
+    obj.destination = `${host}${ele}`;
+    res.push(obj);
+  });
+  const prodRewriteUrl = 'build/rewrites/production.js';
+  fs.writeFileSync(path.resolve(prodRewriteUrl), `module.exports = ${JSON.stringify(res, null, 2)}\n`);
+}
+Promise.all([getCMS(), getConfig(), getContractAddress(), getProdRewrite()]).catch(console.error);
