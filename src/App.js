@@ -9,24 +9,23 @@ import HeaderBlank from "./components/Header/HeaderBlank";
 import BrowserFooter from "./components/Footer/Footer";
 import BrowserBreadcrumb from "./components/Breadcrumb/Breadcrumb";
 import Container from "./components/Container/Container";
-import { PageRouter } from "./routes/routes";
+import { PageRouter, RouterGurad } from "./routes/routes";
 import { useLocation } from "react-use";
 
 import "./App.less";
 
 function App() {
-  const { pathname } = useLocation()
-
+  const { pathname } = useLocation();
   const back2Top = useCallback(() => {
-    const app = document.querySelector('#app')
+    const app = document.querySelector("#app");
     if (app) {
-      app.scrollIntoView({ block: 'start', behavior: 'auto' })
+      app.scrollIntoView({ block: "start", behavior: "auto" });
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    back2Top()
-  }, [pathname])
+    back2Top();
+  }, [pathname]);
 
   return (
     <Suspense fallback={null}>
@@ -36,7 +35,7 @@ function App() {
           <HeaderBlank />
           <BrowserBreadcrumb />
           <Container>
-            <PageRouter />
+            <RouterGurad routes={PageRouter}></RouterGurad>
           </Container>
           <BrowserFooter />
         </BrowserRouter>
@@ -44,8 +43,5 @@ function App() {
     </Suspense>
   );
 }
-// if (module.hot) {
-//   module.hot.accept();
-// }
-// export default hot(App);
+
 export default App;

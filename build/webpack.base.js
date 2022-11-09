@@ -24,7 +24,15 @@ const {
 } = require("./util");
 
 const copies = [];
-
+const ViewerPages = ["address", "contract", "proposal"];
+const htmlPluginConfig = {
+  template: path.resolve(ROOT, "./template.ejs"),
+  chunks: isProdMode ? ["runtime.app", "vendors", "app"] : ["app"],
+  name: "app",
+  title: "AELF Block Explorer",
+  favicon: isTestNet ? "public/favicon.test.ico" : "public/favicon.main.ico",
+  hash: true,
+};
 const baseConfig = {
   // entry: ENTRIES,
   entry: {
@@ -136,29 +144,17 @@ const baseConfig = {
     ],
   },
   plugins: [
-    // ...PAGES.map(({ name, config }) => {
-    //   let chunks = [name];
-    //   const filename = path.resolve(OUTPUT_PATH, config.name || `${name}.html`);
-    //   if (isProdMode) {
-    //     const runtime = `runtime.${name}`;
-    //     chunks = [runtime, "vendors", name];
-    //   }
-    //   return new HtmlWebpackPlugin({
-    //     template: path.resolve(ROOT, "./template.ejs"),
-    //     filename,
-    //     chunks,
-    //     name,
-    //     title: config.title,
-    //   });
-    // }),
+    // Compatible with old url
+    ...ViewerPages.map((ele) => {
+      const filename = `viewer/${ele}.html`;
+      return new HtmlWebpackPlugin({
+        filename,
+        ...htmlPluginConfig,
+      });
+    }),
     new HtmlWebpackPlugin({
-      template: path.resolve(ROOT, "./template.ejs"),
       filename: "index.html",
-      chunks: isProdMode ? ["runtime.app", "vendors", "app"] : ["app"],
-      name: "app",
-      title: "AELF Block Explorer",
-      favicon: isTestNet ? 'public/favicon.test.ico' : 'public/favicon.main.ico',
-      hash: true
+      ...htmlPluginConfig,
     }),
     new webpack.ProvidePlugin({
       React: "react",
