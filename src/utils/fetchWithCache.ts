@@ -1,7 +1,6 @@
 import cacheData from 'memory-cache';
 export async function fetchWithCache(ctx, key, fn, ...rest) {
   const value = cacheData.get(key);
-  console.log(value, 'value');
   if (value) {
     return value;
   } else {

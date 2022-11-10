@@ -173,7 +173,7 @@ const initSocketSSR = async () => {
     const socket = io(BUILD_ENDPOINT_HOST, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
-      timeout: 1000,
+      timeout: 2000,
     });
     socket.on('reconnect_attempt', () => {
       socket.io.opts.transports = ['polling', 'websocket'];
@@ -193,7 +193,11 @@ const initSocketSSR = async () => {
       }
     });
     socket.emit('getBlocksList');
-    socket.io.on('error', (error) => {
+    socket.on('error', (error) => {
+      reject(error);
+    });
+    socket.on('connect_error', (error) => {
+      // timeout
       reject(error);
     });
   });

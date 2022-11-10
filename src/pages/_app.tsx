@@ -9,7 +9,7 @@ const ProposalApp = dynamic(() => import('./_proposalApp'), { ssr: false });
 import { store } from '../redux/store';
 import { Provider as ReduxProvider } from 'react-redux';
 import initAxios from '../utils/axios';
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { getSSR } from 'utils/axios';
 import config, { NETWORK_TYPE } from 'constants/config/config';
 import { getCMSDelayRequestSSR } from 'utils/getCMS';
@@ -17,6 +17,8 @@ import Head from 'next/head';
 import ProviderBasic from 'hooks/Providers/ProviderBasic';
 import { getNodesInfo } from 'utils/getNodesInfo';
 import { fetchWithCache } from 'utils/fetchWithCache';
+import { guard } from 'utils/guard';
+import { useEffect } from 'react';
 // as style is broken on build but works on dev env with next-plugin-antd-less
 // need require antd less dc
 require('antd/dist/antd.variable.less');
@@ -76,6 +78,15 @@ async function fetchChainList() {
 
 const APP = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
+
+  useEffect(() => {
+    // compatible with old url
+    // can get hash only in client
+    const pathname = guard(router);
+    if (pathname) {
+      router.replace(pathname);
+    }
+  }, []);
   const pathKey = router.asPath.split('/')[2];
   const flag = router.asPath.split('/')[1] === 'proposal' && PROPOSAL_URL.includes(pathKey);
   pageProps.default = ROUTES_DEFAULT[pathKey];
@@ -111,7 +122,8 @@ const APP = ({ Component, pageProps }: AppProps) => {
     </ReduxProvider>
   );
 };
-APP.getInitialProps = async ({ ctx }: { ctx: NextPageContext }) => {
+APP.getInitialProps = async ({ ctx, router }: { ctx: NextPageContext; router: NextRouter }) => {
+  // cannot get hash in ssr
   let nodeInfo, chainList;
   const headers = ctx.req?.headers;
   if (typeof window === 'undefined') {

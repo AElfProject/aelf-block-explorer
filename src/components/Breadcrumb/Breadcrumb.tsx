@@ -282,7 +282,8 @@ class BrowserBreadcrumb extends Component<PropsDto> {
       pathname.includes('/accounts') ||
       pathname.includes('/contracts') ||
       pathname.includes('/contract') ||
-      pathname.includes('/token')
+      pathname.includes('/token') ||
+      pathname.includes('/viewer')
     ) {
       return <></>;
     }
