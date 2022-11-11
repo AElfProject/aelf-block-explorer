@@ -11,8 +11,8 @@ import moment from 'moment';
 // todo: write test code
 // todo: write util function's doc
 export function isBeforeToday(time) {
-  const flag = moment(time).isBefore(moment().startOf('day'));
-  return flag;
+  const beforeTodayFlag = moment(time).isBefore(moment().startOf('day'));
+  return beforeTodayFlag;
 }
 
 export function getFormattedDate(date, type?) {
