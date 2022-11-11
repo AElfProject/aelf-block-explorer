@@ -42,5 +42,4 @@ yarn-error.log*
 # cache
 .eslintcache
 
-# prodRewrites.js
-prodRewrites.js
+baseConfig.js
