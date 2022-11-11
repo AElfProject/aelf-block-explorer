@@ -321,7 +321,7 @@ class BrowserHeader extends Component<IProps, any> {
         {this.isPhone && (
           <MenuItem key="/about">
             <a href="https://www.aelf.io/" target="_blank" rel="noopener noreferrer">
-              About
+              About-nextjs
             </a>
           </MenuItem>
         )}
