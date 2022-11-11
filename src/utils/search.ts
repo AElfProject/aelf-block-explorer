@@ -1,6 +1,13 @@
 import { TXS_BLOCK_API_URL } from '../constants';
 import { get, isAElfAddress } from 'utils/axios';
+import * as Sentry from '@sentry/nextjs';
 
+const invalidCapture = () => {
+  Sentry.withScope(function (scope) {
+    scope.setLevel('info');
+    Sentry.captureException(new Error('search-invalid'));
+  });
+};
 /* eslint-disable import/prefer-default-export */
 export function getHandleSearch(navigate, value) {
   const searchRules = {
@@ -28,6 +35,7 @@ export function getHandleSearch(navigate, value) {
       navigate(`/block/${val}`);
     },
     invalid: () => {
+      invalidCapture();
       navigate(`/search-invalid/${value}`);
     },
   };
@@ -63,10 +71,12 @@ export function getHandleSearch(navigate, value) {
     // 2. block   66
     // 3. address length=38
     if (`${tempValue}`.startsWith('-')) {
+      invalidCapture();
       navigate(`/search-invalid/${tempValue}`);
       return;
     }
     if (+tempValue === 0) {
+      invalidCapture();
       navigate(`/search-invalid/${tempValue}`);
       return;
     }

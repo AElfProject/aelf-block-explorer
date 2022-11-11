@@ -17,6 +17,7 @@ import Head from 'next/head';
 import ProviderBasic from 'hooks/Providers/ProviderBasic';
 import { getNodesInfo } from 'utils/getNodesInfo';
 import { fetchWithCache } from 'utils/fetchWithCache';
+import { setEvent } from 'utils/firebase';
 import { guard } from 'utils/guard';
 import { useEffect } from 'react';
 // as style is broken on build but works on dev env with next-plugin-antd-less
@@ -61,7 +62,7 @@ const nodesInfoProvider = '/nodes/info';
 async function getNodesInfoSSR(ctx: NextPageContext) {
   const nodesInfo = (await getSSR(ctx, nodesInfoProvider)) as NodesInfoDto;
   const nodesInfoList = nodesInfo?.list;
-  const nodeInfo: NodesInfoItem = nodesInfoList.find((item) => {
+  const nodeInfo: NodesInfoItem = (nodesInfoList || []).find((item) => {
     if (item.chain_id === config.CHAIN_ID) {
       return item;
     }
@@ -92,6 +93,10 @@ const APP = ({ Component, pageProps }: AppProps) => {
   pageProps.default = ROUTES_DEFAULT[pathKey];
   initAxios();
   if (typeof window !== 'undefined') {
+    setEvent('page_view', {
+      page_location: window.location,
+      page_title: router.asPath,
+    });
     getNodesInfo();
   }
 

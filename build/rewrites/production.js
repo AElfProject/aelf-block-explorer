@@ -1,3 +1,3 @@
-// git ignore 
-const rewrites = require('../../prodRewrites');
-module.exports = rewrites;
+// git ignore
+const prodRewrites = require('../../baseConfig').prodRewrites;
+module.exports = prodRewrites;

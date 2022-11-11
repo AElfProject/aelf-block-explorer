@@ -1,5 +1,5 @@
 {
-  "name": "next-demo",
+  "name": "aelf-block-explorer",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -20,7 +20,7 @@
     "@monaco-editor/react": "^4.4.5",
     "@reduxjs/toolkit": "^1.8.5",
     "@sentry/apm": "^5.19.0",
-    "@sentry/node": "^5.19.0",
+    "@sentry/nextjs": "^7.19.0",
     "@sentry/react": "^5.19.0",
     "aelf-block-scan": "^0.4.1",
     "aelf-bridge": "^0.0.9",
@@ -43,6 +43,7 @@
     "eslint-config-prettier": "6.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "file-saver": "^2.0.2",
+    "firebase": "^9.13.0",
     "i18next": "^19.0.0",
     "i18next-browser-languagedetector": "^4.0.1",
     "ismobilejs": "^1.1.1",
