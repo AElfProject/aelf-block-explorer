@@ -42,4 +42,5 @@ yarn-error.log*
 # cache
 .eslintcache
 
+.sentryclirc
 baseConfig.js
