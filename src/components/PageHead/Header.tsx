@@ -253,7 +253,9 @@ class BrowserHeader extends Component<IProps, any> {
         className={menuClass}
         expandIcon={<IconFont className="submenu-right-arrow" type="Down" />}>
         <MenuItem key="/home">
-          <Link href="/">Home</Link>
+          <Link href="/">
+            <span className="menu-item-title">Home</span>
+          </Link>
         </MenuItem>
         <SubMenu
           {...this.props}
@@ -269,34 +271,48 @@ class BrowserHeader extends Component<IProps, any> {
           className="aelf-submenu-container">
           <SubMenu key="Block" title="Block" popupOffset={[0, -4]} {...this.props}>
             <MenuItem key="/blocks">
-              <Link href="/blocks">Blocks</Link>
+              <Link href="/blocks">
+                <span className="menu-item-title">Blocks</span>
+              </Link>
             </MenuItem>
             <MenuItem key="/unconfirmedBlocks">
-              <Link href="/unconfirmedBlocks">Unconfirmed Blocks</Link>
+              <Link href="/unconfirmedBlocks">
+                <span className="menu-item-title">Unconfirmed Blocks</span>
+              </Link>
             </MenuItem>
           </SubMenu>
 
           <SubMenu key="Transaction" title="Transaction" {...this.props}>
             <MenuItem key="/txs">
-              <Link href="/txs">Transactions</Link>
+              <Link href="/txs">
+                <span className="menu-item-title">Transactions</span>
+              </Link>
             </MenuItem>
             <MenuItem key="/unconfirmedTxs">
-              <Link href="/unconfirmedTxs">Unconfirmed Transactions</Link>
+              <Link href="/unconfirmedTxs">
+                <span className="menu-item-title">Unconfirmed Transactions</span>
+              </Link>
             </MenuItem>
           </SubMenu>
 
           <SubMenu key="Address" title="Address" {...this.props}>
             <MenuItem key="/accounts">
-              <Link href="/accounts">Top Accounts</Link>
+              <Link href="/accounts">
+                <span className="menu-item-title">Top Accounts</span>
+              </Link>
             </MenuItem>
             <MenuItem key="/contracts">
-              <Link href="/contracts">Contracts</Link>
+              <Link href="/contracts">
+                <span className="menu-item-title">Contracts</span>
+              </Link>
             </MenuItem>
           </SubMenu>
         </SubMenu>
 
         <MenuItem key="/token">
-          <Link href="/token">Token</Link>
+          <Link href="/token">
+            <span className="menu-item-title">Token</span>
+          </Link>
         </MenuItem>
         <SubMenu
           {...this.props}
@@ -311,7 +327,9 @@ class BrowserHeader extends Component<IProps, any> {
           }
           className="aelf-submenu-container">
           <MenuItem key="/proposal">
-            <Link href="/proposal/proposals">Proposal</Link>
+            <Link href="/proposal/proposals">
+              <span className="menu-item-title">Proposal</span>
+            </Link>
           </MenuItem>
           {voteHTML}
           {resourceHTML}

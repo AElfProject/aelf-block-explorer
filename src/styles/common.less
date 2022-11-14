@@ -48,7 +48,7 @@
   text-overflow: ellipsis;
 }
 .common-header-submenu {
-  .ant-menu {
+  .ant-menu, .rc-menu {
     margin-left: -10px;
   }
 }
@@ -56,6 +56,10 @@
 // .ant-menu-submenu-placement-rightTop is the third layer
 .common-header-submenu,
 .ant-menu-submenu-placement-rightTop {
+  .rc-menu.rc-menu-sub {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
   .rc-menu-item:not(:last-child) {
     margin: 0;
   }
