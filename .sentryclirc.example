@@ -1,0 +1,14 @@
+[defaults]
+url=https://sentry.io/
+project=aelf-block-explorer
+org=ienyan
+
+[auth]
+token=your token
+
+[log]
+level=debug
+
+[http]
+verify_ssl=false
+check_ssl_revoke=false

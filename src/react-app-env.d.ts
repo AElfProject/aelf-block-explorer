@@ -23,3 +23,6 @@ declare module '*.ico';
 
 declare module 'socket.io-client';
 declare module 'react-if';
+
+declare module 'firebase/app';
+declare module 'firebase/analytics';

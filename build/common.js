@@ -1,4 +1,7 @@
 const rewritesConfig = require('./rewrites/index');
+const { ROOT, getLessVariables } = require('./util.js');
+const path = require('path');
+const { NEXT_PUBLIC_CSS_APP_PREFIX, NEXT_PUBLIC_CSS_EXAMPLE_PREFIX } = process.env;
 module.exports = {
   // `Warning: findDOMNode is deprecated in StrictMode.` when use antd
   reactStrictMode: false,
@@ -10,7 +13,51 @@ module.exports = {
   async rewrites() {
     return rewritesConfig;
   },
+  lessLoaderOptions: {
+    lessOptions: {
+      javascriptEnabled: true,
+      modifyVars: Object.assign(getLessVariables(path.resolve(ROOT, 'src/assets/theme/color.less')), {
+        '@app-prefix': NEXT_PUBLIC_CSS_EXAMPLE_PREFIX,
+        '@ant-prefix': NEXT_PUBLIC_CSS_APP_PREFIX,
+      }),
+      lessVarsFilePath: 'src/assets/theme/color.less', // optional
+      lessVarsFilePathAppendToEndOfContent: false, // optional
+    },
+  },
   images: {
-    domains: ['raw.githubusercontent.com'],
+    disableStaticImages: true,
+  },
+  webpack: function (config) {
+    config.module.rules.push(
+      {
+        test: /\.(jpe?g|png|gif|svg|webp)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: 'static/img/[name]-[hash:5].[ext]',
+              limit: 8192,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(woff|woff2|ttf|eot|svg)(#.+)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: 'static/fonts/[name].[ext]',
+              limit: 8192,
+            },
+          },
+        ],
+      },
+    );
+    return config;
+  },
+  productionBrowserSourceMaps: true,
+  sentry: {
+    hideSourceMaps: true,
   },
 };

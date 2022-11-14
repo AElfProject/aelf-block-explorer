@@ -18,6 +18,7 @@ import AElf from 'aelf-sdk';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 import { RPCSERVER } from '../../constants';
+import * as Sentry from '@sentry/nextjs';
 const https = require('https');
 // At request level
 const agent = new https.Agent({
@@ -42,11 +43,12 @@ const api = create({
   baseURL: '/api',
 });
 
-const httpErrorHandler = (message: string, des: string) =>
+const httpErrorHandler = (message: string, des: string) => {
   notification.open({
     message,
     description: des,
   });
+};
 
 api.addResponseTransform((res) => {
   if (res.ok) {
@@ -63,7 +65,7 @@ const get = async (url: string, params?: any, config?: any) => {
   if (res.ok) {
     return res.data as any;
   }
-
+  Sentry.captureException(res);
   httpErrorHandler(res.problem, res.problem);
 };
 
@@ -72,15 +74,15 @@ const getSSR = async (ctx: NextPageContext, url: string, params?: any, config?: 
   const baseUrl = '/api';
   const wholeUrl = config?.onlyUrl ? url : `${host}${baseUrl}${url}`;
   const res = await api.get(wholeUrl, params, config);
-  // console.log(res, 'res');
   if (res.ok) {
     return res.data as any;
   } else {
-    throw new Error(
-      `url: ${res.config?.url}, params: ${JSON.stringify(res.config?.params)},problem: ${res.problem}, status: ${
-        res.status
-      }`,
-    );
+    Sentry.captureException(res);
+    // throw new Error(
+    //   `url: ${res.config?.url}, params: ${JSON.stringify(res.config?.params)},problem: ${res.problem}, status: ${
+    //     res.status
+    //   }`,
+    // );
   }
 };
 

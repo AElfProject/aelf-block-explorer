@@ -1,6 +1,7 @@
 const Home = dynamic(import('page-components/Home'));
 export default Home;
 import { NextPageContext } from 'next';
+import * as Sentry from '@sentry/nextjs';
 import {
   IBasicInfo,
   IBlocksResult,
@@ -67,7 +68,6 @@ const getPrice = async (ctx: NextPageContext) => {
       })) as IPreviousPriceDto;
     }
   } catch (e) {
-    // todo: unify error handle
     mobilePrice = { USD: 0 };
     mobilePrevPrice = { usd: 0 };
   }
@@ -212,8 +212,9 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   try {
     const { data, isFirst } = await fetchWithCache(ctx, 'socketData', initSocketSSR);
     handleSocketData(data, isFirst);
-  } catch {
-    // error handle
+  } catch (e) {
+    // error capture
+    Sentry.captureException(e);
   }
 
   try {

@@ -7,7 +7,6 @@ export async function fetchWithCache(ctx, key, fn, ...rest) {
     const hours = 24;
     const res = await fn(ctx, ...rest);
     cacheData.put(key, res, hours * 1000 * 60 * 60);
-    console.log(res, 'res');
     return res;
   }
 }

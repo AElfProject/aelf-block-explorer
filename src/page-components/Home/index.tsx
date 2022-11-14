@@ -110,7 +110,6 @@ export default function Home({
 
   const initBasicInfo = useCallback(async () => {
     const result: IBasicInfo = (await get(BASIC_INFO)) as IBasicInfo;
-
     const { height = 0, totalTxs, unconfirmedBlockHeight = '0', accountNumber = 0 } = result;
     setBlockHeight(height);
     setLocalTransactions(totalTxs);
