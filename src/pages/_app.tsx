@@ -89,7 +89,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
     }
   }, []);
   const pathKey = router.asPath.split('/')[2];
-  const flag = router.asPath.split('/')[1] === 'proposal' && PROPOSAL_URL.includes(pathKey);
+  const isProposal = router.asPath.split('/')[1] === 'proposal' && PROPOSAL_URL.includes(pathKey);
   pageProps.default = ROUTES_DEFAULT[pathKey];
   initAxios();
   if (typeof window !== 'undefined') {
@@ -120,7 +120,7 @@ const APP = ({ Component, pageProps }: AppProps) => {
         <HeaderBlank />
         <BrowserBreadcrumb />
         <Container>
-          {flag ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
+          {isProposal ? <ProposalApp {...pageProps} Component={Component}></ProposalApp> : <Component {...pageProps} />}
         </Container>
         <BrowserFooter {...pageProps} />
       </ProviderBasic>

@@ -42,10 +42,10 @@ export default function TokenTag({ values, isDone, price, decimals: decimalsSSR 
       setHasMore(true);
     }
     if (!isDone && !loadingFlag) {
-      const flag = setTimeout(() => {
+      const doneFlag = setTimeout(() => {
         setForceDone(true);
       }, 5000) as any;
-      setLoadingFlag(flag);
+      setLoadingFlag(doneFlag);
     }
   }, [values]);
 

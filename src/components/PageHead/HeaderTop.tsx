@@ -106,7 +106,7 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
             </SubMenu>
             <MenuItem key="/about">
               <a href="https://www.aelf.io/" target="_blank" rel="noopener noreferrer">
-                About
+                About-nextjs
               </a>
             </MenuItem>
           </Menu>
