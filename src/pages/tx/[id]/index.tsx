@@ -13,13 +13,15 @@ const getLastHeight = async () => {
     .then(({ LastIrreversibleBlockHeight }) => {
       return LastIrreversibleBlockHeight;
     })
-    .catch((_) => {
+    .catch((error) => {
+      console.error(error);
       redirectRes = '/search-failed';
     });
 };
 const getInfoBackUp = async (transaction) => {
   const { BlockNumber } = transaction;
-  const block = await aelf.chain.getBlockByHeight(BlockNumber, false).catch((_) => {
+  const block = await aelf.chain.getBlockByHeight(BlockNumber, false).catch((error) => {
+    console.error(error);
     redirectRes = '/search-failed';
     return;
   });
@@ -32,7 +34,8 @@ const getInfoBackUp = async (transaction) => {
   };
 };
 const getData = async (res) => {
-  const names = await getContractNames().catch((_) => {
+  const names = await getContractNames().catch((error) => {
+    console.error(error);
     redirectRes = '/search-failed';
     return;
   });
@@ -47,12 +50,14 @@ const getTxResult = async (id) => {
     .getTxResult(id)
     .then((res) => {
       if (res.Status === 'NOTEXISTED') {
+        console.error(res);
         redirectRes = '/search-invalid/' + res.TransactionId;
       } else {
         return getData(res);
       }
     })
-    .catch((_) => {
+    .catch((error) => {
+      console.error(error);
       redirectRes = '/search-failed';
     });
 };
