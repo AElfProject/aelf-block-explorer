@@ -228,12 +228,16 @@ class BrowserHeader extends Component<IProps, any> {
     if (chain_id === config.MAINCHAINID) {
       voteHTML = (
         <MenuItem key="/vote">
-          <Link href="/vote">Vote</Link>
+          <Link href="/vote">
+            <span className="menu-item-title">Vote</span>
+          </Link>
         </MenuItem>
       );
       resourceHTML = (
         <MenuItem key="/resource">
-          <Link href="/resource">Resource</Link>
+          <Link href="/resource">
+            <span className="menu-item-title">Resource</span>
+          </Link>
         </MenuItem>
       );
     }
