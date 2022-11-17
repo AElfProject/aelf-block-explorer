@@ -11,7 +11,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import AElf from 'aelf-sdk';
 import { message } from 'antd';
 import { arrayToMap } from 'page-components/Proposal/common/utils';
-import walletInstance, { walletInstanceSingle } from 'page-components/Proposal/common/wallet';
+import { walletInstanceSingle } from 'page-components/Proposal/common/wallet';
 import constants, { LOG_STATUS } from 'page-components/Proposal/common/constants';
 
 // check is exist
@@ -126,7 +126,7 @@ export const initialState = {
   logStatus: LOG_STATUS.LOG_OUT,
   isALLSettle: false,
   loading: false,
-  wallet: walletInstance,
+  wallet: walletInstanceSingle(),
   currentWallet: {},
 };
 
