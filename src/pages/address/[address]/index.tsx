@@ -55,6 +55,7 @@ const fetchIsAddress = (address) => {
   }
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  redirectRes = '';
   const headers = ctx.req?.headers;
   const { address, codeHash } = ctx.query as { address: string; codeHash: string };
   fetchIsAddress(address);

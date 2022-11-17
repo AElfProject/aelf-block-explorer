@@ -158,6 +158,7 @@ const getPrice = async (ctx) => {
   return getSSR(ctx, ELF_REALTIME_PRICE_URL, { fsym: 'ELF', tsyms: 'USD,BTC,CNY' }).then((res) => res);
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  redirectRes = '';
   const headers = ctx.req?.headers;
   const { id, tab } = ctx.query;
   const activeKey = tab === 'txns' ? 'transactions' : 'overview';

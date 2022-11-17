@@ -61,6 +61,7 @@ const fetchTransactions = async (ctx, symbol) => {
   }
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  redirectRes = '';
   const headers = ctx.req?.headers;
   const { symbol } = ctx.query;
   let tokenInfo, price, dataSource, actualTotal;
