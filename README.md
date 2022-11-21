@@ -2,6 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+1. add .sentryclirc referring .sentryclirc.example
+2. add .env、.env.local refferring .env.example
+3. add baseConfig.js including prodRewrites and firebaseConfig, prodRewrites is just like `build/rewrites/development.js`, firebaseConfig can be found at firebase settings.
+
 ```bash
 # install dependencies
 $ yarn
@@ -29,4 +33,9 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ### Production
 
-Change the chain node URL in script such as `yarn build -- --CHAIN_ENDPOINT https://aelf-test-node.aelf.io`
+```bash
+# Change the chain node URL in script such as
+yarn beforeBuild -- --CHAIN_ENDPOINT https://aelf-test-node.aelf.io
+yarn build
+yarn start
+```

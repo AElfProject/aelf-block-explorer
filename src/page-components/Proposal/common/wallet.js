@@ -49,5 +49,3 @@ export function walletInstanceSingle() {
   }
   return walletInstance;
 }
-
-export default walletInstance;

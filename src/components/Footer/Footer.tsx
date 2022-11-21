@@ -1,3 +1,12 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-25 13:48:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:07:14
+ * @FilePath: /aelf-block-explorer/src/components/Footer/Footer.tsx
+ * @Description: footer used in almost every page and it's different between in main and test
+ */
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NETWORK_TYPE } from 'constants/config/config';
@@ -16,35 +25,45 @@ const BrowserFooter = ({ headers }: IProps) => {
   const { pathname } = useRouter();
   const [isNoFooter, setIsNoFooter] = useState(false);
   const NO_FOOTER_LIST = useMemo(() => ['search-invalid', 'search-failed'], []);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
     const firstPathName = pathname.split('/')[1];
     setIsNoFooter(NO_FOOTER_LIST.includes(firstPathName));
   }, [pathname]);
-  let isMobile = !!isPhoneCheckSSR(headers);
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   return isNoFooter ? (
     <></>
   ) : (
     <section className={'footer ' + (NETWORK_TYPE === 'MAIN' ? 'main' : 'test')}>
-      {/* should add the priority property to the image that will be 
-      the Largest Contentful Paint (LCP) element for each page */}
       {isMobile ? (
         NETWORK_TYPE === 'MAIN' ? (
-          <Image src={BgFooterMobile} layout="fill" priority alt="Picture of the footer mobile"></Image>
+          <Image
+            src={BgFooterMobile}
+            layout="fill"
+            objectFit="contain"
+            priority
+            alt="Picture of the footer mobile"></Image>
         ) : (
-          <Image src={BgFooterMobileTest} layout="fill" priority alt="Picture of the footer mobile test"></Image>
+          <Image
+            src={BgFooterMobileTest}
+            layout="fill"
+            objectFit="contain"
+            priority
+            alt="Picture of the footer mobile test"></Image>
         )
       ) : NETWORK_TYPE === 'MAIN' ? (
-        <Image src={BgFooter} layout="fill" priority alt="Picture of the footer"></Image>
+        <Image src={BgFooter} layout="fill" objectFit="contain" priority alt="Picture of the footer"></Image>
       ) : (
-        <Image src={BgFooterTest} layout="fill" priority alt="Picture of the footer test"></Image>
+        <Image src={BgFooterTest} layout="fill" objectFit="contain" priority alt="Picture of the footer test"></Image>
       )}
       <div className="footer-container">
         <div className="left">
           <div className="top">
-            <h4>AELF Explorer</h4>
+            <h1>AELF Explorer</h1>
             <p className="description">Decentralized Cloud Computing Blockchain Network</p>
           </div>
           <div className="bottom">

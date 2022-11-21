@@ -1,9 +1,10 @@
 import io from 'socket.io-client';
 import { SOCKET_URL } from '../../../constants';
 import { ISocketData } from '../types';
+import * as Sentry from '@sentry/nextjs';
 
 export function initSocket(handleSocketData: any) {
-  const socket = io(location.origin, {
+  const socket = io(window.location.origin, {
     path: SOCKET_URL,
     transports: ['websocket', 'polling'],
   });
@@ -28,5 +29,9 @@ export function initSocket(handleSocketData: any) {
   });
 
   socket.emit('getBlocksList');
+  socket.on('connect_error', (error) => {
+    // interface 404
+    // Sentry.captureException(error);
+  });
   return socket;
 }

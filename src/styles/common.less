@@ -1,12 +1,4 @@
 @import '../assets/theme/color.less';
-/*
- * @Author: Alfred Yang
- * @Github: https://github.com/cat-walk
- * @Date: 2019-12-07 18:46:20
- * @LastEditors: Alfred Yang
- * @LastEditTime: 2019-12-09 16:46:38
- * @Description: file content
- */
 // todo: use variable instead
 .ant-modal .ant-modal-content {
   background: @bgWhite;
@@ -43,6 +35,7 @@
 .bold-text {
   font-weight: bold;
 }
+
 /* text relative style end */
 
 .card-header-icon {
@@ -55,7 +48,7 @@
   text-overflow: ellipsis;
 }
 .common-header-submenu {
-  .ant-menu {
+  .ant-menu, .rc-menu {
     margin-left: -10px;
   }
 }
@@ -63,6 +56,10 @@
 // .ant-menu-submenu-placement-rightTop is the third layer
 .common-header-submenu,
 .ant-menu-submenu-placement-rightTop {
+  .rc-menu.rc-menu-sub {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
   .rc-menu-item:not(:last-child) {
     margin: 0;
   }
@@ -206,12 +203,9 @@
 }
 
 .contract-viewer-header-desc {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-flow: row nowrap;
   flex-flow: row nowrap;
 }
 
@@ -234,12 +228,9 @@
 }
 
 .reader .contract-reader {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-flow: row nowrap;
   flex-flow: row nowrap;
   height: 832px;
 }
@@ -252,17 +243,17 @@
 .reader .contract-reader .contract-viewer-file-tree::-webkit-scrollbar {
   height: 10px;
   width: 10px;
-  background: rgba(0, 0, 0, 0);
+  background: rgb(0 0 0 / 0%);
 }
 
 .reader .contract-reader .contract-viewer-file-tree:hover::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px hsla(0, 0%, 39.2%, 0.4);
+  box-shadow: inset 0 0 6px hsl(0deg 0% 39.2% / 40%);
   border-radius: 10px;
 }
 
 .reader .contract-reader .contract-viewer-file-tree:hover::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 12px rgb(0 0 0 / 50%);
 }
 
 .reader .contract-reader .contract-viewer-monaco {
@@ -423,7 +414,7 @@ pre.view-params {
 .spin-container {
   min-height: 500px;
   text-align: center;
-  background: rgba(0, 0, 0, 0.05);
+  background: rgb(0 0 0 / 5%);
 }
 
 .contract-viewer {
@@ -432,12 +423,9 @@ pre.view-params {
 }
 
 .address-bread {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-flow: row nowrap;
   flex-flow: row nowrap;
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
@@ -491,8 +479,6 @@ pre.view-params {
 }
 
 .address-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-align: baseline;
   -ms-flex-align: baseline;
@@ -516,4 +502,13 @@ pre.view-params {
 
 p {
   margin: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: @cloud-burst;
+  font-weight: 400;
 }

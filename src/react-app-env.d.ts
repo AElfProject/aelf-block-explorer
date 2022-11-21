@@ -1,6 +1,7 @@
 /// <reference types="react-scripts" />
 interface Window {
   NightElf?: any;
+  editor?: editor.IStandaloneCodeEditor | undefined;
 }
 // 声明没有ts文件的第三方SDK
 declare module 'aelf-sdk';
@@ -21,3 +22,7 @@ declare module '*.gif';
 declare module '*.ico';
 
 declare module 'socket.io-client';
+declare module 'react-if';
+
+declare module 'firebase/app';
+declare module 'firebase/analytics';

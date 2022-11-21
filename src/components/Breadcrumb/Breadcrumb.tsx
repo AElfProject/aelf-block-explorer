@@ -26,7 +26,7 @@ type PathSnippetDto =
   | 'resourceDetail';
 
 // if you want to hide the Breadcrumb
-const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contract', '/token'];
+const NO_BREADCRUMB_PAGES = ['/vote', '/proposal', '/address', '/contracts', '/token'];
 const noBreadcrumb = (pathname: string) => {
   const isMainPage = pathname === '/';
   return NO_BREADCRUMB_PAGES.filter((item) => pathname.includes(item)).length === 0 && !isMainPage;
@@ -55,19 +55,18 @@ const BREADCRUMB_NAME_MAP: {
   '/vote': 'Vote',
   '/resource': 'Resource',
   '/resourceDetail': 'Resource Detail List',
-  '/contract': 'Contract',
+  '/contracts': 'Contract',
   '/proposal': 'Proposal',
   '/token': 'Token',
   myvote: 'My Vote',
   '/search-invalid': '',
 };
-
+// TODO: I don't know why /new-socket can reach here
 const DO_NOT_DISPLAY_PATH = [
+  'new-socket',
   '/_error',
   '/transaction-list',
-  '/txs',
   '/unconfirmedTxs',
-  '/tx/',
   '/blocks',
   '/unconfirmedBlocks',
 ];
@@ -109,6 +108,10 @@ const BREADCRUMB_NAMES_TATE = {
       url: ['/txs', false],
       name: [BREADCRUMB_NAME_MAP['/unconfirmedTxs'], BREADCRUMB_NAME_MAP['/unconfirmedTx']],
     },
+    accounts: {
+      url: ['/txs', false],
+      name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/address']],
+    },
     address: {
       url: ['/txs', false],
       name: [BREADCRUMB_NAME_MAP['/txs'], BREADCRUMB_NAME_MAP['/address']],
@@ -130,8 +133,8 @@ const BREADCRUMB_NAMES_TATE = {
       name: [BREADCRUMB_NAME_MAP['/resource'], BREADCRUMB_NAME_MAP['/resourceDetail']],
     },
     contract: {
-      url: ['/contract'],
-      name: [BREADCRUMB_NAME_MAP['/contract']],
+      url: ['/contracts'],
+      name: [BREADCRUMB_NAME_MAP['/contracts']],
     },
     proposal: {
       url: ['/proposal', false],
@@ -163,7 +166,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
     const current = BREADCRUMB_NAMES_TATE.currentState;
     const { pathname } = this.props.router;
 
-    // hummm, stupid solution
     const inBlockDetail = current === 'block' && breadcrumbTitle === 'Block List';
     const inUnconfirmedBlock = current === 'unconfirmedBlock' && breadcrumbTitle === 'Unconfirmed Block List';
     const inTxList = current === 'txs' && breadcrumbTitle === 'Transaction List' && pathname !== '/txs';
@@ -189,7 +191,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
     return pathname.includes(current);
   }
 
-  // TODO: 如果没有收录，则不展示面包屑。
   getExtraBreadcrumbItems(pathSnippets: string[], reloadUrl: string) {
     return pathSnippets.map((item, index) => {
       if (index === 0) {
@@ -197,10 +198,12 @@ class BrowserBreadcrumb extends Component<PropsDto> {
       }
 
       const STATE = BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState as PathSnippetDto];
-
-      if (typeof window !== 'undefined' && !STATE) {
-        this.props.router.push('/');
-        return;
+      if (!STATE) {
+        if (typeof window !== 'undefined') {
+          this.props.router.push('/');
+        }
+        // if don't record url return empty array
+        return [];
       }
       const breadcrumbTitle: string = STATE.name[index] ? STATE.name[index] : BREADCRUMB_NAME_MAP[item];
 
@@ -265,8 +268,10 @@ class BrowserBreadcrumb extends Component<PropsDto> {
   }
 
   render() {
-    const pathname = this.props.router.asPath;
-    // I don't know why /new-socket can reach here
+    const pathname = this.props.router.asPath.split('?')[0];
+    // url list doesn't provide '/contract' now
+    // but if someone add path '/contract' to favourite
+    // so add '/contract' here for avoiding errors
     if (
       DO_NOT_DISPLAY_PATH.includes(pathname) ||
       pathname.includes('/tx/') ||
@@ -274,7 +279,11 @@ class BrowserBreadcrumb extends Component<PropsDto> {
       pathname.includes('/block/') ||
       pathname.includes('/search-invalid') ||
       pathname.includes('/search-failed') ||
-      pathname.includes('new-socket')
+      pathname.includes('/accounts') ||
+      pathname.includes('/contracts') ||
+      pathname.includes('/contract') ||
+      pathname.includes('/token') ||
+      pathname.includes('/viewer')
     ) {
       return <></>;
     }
@@ -285,7 +294,6 @@ class BrowserBreadcrumb extends Component<PropsDto> {
 
     const className = noBreadcrumb(pathname) ? 'breadcrumb' : 'breadcrumb hide';
     const pathSnippets: string[] = pathname.split('/').filter((i) => i);
-
     const firstBreadcrumbItem = this.getFirstBreadcrumbItem();
     const extraBreadcrumbItems = this.getExtraBreadcrumbItems(pathSnippets, reloadUrl);
     const breadcrumbItems = ([] as JSX.Element[]).concat(firstBreadcrumbItem, extraBreadcrumbItems);

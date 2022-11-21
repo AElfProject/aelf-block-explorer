@@ -12,13 +12,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
     gap: 24px;
     padding: 40px 0;
     height: 184px;
     h2 {
       text-align: center;
       font-family: 'Roboto Bold', sans-serif;
-      font-weight: 400;
       font-size: 24px;
       color: @cloud-burst;
     }
@@ -169,12 +169,15 @@
         .blocks {
           .block {
             flex: 126;
+            max-width: 126px;
           }
           .age {
             flex: 160;
+            max-width: 160px;
           }
           .txns {
             flex: 100;
+            max-width: 100px;
           }
           .reward {
             flex: 102;
@@ -205,6 +208,13 @@
             text-align: right;
           }
         }
+        .row {
+          .hash,
+          .from,
+          .to {
+            color: @mariner;
+          }
+        }
       }
     }
     .chart-section {
@@ -230,6 +240,7 @@
     height: 181px;
     padding: 35px 16px 0;
     gap: 8px;
+    justify-content: start;
     h2 {
       font-size: 18px;
       line-height: 18px;

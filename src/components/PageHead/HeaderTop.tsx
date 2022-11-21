@@ -1,3 +1,11 @@
+/*
+ * @Author: AbigailDeng Abigail.deng@ienyan.com
+ * @Date: 2022-10-25 13:48:07
+ * @LastEditors: AbigailDeng Abigail.deng@ienyan.com
+ * @LastEditTime: 2022-10-28 15:14:42
+ * @FilePath: /aelf-block-explorer/src/components/PageHead/HeaderTop.tsx
+ * @Description: header container at top different in pc and mobile
+ */
 import { Menu } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
@@ -22,11 +30,12 @@ interface PropsDto {
 }
 export default function HeaderTop({ headerClass, menuMode, networkList, showSearch, headers }: PropsDto) {
   const { CHAIN_ID } = config;
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
   const [price, setPrice] = useState({ USD: 0 });
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
@@ -36,7 +45,6 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
   }, [price, previousPrice]);
 
   useEffect(() => {
-    //todo change this
     if (CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && !isMobile) {
       const d = new Date();
       const day = d.getDate();
@@ -98,7 +106,7 @@ export default function HeaderTop({ headerClass, menuMode, networkList, showSear
             </SubMenu>
             <MenuItem key="/about">
               <a href="https://www.aelf.io/" target="_blank" rel="noopener noreferrer">
-                About
+                About-nextjs
               </a>
             </MenuItem>
           </Menu>

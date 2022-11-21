@@ -25,6 +25,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+#env
+.env
 # local env files
 .env*.local
 # production env files
@@ -38,3 +40,9 @@ yarn-error.log*
 
 # shell
 *.sh
+
+# cache
+.eslintcache
+
+.sentryclirc
+baseConfig.js

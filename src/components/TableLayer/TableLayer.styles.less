@@ -4,10 +4,12 @@
   background-color: @bgBlankWhite !important;
   overflow-x: auto;
   padding-bottom: 16px;
+  padding-top: 8px;
   width: 100%;
+  border-radius: 8px;
   > .table-layer-block {
     min-width: 16px;
-    height: 45px;
+    height: 41px;
     border-bottom: @border-color2 1px solid !important;
   }
   .ant-table-wrapper {
@@ -15,7 +17,7 @@
     .ant-table-thead {
       tr {
         th {
-          font-family: 'Roboto-Medium';
+          font-family: 'Roboto-Medium', sans-serif;
           background: @bgBlankWhite !important;
           border-bottom: @border-color2 1px solid !important;
           font-weight: 400;
@@ -42,4 +44,9 @@
   background: white;
   border-radius: 4px;
   padding-bottom: 10px;
+  > .table-layer-block {
+    min-width: 8px;
+    height: 41px;
+    border-bottom: @border-color2 1px solid !important;
+  }
 }

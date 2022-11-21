@@ -1,6 +1,7 @@
-import Home from 'page-components/Home';
+const Home = dynamic(import('page-components/Home'));
 export default Home;
 import { NextPageContext } from 'next';
+import * as Sentry from '@sentry/nextjs';
 import {
   IBasicInfo,
   IBlocksResult,
@@ -28,6 +29,9 @@ import {
   HISTORY_PRICE,
 } from 'constants/api';
 import io from 'socket.io-client';
+import dynamic from 'next/dynamic';
+import { fetchWithCache } from 'utils/fetchWithCache';
+
 let chainId = config.CHAIN_ID;
 const PAGE_SIZE = 25;
 const interval = 60 * 1000; // 1 minute
@@ -64,7 +68,6 @@ const getPrice = async (ctx: NextPageContext) => {
       })) as IPreviousPriceDto;
     }
   } catch (e) {
-    // todo: unify error handle
     mobilePrice = { USD: 0 };
     mobilePrevPrice = { usd: 0 };
   }
@@ -164,12 +167,13 @@ const handleSocketData = (
 };
 // init socket from server side
 const initSocketSSR = async () => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // use test host which is set in .env.local when in local env
-    const BUILD_ENDPOINT = process.env.BUILD_ENDPOINT;
-    const socket = io(BUILD_ENDPOINT, {
+    const BUILD_ENDPOINT_HOST = process.env.BUILD_ENDPOINT_HOST;
+    const socket = io(BUILD_ENDPOINT_HOST, {
       path: SOCKET_URL,
       transports: ['websocket', 'polling'],
+      timeout: 2000,
     });
     socket.on('reconnect_attempt', () => {
       socket.io.opts.transports = ['polling', 'websocket'];
@@ -189,17 +193,40 @@ const initSocketSSR = async () => {
       }
     });
     socket.emit('getBlocksList');
+    socket.on('error', (error) => {
+      reject(error);
+    });
+    socket.on('connect_error', (error) => {
+      // timeout
+      reject(error);
+    });
   });
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  // reset
+  mobilePrice = { USD: 0 };
+  mobilePrevPrice = { usd: 0 };
+  blockHeight = 0;
+  rewardSSR = { ELF: 0 };
+  localAccountsSSR = 0;
+  unconfirmedBlockHeightSSR = '0';
+  localTransactionsSSR = 0;
+  transactionsSSR = [];
+  blocksSSR = [];
   // get chain info config
   const headers = ctx.req?.headers;
   chainId = config.CHAIN_ID;
   let tpsData;
   // fetch interface
   await Promise.all([getPrice(ctx), initBasicInfo(ctx), initBlock(ctx), initTxs(ctx)]);
-  // const { data, isFirst } = (await initSocketSSR()) as any;
-  // handleSocketData(data, isFirst);
+  try {
+    const { data, isFirst } = await fetchWithCache(ctx, 'socketData', initSocketSSR);
+    handleSocketData(data, isFirst);
+  } catch (e) {
+    // error capture
+    Sentry.captureException(e);
+  }
+
   try {
     tpsData = (await getSSR(ctx, TPS_LIST_API_URL, {
       start: startTime,

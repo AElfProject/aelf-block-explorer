@@ -343,7 +343,6 @@ const CreateOrganization = () => {
   const [formData, setFormData] = useState({
     proposalType: proposalTypes.ASSOCIATION,
   });
-  // const [whiteList, setWhiteList] = useState([]);
   useEffect(() => {
     getTokenList().then((tokens) => {
       setTokenList(Object.keys(tokens).map((key) => tokens[key]));

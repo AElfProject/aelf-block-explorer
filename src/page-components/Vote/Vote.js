@@ -20,7 +20,7 @@ import config, { APPNAME, schemeIds } from 'constants/config/config';
 import { aelf } from 'utils/axios';
 import contractsStore from 'redux/features/vote/contracts';
 import Decimal from 'decimal.js';
-import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from 'constants/config/config';
+import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from 'constants';
 import getStateJudgment from 'utils/getStateJudgment';
 import MyVote from './MyVote/MyVote';
 import ElectionNotification from './ElectionNotification/ElectionNotification';
@@ -134,7 +134,6 @@ class VoteContainer extends Component {
       dividendLoading: false,
       claimLoading: false,
     };
-
     this.isPhone = isPhoneCheck();
     this.loginMessageLock = false;
     this.loginPlugin = this.loginPlugin.bind(this);

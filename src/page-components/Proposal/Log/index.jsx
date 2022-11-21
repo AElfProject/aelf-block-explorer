@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { If, Then, Else } from 'react-if';
 import { DownOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Menu } from 'antd';
-import { logOut, logIn } from 'redux/features/proposal/common.js';
+import { logOut, logIn } from 'redux/features/proposal/common';
 import { LOG_STATUS } from 'constants';
 import { isPhoneCheck } from 'utils/deviceCheck';
 

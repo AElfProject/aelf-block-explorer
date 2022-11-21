@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Dividends from 'components/Dividends';
 import IconFont from 'components/IconFont';
@@ -11,9 +11,10 @@ interface IProps {
   headers: any;
 }
 export default function LatestInfo({ blocks = [], transactions = [], headers }: IProps) {
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
 
   return (

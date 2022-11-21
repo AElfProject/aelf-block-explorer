@@ -192,7 +192,7 @@ class RedeemModal extends PureComponent {
   }
 
   handleOk() {
-    const { handleRedeemConfirm, form, changeVoteState, setRedeemConfirmLoading } = this.props;
+    const { handleRedeemConfirm, changeVoteState, setRedeemConfirmLoading } = this.props;
 
     setRedeemConfirmLoading(true);
 
@@ -201,16 +201,14 @@ class RedeemModal extends PureComponent {
       setRedeemConfirmLoading(false);
     }, 60 * 1000);
 
-    form.validateFields((err, values) => {
-      if (err) {
-        setRedeemConfirmLoading(false);
-        return;
-      }
-      const { redeemVoteSelectedRowKeys } = values;
-      changeVoteState({ redeemVoteSelectedRowKeys: [redeemVoteSelectedRowKeys] }, () => {
+    const redeemVoteSelectedRowKeys = this.formRef.current?.getFieldValue('redeemVoteSelectedRowKeys');
+    if (redeemVoteSelectedRowKeys) {
+      changeVoteState({ redeemVoteSelectedRowKeys }, () => {
         handleRedeemConfirm();
       });
-    });
+    } else {
+      setRedeemConfirmLoading(false);
+    }
   }
 
   render() {
@@ -241,7 +239,7 @@ class RedeemModal extends PureComponent {
                 ruels={item.validator?.rules}
                 initialValue={item.validator?.initialValue}
                 validateTrigger={item.validator?.validateTrigger}>
-                ({item.validator ? <span>{item.render}</span> || <Input /> : <span>{item.render}</span>})
+                {item.validator ? <span>{item.render}</span> || <Input /> : <span>{item.render}</span>}
               </Form.Item>
             ))}
         </Form>

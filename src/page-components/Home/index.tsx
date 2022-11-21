@@ -37,7 +37,7 @@ export default function Home({
   mobileprice: mobilePrice,
   mobileprevprice: mobilePrevPrice,
   tpsdata: tpsData,
-  blockheight: blockHeight,
+  blockheight: blockHeightSSR,
   rewardssr: rewardSSR,
   localaccountsssr: localAccountsSSR,
   unconfirmedblockheightssr: unconfirmedBlockHeightSSR,
@@ -56,12 +56,13 @@ export default function Home({
   const [localTransactions, setLocalTransactions] = useState(localTransactionsSSR || 0);
   const [localAccounts, setLocalAccounts] = useState(localAccountsSSR || 0);
   const [unconfirmedBlockHeight, setUnconfirmedBlockHeight] = useState(unconfirmedBlockHeightSSR || '0');
-  let isMobile = !!isPhoneCheckSSR(headers);
+  const [blockHeight, setBlockHeight] = useState(blockHeightSSR || 0);
+  const [isMobile, setIsMobile] = useState(!!isPhoneCheckSSR(headers));
+
   const latestSection = useMemo(
     () => <LatestInfo blocks={blocks} transactions={transactions} headers={headers} />,
     [blocks, transactions],
   );
-  blockHeight = blockHeight || 0;
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
       return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
@@ -69,7 +70,7 @@ export default function Home({
     return 0;
   }, [price.USD, previousPrice.usd]);
   useEffect(() => {
-    isMobile = !!isPhoneCheck();
+    setIsMobile(!!isPhoneCheck());
   }, []);
   useEffect(() => {
     if (CHAIN_ID === 'AELF' && NETWORK_TYPE === 'MAIN' && isMobile) {
@@ -109,9 +110,8 @@ export default function Home({
 
   const initBasicInfo = useCallback(async () => {
     const result: IBasicInfo = (await get(BASIC_INFO)) as IBasicInfo;
-
     const { height = 0, totalTxs, unconfirmedBlockHeight = '0', accountNumber = 0 } = result;
-    blockHeight = height;
+    setBlockHeight(height);
     setLocalTransactions(totalTxs);
     setUnconfirmedBlockHeight(unconfirmedBlockHeight);
     setLocalAccounts(accountNumber);
@@ -152,7 +152,7 @@ export default function Home({
       arr.sort((pre, next) => next.block.Header.Height - pre.block.Header.Height);
       const new_transactions = arr.reduce((acc: ISocketTxItem[], i) => acc.concat(i.txs), []).map(transactionFormat);
       const new_blocks = arr.map((item) => formatBlock(item.block));
-      blockHeight = height;
+      setBlockHeight(height);
       setUnconfirmedBlockHeight(unconfirmedHeight);
       setTransactions((v) => {
         const temp: ITXItem = Object.fromEntries([...new_transactions, ...v].map((item) => [item.tx_id, item]));
