@@ -203,6 +203,16 @@ const initSocketSSR = async () => {
   });
 };
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  // reset
+  mobilePrice = { USD: 0 };
+  mobilePrevPrice = { usd: 0 };
+  blockHeight = 0;
+  rewardSSR = { ELF: 0 };
+  localAccountsSSR = 0;
+  unconfirmedBlockHeightSSR = '0';
+  localTransactionsSSR = 0;
+  transactionsSSR = [];
+  blocksSSR = [];
   // get chain info config
   const headers = ctx.req?.headers;
   chainId = config.CHAIN_ID;

@@ -93,7 +93,9 @@ const getTokenPrice = async (ctx) => {
 };
 
 export const getServerSideProps = async (ctx: NextPageContext) => {
+  // reset
   redirectRes = '';
+  contractNameSSR = '';
   const headers = ctx.req?.headers;
   const { id } = ctx.query;
   let lastHeight, info, tokenPrice, decimals;
