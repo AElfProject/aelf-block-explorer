@@ -988,6 +988,7 @@ class VoteContainer extends Component {
     const payload = {
       voteId: switchVoteSelectedRowKeys[0],
       candidatePubkey: targetPublicKey,
+      isResetVotingTime: true,
     };
     electionContractFromExt
       .ChangeVotingOption(payload)
