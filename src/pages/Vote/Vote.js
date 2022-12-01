@@ -567,10 +567,15 @@ class VoteContainer extends Component {
         .unix(voteTimestamp.seconds)
         .format("YYYY-MM-DD HH:mm:ss");
     });
+
+    const switchVoteSelectedRowKeys = switchableVoteRecords.map(
+      (ele) => ele.key
+    );
     this.setState({
       expiredVotesAmount,
       activeVotingRecords,
       switchableVoteRecords,
+      switchVoteSelectedRowKeys,
       withdrawnableVoteRecords: withdrawableVoteRecords,
     });
   }
@@ -605,8 +610,10 @@ class VoteContainer extends Component {
   }
 
   handleClick(e) {
-    const ele = JSON.stringify(e.target.dataset) !== '{}'
-      ? e.target : e.target.parentNode;
+    const ele =
+      JSON.stringify(e.target.dataset) !== "{}"
+        ? e.target
+        : e.target.parentNode;
     const {
       role = "default",
       shoulddetectlock: shouldDetectLock,
@@ -981,6 +988,7 @@ class VoteContainer extends Component {
     const payload = {
       voteId: switchVoteSelectedRowKeys[0],
       candidatePubkey: targetPublicKey,
+      isResetVotingTime: true,
     };
     electionContractFromExt
       .ChangeVotingOption(payload)
@@ -1082,8 +1090,8 @@ class VoteContainer extends Component {
           let { value = {} } = result || {};
           value = !value
             ? {
-              ELF: 0,
-            }
+                ELF: 0,
+              }
             : value;
           value = Object.keys(value).reduce((acc, key) => {
             return {
