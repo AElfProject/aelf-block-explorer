@@ -1,6 +1,15 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Tabs, Modal, Form, Input, DatePicker, Button, Tooltip } from "antd";
+import {
+  Table,
+  Tabs,
+  Modal,
+  Form,
+  Input,
+  DatePicker,
+  Button,
+  Tooltip,
+} from "antd";
 import { SearchOutlined, InfoCircleFilled } from "@ant-design/icons";
 import DatePickerReact from "react-datepicker";
 import moment from "moment";
@@ -64,7 +73,7 @@ const validateMessages = {
 const formItemsNeedToValidateMap = {
   fromWallet: ["lockTime", "voteAmountInput"],
   fromExpiredVotes: [],
-  fromActiveVotes: ["switchVoteRowSelection"],
+  fromActiveVotes: ["lockTime", "switchVoteRowSelection"],
 };
 
 function disabledDate(current) {
@@ -168,7 +177,7 @@ class VoteModal extends Component {
       withdrawnableVoteRecords,
       estimatedProfit,
       switchVoteSelectedRowKeys,
-      handleSwithVoteSelectedRowChange,
+      handleSwitchVoteSelectedRowChange,
       voteFromExpiredVoteAmount,
       voteFromExpiredSelectedRowKeys,
       handleVoteFromExpiredSelectedRowChange,
@@ -185,16 +194,23 @@ class VoteModal extends Component {
       hideDefaultSelections: true,
       type: "checkbox",
     };
-
     const switchVoteRowSelection = {
-      selectedRowKeys: switchVoteSelectedRowKeys,
+      selectedRowKeys: [
+        switchVoteSelectedRowKeys.length > 0
+          ? switchVoteSelectedRowKeys[0]
+          : "",
+      ],
       onChange: (...params) => {
-        handleSwithVoteSelectedRowChange(...params);
+        handleSwitchVoteSelectedRowChange(...params);
         this.setState({
           formattedLockTime: params[1][0].formatedLockTime,
         });
+        // set `Select Vote` value manully, cannot set it automatically
+        // as formItem's child is not radio but table
+        this.formRef.current.setFieldsValue({
+          switchVoteRowSelection: params[0],
+        });
       },
-      hideDefaultSelections: true,
       type: "radio",
     };
 
@@ -296,7 +312,6 @@ class VoteModal extends Component {
                       showYearDropdown
                       selected={datePickerTime}
                       onChange={(date) => {
-                        console.log("setFieldsValue", date);
                         this.setState({
                           datePickerTime: date,
                         });
@@ -335,6 +350,81 @@ class VoteModal extends Component {
             tip: isIPhone()
               ? null
               : "Withdraw and transfer are not supported during the locking period",
+          },
+        ],
+      },
+      {
+        type: FROM_ACTIVE_VOTES,
+        label: "From Not Expired Votes",
+        index: 2,
+        formItems: [
+          {
+            label: "Node Name",
+            render: <span className='form-item-value'>{nodeName}</span>,
+          },
+          {
+            label: "Node Address",
+            render: <span className='form-item-value'>{nodeAddress}</span>,
+          },
+          {
+            label: "Select Vote",
+            render: (
+              <Form.Item
+                name='switchVoteRowSelection'
+                initialValue={[
+                  switchVoteSelectedRowKeys.length > 0
+                    ? switchVoteSelectedRowKeys[0]
+                    : "",
+                ]}
+                rules={[
+                  {
+                    required: true,
+                    message: SELECT_SOMETHING_TIP,
+                  },
+                ]}
+              >
+                <Table
+                  size='middle'
+                  dataSource={switchableVoteRecords}
+                  columns={columns}
+                  rowSelection={switchVoteRowSelection}
+                  pagination={switchVotePagination}
+                  scroll={{ x: 798 }}
+                />
+              </Form.Item>
+            ),
+          },
+          {
+            label: "Lock Time",
+            render: (
+              <Form.Item
+                name='lockTime'
+                validateTrigger={["onChange", "onBlur"]}
+                rules={[
+                  // todo: add the validator rule
+                  {
+                    required: true,
+                    message: "Please select your lock time!",
+                  },
+                ]}
+              >
+                <div>
+                  <DatePicker
+                    disabledDate={disabledDate}
+                    onChange={(value) => {
+                      handleLockTimeChange(value);
+                      this.formRef.current.setFieldsValue({
+                        lockTime: value,
+                      });
+                    }}
+                  />
+                  <span className='tip-color' style={{ marginLeft: 10 }}>
+                    Withdrawal and transfer are not supported during the lock-up
+                    period
+                  </span>
+                </div>
+              </Form.Item>
+            ),
           },
         ],
       },
@@ -536,7 +626,9 @@ class VoteModal extends Component {
 
                   <Form.Item
                     required={
-                      item.label === "Vote Amount" || item.label === "Lock Time"
+                      item.label === "Vote Amount" ||
+                      item.label === "Lock Time" ||
+                      item.label === "Select Vote"
                     }
                     label={item.label}
                     key={item.label}
