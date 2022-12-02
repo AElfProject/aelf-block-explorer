@@ -394,38 +394,38 @@ class VoteModal extends Component {
               </Form.Item>
             ),
           },
-          {
-            label: "Lock Time",
-            render: (
-              <Form.Item
-                name='lockTime'
-                validateTrigger={["onChange", "onBlur"]}
-                rules={[
-                  // todo: add the validator rule
-                  {
-                    required: true,
-                    message: "Please select your lock time!",
-                  },
-                ]}
-              >
-                <div>
-                  <DatePicker
-                    disabledDate={disabledDate}
-                    onChange={(value) => {
-                      handleLockTimeChange(value);
-                      this.formRef.current.setFieldsValue({
-                        lockTime: value,
-                      });
-                    }}
-                  />
-                  <span className='tip-color' style={{ marginLeft: 10 }}>
-                    Withdrawal and transfer are not supported during the lock-up
-                    period
-                  </span>
-                </div>
-              </Form.Item>
-            ),
-          },
+          // {
+          //   label: "Lock Time",
+          //   render: (
+          //     <Form.Item
+          //       name='lockTime'
+          //       validateTrigger={["onChange", "onBlur"]}
+          //       rules={[
+          //         // todo: add the validator rule
+          //         {
+          //           required: true,
+          //           message: "Please select your lock time!",
+          //         },
+          //       ]}
+          //     >
+          //       <div>
+          //         <DatePicker
+          //           disabledDate={disabledDate}
+          //           onChange={(value) => {
+          //             handleLockTimeChange(value);
+          //             this.formRef.current.setFieldsValue({
+          //               lockTime: value,
+          //             });
+          //           }}
+          //         />
+          //         <span className='tip-color' style={{ marginLeft: 10 }}>
+          //           Withdrawal and transfer are not supported during the lock-up
+          //           period
+          //         </span>
+          //       </div>
+          //     </Form.Item>
+          //   ),
+          // },
         ],
       },
     ];
