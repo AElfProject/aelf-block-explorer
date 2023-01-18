@@ -141,7 +141,8 @@ export default function Home() {
         .reduce((acc, i) => acc.concat(i.txs), [])
         .map(transactionFormat);
       const new_blocks = arr.map((item) => formatBlock(item.block));
-      blockHeight = height;
+      // data don't provide confirmedHeight
+      blockHeight = height - unconfirmedHeight;
       setUnconfirmedBlockHeight(unconfirmedHeight);
       setTransactions((v) => {
         const temp = Object.fromEntries(
