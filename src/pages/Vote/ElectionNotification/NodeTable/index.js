@@ -18,6 +18,7 @@ import {
   getAllTeamDesc,
   fetchPageableCandidateInformation,
   fetchElectorVoteWithRecords,
+  fetchCount,
 } from "@api/vote";
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
@@ -34,14 +35,6 @@ import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const clsPrefix = "node-table";
 
-const pagination = {
-  showQuickJumper: true,
-  total: 0,
-  showTotal: (total) => `Total ${total} items`,
-  pageSize: 20,
-  showSizeChanger: false,
-};
-
 class NodeTable extends PureComponent {
   constructor(props) {
     super(props);
@@ -51,6 +44,17 @@ class NodeTable extends PureComponent {
       totalVotesAmount: null,
       isLoading: false,
       producedBlocks: null,
+      pagination: {
+        showQuickJumper: true,
+        total: 0,
+        showTotal: (total) => `Total ${total} items`,
+        pageSize: 20,
+        showSizeChanger: false,
+        onChange: (e) => {
+          const informationStart = (e - 1) * 20;
+          this.fetchNodes({}, informationStart);
+        },
+      },
     };
     this.socket = io({
       path: SOCKET_URL_NEW,
@@ -63,6 +67,7 @@ class NodeTable extends PureComponent {
   componentDidMount() {
     this.wsProducedBlocks();
     if (this.props.electionContract && this.props.consensusContract) {
+      this.fetchTotal();
       this.fetchNodes({});
     }
   }
@@ -77,9 +82,11 @@ class NodeTable extends PureComponent {
       this.props.electionContract &&
       this.props.consensusContract
     ) {
+      this.fetchTotal();
       this.fetchNodes({});
     }
     if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+      this.fetchTotal();
       this.fetchNodes({});
     }
     if (this.props.electionContract && this.props.consensusContract) {
@@ -88,6 +95,7 @@ class NodeTable extends PureComponent {
         (this.props.currentWallet &&
           this.props.currentWallet.address !== prevProps.currentWallet.address)
       ) {
+        this.fetchTotal();
         this.fetchNodes({});
       }
     }
@@ -134,17 +142,17 @@ class NodeTable extends PureComponent {
           style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
           icon={<SearchOutlined />}
-          size='small'
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters, confirm)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -247,9 +255,9 @@ class NodeTable extends PureComponent {
         width: 100,
         dataIndex: "myTotalVoteAmount",
         sorter: (a, b) => {
-          const myA = a.myTotalVoteAmount === '-' ? 0 : a.myTotalVoteAmount
-          const myB = b.myTotalVoteAmount === '-' ? 0 : b.myTotalVoteAmount
-          return myA - myB
+          const myA = a.myTotalVoteAmount === "-" ? 0 : a.myTotalVoteAmount;
+          const myB = b.myTotalVoteAmount === "-" ? 0 : b.myTotalVoteAmount;
+          return myA - myB;
         },
         render: (value) => (value && value !== "-" ? value / ELF_DECIMAL : "-"),
       },
@@ -261,13 +269,13 @@ class NodeTable extends PureComponent {
           <div className={`${clsPrefix}-btn-group`}>
             {/* todo: replace pubkey by address? */}
             <Button
-              className='table-btn vote-btn'
+              className="table-btn vote-btn"
               key={record.pubkey}
-              type='primary'
+              type="primary"
               style={{ marginRight: 14 }}
               data-nodeaddress={record.formattedAddress}
               data-targetpublickey={record.pubkey}
-              data-role='vote'
+              data-role="vote"
               data-nodename={record.name}
               data-shoulddetectlock
               data-votetype={FROM_WALLET}
@@ -275,10 +283,10 @@ class NodeTable extends PureComponent {
               Vote
             </Button>
             <Button
-              className='table-btn redeem-btn'
+              className="table-btn redeem-btn"
               key={record.pubkey + 1}
-              type='primary'
-              data-role='redeem'
+              type="primary"
+              data-role="redeem"
               data-shoulddetectlock
               data-nodeaddress={record.formattedAddress}
               data-targetpublickey={record.pubkey}
@@ -321,59 +329,73 @@ class NodeTable extends PureComponent {
     confirm();
   };
 
-  fetchData(currentWallet) {
-    const {
-      electionContract,
-      consensusContract,
-      shouldRefreshNodeTable,
-      changeVoteState,
-    } = this.props;
-    // todo: It seems to has useless render in cdm
-    console.log({
-      flag: !this.hasRun || shouldRefreshNodeTable,
-      shouldRefreshNodeTable,
-    });
-    if (
-      electionContract &&
-      consensusContract &&
-      (!this.hasRun || shouldRefreshNodeTable)
-    ) {
-      changeVoteState(
-        {
-          shouldRefreshNodeTable: false,
-        },
-        async () => {
-          this.setState({
-            isLoading: true,
-          });
-          // Need await to ensure the totalVotesCount take its seat.
-          // todo: fetchTheTotalVotesAmount after contract changed
-          // await this.fetchTotalVotesAmount();
-          this.fetchNodes(currentWallet);
-        }
-      );
-      this.hasRun = true;
-    }
-  }
+  // fetchData(currentWallet) {
+  //   const {
+  //     electionContract,
+  //     consensusContract,
+  //     shouldRefreshNodeTable,
+  //     changeVoteState,
+  //   } = this.props;
+  //   // todo: It seems to has useless render in cdm
+  //   console.log({
+  //     flag: !this.hasRun || shouldRefreshNodeTable,
+  //     shouldRefreshNodeTable,
+  //   });
+  //   if (
+  //     electionContract &&
+  //     consensusContract &&
+  //     (!this.hasRun || shouldRefreshNodeTable)
+  //   ) {
+  //     changeVoteState(
+  //       {
+  //         shouldRefreshNodeTable: false,
+  //       },
+  //       async () => {
+  //         this.setState({
+  //           isLoading: true,
+  //         });
+  //         // Need await to ensure the totalVotesCount take its seat.
+  //         // todo: fetchTheTotalVotesAmount after contract changed
+  //         // await this.fetchTotalVotesAmount();
+  //         this.fetchNodes(currentWallet);
+  //       }
+  //     );
+  //     this.hasRun = true;
+  //   }
+  // }
 
+  fetchTotal() {
+    fetchCount(this.props.electionContract, "").then((res) => {
+      const total = res.value?.length || 0;
+      const pagination = {
+        ...this.state.pagination,
+        total,
+      };
+      this.setState({
+        pagination,
+      });
+    });
+  }
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
-  fetchNodes(currentWalletInput) {
+  fetchNodes(currentWalletInput, informationStart = 0) {
+    this.setState({
+      isLoading: true,
+    });
     const { electionContract, consensusContract } = this.props;
     const currentWallet =
       (Object.keys(currentWalletInput).length && currentWalletInput) ||
       this.props.currentWallet;
-
     Promise.all([
       fetchPageableCandidateInformation(electionContract, {
-        start: 0,
-        length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL, // give a number large enough to make sure that we get all the nodes
+        start: informationStart,
+        length: 20, // A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
       }),
       getAllTeamDesc(),
       currentWallet && currentWallet.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-          value: getPublicKeyFromObject(currentWallet.publicKey),
-        })
+            value: getPublicKeyFromObject(currentWallet.publicKey),
+          })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract),
     ])
@@ -398,6 +420,9 @@ class NodeTable extends PureComponent {
         });
       })
       .catch((err) => {
+        this.setState({
+          isLoading: false,
+        });
         console.error("GetPageableCandidateInformation", err);
       });
   }
@@ -483,9 +508,9 @@ class NodeTable extends PureComponent {
           totalActiveVotesAmount === 0
             ? 0
             : (
-              (item.obtainedVotesAmount / totalActiveVotesAmount) *
-              100
-            ).toFixed(2);
+                (item.obtainedVotesAmount / totalActiveVotesAmount) *
+                100
+              ).toFixed(2);
         return {
           ...item.candidateInformation,
           obtainedVotesAmount: item.obtainedVotesAmount,
@@ -522,7 +547,7 @@ class NodeTable extends PureComponent {
   }
 
   render() {
-    const { nodeList, isLoading } = this.state;
+    const { nodeList, isLoading, pagination } = this.state;
     const nodeListCols = this.getCols();
 
     return (
@@ -548,7 +573,7 @@ class NodeTable extends PureComponent {
             Refresh
           </Button> */}
         </h2>
-        <TableLayer className='node-table-wrapper'>
+        <TableLayer className="node-table-wrapper">
           <Table
             showSorterTooltip={false}
             columns={nodeListCols}
@@ -558,7 +583,7 @@ class NodeTable extends PureComponent {
             pagination={pagination}
             rowKey={(record) => record.pubkey}
             scroll={{ x: 1024 }}
-          // size='middle'
+            // size='middle'
           />
         </TableLayer>
       </section>
