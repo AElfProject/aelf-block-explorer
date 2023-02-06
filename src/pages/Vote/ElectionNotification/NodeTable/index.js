@@ -34,7 +34,7 @@ import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const clsPrefix = "node-table";
-
+const TableItemCount = 20;
 class NodeTable extends PureComponent {
   constructor(props) {
     super(props);
@@ -50,10 +50,6 @@ class NodeTable extends PureComponent {
         showTotal: (total) => `Total ${total} items`,
         pageSize: 20,
         showSizeChanger: false,
-        onChange: (e) => {
-          const informationStart = (e - 1) * 20;
-          this.fetchNodes({}, informationStart);
-        },
       },
     };
     this.socket = io({
@@ -67,7 +63,6 @@ class NodeTable extends PureComponent {
   componentDidMount() {
     this.wsProducedBlocks();
     if (this.props.electionContract && this.props.consensusContract) {
-      this.fetchTotal();
       this.fetchNodes({});
     }
   }
@@ -82,11 +77,9 @@ class NodeTable extends PureComponent {
       this.props.electionContract &&
       this.props.consensusContract
     ) {
-      this.fetchTotal();
       this.fetchNodes({});
     }
     if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
-      this.fetchTotal();
       this.fetchNodes({});
     }
     if (this.props.electionContract && this.props.consensusContract) {
@@ -95,7 +88,6 @@ class NodeTable extends PureComponent {
         (this.props.currentWallet &&
           this.props.currentWallet.address !== prevProps.currentWallet.address)
       ) {
-        this.fetchTotal();
         this.fetchNodes({});
       }
     }
@@ -364,21 +356,38 @@ class NodeTable extends PureComponent {
   //   }
   // }
 
-  fetchTotal() {
-    fetchCount(this.props.electionContract, "").then((res) => {
-      const total = res.value?.length || 0;
-      const pagination = {
-        ...this.state.pagination,
-        total,
-      };
-      this.setState({
-        pagination,
-      });
+  async fetchTotal() {
+    const res = await fetchCount(this.props.electionContract, "");
+    const total = res.value?.length || 0;
+    const pagination = {
+      ...this.state.pagination,
+      total,
+    };
+    this.setState({
+      pagination,
     });
+    return total;
   }
+
+  async fetchAllCandidateInfo() {
+    const total = await this.fetchTotal();
+    const { electionContract } = this.props;
+    let start = 0;
+    let result = [];
+    while (start <= total) {
+      const res = await fetchPageableCandidateInformation(electionContract, {
+        start,
+        length: TableItemCount,
+      });
+      result = result.concat(res.value);
+      start += 20;
+    }
+    return result;
+  }
+
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
-  fetchNodes(currentWalletInput, informationStart = 0) {
+  fetchNodes(currentWalletInput) {
     this.setState({
       isLoading: true,
     });
@@ -387,10 +396,7 @@ class NodeTable extends PureComponent {
       (Object.keys(currentWalletInput).length && currentWalletInput) ||
       this.props.currentWallet;
     Promise.all([
-      fetchPageableCandidateInformation(electionContract, {
-        start: informationStart,
-        length: 20, // A_NUMBER_LARGE_ENOUGH_TO_GET_ALL
-      }),
+      this.fetchAllCandidateInfo(),
       getAllTeamDesc(),
       currentWallet && currentWallet.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
@@ -432,7 +438,7 @@ class NodeTable extends PureComponent {
     const { producedBlocks } = this.state;
 
     let totalActiveVotesAmount = 0;
-    const nodeInfos = resArr[0] ? resArr[0].value : [];
+    const nodeInfos = resArr[0] || [];
     const { activeVotingRecords } = resArr[2] || {};
     let teamInfos = null;
     if (resArr[1].code === 0) {
