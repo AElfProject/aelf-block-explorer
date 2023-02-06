@@ -1,12 +1,17 @@
 import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 import { If, Then, Else } from "react-if";
-import { Row, Col, Button, Avatar, Tag, Typography, message, Icon } from "antd";
+import { Row, Col, Button, Avatar, Tag, Typography, message } from "antd";
 import queryString from "query-string";
 import { EditOutlined, TeamOutlined } from "@ant-design/icons";
 
 import StatisticalData from "@components/StatisticalData/";
-import { getTeamDesc, fetchElectorVoteWithRecords } from "@api/vote";
+import {
+  getTeamDesc,
+  fetchElectorVoteWithRecords,
+  fetchPageableCandidateInformation,
+  fetchCount,
+} from "@api/vote";
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
 import {
   FROM_WALLET,
@@ -27,6 +32,8 @@ const { Paragraph } = Typography;
 const clsPrefix = "team-detail";
 
 const ellipsis = { rows: 1 };
+
+const TableItemCount = 20;
 
 class TeamDetail extends PureComponent {
   constructor(props) {
@@ -106,18 +113,30 @@ class TeamDetail extends PureComponent {
     this.fetchTheUsersActiveVoteRecords();
   }
 
-  fetchAllCandidateInfo() {
-    const { electionContract } = this.props;
+  async fetchTotal() {
+    const res = await fetchCount(this.props.electionContract, "");
+    const total = res.value?.length || 0;
+    return total;
+  }
 
-    electionContract.GetPageableCandidateInformation.call({
-      start: 0,
-      length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL, // give a number large enough to make sure that we get all the nodes
-      // FIXME: [unstable] sometimes any number large than 5 assign to length will cost error when fetch data
-    })
-      .then((res) => this.processAllCandidateInfo(res.value))
-      .catch((err) => {
-        console.error(err);
-      });
+  async fetchAllCandidateInfo() {
+    try {
+      const total = await this.fetchTotal();
+      const { electionContract } = this.props;
+      let start = 0;
+      let result = [];
+      while (start <= total) {
+        const res = await fetchPageableCandidateInformation(electionContract, {
+          start,
+          length: TableItemCount,
+        });
+        result = result.concat(res.value);
+        start += 20;
+      }
+      this.processAllCandidateInfo(result);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   processAllCandidateInfo(allCandidateInfo) {
@@ -257,13 +276,13 @@ class TeamDetail extends PureComponent {
     return (
       <section className={`${clsPrefix}-header card-container`}>
         <Row>
-          <Col md={18} sm={24} xs={24} className='card-container-left'>
+          <Col md={18} sm={24} xs={24} className="card-container-left">
             <Row className={`${clsPrefix}-team-avatar-info`}>
-              <Col md={6} sm={6} xs={6} className='team-avatar-container'>
+              <Col md={6} sm={6} xs={6} className="team-avatar-container">
                 {data.avatar ? (
-                  <Avatar shape='square' size={avatarSize} src={data.avatar} />
+                  <Avatar shape="square" size={avatarSize} src={data.avatar} />
                 ) : (
-                  <Avatar shape='square' size={avatarSize}>
+                  <Avatar shape="square" size={avatarSize}>
                     U
                   </Avatar>
                 )}
@@ -271,7 +290,7 @@ class TeamDetail extends PureComponent {
               <Col className={`${clsPrefix}-team-info`} md={18} sm={18} xs={18}>
                 <h5 className={`${clsPrefix}-node-name ellipsis`}>
                   {data.name ? data.name : formattedAddress}
-                  <Tag color='#f50'>
+                  <Tag color="#f50">
                     {isBP ? "BP" : isCandidate ? "Candidate" : "Quited"}
                   </Tag>
                 </h5>
@@ -290,8 +309,8 @@ class TeamDetail extends PureComponent {
                       Official Website:&nbsp;
                       <a
                         href={data.officialWebsite}
-                        target='_blank'
-                        rel='noreferrer noopener'
+                        target="_blank"
+                        rel="noreferrer noopener"
                       >
                         {data.officialWebsite}
                       </a>
@@ -304,8 +323,8 @@ class TeamDetail extends PureComponent {
                       Email:&nbsp;
                       <a
                         href={`mailto:${data.mail}`}
-                        target='_blank'
-                        rel='noreferrer noopener'
+                        target="_blank"
+                        rel="noreferrer noopener"
                       >
                         {data.mail}
                       </a>
@@ -313,7 +332,7 @@ class TeamDetail extends PureComponent {
                   </Then>
                 </If>
                 {hasAuth ? (
-                  <Button type='primary' shape='round' className='edit-btn'>
+                  <Button type="primary" shape="round" className="edit-btn">
                     <Link
                       to={{
                         pathname: "/vote/apply/keyin",
@@ -327,13 +346,13 @@ class TeamDetail extends PureComponent {
               </Col>
             </Row>
           </Col>
-          <Col md={6} xs={0} className='card-container-right'>
+          <Col md={6} xs={0} className="card-container-right">
             <Button
-              className='table-btn vote-btn'
-              type='primary'
-              shape='round'
+              className="table-btn vote-btn"
+              type="primary"
+              shape="round"
               disabled={!isCandidate}
-              data-role='vote'
+              data-role="vote"
               data-shoulddetectlock
               data-votetype={FROM_WALLET}
               data-nodeaddress={formattedAddress}
@@ -343,10 +362,10 @@ class TeamDetail extends PureComponent {
               Vote
             </Button>
             <Button
-              className='table-btn redeem-btn'
-              type='primary'
-              shape='round'
-              data-role='redeem'
+              className="table-btn redeem-btn"
+              type="primary"
+              shape="round"
+              data-role="redeem"
               data-shoulddetectlock
               data-nodeaddress={formattedAddress}
               data-targetpublickey={this.teamPubkey}
@@ -372,17 +391,17 @@ class TeamDetail extends PureComponent {
         {topTeamInfo}
         <StatisticalData data={staticsData} inline />
         <section className={`${clsPrefix}-intro card-container`}>
-          <h5 className='card-header'>
-            <EditOutlined className='card-header-icon' />
+          <h5 className="card-header">
+            <EditOutlined className="card-header-icon" />
             Introduction
           </h5>
-          <div className='card-content'>
+          <div className="card-content">
             <If condition={!!data.intro}>
               <Then>
                 <p>{data.intro}</p>
               </Then>
               <Else>
-                <div className='vote-team-detail-empty'>
+                <div className="vote-team-detail-empty">
                   The team didn't fill the introduction.
                 </div>
               </Else>
@@ -390,25 +409,25 @@ class TeamDetail extends PureComponent {
           </div>
         </section>
         <section className={`${clsPrefix}-social-network card-container`}>
-          <h5 className='card-header'>
-            <TeamOutlined className='card-header-icon' />
+          <h5 className="card-header">
+            <TeamOutlined className="card-header-icon" />
             Social Network
           </h5>
-          <div className='card-content'>
+          <div className="card-content">
             <If condition={!!(data.socials && data.socials.length > 0)}>
               <Then>
-                <div className='vote-team-detail-social-network'>
+                <div className="vote-team-detail-social-network">
                   {(data.socials || []).map((item) => (
-                    <div className='vote-team-detail-social-network-item'>
-                      <span className='vote-team-detail-social-network-item-title'>
+                    <div className="vote-team-detail-social-network-item">
+                      <span className="vote-team-detail-social-network-item-title">
                         {item.type}
                       </span>
-                      <span className='vote-team-detail-social-network-item-url'>
+                      <span className="vote-team-detail-social-network-item-url">
                         :&nbsp;
                         <a
                           href={item.url}
-                          target='_blank'
-                          rel='noreferrer noopener'
+                          target="_blank"
+                          rel="noreferrer noopener"
                         >
                           {item.url}
                         </a>
@@ -418,7 +437,7 @@ class TeamDetail extends PureComponent {
                 </div>
               </Then>
               <Else>
-                <span className='vote-team-detail-empty'>
+                <span className="vote-team-detail-empty">
                   The team didn't fill the social contacts.
                 </span>
               </Else>
