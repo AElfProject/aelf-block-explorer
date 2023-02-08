@@ -15,7 +15,8 @@
     "no-underscore-dangle": 0,
     "no-param-reassign": 0,
     "import/imports-first": ["error", "absolute-first"],
-    "import/newline-after-import": "error"
+    "import/newline-after-import": "error",
+    "react/jsx-props-no-spreading": 0
   },
   "globals": {
     "window": true,
@@ -25,5 +26,16 @@
     "FileReader": true,
     "Blob": true,
     "navigator": true
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@", "./src/"],
+          ["@utils", "./src/utils"],
+          ["@actions", "./src/redux/actions"]
+        ]
+      }
+    }
   }
 }

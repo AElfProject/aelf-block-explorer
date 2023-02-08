@@ -18,7 +18,7 @@ const noBreadcrumb = (pathname) => {
   const isMainPage = pathname === "/";
   return (
     NO_BREADCRUMB_PAGES.filter((item) => pathname.includes(item)).length ===
-    0 && !isMainPage
+      0 && !isMainPage
   );
 };
 
@@ -31,14 +31,14 @@ const BREADCRUMB_NAME_MAP = {
   // "/tx": "交易信息",
   // "/address": "地址信息"
   "/blocks": "Block List",
-  "/unconfirmedBlocks": "Unconfirmed Block List",
+  // "/unconfirmedBlocks": "Unconfirmed Block List",
   "/txs": "Transaction List",
-  "/unconfirmedTxs": "Unconfirmed Transaction List",
+  // "/unconfirmedTxs": "Unconfirmed Transaction List",
   "/txs/block": "Transactions of Block",
-  "/block": "Block",
-  "/unconfirmedBlock": "Unconfirmed Block",
+  // "/block": "Block",
+  // "/unconfirmedBlock": "Unconfirmed Block",
   "/tx": "Transaction",
-  "/unconfirmedTx": "Unconfirmed Transaction",
+  // "/unconfirmedTx": "Unconfirmed Transaction",
   "/address": "Address",
   "/vote": "Vote",
   "/resource": "Resource",
@@ -47,17 +47,17 @@ const BREADCRUMB_NAME_MAP = {
   "/proposal": "Proposal",
   "/token": "Token",
   myvote: "My Vote",
-  '/search-invalid': ''
+  "/search-invalid": "",
 };
 
 const DO_NOT_DISPLAY_PATH = [
-  '/transaction-list',
-  '/txs',
-  '/unconfirmedTxs',
-  '/tx/',
-  '/blocks',
-  '/unconfirmedBlocks',
-]
+  "/transaction-list",
+  "/txs",
+  // "/unconfirmedTxs",
+  "/tx/",
+  "/blocks",
+  // "/unconfirmedBlocks",
+];
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
@@ -72,33 +72,33 @@ const BREADCRUMB_NAMES_TATE = {
       url: ["/blocks", false],
       name: [BREADCRUMB_NAME_MAP["/blocks"], BREADCRUMB_NAME_MAP["/block"]],
     },
-    unconfirmedBlocks: {
-      url: ["/unconfirmedBlocks"],
-      name: [BREADCRUMB_NAME_MAP["/unconfirmedBlocks"]],
-    },
-    unconfirmedBlock: {
-      url: ["/unconfirmedBlock"],
-      name: [BREADCRUMB_NAME_MAP["/unconfirmedBlock"]],
-    },
+    // unconfirmedBlocks: {
+    //   url: ["/unconfirmedBlocks"],
+    //   name: [BREADCRUMB_NAME_MAP["/unconfirmedBlocks"]],
+    // },
+    // unconfirmedBlock: {
+    //   url: ["/unconfirmedBlock"],
+    //   name: [BREADCRUMB_NAME_MAP["/unconfirmedBlock"]],
+    // },
     txs: {
       url: ["/txs", false],
       name: [BREADCRUMB_NAME_MAP["/txs"], BREADCRUMB_NAME_MAP["/txs/block"]],
     },
-    unconfirmedTxs: {
-      url: ["/unconfirmedTxs", false],
-      name: [BREADCRUMB_NAME_MAP["/unconfirmedTxs"]],
-    },
+    // unconfirmedTxs: {
+    //   url: ["/unconfirmedTxs", false],
+    //   name: [BREADCRUMB_NAME_MAP["/unconfirmedTxs"]],
+    // },
     tx: {
       url: ["/txs", false],
       name: [BREADCRUMB_NAME_MAP["/txs"], BREADCRUMB_NAME_MAP["/tx"]],
     },
-    unconfirmedTx: {
-      url: ["/txs", false],
-      name: [
-        BREADCRUMB_NAME_MAP["/unconfirmedTxs"],
-        BREADCRUMB_NAME_MAP["/unconfirmedTx"],
-      ],
-    },
+    // unconfirmedTx: {
+    //   url: ["/txs", false],
+    //   name: [
+    //     BREADCRUMB_NAME_MAP["/unconfirmedTxs"],
+    //     BREADCRUMB_NAME_MAP["/unconfirmedTx"],
+    //   ],
+    // },
     accounts: {
       url: ["/txs", false],
       name: [BREADCRUMB_NAME_MAP["/txs"], BREADCRUMB_NAME_MAP["/address"]],
@@ -142,28 +142,61 @@ const BREADCRUMB_NAMES_TATE = {
 };
 
 class BrowserBreadcrumb extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  getFirstBreadcrumbItem() {
-    return (
-      <Breadcrumb.Item key='/'>
-        <Link to='/' onClick={this.handleClick}>
+  static getBreadcrumbTitle(pathSnippets) {
+    const pageNameMap = {
+      blocks: (
+        <div className="breadcrumb-title" style={{ fontSize: 28 }}>
           {" "}
-          Home{" "}
-        </Link>
-      </Breadcrumb.Item>
-    );
+          Block List{" "}
+          <span className="tip-color" style={{ fontSize: 16 }}>
+            ( Only confirmed blocks )
+          </span>
+        </div>
+      ),
+      // unconfirmedBlocks: "Unconfirmed Block List",
+      // block: "Block",
+      // unconfirmedBlock: "Unconfirmed Block",
+      txs: "Transaction List",
+      // unconfirmedTxs: "Unconfirmed Transaction List",
+      // tx: "Transaction",
+      // unconfirmedTx: "Unconfirmed Transaction",
+      address: "Address",
+      contract: "Contract",
+      proposal: "Proposal",
+      resource: (
+        <span className="breadcrumb-title breadcrumb-small-title">
+          Resource Trading
+        </span>
+      ),
+      resourceDetail: (
+        <span className="breadcrumb-title breadcrumb-small-title">
+          Transaction Details
+        </span>
+      ),
+    };
+
+    return [
+      pageNameMap[pathSnippets[0]],
+      pathSnippets[1] ? (
+        <span className="breadcrumb-sub-title" key="breadcrumb-sub-title">
+          {pathSnippets[0] === "address" || pathSnippets[0] === "resourceDetail"
+            ? `#${addressFormat(pathSnippets[1])}`
+            : `#${pathSnippets[1]}`}
+        </span>
+      ) : (
+        ""
+      ),
+    ];
   }
 
-  checkLocation(breadcrumbTitle) {
+  static checkLocation(breadcrumbTitle) {
     const current = BREADCRUMB_NAMES_TATE.currentState;
-    const { pathname } = location;
+    const { pathname } = window.location;
 
     // hummm, stupid solution
     const inBlockDetail =
       current === "block" && breadcrumbTitle === "Block List";
+    // eslint-disable-next-line no-unused-vars
     const inUnconfirmedBlock =
       current === "unconfirmedBlock" &&
       breadcrumbTitle === "Unconfirmed Block List";
@@ -175,6 +208,7 @@ class BrowserBreadcrumb extends Component {
       current === "address" && breadcrumbTitle === "Transaction List";
     const inTxDetail =
       current === "tx" && breadcrumbTitle === "Transaction List";
+    // eslint-disable-next-line no-unused-vars
     const inUnconfirmedTxDetail =
       current === "unconfirmedTx" &&
       breadcrumbTitle === "Unconfirmed Transaction List";
@@ -187,15 +221,24 @@ class BrowserBreadcrumb extends Component {
       inTxList ||
       inAddress ||
       inTxDetail ||
-      inUnconfirmedTxDetail ||
       inResourceDetail ||
-      inContract ||
-      inUnconfirmedBlock
+      inContract
     ) {
       return false;
     }
 
-    return location.pathname.includes(current);
+    return window.location.pathname.includes(current);
+  }
+
+  getFirstBreadcrumbItem() {
+    return (
+      <Breadcrumb.Item key="/">
+        <Link to="/" onClick={this.handleClick}>
+          {" "}
+          Home{" "}
+        </Link>
+      </Breadcrumb.Item>
+    );
   }
 
   // TODO: 如果没有收录，则不展示面包屑。
@@ -208,9 +251,9 @@ class BrowserBreadcrumb extends Component {
       const STATE =
         BREADCRUMB_NAMES_TATE.states[BREADCRUMB_NAMES_TATE.currentState];
 
-      // todo
       if (!STATE) {
-        this.props.navigate("/");
+        const { navigate } = this.props;
+        navigate("/");
         return;
       }
 
@@ -222,11 +265,10 @@ class BrowserBreadcrumb extends Component {
         index === pathSnippets.length - 1
           ? STATE.url[index] || reloadUrl
           : STATE.url[index] ||
-          `/${pathSnippets.slice(0, index + 1).join("/")}`;
-
-      console.log("breadcrumbTitle: ", breadcrumbTitle);
+            `/${pathSnippets.slice(0, index + 1).join("/")}`;
       const isCurrentTitle = this.checkLocation(breadcrumbTitle);
 
+      // eslint-disable-next-line consistent-return
       return (
         <Breadcrumb.Item key={url}>
           {isCurrentTitle ? (
@@ -241,68 +283,23 @@ class BrowserBreadcrumb extends Component {
     });
   }
 
-  getBreadcrumbTitle(pathSnippets) {
-    const pageNameMap = {
-      blocks: (
-        <div className='breadcrumb-title' style={{ fontSize: 28 }}>
-          {" "}
-          Block List{" "}
-          <span className='tip-color' style={{ fontSize: 16 }}>
-            ( Only confirmed blocks )
-          </span>
-        </div>
-      ),
-      unconfirmedBlocks: "Unconfirmed Block List",
-      block: "Block",
-      unconfirmedBlock: "Unconfirmed Block",
-      txs: "Transaction List",
-      unconfirmedTxs: "Unconfirmed Transaction List",
-      tx: "Transaction",
-      unconfirmedTx: "Unconfirmed Transaction",
-      address: "Address",
-      contract: "Contract",
-      proposal: "Proposal",
-      resource: (
-        <span className='breadcrumb-title breadcrumb-small-title'>
-          Resource Trading
-        </span>
-      ),
-      resourceDetail: (
-        <span className='breadcrumb-title breadcrumb-small-title'>
-          Transaction Details
-        </span>
-      ),
-    };
-
-    return [
-      pageNameMap[pathSnippets[0]],
-      pathSnippets[1] ? (
-        <span className='breadcrumb-sub-title' key='breadcrumb-sub-title'>
-          {pathSnippets[0] === "address" || pathSnippets[0] === "resourceDetail"
-            ? `#${addressFormat(pathSnippets[1])}`
-            : `#${pathSnippets[1]}`}
-        </span>
-      ) : (
-        ""
-      ),
-    ];
-  }
-
   render() {
     const { location } = this.props;
     const { pathname } = location;
 
-    if (DO_NOT_DISPLAY_PATH.includes(pathname)
-      || pathname.includes('/tx/')
-      || pathname.includes('/txs')
-      || pathname.includes('/block/')
-      || pathname.includes('/search-invalid')
-      || pathname.includes('/search-failed')
-      || pathname.includes('/accounts')
-      || pathname.includes('/contracts')
-      || pathname.includes('/contract')
-      || pathname.includes('/token')) {
-      return <></>
+    if (
+      DO_NOT_DISPLAY_PATH.includes(pathname) ||
+      pathname.includes("/tx/") ||
+      pathname.includes("/txs") ||
+      pathname.includes("/block/") ||
+      pathname.includes("/search-invalid") ||
+      pathname.includes("/search-failed") ||
+      pathname.includes("/accounts") ||
+      pathname.includes("/contracts") ||
+      pathname.includes("/contract") ||
+      pathname.includes("/token")
+    ) {
+      return <></>;
     }
 
     const reloadUrl = pathname + location.search;
@@ -324,7 +321,7 @@ class BrowserBreadcrumb extends Component {
 
     return (
       <div className={className}>
-        <h1 className='breadcrumb-title'>{title}</h1>
+        <h1 className="breadcrumb-title">{title}</h1>
         <Breadcrumb>{breadcrumbItems}</Breadcrumb>
       </div>
     );

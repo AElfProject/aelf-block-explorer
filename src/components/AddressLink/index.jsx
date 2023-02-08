@@ -4,18 +4,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import config from "../../common/config";
+import addressFormat from "../../utils/addressFormat";
 
 const AddressLink = (props) => {
-  const { address, suffix } = props;
-
+  const { address: prefixAddress, suffix } = props;
+  const address = addressFormat(prefixAddress);
   return (
     <>
-      <Link
-        to={`/address/${address}`}
-        title={`ELF_${address}_${config.viewer.chainId}`}
-      >
-        {`ELF_${address}_${config.viewer.chainId}`}
+      <Link to={`/address/${address}`} title={`${address}`}>
+        {`${address}`}
       </Link>
       {suffix}
     </>

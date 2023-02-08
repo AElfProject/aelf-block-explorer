@@ -2,24 +2,19 @@
  * @file desc list
  * @author atom-yang
  */
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Card,
-  Row,
-  Col,
-} from 'antd';
+import React, { useMemo } from "react";
+import PropTypes from "prop-types";
+import { Card, Row, Col } from "antd";
 import {
   getOrganizationLeftInfo,
   getCircleValues,
-} from '../../OrganizationList/Organization';
+} from "../../OrganizationList/Organization";
 import constants, {
   organizationInfoPropTypes,
-} from '../../../common/constants';
+} from "../../../common/constants";
+import addressFormat from "../../../../../utils/addressFormat";
 
-const {
-  proposalActions,
-} = constants;
+const { proposalActions } = constants;
 
 const OrganizationCard = (props) => {
   const {
@@ -32,74 +27,75 @@ const OrganizationCard = (props) => {
     parliamentProposerList,
     className,
   } = props;
-  const thresholdValue = useMemo(() => getCircleValues(
-    proposalType, releaseThreshold, leftOrgInfo, bpCount || bpList.length,
-  ), [
-    proposalType,
-    releaseThreshold,
-    leftOrgInfo,
-    bpList,
-  ]);
-  const leftInfo = useMemo(() => getOrganizationLeftInfo(proposalType, leftOrgInfo, bpList, parliamentProposerList), [
-    proposalType,
-    leftOrgInfo,
-    bpList,
-    parliamentProposerList,
-  ]);
+  const thresholdValue = useMemo(
+    () =>
+      getCircleValues(
+        proposalType,
+        releaseThreshold,
+        leftOrgInfo,
+        bpCount || bpList.length
+      ),
+    [proposalType, releaseThreshold, leftOrgInfo, bpList]
+  );
+  const leftInfo = useMemo(
+    () =>
+      getOrganizationLeftInfo(
+        proposalType,
+        leftOrgInfo,
+        bpList,
+        parliamentProposerList
+      ),
+    [proposalType, leftOrgInfo, bpList, parliamentProposerList]
+  );
   return (
-    <Card
-      className={className}
-      title="Organization Info"
-    >
+    <Card className={className} title="Organization Info">
       <div className="gap-bottom-large">
-        <span className="sub-title">
-          Address:
-        </span>
-        <span>{orgAddress}</span>
+        <span className="sub-title">Address:</span>
+        <span>{addressFormat(orgAddress)}</span>
       </div>
       <Row gutter={16}>
         <Col sm={12} xs={24}>
           <>
             <div
               className="gap-bottom-small text-ellipsis"
-              title={`${thresholdValue[proposalActions.APPROVE].num}(${thresholdValue[proposalActions.APPROVE].rate})`}
+              title={`${thresholdValue[proposalActions.APPROVE].num}(${
+                thresholdValue[proposalActions.APPROVE].rate
+              })`}
             >
               <span className="sub-title gap-right-small">
                 Minimal Approval Threshold:
               </span>
               <span className="text-ell">
-                {thresholdValue[proposalActions.APPROVE].num}
-                (
-                {thresholdValue[proposalActions.APPROVE].rate}
-                )
+                {thresholdValue[proposalActions.APPROVE].num}(
+                {thresholdValue[proposalActions.APPROVE].rate})
               </span>
             </div>
             <div
               className="gap-bottom-small text-ellipsis"
-              title={`${thresholdValue[proposalActions.REJECT].num}(${thresholdValue[proposalActions.REJECT].rate})`}
+              title={`${thresholdValue[proposalActions.REJECT].num}(${
+                thresholdValue[proposalActions.REJECT].rate
+              })`}
             >
               <span className="sub-title gap-right-small">
                 Maximal Rejection Threshold:
               </span>
               <span>
-                {thresholdValue[proposalActions.REJECT].num}
-                (
-                {thresholdValue[proposalActions.REJECT].rate}
-                )
+                {thresholdValue[proposalActions.REJECT].num}(
+                {thresholdValue[proposalActions.REJECT].rate})
               </span>
             </div>
             <div
               className="gap-bottom-small text-ellipsis"
-              title={`${thresholdValue[proposalActions.ABSTAIN].num}(${thresholdValue[proposalActions.ABSTAIN].rate})`}
+              title={`${thresholdValue[proposalActions.ABSTAIN].num}(${
+                thresholdValue[proposalActions.ABSTAIN].rate
+              })`}
             >
               <span className="sub-title gap-right-small">
                 Maximal Abstention Threshold:
               </span>
               <span>
-                {thresholdValue[proposalActions.ABSTAIN].num}
-                (
-                {thresholdValue[proposalActions.ABSTAIN].rate}
-                )
+                {thresholdValue[proposalActions.ABSTAIN].num}(
+                {thresholdValue[proposalActions.ABSTAIN].rate})
               </span>
             </div>
             <div
@@ -110,10 +106,7 @@ const OrganizationCard = (props) => {
                 Minimal Vote Threshold:
               </span>
               <span>
-                {thresholdValue.Total.num}
-                (
-                {thresholdValue.Total.rate}
-                )
+                {thresholdValue.Total.num}({thresholdValue.Total.rate})
               </span>
             </div>
           </>

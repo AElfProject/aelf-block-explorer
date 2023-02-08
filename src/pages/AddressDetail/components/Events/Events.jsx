@@ -11,9 +11,11 @@ import useMobile from "../../../../hooks/useMobile";
 import { get } from "../../../../utils";
 
 import "./Events.styles.less";
+import { getOriginAddress } from "../../../../utils/addressFormat";
 
 export default function Events() {
-  const { address } = useParams();
+  const { address: prefixAddress } = useParams();
+  const address = getOriginAddress(prefixAddress);
   const isMobile = useMobile();
   const [total, setTotal] = useState(0);
   const [dataLoading, setDataLoading] = useState(true);
@@ -28,7 +30,7 @@ export default function Events() {
         width: 192,
         ellipsis: true,
         dataIndex: "txId",
-        className: 'color-blue',
+        className: "color-blue",
         render(txId) {
           return <Link to={`/tx/${txId}`}>{txId}</Link>;
         },
@@ -43,7 +45,7 @@ export default function Events() {
               Indexed={data.Indexed}
               NonIndexed={data.NonIndexed}
               Name={record.name}
-              Address={address}
+              Address={prefixAddress}
             />
           );
         },
@@ -107,7 +109,7 @@ export default function Events() {
                     Indexed={item.data.Indexed}
                     NonIndexed={item.data.NonIndexed}
                     Name={item.name}
-                    Address={address}
+                    Address={prefixAddress}
                   />
                 </p>
               </div>

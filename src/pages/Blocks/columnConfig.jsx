@@ -1,9 +1,10 @@
-import Dividends from "../../components/Dividends";
 import { Link } from "react-router-dom";
+import React from "react";
+import Dividends from "../../components/Dividends";
 import { getFormattedDate } from "../../utils/timeUtils";
 import IconFont from "../../components/IconFont";
-import { SYMBOL, CHAIN_ID } from "../../../config/config";
 import { isPhoneCheck } from "../../utils/deviceCheck";
+import addressFormat from "../../utils/addressFormat";
 
 export default (timeFormat, handleFormatChange) => {
   const isMobile = isPhoneCheck();
@@ -26,7 +27,12 @@ export default (timeFormat, handleFormatChange) => {
       dataIndex: "time",
       width: isMobile ? 140 : 228,
       title: (
-        <div className="time" onClick={handleFormatChange}>
+        <div
+          className="time"
+          onClick={handleFormatChange}
+          onKeyDown={handleFormatChange}
+          role="presentation"
+        >
           {timeFormat} <IconFont type="change" />
         </div>
       ),
@@ -41,7 +47,7 @@ export default (timeFormat, handleFormatChange) => {
       render: (text, record) => {
         return (
           <div>
-            {!isNaN(+record.tx_count) && +record.tx_count !== 0 ? (
+            {!Number.isNaN(+record.tx_count) && +record.tx_count !== 0 ? (
               <Link to={`/block/${record.block_height}?tab=txns`}>
                 {record.tx_count}
               </Link>
@@ -74,9 +80,9 @@ export default (timeFormat, handleFormatChange) => {
         return (
           <div className="address">
             <Link
-              title={`${SYMBOL}_${text}_${CHAIN_ID}`}
-              to={`/address/${text}`}
-            >{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
+              title={`${addressFormat(text)}`}
+              to={`/address/${addressFormat(text)}`}
+            >{`${addressFormat(text)}`}</Link>
           </div>
         );
       },

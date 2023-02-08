@@ -1,7 +1,6 @@
 import { Tag } from "antd";
 import moment from "moment";
-import React from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import IconFont from "../../../components/IconFont";
 import { getFormattedDate } from "../../../utils/timeUtils";
@@ -37,7 +36,7 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
             "Chain ID": basicInfo.chainId,
             Miner: (
               <div>
-                <Link to={"/address/" + basicInfo.miner}>
+                <Link to={`/address/${addressFormat(basicInfo.miner)}`}>
                   {addressFormat(basicInfo.miner)}
                 </Link>
                 &nbsp;&nbsp;
@@ -58,10 +57,10 @@ export default function BasicInfo({ basicInfo, bestChainHeight }) {
   );
 
   return (
-    <div className={`wrap basic`}>
-      {(Object.keys(renderObj) || []).map((key, index) => {
+    <div className="wrap basic">
+      {(Object.keys(renderObj) || []).map((key) => {
         return (
-          <div key={index} className="row">
+          <div key={key} className="row">
             <p className="label">{key} : </p>
             <div className="value">{renderObj[key]}</div>
           </div>

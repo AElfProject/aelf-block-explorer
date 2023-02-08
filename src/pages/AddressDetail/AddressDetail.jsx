@@ -5,7 +5,6 @@ import { Tabs, Tooltip } from "antd";
 import { useEffectOnce } from "react-use";
 import CopyButton from "../../components/CopyButton/CopyButton";
 import IconFont from "../../components/IconFont";
-import { CHAIN_ID } from "../../constants";
 import QrCode from "./components/QrCode/QrCode";
 import { get, getContractNames } from "../../utils";
 import {
@@ -21,10 +20,11 @@ import CommonTabPane from "./components/CommonTabPane";
 import Overview from "./components/Overview";
 import ContractTabPane from "./components/ContractTabPane";
 import { isAddress } from "../../utils/utils";
+import addressFormat from "../../utils/addressFormat";
 
 export default function AddressDetail() {
   const nav = useNavigate();
-  const { address, codeHash } = useParams();
+  const { address: prefixAddress, codeHash } = useParams();
   const isMobile = useMobile();
   const [activeKey, setActiveKey] = useState("tokens");
   const [contracts, setContracts] = useState({});
@@ -33,7 +33,7 @@ export default function AddressDetail() {
   const [tokensLoading, setTokensLoading] = useState(true);
   const [contractInfo, setContractInfo] = useState(undefined);
   const [contractHistory, setContractHistory] = useState(undefined);
-
+  const address = prefixAddress.split("_")[1];
   const isCA = useMemo(() => !!contracts[address], [contracts, address]);
 
   const elfBalance = useMemo(
@@ -135,14 +135,14 @@ export default function AddressDetail() {
       <section className="basic-info">
         <h2>{pageTitle}</h2>
         <p>
-          {address}
-          <CopyButton value={address} />
+          {addressFormat(address)}
+          <CopyButton value={addressFormat(address)} />
           <Tooltip
             placement={isMobile ? "bottomRight" : "bottom"}
             color="white"
             getPopupContainer={(node) => node}
             trigger="click"
-            title={<QrCode value={`ELF_${address}_${CHAIN_ID}`} />}
+            title={<QrCode value={`${addressFormat(address)}`} />}
           >
             <IconFont type="code" />
           </Tooltip>

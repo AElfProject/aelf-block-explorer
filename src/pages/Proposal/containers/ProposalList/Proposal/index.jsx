@@ -23,16 +23,17 @@ import constants, {
 import "./index.less";
 import VoteChart from "../../../components/VoteChart";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
+import addressFormat from "../../../../../utils/addressFormat";
 
 const { proposalTypes, proposalStatus, proposalActions } = constants;
 
 export const ACTIONS_ICON_MAP = {
   [proposalActions.APPROVE]: (
-    <CheckCircleOutlined className='gap-right-small' />
+    <CheckCircleOutlined className="gap-right-small" />
   ),
-  [proposalActions.REJECT]: <CloseCircleOutlined className='gap-right-small' />,
+  [proposalActions.REJECT]: <CloseCircleOutlined className="gap-right-small" />,
   [proposalActions.ABSTAIN]: (
-    <MinusCircleOutlined className='gap-right-small' />
+    <MinusCircleOutlined className="gap-right-small" />
   ),
 };
 
@@ -46,8 +47,8 @@ const Title = (props) => {
     momentExpired.isAfter(now) &&
     momentExpired.isBefore(threshold);
   return (
-    <div className='proposal-list-item-title'>
-      <span className='gap-right-small'>{proposalType}</span>
+    <div className="proposal-list-item-title">
+      <span className="gap-right-small">{proposalType}</span>
       {votedStatus !== "none" ? (
         <Tag color={ACTIONS_COLOR_MAP[votedStatus]}>
           {ACTIONS_ICON_MAP[votedStatus]}
@@ -55,7 +56,7 @@ const Title = (props) => {
         </Tag>
       ) : null}
       {showExpired ? (
-        <span className='warning-text'>{`Expire ${now.to(
+        <span className="warning-text">{`Expire ${now.to(
           momentExpired
         )}`}</span>
       ) : null}
@@ -75,8 +76,6 @@ const Proposal = (props) => {
     proposalType,
     proposalId,
     expiredTime,
-    createAt,
-    releasedTime,
     contractAddress,
     contractMethod,
     proposer,
@@ -105,7 +104,7 @@ const Proposal = (props) => {
     currentAccount &&
     proposer === currentAccount;
   return (
-    <div className='proposal-list-item gap-bottom'>
+    <div className="proposal-list-item gap-bottom">
       <Card
         title={
           <Title
@@ -116,11 +115,11 @@ const Proposal = (props) => {
           />
         }
       >
-        <div className='proposal-list-item-id'>
-          <div className='gap-right-large'>
+        <div className="proposal-list-item-id">
+          <div className="gap-right-large">
             <Link
               to={`/proposal/proposalsDetail/${proposalId}`}
-              className='text-ellipsis'
+              className="text-ellipsis"
             >
               {proposalId}
             </Link>
@@ -130,7 +129,7 @@ const Proposal = (props) => {
               </Tag>
             ) : null}
           </div>
-          <div className='proposal-list-item-id-status'>
+          <div className="proposal-list-item-id-status">
             <Tag color={STATUS_COLOR_MAP[status]}>
               {PROPOSAL_STATUS_CAPITAL[status]}
             </Tag>
@@ -138,8 +137,8 @@ const Proposal = (props) => {
               // eslint-disable-next-line max-len
               <Button
                 proposal-id={proposalId}
-                type='link'
-                size='small'
+                type="link"
+                size="small"
                 onClick={handleRelease}
               >
                 Release&gt;
@@ -148,20 +147,22 @@ const Proposal = (props) => {
           </div>
         </div>
         <Divider />
-        <div className='proposal-list-item-info'>
-          <div className='proposal-list-item-info-item'>
-            <span className='sub-title gap-right'>Proposal Expires:</span>
-            <span className='text-ellipsis'>
+        <div className="proposal-list-item-info">
+          <div className="proposal-list-item-info-item">
+            <span className="sub-title gap-right">Proposal Expires:</span>
+            <span className="text-ellipsis">
               {moment(expiredTime).format("YYYY/MM/DD HH:mm:ss")}
             </span>
           </div>
-          <div className='proposal-list-item-info-item'>
-            <span className='sub-title gap-right'>Contract:</span>
-            <span className='text-ellipsis'>{contractAddress}</span>
+          <div className="proposal-list-item-info-item">
+            <span className="sub-title gap-right">Contract:</span>
+            <span className="text-ellipsis">
+              {addressFormat(contractAddress)}
+            </span>
           </div>
-          <div className='proposal-list-item-info-item'>
-            <span className='sub-title gap-right'>Contract Method:</span>
-            <span className='text-ellipsis'>{contractMethod}</span>
+          <div className="proposal-list-item-info-item">
+            <span className="sub-title gap-right">Contract Method:</span>
+            <span className="text-ellipsis">{contractMethod}</span>
           </div>
         </div>
         <Divider />
@@ -174,21 +175,21 @@ const Proposal = (props) => {
           organizationInfo={organizationInfo}
         />
         <Divider />
-        <div className='proposal-list-item-actions'>
-          <div className='proposal-list-item-buttons'>
+        <div className="proposal-list-item-actions">
+          <div className="proposal-list-item-buttons">
             <Button
-              type='primary'
+              type="primary"
               disabled={!canThisUserVote}
-              className='approve-color gap-right'
-              shape='round'
+              className="approve-color gap-right"
+              shape="round"
               proposal-id={proposalId}
               onClick={handleApprove}
             >
               Approve
             </Button>
             <Button
-              type='danger'
-              shape='round'
+              type="danger"
+              shape="round"
               disabled={!canThisUserVote}
               proposal-id={proposalId}
               onClick={handleReject}
@@ -197,8 +198,8 @@ const Proposal = (props) => {
             </Button>
           </div>
           <Button
-            className='proposal-list-item-abstain'
-            type='link'
+            className="proposal-list-item-abstain"
+            type="link"
             disabled={!canThisUserVote}
             onClick={handleAbstain}
             proposal-id={proposalId}
