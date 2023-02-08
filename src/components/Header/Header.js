@@ -189,7 +189,8 @@ class BrowserHeader extends PureComponent {
     });
   }
 
-  static renderPhoneMenu() {
+  // eslint-disable-next-line class-methods-use-this
+  renderPhoneMenu() {
     const networkHTML = networkList.map((item) => {
       let classSelected = "";
       if (NETWORK_TYPE === item.netWorkType) {

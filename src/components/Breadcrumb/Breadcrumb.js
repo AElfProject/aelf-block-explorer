@@ -195,7 +195,8 @@ class BrowserBreadcrumb extends Component {
     });
   }
 
-  static getBreadcrumbTitle(pathSnippets) {
+  // eslint-disable-next-line class-methods-use-this
+  getBreadcrumbTitle(pathSnippets) {
     const pageNameMap = {
       blocks: (
         <div className="breadcrumb-title" style={{ fontSize: 28 }}>
