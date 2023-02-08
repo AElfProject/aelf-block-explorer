@@ -142,94 +142,6 @@ const BREADCRUMB_NAMES_TATE = {
 };
 
 class BrowserBreadcrumb extends Component {
-  static getBreadcrumbTitle(pathSnippets) {
-    const pageNameMap = {
-      blocks: (
-        <div className="breadcrumb-title" style={{ fontSize: 28 }}>
-          {" "}
-          Block List{" "}
-          <span className="tip-color" style={{ fontSize: 16 }}>
-            ( Only confirmed blocks )
-          </span>
-        </div>
-      ),
-      // unconfirmedBlocks: "Unconfirmed Block List",
-      // block: "Block",
-      // unconfirmedBlock: "Unconfirmed Block",
-      txs: "Transaction List",
-      // unconfirmedTxs: "Unconfirmed Transaction List",
-      // tx: "Transaction",
-      // unconfirmedTx: "Unconfirmed Transaction",
-      address: "Address",
-      contract: "Contract",
-      proposal: "Proposal",
-      resource: (
-        <span className="breadcrumb-title breadcrumb-small-title">
-          Resource Trading
-        </span>
-      ),
-      resourceDetail: (
-        <span className="breadcrumb-title breadcrumb-small-title">
-          Transaction Details
-        </span>
-      ),
-    };
-
-    return [
-      pageNameMap[pathSnippets[0]],
-      pathSnippets[1] ? (
-        <span className="breadcrumb-sub-title" key="breadcrumb-sub-title">
-          {pathSnippets[0] === "address" || pathSnippets[0] === "resourceDetail"
-            ? `#${addressFormat(pathSnippets[1])}`
-            : `#${pathSnippets[1]}`}
-        </span>
-      ) : (
-        ""
-      ),
-    ];
-  }
-
-  static checkLocation(breadcrumbTitle) {
-    const current = BREADCRUMB_NAMES_TATE.currentState;
-    const { pathname } = window.location;
-
-    // hummm, stupid solution
-    const inBlockDetail =
-      current === "block" && breadcrumbTitle === "Block List";
-    // eslint-disable-next-line no-unused-vars
-    const inUnconfirmedBlock =
-      current === "unconfirmedBlock" &&
-      breadcrumbTitle === "Unconfirmed Block List";
-    const inTxList =
-      current === "txs" &&
-      breadcrumbTitle === "Transaction List" &&
-      pathname !== "/txs";
-    const inAddress =
-      current === "address" && breadcrumbTitle === "Transaction List";
-    const inTxDetail =
-      current === "tx" && breadcrumbTitle === "Transaction List";
-    // eslint-disable-next-line no-unused-vars
-    const inUnconfirmedTxDetail =
-      current === "unconfirmedTx" &&
-      breadcrumbTitle === "Unconfirmed Transaction List";
-    const inResourceDetail =
-      current === "resourceDetail" && breadcrumbTitle === "Resource";
-    const inContract = current === "contract";
-
-    if (
-      inBlockDetail ||
-      inTxList ||
-      inAddress ||
-      inTxDetail ||
-      inResourceDetail ||
-      inContract
-    ) {
-      return false;
-    }
-
-    return window.location.pathname.includes(current);
-  }
-
   getFirstBreadcrumbItem() {
     return (
       <Breadcrumb.Item key="/">
@@ -281,6 +193,95 @@ class BrowserBreadcrumb extends Component {
         </Breadcrumb.Item>
       );
     });
+  }
+
+  static getBreadcrumbTitle(pathSnippets) {
+    const pageNameMap = {
+      blocks: (
+        <div className="breadcrumb-title" style={{ fontSize: 28 }}>
+          {" "}
+          Block List{" "}
+          <span className="tip-color" style={{ fontSize: 16 }}>
+            ( Only confirmed blocks )
+          </span>
+        </div>
+      ),
+      // unconfirmedBlocks: "Unconfirmed Block List",
+      // block: "Block",
+      // unconfirmedBlock: "Unconfirmed Block",
+      txs: "Transaction List",
+      // unconfirmedTxs: "Unconfirmed Transaction List",
+      // tx: "Transaction",
+      // unconfirmedTx: "Unconfirmed Transaction",
+      address: "Address",
+      contract: "Contract",
+      proposal: "Proposal",
+      resource: (
+        <span className="breadcrumb-title breadcrumb-small-title">
+          Resource Trading
+        </span>
+      ),
+      resourceDetail: (
+        <span className="breadcrumb-title breadcrumb-small-title">
+          Transaction Details
+        </span>
+      ),
+    };
+
+    return [
+      pageNameMap[pathSnippets[0]],
+      pathSnippets[1] ? (
+        <span className="breadcrumb-sub-title" key="breadcrumb-sub-title">
+          {pathSnippets[0] === "address" || pathSnippets[0] === "resourceDetail"
+            ? `#${addressFormat(pathSnippets[1])}`
+            : `#${pathSnippets[1]}`}
+        </span>
+      ) : (
+        ""
+      ),
+    ];
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  checkLocation(breadcrumbTitle) {
+    const current = BREADCRUMB_NAMES_TATE.currentState;
+    const { pathname } = window.location;
+
+    // hummm, stupid solution
+    const inBlockDetail =
+      current === "block" && breadcrumbTitle === "Block List";
+    // eslint-disable-next-line no-unused-vars
+    const inUnconfirmedBlock =
+      current === "unconfirmedBlock" &&
+      breadcrumbTitle === "Unconfirmed Block List";
+    const inTxList =
+      current === "txs" &&
+      breadcrumbTitle === "Transaction List" &&
+      pathname !== "/txs";
+    const inAddress =
+      current === "address" && breadcrumbTitle === "Transaction List";
+    const inTxDetail =
+      current === "tx" && breadcrumbTitle === "Transaction List";
+    // eslint-disable-next-line no-unused-vars
+    const inUnconfirmedTxDetail =
+      current === "unconfirmedTx" &&
+      breadcrumbTitle === "Unconfirmed Transaction List";
+    const inResourceDetail =
+      current === "resourceDetail" && breadcrumbTitle === "Resource";
+    const inContract = current === "contract";
+
+    if (
+      inBlockDetail ||
+      inTxList ||
+      inAddress ||
+      inTxDetail ||
+      inResourceDetail ||
+      inContract
+    ) {
+      return false;
+    }
+
+    return window.location.pathname.includes(current);
   }
 
   render() {
