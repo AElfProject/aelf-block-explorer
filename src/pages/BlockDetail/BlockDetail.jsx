@@ -249,7 +249,7 @@ function BlockDetail(props) {
     if (key === "overview") {
       window.location.hash = "";
     } else {
-      window.location.hash = "#txns";
+      window.location.hash = "txns";
     }
   };
 

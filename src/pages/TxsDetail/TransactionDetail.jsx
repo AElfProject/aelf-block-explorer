@@ -141,7 +141,7 @@ function TransactionDetail(props) {
     if (key === "overview") {
       window.location.hash = "";
     } else {
-      window.location.hash = "#logs";
+      window.location.hash = "logs";
     }
   };
 
