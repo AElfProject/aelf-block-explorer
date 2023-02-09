@@ -113,20 +113,11 @@ export default function AddressDetail() {
 
   useEffect(() => {
     const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || "token");
     if (isCA) {
       fetchFile();
       fetchHistory();
-      if (hash) {
-        const key = keyFromHash[hash];
-        setActiveKey(key);
-      } else {
-        setActiveKey("contract");
-      }
-    } else if (hash) {
-      const key = keyFromHash[hash];
-      setActiveKey(key);
-    } else {
-      setActiveKey("tokens");
     }
   }, [isCA, fetchFile]);
 
