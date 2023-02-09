@@ -22,6 +22,13 @@ import ContractTabPane from "./components/ContractTabPane";
 import { isAddress } from "../../utils/utils";
 import addressFormat from "../../utils/addressFormat";
 
+const keyFromHash = {
+  "#txs": "transactions",
+  "#transfers": "transfers",
+  "#contract": "contract",
+  "#events": "events",
+  "#history": "history",
+};
 export default function AddressDetail() {
   const nav = useNavigate();
   const { address: prefixAddress, codeHash } = useParams();
@@ -105,12 +112,12 @@ export default function AddressDetail() {
   }, [balances]);
 
   useEffect(() => {
+    const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || "tokens");
     if (isCA) {
       fetchFile();
       fetchHistory();
-      setActiveKey("contract");
-    } else {
-      setActiveKey("tokens");
     }
   }, [isCA, fetchFile]);
 
@@ -125,6 +132,20 @@ export default function AddressDetail() {
     }
   }, [address]);
 
+  const changeTab = (key) => {
+    if (key === "tokens") {
+      window.location.hash = "";
+    } else {
+      const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
+      window.location.hash = Object.keys(keyFromHash)[index];
+    }
+  };
+
+  window.addEventListener("hashchange", () => {
+    const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || "tokens");
+  });
   return (
     <div
       className={clsx(
@@ -150,7 +171,7 @@ export default function AddressDetail() {
       </section>
       <Overview prices={prices} elfBalance={elfBalance} />
       <section className="more-info">
-        <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
+        <Tabs activeKey={activeKey} onTabClick={(key) => changeTab(key)}>
           {CommonTabPane({ balances, prices, tokensLoading, address }).map(
             ({ children, ...props }) => (
               <Tabs.TabPane key={props.key} tab={props.tab}>

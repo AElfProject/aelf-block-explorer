@@ -11,7 +11,7 @@ export default ({ isMobile }) => {
       dataIndex: "address",
       width: isMobile ? 232 : 320,
       ellipsis: true,
-      render: (address) => <AddressLink address={address} />,
+      render: (address) => <AddressLink address={address} hash="#contract" />,
     },
     {
       title: "Contract Name",
