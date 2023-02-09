@@ -1,24 +1,22 @@
 import { Button, Tabs } from "antd";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { aelf, getContractNames } from "../../utils";
 import { deserializeLog, getFee, removeAElfPrefix } from "../../utils/utils";
-
-const { TabPane } = Tabs;
-
 import "./TransactionDetail.styles.less";
 import Events from "../../components/Events";
-import { useEffect } from "react";
 import ExtensionInfo from "./components/ExtensionInfo";
 import BasicInfo from "./components/BasicInfo";
 import CodeBlock from "../../components/CodeBlock/CodeBlock";
 import IconFont from "../../components/IconFont";
 import useMobile from "../../hooks/useMobile";
-import { useCallback } from "react";
 import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 import { withRouter } from "../../routes/utils";
 
+const { TabPane } = Tabs;
+
 function TransactionDetail(props) {
-  const { id } = props.params;
+  const { params } = props;
+  const { id } = params;
   const [lastHeight, setLastHeight] = useState(undefined);
   const [info, setInfo] = useState(undefined);
   const [contractName, setContractName] = useState("");
@@ -39,32 +37,6 @@ function TransactionDetail(props) {
     }
     return false;
   }, [info]);
-
-  useEffect(() => {
-    setShowExtensionInfo(false);
-    setActiveKey("overview");
-    setInfo(undefined);
-    aelf.chain
-      .getChainStatus()
-      .then(({ LastIrreversibleBlockHeight }) => {
-        setLastHeight(LastIrreversibleBlockHeight);
-      })
-      .catch((error) => {
-        location.href = "/search-failed";
-      });
-    aelf.chain
-      .getTxResult(id)
-      .then((res) => {
-        if (res.Status === "NOTEXISTED") {
-          location.href = "/search-invalid/" + res.TransactionId;
-        } else {
-          getData(res);
-        }
-      })
-      .catch((e) => {
-        getData(e);
-      });
-  }, [id]);
 
   useEffect(() => {
     const { Logs = [] } = info || {};
@@ -92,8 +64,8 @@ function TransactionDetail(props) {
     const { BlockNumber } = transaction;
     const block = await aelf.chain
       .getBlockByHeight(BlockNumber, false)
-      .catch((error) => {
-        location.href = "/search-failed";
+      .catch(() => {
+        window.location.href = "/search-failed";
       });
     const {
       Header: { Time },
@@ -108,15 +80,15 @@ function TransactionDetail(props) {
     (res) => {
       getContractNames()
         .then((names) => {
-          const { isSystemContract, contractName } =
+          const { isSystemContract, contractName: nameOfContract } =
             names[res.Transaction.To] || {};
           const name = isSystemContract
-            ? removeAElfPrefix(contractName)
-            : contractName;
+            ? removeAElfPrefix(nameOfContract)
+            : nameOfContract;
           setContractName(name || res.Transaction.To);
         })
-        .catch((error) => {
-          location.href = "/search-failed";
+        .catch(() => {
+          window.location.href = "/search-failed";
         });
       getInfoBackUp(res).then((backup) => {
         setInfo({ ...res, ...backup });
@@ -125,6 +97,62 @@ function TransactionDetail(props) {
     [getContractNames, getInfoBackUp]
   );
 
+  const renderLogData = () => {
+    if (hasLogs) {
+      if (Array.isArray(info.Logs)) {
+        return <Events list={info.Logs} key={id} />;
+      }
+      return <CodeBlock value={info.Logs} />;
+    }
+    return <div className="no-data">No Data</div>;
+  };
+
+  useEffect(() => {
+    const { location } = props;
+    setShowExtensionInfo(false);
+    setActiveKey("overview");
+    if (location.hash === "#logs") {
+      setActiveKey("logs");
+    }
+    setInfo(undefined);
+    aelf.chain
+      .getChainStatus()
+      .then(({ LastIrreversibleBlockHeight }) => {
+        setLastHeight(LastIrreversibleBlockHeight);
+      })
+      .catch(() => {
+        window.location.href = "/search-failed";
+      });
+    aelf.chain
+      .getTxResult(id)
+      .then((res) => {
+        if (res.Status === "NOTEXISTED") {
+          window.location.href = `/search-invalid/${res.TransactionId}`;
+        } else {
+          getData(res);
+        }
+      })
+      .catch((e) => {
+        getData(e);
+      });
+  }, [id]);
+
+  const changeTab = (key) => {
+    if (key === "overview") {
+      window.location.hash = "";
+    } else {
+      window.location.hash = "#logs";
+    }
+  };
+
+  window.addEventListener("hashchange", () => {
+    if (window.location.hash === "#logs") {
+      setActiveKey("logs");
+    } else {
+      setActiveKey("overview");
+    }
+  });
+
   return (
     <div
       className={`tx-block-detail-container basic-container-new ${
@@ -132,7 +160,7 @@ function TransactionDetail(props) {
       }`}
     >
       <h2>Transaction Details</h2>
-      <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
+      <Tabs activeKey={activeKey} onChange={(key) => changeTab(key)}>
         <TabPane tab="Overview" key="overview">
           <div className="overview-container">
             <CustomSkeleton loading={!info}>
@@ -163,17 +191,7 @@ function TransactionDetail(props) {
         </TabPane>
         <TabPane tab={`Logs (${info ? info.Logs.length : 0})`} key="logs">
           <div className="logs-container">
-            <CustomSkeleton loading={!info}>
-              {hasLogs ? (
-                Array.isArray(info.Logs) ? (
-                  <Events list={info.Logs} key={id} />
-                ) : (
-                  <CodeBlock value={info.Logs} />
-                )
-              ) : (
-                <div className="no-data">No Data</div>
-              )}
-            </CustomSkeleton>
+            <CustomSkeleton loading={!info}>{renderLogData()}</CustomSkeleton>
           </div>
         </TabPane>
       </Tabs>

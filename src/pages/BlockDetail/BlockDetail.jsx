@@ -256,6 +256,8 @@ function BlockDetail(props) {
   window.addEventListener("hashchange", () => {
     if (window.location.hash === "#txns") {
       setActiveKey("transactions");
+    } else {
+      setActiveKey("overview");
     }
   });
   return (
