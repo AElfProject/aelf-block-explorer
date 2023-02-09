@@ -13,12 +13,17 @@ import Holders from "./components/Holders";
 import Contract from "./components/Contract";
 import useMobile from "../../hooks/useMobile";
 
+const keyFromHash = {
+  "#balances": "holders",
+  "#contract": "contract",
+};
 export default function Token() {
   const isMobile = useMobile();
   const { symbol } = useParams();
   const nav = useNavigate();
   const [tokenInfo, setTokenInfo] = useState(undefined);
   const [price, setPrice] = useState(0);
+  const [activeKey, setActiveKey] = useState("transactions");
   const fetchTokenInfo = useCallback(async () => {
     const result = await getTokenAllInfo(symbol).catch(() => {
       nav("/search-failed");
@@ -38,11 +43,31 @@ export default function Token() {
     }
   }, [symbol]);
 
-  useEffect(() => {
-    fetchTokenInfo();
-    fetchPrice();
+  useEffect(async () => {
+    const { hash } = window.location;
+    await Promise.all([fetchTokenInfo(), fetchPrice()]);
+    if (hash) {
+      const key = keyFromHash[hash];
+      setActiveKey(key);
+    } else {
+      setActiveKey("transactions");
+    }
   }, [fetchPrice, fetchTokenInfo]);
 
+  const changeTab = (key) => {
+    if (key === "transactions") {
+      window.location.hash = "";
+    } else {
+      const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
+      window.location.hash = Object.keys(keyFromHash)[index];
+    }
+  };
+
+  window.addEventListener("hashchange", () => {
+    const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || "transactions");
+  });
   return (
     <div
       className={clsx(
@@ -55,7 +80,7 @@ export default function Token() {
       </h2>
       <Overview tokenInfo={tokenInfo} price={price} />
       <section className="more-info">
-        <Tabs>
+        <Tabs activeKey={activeKey} onTabClick={(key) => changeTab(key)}>
           <Tabs.TabPane tab="Transactions" key="transactions">
             <Transactions />
           </Tabs.TabPane>
