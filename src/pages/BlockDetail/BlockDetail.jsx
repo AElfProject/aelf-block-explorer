@@ -1,23 +1,19 @@
-import { message, Tag, Tabs, Button } from "antd";
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useCallback } from "react";
+import { Tag, Tabs, Button } from "antd";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { useDebounce } from "react-use";
 import IconFont from "../../components/IconFont";
 import { BLOCK_INFO_API_URL } from "../../constants";
 import useMobile from "../../hooks/useMobile";
 import { aelf, get, getContractNames } from "../../utils";
 import BasicInfo from "./components/BasicInfo";
-
-const { TabPane } = Tabs;
-
 import "./BlockDetail.styles.less";
 import ExtensionInfo from "./components/ExtensionInfo";
 import TransactionList from "./components/TransactionList";
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
-import { useDebounce } from "react-use";
 import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 import { withRouter } from "../../routes/utils";
+
+const { TabPane } = Tabs;
 function BlockDetail(props) {
   const [pageId, setPageId] = useState(undefined);
   const [blockHeight, setBlockHeight] = useState(undefined);
@@ -33,12 +29,14 @@ function BlockDetail(props) {
   const jumpLink = useMemo(() => {
     const prevLink = `/block/${+blockHeight - 1}`;
     const nextLink = `/block/${+blockHeight + 1}`;
-
+    const { navigate } = props;
     return (
       <span className="jump-link">
         <a
           disabled={+blockHeight === 1}
-          onClick={() => +blockHeight === 1 || props.navigate(prevLink)}
+          onClick={() => +blockHeight === 1 || navigate(prevLink)}
+          onKeyDown={null}
+          role="presentation"
         >
           <IconFont type="left" />
         </a>
@@ -58,22 +56,13 @@ function BlockDetail(props) {
       setShowExtensionInfo(false);
     }
     setActiveKey("overview");
-    if (location.search && location.search.includes("tab=txns")) {
+    if (
+      (location.search && location.search.includes("tab=txns")) ||
+      location.hash === "#txns"
+    ) {
       setActiveKey("transactions");
     }
   }, [props]);
-
-  useDebounce(
-    () => {
-      try {
-        fetchBlockInfo();
-      } catch (error) {
-        console.log(">>>error", error);
-      }
-    },
-    1000,
-    [pageId]
-  );
 
   const merge = useCallback((data = [], contractNames) => {
     return (data || []).map((item) => ({
@@ -88,14 +77,14 @@ function BlockDetail(props) {
       .then((result) => {
         return result;
       })
-      .catch((error) => {
-        location.href = "/search-failed";
+      .catch(() => {
+        window.location.href = "/search-failed";
       });
   }, [aelf]);
 
   const getTxsList = useCallback(
     async (blockHash, page) => {
-      let getTxsOption = {
+      const getTxsOption = {
         limit: 1000,
         page: page || 0,
         order: "asc",
@@ -105,12 +94,12 @@ function BlockDetail(props) {
       let data = await get("/block/transactions", getTxsOption).catch(
         (error) => {
           console.log(">>>>error", error);
-          location.href = "/search-failed";
+          window.location.href = "/search-failed";
         }
       );
       const contractNames = await getContractNames().catch((error) => {
         console.log(">>>>error", error);
-        location.href = "/search-failed";
+        window.location.href = "/search-failed";
       });
       data = {
         ...data,
@@ -122,22 +111,22 @@ function BlockDetail(props) {
   );
 
   const getDataFromHeight = useCallback(
-    async (blockHeight) => {
+    async (height) => {
       try {
         const result = await aelf.chain
-          .getBlockByHeight(blockHeight, false)
-          .catch((error) => {
-            location.href = "/search-failed";
+          .getBlockByHeight(height, false)
+          .catch(() => {
+            window.location.href = "/search-failed";
           });
         const { BlockHash: blockHash } = result;
         const { transactions = [] } = blockHash
-          ? await getTxsList(blockHash).catch((error) => {
-              location.href = "/search-failed";
+          ? await getTxsList(blockHash).catch(() => {
+              window.location.href = "/search-failed";
             })
           : {};
         return { blockInfo: result, transactionList: transactions };
       } catch (err) {
-        console.error("err", err);
+        console.error(err);
         return { blockInfo: undefined, transactionList: undefined };
       }
     },
@@ -151,12 +140,12 @@ function BlockDetail(props) {
       const txsList = await getTxsList(blockHash);
       const { transactions = [] } = txsList;
       if (!transactions[0]) {
-        location.href = "/search-invalid/" + id;
+        location.href = `/search-invalid/${id}`;
       }
-      const { block_height: blockHeight } = transactions[0];
+      const { block_height: height } = transactions[0];
       const result = await aelf.chain
-        .getBlockByHeight(blockHeight, false)
-        .catch((error) => {
+        .getBlockByHeight(height, false)
+        .catch(() => {
           location.href = "/search-failed";
         });
       return { blockInfo: result, transactionList: transactions };
@@ -172,13 +161,15 @@ function BlockDetail(props) {
     setBestChainHeight(LastIrreversibleBlockHeight);
 
     let result;
-    let blockHeight;
+    let height;
     let txsList = [];
     let error;
+
+    // eslint-disable-next-line eqeqeq
     if (parseInt(input, 10) == input) {
-      blockHeight = input;
-      if (blockHeight > BestChainHeight) {
-        location.href = "/search-invalid/" + blockHeight;
+      height = input;
+      if (height > BestChainHeight) {
+        window.location.href = `/search-invalid/${height}`;
       } else {
         const data = await getDataFromHeight(input);
         result = data.blockInfo;
@@ -189,20 +180,20 @@ function BlockDetail(props) {
       result = data.blockInfo;
       txsList = data.transactionList;
       error = txsList.length ? "" : "Not Found";
-      blockHeight = result.Header.Height;
+      height = result.Header.Height;
     }
-    setBlockHeight(blockHeight);
+    setBlockHeight(height);
     setTransactionList(txsList);
 
     get(BLOCK_INFO_API_URL, {
-      height: blockHeight,
+      height,
     })
       .then((res = { miner: "", dividends: "" }) => {
         if (result) {
           const { Header: header } = result;
           setBlockInfo({
             basicInfo: {
-              blockHeight: blockHeight,
+              blockHeight: height,
               timestamp: header.Time,
               blockHash: result.BlockHash,
               transactions: txsList.length,
@@ -223,14 +214,15 @@ function BlockDetail(props) {
             },
           });
         } else {
-          location.href = "/search-invalid/" + pageId;
+          window.location.href = `/search-invalid/${pageId}`;
         }
       })
-      .catch((error) => {
-        location.href = "/search-failed";
+      .catch(() => {
+        console.error(error);
+        window.location.href = "/search-failed";
       });
     // Dismiss manually and asynchronously
-    if ((!txsList || !txsList.length) && blockHeight <= BestChainHeight + 6) {
+    if ((!txsList || !txsList.length) && height <= BestChainHeight + 6) {
       if (retryBlockInfoCount >= retryBlockInfoLimit) {
         return;
       }
@@ -241,6 +233,31 @@ function BlockDetail(props) {
     }
   }, [pageId]);
 
+  useDebounce(
+    () => {
+      try {
+        fetchBlockInfo();
+      } catch (error) {
+        console.log(">>>error", error);
+      }
+    },
+    1000,
+    [pageId]
+  );
+
+  const changeTab = (key) => {
+    if (key === "overview") {
+      window.location.hash = "";
+    } else {
+      window.location.hash = "#txns";
+    }
+  };
+
+  window.addEventListener("hashchange", () => {
+    if (window.location.hash === "#txns") {
+      setActiveKey("transactions");
+    }
+  });
   return (
     <div
       className={`block-detail-container basic-container-new ${
@@ -252,7 +269,7 @@ function BlockDetail(props) {
         {blockHeight && <Tag className="block-height">#{blockHeight}</Tag>}
         {blockHeight && jumpLink}
       </h2>
-      <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
+      <Tabs activeKey={activeKey} onChange={(key) => changeTab(key)}>
         <TabPane tab="Overview" key="overview">
           <div className="overview-container">
             <CustomSkeleton loading={!blockInfo}>

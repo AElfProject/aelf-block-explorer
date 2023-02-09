@@ -16,7 +16,8 @@
     "no-param-reassign": 0,
     "import/imports-first": ["error", "absolute-first"],
     "import/newline-after-import": "error",
-    "react/jsx-props-no-spreading": 0
+    "react/jsx-props-no-spreading": 0,
+    "jsx-a11y/anchor-is-valid": 0
   },
   "globals": {
     "window": true,
