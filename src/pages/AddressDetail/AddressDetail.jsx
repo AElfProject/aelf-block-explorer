@@ -114,7 +114,7 @@ export default function AddressDetail() {
   useEffect(() => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
-    setActiveKey(key || "token");
+    setActiveKey(key || "tokens");
     if (isCA) {
       fetchFile();
       fetchHistory();
