@@ -59,7 +59,7 @@ function BlockDetail(props) {
     setActiveKey("overview");
     if (
       (location.search && location.search.includes("tab=txns")) ||
-      location.hash === "#txns"
+      window.location.hash === "#txns"
     ) {
       setActiveKey("transactions");
     }
