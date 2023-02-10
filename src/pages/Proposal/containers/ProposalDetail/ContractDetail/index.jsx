@@ -14,6 +14,8 @@ import { base64ToHex } from "../../../common/utils";
 import { getContract } from "../../../../../common/utils";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
 import { getContractURL } from "../../../utils";
+import addressFormat from "../../../../../utils/addressFormat";
+
 const { viewer } = config;
 
 function getContractName(address) {
@@ -97,7 +99,7 @@ const ContractDetail = (props) => {
         </Col>
         <Col sm={20} xs={24}>
           <a
-            href={getContractURL(contractAddress)}
+            href={getContractURL(addressFormat(contractAddress))}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -129,6 +131,7 @@ const ContractDetail = (props) => {
 
 ContractDetail.propTypes = {
   aelf: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
     chain: PropTypes.object,
   }).isRequired,
   contractAddress: PropTypes.string.isRequired,
