@@ -3,6 +3,7 @@ import moment from "moment";
 import React from "react";
 import { Link } from "react-router-dom";
 import { CHAIN_ID } from "../../../../constants";
+import addressFormat from "../../../../utils/addressFormat";
 
 import "./History.styles.less";
 
@@ -21,17 +22,17 @@ export default function History({ history }) {
       <>
         <div className="description-item">
           <span>Author: </span>
-          <Link to={`/address/${author}`}>{`ELF_${author}_${CHAIN_ID}`}</Link>
+          <Link to={`/address/${addressFormat(author)}#contract`}>{addressFormat(author)}</Link>
         </div>
         <div className="description-item">
           <span>Code Hash: </span>
-          <Link to={`/address/${address}${isLast ? "" : `/${codeHash}`}`}>
+          <Link to={`/address/${addressFormat(address)}${isLast ? "" : `/${codeHash}`}#contract`}>
             {codeHash}
           </Link>
         </div>
         <div className="description-item">
           <span>Version: </span>
-          <Link to={`/address/${address}${isLast ? "" : `/${codeHash}`}`}>
+          <Link to={`/address/${addressFormat(address)}${isLast ? "" : `/${codeHash}`}#contract`}>
             {version}
           </Link>
         </div>

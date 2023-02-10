@@ -60,5 +60,5 @@ export async function getDeserializeLog(aelf, txId, logName) {
 
 export function getContractURL(address) {
   // eslint-disable-next-line max-len
-  return `${window.location.protocol}//${window.location.host}/contract/${address}`;
+  return `${window.location.protocol}//${window.location.host}/contract/${address}#contract`;
 }

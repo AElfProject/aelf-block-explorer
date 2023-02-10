@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 /**
  * @file vote detail
  * @author atom-yang
@@ -29,6 +30,7 @@ import { getContractAddress, sendTransaction } from "../../../common/utils";
 import "./index.less";
 import { removePrefixOrSuffix } from "../../../../../common/utils";
 import TableLayer from "../../../../../components/TableLayer/TableLayer";
+import addressFormat from "../../../../../utils/addressFormat";
 
 const { Title } = Typography;
 const { viewer } = config;
@@ -60,7 +62,7 @@ const listColumn = [
     width: 300,
     render: (voter) => (
       <a
-        href={`${viewer.addressUrl}/${voter}`}
+        href={`${viewer.addressUrl}/${addressFormat(voter)}`}
         target="_blank"
         rel="noopener noreferrer"
       >
