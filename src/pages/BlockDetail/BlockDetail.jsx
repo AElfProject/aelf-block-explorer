@@ -273,7 +273,6 @@ function BlockDetail(props) {
         {blockHeight && <Tag className="block-height">#{blockHeight}</Tag>}
         {blockHeight && jumpLink}
       </h2>
-      {activeKey}
       <Tabs activeKey={activeKey} onChange={(key) => changeTab(key)}>
         <TabPane tab="Overview" key="overview">
           <div className="overview-container">
