@@ -22,17 +22,17 @@ export default function History({ history }) {
       <>
         <div className="description-item">
           <span>Author: </span>
-          <Link to={`/address/${addressFormat(author)}`}>{`ELF_${author}_${CHAIN_ID}`}</Link>
+          <Link to={`/address/${addressFormat(author)}`}>{addressFormat(author)}</Link>
         </div>
         <div className="description-item">
           <span>Code Hash: </span>
-          <Link to={`/address/${addressFormat(address)}${isLast ? "" : `/${codeHash}`}`}>
+          <Link to={`/address/${addressFormat(address)}${isLast ? "" : `/${codeHash}`}#contract`}>
             {codeHash}
           </Link>
         </div>
         <div className="description-item">
           <span>Version: </span>
-          <Link to={`/address/${addressFormat(address)}${isLast ? "" : `/${codeHash}`}`}>
+          <Link to={`/address/${addressFormat(address)}${isLast ? "" : `/${codeHash}`}#contract`}>
             {version}
           </Link>
         </div>

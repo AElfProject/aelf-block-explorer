@@ -51,6 +51,7 @@ import {
 } from "../../../../common/utils";
 import { PRIMARY_COLOR } from "../../../../common/constants";
 import removeHash from "../../../../utils/removeHash";
+import addressFormat from "../../../../utils/addressFormat";
 
 const { viewer } = config;
 const { Title } = Typography;
@@ -332,7 +333,7 @@ const ProposalDetail = () => {
                 <span className="sub-title gap-right">Proposer:</span>
                 <span className="text-ellipsis">
                   <a
-                    href={`${viewer.addressUrl}/${proposer}`}
+                    href={`${viewer.addressUrl}/${addressFormat(proposer)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={`ELF_${proposer}_${viewer.chainId}`}
