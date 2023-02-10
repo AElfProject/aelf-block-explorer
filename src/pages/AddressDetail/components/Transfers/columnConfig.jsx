@@ -4,11 +4,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { Tag } from "antd";
-import { CHAIN_ID } from "../../../../constants";
 import Dividends from "../../../../components/Dividends";
 import IconFont from "../../../../components/IconFont";
 import { getFormattedDate } from "../../../../utils/timeUtils";
 import { numberFormatter } from "../../../../utils/formater";
+import addressFormat from "../../../../utils/addressFormat";
 
 const getColumnConfig = ({
   address,
@@ -49,7 +49,9 @@ const getColumnConfig = ({
         const isOut = from === address;
         return (
           <div className="from">
-            <Link to={`/address/${from}`}>{`ELF_${from}_${CHAIN_ID}`}</Link>
+            <Link to={`/address/${addressFormat(from)}`}>
+              {addressFormat(from)}
+            </Link>
             <Tag className={clsx(isOut ? "out" : "in")}>
               {isOut ? "OUT" : "IN"}
             </Tag>
@@ -65,10 +67,9 @@ const getColumnConfig = ({
       className: "color-blue",
       render(to) {
         return (
-          <Link
-            className="to"
-            to={`/address/${to}`}
-          >{`ELF_${to}_${CHAIN_ID}`}</Link>
+          <Link className="to" to={`/address/${addressFormat(to)}`}>
+            {addressFormat(to)}
+          </Link>
         );
       },
     },

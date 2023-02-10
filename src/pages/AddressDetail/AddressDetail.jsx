@@ -21,6 +21,7 @@ import Overview from "./components/Overview";
 import ContractTabPane from "./components/ContractTabPane";
 import { isAddress } from "../../utils/utils";
 import addressFormat from "../../utils/addressFormat";
+import removeHash from "../../utils/removeHash";
 
 const keyFromHash = {
   "#txs": "transactions",
@@ -134,7 +135,8 @@ export default function AddressDetail() {
 
   const changeTab = (key) => {
     if (key === "tokens") {
-      window.location.hash = "";
+      removeHash();
+      setActiveKey("tokens");
     } else {
       const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
       window.location.hash = Object.keys(keyFromHash)[index];

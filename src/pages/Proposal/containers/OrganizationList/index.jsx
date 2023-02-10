@@ -24,6 +24,7 @@ import { setCurrentOrg } from "../../actions/proposalDetail";
 import { getOrganizations } from "../../actions/organizationList";
 import "./index.less";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
+import removeHash from "../../../../utils/removeHash";
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -89,7 +90,8 @@ const OrganizationList = () => {
 
   const handleTabChange = (key) => {
     if (key === proposalTypes.PARLIAMENT) {
-      window.location.hash = "";
+      removeHash();
+      setActiveKey(proposalTypes.PARLIAMENT);
     } else {
       const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
       window.location.hash = Object.keys(keyFromHash)[index];

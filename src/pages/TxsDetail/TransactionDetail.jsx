@@ -11,6 +11,7 @@ import IconFont from "../../components/IconFont";
 import useMobile from "../../hooks/useMobile";
 import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 import { withRouter } from "../../routes/utils";
+import removeHash from "../../utils/removeHash";
 
 const { TabPane } = Tabs;
 
@@ -139,7 +140,8 @@ function TransactionDetail(props) {
 
   const changeTab = (key) => {
     if (key === "overview") {
-      window.location.hash = "";
+      removeHash();
+      setActiveKey("overview");
     } else {
       window.location.hash = "logs";
     }

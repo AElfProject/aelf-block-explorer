@@ -12,6 +12,7 @@ import ExtensionInfo from "./components/ExtensionInfo";
 import TransactionList from "./components/TransactionList";
 import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 import { withRouter } from "../../routes/utils";
+import removeHash from "../../utils/removeHash";
 
 const { TabPane } = Tabs;
 function BlockDetail(props) {
@@ -247,7 +248,8 @@ function BlockDetail(props) {
 
   const changeTab = (key) => {
     if (key === "overview") {
-      window.location.hash = "";
+      removeHash();
+      setActiveKey("overview");
     } else {
       window.location.hash = "txns";
     }
@@ -271,6 +273,7 @@ function BlockDetail(props) {
         {blockHeight && <Tag className="block-height">#{blockHeight}</Tag>}
         {blockHeight && jumpLink}
       </h2>
+      {activeKey}
       <Tabs activeKey={activeKey} onChange={(key) => changeTab(key)}>
         <TabPane tab="Overview" key="overview">
           <div className="overview-container">

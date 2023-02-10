@@ -50,6 +50,7 @@ import {
   validateURL,
 } from "../../../../common/utils";
 import { PRIMARY_COLOR } from "../../../../common/constants";
+import removeHash from "../../../../utils/removeHash";
 
 const { viewer } = config;
 const { Title } = Typography;
@@ -248,7 +249,8 @@ const ProposalDetail = () => {
 
   const changeTab = (key) => {
     if (key === "proposal") {
-      window.location.hash = "";
+      removeHash();
+      setActiveKey("proposal");
     } else {
       window.location.hash = "voting";
     }
