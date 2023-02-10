@@ -4,6 +4,7 @@ import Dividends from "../../../components/Dividends";
 import IconFont from "../../../components/IconFont";
 import useMobile from "../../../hooks/useMobile";
 import { getFormattedDate } from "../../../utils/timeUtils";
+import addressFormat from "../../../utils/addressFormat";
 
 export default function LatestInfo({ blocks = [], transactions = [] }) {
   const isMobile = useMobile();
@@ -79,24 +80,28 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
             <p className="age">Age</p>
           </div>
           <div className="table-body">
-            {transactions.map((transactions) => (
-              <div key={transactions.tx_id} className="row">
+            {transactions.map((transaction) => (
+              <div key={transaction.tx_id} className="row">
                 <p className="hash">
-                  <Link to={`/tx/${transactions.tx_id}`}>
-                    {transactions.tx_id}
+                  <Link to={`/tx/${transaction.tx_id}`}>
+                    {transaction.tx_id}
                   </Link>
                 </p>
                 <p className="from">
-                  <Link to={`/address/${transactions.address_from}`}>
-                    {transactions.address_from}
+                  <Link
+                    to={`/address/${addressFormat(transaction.address_from)}`}
+                  >
+                    {addressFormat(transaction.address_from)}
                   </Link>
                 </p>
                 <p className="to">
-                  <Link to={`/address/${transactions.address_to}`}>
-                    {transactions.address_to}
+                  <Link
+                    to={`/address/${addressFormat(transaction.address_to)}`}
+                  >
+                    {addressFormat(transaction.address_to)}
                   </Link>
                 </p>
-                <p className="age">{getFormattedDate(transactions.time)}</p>
+                <p className="age">{getFormattedDate(transaction.time)}</p>
               </div>
             ))}
           </div>

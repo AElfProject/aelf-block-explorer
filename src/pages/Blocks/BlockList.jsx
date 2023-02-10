@@ -5,13 +5,14 @@ import useLocation from "react-use/lib/useLocation";
 import {
   ALL_BLOCKS_API_URL,
   ALL_UNCONFIRMED_BLOCKS_API_URL,
+  ALL_BLOCKS_UNCONFIRMED_BLOCKS_API_URL
 } from "../../constants";
 import useMobile from "../../hooks/useMobile";
 import { get } from "../../utils";
 import ColumnConfig from "./columnConfig";
+import TableLayer from "../../components/TableLayer/TableLayer";
 
 import "./BlockList.styles.less";
-import TableLayer from "../../components/TableLayer/TableLayer";
 
 export default function BlockList() {
   const { pathname = "" } = useLocation();
@@ -23,16 +24,6 @@ export default function BlockList() {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
 
-  const pageTitle = useMemo(
-    () => (pathname.includes("unconfirmed") ? "Unconfirmed Blocks" : "Blocks"),
-    [pathname]
-  );
-
-  const isConfirmed = useMemo(
-    () => pathname.includes("unconfirmed"),
-    [pathname]
-  );
-
   const api = useMemo(() => {
     return pathname.indexOf("unconfirmed") === -1
       ? ALL_BLOCKS_API_URL
@@ -43,13 +34,15 @@ export default function BlockList() {
     async (page) => {
       setDataLoading(true);
       setDataSource(undefined);
-      const data = await get(api, {
+      const data = await get(ALL_BLOCKS_UNCONFIRMED_BLOCKS_API_URL, {
         order: "desc",
         page: page - 1,
         limit: pageSize,
       });
 
-      setAll(data ? data.total : 0);
+      if(page - 1 === 0) {
+        setAll(data?.blocks?.[0]?.block_height ?? 0);
+      }
       setDataLoading(false);
       setDataSource(data && data.blocks.length ? data.blocks : null);
     },
@@ -95,13 +88,12 @@ export default function BlockList() {
       }`}
       key="body"
     >
-      <h2>{pageTitle}</h2>
+      <h2>Blocks</h2>
       <div>
         <div className="before-table">
           <div className="left">
             <p>
-              Total of {Number(all).toLocaleString()}{" "}
-              {isConfirmed ? "Unconfirmed Blocks" : "Confirmed Blocks"}
+              Total of {Number(all).toLocaleString()}{" "}Blocks
             </p>
           </div>
           <div className="right">

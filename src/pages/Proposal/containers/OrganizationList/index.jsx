@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   Tabs,
   Pagination,
@@ -24,13 +24,20 @@ import { setCurrentOrg } from "../../actions/proposalDetail";
 import { getOrganizations } from "../../actions/organizationList";
 import "./index.less";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
+import removeHash from "../../../../utils/removeHash";
 
 const { TabPane } = Tabs;
 const { Search } = Input;
 const { proposalTypes } = constants;
+const keyFromHash = {
+  "#association": proposalTypes.ASSOCIATION,
+  "#referendum": proposalTypes.REFERENDUM,
+};
 
 const OrganizationList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [activeKey, setActiveKey] = useState(proposalTypes.PARLIAMENT);
   const common = useSelector((state) => state.common, shallowEqual);
   const organizationList = useSelector(
     (state) => state.organizations,
@@ -41,15 +48,21 @@ const OrganizationList = () => {
   const { logStatus, isALLSettle, currentWallet } = common;
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(params.search);
-  // const { proposalType } = useParams();
 
   const fetchList = (param) => {
     dispatch(getOrganizations(param));
   };
 
   useEffect(() => {
+    // get activeKey according to hash
+    const { hash } = location;
+    setActiveKey(keyFromHash[hash] || proposalTypes.PARLIAMENT);
     if (isALLSettle === true) {
-      fetchList(params);
+      // change redux state
+      fetchList({
+        ...params,
+        proposalType: activeKey,
+      });
     }
   }, [isALLSettle, logStatus]);
 
@@ -76,6 +89,13 @@ const OrganizationList = () => {
   };
 
   const handleTabChange = (key) => {
+    if (key === proposalTypes.PARLIAMENT) {
+      removeHash();
+      setActiveKey(proposalTypes.PARLIAMENT);
+    } else {
+      const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
+      window.location.hash = Object.keys(keyFromHash)[index];
+    }
     fetchList({
       ...params,
       pageNum: 1,
@@ -83,6 +103,11 @@ const OrganizationList = () => {
       search: "",
     });
   };
+  window.addEventListener("hashchange", () => {
+    const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || proposalTypes.PARLIAMENT);
+  });
 
   const editOrganization = (orgAddress) => {
     const org = list.filter((item) => item.orgAddress === orgAddress)[0];
@@ -100,19 +125,18 @@ const OrganizationList = () => {
   };
 
   return (
-    <div className='organization-list'>
+    <div className="organization-list">
       <Tabs
         animated={false}
         tabBarExtraContent={
           logStatus === LOG_STATUS.LOGGED ? (
-            <Link to='/proposal/createOrganizations'>
+            <Link to="/proposal/createOrganizations">
               Create Organization&gt;
             </Link>
           ) : null
         }
-        className='organization-list-tab'
-        activeKey={params.proposalType}
-        defaultActiveKey={params.proposalType}
+        className="organization-list-tab"
+        activeKey={activeKey}
         onChange={handleTabChange}
       >
         <TabPane
@@ -128,12 +152,12 @@ const OrganizationList = () => {
           key={proposalTypes.REFERENDUM}
         />
       </Tabs>
-      <div className='organization-list-filter gap-top-large gap-bottom-large'>
+      <div className="organization-list-filter gap-top-large gap-bottom-large">
         <Row gutter={16}>
           <Col sm={6} xs={24}>
             <Search
-              className='organization-list-search-input'
-              placeholder='Organization Address'
+              className="organization-list-search-input"
+              placeholder="Organization Address"
               defaultValue={params.search}
               allowClear
               value={searchValue}
@@ -143,7 +167,7 @@ const OrganizationList = () => {
           </Col>
         </Row>
       </div>
-      <div className='organization-list-list'>
+      <div className="organization-list-list">
         <Switch>
           <Case
             condition={
@@ -170,9 +194,9 @@ const OrganizationList = () => {
           </Case>
           <Case condition={loadingStatus === LOADING_STATUS.FAILED}>
             <Result
-              status='error'
-              title='Error Happened'
-              subTitle='Please check your network'
+              status="error"
+              title="Error Happened"
+              subTitle="Please check your network"
             />
           </Case>
         </Switch>
@@ -187,7 +211,7 @@ const OrganizationList = () => {
         </If>
       </div>
       <Pagination
-        className='float-right gap-top'
+        className="float-right gap-top"
         showQuickJumper
         total={total}
         current={params.pageNum}

@@ -17,9 +17,12 @@ dayjs.extend(relativeTime);
 
 const ALL_BLOCKS_API_URL = "/all/blocks";
 const ALL_UNCONFIRMED_BLOCKS_API_URL = "/all/unconfirmedBlocks";
+const ALL_BLOCKS_UNCONFIRMED_BLOCKS_API_URL = "/all/block";
 const ALL_TXS_API_URL = "/all/transactions";
 const ALL_UNCONFIRMED_TXS_API_URL = "/all/unconfirmedTransactions";
 const TXS_BLOCK_API_URL = "/block/transactions";
+const ALL_TXS_UNCONFIRMED_TXS_API_URL = "/all/transaction";
+
 export const TXS_INFO_API_URL = "/block/txInfo";
 export const BLOCK_INFO_API_URL = "/block/blockInfo";
 const ADDRESS_TXS_API_URL = "/address/transactions";
@@ -152,8 +155,7 @@ const BLOCKS_LIST_COLUMNS = [
       return (
         <Link
           title={`${SYMBOL}_${text}_${CHAIN_ID}`}
-          to={`/address/${text}`}
-        >{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
+          to={`/address/${text}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
       );
     },
   },
@@ -280,7 +282,7 @@ const ALL_TXS_LIST_COLUMNS = [
         } else if (row.quantity <= 9) {
           amount = `0.0000000${row.quantity}`;
         } else {
-          amount = row.quantity / (10 ** row.decimals);
+          amount = row.quantity / 10 ** row.decimals;
         }
       }
       if (row.symbol) {
@@ -413,6 +415,8 @@ const RESOURCE_DETAILS_COLUMN = [
 export {
   ALL_BLOCKS_API_URL,
   ALL_UNCONFIRMED_BLOCKS_API_URL,
+  ALL_BLOCKS_UNCONFIRMED_BLOCKS_API_URL,
+  ALL_TXS_UNCONFIRMED_TXS_API_URL,
   ALL_TXS_API_URL,
   ALL_UNCONFIRMED_TXS_API_URL,
   TXS_BLOCK_API_URL,

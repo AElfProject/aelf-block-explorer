@@ -18,6 +18,7 @@ import constants, {
 import "./index.less";
 import { isPhoneCheck } from "../../../../../common/utils";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
+import addressFormat from "../../../../../utils/addressFormat";
 
 const { viewer } = config;
 
@@ -28,8 +29,8 @@ const { proposalTypes, proposalActions } = constants;
 const Title = (props) => {
   const { proposalType } = props;
   return (
-    <div className='organization-list-item-title'>
-      <span className='gap-right-small'>{proposalType} Organization</span>
+    <div className="organization-list-item-title">
+      <span className="gap-right-small">{proposalType} Organization</span>
     </div>
   );
 };
@@ -146,7 +147,7 @@ export function getOrganizationLeftInfo(
   const proposerList =
     proposers.length > 0 ? (
       // eslint-disable-next-line max-len
-      <Select size='small' defaultValue={proposers[0]}>
+      <Select size="small" defaultValue={proposers[0]}>
         {proposers.map((v) => (
           <Option key={v} value={v}>{`ELF_${v}_${viewer.chainId}`}</Option>
         ))}
@@ -157,7 +158,7 @@ export function getOrganizationLeftInfo(
   const members =
     organizationMembers.length > 0 ? (
       // eslint-disable-next-line max-len
-      <Select size='small' defaultValue={organizationMembers[0]}>
+      <Select size="small" defaultValue={organizationMembers[0]}>
         {organizationMembers.map((v) => (
           <Option key={v} value={v}>{`ELF_${v}_${viewer.chainId}`}</Option>
         ))}
@@ -169,28 +170,28 @@ export function getOrganizationLeftInfo(
     <Switch>
       <Case condition={proposalType === proposalTypes.REFERENDUM}>
         <>
-          <div className='gap-bottom-small card-list-desc-item'>
-            <span className='sub-title'>Token:</span>
+          <div className="gap-bottom-small card-list-desc-item">
+            <span className="sub-title">Token:</span>
             <span>{tokenSymbol}</span>
           </div>
-          <div className='gap-bottom-small card-list-desc-item'>
-            <span className='sub-title'>Members:</span>
+          <div className="gap-bottom-small card-list-desc-item">
+            <span className="sub-title">Members:</span>
             <span>All Users</span>
           </div>
-          <div className='card-list-desc-item'>
-            <span className='sub-title'>Proposer White List:</span>
+          <div className="card-list-desc-item">
+            <span className="sub-title">Proposer White List:</span>
             <span>{proposerList}</span>
           </div>
         </>
       </Case>
       <Case condition={proposalType === proposalTypes.PARLIAMENT}>
         <>
-          <div className='gap-bottom-small card-list-desc-item'>
-            <span className='sub-title'>Members:</span>
+          <div className="gap-bottom-small card-list-desc-item">
+            <span className="sub-title">Members:</span>
             <span>{members}</span>
           </div>
-          <div className='card-list-desc-item'>
-            <span className='sub-title'>Proposer White List:</span>
+          <div className="card-list-desc-item">
+            <span className="sub-title">Proposer White List:</span>
             <span>
               {proposerAuthorityRequired === false ? "All Users" : proposerList}
             </span>
@@ -199,12 +200,12 @@ export function getOrganizationLeftInfo(
       </Case>
       <Case condition={proposalType === proposalTypes.ASSOCIATION}>
         <>
-          <div className='gap-bottom-small card-list-desc-item'>
-            <span className='sub-title'>Members:</span>
+          <div className="gap-bottom-small card-list-desc-item">
+            <span className="sub-title">Members:</span>
             <span>{members}</span>
           </div>
-          <div className='card-list-desc-item'>
-            <span className='sub-title'>Proposer White List:</span>
+          <div className="card-list-desc-item">
+            <span className="sub-title">Proposer White List:</span>
             <span>{proposerList}</span>
           </div>
         </>
@@ -267,49 +268,51 @@ const Organization = (props) => {
 
   if (isPhoneCheck()) {
     return (
-      <div className='organization-list-item gap-bottom'>
+      <div className="organization-list-item gap-bottom">
         <Card title={<Title proposalType={proposalType} />}>
-          <div className='organization-list-item-id'>
-            <div className='gap-right-large text-ellipsis'>{orgAddress}</div>
+          <div className="organization-list-item-id">
+            <div className="gap-right-large text-ellipsis">
+              {addressFormat(orgAddress)}
+            </div>
             {canEdit ? (
               <EditOutlined color={PRIMARY_COLOR} onClick={handleEdit} />
             ) : null}
           </div>
           <Divider />
-          <div className='organization-list-item-info'>
-            <div className='organization-list-item-info-item'>
-              <span className='sub-title gap-right'>Author:</span>
-              <span className='text-ellipsis'>
+          <div className="organization-list-item-info">
+            <div className="organization-list-item-info-item">
+              <span className="sub-title gap-right">Author:</span>
+              <span className="text-ellipsis">
                 <a
-                  href={`${viewer.addressUrl}/${creator}`}
-                  target='_blank'
-                  rel='noopener noreferrer'
+                  href={`${viewer.addressUrl}/${addressFormat(creator)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {`ELF_${creator}_${viewer.chainId}`}
+                  {addressFormat(creator)}
                 </a>
               </span>
             </div>
-            <div className='organization-list-item-info-item'>
-              <span className='sub-title gap-right'>Update Time:</span>
-              <span className='text-ellipsis'>
+            <div className="organization-list-item-info-item">
+              <span className="sub-title gap-right">Update Time:</span>
+              <span className="text-ellipsis">
                 {moment(updatedAt).format("YYYY/MM/DD HH:mm:ss")}
               </span>
             </div>
           </div>
           <Divider />
-          <div className='organization-list-item-votes'>
+          <div className="organization-list-item-votes">
             <p>Voting Data: Votes (Votes / Minimum Votes)</p>
-            <Row gutter={16} className='organization-list-item-vote-chart'>
+            <Row gutter={16} className="organization-list-item-vote-chart">
               <Col span={8} offset={2}>
                 <Circle
-                  className='organization-list-item-vote-chart-circle'
+                  className="organization-list-item-vote-chart-circle"
                   type={proposalActions.APPROVE}
                   {...votesData[proposalActions.APPROVE]}
                 />
               </Col>
               <Col span={8} offset={4}>
                 <Circle
-                  className='organization-list-item-vote-chart-circle'
+                  className="organization-list-item-vote-chart-circle"
                   type={proposalActions.REJECT}
                   {...votesData[proposalActions.REJECT]}
                 />
@@ -317,17 +320,17 @@ const Organization = (props) => {
             </Row>
             <Row gutter={16}>
               <Col span={12}>
-                <div className='organization-list-item-vote-desc text-center'>
-                  <div className='text-ellipsis' title='Approved Votes'>
+                <div className="organization-list-item-vote-desc text-center">
+                  <div className="text-ellipsis" title="Approved Votes">
                     Approved Votes
                   </div>
                   <div
-                    className='text-ellipsis'
+                    className="text-ellipsis"
                     title={`${votesData[proposalActions.APPROVE].num}(${
                       votesData[proposalActions.APPROVE].rate
                     })`}
                   >
-                    <span className='sub-title gap-right-small'>
+                    <span className="sub-title gap-right-small">
                       {votesData[proposalActions.APPROVE].num}
                     </span>
                     <span>({votesData[proposalActions.APPROVE].rate})</span>
@@ -335,17 +338,17 @@ const Organization = (props) => {
                 </div>
               </Col>
               <Col span={12}>
-                <div className='organization-list-item-vote-desc text-center'>
-                  <div className='text-ellipsis' title='Rejected Votes'>
+                <div className="organization-list-item-vote-desc text-center">
+                  <div className="text-ellipsis" title="Rejected Votes">
                     Rejected Votes
                   </div>
                   <div
-                    className='text-ellipsis'
+                    className="text-ellipsis"
                     title={`${votesData[proposalActions.REJECT].num}(${
                       votesData[proposalActions.REJECT].rate
                     })`}
                   >
-                    <span className='sub-title gap-right-small'>
+                    <span className="sub-title gap-right-small">
                       {votesData[proposalActions.REJECT].num}
                     </span>
                     <span>({votesData[proposalActions.REJECT].rate})</span>
@@ -354,35 +357,35 @@ const Organization = (props) => {
               </Col>
             </Row>
 
-            <Row gutter={16} className='organization-list-item-vote-chart'>
+            <Row gutter={16} className="organization-list-item-vote-chart">
               <Col span={8} offset={2}>
                 <Circle
-                  className='organization-list-item-vote-chart-circle'
+                  className="organization-list-item-vote-chart-circle"
                   type={proposalActions.ABSTAIN}
                   {...votesData[proposalActions.ABSTAIN]}
                 />
               </Col>
               <Col span={8} offset={4}>
                 <Circle
-                  className='organization-list-item-vote-chart-circle'
-                  type='Total'
+                  className="organization-list-item-vote-chart-circle"
+                  type="Total"
                   {...votesData.Total}
                 />
               </Col>
             </Row>
             <Row gutter={16}>
               <Col span={12}>
-                <div className='organization-list-item-vote-desc text-center'>
-                  <div className='text-ellipsis' title='Abstained Votes'>
+                <div className="organization-list-item-vote-desc text-center">
+                  <div className="text-ellipsis" title="Abstained Votes">
                     Abstained Votes
                   </div>
                   <div
-                    className='text-ellipsis'
+                    className="text-ellipsis"
                     title={`${votesData[proposalActions.ABSTAIN].num}(${
                       votesData[proposalActions.ABSTAIN].rate
                     })`}
                   >
-                    <span className='sub-title gap-right-small'>
+                    <span className="sub-title gap-right-small">
                       {votesData[proposalActions.ABSTAIN].num}
                     </span>
                     <span>({votesData[proposalActions.ABSTAIN].rate})</span>
@@ -390,15 +393,15 @@ const Organization = (props) => {
                 </div>
               </Col>
               <Col span={12}>
-                <div className='organization-list-item-vote-desc text-center'>
-                  <div className='text-ellipsis' title='Total Votes'>
+                <div className="organization-list-item-vote-desc text-center">
+                  <div className="text-ellipsis" title="Total Votes">
                     Total Votes
                   </div>
                   <div
-                    className='text-ellipsis'
+                    className="text-ellipsis"
                     title={`${votesData.Total.num}(${votesData.Total.rate})`}
                   >
-                    <span className='sub-title gap-right-small'>
+                    <span className="sub-title gap-right-small">
                       {votesData.Total.num}
                     </span>
                     <span>({votesData.Total.rate})</span>
@@ -408,88 +411,90 @@ const Organization = (props) => {
             </Row>
           </div>
           <Divider />
-          <div className='organization-list-item-extra'>{leftOrg}</div>
+          <div className="organization-list-item-extra">{leftOrg}</div>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className='organization-list-item gap-bottom'>
+    <div className="organization-list-item gap-bottom">
       <Card title={<Title proposalType={proposalType} />}>
-        <div className='organization-list-item-id'>
-          <div className='gap-right-large text-ellipsis'>{orgAddress}</div>
+        <div className="organization-list-item-id">
+          <div className="gap-right-large text-ellipsis">
+            {addressFormat(orgAddress)}
+          </div>
           {canEdit ? (
             <EditOutlined color={PRIMARY_COLOR} onClick={handleEdit} />
           ) : null}
         </div>
         <Divider />
-        <div className='organization-list-item-info'>
-          <div className='organization-list-item-info-item'>
-            <span className='sub-title gap-right'>Author:</span>
-            <span className='text-ellipsis'>
+        <div className="organization-list-item-info">
+          <div className="organization-list-item-info-item">
+            <span className="sub-title gap-right">Author:</span>
+            <span className="text-ellipsis">
               <a
-                href={`${viewer.addressUrl}/${creator}`}
-                target='_blank'
-                rel='noopener noreferrer'
+                href={`${viewer.addressUrl}/${addressFormat(creator)}`}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                {`ELF_${creator}_${viewer.chainId}`}
+                {addressFormat(creator)}
               </a>
             </span>
           </div>
-          <div className='organization-list-item-info-item'>
-            <span className='sub-title gap-right'>Update Time:</span>
-            <span className='text-ellipsis'>
+          <div className="organization-list-item-info-item">
+            <span className="sub-title gap-right">Update Time:</span>
+            <span className="text-ellipsis">
               {moment(updatedAt).format("YYYY/MM/DD HH:mm:ss")}
             </span>
           </div>
         </div>
         <Divider />
-        <div className='organization-list-item-votes'>
+        <div className="organization-list-item-votes">
           <p>Voting Data: Votes (Votes / Minimum Votes)</p>
-          <Row gutter={16} className='organization-list-item-vote-chart'>
+          <Row gutter={16} className="organization-list-item-vote-chart">
             <Col span={4} offset={1}>
               <Circle
-                className='organization-list-item-vote-chart-circle'
+                className="organization-list-item-vote-chart-circle"
                 type={proposalActions.APPROVE}
                 {...votesData[proposalActions.APPROVE]}
               />
             </Col>
             <Col span={4} offset={2}>
               <Circle
-                className='organization-list-item-vote-chart-circle'
+                className="organization-list-item-vote-chart-circle"
                 type={proposalActions.REJECT}
                 {...votesData[proposalActions.REJECT]}
               />
             </Col>
             <Col span={4} offset={2}>
               <Circle
-                className='organization-list-item-vote-chart-circle'
+                className="organization-list-item-vote-chart-circle"
                 type={proposalActions.ABSTAIN}
                 {...votesData[proposalActions.ABSTAIN]}
               />
             </Col>
             <Col span={4} offset={2}>
               <Circle
-                className='organization-list-item-vote-chart-circle'
-                type='Total'
+                className="organization-list-item-vote-chart-circle"
+                type="Total"
                 {...votesData.Total}
               />
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={6}>
-              <div className='organization-list-item-vote-desc text-center'>
-                <div className='text-ellipsis' title='Approved Votes'>
+              <div className="organization-list-item-vote-desc text-center">
+                <div className="text-ellipsis" title="Approved Votes">
                   Approved Votes
                 </div>
                 <div
-                  className='text-ellipsis'
+                  className="text-ellipsis"
                   title={`${votesData[proposalActions.APPROVE].num}(${
                     votesData[proposalActions.APPROVE].rate
                   })`}
                 >
-                  <span className='sub-title gap-right-small'>
+                  <span className="sub-title gap-right-small">
                     {votesData[proposalActions.APPROVE].num}
                   </span>
                   <span>({votesData[proposalActions.APPROVE].rate})</span>
@@ -497,17 +502,17 @@ const Organization = (props) => {
               </div>
             </Col>
             <Col span={6}>
-              <div className='organization-list-item-vote-desc text-center'>
-                <div className='text-ellipsis' title='Rejected Votes'>
+              <div className="organization-list-item-vote-desc text-center">
+                <div className="text-ellipsis" title="Rejected Votes">
                   Rejected Votes
                 </div>
                 <div
-                  className='text-ellipsis'
+                  className="text-ellipsis"
                   title={`${votesData[proposalActions.REJECT].num}(${
                     votesData[proposalActions.REJECT].rate
                   })`}
                 >
-                  <span className='sub-title gap-right-small'>
+                  <span className="sub-title gap-right-small">
                     {votesData[proposalActions.REJECT].num}
                   </span>
                   <span>({votesData[proposalActions.REJECT].rate})</span>
@@ -515,17 +520,17 @@ const Organization = (props) => {
               </div>
             </Col>
             <Col span={6}>
-              <div className='organization-list-item-vote-desc text-center'>
-                <div className='text-ellipsis' title='Abstained Votes'>
+              <div className="organization-list-item-vote-desc text-center">
+                <div className="text-ellipsis" title="Abstained Votes">
                   Abstained Votes
                 </div>
                 <div
-                  className='text-ellipsis'
+                  className="text-ellipsis"
                   title={`${votesData[proposalActions.ABSTAIN].num}(${
                     votesData[proposalActions.ABSTAIN].rate
                   })`}
                 >
-                  <span className='sub-title gap-right-small'>
+                  <span className="sub-title gap-right-small">
                     {votesData[proposalActions.ABSTAIN].num}
                   </span>
                   <span>({votesData[proposalActions.ABSTAIN].rate})</span>
@@ -533,15 +538,15 @@ const Organization = (props) => {
               </div>
             </Col>
             <Col span={6}>
-              <div className='organization-list-item-vote-desc text-center'>
-                <div className='text-ellipsis' title='Total Votes'>
+              <div className="organization-list-item-vote-desc text-center">
+                <div className="text-ellipsis" title="Total Votes">
                   Total Votes
                 </div>
                 <div
-                  className='text-ellipsis'
+                  className="text-ellipsis"
                   title={`${votesData.Total.num}(${votesData.Total.rate})`}
                 >
-                  <span className='sub-title gap-right-small'>
+                  <span className="sub-title gap-right-small">
                     {votesData.Total.num}
                   </span>
                   <span>({votesData.Total.rate})</span>
@@ -551,7 +556,7 @@ const Organization = (props) => {
           </Row>
         </div>
         <Divider />
-        <div className='organization-list-item-extra'>{leftOrg}</div>
+        <div className="organization-list-item-extra">{leftOrg}</div>
       </Card>
     </div>
   );

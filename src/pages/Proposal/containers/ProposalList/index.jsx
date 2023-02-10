@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 /**
  * @file proposal list
  * @author atom-yang
@@ -25,11 +26,16 @@ import ApproveTokenModal from "../../components/ApproveTokenModal";
 import "./index.less";
 import { getContractAddress, sendTransaction } from "../../common/utils";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
+import removeHash from "../../../../utils/removeHash";
 
 const { TabPane } = Tabs;
 const { Search } = Input;
 const { Option } = Select;
 const { proposalTypes, proposalStatus } = constants;
+const keyFromHash = {
+  "#association": proposalTypes.ASSOCIATION,
+  "#referendum": proposalTypes.REFERENDUM,
+};
 
 const ProposalList = () => {
   const common = useSelector((state) => state.common, shallowEqual);
@@ -43,7 +49,7 @@ const ProposalList = () => {
   const { aelf, logStatus, isALLSettle, wallet, currentWallet } = common;
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(params.search);
-  // const { proposalType } = useParams();
+  const [activeKey, setActiveKey] = useState(params.proposalType);
 
   useEffect(() => {
     sendHeight(500);
@@ -101,6 +107,13 @@ const ProposalList = () => {
     });
   };
   const handleTabChange = (key) => {
+    if (key === proposalTypes.PARLIAMENT) {
+      removeHash();
+      setActiveKey(proposalTypes.PARLIAMENT);
+    } else {
+      const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
+      window.location.hash = Object.keys(keyFromHash)[index];
+    }
     fetchList({
       ...params,
       pageNum: 1,
@@ -110,6 +123,11 @@ const ProposalList = () => {
       search: "",
     });
   };
+  window.addEventListener("hashchange", () => {
+    const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || proposalTypes.PARLIAMENT);
+  });
 
   const send = async (id, action) => {
     if (params.proposalType === proposalTypes.REFERENDUM) {
@@ -169,10 +187,10 @@ const ProposalList = () => {
   };
 
   return (
-    <div className='proposal-list'>
+    <div className="proposal-list">
       <Tabs
-        className='proposal-list-tab'
-        activeKey={params.proposalType}
+        className="proposal-list-tab"
+        activeKey={activeKey}
         onChange={handleTabChange}
         animated={false}
       >
@@ -189,20 +207,20 @@ const ProposalList = () => {
           key={proposalTypes.REFERENDUM}
         />
       </Tabs>
-      <div className='proposal-list-filter gap-bottom'>
+      <div className="proposal-list-filter gap-bottom">
         <If condition={params.proposalType === proposalTypes.PARLIAMENT}>
           <Then>
             <Checkbox
               onChange={handleContractFilter}
-              className='gap-bottom-large'
+              className="gap-bottom-large"
             >
               Deploy/Update Contract Proposal
             </Checkbox>
           </Then>
         </If>
-        <div className='proposal-list-filter-form'>
-          <div className='proposal-list-filter-form-select'>
-            <span className='sub-title gap-right'>Status: </span>
+        <div className="proposal-list-filter-form">
+          <div className="proposal-list-filter-form-select">
+            <span className="sub-title gap-right">Status: </span>
             <Select
               defaultValue={proposalStatus.ALL}
               value={params.status}
@@ -216,8 +234,8 @@ const ProposalList = () => {
             </Select>
           </div>
           <Search
-            className='proposal-list-filter-form-input'
-            placeholder='Proposal ID/Contract Address/Proposer'
+            className="proposal-list-filter-form-input"
+            placeholder="Proposal ID/Contract Address/Proposer"
             defaultValue={params.search}
             allowClear
             value={searchValue}
@@ -226,7 +244,7 @@ const ProposalList = () => {
           />
         </div>
       </div>
-      <div className='proposal-list-list'>
+      <div className="proposal-list-list">
         <Switch>
           <Case
             condition={
@@ -235,7 +253,7 @@ const ProposalList = () => {
             }
           >
             <Spin spinning={loadingStatus === LOADING_STATUS.LOADING}>
-              <Row type='flex' gutter={16}>
+              <Row type="flex" gutter={16}>
                 {list.map((item) => (
                   <Col xs={24} sm={12} key={item.proposalId}>
                     <Proposal
@@ -255,9 +273,9 @@ const ProposalList = () => {
           </Case>
           <Case condition={loadingStatus === LOADING_STATUS.FAILED}>
             <Result
-              status='error'
-              title='Error Happened'
-              subTitle='Please check your network'
+              status="error"
+              title="Error Happened"
+              subTitle="Please check your network"
             />
           </Case>
         </Switch>
@@ -272,7 +290,7 @@ const ProposalList = () => {
         </If>
       </div>
       <Pagination
-        className='float-right gap-top'
+        className="float-right gap-top"
         showQuickJumper
         total={total}
         current={params.pageNum}

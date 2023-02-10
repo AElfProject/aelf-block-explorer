@@ -3,8 +3,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import useLocation from "react-use/lib/useLocation";
 import { useDebounce } from "react-use";
 import {
-  ALL_TXS_API_URL,
-  ALL_UNCONFIRMED_TXS_API_URL,
+  ALL_TXS_UNCONFIRMED_TXS_API_URL,
   TXS_BLOCK_API_URL,
 } from "../../constants";
 import { get, getContractNames } from "../../utils";
@@ -28,15 +27,6 @@ export default function TransactionList() {
     return actualTotal;
   });
 
-  const isUnconfirmed = useMemo(
-    () => pathname.includes("unconfirmed"),
-    [pathname]
-  );
-
-  const pageTitle = useMemo(() => {
-    return isUnconfirmed ? "Unconfirmed Transactions" : "Transactions";
-  }, [isUnconfirmed]);
-
   const merge = (data = {}, contractNames) => {
     const { transactions = [] } = data;
     return (transactions || []).map((item) => ({
@@ -53,10 +43,7 @@ export default function TransactionList() {
       if (search) {
         url = TXS_BLOCK_API_URL;
       } else {
-        url =
-          pathname.indexOf("unconfirmed") === -1
-            ? ALL_TXS_API_URL
-            : ALL_UNCONFIRMED_TXS_API_URL;
+        url = ALL_TXS_UNCONFIRMED_TXS_API_URL;
       }
       const data = await get(url, {
         order: "desc",
@@ -103,15 +90,13 @@ export default function TransactionList() {
       className={`txs-page-container basic-container-new ${
         isMobile ? "mobile" : ""
       }`}
-      key="body"
-    >
-      <h2>{pageTitle}</h2>
+      key="body">
+      <h2>Transactions</h2>
       <div>
         <div className="before-table">
           <div className="left">
             <p>
-              More than {">"} {Number(actualTotal).toLocaleString()}{" "}
-              {isUnconfirmed && "unconfirmed"} transactions found
+              More than {">"} {Number(actualTotal).toLocaleString()}{" "}transactions found
             </p>
             <p>(Showing the last 500k records)</p>
           </div>

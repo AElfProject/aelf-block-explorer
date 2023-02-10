@@ -154,8 +154,11 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Link to={`/address/${text}`} title={addressFormat(text)}>
-              {text}
+            <Link
+              to={`/address/${addressFormat(text)}`}
+              title={addressFormat(text)}
+            >
+              {addressFormat(text)}
             </Link>
             <IconFont type="right2" />
           </div>
@@ -169,8 +172,11 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Link to={`/address/${text}`} title={addressFormat(text)}>
-              {text}
+            <Link
+              to={`/address/${addressFormat(text)}`}
+              title={addressFormat(text)}
+            >
+              {addressFormat(text)}
             </Link>
           </div>
         );

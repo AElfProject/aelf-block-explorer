@@ -95,7 +95,7 @@ export default function BasicInfo({
           <div className="value-address">
             <div>
               <Link
-                to={`/address/${info.Transaction.From}`}
+                to={`/address/${addressFormat(info.Transaction.From)}`}
                 title={addressFormat(info.Transaction.From)}
               >
                 {addressFormat(info.Transaction.From)}
@@ -109,7 +109,7 @@ export default function BasicInfo({
           <div className="value-address">
             <div>
               <Link
-                to={`/contract/${info.Transaction.To}`}
+                to={`/contract/${addressFormat(info.Transaction.To)}`}
                 title={addressFormat(info.Transaction.To)}
               >
                 {addressFormat(info.Transaction.To)}

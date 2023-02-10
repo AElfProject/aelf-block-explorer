@@ -10,12 +10,15 @@
         "extensions": [".js", ".jsx"]
       }
     ],
+    "no-unused-vars": 1,
     "react/prop-types": 0,
     "react/no-redundant-should-component-update": 0,
     "no-underscore-dangle": 0,
     "no-param-reassign": 0,
     "import/imports-first": ["error", "absolute-first"],
-    "import/newline-after-import": "error"
+    "import/newline-after-import": "error",
+    "react/jsx-props-no-spreading": 0,
+    "jsx-a11y/anchor-is-valid": 0
   },
   "globals": {
     "window": true,
@@ -25,5 +28,16 @@
     "FileReader": true,
     "Blob": true,
     "navigator": true
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@", "./src/"],
+          ["@utils", "./src/utils"],
+          ["@actions", "./src/redux/actions"]
+        ]
+      }
+    }
   }
 }

@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { useParams } from "react-router";
 import AddressLink from "../../../components/AddressLink";
 import CopyButton from "../../../components/CopyButton/CopyButton";
+import addressFormat from "../../../utils/addressFormat";
 import { numberFormatter } from "../../../utils/formater";
 
 export default function Overview({ tokenInfo = {}, price = 0 }) {
@@ -40,7 +41,7 @@ export default function Overview({ tokenInfo = {}, price = 0 }) {
           <div>
             <AddressLink
               address={contractAddress}
-              suffix={<CopyButton value={contractAddress} />}
+              suffix={<CopyButton value={addressFormat(contractAddress)} />}
             />
           </div>
         ),

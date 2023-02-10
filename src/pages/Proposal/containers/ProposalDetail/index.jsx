@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 /**
  * @file proposal detail
  * @author atom-yang
@@ -5,7 +6,12 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import PropTypes from "prop-types";
-import { useParams, useNavigate, Redirect } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  Redirect,
+  useLocation,
+} from "react-router-dom";
 import {
   Tag,
   Button,
@@ -44,6 +50,7 @@ import {
   validateURL,
 } from "../../../../common/utils";
 import { PRIMARY_COLOR } from "../../../../common/constants";
+import removeHash from "../../../../utils/removeHash";
 
 const { viewer } = config;
 const { Title } = Typography;
@@ -76,7 +83,7 @@ function CountDown(props) {
     expired.isAfter(now) &&
     expired.isBefore(threshold);
   return show ? (
-    <span className='warning-text'>{`Expire ${now.to(expired)}`}</span>
+    <span className="warning-text">{`Expire ${now.to(expired)}`}</span>
   ) : null;
 }
 
@@ -96,13 +103,13 @@ function Extra(props) {
     currentWallet &&
     proposer === currentWallet.address;
   return (
-    <div className='proposal-list-item-id-status'>
+    <div className="proposal-list-item-id-status">
       <Tag color={STATUS_COLOR_MAP[status]}>
         {PROPOSAL_STATUS_CAPITAL[status]}
       </Tag>
       {status === proposalStatus.APPROVED && canRelease ? (
         // eslint-disable-next-line max-len
-        <Button type='link' size='small' onClick={handleRelease}>
+        <Button type="link" size="small" onClick={handleRelease}>
           Release&gt;
         </Button>
       ) : null}
@@ -124,8 +131,10 @@ Extra.propTypes = {
 const ProposalDetail = () => {
   const { proposalId = "" } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const common = useSelector((state) => state.common);
   const [visible, setVisible] = useState(false);
+  const [activeKey, setActiveKey] = useState("proposal");
   const { logStatus, aelf, wallet, currentWallet, isALLSettle } = common;
   const [info, setInfo] = useState({
     proposal: {},
@@ -136,8 +145,15 @@ const ProposalDetail = () => {
     loadingStatus: LOADING_STATUS.LOADING,
   });
   if (!proposalId) {
-    return <Redirect to='/proposals' />;
+    return <Redirect to="/proposals" />;
   }
+  useEffect(() => {
+    if (location.hash === "#voting") {
+      setActiveKey("vote");
+    } else {
+      setActiveKey("proposal");
+    }
+  }, [proposalId]);
   useEffect(() => {
     getData(currentWallet, proposalId)
       .then((result) => {
@@ -231,14 +247,31 @@ const ProposalDetail = () => {
     setVisible(false);
   }
 
+  const changeTab = (key) => {
+    if (key === "proposal") {
+      removeHash();
+      setActiveKey("proposal");
+    } else {
+      window.location.hash = "voting";
+    }
+  };
+
+  window.addEventListener("hashchange", () => {
+    if (location.hash === "#voting") {
+      setActiveKey("vote");
+    } else {
+      setActiveKey("proposal");
+    }
+  });
+
   return (
-    <div className='proposal-detail'>
+    <div className="proposal-detail">
       {info.loadingStatus === LOADING_STATUS.LOADING ? <Skeleton /> : null}
       {info.loadingStatus === LOADING_STATUS.SUCCESS ? (
         <>
           <PageHeader
             onBack={navigate.length > 1 ? goBack : null}
-            title='Proposal Detail'
+            title="Proposal Detail"
             subTitle={<CountDown time={expiredTime} status={status} />}
             tags={
               votedStatus && votedStatus !== "none" ? (
@@ -257,7 +290,7 @@ const ProposalDetail = () => {
               />
             }
           />
-          <Divider className='proposal-detail-header-divider' />
+          <Divider className="proposal-detail-header-divider" />
           {isPhoneCheck() ? (
             <Title level={4}>
               Proposal ID:
@@ -269,8 +302,8 @@ const ProposalDetail = () => {
               {proposalId}
             </Title>
           )}
-          <div className='proposal-detail-tag gap-bottom'>
-            <Tag color={PRIMARY_COLOR} className='gap-right'>
+          <div className="proposal-detail-tag gap-bottom">
+            <Tag color={PRIMARY_COLOR} className="gap-right">
               {proposalType}
             </Tag>
             {CONTRACT_TEXT_MAP[contractMethod] ? (
@@ -279,43 +312,43 @@ const ProposalDetail = () => {
               </Tag>
             ) : null}
           </div>
-          <div className='proposal-detail-desc-list'>
+          <div className="proposal-detail-desc-list">
             <Row gutter={48}>
-              <Col sm={12} xs={24} className='detail-flex'>
-                <span className='sub-title gap-right'>
+              <Col sm={12} xs={24} className="detail-flex">
+                <span className="sub-title gap-right">
                   Application Submitted:
                 </span>
-                <span className='text-ellipsis'>
+                <span className="text-ellipsis">
                   {moment(createAt).format("YYYY/MM/DD HH:mm:ss")}
                 </span>
               </Col>
-              <Col sm={12} xs={24} className='detail-flex'>
-                <span className='sub-title gap-right'>Proposal Expires:</span>
-                <span className='text-ellipsis'>
+              <Col sm={12} xs={24} className="detail-flex">
+                <span className="sub-title gap-right">Proposal Expires:</span>
+                <span className="text-ellipsis">
                   {moment(expiredTime).format("YYYY/MM/DD HH:mm:ss")}
                 </span>
               </Col>
-              <Col sm={12} xs={24} className='detail-flex'>
-                <span className='sub-title gap-right'>Proposer:</span>
-                <span className='text-ellipsis'>
+              <Col sm={12} xs={24} className="detail-flex">
+                <span className="sub-title gap-right">Proposer:</span>
+                <span className="text-ellipsis">
                   <a
                     href={`${viewer.addressUrl}/${proposer}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
+                    target="_blank"
+                    rel="noopener noreferrer"
                     title={`ELF_${proposer}_${viewer.chainId}`}
                   >
                     {`ELF_${proposer}_${viewer.chainId}`}
                   </a>
                 </span>
               </Col>
-              <Col sm={12} xs={24} className='detail-flex'>
-                <span className='sub-title gap-right'>URL:</span>
-                <span className='text-ellipsis'>
+              <Col sm={12} xs={24} className="detail-flex">
+                <span className="sub-title gap-right">URL:</span>
+                <span className="text-ellipsis">
                   {validateURL(leftInfo.proposalDescriptionUrl || "") ? (
                     <a
                       href={leftInfo.proposalDescriptionUrl}
-                      target='_blank'
-                      rel='noopener noreferrer'
+                      target="_blank"
+                      rel="noopener noreferrer"
                       title={leftInfo.proposalDescriptionUrl}
                     >
                       {leftInfo.proposalDescriptionUrl}
@@ -326,11 +359,11 @@ const ProposalDetail = () => {
                 </span>
               </Col>
               {status === proposalStatus.RELEASED ? (
-                <Col sm={12} xs={24} className='detail-flex'>
-                  <span className='sub-title gap-right'>
+                <Col sm={12} xs={24} className="detail-flex">
+                  <span className="sub-title gap-right">
                     Proposal Released:
                   </span>
-                  <span className='text-ellipsis'>
+                  <span className="text-ellipsis">
                     {moment(releasedTime).format("YYYY/MM/DD HH:mm:ss")}
                   </span>
                 </Col>
@@ -338,11 +371,15 @@ const ProposalDetail = () => {
             </Row>
           </div>
           <Divider />
-          <Tabs type='card'>
-            <TabPane tab='Proposal Details' key='proposal'>
+          <Tabs
+            type="card"
+            activeKey={activeKey}
+            onTabClick={(key) => changeTab(key)}
+          >
+            <TabPane tab="Proposal Details" key="proposal">
               <>
                 <VoteData
-                  className='gap-top-large'
+                  className="gap-top-large"
                   proposalType={proposalType}
                   expiredTime={expiredTime}
                   status={status}
@@ -358,14 +395,14 @@ const ProposalDetail = () => {
                   organization={info.organization}
                 />
                 <OrganizationCard
-                  className='gap-top-large'
+                  className="gap-top-large"
                   bpList={info.bpList}
                   bpCount={info.bpList.length}
                   parliamentProposerList={info.parliamentProposerList}
                   {...info.organization}
                 />
                 <ContractDetail
-                  className='gap-top-large'
+                  className="gap-top-large"
                   aelf={aelf}
                   contractAddress={contractAddress}
                   contractMethod={contractMethod}
@@ -374,7 +411,7 @@ const ProposalDetail = () => {
                 />
               </>
             </TabPane>
-            <TabPane tab='Voting Details' key='vote'>
+            <TabPane tab="Voting Details" key="vote">
               <VoteDetail
                 proposalType={proposalType}
                 proposalId={proposalId}
@@ -405,9 +442,9 @@ const ProposalDetail = () => {
       ) : null}
       {info.loadingStatus === LOADING_STATUS.FAILED ? (
         <Result
-          status='error'
-          title='Error Happened'
-          subTitle='Please check your network'
+          status="error"
+          title="Error Happened"
+          subTitle="Please check your network"
         />
       ) : null}
     </div>
