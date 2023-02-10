@@ -40,7 +40,9 @@ export default function BlockList() {
         limit: pageSize,
       });
 
-      setAll(data ? data.total : 0);
+      if(page - 1 === 0) {
+        setAll(data?.blocks?.[0]?.block_height ?? 0);
+      }
       setDataLoading(false);
       setDataSource(data && data.blocks.length ? data.blocks : null);
     },
