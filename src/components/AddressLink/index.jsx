@@ -8,7 +8,7 @@ import addressFormat from "../../utils/addressFormat";
 
 const AddressLink = (props) => {
   const { address: prefixAddress, suffix, hash } = props;
-  const address = addressFormat(prefixAddress) + hash ?? "";
+  const address = addressFormat(prefixAddress) + (hash ?? "");
   return (
     <>
       <Link to={`/address/${address}`} title={`${address}`}>
