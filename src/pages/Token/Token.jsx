@@ -12,6 +12,7 @@ import Transactions from "./components/Transactions";
 import Holders from "./components/Holders";
 import Contract from "./components/Contract";
 import useMobile from "../../hooks/useMobile";
+import removeHash from '../../utils/removeHash'
 
 const keyFromHash = {
   "#balances": "holders",
@@ -56,7 +57,8 @@ export default function Token() {
 
   const changeTab = (key) => {
     if (key === "transactions") {
-      window.location.hash = "";
+      removeHash();
+      setActiveKey('transactions')
     } else {
       const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
       window.location.hash = Object.keys(keyFromHash)[index];
