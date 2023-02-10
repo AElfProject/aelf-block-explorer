@@ -22,7 +22,7 @@ export default function History({ history }) {
       <>
         <div className="description-item">
           <span>Author: </span>
-          <Link to={`/address/${addressFormat(author)}`}>{addressFormat(author)}</Link>
+          <Link to={`/address/${addressFormat(author)}#contract`}>{addressFormat(author)}</Link>
         </div>
         <div className="description-item">
           <span>Code Hash: </span>
