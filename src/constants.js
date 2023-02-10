@@ -155,7 +155,7 @@ const BLOCKS_LIST_COLUMNS = [
       return (
         <Link
           title={`${SYMBOL}_${text}_${CHAIN_ID}`}
-          to={`/address/${text}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
+          to={`/address/${addressFormat(text)}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
       );
     },
   },

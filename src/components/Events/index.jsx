@@ -4,23 +4,23 @@
  */
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import EventItem from "../EventItem";
 import CopyButton from "../CopyButton/CopyButton";
-import { Link } from "react-router-dom";
 import addressFormat from "../../utils/addressFormat";
 
 const Events = (props) => {
   const { list } = props;
   return (
     <div className="event-list">
-      {list.map((item, index) => (
-        <div key={index}>
+      {list.map((item) => (
+        <div key={item.address}>
           <div className="info">
             <span className="label">Address: </span>
             <div>
               <Link
                 className="info"
-                to={`/address/${item.Address}`}
+                to={`/address/${addressFormat(item.Address)}`}
                 title={addressFormat(item.Address)}
               >
                 {addressFormat(item.Address)}
@@ -41,6 +41,7 @@ const Events = (props) => {
 
 Events.propTypes = {
   list: PropTypes.arrayOf(PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
     Indexed: PropTypes.array,
     NoIndexed: PropTypes.string,
     Name: PropTypes.string.isRequired,
