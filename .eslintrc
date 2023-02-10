@@ -10,6 +10,7 @@
         "extensions": [".js", ".jsx"]
       }
     ],
+    "no-unused-vars": 1,
     "react/prop-types": 0,
     "react/no-redundant-should-component-update": 0,
     "no-underscore-dangle": 0,
