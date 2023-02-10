@@ -2,7 +2,7 @@ import { Pagination } from "antd";
 import React, { useCallback, useState } from "react";
 import { useParams } from "react-router";
 import { useDebounce } from "react-use";
-import { VIEWER_TOKEN_TX_LIST } from "../../../api/url";
+import { VIEWER_TOKEN_ALL_TX_LIST } from "../../../api/url";
 import TransactionTable from "../../../components/TransactionTable/TransactionTable";
 import useMobile from "../../../hooks/useMobile";
 import { get } from "../../../utils";
@@ -19,7 +19,7 @@ export default function Transactions() {
   const fetchTransactions = useCallback(async () => {
     setDataLoading(true);
     setDataSource(undefined);
-    const result = await get(VIEWER_TOKEN_TX_LIST, {
+    const result = await get(VIEWER_TOKEN_ALL_TX_LIST, {
       symbol,
       pageSize,
       pageNum: pageIndex,
