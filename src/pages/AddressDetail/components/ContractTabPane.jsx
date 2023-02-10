@@ -9,6 +9,7 @@ export default function ContractTabPane({
   address,
   codeHash,
   activeKey,
+  onTabClick
 }) {
   return [
     {
@@ -31,7 +32,7 @@ export default function ContractTabPane({
     {
       key: "history",
       tab: "History",
-      children: <History history={contractHistory} />,
+      children: <History history={contractHistory} onTabClick={onTabClick}/>,
     },
   ];
 }

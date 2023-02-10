@@ -188,6 +188,9 @@ export default function AddressDetail() {
               address,
               codeHash,
               activeKey,
+              onTabClick:(key)=>{
+                setActiveKey(key);
+              }
             }).map(({ children, ...props }) => (
               <Tabs.TabPane key={props.key} tab={props.tab}>
                 {children}
