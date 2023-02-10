@@ -24,7 +24,7 @@ import addressFormat from "../../utils/addressFormat";
 import removeHash from "../../utils/removeHash";
 
 const keyFromHash = {
-  "#txs": "transactions",
+  "#txns": "transactions",
   "#transfers": "transfers",
   "#contract": "contract",
   "#events": "events",
