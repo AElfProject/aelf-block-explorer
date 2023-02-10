@@ -7,5 +7,6 @@ export const VIEWER_GET_FILE = "/viewer/getFile"
 export const VIEWER_EVENT_LIST = "/viewer/eventList"
 export const VIEWER_GET_ALL_TOKENS = "/viewer/getAllTokens"
 export const VIEWER_TOKEN_TX_LIST = "/viewer/tokenTxList"
+export const VIEWER_TOKEN_ALL_TX_LIST = "/viewer/all/tokenTxList"
 
 export const TOKEN_PRICE = "/token/price"
