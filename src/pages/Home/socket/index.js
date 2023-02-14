@@ -1,10 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import io from "socket.io-client";
-import { SOCKET_URL } from '../../../constants';
+import { SOCKET_URL } from "../../../constants";
 
 export function initSocket(handleSocketData) {
-
-  const socket = io(window.location.origin, {
+  const socket = io("https://explorer-test.aelf.io/", {
     path: SOCKET_URL,
     transports: ["websocket", "polling"],
   });
@@ -29,5 +28,5 @@ export function initSocket(handleSocketData) {
   });
 
   socket.emit("getBlocksList");
-  return socket
-};
+  return socket;
+}
