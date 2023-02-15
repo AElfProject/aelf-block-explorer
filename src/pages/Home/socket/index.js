@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import { SOCKET_URL } from "../../../constants";
 
 export function initSocket(handleSocketData) {
-  const socket = io("https://explorer-test.aelf.io/", {
+  const socket = io(window.location.origin, {
     path: SOCKET_URL,
     transports: ["websocket", "polling"],
   });
