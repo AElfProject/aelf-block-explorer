@@ -210,16 +210,6 @@ export default function Home() {
       <section className="banner-section">
         <h2>AELF Explorer</h2>
         <Search />
-        {CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && isMobile && (
-          <div className="price-info">
-            <img src={TokenIcon} alt="token-icon" />
-            <span className="price">$ {price.USD}</span>
-            <span className={`range ${range >= 0 ? "rise" : "fall"}`}>
-              {range >= 0 ? "+" : ""}
-              {range.toFixed(2)}%
-            </span>
-          </div>
-        )}
       </section>
       <div className="body-container">
         <section className="info-section">
