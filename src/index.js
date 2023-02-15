@@ -1,8 +1,8 @@
+/* eslint-disable camelcase */
 /**
  * @file MyWalletCard.js
  * @author huangzongzhe,longyue,zhouminghui
  */
-/* eslint-disable fecs-camelcase */
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -24,7 +24,6 @@ import App from "./App";
 async function getNodesInfo() {
   const nodesInfoProvider = "/nodes/info";
   const nodesInfo = await get(nodesInfoProvider);
-  console.log("nodesInfo", nodesInfo);
 
   if (nodesInfo && nodesInfo.list) {
     const nodesInfoList = nodesInfo.list;
@@ -32,9 +31,7 @@ async function getNodesInfo() {
 
     // todo: MAIN_CHAIN_ID CHAIN_ID
     const nodeInfo = nodesInfoList.find((item) => {
-      if (item.chain_id === config.CHAIN_ID) {
-        return item;
-      }
+      return item.chain_id === config.CHAIN_ID;
     });
     const { contract_address, chain_id } = nodeInfo;
     localStorage.setItem("currentChain", JSON.stringify(nodeInfo));

@@ -2,33 +2,50 @@ import React, { useMemo } from "react";
 import IconFont from "../../../components/IconFont";
 
 export default function ChainInfo({
+  price,
+  range,
   blockHeight,
   localTransactions,
+  tpsData,
   reward,
-  unconfirmedBlockHeight,
   localAccounts,
 }) {
   const infoList = useMemo(
     () => [
       {
-        icon: "confirmedblocks",
-        label: "Confirmed Blocks",
-        value: blockHeight.toLocaleString(),
+        icon: "elfPrice",
+        label: "ELF Price",
+        value: range !== "-" && (
+          <p>
+            <span>$ {price.USD.toFixed(2)}</span>
+            <span className={`range ${range >= 0 ? "rise" : "fall"}`}>
+              ({range >= 0 ? "+" : ""}
+              {range.toFixed(2)}%)
+            </span>
+          </p>
+        ),
       },
       {
         icon: "transactions",
         label: "Transactions",
-        value: localTransactions.toLocaleString(),
+        value: (
+          <p>
+            <span>{(localTransactions / 1000000).toFixed(2)}M</span>
+            <span className="tps">
+              {tpsData ? `(${(tpsData / 60).toFixed(2)}TPS)` : ""}
+            </span>
+          </p>
+        ),
       },
       {
-        icon: "reward",
+        icon: "rewardDollar",
         label: "Reward",
         value: <p>{reward && (reward.ELF || 0).toLocaleString()} ELF</p>,
       },
       {
         icon: "unconfirmedblocks",
-        label: "Unconfirmed Blocks",
-        value: unconfirmedBlockHeight,
+        label: "Last Block",
+        value: blockHeight,
       },
       {
         icon: "account",
@@ -43,13 +60,7 @@ export default function ChainInfo({
         ),
       },
     ],
-    [
-      blockHeight,
-      localTransactions,
-      reward,
-      unconfirmedBlockHeight,
-      localAccounts,
-    ]
+    [blockHeight, localTransactions, reward, localAccounts]
   );
   return (
     <>
