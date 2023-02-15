@@ -218,7 +218,7 @@ class BrowserHeader extends PureComponent {
   renderMenu(menuMode, showMenu = true) {
     const { current } = this.state;
     const nodeInfo = JSON.parse(localStorage.getItem("currentChain"));
-    const { chain_id } = nodeInfo;
+    const { chain_id } = nodeInfo || {};
 
     let voteHTML = "";
     let resourceHTML = "";
