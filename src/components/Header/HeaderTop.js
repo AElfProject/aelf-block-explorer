@@ -39,6 +39,7 @@ export default function HeaderTop({
       if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
         setPrice(priceRes);
         setPreviousPrice(previousPriceRes);
+        jumpFlag = true;
       }
     };
     // include headertop and home page
@@ -47,7 +48,6 @@ export default function HeaderTop({
     } else if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
       // only once
       if (!jumpFlag) {
-        jumpFlag = true;
         fetchData();
       }
     }
