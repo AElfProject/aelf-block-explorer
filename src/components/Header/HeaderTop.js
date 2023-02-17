@@ -42,15 +42,14 @@ export default function HeaderTop({
       }
     };
     // include headertop and home page
-    if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
+    if (window.location.pathname === "/") {
+      fetchData();
+    } else if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
       // only once
       if (!jumpFlag) {
         jumpFlag = true;
         fetchData();
       }
-    }
-    if (window.location.pathname === "/") {
-      fetchData();
     }
   }, [pathname]);
 
