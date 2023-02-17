@@ -17,6 +17,7 @@ import fetchPriceAndPrevious from "../../utils/fetchPriceAndPrevious";
 const TokenIcon = require("../../assets/images/tokenLogo.png");
 
 const { SubMenu, Item: MenuItem } = Menu;
+let jumpFlag = false;
 
 export default function HeaderTop({
   headerClass,
@@ -41,10 +42,14 @@ export default function HeaderTop({
       }
     };
     // include headertop and home page
-    if (
-      (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) ||
-      window.location.pathname === "/"
-    ) {
+    if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
+      // only once
+      if (!jumpFlag) {
+        jumpFlag = true;
+        fetchData();
+      }
+    }
+    if (window.location.pathname === "/") {
       fetchData();
     }
   }, [pathname]);
