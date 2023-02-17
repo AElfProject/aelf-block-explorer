@@ -19,6 +19,8 @@ const { DEFAUT_RPCSERVER } = constants;
 
 const initialState = {
   isSmallScreen: false,
+  price: { USD: 0 },
+  previousPrice: { usd: 0 },
   aelf: new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCSERVER)),
   logStatus: LOG_STATUS.LOG_OUT,
   isALLSettle: false,
@@ -73,6 +75,14 @@ const common = (state = initialState, { type, payload }) => {
       };
     case "SET_IS_SMALL_SCREEN":
       return { ...state, isSmallScreen: payload.isSmallScreen };
+    case "SET_PRICE_HISTORYPRICE": {
+      return {
+        ...state,
+        price: payload.price,
+        previousPrice: payload.previousPrice,
+      };
+    }
+
     default:
       return state;
   }
