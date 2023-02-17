@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useLocation } from "react-router";
 import TPSChart from "../../components/TPSChart/TPSChart";
 import {
   ALL_BLOCKS_UNCONFIRMED_BLOCKS_API_URL,
@@ -19,6 +20,9 @@ import { CHAIN_ID } from "../../../config/config.json";
 import "./home.styles.less";
 import { initSocket } from "./socket";
 import { NETWORK_TYPE } from "../../../config/config";
+import { setPriceAndHistoryPrice } from "../../redux/actions/common";
+import fetchPriceAndPrevious from "../../utils/fetchPriceAndPrevious";
+import { isPhoneCheckWithWindow } from "../../utils/deviceCheck";
 
 const PAGE_SIZE = 25;
 const interval = 60 * 1000; // 1 minute
@@ -29,7 +33,10 @@ let blockHeight = 0;
 
 export default function Home() {
   const common = useSelector((state) => state.common);
-  const { price, previousPrice } = common;
+  const dispatch = useDispatch();
+  const [price, setPrice] = useState({ USD: 0 });
+  const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
+  const { pathname } = useLocation();
   const [blocks, setBlocks] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [reward, setReward] = useState({ ELF: 0 });
@@ -62,6 +69,23 @@ export default function Home() {
 
     return res;
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { price: priceRes, previousPrice: previousPriceRes } =
+        await fetchPriceAndPrevious();
+      dispatch(setPriceAndHistoryPrice(priceRes, previousPriceRes));
+      setPrice(priceRes);
+      setPreviousPrice(previousPriceRes);
+    };
+    const isPhone = isPhoneCheckWithWindow();
+    if (isPhone) {
+      fetchData();
+    } else {
+      setPrice(common.price);
+      setPreviousPrice(common.previousPrice);
+    }
+  }, [pathname]);
 
   const initBasicInfo = useCallback(async () => {
     const result = await get(BASIC_INFO);

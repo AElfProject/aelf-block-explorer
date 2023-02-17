@@ -12,6 +12,7 @@ import useMobile from "../../hooks/useMobile";
 import { ELF_REALTIME_PRICE_URL, HISTORY_PRICE } from "../../constants";
 import { get } from "../../utils";
 import { setPriceAndHistoryPrice } from "../../redux/actions/common";
+import fetchPriceAndPrevious from "../../utils/fetchPriceAndPrevious";
 
 const TokenIcon = require("../../assets/images/tokenLogo.png");
 
@@ -31,28 +32,8 @@ export default function HeaderTop({
   const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
   useEffect(() => {
     const fetchData = async () => {
-      let priceRes;
-      let previousPriceRes;
-      const d = new Date();
-      await get(ELF_REALTIME_PRICE_URL, {
-        fsym: "ELF",
-        tsyms: "USD,BTC,CNY",
-      }).then((res) => {
-        priceRes = res;
-      });
-      // set zh to keep correct date type
-      await get(HISTORY_PRICE, {
-        token_id: "aelf",
-        vs_currencies: "usd",
-        date:
-          new Date(d.toLocaleDateString("zh")).valueOf() -
-          d.getTimezoneOffset() * 60000 -
-          24 * 3600 * 1000,
-      }).then((res) => {
-        if (!res.message) {
-          previousPriceRes = res;
-        }
-      });
+      const { price: priceRes, previousPrice: previousPriceRes } =
+        await fetchPriceAndPrevious();
       dispatch(setPriceAndHistoryPrice(priceRes, previousPriceRes));
       if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
         setPrice(priceRes);
@@ -66,7 +47,7 @@ export default function HeaderTop({
     ) {
       fetchData();
     }
-  }, [isMobile, pathname]);
+  }, [pathname]);
 
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
