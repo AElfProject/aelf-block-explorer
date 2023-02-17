@@ -36,7 +36,8 @@
           ["@", "./src/"],
           ["@src", "./src/"],
           ["@utils", "./src/utils"],
-          ["@actions", "./src/redux/actions"]
+          ["@actions", "./src/redux/actions"],
+          ["@pages", "./src/pages"]
         ]
       }
     }

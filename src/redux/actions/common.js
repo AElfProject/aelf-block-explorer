@@ -7,6 +7,12 @@
  * @Description: file content
  */
 export const setIsSmallScreen = (isSmallScreen) => ({
-  type: 'SET_IS_SMALL_SCREEN',
+  type: "SET_IS_SMALL_SCREEN",
   payload: { isSmallScreen },
 });
+export const setPriceAndHistoryPrice = (price, previousPrice) => {
+  return {
+    type: "SET_PRICE_HISTORYPRICE",
+    payload: { price, previousPrice },
+  };
+};

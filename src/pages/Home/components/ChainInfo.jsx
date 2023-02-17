@@ -17,10 +17,10 @@ export default function ChainInfo({
         label: "ELF Price",
         value: range !== "-" && (
           <p>
-            <span>$ {price.USD.toFixed(2)}</span>
+            <span>$ {price?.USD?.toFixed(2)}</span>
             <span className={`range ${range >= 0 ? "rise" : "fall"}`}>
               ({range >= 0 ? "+" : ""}
-              {range.toFixed(2)}%)
+              {range?.toFixed(2)}%)
             </span>
           </p>
         ),
@@ -60,7 +60,7 @@ export default function ChainInfo({
         ),
       },
     ],
-    [blockHeight, localTransactions, reward, localAccounts]
+    [price, range, blockHeight, localTransactions, reward, localAccounts]
   );
   return (
     <>

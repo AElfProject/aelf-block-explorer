@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import TPSChart from "../../components/TPSChart/TPSChart";
 import {
   ALL_BLOCKS_UNCONFIRMED_BLOCKS_API_URL,
@@ -27,8 +28,8 @@ const TokenIcon = require("../../assets/images/tokenLogo.png");
 let blockHeight = 0;
 
 export default function Home() {
-  const [price, setPrice] = useState({ USD: 0 });
-  const [previousPrice, setPreviousPrice] = useState({ usd: 0 });
+  const common = useSelector((state) => state.common);
+  const { price, previousPrice } = common;
   const [blocks, setBlocks] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [reward, setReward] = useState({ ELF: 0 });
@@ -46,31 +47,11 @@ export default function Home() {
   const [ownTpsData, setOwnTpsData] = useState([]);
 
   const range = useMemo(() => {
-    if (price.USD && previousPrice.usd) {
-      return ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
+    if (price?.USD && previousPrice?.usd) {
+      return ((price?.USD - previousPrice?.usd) / previousPrice?.usd) * 100;
     }
     return 0;
-  }, [price.USD, previousPrice.usd]);
-
-  useEffect(() => {
-    const d = new Date();
-    get(ELF_REALTIME_PRICE_URL, { fsym: "ELF", tsyms: "USD,BTC,CNY" }).then(
-      (res) => setPrice(res)
-    );
-    // set zh to keep correct date type
-    get(HISTORY_PRICE, {
-      token_id: "aelf",
-      vs_currencies: "usd",
-      date:
-        new Date(d.toLocaleDateString("zh")).valueOf() -
-        d.getTimezoneOffset() * 60000 -
-        24 * 3600 * 1000,
-    }).then((res) => {
-      if (!res.message) {
-        setPreviousPrice(res);
-      }
-    });
-  }, [window.location]);
+  }, [price?.USD, previousPrice?.usd]);
 
   const fetch = useCallback(async (url) => {
     const res = await get(url, {
