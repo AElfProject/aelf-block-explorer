@@ -74,7 +74,6 @@ export default function Home() {
     const fetchData = async () => {
       const { price: priceRes, previousPrice: previousPriceRes } =
         await fetchPriceAndPrevious();
-      dispatch(setPriceAndHistoryPrice(priceRes, previousPriceRes));
       setPrice(priceRes);
       setPreviousPrice(previousPriceRes);
     };
@@ -85,7 +84,7 @@ export default function Home() {
       setPrice(common.price);
       setPreviousPrice(common.previousPrice);
     }
-  }, [pathname]);
+  }, [pathname, common.price, common.previousPrice]);
 
   const initBasicInfo = useCallback(async () => {
     const result = await get(BASIC_INFO);
