@@ -123,10 +123,6 @@ export default function AddressDetail() {
 
   useEffect(() => {
     const { hash } = window.location;
-    // compatible with old contract url without hash
-    if (prefixAddress.indexOf("_") === -1 && isCA && !hash) {
-      window.location.hash = "#contract";
-    }
     const key = keyFromHash[hash];
     setActiveKey(key || "tokens");
     if (isCA) {
