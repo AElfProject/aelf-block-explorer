@@ -30,6 +30,14 @@ const keyFromHash = {
   "#events": "events",
   "#history": "history",
 };
+// compatible with old url
+const formatAddress = (prefixAddress) => {
+  if (prefixAddress.indexOf("_") > -1) {
+    return prefixAddress.split("_")[1];
+  }
+  return prefixAddress;
+};
+
 export default function AddressDetail() {
   const nav = useNavigate();
   const { address: prefixAddress, codeHash } = useParams();
@@ -41,7 +49,8 @@ export default function AddressDetail() {
   const [tokensLoading, setTokensLoading] = useState(true);
   const [contractInfo, setContractInfo] = useState(undefined);
   const [contractHistory, setContractHistory] = useState(undefined);
-  const address = prefixAddress.split("_")[1];
+
+  const address = formatAddress(prefixAddress);
   const isCA = useMemo(() => !!contracts[address], [contracts, address]);
 
   const elfBalance = useMemo(
@@ -113,6 +122,10 @@ export default function AddressDetail() {
   }, [balances]);
 
   useEffect(() => {
+    // compatible with old contract url without hash
+    if (prefixAddress.indexOf("_") && isCA) {
+      window.location.hash = "#contract";
+    }
     const { hash } = window.location;
     const key = keyFromHash[hash];
     setActiveKey(key || "tokens");
@@ -188,9 +201,9 @@ export default function AddressDetail() {
               address,
               codeHash,
               activeKey,
-              onTabClick:(key)=>{
+              onTabClick: (key) => {
                 setActiveKey(key);
-              }
+              },
             }).map(({ children, ...props }) => (
               <Tabs.TabPane key={props.key} tab={props.tab}>
                 {children}
