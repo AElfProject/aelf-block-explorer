@@ -15,6 +15,9 @@ export default function Tokens({ balances, prices, dataLoading }) {
   const sortedArr = useMemo(() => {
     const elf = balances.find((i) => i.symbol === "ELF");
     const other = balances.filter((i) => i.symbol !== "ELF");
+    if (!elf) {
+      return other;
+    }
     return [elf, ...other];
   }, [balances]);
 
