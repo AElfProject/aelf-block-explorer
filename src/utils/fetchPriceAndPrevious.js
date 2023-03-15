@@ -8,6 +8,7 @@ export default async function fetchPriceAndPrevious() {
   await get(ELF_REALTIME_PRICE_URL, {
     fsym: "ELF",
     tsyms: "USD,BTC,CNY",
+    force: true,
   }).then((res) => {
     price = res;
   });

@@ -31,7 +31,7 @@ export default function BasicInfo({
       ])
     );
     Object.keys(obj).forEach((key) => {
-      const symbol = key.split("-")[1];
+      const symbol = key.slice(key.indexOf("-") + 1);
       if (value[symbol]) {
         value[symbol] += obj[key];
       } else {
