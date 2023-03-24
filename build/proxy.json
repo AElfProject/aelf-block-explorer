@@ -1,19 +1,19 @@
 [
   {
     "description": "aelf-contract-viewer运行的API，可本地运行或者代理到线上，只需要更改target",
-    "target": "https://explorer-test.aelf.io",
+    "target": "https://explorer-test-side02.aelf.io",
     "context": ["/api/viewer", "/api/proposal"],
     "headers": {
-      "Host": "explorer-test.aelf.io"
+      "Host": "explorer-test-side02.aelf.io"
     },
     "changeOrigin": true,
     "secure": false
   },
   {
-    "target": "https://explorer-test.aelf.io/",
+    "target": "https://explorer-test-side02.aelf.io/",
     "context": ["/api/blockChain"],
     "headers": {
-      "Host": "explorer-test.aelf.io"
+      "Host": "explorer-test-side02.aelf.io"
     },
     "pathRewrite": {
       "^/api/blockChain": "/chain/api/blockChain"
@@ -23,30 +23,30 @@
   },
   {
     "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
-    "target": "https://explorer-test.aelf.io",
+    "target": "https://explorer-test-side02.aelf.io",
     "context": ["/api"],
     "headers": {
-      "Host": "explorer-test.aelf.io"
+      "Host": "explorer-test-side02.aelf.io"
     },
     "changeOrigin": true,
     "secure": false
   },
   {
     "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
-    "target": "https://explorer-test.aelf.io",
+    "target": "https://explorer-test-side02.aelf.io",
     "context": ["/cms"],
     "headers": {
-      "Host": "explorer-test.aelf.io"
+      "Host": "explorer-test-side02.aelf.io"
     },
     "changeOrigin": true,
     "secure": false
   },
   {
     "description": "链节点，只需要更改target",
-    "target": "https://explorer-test.aelf.io",
+    "target": "https://explorer-test-side02.aelf.io",
     "context": ["/chain"],
     "headers": {
-      "Host": "explorer-test.aelf.io"
+      "Host": "explorer-test-side02.aelf.io"
     },
     "changeOrigin": true,
     "secure": false
@@ -61,10 +61,10 @@
   },
   {
     "description": "aelf-block-api运行的websocket服务，只需更改target",
-    "target": "wss://explorer-test.aelf.io",
+    "target": "wss://explorer-test-side02.aelf.io",
     "context": ["/socket"],
     "headers": {
-      "Host": "explorer-test.aelf.io"
+      "Host": "explorer-test-side02.aelf.io"
     },
     "changeOrigin": true,
     "secure": false

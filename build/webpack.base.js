@@ -48,12 +48,12 @@ const baseConfig = {
       "@actions": path.resolve(ROOT, "src/redux/actions/"),
     },
     modules: [path.resolve(ROOT, "src"), path.resolve(ROOT, "node_modules")],
-    extensions: [".jsx", ".js", ".mjs"],
+    extensions: [".jsx", ".js", ".mjs", ".tsx"],
   },
   module: {
     rules: [
       {
-        test: /\.(js)x?$/,
+        test: /\.(js|ts)x?$/,
         exclude: /node_modules/,
         use: {
           loader: require.resolve("babel-loader"),
@@ -157,8 +157,10 @@ const baseConfig = {
       chunks: isProdMode ? ["runtime.app", "vendors", "app"] : ["app"],
       name: "app",
       title: "AELF Block Explorer",
-      favicon: isTestNet ? 'public/favicon.test.ico' : 'public/favicon.main.ico',
-      hash: true
+      favicon: isTestNet
+        ? "public/favicon.test.ico"
+        : "public/favicon.main.ico",
+      hash: true,
     }),
     new webpack.ProvidePlugin({
       React: "react",

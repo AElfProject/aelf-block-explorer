@@ -46,6 +46,7 @@ export async function getDeserializeLog(aelf, txId, logName) {
   if (!txId)
     throw new Error("Transaction failed. Please reinitiate this step.");
   const txResult = await getTxResult(aelf, txId ?? "");
+  // A transaction is said to be mined when it is included to the blockchain in a new block.
   if (txResult.Status === "MINED") {
     const { Logs = [] } = txResult;
     const log = (Logs || []).filter((v) => v.Name === logName);

@@ -2,23 +2,19 @@
  * @file NightElfCheck
  * @author zhouminghui
  */
-import AElfBridge from 'aelf-bridge';
-import Promise from 'core-js-pure/actual/promise';
-import {
-  getPublicKeyFromObject,
-} from '../../../common/utils';
-import contants from './constants';
+import AElfBridge from "aelf-bridge";
+import Promise from "core-js-pure/actual/promise";
 
-const {
-  viewer,
-  APP_NAME,
-  DEFAUT_RPCSERVER,
-} = contants;
+import contants from "./constants";
+// eslint-disable-next-line import/no-cycle
+import { getPublicKeyFromObject } from "../../../common/utils";
+
+const { viewer, APP_NAME, DEFAUT_RPCSERVER } = contants;
 
 const contracts = viewer.contractAddress.map((v) => ({
   ...v,
   chainId: viewer.chainId,
-  github: '',
+  github: "",
 }));
 
 export default class Extension {
@@ -43,7 +39,9 @@ export default class Extension {
     this.isExist = Promise.any([
       this.isExtensionExist(),
       this.isAelfBridgeExist(),
-    ]).then((first) => first).catch(() => false);
+    ])
+      .then((first) => first)
+      .catch(() => false);
 
     Extension.instance = this;
   }
@@ -52,27 +50,29 @@ export default class Extension {
     return new Promise((resolve) => {
       if (window.NightElf || window.parent.NightElf) {
         resolve(true);
-        this.elfType = 'extension';
+        this.elfType = "extension";
       } else {
-        document.addEventListener('NightElf', () => {
+        document.addEventListener("NightElf", () => {
           resolve(true);
-          this.elfType = 'extension';
+          this.elfType = "extension";
         });
         setTimeout(() => {
           resolve(!!(window.NightElf || window.parent.NightElf));
         }, 5000);
       }
-    }).then((result) => {
-      if (result) {
-        this.elfInstance = new (window.NightElf || window.parent.NightElf).AElf({
-          httpProvider: [
-            DEFAUT_RPCSERVER,
-          ],
-          appName: APP_NAME,
-        });
-      }
-      return result;
-    }).catch(() => false);
+    })
+      .then((result) => {
+        if (result) {
+          this.elfInstance = new (
+            window.NightElf || window.parent.NightElf
+          ).AElf({
+            httpProvider: [DEFAUT_RPCSERVER],
+            appName: APP_NAME,
+          });
+        }
+        return result;
+      })
+      .catch(() => false);
   }
 
   isAelfBridgeExist() {
@@ -83,74 +83,84 @@ export default class Extension {
       bridgeInstance.connect().then((isConnected) => {
         if (isConnected) {
           resolve(true);
-          this.elfType = 'app';
+          this.elfType = "app";
         }
       });
       setTimeout(() => {
         resolve(false);
       }, 5000);
-    }).then((result) => {
-      if (result) {
-        this.elfInstance = new AElfBridge({
-          endpoint: DEFAUT_RPCSERVER,
-        });
-      }
-      return result;
-    }).catch(() => false);
+    })
+      .then((result) => {
+        if (result) {
+          this.elfInstance = new AElfBridge({
+            endpoint: DEFAUT_RPCSERVER,
+          });
+        }
+        return result;
+      })
+      .catch(() => false);
   }
 
   async loginAelfBridge() {
     if (Object.keys(this.currentWallet).length) {
-      console.log('this.currentWallet ready', this.currentWallet);
+      console.log("this.currentWallet ready", this.currentWallet);
       return this.currentWallet;
     }
 
     const result = await this.elfInstance.account();
     const account = result.accounts[0];
 
-    console.log('aelfInstanceByBridge account', account, JSON.stringify(result));
+    console.log(
+      "aelfInstanceByBridge account",
+      account,
+      JSON.stringify(result)
+    );
 
     this.currentWallet = {
       ...account,
       publicKey: account.publicKey.match('"x"')
-        ? getPublicKeyFromObject(JSON.parse(account.publicKey)) : account.publicKey,
+        ? getPublicKeyFromObject(JSON.parse(account.publicKey))
+        : account.publicKey,
     };
 
     this.elfInstance.chain.getChainStatus();
-    console.log('this.currentWallet', this.currentWallet);
+    console.log("this.currentWallet", this.currentWallet);
     return this.currentWallet;
   }
 
   async loginExtension() {
     return new Promise((resolve, reject) => {
-      this.elfInstance.login({
-        appName: APP_NAME,
-        payload: {
-          method: 'LOGIN',
-          contracts,
+      this.elfInstance.login(
+        {
+          appName: APP_NAME,
+          payload: {
+            method: "LOGIN",
+            contracts,
+          },
         },
-      }, (error, result) => {
-        if (error) {
-          reject(error);
-        } else if (result && +result.error === 0) {
-          let detail;
-          try {
-            detail = JSON.parse(result.detail);
-          } catch (e) {
-            detail = result.detail;
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else if (result && +result.error === 0) {
+            let detail;
+            try {
+              detail = JSON.parse(result.detail);
+            } catch (e) {
+              detail = result.detail;
+            }
+            this.currentWallet = {
+              ...detail,
+              publicKey: getPublicKeyFromObject(detail.publicKey),
+            };
+            resolve(this.currentWallet);
+          } else {
+            reject(result);
           }
-          this.currentWallet = {
-            ...detail,
-            publicKey: getPublicKeyFromObject(detail.publicKey),
-          };
-          resolve(this.currentWallet);
-        } else {
-          reject(result);
         }
-      });
+      );
     }).then((result) => {
       this.elfInstance.chain.getChainStatus();
-      console.log('this.currentWallet', this.currentWallet);
+      console.log("this.currentWallet", this.currentWallet);
       return result;
     });
   }
@@ -158,33 +168,38 @@ export default class Extension {
   async login() {
     const isExist = await this.isExist;
     if (!isExist) {
-      throw new Error('Plugin is not exist');
+      throw new Error("Plugin is not exist");
     }
-    if (this.elfType === 'app') {
+    if (this.elfType === "app") {
       return this.loginAelfBridge();
     }
     return this.loginExtension();
   }
 
   async logout(address) {
-    if (this.elfType === 'app') {
+    if (this.elfType === "app") {
       return false;
     }
     return new Promise((resolve, reject) => {
-      this.elfInstance.logout({
-        appName: APP_NAME,
-        address,
-      }, (error, result) => {
-        if (error) {
+      this.elfInstance
+        .logout(
+          {
+            appName: APP_NAME,
+            address,
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              this.currentWallet = {};
+              this.contracts = {};
+              resolve(result);
+            }
+          }
+        )
+        .catch((error) => {
           reject(error);
-        } else {
-          this.currentWallet = {};
-          this.contracts = {};
-          resolve(result);
-        }
-      }).catch((error) => {
-        reject(error);
-      });
+        });
     });
   }
 
@@ -192,23 +207,21 @@ export default class Extension {
    * Todo: get signature from aelf bridge
    */
   sign(hex) {
-    return this.elfInstance.getSignature({
-      address: this.currentWallet.address,
-      hexToBeSign: hex,
-    }).then((result) => {
-      if (result && +result.error === 0) {
-        return result.signature;
-      }
-      throw result;
-    });
+    return this.elfInstance
+      .getSignature({
+        address: this.currentWallet.address,
+        hexToBeSign: hex,
+      })
+      .then((result) => {
+        if (result && +result.error === 0) {
+          return result.signature;
+        }
+        throw result;
+      });
   }
 
   async invoke(params) {
-    const {
-      contractAddress,
-      param,
-      contractMethod,
-    } = params;
+    const { contractAddress, param, contractMethod } = params;
     if (!this.contracts[contractAddress]) {
       const con = await this.elfInstance.chain.contractAt(contractAddress, {
         address: this.currentWallet.address,

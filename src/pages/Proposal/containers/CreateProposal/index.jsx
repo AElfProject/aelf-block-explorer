@@ -2,6 +2,7 @@
  * @file create proposal
  * @author atom-yang
  */
+// eslint-disable-next-line no-use-before-define
 import React, { useCallback, useState } from "react";
 import { Tabs, Modal, message } from "antd";
 import { useSelector } from "react-redux";
@@ -27,6 +28,7 @@ import {
   useReleaseCodeCheckedContractAction,
 } from "./utils.callback";
 import ContractProposalModal from "./ContractProposalModal";
+import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.tsx";
 
 const { TabPane } = Tabs;
 
@@ -54,7 +56,26 @@ const CreateProposal = () => {
   });
   const { aelf, wallet, currentWallet } = common;
   const [applyModal, setApplyModal] = useState(initApplyModal);
+  const [withoutApprovalProps, setWithoutApprovalProps] = useState({});
+  const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
 
+  // open without approval modal
+  const onOpenWithoutApprovalModal = (isUpdate, params) => {
+    const props = {
+      isUpdate,
+      message:
+        "The account balance is not enough to pay the deployment fee and size fee!",
+      status: {
+        verification: 2,
+        execution: 3,
+      },
+      cancel: () => {
+        setWithoutApprovalOpen(false);
+      },
+    };
+    setWithoutApprovalProps(props);
+    setWithoutApprovalOpen(true);
+  };
   const handleCancel = () => {
     if (normalResult.isModalVisible) {
       setNormalResult({
@@ -102,6 +123,7 @@ const CreateProposal = () => {
 
   async function submitContract(contract) {
     const {
+      isUpdate,
       address,
       action,
       name,
@@ -109,10 +131,11 @@ const CreateProposal = () => {
       isOnlyUpdateName,
       onSuccess,
       contractMethod,
+      approvalMode,
     } = contract;
     let params = {};
-
     try {
+      // bp and without approval, both process is below when onlyUpdateName.
       if (isOnlyUpdateName) {
         await updateContractName(wallet, currentWallet, {
           contractAddress: address,
@@ -146,6 +169,17 @@ const CreateProposal = () => {
           code: file,
         };
       }
+      if (approvalMode === "withoutApproval") {
+        const result = await contractSend(action, params);
+        const Log = await getDeserializeLog(
+          aelf,
+          result?.TransactionId || result?.result?.TransactionId || "",
+          "ProposalCreated"
+        );
+        const { proposalId } = Log ?? "";
+
+        return;
+      }
       const result = await contractSend(action, params);
       const Log = await getDeserializeLog(
         aelf,
@@ -170,7 +204,7 @@ const CreateProposal = () => {
           <div style={{ textAlign: "left" }}>
             {proposalId ? (
               <CopylistItem
-                label='Proposal ID：'
+                label="Proposal ID："
                 value={proposalId}
                 // href={`/proposalsDetail/${proposalId}`}
               />
@@ -178,7 +212,7 @@ const CreateProposal = () => {
               "This may be due to transaction failure. Please check it via Transaction ID:"
             )}
             <CopylistItem
-              label='Transaction ID：'
+              label="Transaction ID："
               isParentHref
               value={
                 result?.TransactionId || result?.result?.TransactionId || ""
@@ -275,9 +309,9 @@ const CreateProposal = () => {
   }, []);
 
   return (
-    <div className='proposal-apply'>
-      <Tabs className='proposal-apply-tab' defaultActiveKey='normal'>
-        <TabPane tab='Ordinary Proposal' key='normal'>
+    <div className="proposal-apply">
+      <Tabs className="proposal-apply-tab" defaultActiveKey="normal">
+        <TabPane tab="Ordinary Proposal" key="normal">
           <NormalProposal
             isModify={orgAddress === modifyData.orgAddress}
             {...(orgAddress === modifyData.orgAddress ? modifyData : {})}
@@ -292,7 +326,7 @@ const CreateProposal = () => {
             submit={handleNormalSubmit}
           />
         </TabPane>
-        <TabPane tab='Deploy/Update Contract' key='contract'>
+        <TabPane tab="Deploy/Update Contract" key="contract">
           <ContractProposal
             loading={contractResult.confirming}
             submit={handleContractSubmit}
@@ -300,59 +334,59 @@ const CreateProposal = () => {
         </TabPane>
       </Tabs>
       <Modal
-        wrapClassName='create-proposal-modal'
-        title='Are you sure create this new proposal?'
+        wrapClassName="create-proposal-modal"
+        title="Are you sure create this new proposal?"
         width={720}
         visible={normalResult.isModalVisible}
         confirmLoading={normalResult.confirming}
         onOk={submitNormalResult}
         onCancel={handleCancel}
       >
-        <div className='proposal-result-list'>
-          <div className='proposal-result-list-item gap-bottom'>
-            <span className='sub-title gap-right'>Proposal Type:</span>
-            <span className='proposal-result-list-item-value text-ellipsis'>
+        <div className="proposal-result-list">
+          <div className="proposal-result-list-item gap-bottom">
+            <span className="sub-title gap-right">Proposal Type:</span>
+            <span className="proposal-result-list-item-value text-ellipsis">
               {normalResult.proposalType}
             </span>
           </div>
-          <div className='proposal-result-list-item gap-bottom'>
-            <span className='sub-title gap-right'>Organization Address:</span>
-            <span className='proposal-result-list-item-value text-ellipsis'>
+          <div className="proposal-result-list-item gap-bottom">
+            <span className="sub-title gap-right">Organization Address:</span>
+            <span className="proposal-result-list-item-value text-ellipsis">
               {normalResult.organizationAddress}
             </span>
           </div>
-          <div className='proposal-result-list-item gap-bottom'>
-            <span className='sub-title gap-right'>Contract Address:</span>
-            <span className='proposal-result-list-item-value text-ellipsis'>
+          <div className="proposal-result-list-item gap-bottom">
+            <span className="sub-title gap-right">Contract Address:</span>
+            <span className="proposal-result-list-item-value text-ellipsis">
               {normalResult.toAddress}
             </span>
           </div>
-          <div className='proposal-result-list-item gap-bottom'>
-            <span className='sub-title gap-right'>Contract Method:</span>
-            <span className='proposal-result-list-item-value text-ellipsis'>
+          <div className="proposal-result-list-item gap-bottom">
+            <span className="sub-title gap-right">Contract Method:</span>
+            <span className="proposal-result-list-item-value text-ellipsis">
               {normalResult.contractMethodName}
             </span>
           </div>
-          <div className='proposal-result-list-item gap-bottom'>
-            <span className='sub-title gap-right'>Contract Params:</span>
-            <pre className='proposal-result-list-item-value'>
+          <div className="proposal-result-list-item gap-bottom">
+            <span className="sub-title gap-right">Contract Params:</span>
+            <pre className="proposal-result-list-item-value">
               {JSON.stringify((normalResult.params || {}).origin, null, 2)}
             </pre>
           </div>
-          <div className='proposal-result-list-item gap-bottom'>
-            <span className='sub-title gap-right'>Description URL:</span>
+          <div className="proposal-result-list-item gap-bottom">
+            <span className="sub-title gap-right">Description URL:</span>
             <a
               href={normalResult.proposalDescriptionUrl}
-              className='proposal-result-list-item-value text-ellipsis'
-              target='_blank'
-              rel='noopener noreferrer'
+              className="proposal-result-list-item-value text-ellipsis"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {normalResult.proposalDescriptionUrl}
             </a>
           </div>
-          <div className='proposal-result-list-item gap-bottom'>
-            <span className='sub-title gap-right'>Expiration Time:</span>
-            <span className='proposal-result-list-item-value text-ellipsis'>
+          <div className="proposal-result-list-item gap-bottom">
+            <span className="sub-title gap-right">Expiration Time:</span>
+            <span className="proposal-result-list-item-value text-ellipsis">
               {normalResult.expiredTime &&
                 normalResult.expiredTime.format("YYYY/MM/DD HH:mm:ss")}
             </span>
@@ -362,6 +396,10 @@ const CreateProposal = () => {
       <ContractProposalModal
         contractModalCancle={contractModalCancle}
         applyModal={applyModal}
+      />
+      <WithoutApprovalModal
+        open={withoutApprovalOpen}
+        withoutApprovalProps={withoutApprovalProps}
       />
     </div>
   );
