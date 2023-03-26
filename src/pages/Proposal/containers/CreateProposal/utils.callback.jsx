@@ -36,6 +36,34 @@ export const useCallbackAssem = () => {
   );
 };
 
+export const useProposalInfo = () => {
+  const common = useSelector((state) => state.common);
+  const { wallet } = common;
+  // eslint-disable-next-line no-return-await
+  const proposalInfoSend = useCallback(
+    async (action, param) => {
+      const result = await wallet.invoke({
+        contractAddress: getContractAddress("Parliament"),
+        param,
+        contractMethod: action,
+      });
+      if ((result && +result.error === 0) || !result.error) {
+        return result;
+      }
+      throw new Error(
+        (result.errorMessage || {}).message || "Send proposal failed"
+      );
+    },
+    [wallet]
+  );
+  return useMemo(
+    () => ({
+      proposalInfoSend,
+    }),
+    [proposalInfoSend]
+  );
+};
+
 export const useReleaseApprovedContractAction = () => {
   const proposalSelect = useSelector((state) => state.proposalSelect);
   const common = useSelector((state) => state.common);

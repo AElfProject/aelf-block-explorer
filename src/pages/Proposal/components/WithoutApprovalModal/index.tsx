@@ -24,13 +24,14 @@ interface IProps {
   open: boolean;
   withoutApprovalProps: IModalProps;
 }
-const getMessage = (status, message, transactionId?) => {
+const getMessage = (props) => {
+  const { isUpdate, status, message, transactionId, title } = props;
   const { verification, execution } = status || {};
   // verification loading
   if (verification === 2) {
     return (
       <div className="verification-loading">
-        Contract deployment verification...
+        {`Contract ${isUpdate ? "update" : "deployment"} verification...`}
       </div>
     );
   } else if (verification === 1) {
@@ -39,14 +40,15 @@ const getMessage = (status, message, transactionId?) => {
         <div className="title">
           <CloseCircleFilled className="circle-icon close" />
           <span className={`fail-message`}>
-            Transaction pre-verification failed！
+            {`${title || "Transaction pre-verification failed！"}`}
           </span>
         </div>
-        <div className="content">{message}</div>
+        <div className={`content ${!!title && "text-left"}`}>{message}</div>
         <CopylistItem
-          label="Transaction ID："
+          label="Transaction ID"
           value={transactionId}
           href={""}
+          valueHref={`${window.location.origin}/tx/${transactionId}`}
         ></CopylistItem>
       </div>
     );
@@ -55,7 +57,7 @@ const getMessage = (status, message, transactionId?) => {
     if (execution === 2) {
       return (
         <div className="execution-loading">
-          Contract deployment in progress...
+          {`Contract ${isUpdate ? "update" : "deployment"}  in progress...`}
         </div>
       );
     } else if (execution === 0) {
@@ -63,11 +65,13 @@ const getMessage = (status, message, transactionId?) => {
         <div className="execution-success">
           <div className="title">
             <CheckCircleFilled className="circle-icon check" />
-            <span className={`success-message`}>The contract is deployed!</span>
+            <span className={`success-message`}>{`The contract is ${
+              isUpdate ? "updated" : "deployed"
+            }!`}</span>
           </div>
           <div className="content">{message}</div>
           <CopylistItem
-            label="Transaction ID："
+            label="Transaction ID"
             value={transactionId}
             href={""}
           ></CopylistItem>
@@ -79,12 +83,12 @@ const getMessage = (status, message, transactionId?) => {
           <div className="title">
             <CloseCircleFilled className="circle-icon close" />
             <span className={`fail-message`}>
-              Contract deployment failure！
+              {`Contract ${isUpdate ? "update" : "deployment"}  failure！`}
             </span>
           </div>
           <div className="content">{message}</div>
           <CopylistItem
-            label="Transaction ID："
+            label="Transaction ID"
             value={transactionId}
             href={""}
           ></CopylistItem>
@@ -95,7 +99,7 @@ const getMessage = (status, message, transactionId?) => {
 };
 const WithoutApprovalModal = (props: IProps) => {
   const { open, withoutApprovalProps } = props;
-  const { cancel, status, message } = withoutApprovalProps;
+  const { isUpdate, cancel, status } = withoutApprovalProps;
   const handleCancel = () => {
     cancel();
   };
@@ -120,7 +124,7 @@ const WithoutApprovalModal = (props: IProps) => {
             <span className={`icon icon${status?.verification}`}>1</span>
           )}
           <span className={`title title${status?.verification}`}>
-            Deployment verification
+            {`${isUpdate ? "Update" : "Deployment"}  verification`}
           </span>
         </div>
         <div className="middle-line"></div>
@@ -135,12 +139,12 @@ const WithoutApprovalModal = (props: IProps) => {
             <span className={`icon icon${status?.execution}`}>2</span>
           )}
           <span className={`title title${status?.execution}`}>
-            Deployment execution
+            {`${isUpdate ? "Update" : "Deployment"}  execution`}
           </span>
         </div>
       </div>
       <div className="without-approval-modal-message">
-        {getMessage(status, message)}
+        {getMessage(withoutApprovalProps)}
       </div>
       <div className="without-approval-modal-notice">
         <div className="title">Notice</div>

@@ -9,6 +9,13 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
+import {
+  useCallbackAssem,
+  useProposalInfo,
+  useReleaseApprovedContractAction,
+  useReleaseCodeCheckedContractAction,
+} from "./utils.callback";
+import ContractProposalModal from "./ContractProposalModal";
 import "./index.less";
 import {
   formatTimeToNano,
@@ -20,15 +27,11 @@ import CopylistItem from "../../components/CopylistItem";
 import {
   addContractName,
   getDeserializeLog,
+  getTransactionResult,
   updateContractName,
 } from "../../utils";
-import {
-  useCallbackAssem,
-  useReleaseApprovedContractAction,
-  useReleaseCodeCheckedContractAction,
-} from "./utils.callback";
-import ContractProposalModal from "./ContractProposalModal";
 import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.tsx";
+import { deserializeLog } from "../../../../common/utils";
 
 const { TabPane } = Tabs;
 
@@ -48,6 +51,7 @@ const CreateProposal = () => {
     confirming: false,
   });
   const { contractSend } = useCallbackAssem();
+  const { proposalInfoSend } = useProposalInfo();
   const releaseApprovedContractHandler = useReleaseApprovedContractAction();
   const releaseCodeCheckedContractHandler =
     useReleaseCodeCheckedContractAction();
@@ -60,20 +64,8 @@ const CreateProposal = () => {
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
 
   // open without approval modal
-  const onOpenWithoutApprovalModal = (isUpdate, params) => {
-    const props = {
-      isUpdate,
-      message:
-        "The account balance is not enough to pay the deployment fee and size fee!",
-      status: {
-        verification: 2,
-        execution: 3,
-      },
-      cancel: () => {
-        setWithoutApprovalOpen(false);
-      },
-    };
-    setWithoutApprovalProps(props);
+  const onOpenWithoutApprovalModal = (params) => {
+    setWithoutApprovalProps(params);
     setWithoutApprovalOpen(true);
   };
   const handleCancel = () => {
@@ -121,6 +113,10 @@ const CreateProposal = () => {
     [proposalSelect]
   );
 
+  const cancelWithoutApproval = () => {
+    setWithoutApprovalOpen(false);
+  };
+
   async function submitContract(contract) {
     const {
       isUpdate,
@@ -163,6 +159,18 @@ const CreateProposal = () => {
           category: "0",
           code: file,
         };
+      } else if (action === "UpdateUserSmartContract") {
+        // TODO: ContractDeploymentInput input???
+        params = {
+          category: "0",
+          code: file,
+        };
+      } else if (action === "DeployUserSmartContract") {
+        // TODO: ContractDeploymentInput input???
+        params = {
+          category: "0",
+          code: file,
+        };
       } else {
         params = {
           address,
@@ -170,14 +178,102 @@ const CreateProposal = () => {
         };
       }
       if (approvalMode === "withoutApproval") {
-        const result = await contractSend(action, params);
-        const Log = await getDeserializeLog(
-          aelf,
-          result?.TransactionId || result?.result?.TransactionId || "",
-          "ProposalCreated"
-        );
-        const { proposalId } = Log ?? "";
-
+        try {
+          // deploying
+          onOpenWithoutApprovalModal({
+            isUpdate,
+            status: {
+              verification: 2,
+              execution: 3,
+            },
+            cancel: cancelWithoutApproval,
+          });
+          // // get transaction id
+          const result = await contractSend(action, params);
+          // // according to Error show modal
+          let txRes = await getTransactionResult(
+            aelf,
+            result?.TransactionId || result?.result?.TransactionId || ""
+          );
+          txRes = {
+            TransactionId:
+              "9c950bfbea14b0fda68397c9c6e652b1741391139ccedb03e94a1d3f11eb1d9a",
+            Status: "MINED",
+            Logs: [
+              {
+                Address: "vcv1qewcsFN2tVWqLuu7DJ5wVFA8YEx5FFgCQBb1jMCbAQHxV",
+                Indexed: ["EiIKIAobvN9ajS/MOdT6SNONzWdudjtlkqILPDWV4ef1XTOn"],
+                Name: "ProposalCreated",
+                NonIndexed: "CiIKIIGh8TUTuvi4vc0ZZMbSRha7qBVQiMUOfwTgS4xz+mc0",
+              },
+            ],
+            ReturnValue:
+              "0a220a208d943111326527f426a1833a1d73b5e575846c29f85a358263577993b603033f",
+          };
+          // if pre-check fail
+          if (txRes?.Status === "NODEVALIDATIONFAILED") {
+            onOpenWithoutApprovalModal({
+              isUpdate,
+              transactionId: txRes?.TransactionId,
+              message: txRes?.Error,
+              status: {
+                verification: 1,
+                execution: 3,
+              },
+              cancel: cancelWithoutApproval,
+            });
+          } else if (txRes?.Status === "FAILED") {
+            // if balance is not enough
+            onOpenWithoutApprovalModal({
+              isUpdate,
+              title: "Contract deploy failed !",
+              transactionId: txRes?.TransactionId,
+              message:
+                "The account balance is not enough to pay the deployment fee and size fee!",
+              status: {
+                verification: 1,
+                execution: 3,
+              },
+              cancel: cancelWithoutApproval,
+            });
+          } else if (txRes?.Status === "MINED") {
+            const { Logs = [], ReturnValue } = txRes;
+            const log = (Logs || []).filter(
+              (v) => v.Name === "ProposalCreated"
+            );
+            if (log.length === 0) {
+              // TODO: how to deal with???
+            }
+            const { proposalId } = await deserializeLog(
+              log[0],
+              log[0].Name,
+              log[0].Address
+            );
+            // start training in rotation 3s once
+            // get proposal info
+            const proposalInfo = await proposalInfoSend(
+              "GetProposal",
+              proposalId
+            );
+            console.log(proposalInfo);
+            // get contract address
+            const contractAddress = await contractSend(
+              "GetSmartContractRegistrationByCodeHash",
+              ReturnValue
+            );
+            console.log(contractAddress);
+            // if proposalInfo-tobeReleased is true, go to exec
+            // if proposalInfo-tobeReleased is true then GetSmartContractRegistrationByCodeHash
+            // start training in rotation 3s once
+            //    if deploy success, can get contract address
+            //    if deploy failed, if without approval modal close, open normal modal
+            //    if without approval modal open, show exec failed
+            // if proposalInfo-tobeReleased is false until 10min, failed deploying ACS12
+            //
+          }
+        } catch (e) {
+          cancelWithoutApproval();
+        }
         return;
       }
       const result = await contractSend(action, params);

@@ -59,6 +59,14 @@ export async function getDeserializeLog(aelf, txId, logName) {
   }
 }
 
+export const getTransactionResult = async (aelf, txId) => {
+  if (!txId) {
+    throw new Error("Transaction failed. Please reinitiate this step.");
+  }
+  const txResult = await getTxResult(aelf, txId ?? "");
+  return txResult;
+};
+
 export function getContractURL(address) {
   // eslint-disable-next-line max-len
   return `${window.location.protocol}//${window.location.host}/contract/${address}#contract`;
