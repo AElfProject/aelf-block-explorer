@@ -6,6 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Modal } from "antd";
 import React from "react";
+import { CHAIN_ID } from "../../../../constants";
 import CopylistItem from "../CopylistItem";
 import "./index.less";
 interface IStatus {
@@ -24,6 +25,13 @@ interface IProps {
   open: boolean;
   withoutApprovalProps: IModalProps;
 }
+
+const noticeContent = [
+  "Transaction pre-verification failure, will not deduct the cost;",
+  "If the deployment fails, the deducted expenses will not be refunded;",
+  "The contract deployment is divided into two phases, which take about 1-10 minutes.",
+  "You can close this page during deployment. This page does not affect the process of contract deployment.",
+];
 const getMessage = (props) => {
   const { isUpdate, status, message, transactionId, title } = props;
   const { verification, execution } = status || {};
@@ -149,15 +157,16 @@ const WithoutApprovalModal = (props: IProps) => {
       <div className="without-approval-modal-notice">
         <div className="title">Notice</div>
         <div className="content">
-          1.Transaction pre-verification failure, will not deduct the cost;
-          <br />
-          2.If the deployment fails, the deducted expenses will not be refunded;
-          <br />
-          3.The contract deployment is divided into two phases, which take about
-          1-10 minutes.
-          <br />
-          4.You can close this page during deployment. This page does not affect
-          the process of contract deployment.
+          {(CHAIN_ID === "AELF" ? noticeContent : noticeContent.slice(1)).map(
+            (ele, index) => {
+              return (
+                <div className="content-item">
+                  <span>{index + 1}.</span>
+                  <span>{ele}</span>
+                </div>
+              );
+            }
+          )}
         </div>
       </div>
     </Modal>

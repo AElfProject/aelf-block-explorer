@@ -11,3 +11,8 @@ export const regPos = /^\d+(\.\d*)?$/; // 非负浮点数, allow 0.
 
 // export const regBuyTooManyResource = /must be 0/;
 export const regBuyTooManyResource = /InvalidValueException/;
+
+export const validateVersion = (version) => {
+  const regex = new RegExp(/^\d+(.\d+){3}$/);
+  return regex.test(version);
+};
