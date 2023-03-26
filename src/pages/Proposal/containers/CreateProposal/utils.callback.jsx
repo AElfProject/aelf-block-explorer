@@ -194,6 +194,11 @@ export const useReleaseCodeCheckedContractAction = () => {
         const { address } = logs ?? {};
         contractAddress = address;
       }
+      // TODO: how to get contract name???
+      const { ContractVersion } = await contractSend(
+        "GetSmartContractRegistrationByCodeHash",
+        txResult?.ReturnValue
+      );
 
       return {
         visible: true,
@@ -204,12 +209,18 @@ export const useReleaseCodeCheckedContractAction = () => {
         children: (
           <div style={{ textAlign: "left" }}>
             {!isError && contractAddress ? (
-              <CopylistItem
-                label="Contract Address："
-                isParentHref
-                value={contractAddress}
-                href={getContractURL(contractAddress || "")}
-              />
+              <div>
+                <CopylistItem
+                  label="Contract Address："
+                  isParentHref
+                  value={contractAddress}
+                  href={getContractURL(contractAddress || "")}
+                />
+                <div className="contract-name">Contract Name:</div>
+                <div className="contract-version">
+                  Version: {ContractVersion}
+                </div>
+              </div>
             ) : (
               "Please check your Proposal ."
             )}
