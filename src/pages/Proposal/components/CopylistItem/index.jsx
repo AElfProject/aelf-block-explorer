@@ -33,7 +33,11 @@ const CopylistItem = (props) => {
     <div className="copy-list-item-wrapper">
       <span className="copy-list-label">{label}:</span>
       <span className="copy-list-value">
-        {valueHref && <a href={valueHref}>{omitString(value, 10, 10)}</a>}
+        {valueHref ? (
+          <a href={valueHref}>{omitString(value, 10, 10)}</a>
+        ) : (
+          omitString(value, 10, 10)
+        )}
         {href ? (
           <>
             {isParentHref ? (

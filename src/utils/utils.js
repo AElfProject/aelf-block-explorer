@@ -1,16 +1,19 @@
 /* eslint-disable import/no-cycle */
-import AElf from 'aelf-sdk';
-import Decimal from 'decimal.js';
-import { aelf } from '../utils';
-import config from '../../config/config';
+import AElf from "aelf-sdk";
+import Decimal from "decimal.js";
+import { aelf } from "../utils";
+import config from "../../config/config";
 
-const resourceDecimals = config.resourceTokens.reduce((acc, v) => ({
-  ...acc,
-  [v.symbol]: v.decimals,
-}), {});
+const resourceDecimals = config.resourceTokens.reduce(
+  (acc, v) => ({
+    ...acc,
+    [v.symbol]: v.decimals,
+  }),
+  {}
+);
 
 export function isAddress(value) {
-  if (/[\u4e00-\u9fa5]/.test(value)) return false
+  if (/[\u4e00-\u9fa5]/.test(value)) return false;
   try {
     return !!AElf.utils.base58.decode(value);
   } catch {
@@ -21,14 +24,14 @@ export function isAddress(value) {
 export const rand16Num = (len = 0) => {
   const result = [];
   for (let i = 0; i < len; i += 1) {
-    result.push('0123456789abcdef'.charAt(Math.floor(Math.random() * 16)));
+    result.push("0123456789abcdef".charAt(Math.floor(Math.random() * 16)));
   }
-  return result.join('');
+  return result.join("");
 };
 
 export const removeAElfPrefix = (name) => {
   if (/^(AElf\.)(.*?)+/.test(name)) {
-    return name.split('.')[name.split('.').length - 1];
+    return name.split(".")[name.split(".").length - 1];
   }
   return name;
 };
@@ -38,7 +41,9 @@ const TOKEN_DECIMALS = {
 };
 let tokenContract = null;
 
-export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(config.commonPrivateKey);
+export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(
+  config.commonPrivateKey
+);
 
 export async function getTokenDecimal(symbol) {
   let decimal;
@@ -64,20 +69,34 @@ export async function getFee(transaction) {
   const resourceFees = AElf.pbUtils.getResourceFee(transaction.Logs || []);
   const decimals = await Promise.all(fee.map((f) => getTokenDecimal(f.symbol)));
   return {
-    fee: fee.map((f, i) => ({
-      ...f,
-      amount: new Decimal(f.amount || 0).dividedBy(`1e${decimals[i]}`).toString(),
-    })).reduce((acc, v) => ({
-      ...acc,
-      [v.symbol]: v.amount,
-    }), {}),
-    resources: resourceFees.map((v) => ({
-      ...v,
-      amount: new Decimal(v.amount || 0).dividedBy(`1e${resourceDecimals[v.symbol]}`).toString(),
-    })).reduce((acc, v) => ({
-      ...acc,
-      [v.symbol]: v.amount,
-    }), {}),
+    fee: fee
+      .map((f, i) => ({
+        ...f,
+        amount: new Decimal(f.amount || 0)
+          .dividedBy(`1e${decimals[i]}`)
+          .toString(),
+      }))
+      .reduce(
+        (acc, v) => ({
+          ...acc,
+          [v.symbol]: v.amount,
+        }),
+        {}
+      ),
+    resources: resourceFees
+      .map((v) => ({
+        ...v,
+        amount: new Decimal(v.amount || 0)
+          .dividedBy(`1e${resourceDecimals[v.symbol]}`)
+          .toString(),
+      }))
+      .reduce(
+        (acc, v) => ({
+          ...acc,
+          [v.symbol]: v.amount,
+        }),
+        {}
+      ),
   };
 }
 
@@ -103,12 +122,7 @@ function decodeBase64(str) {
 }
 
 export async function deserializeLog(log) {
-  const {
-    Indexed = [],
-    NonIndexed,
-    Name,
-    Address,
-  } = log;
+  const { Indexed = [], NonIndexed, Name, Address } = log;
   const proto = await getProto(Address);
   if (!proto) {
     return {};
@@ -135,8 +149,15 @@ export async function deserializeLog(log) {
     };
   }, {});
   // eslint-disable-next-line max-len
-  deserializeLogResult = AElf.utils.transform.transform(dataType, deserializeLogResult, AElf.utils.transform.OUTPUT_TRANSFORMERS);
-  deserializeLogResult = AElf.utils.transform.transformArrayToMap(dataType, deserializeLogResult);
+  deserializeLogResult = AElf.utils.transform.transform(
+    dataType,
+    deserializeLogResult,
+    AElf.utils.transform.OUTPUT_TRANSFORMERS
+  );
+  deserializeLogResult = AElf.utils.transform.transformArrayToMap(
+    dataType,
+    deserializeLogResult
+  );
   return deserializeLogResult;
 }
 
@@ -144,13 +165,19 @@ export function deserializeLogs(logs) {
   return Promise.all(logs.map((log) => deserializeLog(log)));
 }
 
-export function getOmittedStr(str = '', front = 8, rear = 4) {
-  const strArr = [...str]
+export function getOmittedStr(str = "", front = 8, rear = 4) {
+  const strArr = [...str];
 
-  const { length } = str
-  if (length > (front + rear)) {
-    strArr.splice(front, length - rear - front, '...')
-    return strArr.join('')
+  const { length } = str;
+  if (length > front + rear) {
+    strArr.splice(front, length - rear - front, "...");
+    return strArr.join("");
   }
-  return str
+  return str;
 }
+export const callGetMethod = async (params, fnName) => {
+  const { contractAddress, param, contractMethod } = params;
+  const con = await aelf.chain.contractAt(contractAddress, FAKE_WALLET);
+  console.log(con, fnName, param);
+  return con[contractMethod][fnName](param);
+};

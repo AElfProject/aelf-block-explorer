@@ -1,6 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { callGetMethod } from "../../../../utils/utils";
 import { getOriginProposedContractInputHash } from "../../common/util.proposed";
 import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
@@ -36,31 +37,29 @@ export const useCallbackAssem = () => {
   );
 };
 
-export const useProposalInfo = () => {
+export const useCallGetMethod = () => {
   const common = useSelector((state) => state.common);
   const { wallet } = common;
   // eslint-disable-next-line no-return-await
-  const proposalInfoSend = useCallback(
-    async (action, param) => {
-      const result = await wallet.invoke({
-        contractAddress: getContractAddress("Parliament"),
-        param,
-        contractMethod: action,
-      });
-      if ((result && +result.error === 0) || !result.error) {
-        return result;
-      }
-      throw new Error(
-        (result.errorMessage || {}).message || "Send proposal failed"
+  const callGetMethodSend = useCallback(
+    async (contractName, action, param, fnName = "call") => {
+      const result = await callGetMethod(
+        {
+          contractAddress: getContractAddress(contractName),
+          param,
+          contractMethod: action,
+        },
+        fnName
       );
+      return result;
     },
     [wallet]
   );
   return useMemo(
     () => ({
-      proposalInfoSend,
+      callGetMethodSend,
     }),
-    [proposalInfoSend]
+    [callGetMethodSend]
   );
 };
 

@@ -1,16 +1,14 @@
 /* eslint-disable consistent-return */
 
-import AElf from 'aelf-sdk';
-import { request } from '../../../common/request';
+import AElf from "aelf-sdk";
+import { request } from "../../../common/request";
 
-import { deserializeLog } from '../../../common/utils';
-import constants, { API_PATH } from './constants';
+import { deserializeLog } from "../../../common/utils";
+import constants, { API_PATH } from "./constants";
 
 const { DEFAUT_RPCSERVER } = constants;
 
-const aelf = new AElf(
-  new AElf.providers.HttpProvider(DEFAUT_RPCSERVER),
-);
+const aelf = new AElf(new AElf.providers.HttpProvider(DEFAUT_RPCSERVER));
 
 // const logList = [{
 //   Address: "vcv1qewcsFN2tVWqLuu7DJ5wVFA8YEx5FFgCQBb1jMCbAQHxV",
@@ -20,45 +18,45 @@ const aelf = new AElf(
 // }]
 
 async function getProposalIndoData(proposalId) {
-  return request(API_PATH.GET_PROPOSAL_INFO, proposalId, { method: 'GET' });
+  return request(API_PATH.GET_PROPOSAL_INFO, proposalId, { method: "GET" });
 }
 
-async function getTxInfo(txId) {
+export async function getTxInfo(txId) {
   return aelf.chain.getTxResult(txId);
 }
 
 export const getPreStepProposalId = async ({ logs, txId }) => {
   if (logs || txId) {
     const list = logs || (await getTxInfo(txId)).Logs;
-    const log = (list || []).filter((v) => v.Name === 'ProposalReleased');
+    const log = (list || []).filter((v) => v.Name === "ProposalReleased");
     if (log.length === 0) {
       return;
     }
     const result = await deserializeLog(log[0], log[0].Name, log[0].Address);
     return result;
   }
-  return '';
+  return "";
 };
 
 export const getCreatedTxIdOfProposal = async (proposalId) => {
-  if (!proposalId) return '';
+  if (!proposalId) return "";
   try {
     const data = await getProposalIndoData(proposalId);
     const { proposal } = data;
-    return proposal.createTxId || '';
+    return proposal.createTxId || "";
   } catch (e) {
-    return '';
+    return "";
   }
 };
 
 export const getProposedContractInputHash = async ({ logs, txId }) => {
   const list = logs || (await getTxInfo(txId)).Logs;
-  const log = (list || []).filter((v) => v.Name === 'ContractProposed');
+  const log = (list || []).filter((v) => v.Name === "ContractProposed");
   if (log.length === 0) {
-    return '';
+    return "";
   }
   const result = await deserializeLog(log[0], log[0].Name, log[0].Address);
-  return result && result.proposedContractInputHash || '';
+  return (result && result.proposedContractInputHash) || "";
 };
 
 export const getOriginProposedContractInputHash = async ({ txId }) => {

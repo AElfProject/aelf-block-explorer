@@ -26,11 +26,16 @@ interface IProps {
   withoutApprovalProps: IModalProps;
 }
 
-const noticeContent = [
-  "Transaction pre-verification failure, will not deduct the cost;",
-  "If the deployment fails, the deducted expenses will not be refunded;",
-  "The contract deployment is divided into two phases, which take about 1-10 minutes.",
-  "You can close this page during deployment. This page does not affect the process of contract deployment.",
+const noticeDeployContent = [
+  "If the transaction pre-validation fails, fees will not be charged.",
+  "If the deployment fails, fees charged will not be returned.",
+  "Contract deployment includes 2 phases and takes around 1-10 minutes.",
+  "Closing deployment window while it's ongoing will not affect its progress.",
+];
+const noticeUpdateContent = [
+  "If the update fails, fees charged will not be returned.",
+  "Contract update includes 2 phases and takes around 1-10 minutes.",
+  "Contract deployment includes 2 phases and takes around 1-10 minutes.",
 ];
 const getMessage = (props) => {
   const { isUpdate, status, message, transactionId, title } = props;
@@ -48,16 +53,24 @@ const getMessage = (props) => {
         <div className="title">
           <CloseCircleFilled className="circle-icon close" />
           <span className={`fail-message`}>
-            {`${title || "Transaction pre-verification failed！"}`}
+            {`${
+              title ||
+              `Closing deployment window while it's ongoing will not affect its progress`
+            }`}
           </span>
         </div>
-        <div className={`content ${!!title && "text-left"}`}>{message}</div>
-        <CopylistItem
-          label="Transaction ID"
-          value={transactionId}
-          href={""}
-          valueHref={`${window.location.origin}/tx/${transactionId}`}
-        ></CopylistItem>
+        <div className={`content ${!!title && "text-left"}`}>
+          {!!title && <div>Possible causes:</div>}
+          <div>{message}</div>
+        </div>
+        {!!title && (
+          <CopylistItem
+            label="Transaction ID"
+            value={transactionId}
+            href={""}
+            valueHref={`/tx/${transactionId}`}
+          ></CopylistItem>
+        )}
       </div>
     );
   }
@@ -65,7 +78,7 @@ const getMessage = (props) => {
     if (execution === 2) {
       return (
         <div className="execution-loading">
-          {`Contract ${isUpdate ? "update" : "deployment"}  in progress...`}
+          {`Executing contract  ${isUpdate ? "update" : "deployment"}`}
         </div>
       );
     } else if (execution === 0) {
@@ -78,11 +91,6 @@ const getMessage = (props) => {
             }!`}</span>
           </div>
           <div className="content">{message}</div>
-          <CopylistItem
-            label="Transaction ID"
-            value={transactionId}
-            href={""}
-          ></CopylistItem>
         </div>
       );
     } else if (execution === 1) {
@@ -108,11 +116,13 @@ const getMessage = (props) => {
 const WithoutApprovalModal = (props: IProps) => {
   const { open, withoutApprovalProps } = props;
   const { isUpdate, cancel, status } = withoutApprovalProps;
+  let noticeContent = isUpdate ? noticeUpdateContent : noticeDeployContent;
   const handleCancel = () => {
     cancel();
   };
   return (
     <Modal
+      zIndex={2000}
       width={800}
       open={open}
       onOk={handleCancel}
@@ -157,16 +167,14 @@ const WithoutApprovalModal = (props: IProps) => {
       <div className="without-approval-modal-notice">
         <div className="title">Notice</div>
         <div className="content">
-          {(CHAIN_ID === "AELF" ? noticeContent : noticeContent.slice(1)).map(
-            (ele, index) => {
-              return (
-                <div className="content-item">
-                  <span>{index + 1}.</span>
-                  <span>{ele}</span>
-                </div>
-              );
-            }
-          )}
+          {noticeContent.map((ele, index) => {
+            return (
+              <div className="content-item">
+                <span>{index + 1}.</span>
+                <span>{ele}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </Modal>

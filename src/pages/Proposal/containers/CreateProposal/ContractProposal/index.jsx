@@ -24,6 +24,8 @@ import {
   destorySelectList,
   getProposalSelectListWrap,
 } from "../../../actions/proposalSelectList";
+import { useCallGetMethod } from "../utils.callback";
+import { hexStringToByteArray } from "../../../../../utils/formater";
 
 const FormItem = Form.Item;
 const InputNameReg = /^[.,a-zA-Z\d]+$/;
@@ -72,7 +74,18 @@ const contractMethodList = [
     methodType: contractMethodType.ReleaseCodeCheckedContract,
   },
 ];
-
+const noticeDeployList = [
+  "Method fee: 50,000 ELF for deploying contract on the MainChain.",
+  "Size fee: A certain amount of ELF for deploying contract.",
+  "If the transaction pre-validation fails, fees will not be charged.",
+  "If the deployment fails, fees charged will not be returned.",
+];
+const noticeUpdateList = [
+  "Method fee: 50,000 ELF for updating contract on the MainChain.",
+  "Size fee: A certain amount of ELF for updating contract.",
+  "If the transaction pre-validation fails, fees will not be charged.",
+  "If the update fails, fees charged will not be returned.",
+];
 const formItemLayout = {
   labelCol: {
     sm: { span: 6 },
@@ -192,7 +205,7 @@ const ContractProposal = (props) => {
   );
   const [approvalMode, setApprovalMode] = useState("withoutApproval");
   const [update, setUpdate] = useState();
-
+  const { callGetMethodSend } = useCallGetMethod();
   useEffect(() => {
     request(
       API_PATH.GET_ALL_CONTRACTS,
@@ -273,6 +286,13 @@ const ContractProposal = (props) => {
     return result;
   }
 
+  const checkUpdateMode = async (params) => {
+    const { address } = params;
+    const result = await callGetMethodSend("Genesis", "GetContractInfo", {
+      value: address,
+    });
+    console.log(result);
+  };
   async function handleSubmit() {
     try {
       const result = await customValidateFields();
@@ -282,6 +302,9 @@ const ContractProposal = (props) => {
         contractMethod = "",
         proposalId,
       } = result;
+      if (isUpdate) {
+        checkUpdateMode(result);
+      }
       let file;
       if (result.file) {
         file = await readFile(result.file[0].originFileObj);
@@ -582,6 +605,15 @@ const ContractProposal = (props) => {
           </>
         ) : (
           <ProposalSearch selectMehtod={contractMethod} />
+        )}
+        {approvalMode === "withoutApproval" && (
+          <Form.Item label="Notice">
+            <div className="contract-proposal-notice-content">
+              {(isUpdate ? noticeUpdateList : noticeDeployList).map((ele) => {
+                return <div>{ele}</div>;
+              })}
+            </div>
+          </Form.Item>
         )}
         <Form.Item {...tailFormItemLayout}>
           <Button
