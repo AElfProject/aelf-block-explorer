@@ -178,6 +178,6 @@ export function getOmittedStr(str = "", front = 8, rear = 4) {
 export const callGetMethod = async (params, fnName) => {
   const { contractAddress, param, contractMethod } = params;
   const con = await aelf.chain.contractAt(contractAddress, FAKE_WALLET);
-  console.log(con, fnName, param);
+  console.log(con, contractMethod, fnName, param);
   return con[contractMethod][fnName](param);
 };

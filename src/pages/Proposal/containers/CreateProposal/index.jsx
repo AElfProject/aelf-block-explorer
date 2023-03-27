@@ -38,6 +38,7 @@ import addressFormat from "../../../../utils/addressFormat";
 import { get } from "../../../../utils";
 import { VIEWER_GET_FILE } from "../../../../api/url";
 import { hexStringToByteArray } from "../../../../utils/formater";
+import { AddressNameVer } from "../../components/AddressNameVer/index.tsx";
 
 const { TabPane } = Tabs;
 
@@ -74,7 +75,6 @@ const CreateProposal = () => {
 
   // open without approval modal
   const onOpenWithoutApprovalModal = (params) => {
-    console.log(params);
     setWithoutApprovalProps(params);
     setWithoutApprovalOpen(true);
   };
@@ -144,8 +144,8 @@ const CreateProposal = () => {
           "GetProposal",
           {
             value: hexStringToByteArray(
-              // proposalId
-              "b4cbd0a1e2ad563f58850c05a22e9380cd87cb4527462dca46b7df5826a60d42"
+              proposalId
+              // "b4cbd0a1e2ad563f58850c05a22e9380cd87cb4527462dca46b7df5826a60d42"
             ),
           }
         );
@@ -241,7 +241,9 @@ const CreateProposal = () => {
             }
           );
           if (contractRegistration.contractAddress) {
+            // get contractVersion
             const { contractAddress, contractVersion } = contractRegistration;
+            // get contractName
             const {
               data: { contractName },
             } = await get(VIEWER_GET_FILE, { address: contractAddress });
@@ -255,22 +257,11 @@ const CreateProposal = () => {
               },
               cancel: cancelWithoutApproval,
               message: (
-                <div>
-                  <CopylistItem
-                    label="Contract Address"
-                    value={contractAddress}
-                    href=""
-                    valueHref={`/address/${addressFormat(contractAddress)}`}
-                  />
-                  <div>
-                    <span>Contract Name:</span>
-                    <span>{contractName}</span>
-                  </div>
-                  <div>
-                    <span>Version:</span>
-                    <span>{contractVersion}</span>
-                  </div>
-                </div>
+                <AddressNameVer
+                  address={contractAddress}
+                  name={contractName}
+                  ver={contractVersion}
+                />
               ),
             });
             resolve();
@@ -351,28 +342,28 @@ const CreateProposal = () => {
             },
             cancel: cancelWithoutApproval,
           });
-          // // get transaction id
-          // const result = await contractSend(action, params);
-          // // according to Error show modal
-          // let txRes = await getTransactionResult(
-          //   aelf,
-          //   result?.TransactionId || result?.result?.TransactionId || ""
-          // );
-          const txRes = {
-            TransactionId:
-              "9c950bfbea14b0fda68397c9c6e652b1741391139ccedb03e94a1d3f11eb1d9a",
-            Status: "MINED",
-            Logs: [
-              {
-                Address: "vcv1qewcsFN2tVWqLuu7DJ5wVFA8YEx5FFgCQBb1jMCbAQHxV",
-                Indexed: ["EiIKIAobvN9ajS/MOdT6SNONzWdudjtlkqILPDWV4ef1XTOn"],
-                Name: "ProposalCreated",
-                NonIndexed: "CiIKIIGh8TUTuvi4vc0ZZMbSRha7qBVQiMUOfwTgS4xz+mc0",
-              },
-            ],
-            ReturnValue:
-              "0a220a208d943111326527f426a1833a1d73b5e575846c29f85a358263577993b603033f",
-          };
+          // get transaction id
+          const result = await contractSend(action, params);
+          // according to Error show modal
+          const txRes = await getTransactionResult(
+            aelf,
+            result?.TransactionId || result?.result?.TransactionId || ""
+          );
+          // const txRes = {
+          //   TransactionId:
+          //     "9c950bfbea14b0fda68397c9c6e652b1741391139ccedb03e94a1d3f11eb1d9a",
+          //   Status: "MINED",
+          //   Logs: [
+          //     {
+          //       Address: "vcv1qewcsFN2tVWqLuu7DJ5wVFA8YEx5FFgCQBb1jMCbAQHxV",
+          //       Indexed: ["EiIKIAobvN9ajS/MOdT6SNONzWdudjtlkqILPDWV4ef1XTOn"],
+          //       Name: "ProposalCreated",
+          //       NonIndexed: "CiIKIIGh8TUTuvi4vc0ZZMbSRha7qBVQiMUOfwTgS4xz+mc0",
+          //     },
+          //   ],
+          //   ReturnValue:
+          //     "0a220a208d943111326527f426a1833a1d73b5e575846c29f85a358263577993b603033f",
+          // };
           // if pre-check fail
           if (txRes?.Status === "NODEVALIDATIONFAILED") {
             onOpenWithoutApprovalModal({

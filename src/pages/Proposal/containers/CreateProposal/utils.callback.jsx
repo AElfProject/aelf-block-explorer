@@ -1,11 +1,14 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { hexStringToByteArray } from "../../../../utils/formater";
 import { callGetMethod } from "../../../../utils/utils";
 import { getOriginProposedContractInputHash } from "../../common/util.proposed";
 import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
 import { getContractURL, getDeserializeLog } from "../../utils";
+import { get } from "../../../../utils";
+import { VIEWER_GET_FILE } from "../../../../api/url";
 
 export const useCallbackAssem = () => {
   const common = useSelector((state) => state.common);
@@ -141,6 +144,7 @@ export const useReleaseCodeCheckedContractAction = () => {
   const proposalSelect = useSelector((state) => state.proposalSelect);
   const common = useSelector((state) => state.common);
   const { contractSend } = useCallbackAssem();
+  const { callGetMethodSend } = useCallGetMethod();
   const { aelf } = common;
   return useCallback(
     async (contract, isDeploy) => {
@@ -193,11 +197,24 @@ export const useReleaseCodeCheckedContractAction = () => {
         const { address } = logs ?? {};
         contractAddress = address;
       }
-      // TODO: how to get contract name???
-      const { ContractVersion } = await contractSend(
-        "GetSmartContractRegistrationByCodeHash",
-        txResult?.ReturnValue
+      const { codeHash = "" } = await callGetMethodSend(
+        "Genesis",
+        "DeployUserSmartContract",
+        hexStringToByteArray(txResult?.ReturnValue),
+        "unpackOutput"
       );
+      // get contractVersion
+      const { contractVersion } = await callGetMethodSend(
+        "Genesis",
+        "GetSmartContractRegistrationByCodeHash",
+        {
+          value: hexStringToByteArray(codeHash),
+        }
+      );
+      // get contractName
+      const {
+        data: { contractName },
+      } = await get(VIEWER_GET_FILE, { address: contractAddress });
 
       return {
         visible: true,
@@ -215,9 +232,13 @@ export const useReleaseCodeCheckedContractAction = () => {
                   value={contractAddress}
                   href={getContractURL(contractAddress || "")}
                 />
-                <div className="contract-name">Contract Name:</div>
+                <div className="contract-name">
+                  <span>Contract Name: </span>
+                  <span>{contractName}</span>
+                </div>
                 <div className="contract-version">
-                  Version: {ContractVersion}
+                  <span>Version: </span>
+                  <span>{contractVersion}</span>
                 </div>
               </div>
             ) : (

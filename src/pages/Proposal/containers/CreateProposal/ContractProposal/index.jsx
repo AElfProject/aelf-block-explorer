@@ -25,7 +25,7 @@ import {
   getProposalSelectListWrap,
 } from "../../../actions/proposalSelectList";
 import { useCallGetMethod } from "../utils.callback";
-import { hexStringToByteArray } from "../../../../../utils/formater";
+import { getContractAddress } from "../../../common/utils";
 
 const FormItem = Form.Item;
 const InputNameReg = /^[.,a-zA-Z\d]+$/;
@@ -286,12 +286,21 @@ const ContractProposal = (props) => {
     return result;
   }
 
-  const checkUpdateMode = async (params) => {
-    const { address } = params;
-    const result = await callGetMethodSend("Genesis", "GetContractInfo", {
-      value: address,
-    });
-    console.log(result);
+  const checkUpdateMode = async (address) => {
+    const result = await callGetMethodSend(
+      "Genesis",
+      "GetContractInfo",
+      address
+    );
+    const { author } = result;
+    // bp mode choose withoutApproval mode
+    if (getContractAddress("Genesis") === author) {
+      message.error(
+        "Contract update failed. Please update this contract in BP Approval mode."
+      );
+      return false;
+    }
+    return true;
   };
   async function handleSubmit() {
     try {
@@ -302,8 +311,8 @@ const ContractProposal = (props) => {
         contractMethod = "",
         proposalId,
       } = result;
-      if (isUpdate) {
-        checkUpdateMode(result);
+      if (isUpdate && !(await checkUpdateMode(address))) {
+        return;
       }
       let file;
       if (result.file) {
