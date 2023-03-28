@@ -474,6 +474,9 @@ const CreateProposal = () => {
     });
     const { isOnlyUpdateName } = results;
     Modal.confirm({
+      className: "sure-modal-content",
+      width: "720",
+      cancelButtonProps: { type: "primary", ghost: true },
       title: (
         <div style={{ textAlign: "left" }}>
           {isOnlyUpdateName
@@ -489,7 +492,6 @@ const CreateProposal = () => {
       },
     });
   }
-
   async function submitNormalResult() {
     setNormalResult({
       ...normalResult,

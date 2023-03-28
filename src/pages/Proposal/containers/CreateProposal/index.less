@@ -44,10 +44,56 @@
     }
   }
 }
-.contract-proposal {
-  .ant-form-item-label {
-    label[title="Notice"] {
-      align-items: flex-start;
+.contract-proposal-notice-content {
+  color: #858585;
+  font-size: 12px;
+  div {
+    line-height: 20px;
+  }
+  .content-item {
+    display: flex;
+    align-items: flex-start;
+
+    :first-child {
+      width: 4%;
+    }
+  }
+}
+.proposal-apply-tab {
+  .apply-btn {
+    margin-top: 16px;
+    display: block;
+  }
+  &.ant-tabs-mobile {
+    .apply-btn {
+      margin: 16px auto 0;
+      display: block;
+    }
+  }
+}
+
+.sure-modal-content {
+  width: 720px;
+  .ant-modal-content {
+    height: 204px;
+    border-radius: 8px;
+    .ant-modal-body {
+      height: 100%;
+      .ant-modal-confirm-body-wrapper {
+        width: 100%;
+        height: 100%;
+        .ant-modal-confirm-body {
+          margin-top: 24px;
+        }
+        .ant-modal-confirm-btns {
+          text-align: center;
+          margin-top: 56px;
+          .ant-btn {
+            width: 120px;
+            height: 40px;
+          }
+        }
+      }
     }
   }
 }

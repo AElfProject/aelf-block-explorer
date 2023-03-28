@@ -2,14 +2,10 @@
  * @file create normal proposal
  * @author atom-yang
  */
-import React, {
-  useEffect,
-  useState,
-  Suspense,
-  lazy,
-} from 'react';
-import moment from 'moment';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+// eslint-disable-next-line no-use-before-define
+import React, { useEffect, useState, Suspense, lazy } from "react";
+import moment from "moment";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import {
   Form,
   Select,
@@ -21,8 +17,8 @@ import {
   Input,
   message,
   Spin,
-} from 'antd';
-import PropTypes from 'prop-types';
+} from "antd";
+import PropTypes from "prop-types";
 import {
   isInnerType,
   isSpecialParameters,
@@ -31,23 +27,23 @@ import {
   commonFilter,
   isSingleStringParameter,
   isEmptyInputType,
-} from '../../../common/utils';
-import constants, { API_PATH } from '../../../common/constants';
-import { request } from '../../../../../common/request';
+} from "../../../common/utils";
+import constants, { API_PATH } from "../../../common/constants";
+import { request } from "../../../../../common/request";
 // import ContractParams from '../../../components/ContractParams';
 // import JSONEditor from '../../../components/JSONEditor';
-import './index.less';
+import "./index.less";
 import {
   validateURL,
   getContractMethodList,
   CONTRACT_INSTANCE_MAP,
-} from '../../../../../common/utils';
+} from "../../../../../common/utils";
 
-const JSONEditor = lazy(() => import(/* webpackChunkName: "jsonEditor" */ '../../../components/JSONEditor'));
+const JSONEditor = lazy(() =>
+  import(/* webpackChunkName: "jsonEditor" */ "../../../components/JSONEditor")
+);
 
-const {
-  proposalTypes,
-} = constants;
+const { proposalTypes } = constants;
 
 const { Item: FormItem } = Form;
 
@@ -62,7 +58,7 @@ const formItemLayout = {
 
 const FIELDS_MAP = {
   formProposalType: {
-    name: 'formProposalType',
+    name: "formProposalType",
     label: (
       <span>
         Proposal Mode&nbsp;
@@ -73,17 +69,18 @@ const FIELDS_MAP = {
         >
           <QuestionCircleOutlined className="main-color" />
         </Tooltip>
-      </span>),
-    placeholder: 'Please select a proposal mode',
+      </span>
+    ),
+    placeholder: "Please select a proposal mode",
     rules: [
       {
         required: true,
-        message: 'Please select a proposal mode!',
+        message: "Please select a proposal mode!",
       },
     ],
   },
   formOrgAddress: {
-    name: 'formOrgAddress',
+    name: "formOrgAddress",
     label: (
       <span>
         Organization&nbsp;
@@ -95,79 +92,77 @@ const FIELDS_MAP = {
         >
           <QuestionCircleOutlined className="main-color" />
         </Tooltip>
-      </span>),
-    placeholder: 'Please select an organization',
+      </span>
+    ),
+    placeholder: "Please select an organization",
     rules: [
       {
         required: true,
-        message: 'Please select an organization!',
+        message: "Please select an organization!",
       },
     ],
   },
   formContractAddress: {
-    name: 'formContractAddress',
-    label: 'Contract Address',
-    placeholder: 'Please select a contract',
+    name: "formContractAddress",
+    label: "Contract Address",
+    placeholder: "Please select a contract",
     rules: [
       {
         required: true,
-        message: 'Please select a contract!',
+        message: "Please select a contract!",
       },
     ],
   },
   formContractMethod: {
-    name: 'formContractMethod',
-    label: 'Method Name',
-    placeholder: 'Please select a contract method',
+    name: "formContractMethod",
+    label: "Method Name",
+    placeholder: "Please select a contract method",
     rules: [
       {
         required: true,
-        message: 'Please select a contact method!',
+        message: "Please select a contact method!",
       },
     ],
   },
   params: {
-    label: 'Method Params',
+    label: "Method Params",
   },
   formExpiredTime: {
-    name: 'formExpiredTime',
+    name: "formExpiredTime",
     label: (
       <span>
         Expiration Time&nbsp;
-        <Tooltip
-          title="Proposals must be voted on and released before the expiration time"
-        >
-          <QuestionCircleOutlined className="main-color" />
-        </Tooltip>
-      </span>),
-    placeholder: 'Please select a time',
-    rules: [
-      {
-        type: 'object',
-        required: true,
-        message: 'Please select a time!',
-      },
-    ],
-  },
-  formDescriptionURL: {
-    name: 'formDescriptionURL',
-    label: (
-      <span>
-        URL&nbsp;
-        <Tooltip
-          title="Please provide a URL describing the proposal"
-        >
+        <Tooltip title="Proposals must be voted on and released before the expiration time">
           <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
-    placeholder: 'Please input the description URL of proposal',
-    validateTrigger: 'onBlur',
+    placeholder: "Please select a time",
+    rules: [
+      {
+        type: "object",
+        required: true,
+        message: "Please select a time!",
+      },
+    ],
+  },
+  formDescriptionURL: {
+    name: "formDescriptionURL",
+    label: (
+      <span>
+        URL&nbsp;
+        <Tooltip title="Please provide a URL describing the proposal">
+          <QuestionCircleOutlined className="main-color" />
+        </Tooltip>
+      </span>
+    ),
+    placeholder: "Please input the description URL of proposal",
+    validateTrigger: "onBlur",
     rules: [
       {
         validator(rule, value) {
           if (value && value.length > 0 && !validateURL(`https://${value}`)) {
-            return Promise.reject(new Error('Please check your URL format'));
+            return Promise.reject(new Error("Please check your URL format"));
           }
           return Promise.resolve();
         },
@@ -176,21 +171,36 @@ const FIELDS_MAP = {
   },
 };
 
-const contractFilter = (input, _, list) => list
-  .filter(({ contractName, address }) => contractName.indexOf(input) > -1 || address.indexOf(input) > -1).length > 0;
+const contractFilter = (input, _, list) =>
+  list.filter(
+    ({ contractName, address }) =>
+      contractName.indexOf(input) > -1 || address.indexOf(input) > -1
+  ).length > 0;
 
-async function getOrganizationBySearch(currentWallet, proposalType, search = '') {
-  return request(API_PATH.GET_AUDIT_ORGANIZATIONS, {
-    address: currentWallet.address,
-    search,
-    proposalType,
-  }, { method: 'GET' });
+async function getOrganizationBySearch(
+  currentWallet,
+  proposalType,
+  search = ""
+) {
+  return request(
+    API_PATH.GET_AUDIT_ORGANIZATIONS,
+    {
+      address: currentWallet.address,
+      search,
+      proposalType,
+    },
+    { method: "GET" }
+  );
 }
 
-async function getContractAddress(search = '') {
-  return request(API_PATH.GET_ALL_CONTRACTS, {
-    search,
-  }, { method: 'GET' });
+async function getContractAddress(search = "") {
+  return request(
+    API_PATH.GET_ALL_CONTRACTS,
+    {
+      search,
+    },
+    { method: "GET" }
+  );
 }
 
 const disabledDate = (date) => date && moment().isAfter(date);
@@ -208,7 +218,7 @@ function parsedParams(inputType, originalParams) {
   const fieldsLength = Object.keys(inputType.toJSON().fields || {}).length;
   let result = {};
   if (fieldsLength === 0) {
-    return '';
+    return "";
   }
   if (isInnerType(inputType)) {
     const type = inputType.fieldsArray[0];
@@ -217,23 +227,25 @@ function parsedParams(inputType, originalParams) {
   Object.keys(originalParams).forEach((name) => {
     const value = originalParams[name];
     const type = inputType.fields[name];
-    if (value === '' || value === null || value === undefined) {
+    if (value === "" || value === null || value === undefined) {
       return;
     }
     if (
-      !Array.isArray(value)
-      && typeof value === 'object'
-      && value !== null
-      && (type.type || '').indexOf('google.protobuf.Timestamp') === -1
+      !Array.isArray(value) &&
+      typeof value === "object" &&
+      value !== null &&
+      (type.type || "").indexOf("google.protobuf.Timestamp") === -1
     ) {
       result = {
         ...result,
         [name]: parsedParams(type.resolvedType, value),
       };
-    } else if ((type.type || '').indexOf('google.protobuf.Timestamp') > -1) {
+    } else if ((type.type || "").indexOf("google.protobuf.Timestamp") > -1) {
       result = {
         ...result,
-        [name]: Array.isArray(value) ? value.filter((v) => v).map(formatTimeToNano) : formatTimeToNano(value),
+        [name]: Array.isArray(value)
+          ? value.filter((v) => v).map(formatTimeToNano)
+          : formatTimeToNano(value),
       };
     } else if (isSpecialParameters(type)) {
       result = {
@@ -260,28 +272,32 @@ function parsedParamsWithoutSpecial(inputType, originalParams) {
   Object.keys(originalParams).forEach((name) => {
     const value = originalParams[name];
     const type = inputType.fields[name];
-    if (value === '' || value === null || value === undefined) {
+    if (value === "" || value === null || value === undefined) {
       return;
     }
     if (
-      !Array.isArray(value)
-      && typeof value === 'object'
-      && value !== null
-      && (type.type || '').indexOf('google.protobuf.Timestamp') === -1
+      !Array.isArray(value) &&
+      typeof value === "object" &&
+      value !== null &&
+      (type.type || "").indexOf("google.protobuf.Timestamp") === -1
     ) {
       result = {
         ...result,
         [name]: parsedParams(type.resolvedType, value),
       };
-    } else if ((type.type || '').indexOf('google.protobuf.Timestamp') > -1) {
+    } else if ((type.type || "").indexOf("google.protobuf.Timestamp") > -1) {
       result = {
         ...result,
-        [name]: Array.isArray(value) ? value.filter((v) => v).map(formatTimeToNano) : formatTimeToNano(value),
+        [name]: Array.isArray(value)
+          ? value.filter((v) => v).map(formatTimeToNano)
+          : formatTimeToNano(value),
       };
-    } else if ((type.type || '').indexOf('int') > -1) {
+    } else if ((type.type || "").indexOf("int") > -1) {
       result = {
         ...result,
-        [name]: Array.isArray(value) ? value.filter((v) => parseInt(v, 10)) : parseInt(value, 10),
+        [name]: Array.isArray(value)
+          ? value.filter((v) => parseInt(v, 10))
+          : parseInt(value, 10),
       };
     } else {
       result = {
@@ -294,15 +310,9 @@ function parsedParamsWithoutSpecial(inputType, originalParams) {
 }
 
 const URLPrefix = (props) => {
-  const {
-    formField,
-  } = props;
+  const { formField } = props;
   return (
-    <FormItem
-      name={formField}
-      required
-      noStyle
-    >
+    <FormItem name={formField} required noStyle>
       <Select>
         <Select.Option value="https://">https://</Select.Option>
         <Select.Option value="http://">http://</Select.Option>
@@ -317,10 +327,7 @@ URLPrefix.propTypes = {
 
 const SuspenseJSONEditor = (props) => (
   <Suspense fallback={<Spin className="text-ellipsis" />}>
-    <JSONEditor
-      className="params-input"
-      {...props}
-    />
+    <JSONEditor className="params-input" {...props} />
   </Suspense>
 );
 
@@ -335,10 +342,7 @@ const NormalProposal = (props) => {
     currentWallet,
   } = props;
   const [form] = Form.useForm();
-  const {
-    setFieldsValue,
-    validateFields,
-  } = form;
+  const { setFieldsValue, validateFields } = form;
 
   const [methods, setMethods] = useState({
     list: [],
@@ -346,7 +350,7 @@ const NormalProposal = (props) => {
     isEmpty: false,
   });
   // eslint-disable-next-line no-unused-vars
-  const [paramsInputMethod, setParamsInputMethod] = useState('plain');
+  const [paramsInputMethod, setParamsInputMethod] = useState("plain");
   const [organizationList, setOrganizationList] = useState([]);
   const [contractList, setContractList] = useState([]);
   // const [methodList, setMethodList] = useState([]);
@@ -360,13 +364,13 @@ const NormalProposal = (props) => {
     let list = [];
     try {
       setFieldsValue({
-        formContractMethod: '',
+        formContractMethod: "",
       });
       setMethods({
         ...methods,
         list: [],
-        contractAddress: '',
-        methodName: '',
+        contractAddress: "",
+        methodName: "",
       });
       setLoadingStatus({
         ...loadingStatus,
@@ -375,7 +379,7 @@ const NormalProposal = (props) => {
       });
       list = await getContractMethodList(aelf, address);
     } catch (e) {
-      message.error(e.message || 'Querying contract address list failed!');
+      message.error(e.message || "Querying contract address list failed!");
     } finally {
       setLoadingStatus({
         ...loadingStatus,
@@ -386,16 +390,16 @@ const NormalProposal = (props) => {
         ...methods,
         list,
         contractAddress: address,
-        methodName: '',
+        methodName: "",
       });
     }
   };
 
-  const handleProposalTypeChange = async type => {
+  const handleProposalTypeChange = async (type) => {
     let list = [];
     try {
       setFieldsValue({
-        formOrgAddress: '',
+        formOrgAddress: "",
       });
       setLoadingStatus({
         ...loadingStatus,
@@ -405,7 +409,7 @@ const NormalProposal = (props) => {
       list = await getOrganizationBySearch(currentWallet, type);
       list = list || [];
     } catch (e) {
-      message.error(e.message || 'Querying contract address list failed!');
+      message.error(e.message || "Querying contract address list failed!");
     } finally {
       setLoadingStatus({
         ...loadingStatus,
@@ -416,19 +420,21 @@ const NormalProposal = (props) => {
     }
   };
   useEffect(() => {
-    getContractAddress('').then((res) => {
-      setContractList(res.list);
-      setLoadingStatus({
-        ...loadingStatus,
-        contractAddress: false,
+    getContractAddress("")
+      .then((res) => {
+        setContractList(res.list);
+        setLoadingStatus({
+          ...loadingStatus,
+          contractAddress: false,
+        });
+      })
+      .catch((e) => {
+        setLoadingStatus({
+          ...loadingStatus,
+          contractAddress: false,
+        });
+        message.error(e.message || "Network Error!");
       });
-    }).catch((e) => {
-      setLoadingStatus({
-        ...loadingStatus,
-        contractAddress: false,
-      });
-      message.error(e.message | 'Network Error!');
-    });
     if (isModify === true) {
       handleContractAddressChange(contractAddress);
       getOrganizationBySearch(currentWallet, proposalType).then((res) => {
@@ -441,8 +447,12 @@ const NormalProposal = (props) => {
     setMethods({
       ...methods,
       methodName: method,
-      isSingleString: isSingleStringParameter(CONTRACT_INSTANCE_MAP[methods.contractAddress][method].inputType),
-      isEmpty: isEmptyInputType(CONTRACT_INSTANCE_MAP[methods.contractAddress][method].inputType),
+      isSingleString: isSingleStringParameter(
+        CONTRACT_INSTANCE_MAP[methods.contractAddress][method].inputType
+      ),
+      isEmpty: isEmptyInputType(
+        CONTRACT_INSTANCE_MAP[methods.contractAddress][method].inputType
+      ),
     });
   };
 
@@ -465,10 +475,11 @@ const NormalProposal = (props) => {
         formPrefix,
         ...leftParams
       } = result;
-      const method = CONTRACT_INSTANCE_MAP[methods.contractAddress][methods.methodName];
+      const method =
+        CONTRACT_INSTANCE_MAP[methods.contractAddress][methods.methodName];
       const { inputType } = method;
       let parsed;
-      if (paramsInputMethod === 'format') {
+      if (paramsInputMethod === "format") {
         parsed = parsedParams(inputType, leftParams);
         // 校验不好使，对于integer string类型不好操作
         // const error = inputType.verify(parsedParamsWithoutSpecial(inputType, leftParams));
@@ -486,8 +497,8 @@ const NormalProposal = (props) => {
       let decoded;
       if (Array.isArray(parsed)) {
         decoded = method.packInput([...parsed]);
-      } else if (typeof parsed === 'object' && parsed !== null) {
-        decoded = method.packInput((JSON.parse(JSON.stringify(parsed))));
+      } else if (typeof parsed === "object" && parsed !== null) {
+        decoded = method.packInput(JSON.parse(JSON.stringify(parsed)));
       } else {
         decoded = method.packInput(parsed);
       }
@@ -497,15 +508,17 @@ const NormalProposal = (props) => {
         toAddress: formContractAddress,
         proposalType: formProposalType,
         organizationAddress: formOrgAddress,
-        proposalDescriptionUrl: (formDescriptionURL && formDescriptionURL.length > 0)
-          ? `${formPrefix}${formDescriptionURL}` : '',
+        proposalDescriptionUrl:
+          formDescriptionURL && formDescriptionURL.length > 0
+            ? `${formPrefix}${formDescriptionURL}`
+            : "",
         params: {
           origin: parsed,
           decoded,
         },
       });
     } catch (e) {
-      message.error(e.message || 'Please input the required form!');
+      message.error(e.message || "Please input the required form!");
     }
   };
 
@@ -515,11 +528,11 @@ const NormalProposal = (props) => {
         form={form}
         {...formItemLayout}
         initialValues={{
-          formProposalType: isModify ? proposalType : '',
-          formOrgAddress: isModify ? orgAddress : '',
-          formContractAddress: isModify ? contractAddress : '',
-          formPrefix: 'https://',
-          realSpecialPlain: '',
+          formProposalType: isModify ? proposalType : "",
+          formOrgAddress: isModify ? orgAddress : "",
+          formContractAddress: isModify ? contractAddress : "",
+          formPrefix: "https://",
+          realSpecialPlain: "",
         }}
       >
         <FormItem
@@ -531,9 +544,15 @@ const NormalProposal = (props) => {
             placeholder={FIELDS_MAP.formProposalType.placeholder}
             onChange={handleProposalTypeChange}
           >
-            <Select.Option value={proposalTypes.PARLIAMENT}>{proposalTypes.PARLIAMENT}</Select.Option>
-            <Select.Option value={proposalTypes.ASSOCIATION}>{proposalTypes.ASSOCIATION}</Select.Option>
-            <Select.Option value={proposalTypes.REFERENDUM}>{proposalTypes.REFERENDUM}</Select.Option>
+            <Select.Option value={proposalTypes.PARLIAMENT}>
+              {proposalTypes.PARLIAMENT}
+            </Select.Option>
+            <Select.Option value={proposalTypes.ASSOCIATION}>
+              {proposalTypes.ASSOCIATION}
+            </Select.Option>
+            <Select.Option value={proposalTypes.REFERENDUM}>
+              {proposalTypes.REFERENDUM}
+            </Select.Option>
           </Select>
         </FormItem>
         <FormItem
@@ -548,10 +567,11 @@ const NormalProposal = (props) => {
             optionFilterProp="children"
             filterOption={commonFilter}
           >
-            {
-              organizationList
-                .map((v) => (<Select.Option key={v} value={v}>{v}</Select.Option>))
-            }
+            {organizationList.map((v) => (
+              <Select.Option key={v} value={v}>
+                {v}
+              </Select.Option>
+            ))}
           </Select>
         </FormItem>
         <FormItem
@@ -567,16 +587,11 @@ const NormalProposal = (props) => {
             filterOption={(...args) => contractFilter(...args, contractList)}
             loading={loadingStatus.contractAddress}
           >
-            {
-              contractList.map((v) => (
-                <Select.Option
-                  key={v.address}
-                  value={v.address}
-                >
-                  {v.contractName || v.address}
-                </Select.Option>
-              ))
-            }
+            {contractList.map((v) => (
+              <Select.Option key={v.address} value={v.address}>
+                {v.contractName || v.address}
+              </Select.Option>
+            ))}
           </Select>
         </FormItem>
         <FormItem
@@ -592,39 +607,41 @@ const NormalProposal = (props) => {
             loading={loadingStatus.contractMethod}
             onChange={handleMethodChange}
           >
-            {
-              methods.list
-                .map((v) => (<Select.Option key={v} value={v}>{v}</Select.Option>))
-            }
+            {methods.list.map((v) => (
+              <Select.Option key={v} value={v}>
+                {v}
+              </Select.Option>
+            ))}
           </Select>
         </FormItem>
         <FormItem
           label={FIELDS_MAP.params.label}
-          className={methods && methods.methodName && !methods.isEmpty ? 'normal-proposal-params' : ''}
+          className={
+            methods && methods.methodName && !methods.isEmpty
+              ? "normal-proposal-params"
+              : ""
+          }
           required
           name="realSpecialPlain"
           trigger="onBlur"
         >
-          {
-            paramsInputMethod === 'plain' && methods && methods.methodName && !methods.isEmpty ? (
-              (
-                <SuspenseJSONEditor
-                  type={methods.isSingleString ? 'plaintext' : 'json'}
-                />
-              )
-            ) : <div />
-          }
+          {paramsInputMethod === "plain" &&
+          methods &&
+          methods.methodName &&
+          !methods.isEmpty ? (
+            <SuspenseJSONEditor
+              type={methods.isSingleString ? "plaintext" : "json"}
+            />
+          ) : (
+            <div />
+          )}
         </FormItem>
         <FormItem
           label={FIELDS_MAP.formDescriptionURL.label}
           {...FIELDS_MAP.formDescriptionURL}
         >
           <Input
-            addonBefore={(
-              <URLPrefix
-                formField="formPrefix"
-              />
-            )}
+            addonBefore={<URLPrefix formField="formPrefix" />}
             placeholder={FIELDS_MAP.formDescriptionURL.placeholder}
           />
         </FormItem>
@@ -642,8 +659,10 @@ const NormalProposal = (props) => {
         </FormItem>
         <Form.Item {...tailFormItemLayout}>
           <Button
-            shape="round"
+            className="apply-btn"
+            style={{ width: "240px" }}
             type="primary"
+            size="large"
             onClick={handleSubmit}
           >
             Apply
@@ -656,6 +675,7 @@ const NormalProposal = (props) => {
 
 NormalProposal.propTypes = {
   aelf: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
     chain: PropTypes.object,
   }).isRequired,
   isModify: PropTypes.bool.isRequired,
@@ -674,9 +694,9 @@ NormalProposal.propTypes = {
 };
 
 NormalProposal.defaultProps = {
-  proposalType: '',
-  orgAddress: '',
-  contractAddress: '',
+  proposalType: "",
+  orgAddress: "",
+  contractAddress: "",
 };
 
 export default NormalProposal;
