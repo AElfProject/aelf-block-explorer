@@ -32,13 +32,11 @@ import {
 } from "../../utils";
 import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.tsx";
 import { deserializeLog } from "../../../../common/utils";
-import { getTxInfo } from "../../common/util.proposed";
 import { interval } from "../../../../utils/timeUtils";
-import addressFormat from "../../../../utils/addressFormat";
 import { get } from "../../../../utils";
 import { VIEWER_GET_FILE } from "../../../../api/url";
 import { hexStringToByteArray } from "../../../../utils/formater";
-import { AddressNameVer } from "../../components/AddressNameVer/index.tsx";
+import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 
 const { TabPane } = Tabs;
 
@@ -49,7 +47,7 @@ const initApplyModal = {
 };
 
 // 10 minutes
-const GET_CONTRACT_VERSION_TIMEOUT = 10000; // 1000 * 60 * 10;
+const GET_CONTRACT_VERSION_TIMEOUT = 1000 * 60 * 10; // 1000 * 60 * 10;
 
 const CreateProposal = () => {
   const { orgAddress = "" } = useParams();
@@ -194,81 +192,73 @@ const CreateProposal = () => {
       transactionId,
     });
   };
+  // eslint-disable-next-line consistent-return
   const minedStatusWithoutApproval = async (txRes, isUpdate) => {
-    const { Logs = [], ReturnValue, TransactionId } = txRes;
-    const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
-    if (log.length === 0) {
-      // TODO: how to deal with???
-    }
-    const releaseRes = await ifToBeRelease(log, isUpdate, TransactionId);
-    if (releaseRes === "acs12 etc fail") {
-      openFailedWithoutApprovalModal(isUpdate, TransactionId);
-      return Promise.reject(new Error("acs12 etc fail"));
-    }
-    const { codeHash = "" } = await callGetMethodSend(
-      "Genesis",
-      "DeployUserSmartContract",
-      hexStringToByteArray(ReturnValue),
-      "unpackOutput"
-    );
-    const startTime = new Date().getTime();
-    return new Promise((resolve, reject) => {
-      interval(async () => {
-        const endTIme = new Date().getTime();
-        // timeout
-        if (endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT) {
-          interval.clear();
-          // exec fail modal
-          onOpenWithoutApprovalModal({
-            isUpdate,
-            status: {
-              verification: 0,
-              execution: 0,
-            },
-            cancel: cancelWithoutApproval,
-            message:
-              "This may be due to the failure in transaction which can be vviewed via Transaction ID:",
-            transactionId: TransactionId,
-          });
-          reject();
-        } else {
-          // get contract address
-          const contractRegistration = await callGetMethodSend(
-            "Genesis",
-            "GetSmartContractRegistrationByCodeHash",
-            {
-              value: hexStringToByteArray(codeHash),
-            }
-          );
-          if (contractRegistration.contractAddress) {
-            // get contractVersion
-            const { contractAddress, contractVersion } = contractRegistration;
-            // get contractName
-            const {
-              data: { contractName },
-            } = await get(VIEWER_GET_FILE, { address: contractAddress });
+    try {
+      const { Logs = [], ReturnValue, TransactionId } = txRes;
+      const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
+      const releaseRes = await ifToBeRelease(log, isUpdate, TransactionId);
+      if (releaseRes === "acs12 etc fail") {
+        openFailedWithoutApprovalModal(isUpdate, TransactionId);
+        return Promise.reject(new Error("acs12 etc fail"));
+      }
+      // executing
+      onOpenWithoutApprovalModal({
+        isUpdate,
+        status: {
+          verification: 0,
+          execution: 2,
+        },
+        cancel: cancelWithoutApproval,
+      });
+      const { codeHash = "" } = await callGetMethodSend(
+        "Genesis",
+        "DeployUserSmartContract",
+        hexStringToByteArray(ReturnValue),
+        "unpackOutput"
+      );
+      console.log(codeHash, "codeHash");
+      const startTime = new Date().getTime();
+      return new Promise((resolve) => {
+        interval(async () => {
+          const endTIme = new Date().getTime();
+          // timeout
+          if (endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT) {
             interval.clear();
-            // open modal
-            onOpenWithoutApprovalModal({
-              isUpdate,
-              status: {
-                verification: 0,
-                execution: 0,
-              },
-              cancel: cancelWithoutApproval,
-              message: (
-                <AddressNameVer
-                  address={contractAddress}
-                  name={contractName}
-                  ver={contractVersion}
-                />
-              ),
+            resolve({
+              status: "fail",
             });
-            resolve();
+          } else {
+            // get contract address
+            const contractRegistration = await callGetMethodSend(
+              "Genesis",
+              "GetSmartContractRegistrationByCodeHash",
+              {
+                value: hexStringToByteArray(codeHash),
+              }
+            );
+            console.log(contractRegistration, "contractRegistration");
+            if (contractRegistration.contractAddress) {
+              // get contractVersion
+              const { contractAddress, contractVersion } = contractRegistration;
+              // get contractName
+              const {
+                data: { contractName },
+              } = await get(VIEWER_GET_FILE, { address: contractAddress });
+              interval.clear();
+              resolve({
+                status: "success",
+                contractAddress,
+                contractName,
+                contractVersion,
+              });
+            }
           }
-        }
-      }, 3000);
-    });
+        }, 10000);
+      });
+    } catch (e) {
+      message.error(e.message);
+    }
   };
 
   async function submitContract(contract) {
@@ -308,19 +298,11 @@ const CreateProposal = () => {
         default:
           break;
       }
-      if (action === "ProposeNewContract") {
-        params = {
-          category: "0",
-          code: file,
-        };
-      } else if (action === "UpdateUserSmartContract") {
-        // TODO: ContractDeploymentInput input???
-        params = {
-          category: "0",
-          code: file,
-        };
-      } else if (action === "DeployUserSmartContract") {
-        // TODO: ContractDeploymentInput input???
+      if (
+        action === "ProposeNewContract" ||
+        action === "DeployUserSmartContract"
+      ) {
+        // category=0: contract is c#
         params = {
           category: "0",
           code: file,
@@ -349,38 +331,36 @@ const CreateProposal = () => {
             aelf,
             result?.TransactionId || result?.result?.TransactionId || ""
           );
-          // const txRes = {
-          //   TransactionId:
-          //     "9c950bfbea14b0fda68397c9c6e652b1741391139ccedb03e94a1d3f11eb1d9a",
-          //   Status: "MINED",
-          //   Logs: [
-          //     {
-          //       Address: "vcv1qewcsFN2tVWqLuu7DJ5wVFA8YEx5FFgCQBb1jMCbAQHxV",
-          //       Indexed: ["EiIKIAobvN9ajS/MOdT6SNONzWdudjtlkqILPDWV4ef1XTOn"],
-          //       Name: "ProposalCreated",
-          //       NonIndexed: "CiIKIIGh8TUTuvi4vc0ZZMbSRha7qBVQiMUOfwTgS4xz+mc0",
-          //     },
-          //   ],
-          //   ReturnValue:
-          //     "0a220a208d943111326527f426a1833a1d73b5e575846c29f85a358263577993b603033f",
-          // };
+          const {
+            TransactionId: transactionId,
+            Error: error,
+            Status: status,
+          } = txRes;
           // if pre-check fail
-          if (txRes?.Status === "NODEVALIDATIONFAILED") {
+          if (status === "NODEVALIDATIONFAILED") {
             onOpenWithoutApprovalModal({
               isUpdate,
-              transactionId: txRes?.TransactionId,
-              message: txRes?.Error,
+              transactionId,
+              message: error,
               status: {
                 verification: 1,
                 execution: 3,
               },
               cancel: cancelWithoutApproval,
             });
-          } else if (txRes?.Status === "FAILED") {
+          } else if (status === "FAILED") {
             // if balance is not enough
-            openFailedWithoutApprovalModal(isUpdate, txRes?.TransactionId);
-          } else if (txRes?.Status === "MINED") {
-            await minedStatusWithoutApproval(txRes, isUpdate);
+            openFailedWithoutApprovalModal(isUpdate, transactionId);
+          } else if (status === "MINED") {
+            // add contract name
+            if (name && +name !== -1) {
+              await addContractName(wallet, currentWallet, {
+                contractName: name,
+                txId: transactionId,
+                action: isUpdate ? "UPDATE" : "DEPLOY",
+                address: currentWallet.address,
+              });
+            }
             // if proposalInfo-tobeReleased is true, go to exec
             // if proposalInfo-tobeReleased is true then GetSmartContractRegistrationByCodeHash
             // start training in rotation 3s once
@@ -388,7 +368,40 @@ const CreateProposal = () => {
             //    if deploy failed, if without approval modal close, open normal modal
             //    if without approval modal open, show exec failed
             // if proposalInfo-tobeReleased is false until 10min, failed deploying ACS12
-            //
+            const minedRes = await minedStatusWithoutApproval(txRes, isUpdate);
+            if (minedRes.status === "success") {
+              const { contractAddress, contractName, contractVersion } =
+                minedRes;
+              // open modal
+              onOpenWithoutApprovalModal({
+                isUpdate,
+                status: {
+                  verification: 0,
+                  execution: 0,
+                },
+                cancel: cancelWithoutApproval,
+                message: (
+                  <AddressNameVer
+                    address={contractAddress}
+                    name={contractName}
+                    ver={contractVersion}
+                  />
+                ),
+              });
+            } else {
+              // exec fail modal
+              onOpenWithoutApprovalModal({
+                isUpdate,
+                status: {
+                  verification: 0,
+                  execution: 1,
+                },
+                cancel: cancelWithoutApproval,
+                message:
+                  "This may be due to the failure in transaction which can be vviewed via Transaction ID:",
+                transactionId,
+              });
+            }
           }
         } catch (e) {
           console.error(e);

@@ -293,10 +293,24 @@ const ContractProposal = (props) => {
       address
     );
     const { author } = result;
+    // Genesis contract ---> bpApproval
     // bp mode choose withoutApproval mode
-    if (getContractAddress("Genesis") === author) {
+    if (
+      getContractAddress("Genesis") === author &&
+      approvalMode === "withoutApproval"
+    ) {
       message.error(
         "Contract update failed. Please update this contract in BP Approval mode."
+      );
+      return false;
+    }
+    // withoutApproval mode choose bp mode
+    if (
+      getContractAddress("Genesis") !== author &&
+      approvalMode === "bpApproval"
+    ) {
+      message.error(
+        "Contract update failed. Please update this contract in without Approval mode."
       );
       return false;
     }

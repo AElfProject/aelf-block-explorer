@@ -2,12 +2,16 @@
   .copy-btn {
     border: none;
     background-color: transparent;
+    &:hover {
+      background: transparent;
+      border: 0;
+    }
   }
   .contract-address,
   .contract-name,
   .contract-version {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     width: 640px;
     margin-left: 120px;
     .label {

@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-use-before-define
+import React from "react";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -5,10 +7,9 @@ import {
   CheckCircleFilled,
 } from "@ant-design/icons";
 import { Modal } from "antd";
-import React from "react";
-import { CHAIN_ID } from "../../../../constants";
 import CopylistItem from "../CopylistItem";
 import "./index.less";
+
 interface IStatus {
   // 0: success 1: fail 2: loading 3: un-arrival
   verification: number;
@@ -47,12 +48,13 @@ const getMessage = (props) => {
         {`Contract ${isUpdate ? "update" : "deployment"} verification...`}
       </div>
     );
-  } else if (verification === 1) {
+  }
+  if (verification === 1) {
     return (
       <div className="verification-fail">
         <div className="title">
           <CloseCircleFilled className="circle-icon close" />
-          <span className={`fail-message`}>
+          <span className="fail-message">
             {`${
               title ||
               `Closing deployment window while it's ongoing will not affect its progress`
@@ -67,9 +69,9 @@ const getMessage = (props) => {
           <CopylistItem
             label="Transaction ID"
             value={transactionId}
-            href={""}
+            href=""
             valueHref={`/tx/${transactionId}`}
-          ></CopylistItem>
+          />
         )}
       </div>
     );
@@ -81,33 +83,31 @@ const getMessage = (props) => {
           {`Executing contract  ${isUpdate ? "update" : "deployment"}`}
         </div>
       );
-    } else if (execution === 0) {
+    }
+    if (execution === 0) {
       return (
         <div className="execution-success">
           <div className="title">
             <CheckCircleFilled className="circle-icon check" />
-            <span className={`success-message`}>{`The contract is ${
+            <span className="success-message">{`The contract is ${
               isUpdate ? "updated" : "deployed"
             }!`}</span>
           </div>
           <div className="content">{message}</div>
         </div>
       );
-    } else if (execution === 1) {
+    }
+    if (execution === 1) {
       return (
         <div className="execution-fail">
           <div className="title">
             <CloseCircleFilled className="circle-icon close" />
-            <span className={`fail-message`}>
+            <span className="fail-message">
               {`Contract ${isUpdate ? "update" : "deployment"}  failure！`}
             </span>
           </div>
           <div className="content">{message}</div>
-          <CopylistItem
-            label="Transaction ID"
-            value={transactionId}
-            href={""}
-          ></CopylistItem>
+          <CopylistItem label="Transaction ID" value={transactionId} href="" />
         </div>
       );
     }
@@ -116,7 +116,7 @@ const getMessage = (props) => {
 const WithoutApprovalModal = (props: IProps) => {
   const { open, withoutApprovalProps } = props;
   const { isUpdate, cancel, status } = withoutApprovalProps;
-  let noticeContent = isUpdate ? noticeUpdateContent : noticeDeployContent;
+  const noticeContent = isUpdate ? noticeUpdateContent : noticeDeployContent;
   const handleCancel = () => {
     cancel();
   };
@@ -145,7 +145,7 @@ const WithoutApprovalModal = (props: IProps) => {
             {`${isUpdate ? "Update" : "Deployment"}  verification`}
           </span>
         </div>
-        <div className="middle-line"></div>
+        <div className="middle-line" />
         <div className="deployment-execution">
           {status?.execution === 0 && (
             <CheckCircleOutlined className="circle-icon check" />

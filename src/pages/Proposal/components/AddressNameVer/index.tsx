@@ -1,11 +1,13 @@
-import { Button, message } from "antd";
+// eslint-disable-next-line no-use-before-define
 import React from "react";
+import { Button, message } from "antd";
 import copy from "copy-to-clipboard";
 import { omitString } from "../../../../common/utils";
 import IconFont from "../../../../components/IconFont";
 import addressFormat from "../../../../utils/addressFormat";
 import "./index.less";
-export const AddressNameVer = ({ address, name, ver }) => {
+
+const AddressNameVer = ({ address, name, ver }) => {
   const handleCopy = () => {
     try {
       copy(address);
@@ -28,7 +30,7 @@ export const AddressNameVer = ({ address, name, ver }) => {
             icon={<IconFont type="copy" />}
             title="Copy code"
             className="copy-btn"
-          ></Button>
+          />
         </span>
       </div>
       <div className="contract-name">
@@ -42,3 +44,4 @@ export const AddressNameVer = ({ address, name, ver }) => {
     </div>
   );
 };
+export default AddressNameVer;
