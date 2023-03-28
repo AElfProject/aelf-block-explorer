@@ -42,11 +42,13 @@
         font-size: 14px;
         display: flex;
       }
-
+      .title0 {
+        color: #595959;
+      }
       .title1 {
         color: #ff4d4f;
       }
-      .title0,
+
       .title2 {
         color: #266cd3;
       }
@@ -133,6 +135,54 @@
           display: flex;
           align-items: flex-start;
         }
+      }
+    }
+    .ant-modal-footer {
+      .ant-btn {
+        width: 240px;
+        height: 40px;
+      }
+    }
+  }
+}
+.without-approval-modal-mobile {
+  .ant-modal-content {
+    .ant-modal-body {
+      padding: 32px 16px 0;
+      .without-approval-modal-degree {
+        margin: 8px auto;
+        .deployment-verification,
+        .deployment-execution {
+          flex-wrap: wrap;
+          justify-content: center;
+          .icon,
+          .circle-icon {
+            margin-bottom: 8px;
+          }
+        }
+      }
+      .without-approval-modal-message {
+        margin-top: 48px;
+        .verification-fail,
+        .execution-fail {
+          .content {
+            margin-left: 0;
+          }
+        }
+        .copy-list-item-wrapper {
+          margin-left: 0;
+        }
+        .address-name-ver {
+          .contract-address,
+          .contract-name,
+          .contract-version {
+            margin-left: 0;
+          }
+        }
+      }
+      .without-approval-modal-notice {
+        margin: 48px 0 32px;
+        padding: 16px;
       }
     }
   }

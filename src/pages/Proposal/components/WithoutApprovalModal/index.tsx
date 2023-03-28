@@ -9,6 +9,7 @@ import {
 import { Modal } from "antd";
 import CopylistItem from "../CopylistItem";
 import "./index.less";
+import useMobile from "../../../../hooks/useMobile";
 
 interface IStatus {
   // 0: success 1: fail 2: loading 3: un-arrival
@@ -45,7 +46,7 @@ const getMessage = (props) => {
   if (verification === 2) {
     return (
       <div className="verification-loading">
-        {`Contract ${isUpdate ? "update" : "deployment"} verification...`}
+        {`Verifying contract ${isUpdate ? "update" : "deployment"}...`}
       </div>
     );
   }
@@ -55,10 +56,7 @@ const getMessage = (props) => {
         <div className="title">
           <CloseCircleFilled className="circle-icon close" />
           <span className="fail-message">
-            {`${
-              title ||
-              `Closing deployment window while it's ongoing will not affect its progress`
-            }`}
+            {`${title || `Transaction pre-validation failed!`}`}
           </span>
         </div>
         <div className={`content ${!!title && "text-left"}`}>
@@ -120,6 +118,7 @@ const WithoutApprovalModal = (props: IProps) => {
   const handleCancel = () => {
     cancel();
   };
+  const isMobile = useMobile();
   return (
     <Modal
       zIndex={2000}
@@ -128,7 +127,9 @@ const WithoutApprovalModal = (props: IProps) => {
       onOk={handleCancel}
       okText="Close"
       closable={false}
-      wrapClassName="without-approval-modal"
+      wrapClassName={`without-approval-modal ${
+        isMobile ? "without-approval-modal-mobile" : ""
+      }`}
     >
       <div className="without-approval-modal-degree">
         <div className="deployment-verification">
