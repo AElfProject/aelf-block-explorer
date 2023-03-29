@@ -1,7 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { hexStringToByteArray } from "../../../../utils/formater";
 import { callGetMethod } from "../../../../utils/utils";
 import { getOriginProposedContractInputHash } from "../../common/util.proposed";
 import { getContractAddress, getTxResult } from "../../common/utils";

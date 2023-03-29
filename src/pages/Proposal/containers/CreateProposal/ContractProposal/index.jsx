@@ -331,7 +331,12 @@ const ContractProposal = (props) => {
         contractMethod = "",
         proposalId,
       } = result;
-      if (isUpdate && !(await checkUpdateMode(address))) {
+      if (
+        isUpdate &&
+        (approvalMode === "withoutApproval" ||
+          contractMethod === "ProposeNewContract") &&
+        !(await checkUpdateMode(address))
+      ) {
         return;
       }
       let file;
@@ -564,7 +569,6 @@ const ContractProposal = (props) => {
           onChange={handleUpload}
           extra="Support DLL or PATCHED file, less than 2MB"
           // if upload is disabled, avoid being triggered by label
-          disabled={fileLength === 1}
         >
           <Button disabled={fileLength === 1}>
             <UploadOutlined className="gap-right-small" />
