@@ -121,7 +121,7 @@ const WithoutApprovalModal = (props: IProps) => {
   const isMobile = useMobile();
   return (
     <Modal
-      zIndex={2000}
+      destroyOnClose
       width={800}
       open={open}
       onOk={handleCancel}

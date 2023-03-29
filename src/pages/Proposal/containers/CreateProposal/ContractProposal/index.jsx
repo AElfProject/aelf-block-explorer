@@ -26,6 +26,7 @@ import {
 } from "../../../actions/proposalSelectList";
 import { useCallGetMethod } from "../utils.callback";
 import { getContractAddress } from "../../../common/utils";
+import { CHAIN_ID } from "../../../../../constants";
 
 const FormItem = Form.Item;
 const InputNameReg = /^[.,a-zA-Z\d]+$/;
@@ -287,6 +288,22 @@ const ContractProposal = (props) => {
     return result;
   }
 
+  const isInWhiteList = async (author) => {
+    if (CHAIN_ID === "AELF") {
+      return false;
+    }
+    const list = await callGetMethodSend(
+      "Parliament",
+      "GetProposerWhiteList",
+      ""
+    );
+    // in white list
+    if (list?.proposers.find((ele) => ele === author)) {
+      return false;
+    }
+    return true;
+  };
+
   const checkUpdateMode = async (address) => {
     try {
       const result = await callGetMethodSend(
@@ -309,6 +326,7 @@ const ContractProposal = (props) => {
       // withoutApproval mode choose bp mode
       if (
         getContractAddress("Genesis") !== author &&
+        (await isInWhiteList(author)) &&
         approvalMode === "bpApproval"
       ) {
         message.error(

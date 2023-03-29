@@ -20,13 +20,13 @@ import "./index.less";
 import {
   formatTimeToNano,
   getContractAddress,
+  getTxResult,
   showTransactionResult,
   uint8ToBase64,
 } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
 import {
   addContractName,
-  getDeserializeLog,
   getTransactionResult,
   updateContractName,
 } from "../../utils";
@@ -122,16 +122,21 @@ const CreateProposal = () => {
   );
 
   const cancelWithoutApproval = () => {
+    // to destroy sure modal
+    Modal.destroyAll();
+    setContractResult({
+      confirming: false,
+    });
     setWithoutApprovalOpen(false);
   };
 
   const ifToBeRelease = async (log) => {
     const startTime = new Date().getTime();
-    const { proposalId } = await deserializeLog(
-      log[0],
-      log[0].Name,
-      log[0].Address
-    );
+    let proposalId = "";
+    if (log.length) {
+      const result = await deserializeLog(log[0], log[0].Name, log[0].Address);
+      proposalId = result.proposalId;
+    }
     // start training in rotation 3s once
     // get proposal info
     return new Promise((resolve) => {
@@ -447,11 +452,19 @@ const CreateProposal = () => {
         return;
       }
       const result = await contractSend(action, params);
-      const Log = await getDeserializeLog(
-        aelf,
-        result?.TransactionId || result?.result?.TransactionId || "",
-        "ProposalCreated"
-      );
+      let Log;
+      const txsId = result?.TransactionId || result?.result?.TransactionId;
+      if (!txsId)
+        throw new Error("Transaction failed. Please reinitiate this step.");
+      const txResult = await getTxResult(aelf, txsId ?? "");
+      // A transaction is said to be mined when it is included to the blockchain in a new block.
+      if (txResult.Status === "MINED") {
+        const { Logs = [] } = txResult;
+        const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
+        if (log.length) {
+          Log = await deserializeLog(log[0], log[0].Name, log[0].Address);
+        }
+      }
       const { proposalId } = Log ?? "";
       if (name && +name !== -1) {
         await addContractName(wallet, currentWallet, {
@@ -469,24 +482,26 @@ const CreateProposal = () => {
         children: (
           <div style={{ textAlign: "left" }}>
             {proposalId ? (
-              <CopylistItem
-                label="Proposal ID："
-                value={proposalId}
-                // href={`/proposalsDetail/${proposalId}`}
-              />
+              <div>
+                <CopylistItem
+                  label="Proposal ID："
+                  value={proposalId}
+                  // href={`/proposalsDetail/${proposalId}`}
+                />
+                <CopylistItem
+                  label="Transaction ID："
+                  isParentHref
+                  value={
+                    result?.TransactionId || result?.result?.TransactionId || ""
+                  }
+                  href={`/tx/${
+                    result?.TransactionId || result?.result?.TransactionId || ""
+                  }`}
+                />
+              </div>
             ) : (
-              "This may be due to transaction failure. Please check it via Transaction ID:"
+              txResult?.Error
             )}
-            <CopylistItem
-              label="Transaction ID："
-              isParentHref
-              value={
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }
-              href={`/tx/${
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }`}
-            />
           </div>
         ),
       });

@@ -39,7 +39,7 @@ const AddressNameVer = ({ address, name, ver }) => {
       </div>
       <div className="contract-version">
         <span className="label">Version:</span>
-        <span className="content">{ver}</span>
+        <span className="content">v{ver}</span>
       </div>
     </div>
   );
