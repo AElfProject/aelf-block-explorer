@@ -197,19 +197,11 @@ export const useReleaseCodeCheckedContractAction = () => {
         const { address } = logs ?? {};
         contractAddress = address;
       }
-      const { codeHash = "" } = await callGetMethodSend(
-        "Genesis",
-        "DeployUserSmartContract",
-        hexStringToByteArray(txResult?.ReturnValue),
-        "unpackOutput"
-      );
       // get contractVersion
       const { contractVersion } = await callGetMethodSend(
         "Genesis",
-        "GetSmartContractRegistrationByCodeHash",
-        {
-          value: hexStringToByteArray(codeHash),
-        }
+        "GetContractInfo",
+        contractAddress
       );
       // get contractName
       const {

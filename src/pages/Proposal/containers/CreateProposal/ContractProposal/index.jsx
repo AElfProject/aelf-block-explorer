@@ -239,7 +239,7 @@ const ContractProposal = (props) => {
       ({ contractName, address }) =>
         contractName.indexOf(input) > -1 || address.indexOf(input) > -1
     ).length > 0;
-  
+
   function normFile(e) {
     if (Array.isArray(e)) {
       return e;
@@ -288,34 +288,39 @@ const ContractProposal = (props) => {
   }
 
   const checkUpdateMode = async (address) => {
-    const result = await callGetMethodSend(
-      "Genesis",
-      "GetContractInfo",
-      address
-    );
-    const { author } = result;
-    // Genesis contract ---> bpApproval
-    // bp mode choose withoutApproval mode
-    if (
-      getContractAddress("Genesis") === author &&
-      approvalMode === "withoutApproval"
-    ) {
-      message.error(
-        "Contract update failed. Please update this contract in BP Approval mode."
+    try {
+      const result = await callGetMethodSend(
+        "Genesis",
+        "GetContractInfo",
+        address
       );
+      const { author } = result;
+      // Genesis contract ---> bpApproval
+      // bp mode choose withoutApproval mode
+      if (
+        getContractAddress("Genesis") === author &&
+        approvalMode === "withoutApproval"
+      ) {
+        message.error(
+          "Contract update failed. Please update this contract in BP Approval mode."
+        );
+        return false;
+      }
+      // withoutApproval mode choose bp mode
+      if (
+        getContractAddress("Genesis") !== author &&
+        approvalMode === "bpApproval"
+      ) {
+        message.error(
+          "Contract update failed. Please update this contract in without Approval mode."
+        );
+        return false;
+      }
+      return true;
+    } catch (e) {
+      message.error(e);
       return false;
     }
-    // withoutApproval mode choose bp mode
-    if (
-      getContractAddress("Genesis") !== author &&
-      approvalMode === "bpApproval"
-    ) {
-      message.error(
-        "Contract update failed. Please update this contract in without Approval mode."
-      );
-      return false;
-    }
-    return true;
   };
   async function handleSubmit() {
     try {

@@ -135,35 +135,40 @@ const CreateProposal = () => {
     // start training in rotation 3s once
     // get proposal info
     return new Promise((resolve) => {
-      interval(async () => {
-        const endTIme = new Date().getTime();
-        const proposalInfo = await callGetMethodSend(
-          "Parliament",
-          "GetProposal",
-          {
-            value: hexStringToByteArray(
-              proposalId
-              // "b4cbd0a1e2ad563f58850c05a22e9380cd87cb4527462dca46b7df5826a60d42"
-            ),
-          }
-        );
-        if (proposalInfo === null || !!proposalInfo.toBeRelease) {
-          interval.clear();
-          resolve(true);
-        }
-        if (
-          endTIme > proposalInfo?.expiredTime ||
-          endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT
-        ) {
-          if (+proposalInfo?.approvalCount <= 0) {
-            interval.clear();
-            resolve("acs12 etc fail");
-          } else {
+      try {
+        interval(async () => {
+          const endTIme = new Date().getTime();
+          const proposalInfo = await callGetMethodSend(
+            "Parliament",
+            "GetProposal",
+            {
+              value: hexStringToByteArray(
+                proposalId
+                // "b4cbd0a1e2ad563f58850c05a22e9380cd87cb4527462dca46b7df5826a60d42"
+              ),
+            }
+          );
+          if (proposalInfo === null || !!proposalInfo.toBeRelease) {
             interval.clear();
             resolve(true);
           }
-        }
-      }, 3000);
+          if (
+            endTIme > proposalInfo?.expiredTime ||
+            endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT
+          ) {
+            if (+proposalInfo?.approvalCount <= 0) {
+              interval.clear();
+              resolve("acs12 etc fail");
+            } else {
+              interval.clear();
+              resolve(true);
+            }
+          }
+        }, 3000);
+      } catch (e) {
+        interval.clear();
+        message.error(e);
+      }
     });
   };
   const openFailedWithoutApprovalModal = (isUpdate, transactionId) => {
@@ -193,11 +198,13 @@ const CreateProposal = () => {
     });
   };
   // eslint-disable-next-line consistent-return
-  const minedStatusWithoutApproval = async (txRes, isUpdate) => {
+  const minedStatusWithoutApproval = async (txRes, isUpdate, address) => {
+    console.log(txRes, "txRes");
     try {
       const { Logs = [], ReturnValue, TransactionId } = txRes;
       const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
       const releaseRes = await ifToBeRelease(log, isUpdate, TransactionId);
+
       if (releaseRes === "acs12 etc fail") {
         openFailedWithoutApprovalModal(isUpdate, TransactionId);
         return Promise.reject(new Error("acs12 etc fail"));
@@ -211,6 +218,24 @@ const CreateProposal = () => {
         },
         cancel: cancelWithoutApproval,
       });
+      if (isUpdate) {
+        // already know contract address
+        // get contractVersion
+        const { contractVersion } = await callGetMethodSend(
+          "Genesis",
+          "GetContractInfo",
+          address
+        );
+        const {
+          data: { contractName },
+        } = await get(VIEWER_GET_FILE, { address });
+        return {
+          status: "success",
+          contractAddress: address,
+          contractName,
+          contractVersion,
+        };
+      }
       const { codeHash = "" } = await callGetMethodSend(
         "Genesis",
         "DeployUserSmartContract",
@@ -220,41 +245,47 @@ const CreateProposal = () => {
       console.log(codeHash, "codeHash");
       const startTime = new Date().getTime();
       return new Promise((resolve) => {
-        interval(async () => {
-          const endTIme = new Date().getTime();
-          // timeout
-          if (endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT) {
-            interval.clear();
-            resolve({
-              status: "fail",
-            });
-          } else {
-            // get contract address
-            const contractRegistration = await callGetMethodSend(
-              "Genesis",
-              "GetSmartContractRegistrationByCodeHash",
-              {
-                value: hexStringToByteArray(codeHash),
-              }
-            );
-            console.log(contractRegistration, "contractRegistration");
-            if (contractRegistration.contractAddress) {
-              // get contractVersion
-              const { contractAddress, contractVersion } = contractRegistration;
-              // get contractName
-              const {
-                data: { contractName },
-              } = await get(VIEWER_GET_FILE, { address: contractAddress });
+        try {
+          interval(async () => {
+            const endTIme = new Date().getTime();
+            // timeout
+            if (endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT) {
               interval.clear();
               resolve({
-                status: "success",
-                contractAddress,
-                contractName,
-                contractVersion,
+                status: "fail",
               });
+            } else {
+              // get contract address
+              const contractRegistration = await callGetMethodSend(
+                "Genesis",
+                "GetSmartContractRegistrationByCodeHash",
+                {
+                  value: hexStringToByteArray(codeHash),
+                }
+              );
+              console.log(contractRegistration, "contractRegistration");
+              if (contractRegistration.contractAddress) {
+                // get contractVersion
+                const { contractAddress, contractVersion } =
+                  contractRegistration;
+                // get contractName
+                const {
+                  data: { contractName },
+                } = await get(VIEWER_GET_FILE, { address: contractAddress });
+                interval.clear();
+                resolve({
+                  status: "success",
+                  contractAddress,
+                  contractName,
+                  contractVersion,
+                });
+              }
             }
-          }
-        }, 10000);
+          }, 10000);
+        } catch (e) {
+          interval.clear();
+          message.error(e.message);
+        }
       });
     } catch (e) {
       message.error(e.message);
@@ -327,10 +358,24 @@ const CreateProposal = () => {
           // get transaction id
           const result = await contractSend(action, params);
           // according to Error show modal
-          const txRes = await getTransactionResult(
+          let txRes = await getTransactionResult(
             aelf,
             result?.TransactionId || result?.result?.TransactionId || ""
           );
+          txRes = {
+            Logs: [
+              {
+                Address: "4SGo3CUj3PPh3hC5oXV83WodyUaPHuz4trLoSTGFnxe84nqNr",
+                Indexed: ["EiIKIAobvN9ajS/MOdT6SNONzWdudjtlkqILPDWV4ef1XTOn"],
+                Name: "ProposalCreated",
+                NonIndexed: "CiIKIFqJPG6VjurJSu9dHzv1KZTbFR54XHoY4lwNRQryTYYx",
+              },
+            ],
+            ReturnValue: "",
+            Status: "MINED",
+            TransactionId:
+              "6d7a91f288606ca85264cbb80a7602bdd3b5a174f8583f99c71b7d7573e057e8",
+          };
           const {
             TransactionId: transactionId,
             Error: error,
@@ -368,7 +413,11 @@ const CreateProposal = () => {
             //    if deploy failed, if without approval modal close, open normal modal
             //    if without approval modal open, show exec failed
             // if proposalInfo-tobeReleased is false until 10min, failed deploying ACS12
-            const minedRes = await minedStatusWithoutApproval(txRes, isUpdate);
+            const minedRes = await minedStatusWithoutApproval(
+              txRes,
+              isUpdate,
+              address
+            );
             if (minedRes.status === "success") {
               const { contractAddress, contractName, contractVersion } =
                 minedRes;
@@ -405,6 +454,7 @@ const CreateProposal = () => {
           }
         } catch (e) {
           console.error(e);
+          message.error(e.message);
         }
         return;
       }
