@@ -239,6 +239,7 @@ const ContractProposal = (props) => {
       ({ contractName, address }) =>
         contractName.indexOf(input) > -1 || address.indexOf(input) > -1
     ).length > 0;
+  
   function normFile(e) {
     if (Array.isArray(e)) {
       return e;
@@ -478,6 +479,10 @@ const ContractProposal = (props) => {
   };
 
   const contractAddressFormItem = () => {
+    const list =
+      approvalMode === "withoutApproval"
+        ? contractList.filter((ele) => !ele.isSystemContract)
+        : contractList;
     return (
       <FormItem
         label="Contract Address"
@@ -496,7 +501,7 @@ const ContractProposal = (props) => {
           filterOption={contractFilter}
           onChange={handleContractChange}
         >
-          {contractList.map((v) => (
+          {list.map((v) => (
             <Select.Option key={v.address} value={v.address}>
               {v.contractName || v.address}
             </Select.Option>
@@ -553,6 +558,8 @@ const ContractProposal = (props) => {
           beforeUpload={() => false}
           onChange={handleUpload}
           extra="Support DLL or PATCHED file, less than 2MB"
+          // if upload is disabled, avoid being triggered by label
+          disabled={fileLength === 1}
         >
           <Button disabled={fileLength === 1}>
             <UploadOutlined className="gap-right-small" />
@@ -613,8 +620,8 @@ const ContractProposal = (props) => {
             <Radio value="ProposeUpdateContract">Update Contract</Radio>
           </Radio.Group>
         </FormItem>
-        {approvalModeFormItem()}
         {isUpdate ? updateTypeFormItem() : null}
+        {approvalModeFormItem()}
         {approvalMode === "bpApproval" && !(isUpdate && isUpdateName)
           ? contractMethodFormItem()
           : null}
