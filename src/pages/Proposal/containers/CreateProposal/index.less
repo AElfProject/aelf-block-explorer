@@ -23,7 +23,9 @@
 .create-proposal-modal.ant-modal-wrap,
 .contract-proposal-modal.ant-modal-wrap {
   .ant-modal {
+    border-radius: 8px;
     .ant-modal-content {
+      border-radius: 8px;
       .ant-modal-header {
         padding: 16px 24px;
         border-bottom: 1px solid #f0f0f0;
@@ -33,12 +35,23 @@
           text-align: left;
         }
       }
+      .ant-modal-body {
+        padding-top: 40px;
+      }
+      .address-name-ver {
+        .contract-address,
+        .contract-name,
+        .contract-version {
+          margin-left: 0;
+        }
+      }
     }
     .ant-modal-footer {
-      padding-bottom: 10px;
-      border-top: 1px solid #f0f0f0;
+      padding-bottom: 24px;
       .ant-btn {
-        width: auto;
+        width: 240px;
+        height: 40px;
+        border-radius: 2px;
         display: inline-block;
       }
     }

@@ -5,9 +5,10 @@ import { callGetMethod } from "../../../../utils/utils";
 import { getOriginProposedContractInputHash } from "../../common/util.proposed";
 import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
-import { getContractURL, getDeserializeLog } from "../../utils";
+import { getDeserializeLog } from "../../utils";
 import { get } from "../../../../utils";
 import { VIEWER_GET_FILE } from "../../../../api/url";
+import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 
 export const useCallbackAssem = () => {
   const common = useSelector((state) => state.common);
@@ -217,20 +218,11 @@ export const useReleaseCodeCheckedContractAction = () => {
           <div style={{ textAlign: "left" }}>
             {!isError && contractAddress ? (
               <div>
-                <CopylistItem
-                  label="Contract Address："
-                  isParentHref
-                  value={contractAddress}
-                  href={getContractURL(contractAddress || "")}
+                <AddressNameVer
+                  address={contractAddress}
+                  name={contractName || contract.name}
+                  ver={contractVersion}
                 />
-                <div className="contract-name">
-                  <span>Contract Name: </span>
-                  <span>{contractName}</span>
-                </div>
-                <div className="contract-version">
-                  <span>Version: </span>
-                  <span>{contractVersion}</span>
-                </div>
               </div>
             ) : (
               "Please check your Proposal ."

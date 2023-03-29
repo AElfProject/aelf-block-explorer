@@ -198,7 +198,7 @@ const CreateProposal = () => {
     });
   };
   // eslint-disable-next-line consistent-return
-  const minedStatusWithoutApproval = async (txRes, isUpdate, address) => {
+  const minedStatusWithoutApproval = async (name, txRes, isUpdate, address) => {
     console.log(txRes, "txRes");
     try {
       const { Logs = [], ReturnValue, TransactionId } = txRes;
@@ -276,7 +276,7 @@ const CreateProposal = () => {
                 resolve({
                   status: "success",
                   contractAddress,
-                  contractName,
+                  contractName: contractName || name,
                   contractVersion,
                 });
               }
@@ -401,6 +401,7 @@ const CreateProposal = () => {
             //    if without approval modal open, show exec failed
             // if proposalInfo-tobeReleased is false until 10min, failed deploying ACS12
             const minedRes = await minedStatusWithoutApproval(
+              name,
               txRes,
               isUpdate,
               address
