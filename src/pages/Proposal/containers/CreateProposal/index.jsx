@@ -358,24 +358,11 @@ const CreateProposal = () => {
           // get transaction id
           const result = await contractSend(action, params);
           // according to Error show modal
-          let txRes = await getTransactionResult(
+          const txRes = await getTransactionResult(
             aelf,
             result?.TransactionId || result?.result?.TransactionId || ""
           );
-          txRes = {
-            Logs: [
-              {
-                Address: "4SGo3CUj3PPh3hC5oXV83WodyUaPHuz4trLoSTGFnxe84nqNr",
-                Indexed: ["EiIKIAobvN9ajS/MOdT6SNONzWdudjtlkqILPDWV4ef1XTOn"],
-                Name: "ProposalCreated",
-                NonIndexed: "CiIKIFqJPG6VjurJSu9dHzv1KZTbFR54XHoY4lwNRQryTYYx",
-              },
-            ],
-            ReturnValue: "",
-            Status: "MINED",
-            TransactionId:
-              "6d7a91f288606ca85264cbb80a7602bdd3b5a174f8583f99c71b7d7573e057e8",
-          };
+
           const {
             TransactionId: transactionId,
             Error: error,
