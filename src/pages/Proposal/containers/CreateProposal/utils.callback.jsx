@@ -7,7 +7,7 @@ import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
 import { getDeserializeLog } from "../../utils";
 import { get } from "../../../../utils";
-import { VIEWER_GET_FILE } from "../../../../api/url";
+import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 
 export const useCallbackAssem = () => {
@@ -206,7 +206,7 @@ export const useReleaseCodeCheckedContractAction = () => {
       // get contractName
       const {
         data: { contractName },
-      } = await get(VIEWER_GET_FILE, { address: contractAddress });
+      } = await get(VIEWER_GET_CONTRACT_NAME, { proposalId });
 
       return {
         visible: true,

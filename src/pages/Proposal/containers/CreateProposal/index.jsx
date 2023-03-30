@@ -34,7 +34,7 @@ import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.ts
 import { deserializeLog } from "../../../../common/utils";
 import { interval } from "../../../../utils/timeUtils";
 import { get } from "../../../../utils";
-import { VIEWER_GET_FILE } from "../../../../api/url";
+import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
 import { hexStringToByteArray } from "../../../../utils/formater";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 
@@ -233,7 +233,7 @@ const CreateProposal = () => {
         );
         const {
           data: { contractName },
-        } = await get(VIEWER_GET_FILE, { address });
+        } = await get(VIEWER_GET_CONTRACT_NAME, { address });
         return {
           status: "success",
           contractAddress: address,
@@ -276,7 +276,9 @@ const CreateProposal = () => {
                 // get contractName
                 const {
                   data: { contractName },
-                } = await get(VIEWER_GET_FILE, { address: contractAddress });
+                } = await get(VIEWER_GET_CONTRACT_NAME, {
+                  address: contractAddress,
+                });
                 interval.clear();
                 resolve({
                   status: "success",
