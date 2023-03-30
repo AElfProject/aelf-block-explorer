@@ -7,6 +7,12 @@ import IconFont from "../../../../components/IconFont";
 import addressFormat from "../../../../utils/addressFormat";
 import "./index.less";
 
+const checkName = (name: string) => {
+  if (name === "-1") {
+    return "-";
+  }
+  return name;
+};
 const AddressNameVer = ({ address, name, ver }) => {
   const handleCopy = () => {
     try {
@@ -35,13 +41,13 @@ const AddressNameVer = ({ address, name, ver }) => {
           </span>
         </div>
       )}
-      {name && (
+      {checkName(name) && (
         <div className="contract-name">
           <span className="label">Contract Name:</span>
-          <span className="content">{name}</span>
+          <span className="content">{checkName(name)}</span>
         </div>
       )}
-      {ver && (
+      {checkName(name) && (
         <div className="contract-version">
           <span className="label">Version:</span>
           <span className="content">v{ver}</span>

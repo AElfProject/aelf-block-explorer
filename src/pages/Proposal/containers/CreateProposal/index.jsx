@@ -283,7 +283,7 @@ const CreateProposal = () => {
                 resolve({
                   status: "success",
                   contractAddress,
-                  contractName: contractName || name,
+                  contractName: contractName || name || "-1",
                   contractVersion,
                 });
               }
@@ -459,8 +459,11 @@ const CreateProposal = () => {
       if (!txsId)
         throw new Error("Transaction failed. Please reinitiate this step.");
       const txResult = await getTxResult(aelf, txsId ?? "");
-      // A transaction is said to be mined when it is included to the blockchain in a new block.
+      if (txResult.Error) {
+        throw new Error(txResult.Error);
+      }
       if (txResult.Status === "MINED") {
+        // A transaction is said to be mined when it is included to the blockchain in a new block.
         const { Logs = [] } = txResult;
         const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
         if (log.length) {
@@ -486,24 +489,24 @@ const CreateProposal = () => {
             {proposalId ? (
               <div>
                 <CopylistItem
-                  label="Proposal ID："
+                  label="Proposal ID"
                   value={proposalId}
                   // href={`/proposalsDetail/${proposalId}`}
                 />
-                <CopylistItem
-                  label="Transaction ID："
-                  isParentHref
-                  value={
-                    result?.TransactionId || result?.result?.TransactionId || ""
-                  }
-                  href={`/tx/${
-                    result?.TransactionId || result?.result?.TransactionId || ""
-                  }`}
-                />
               </div>
             ) : (
-              txResult?.Error
+              "This may be due to transaction failure. Please check it via Transaction ID:"
             )}
+            <CopylistItem
+              label="Transaction ID"
+              isParentHref
+              value={
+                result?.TransactionId || result?.result?.TransactionId || ""
+              }
+              href={`/tx/${
+                result?.TransactionId || result?.result?.TransactionId || ""
+              }`}
+            />
           </div>
         ),
       });

@@ -115,7 +115,7 @@ export const useReleaseApprovedContractAction = () => {
           <div style={{ textAlign: "left" }}>
             {!isError && newProposalId ? (
               <CopylistItem
-                label="Proposal ID："
+                label="Proposal ID"
                 value={newProposalId ?? ""}
                 // href={`/proposalsDetail/${newProposalId}`}
               />
@@ -123,7 +123,7 @@ export const useReleaseApprovedContractAction = () => {
               "This may be due to transaction failure. Please check it via Transaction ID:"
             )}
             <CopylistItem
-              label="Transaction ID："
+              label="Transaction ID"
               isParentHref
               value={
                 result?.TransactionId || result?.result?.TransactionId || ""
