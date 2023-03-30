@@ -568,31 +568,34 @@ const ContractProposal = (props) => {
             </Tooltip>
           </span>
         }
-        name="file"
-        valuePropName="fileList"
-        getValueFromEvent={normFile}
-        rules={[
-          {
-            required: true,
-            message: "Please upload the DLL or PATCHED file!",
-          },
-          {
-            validator: validateFile,
-          },
-        ]}
       >
-        <Upload
-          accept=".dll,.patched"
-          beforeUpload={() => false}
-          onChange={handleUpload}
-          extra="Support DLL or PATCHED file, less than 2MB"
-          // if upload is disabled, avoid being triggered by label
+        <FormItem
+          name="file"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
+          rules={[
+            {
+              required: true,
+              message: "Please upload the DLL or PATCHED file!",
+            },
+            {
+              validator: validateFile,
+            },
+          ]}
         >
-          <Button disabled={fileLength === 1}>
-            <UploadOutlined className="gap-right-small" />
-            Click to Upload
-          </Button>
-        </Upload>
+          <Upload
+            accept=".dll,.patched"
+            beforeUpload={() => false}
+            onChange={handleUpload}
+            extra="Support DLL or PATCHED file, less than 2MB"
+            // if upload is disabled, avoid being triggered by label
+          >
+            <Button disabled={fileLength === 1}>
+              <UploadOutlined className="gap-right-small" />
+              Click to Upload
+            </Button>
+          </Upload>
+        </FormItem>
       </FormItem>
     );
   };
