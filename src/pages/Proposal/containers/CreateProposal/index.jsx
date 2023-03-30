@@ -232,7 +232,7 @@ const CreateProposal = () => {
           address
         );
         const {
-          data: { contractName },
+          data: { name: contractName },
         } = await get(VIEWER_GET_CONTRACT_NAME, { address });
         return {
           status: "success",
@@ -275,7 +275,7 @@ const CreateProposal = () => {
                   contractRegistration;
                 // get contractName
                 const {
-                  data: { contractName },
+                  data: { name: contractName },
                 } = await get(VIEWER_GET_CONTRACT_NAME, {
                   address: contractAddress,
                 });
@@ -340,12 +340,14 @@ const CreateProposal = () => {
         action === "ProposeNewContract" ||
         action === "DeployUserSmartContract"
       ) {
+        // deploy contract
         // category=0: contract is c#
         params = {
           category: "0",
           code: file,
         };
       } else {
+        // update contract
         params = {
           address,
           code: file,

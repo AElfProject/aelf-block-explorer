@@ -188,6 +188,7 @@ export const useReleaseCodeCheckedContractAction = () => {
         isError = true;
       }
       let contractAddress = "";
+      let contractVersion = "";
       if (!isError) {
         const logs = await getDeserializeLog(
           aelf,
@@ -195,18 +196,26 @@ export const useReleaseCodeCheckedContractAction = () => {
           isDeploy ? "ContractDeployed" : "CodeUpdated"
         );
         const { address } = logs ?? {};
+        contractVersion = (logs || {}).address;
         contractAddress = address;
       }
       // get contractVersion
-      const { contractVersion } = await callGetMethodSend(
-        "Genesis",
-        "GetContractInfo",
-        contractAddress
-      );
-      // get contractName
-      const {
-        data: { contractName },
-      } = await get(VIEWER_GET_CONTRACT_NAME, { proposalId });
+      let contractName = "";
+      if (contractAddress) {
+        if (!contractVersion) {
+          const verRes = await callGetMethodSend(
+            "Genesis",
+            "GetContractInfo",
+            contractAddress
+          );
+          contractVersion = verRes.contractVersion;
+        }
+        // get contractName
+        const nameRes = await get(VIEWER_GET_CONTRACT_NAME, {
+          address: contractAddress,
+        });
+        contractName = nameRes.data.name;
+      }
 
       return {
         visible: true,

@@ -655,7 +655,8 @@ const ContractProposal = (props) => {
         {approvalMode === "bpApproval" && !(isUpdate && isUpdateName)
           ? contractMethodFormItem()
           : null}
-        {contractMethodType.ProposeNewContract === contractMethod ? (
+        {approvalMode === "withoutApproval" ||
+        contractMethodType.ProposeNewContract === contractMethod ? (
           <>
             {isUpdate ? contractAddressFormItem() : null}
             {!isUpdate || (isUpdate && isUpdateName)
