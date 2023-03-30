@@ -47,7 +47,7 @@ const initApplyModal = {
 };
 
 // 10 minutes
-const GET_CONTRACT_VERSION_TIMEOUT = 1000 * 60 * 10; // 1000 * 60 * 10;
+const GET_CONTRACT_VERSION_TIMEOUT = 1000 * 60 * 2; // 1000 * 60 * 10;
 
 const CreateProposal = () => {
   const { orgAddress = "" } = useParams();

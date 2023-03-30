@@ -19,28 +19,34 @@ const AddressNameVer = ({ address, name, ver }) => {
   };
   return (
     <div className="address-name-ver">
-      <div className="contract-address">
-        <span className="label">Contract Address:</span>
-        <span className="content">
-          <a href={`/address/${addressFormat(address)}`}>
-            {omitString(address, 10, 10)}
-          </a>
-          <Button
-            onClick={handleCopy}
-            icon={<IconFont type="copy" />}
-            title="Copy code"
-            className="copy-btn"
-          />
-        </span>
-      </div>
-      <div className="contract-name">
-        <span className="label">Contract Name:</span>
-        <span className="content">{name}</span>
-      </div>
-      <div className="contract-version">
-        <span className="label">Version:</span>
-        <span className="content">v{ver}</span>
-      </div>
+      {address && (
+        <div className="contract-address">
+          <span className="label">Contract Address:</span>
+          <span className="content">
+            <a href={`/address/${addressFormat(address)}`}>
+              {omitString(address, 10, 10)}
+            </a>
+            <Button
+              onClick={handleCopy}
+              icon={<IconFont type="copy" />}
+              title="Copy code"
+              className="copy-btn"
+            />
+          </span>
+        </div>
+      )}
+      {name && (
+        <div className="contract-name">
+          <span className="label">Contract Name:</span>
+          <span className="content">{name}</span>
+        </div>
+      )}
+      {ver && (
+        <div className="contract-version">
+          <span className="label">Version:</span>
+          <span className="content">v{ver}</span>
+        </div>
+      )}
     </div>
   );
 };
