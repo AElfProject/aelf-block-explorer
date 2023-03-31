@@ -49,7 +49,12 @@ export async function getDeserializeLog(aelf, txId, logName) {
   // A transaction is said to be mined when it is included to the blockchain in a new block.
   if (txResult.Status === "MINED") {
     const { Logs = [] } = txResult;
-    const log = (Logs || []).filter((v) => v.Name === logName);
+    let log;
+    if (Array.isArray(logName)) {
+      log = (Logs || []).filter((v) => logName.includes(v.Name));
+    } else {
+      log = (Logs || []).filter((v) => v.Name === logName);
+    }
     if (log.length === 0) {
       return;
     }

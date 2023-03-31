@@ -193,10 +193,10 @@ export const useReleaseCodeCheckedContractAction = () => {
         const logs = await getDeserializeLog(
           aelf,
           result?.TransactionId || result?.result?.TransactionId || "",
-          isDeploy ? "ContractDeployed" : "CodeUpdated"
+          ["ContractDeployed", "CodeUpdated"]
         );
         const { address } = logs ?? {};
-        contractVersion = (logs || {}).address;
+        contractVersion = (logs || {}).contractVersion;
         contractAddress = address;
       }
       // get contractVersion

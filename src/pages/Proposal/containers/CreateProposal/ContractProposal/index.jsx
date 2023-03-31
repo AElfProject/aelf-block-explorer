@@ -667,7 +667,7 @@ const ContractProposal = (props) => {
             {!(isUpdateName && isUpdate) ? uploadFileFormItem() : null}
           </>
         ) : (
-          <ProposalSearch selectMehtod={contractMethod} isUpdate={isUpdate} />
+          <ProposalSearch selectMehtod={contractMethod} />
         )}
         {approvalMode === "withoutApproval" && (
           <Form.Item label="Notice">

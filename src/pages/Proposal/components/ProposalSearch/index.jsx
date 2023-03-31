@@ -12,14 +12,10 @@ let timeout = null;
 let currentValue = "";
 
 // TODO reducer
-const ProposalSearch = ({
-  selectMehtod = "ReleaseApprovedContract",
-  isUpdate,
-}) => {
+const ProposalSearch = ({ selectMehtod = "ReleaseApprovedContract" }) => {
   const dispatch = useDispatch();
   const proposalSelect = useSelector((state) => state.proposalSelect);
-  const search = isUpdate ? "UpdateSmartContract" : "DeploySmartContract";
-  const [param, setParam] = useState({ ...proposalSelect.params, search });
+  const [param, setParam] = useState(proposalSelect.params);
   useEffect(() => {
     if (proposalSelect.isAll) return;
     getProposalSelectListWrap(dispatch, param).then(() => {
@@ -99,7 +95,6 @@ const ProposalSearch = ({
 
 ProposalSearch.propTypes = {
   selectMehtod: PropTypes.string.isRequired,
-  isUpdate: PropTypes.bool.isRequired,
 };
 
 export default ProposalSearch;
