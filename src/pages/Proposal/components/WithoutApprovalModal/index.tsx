@@ -78,7 +78,7 @@ const getMessage = (props) => {
     if (execution === 2) {
       return (
         <div className="execution-loading">
-          {`Executing contract  ${isUpdate ? "update" : "deployment"}`}
+          {`Executing contract  ${isUpdate ? "update" : "deployment"}...`}
         </div>
       );
     }

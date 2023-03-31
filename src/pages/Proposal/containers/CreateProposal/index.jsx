@@ -47,7 +47,7 @@ const initApplyModal = {
 };
 
 // 10 minutes
-const GET_CONTRACT_VERSION_TIMEOUT = 1000 * 60 * 2; // 1000 * 60 * 10;
+const GET_CONTRACT_VERSION_TIMEOUT = 1000 * 60 * 10;
 
 const CreateProposal = () => {
   const { orgAddress = "" } = useParams();
@@ -185,7 +185,7 @@ const CreateProposal = () => {
         execution: 3,
       },
       cancel: cancelWithoutApproval,
-      title: `Closing deployment window while it's ongoing will not affect its progress`,
+      title: `Contract deployment failed!`,
       message: (
         <div>
           <div>
@@ -204,7 +204,6 @@ const CreateProposal = () => {
   };
   // eslint-disable-next-line consistent-return
   const minedStatusWithoutApproval = async (name, txRes, isUpdate, address) => {
-    console.log(txRes, "txRes");
     try {
       const { Logs = [], ReturnValue, TransactionId } = txRes;
       const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
@@ -247,7 +246,6 @@ const CreateProposal = () => {
         hexStringToByteArray(ReturnValue),
         "unpackOutput"
       );
-      console.log(codeHash, "codeHash");
       const startTime = new Date().getTime();
       return new Promise((resolve) => {
         try {
@@ -268,7 +266,6 @@ const CreateProposal = () => {
                   value: hexStringToByteArray(codeHash),
                 }
               );
-              console.log(contractRegistration, "contractRegistration");
               if (contractRegistration.contractAddress) {
                 // get contractVersion
                 const { contractAddress, contractVersion } =

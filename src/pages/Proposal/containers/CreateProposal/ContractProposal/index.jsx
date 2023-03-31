@@ -557,6 +557,8 @@ const ContractProposal = (props) => {
   const uploadFileFormItem = () => {
     return (
       <FormItem
+        className="upload-file-form-item"
+        required
         label={
           <span>
             Upload File&nbsp;
