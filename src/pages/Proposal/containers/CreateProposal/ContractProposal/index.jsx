@@ -350,6 +350,7 @@ const ContractProposal = (props) => {
       } = result;
       if (
         isUpdate &&
+        !isUpdateName &&
         (approvalMode === "withoutApproval" ||
           contractMethod === "ProposeNewContract") &&
         !(await checkUpdateMode(address))
@@ -652,7 +653,7 @@ const ContractProposal = (props) => {
           </Radio.Group>
         </FormItem>
         {isUpdate ? updateTypeFormItem() : null}
-        {approvalModeFormItem()}
+        {!(isUpdate && isUpdateName) && approvalModeFormItem()}
         {approvalMode === "bpApproval" && !(isUpdate && isUpdateName)
           ? contractMethodFormItem()
           : null}
