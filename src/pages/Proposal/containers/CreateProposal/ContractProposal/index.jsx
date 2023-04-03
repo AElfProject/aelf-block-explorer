@@ -289,17 +289,16 @@ const ContractProposal = (props) => {
   }
 
   const isInWhiteList = async (author) => {
-    if (CHAIN_ID === "AELF") {
-      return false;
-    }
-    const list = await callGetMethodSend(
-      "Parliament",
-      "GetProposerWhiteList",
-      ""
-    );
-    // in white list
-    if (list?.proposers.find((ele) => ele === author)) {
-      return false;
+    if (CHAIN_ID !== "AELF") {
+      const list = await callGetMethodSend(
+        "Parliament",
+        "GetProposerWhiteList",
+        ""
+      );
+      // in white list
+      if (list?.proposers.find((ele) => ele === author)) {
+        return false;
+      }
     }
     return true;
   };
