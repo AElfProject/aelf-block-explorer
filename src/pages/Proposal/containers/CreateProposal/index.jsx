@@ -30,13 +30,13 @@ import {
   getTransactionResult,
   updateContractName,
 } from "../../utils";
-import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.tsx";
+import WithoutApprovalModal from "../../components/WithoutApprovalModal/index";
 import { deserializeLog } from "../../../../common/utils";
 import { interval } from "../../../../utils/timeUtils";
 import { get } from "../../../../utils";
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
 import { hexStringToByteArray } from "../../../../utils/formater";
-import AddressNameVer from "../../components/AddressNameVer/index.tsx";
+import AddressNameVer from "../../components/AddressNameVer/index";
 
 const { TabPane } = Tabs;
 
