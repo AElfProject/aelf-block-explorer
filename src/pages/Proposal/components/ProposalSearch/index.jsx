@@ -45,7 +45,7 @@ const ProposalSearch = ({ selectMehtod = "ReleaseApprovedContract" }) => {
     const wrapperHeight = popup.clientHeight;
     const innerHeight = popupChild?.clientHeight;
     const toBottom = innerHeight - wrapperHeight;
-    if (popup.scrollTop + toBottomDistance > toBottom && !isFetch) {
+    if ((popup.scrollTop + toBottomDistance > toBottom) && !isFetch) {
       isFetch = true;
       setParam((v) => ({ ...v, pageNum: v.pageNum + 1 }));
     }

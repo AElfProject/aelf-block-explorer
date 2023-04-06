@@ -42,73 +42,78 @@ const noticeUpdateContent = [
 const getMessage = (props) => {
   const { isUpdate, status, message, transactionId, title } = props;
   const { verification, execution } = status || {};
-  // verification loading
-  if (verification === 2) {
-    return (
-      <div className="verification-loading">
-        {`Verifying contract ${isUpdate ? "update" : "deployment"}...`}
-      </div>
-    );
-  }
-  if (verification === 1) {
-    return (
-      <div className="verification-fail">
-        <div className="title">
-          <CloseCircleFilled className="circle-icon close" />
-          <span className="fail-message">
-            {`${title || `Transaction pre-validation failed!`}`}
-          </span>
-        </div>
-        <div className={`content ${!!title && "text-left"}`}>
-          {!!title && <div>Possible causes:</div>}
-          <div>{message}</div>
-        </div>
-        {!!title && (
-          <CopylistItem
-            label="Transaction ID"
-            value={transactionId}
-            href=""
-            valueHref={`/tx/${transactionId}`}
-          />
-        )}
-      </div>
-    );
-  }
-  if (verification === 0) {
-    if (execution === 2) {
+  switch (verification) {
+    case 2:
       return (
-        <div className="execution-loading">
-          {`Executing contract  ${isUpdate ? "update" : "deployment"}...`}
+        <div className="verification-loading">
+          {`Verifying contract ${isUpdate ? "update" : "deployment"}...`}
         </div>
       );
-    }
-    if (execution === 0) {
+    case 1:
       return (
-        <div className="execution-success">
-          <div className="title">
-            <CheckCircleFilled className="circle-icon check" />
-            <span className="success-message">{`The contract is ${
-              isUpdate ? "updated" : "deployed"
-            }!`}</span>
-          </div>
-          <div className="content">{message}</div>
-        </div>
-      );
-    }
-    if (execution === 1) {
-      return (
-        <div className="execution-fail">
+        <div className="verification-fail">
           <div className="title">
             <CloseCircleFilled className="circle-icon close" />
             <span className="fail-message">
-              {`Contract ${isUpdate ? "update" : "deployment"}  failure！`}
+              {`${title || `Transaction pre-validation failed!`}`}
             </span>
           </div>
-          <div className="content">{message}</div>
-          <CopylistItem label="Transaction ID" value={transactionId} href="" />
+          <div className={`content ${!!title && "text-left"}`}>
+            {!!title && <div>Possible causes:</div>}
+            <div>{message}</div>
+          </div>
+          {!!title && (
+            <CopylistItem
+              label="Transaction ID"
+              value={transactionId}
+              href=""
+              valueHref={`/tx/${transactionId}`}
+            />
+          )}
         </div>
       );
-    }
+    case 0:
+      switch (execution) {
+        case 2:
+          return (
+            <div className="execution-loading">
+              {`Executing contract  ${isUpdate ? "update" : "deployment"}...`}
+            </div>
+          );
+        case 0:
+          return (
+            <div className="execution-success">
+              <div className="title">
+                <CheckCircleFilled className="circle-icon check" />
+                <span className="success-message">{`The contract is ${
+                  isUpdate ? "updated" : "deployed"
+                }!`}</span>
+              </div>
+              <div className="content">{message}</div>
+            </div>
+          );
+        case 1:
+          return (
+            <div className="execution-fail">
+              <div className="title">
+                <CloseCircleFilled className="circle-icon close" />
+                <span className="fail-message">
+                  {`Contract ${isUpdate ? "update" : "deployment"}  failure！`}
+                </span>
+              </div>
+              <div className="content">{message}</div>
+              <CopylistItem
+                label="Transaction ID"
+                value={transactionId}
+                href=""
+              />
+            </div>
+          );
+        default:
+          return null;
+      }
+    default:
+      return null;
   }
 };
 const WithoutApprovalModal = (props: IProps) => {
