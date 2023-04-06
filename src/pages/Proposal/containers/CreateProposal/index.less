@@ -17,15 +17,31 @@
     }
   }
 }
+.contract-proposal {
+  margin-top: 16px;
+  .ant-form-item {
+    margin-bottom: 20px;
+  }
+  .upload-file-form-item {
+    margin-bottom: 0;
+  }
+  .ant-btn-primary:focus {
+    border-color: #266cd3;
+    background: #266cd3;
+  }
+}
 .ant-modal-footer {
   text-align: center;
 }
 .create-proposal-modal.ant-modal-wrap,
 .contract-proposal-modal.ant-modal-wrap {
   .ant-modal {
+    border-radius: 8px;
     .ant-modal-content {
+      border-radius: 8px;
       .ant-modal-header {
-        padding: 16px 24px;
+        height: 72px;
+        padding: 22px 24px;
         border-bottom: 1px solid #f0f0f0;
         .ant-modal-title {
           padding: 0;
@@ -33,13 +49,82 @@
           text-align: left;
         }
       }
+      .ant-modal-body {
+        padding-top: 40px;
+      }
+      .address-name-ver {
+        .contract-address,
+        .contract-name,
+        .contract-version {
+          margin-left: 0;
+        }
+      }
     }
     .ant-modal-footer {
-      padding-bottom: 10px;
-      border-top: 1px solid #f0f0f0;
+      padding-bottom: 24px;
       .ant-btn {
-        width: auto;
+        width: 240px;
+        height: 40px;
+        border-radius: 2px;
         display: inline-block;
+      }
+    }
+  }
+}
+.contract-proposal-notice-content {
+  color: #858585;
+  font-size: 12px;
+  div {
+    line-height: 20px;
+  }
+  .content-item {
+    display: flex;
+    align-items: flex-start;
+
+    :first-child {
+      width: 4%;
+    }
+  }
+}
+.proposal-apply-tab {
+  .apply-btn {
+    margin-top: 16px;
+    display: block;
+  }
+  &.ant-tabs-mobile {
+    .apply-btn {
+      margin: 16px auto 0;
+      display: block;
+    }
+  }
+}
+
+.sure-modal-content {
+  width: 720px;
+  .ant-modal-content {
+    // height: 204px;
+    border-radius: 8px;
+    .ant-modal-body {
+      height: 100%;
+      .ant-modal-confirm-body-wrapper {
+        width: 100%;
+        height: 100%;
+        .ant-modal-confirm-body {
+          margin-top: 24px;
+        }
+        .ant-modal-confirm-btns {
+          text-align: center;
+          margin-top: 56px;
+          .ant-btn {
+            width: 120px;
+            height: 40px;
+            margin-bottom: 24px;
+          }
+          .ant-btn-primary:focus {
+            border-color: #266cd3;
+            background: #266cd3;
+          }
+        }
       }
     }
   }

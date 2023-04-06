@@ -1,10 +1,14 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { callGetMethod } from "../../../../utils/utils";
 import { getOriginProposedContractInputHash } from "../../common/util.proposed";
 import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
-import { getContractURL, getDeserializeLog } from "../../utils";
+import { getDeserializeLog } from "../../utils";
+import { get } from "../../../../utils";
+import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
+import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 
 export const useCallbackAssem = () => {
   const common = useSelector((state) => state.common);
@@ -33,6 +37,32 @@ export const useCallbackAssem = () => {
       contractSend,
     }),
     [contractSend]
+  );
+};
+
+export const useCallGetMethod = () => {
+  const common = useSelector((state) => state.common);
+  const { wallet } = common;
+  // eslint-disable-next-line no-return-await
+  const callGetMethodSend = useCallback(
+    async (contractName, action, param, fnName = "call") => {
+      const result = await callGetMethod(
+        {
+          contractAddress: getContractAddress(contractName),
+          param,
+          contractMethod: action,
+        },
+        fnName
+      );
+      return result;
+    },
+    [wallet]
+  );
+  return useMemo(
+    () => ({
+      callGetMethodSend,
+    }),
+    [callGetMethodSend]
   );
 };
 
@@ -85,7 +115,7 @@ export const useReleaseApprovedContractAction = () => {
           <div style={{ textAlign: "left" }}>
             {!isError && newProposalId ? (
               <CopylistItem
-                label="Proposal ID："
+                label="Proposal ID"
                 value={newProposalId ?? ""}
                 // href={`/proposalsDetail/${newProposalId}`}
               />
@@ -93,7 +123,7 @@ export const useReleaseApprovedContractAction = () => {
               "This may be due to transaction failure. Please check it via Transaction ID:"
             )}
             <CopylistItem
-              label="Transaction ID："
+              label="Transaction ID"
               isParentHref
               value={
                 result?.TransactionId || result?.result?.TransactionId || ""
@@ -114,6 +144,7 @@ export const useReleaseCodeCheckedContractAction = () => {
   const proposalSelect = useSelector((state) => state.proposalSelect);
   const common = useSelector((state) => state.common);
   const { contractSend } = useCallbackAssem();
+  const { callGetMethodSend } = useCallGetMethod();
   const { aelf } = common;
   return useCallback(
     async (contract, isDeploy) => {
@@ -157,14 +188,33 @@ export const useReleaseCodeCheckedContractAction = () => {
         isError = true;
       }
       let contractAddress = "";
+      let contractVersion = "";
       if (!isError) {
         const logs = await getDeserializeLog(
           aelf,
           result?.TransactionId || result?.result?.TransactionId || "",
-          isDeploy ? "ContractDeployed" : "CodeUpdated"
+          ["ContractDeployed", "CodeUpdated"]
         );
         const { address } = logs ?? {};
+        contractVersion = (logs || {}).contractVersion;
         contractAddress = address;
+      }
+      // get contractVersion
+      let contractName = "";
+      if (contractAddress) {
+        if (!contractVersion) {
+          const verRes = await callGetMethodSend(
+            "Genesis",
+            "GetContractInfo",
+            contractAddress
+          );
+          contractVersion = verRes.contractVersion;
+        }
+        // get contractName
+        const nameRes = await get(VIEWER_GET_CONTRACT_NAME, {
+          address: contractAddress,
+        });
+        contractName = nameRes.data.name;
       }
 
       return {
@@ -176,12 +226,13 @@ export const useReleaseCodeCheckedContractAction = () => {
         children: (
           <div style={{ textAlign: "left" }}>
             {!isError && contractAddress ? (
-              <CopylistItem
-                label="Contract Address："
-                isParentHref
-                value={contractAddress}
-                href={getContractURL(contractAddress || "")}
-              />
+              <div>
+                <AddressNameVer
+                  address={contractAddress}
+                  name={contractName || contract.name}
+                  ver={contractVersion}
+                />
+              </div>
             ) : (
               "Please check your Proposal ."
             )}

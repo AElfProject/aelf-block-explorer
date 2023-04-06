@@ -1,8 +1,10 @@
+// eslint-disable-next-line no-use-before-define
+import React from "react";
 import { Tag } from "antd";
 import clsx from "clsx";
 import moment from "moment";
-import React from "react";
 import AddressLink from "../../components/AddressLink";
+import { validateVersion } from "../../utils/regExps";
 
 export default ({ isMobile }) => {
   return [
@@ -38,6 +40,9 @@ export default ({ isMobile }) => {
       title: "Version",
       dataIndex: "version",
       width: isMobile ? 66 : 142,
+      render(version) {
+        return validateVersion(version) ? version : "-";
+      },
     },
     {
       title: "Last Updated At",

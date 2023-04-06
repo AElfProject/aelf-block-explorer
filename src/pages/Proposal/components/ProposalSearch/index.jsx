@@ -1,17 +1,18 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Form, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { getProposalSelectListWrap } from '../../actions/proposalSelectList';
+// eslint-disable-next-line no-use-before-define
+import React, { useCallback, useState, useEffect } from "react";
+import { Form, Select } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { getProposalSelectListWrap } from "../../actions/proposalSelectList";
 
 const toBottomDistance = 30;
 
 let isFetch = false;
 let timeout = null;
-let currentValue = '';
+let currentValue = "";
 
 // TODO reducer
-const ProposalSearch = ({ selectMehtod = 'ReleaseApprovedContract' }) => {
+const ProposalSearch = ({ selectMehtod = "ReleaseApprovedContract" }) => {
   const dispatch = useDispatch();
   const proposalSelect = useSelector((state) => state.proposalSelect);
   const [param, setParam] = useState(proposalSelect.params);
@@ -57,7 +58,7 @@ const ProposalSearch = ({ selectMehtod = 'ReleaseApprovedContract' }) => {
       rules={[
         {
           required: true,
-          message: 'Please choose a Proposal ID！',
+          message: "Please choose a Proposal ID！",
         },
       ]}
     >
@@ -69,21 +70,24 @@ const ProposalSearch = ({ selectMehtod = 'ReleaseApprovedContract' }) => {
         onPopupScroll={onPopupScroll}
         // open
       >
-        {proposalSelect?.list?.filter(({ contractMethod }) => {
-          if (selectMehtod === 'ReleaseApprovedContract') {
-            return contractMethod === 'ProposeContractCodeCheck';
-          } if (selectMehtod === 'ReleaseCodeCheckedContract') {
-            return contractMethod === 'DeploySmartContract' || contractMethod === 'UpdateSmartContract';
-          }
-          return true;
-        }).map((item) => (
-          <Select.Option
-            key={item.proposalId}
-            value={item.proposalId}
-          >
-            {item.proposalId}
-          </Select.Option>
-        ))}
+        {proposalSelect?.list
+          ?.filter(({ contractMethod }) => {
+            if (selectMehtod === "ReleaseApprovedContract") {
+              return contractMethod === "ProposeContractCodeCheck";
+            }
+            if (selectMehtod === "ReleaseCodeCheckedContract") {
+              return (
+                contractMethod === "DeploySmartContract" ||
+                contractMethod === "UpdateSmartContract"
+              );
+            }
+            return true;
+          })
+          .map((item) => (
+            <Select.Option key={item.proposalId} value={item.proposalId}>
+              {item.proposalId}
+            </Select.Option>
+          ))}
       </Select>
     </Form.Item>
   );

@@ -6,20 +6,21 @@
  * @LastEditTime: 2019-12-10 01:01:54
  * @Description: file content
  */
+// eslint-disable-next-line import/no-cycle
 import { RESOURCE_OPERATE_LIMIT, ELF_PRECISION } from "@src/constants";
 
 const thousandsComma = (value) => {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
-  return (`${value}`).replace(reg, "$&,");
+  return `${value}`.replace(reg, "$&,");
 };
 
 const numberFormatter = (number) => {
-  const num = Number(number)
+  const num = Number(number);
   if (Number.isNaN(num)) {
-    return number
+    return number;
   }
-  return num.toLocaleString(undefined, { maximumFractionDigits: 8 })
-}
+  return num.toLocaleString(undefined, { maximumFractionDigits: 8 });
+};
 
 const addUrlPrefix = (url) => `https://${url}`;
 
@@ -29,7 +30,7 @@ function getProcessedValue(value, hasDecimal) {
   let decimalProcessedValue = value;
   const isSmallNumber = value < RESOURCE_OPERATE_LIMIT && value > 0;
   decimalProcessedValue = value.toFixed(isSmallNumber ? ELF_PRECISION : 2);
-
+  // eslint-disable-next-line prefer-const
   let [wholeNum, decimal] = `${decimalProcessedValue}`.split(".");
   wholeNum = thousandsComma(wholeNum);
   const processedValue = hasDecimal ? `${wholeNum}.${decimal}` : wholeNum;
@@ -48,7 +49,17 @@ const centerEllipsis = (str) => {
   return str && `${str.slice(0, 10)}...${str.slice(str.length - 10)}`;
 };
 
+const hexStringToByteArray = (hexString) => {
+  const result = [];
+  while (hexString.length >= 2) {
+    result.push(parseInt(hexString.substring(0, 2), 16));
+    hexString = hexString.substring(2, hexString.length);
+  }
+  return result;
+};
+
 export {
+  hexStringToByteArray,
   thousandsComma,
   numberFormatter,
   addUrlPrefix,

@@ -1,0 +1,59 @@
+// eslint-disable-next-line no-use-before-define
+import React from "react";
+import { Button, message } from "antd";
+import copy from "copy-to-clipboard";
+import { omitString } from "../../../../common/utils";
+import IconFont from "../../../../components/IconFont";
+import addressFormat from "../../../../utils/addressFormat";
+import "./index.less";
+
+const checkName = (name: string) => {
+  if (name === "-1") {
+    return "-";
+  }
+  return name;
+};
+const AddressNameVer = ({ address, name, ver }) => {
+  const handleCopy = () => {
+    try {
+      copy(address);
+      // eslint-disable-next-line no-undef
+      message.success("Copied!");
+    } catch (e) {
+      message.error("Copy failed, please copy by yourself.");
+    }
+  };
+  return (
+    <div className="address-name-ver">
+      {address && (
+        <div className="contract-address">
+          <span className="label">Contract Address:</span>
+          <span className="content">
+            <a href={`/address/${addressFormat(address)}`}>
+              {omitString(address, 10, 10)}
+            </a>
+            <Button
+              onClick={handleCopy}
+              icon={<IconFont type="copy" />}
+              title="Copy code"
+              className="copy-btn"
+            />
+          </span>
+        </div>
+      )}
+      {checkName(name) && (
+        <div className="contract-name">
+          <span className="label">Contract Name:</span>
+          <span className="content">{checkName(name)}</span>
+        </div>
+      )}
+      {checkName(name) && (
+        <div className="contract-version">
+          <span className="label">Version:</span>
+          <span className="content">v{ver}</span>
+        </div>
+      )}
+    </div>
+  );
+};
+export default AddressNameVer;

@@ -46,9 +46,15 @@ export async function getDeserializeLog(aelf, txId, logName) {
   if (!txId)
     throw new Error("Transaction failed. Please reinitiate this step.");
   const txResult = await getTxResult(aelf, txId ?? "");
+  // A transaction is said to be mined when it is included to the blockchain in a new block.
   if (txResult.Status === "MINED") {
     const { Logs = [] } = txResult;
-    const log = (Logs || []).filter((v) => v.Name === logName);
+    let log;
+    if (Array.isArray(logName)) {
+      log = (Logs || []).filter((v) => logName.includes(v.Name));
+    } else {
+      log = (Logs || []).filter((v) => v.Name === logName);
+    }
     if (log.length === 0) {
       return;
     }
@@ -57,6 +63,14 @@ export async function getDeserializeLog(aelf, txId, logName) {
     return result;
   }
 }
+
+export const getTransactionResult = async (aelf, txId) => {
+  if (!txId) {
+    throw new Error("Transaction failed. Please reinitiate this step.");
+  }
+  const txResult = await getTxResult(aelf, txId ?? "");
+  return txResult;
+};
 
 export function getContractURL(address) {
   // eslint-disable-next-line max-len
