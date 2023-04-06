@@ -22,6 +22,7 @@ interface IModalProps {
   message: string;
   status: IStatus;
   cancel: Function;
+  title: string;
 }
 interface IProps {
   open: boolean;
@@ -39,9 +40,53 @@ const noticeUpdateContent = [
   "Contract update includes 2 phases and takes around 1-10 minutes.",
   "Contract deployment includes 2 phases and takes around 1-10 minutes.",
 ];
+const getMessageByExec = (props: IModalProps) => {
+  const { isUpdate, status, message, transactionId } = props;
+  const { execution } = status || {};
+  switch (execution) {
+    case 2:
+      return (
+        <div className="execution-loading">
+          {`Executing contract  ${isUpdate ? "update" : "deployment"}...`}
+        </div>
+      );
+    case 0:
+      return (
+        <div className="execution-success">
+          <div className="title">
+            <CheckCircleFilled className="circle-icon check" />
+            <span className="success-message">{`The contract is ${
+              isUpdate ? "updated" : "deployed"
+            }!`}</span>
+          </div>
+          <div className="content">{message}</div>
+        </div>
+      );
+    case 1:
+      return (
+        <div className="execution-fail">
+          <div className="title">
+            <CloseCircleFilled className="circle-icon close" />
+            <span className="fail-message">
+              {`Contract ${isUpdate ? "update" : "deployment"}  failure！`}
+            </span>
+          </div>
+          <div className="content">{message}</div>
+          <CopylistItem
+            label="Transaction ID"
+            value={transactionId}
+            href=""
+            valueHref={`/tx/${transactionId}`}
+          />
+        </div>
+      );
+    default:
+      return null;
+  }
+};
 const getMessage = (props) => {
   const { isUpdate, status, message, transactionId, title } = props;
-  const { verification, execution } = status || {};
+  const { verification } = status || {};
   switch (verification) {
     case 2:
       return (
@@ -73,45 +118,7 @@ const getMessage = (props) => {
         </div>
       );
     case 0:
-      switch (execution) {
-        case 2:
-          return (
-            <div className="execution-loading">
-              {`Executing contract  ${isUpdate ? "update" : "deployment"}...`}
-            </div>
-          );
-        case 0:
-          return (
-            <div className="execution-success">
-              <div className="title">
-                <CheckCircleFilled className="circle-icon check" />
-                <span className="success-message">{`The contract is ${
-                  isUpdate ? "updated" : "deployed"
-                }!`}</span>
-              </div>
-              <div className="content">{message}</div>
-            </div>
-          );
-        case 1:
-          return (
-            <div className="execution-fail">
-              <div className="title">
-                <CloseCircleFilled className="circle-icon close" />
-                <span className="fail-message">
-                  {`Contract ${isUpdate ? "update" : "deployment"}  failure！`}
-                </span>
-              </div>
-              <div className="content">{message}</div>
-              <CopylistItem
-                label="Transaction ID"
-                value={transactionId}
-                href=""
-              />
-            </div>
-          );
-        default:
-          return null;
-      }
+      return getMessageByExec(props);
     default:
       return null;
   }
