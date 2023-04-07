@@ -42,21 +42,22 @@ const prodConfig = {
     moduleIds: "deterministic",
     removeEmptyChunks: true,
     sideEffects: true,
-    minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
-          compress: {},
-        },
-      }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorOptions: {
-          autoprefixer: {
-            disable: true,
-          },
-        },
-      }),
-    ],
+    minimizer:false,
+    //   [
+    //   new TerserPlugin({
+    //     parallel: true,
+    //     terserOptions: {
+    //       compress: {},
+    //     },
+    //   }),
+    //   new OptimizeCSSAssetsPlugin({
+    //     cssProcessorOptions: {
+    //       autoprefixer: {
+    //         disable: true,
+    //       },
+    //     },
+    //   }),
+    // ],
     splitChunks: {
       chunks: "initial",
       cacheGroups: {
