@@ -16,6 +16,7 @@ import {
   Tooltip,
   Form,
 } from "antd";
+import debounce from "lodash.debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { request } from "../../../../../common/request";
 import { API_PATH } from "../../../common/constants";
@@ -692,7 +693,7 @@ const ContractProposal = (props) => {
             type="primary"
             size="large"
             loading={loading}
-            onClick={handleSubmit}
+            onClick={debounce(handleSubmit, 500)}
           >
             Apply
           </Button>
