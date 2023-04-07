@@ -60,7 +60,6 @@ const prodConfig = {
     splitChunks: {
       chunks: "all",
       name: false,
-      minChunks: 3,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
