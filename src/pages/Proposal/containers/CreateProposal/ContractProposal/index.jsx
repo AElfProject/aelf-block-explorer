@@ -186,7 +186,8 @@ function readFile(file) {
 }
 
 const ContractProposal = (props) => {
-  const { loading, submit } = props;
+  const { loading,submit } = props;
+  const [disabled, setDisabled] = useState(false);
   const [form] = Form.useForm();
   const proposalSelect = useSelector((state) => state.proposalSelect);
   const common = useSelector((state) => state.common);
@@ -341,6 +342,7 @@ const ContractProposal = (props) => {
   };
   async function handleSubmit() {
     try {
+      setDisabled(true);
       const result = await customValidateFields();
       const {
         address = "",
@@ -393,6 +395,8 @@ const ContractProposal = (props) => {
           e?.errorFields?.at?.(-1)?.errors?.[0] ||
           "Please input the required form!"
       );
+    } finally {
+      setDisabled(false);
     }
   }
 
@@ -692,6 +696,7 @@ const ContractProposal = (props) => {
             type="primary"
             size="large"
             loading={loading}
+            disabled={disabled}
             onClick={handleSubmit}
           >
             Apply
