@@ -48,12 +48,12 @@ const baseConfig = {
       "@actions": path.resolve(ROOT, "src/redux/actions/"),
     },
     modules: [path.resolve(ROOT, "src"), path.resolve(ROOT, "node_modules")],
-    extensions: [".jsx", ".js", ".mjs", ".tsx"],
+    extensions: [".jsx", ".js", ".mjs"],
   },
   module: {
     rules: [
       {
-        test: /\.(js|ts)x?$/,
+        test: /\.(js)x?$/,
         exclude: /node_modules/,
         use: {
           loader: require.resolve("babel-loader"),

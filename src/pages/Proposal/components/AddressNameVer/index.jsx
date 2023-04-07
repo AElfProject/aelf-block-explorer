@@ -7,7 +7,7 @@ import IconFont from "../../../../components/IconFont";
 import addressFormat from "../../../../utils/addressFormat";
 import "./index.less";
 
-const checkName = (name: string) => {
+const checkName = (name) => {
   if (name === "-1") {
     return "-";
   }

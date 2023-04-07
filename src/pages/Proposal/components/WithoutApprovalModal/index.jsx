@@ -11,24 +11,6 @@ import CopylistItem from "../CopylistItem";
 import "./index.less";
 import useMobile from "../../../../hooks/useMobile";
 
-interface IStatus {
-  // 0: success 1: fail 2: loading 3: un-arrival
-  verification: number;
-  execution: number;
-}
-interface IModalProps {
-  isUpdate: boolean;
-  transactionId: string;
-  message: string;
-  status: IStatus;
-  cancel: Function;
-  title: string;
-}
-interface IProps {
-  open: boolean;
-  withoutApprovalProps: IModalProps;
-}
-
 const noticeDeployContent = [
   "If the transaction pre-validation fails, fees will not be charged.",
   "If the deployment fails, fees charged will not be returned.",
@@ -40,7 +22,7 @@ const noticeUpdateContent = [
   "Contract update includes 2 phases and takes around 1-10 minutes.",
   "Contract deployment includes 2 phases and takes around 1-10 minutes.",
 ];
-const getMessageByExec = (props: IModalProps) => {
+const getMessageByExec = (props) => {
   const { isUpdate, status, message, transactionId } = props;
   const { execution } = status || {};
   switch (execution) {
@@ -123,7 +105,7 @@ const getMessage = (props) => {
       return null;
   }
 };
-const WithoutApprovalModal = (props: IProps) => {
+const WithoutApprovalModal = (props) => {
   const { open, withoutApprovalProps } = props;
   const { isUpdate, cancel, status } = withoutApprovalProps;
   const noticeContent = isUpdate ? noticeUpdateContent : noticeDeployContent;

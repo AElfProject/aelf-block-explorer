@@ -8,7 +8,7 @@ import CopylistItem from "../../components/CopylistItem";
 import { getDeserializeLog } from "../../utils";
 import { get } from "../../../../utils";
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
-import AddressNameVer from "../../components/AddressNameVer/index.tsx";
+import AddressNameVer from "../../components/AddressNameVer";
 
 export const useCallbackAssem = () => {
   const common = useSelector((state) => state.common);

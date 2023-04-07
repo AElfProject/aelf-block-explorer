@@ -17,7 +17,7 @@ const nodeModule = (...segments) =>
   path.join(ROOT, "node_modules", ...segments);
 
 const prodConfig = {
-  mode: "none",
+  mode: "production",
   resolve: {
     alias: {
       react: nodeModule("react", "umd", "react.production.min.js"),

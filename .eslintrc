@@ -1,13 +1,13 @@
 {
   "root": true,
-  "parser": "@typescript-eslint/parser",
+  "parser": "babel-eslint",
   "extends": ["airbnb", "prettier", "prettier/react"],
-  "plugins": ["prettier", "@typescript-eslint"],
+  "plugins": ["prettier"],
   "rules": {
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx", ".tsx", ".ts"]
+        "extensions": [".js", ".jsx"]
       }
     ],
     "no-unused-vars": 1,
