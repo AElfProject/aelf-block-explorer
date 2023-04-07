@@ -63,7 +63,6 @@ const prodConfig = {
           test: /[\\/]node_modules[\\/]/,
           name: "vendors",
           chunks: "initial",
-          enforce: true,
         },
         default: false,
       },
