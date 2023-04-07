@@ -59,13 +59,13 @@ const prodConfig = {
     ],
     splitChunks: {
       chunks: "async",
-      // cacheGroups: {
-      //   commons: {
-      //     test: /[\\/]node_modules[\\/]/,
-      //     name: "vendors",
-      //   },
-      //   default: false,
-      // },
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+        },
+        default: false,
+      },
     },
     runtimeChunk: {
       name: (entryPoint) => `runtime.${entryPoint.name}`,
