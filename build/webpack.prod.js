@@ -59,6 +59,7 @@ const prodConfig = {
     ],
     splitChunks: {
       chunks: "initial",
+      minChunks: 3,
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
