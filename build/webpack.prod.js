@@ -63,9 +63,8 @@ const prodConfig = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendors",
-          reuseExistingChunk: true,
         },
-        default: false,
+        // default: false,
       },
     },
     runtimeChunk: {
