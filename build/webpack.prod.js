@@ -57,14 +57,16 @@ const prodConfig = {
         },
       }),
     ],
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vendors",
-          chunks: "async",
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendors",
+            chunks: "all",
+          },
+          // default: false,
         },
-        default: false,
       },
     },
     runtimeChunk: {
