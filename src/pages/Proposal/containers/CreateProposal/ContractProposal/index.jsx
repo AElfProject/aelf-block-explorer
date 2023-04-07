@@ -16,7 +16,6 @@ import {
   Tooltip,
   Form,
 } from "antd";
-import debounce from "lodash.debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { request } from "../../../../../common/request";
 import { API_PATH } from "../../../common/constants";
@@ -187,7 +186,8 @@ function readFile(file) {
 }
 
 const ContractProposal = (props) => {
-  const { loading, submit } = props;
+  const { loading,submit } = props;
+  const [disabled, setDisabled] = useState(false);
   const [form] = Form.useForm();
   const proposalSelect = useSelector((state) => state.proposalSelect);
   const common = useSelector((state) => state.common);
@@ -342,6 +342,7 @@ const ContractProposal = (props) => {
   };
   async function handleSubmit() {
     try {
+      setDisabled(true);
       const result = await customValidateFields();
       const {
         address = "",
@@ -394,6 +395,8 @@ const ContractProposal = (props) => {
           e?.errorFields?.at?.(-1)?.errors?.[0] ||
           "Please input the required form!"
       );
+    } finally {
+      setDisabled(false);
     }
   }
 
@@ -693,7 +696,8 @@ const ContractProposal = (props) => {
             type="primary"
             size="large"
             loading={loading}
-            onClick={debounce(handleSubmit, 500)}
+            disabled={disabled}
+            onClick={handleSubmit}
           >
             Apply
           </Button>

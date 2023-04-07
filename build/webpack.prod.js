@@ -42,36 +42,35 @@ const prodConfig = {
     moduleIds: "deterministic",
     removeEmptyChunks: true,
     sideEffects: true,
-    minimize:false,
-    //   [
-    //   new TerserPlugin({
-    //     parallel: true,
-    //     terserOptions: {
-    //       compress: {},
-    //     },
-    //   }),
-    //   new OptimizeCSSAssetsPlugin({
-    //     cssProcessorOptions: {
-    //       autoprefixer: {
-    //         disable: true,
-    //       },
-    //     },
-    //   }),
-    // ],
-    // splitChunks: {
-    //   chunks: "initial",
-    //   cacheGroups: {
-    //     commons: {
-    //       test: /[\\/]node_modules[\\/]/,
-    //       name: "vendors",
-    //       chunks: "initial",
-    //     },
-    //     default: false,
-    //   },
-    // },
-    // runtimeChunk: {
-    //   name: (entryPoint) => `runtime.${entryPoint.name}`,
-    // },
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: {},
+        },
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          autoprefixer: {
+            disable: true,
+          },
+        },
+      }),
+    ],
+    splitChunks: {
+      chunks: "async",
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          // chunks: "initial",
+        },
+        default: false,
+      },
+    },
+    runtimeChunk: {
+      name: (entryPoint) => `runtime.${entryPoint.name}`,
+    },
   },
 };
 
