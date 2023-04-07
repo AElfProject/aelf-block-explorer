@@ -58,7 +58,7 @@ const prodConfig = {
       }),
     ],
     splitChunks: {
-      chunks: "initial",
+      chunks: "async",
       // cacheGroups: {
       //   commons: {
       //     test: /[\\/]node_modules[\\/]/,
