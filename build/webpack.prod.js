@@ -59,12 +59,13 @@ const prodConfig = {
     ],
     splitChunks: {
       cacheGroups: {
-        commons: {
+        vendors: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendors",
-          chunks: "all",
+          chunks: "initial",
+          enforce: true,
         },
-        // default: false,
+        default: false,
       },
     },
     runtimeChunk: {
