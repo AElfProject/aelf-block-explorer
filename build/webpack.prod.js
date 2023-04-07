@@ -42,7 +42,7 @@ const prodConfig = {
     moduleIds: "deterministic",
     removeEmptyChunks: true,
     sideEffects: true,
-    minimizer:false,
+    minimize:false,
     //   [
     //   new TerserPlugin({
     //     parallel: true,
