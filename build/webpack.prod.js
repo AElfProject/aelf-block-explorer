@@ -62,7 +62,7 @@ const prodConfig = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: "vendors",
-          chunks: "all",
+          chunks: "async",
         },
         default: false,
       },
