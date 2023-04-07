@@ -58,20 +58,20 @@ const prodConfig = {
     //     },
     //   }),
     // ],
-    splitChunks: {
-      chunks: "initial",
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vendors",
-          chunks: "initial",
-        },
-        default: false,
-      },
-    },
-    runtimeChunk: {
-      name: (entryPoint) => `runtime.${entryPoint.name}`,
-    },
+    // splitChunks: {
+    //   chunks: "initial",
+    //   cacheGroups: {
+    //     commons: {
+    //       test: /[\\/]node_modules[\\/]/,
+    //       name: "vendors",
+    //       chunks: "initial",
+    //     },
+    //     default: false,
+    //   },
+    // },
+    // runtimeChunk: {
+    //   name: (entryPoint) => `runtime.${entryPoint.name}`,
+    // },
   },
 };
 
