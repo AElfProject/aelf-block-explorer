@@ -3,6 +3,7 @@ import AElf from "aelf-sdk";
 import Decimal from "decimal.js";
 import { aelf } from "../utils";
 import config from "../../config/config";
+import commonConfig from "../common/config";
 
 const resourceDecimals = config.resourceTokens.reduce(
   (acc, v) => ({
@@ -177,6 +178,9 @@ export function getOmittedStr(str = "", front = 8, rear = 4) {
 }
 export const callGetMethod = async (params, fnName) => {
   const { contractAddress, param, contractMethod } = params;
-  const con = await aelf.chain.contractAt(contractAddress, FAKE_WALLET);
+  const fakeWallet = AElf.wallet.getWalletByPrivateKey(
+    commonConfig.wallet.privateKey
+  );
+  const con = await aelf.chain.contractAt(contractAddress, fakeWallet);
   return con[contractMethod][fnName](param);
 };
