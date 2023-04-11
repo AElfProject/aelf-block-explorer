@@ -65,6 +65,7 @@ const prodConfig = {
           test: /[\\/]node_modules[\\/]/,
           name: "vendors",
           priority: -10,
+          chunks: "initial",
         },
         default: {
           minChunks: 2,
