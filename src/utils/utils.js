@@ -3,7 +3,7 @@ import AElf from "aelf-sdk";
 import Decimal from "decimal.js";
 import { aelf } from "../utils";
 import config from "../../config/config";
-import commonConfig from "../common/config";
+import { FAKE_WALLET } from "../pages/Proposal/common/constants";
 
 const resourceDecimals = config.resourceTokens.reduce(
   (acc, v) => ({
@@ -41,10 +41,6 @@ const TOKEN_DECIMALS = {
   ELF: 8,
 };
 let tokenContract = null;
-
-export const FAKE_WALLET = AElf.wallet.getWalletByPrivateKey(
-  config.commonPrivateKey
-);
 
 export async function getTokenDecimal(symbol) {
   let decimal;
@@ -178,9 +174,6 @@ export function getOmittedStr(str = "", front = 8, rear = 4) {
 }
 export const callGetMethod = async (params, fnName) => {
   const { contractAddress, param, contractMethod } = params;
-  const fakeWallet = AElf.wallet.getWalletByPrivateKey(
-    commonConfig.wallet.privateKey
-  );
-  const con = await aelf.chain.contractAt(contractAddress, fakeWallet);
+  const con = await aelf.chain.contractAt(contractAddress, FAKE_WALLET);
   return con[contractMethod][fnName](param);
 };
