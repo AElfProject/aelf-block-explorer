@@ -2,6 +2,7 @@
  * @file proposal item
  * @author atom-yang
  */
+// eslint-disable-next-line no-use-before-define
 import React from "react";
 import moment from "moment";
 import PropTypes from "prop-types";
@@ -24,6 +25,8 @@ import "./index.less";
 import VoteChart from "../../../components/VoteChart";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
 import addressFormat from "../../../../../utils/addressFormat";
+import { NETWORK_TYPE } from '../../../../../../config/config';
+import { getBPCount } from '../../../../../common/utils';
 
 const { proposalTypes, proposalStatus, proposalActions } = constants;
 
@@ -76,6 +79,7 @@ const Proposal = (props) => {
     proposalType,
     proposalId,
     expiredTime,
+    releasedTime,
     contractAddress,
     contractMethod,
     proposer,
@@ -95,6 +99,7 @@ const Proposal = (props) => {
     handleAbstain,
   } = props;
 
+  const bpCountNumber = NETWORK_TYPE === 'MAIN' ? getBPCount(status,expiredTime,releasedTime) : bpCount;
   const canThisUserVote =
     (status === proposalStatus.PENDING || status === proposalStatus.APPROVED) &&
     votedStatus === "none" &&
@@ -171,7 +176,7 @@ const Proposal = (props) => {
           approvals={approvals}
           rejections={rejections}
           abstentions={abstentions}
-          bpCount={bpCount}
+          bpCount={bpCountNumber}
           organizationInfo={organizationInfo}
         />
         <Divider />
