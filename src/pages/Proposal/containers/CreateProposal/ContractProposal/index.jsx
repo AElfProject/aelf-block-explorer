@@ -208,6 +208,7 @@ const ContractProposal = (props) => {
   const [approvalMode, setApprovalMode] = useState("withoutApproval");
   const [update, setUpdate] = useState();
   const { callGetMethodSend } = useCallGetMethod();
+
   useEffect(() => {
     request(
       API_PATH.GET_ALL_CONTRACTS,
@@ -224,7 +225,15 @@ const ContractProposal = (props) => {
       });
   }, [update]);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [isUpdateName, setUpdateName] = useState(false);
+  const [isUpdateName,setUpdateName] = useState(false);
+  
+  const noticeList = useMemo(() => {
+    let list = isUpdate ? noticeUpdateList : noticeDeployList;
+    if(CHAIN_ID !== 'AELF') {
+      list = list.slice(1);
+    }
+    return list;
+  }, [isUpdate, CHAIN_ID]);
 
   const setContractName = useCallback((name) => {
     setFieldsValue({
@@ -676,7 +685,7 @@ const ContractProposal = (props) => {
         {approvalMode === "withoutApproval" && (
           <Form.Item label="Notice">
             <div className="contract-proposal-notice-content">
-              {(isUpdate ? noticeUpdateList : noticeDeployList).map(
+              {noticeList.map(
                 (ele, index) => {
                   return (
                     <div className="content-item">
