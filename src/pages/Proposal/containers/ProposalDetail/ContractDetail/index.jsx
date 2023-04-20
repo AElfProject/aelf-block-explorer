@@ -2,6 +2,7 @@
  * @file desc list
  * @author atom-yang
  */
+// eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { If, Then } from "react-if";
@@ -47,7 +48,11 @@ const ContractDetail = (props) => {
       .catch(() => {
         setName("");
       });
-    if (createdBy === "SYSTEM_CONTRACT") {
+    // history reason:
+    // deploy contract on mainnet before node code update
+    // will cause the contractParams cannot be parsed to json
+    // so we need to check the contractMethod is 'PerformDeployUserSmartContract' or not
+    if (createdBy === "SYSTEM_CONTRACT" && contractMethod !== 'PerformDeployUserSmartContract') {
       setParams(JSON.stringify(JSON.parse(contractParams), null, 2));
     } else if (contractParams) {
       getContract(aelf, contractAddress)
@@ -122,7 +127,9 @@ const ContractDetail = (props) => {
           <span className='sub-title'>Contract Params</span>
         </Col>
         <Col sm={20} xs={24}>
-          <pre className='view-params'>{params}</pre>
+          <pre className='view-params'>
+              {params}
+          </pre>
         </Col>
       </Row>
     </Card>

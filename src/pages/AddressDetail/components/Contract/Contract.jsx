@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-use-before-define
 import React from "react";
 import clsx from "clsx";
 import useMobile from "../../../../hooks/useMobile";
@@ -5,6 +6,7 @@ import Reader from "../Reader/Reader";
 import SaveAsFile from "../../../../components/Save";
 
 import "./Contract.styles.less";
+import { validateVersion } from "../../../../utils/regExps";
 
 export default function Contract({
   contractInfo = { contractName: "-", files: "", address: "-", version: "-" },
@@ -13,6 +15,9 @@ export default function Contract({
   isShow,
 }) {
   const isMobile = useMobile();
+  const version = codeHash
+    ? history?.find((i) => i.codeHash === codeHash)?.version
+    : contractInfo.version;
   return (
     <div className={clsx("contract-pane", isMobile && "mobile")}>
       <section className="contract-info">
@@ -27,9 +32,7 @@ export default function Contract({
         <p>
           <span className="label">Compiler Version</span>
           <span className="value">
-            {codeHash
-              ? history?.find((i) => i.codeHash === codeHash)?.version
-              : contractInfo.version}
+            {validateVersion(version) ? version : "-"}
           </span>
         </p>
         <p>
