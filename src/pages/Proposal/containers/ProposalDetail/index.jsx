@@ -3,7 +3,8 @@
  * @file proposal detail
  * @author atom-yang
  */
-import React, { useState, useEffect } from "react";
+// eslint-disable-next-line no-use-before-define
+import React, { useState, useEffect, useMemo } from "react";
 import moment from "moment";
 import PropTypes from "prop-types";
 import {
@@ -45,6 +46,7 @@ import "./index.less";
 import { getContractAddress, sendTransaction } from "../../common/utils";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import {
+  getBPCount,
   isPhoneCheck,
   sendHeight,
   validateURL,
@@ -52,6 +54,7 @@ import {
 import { PRIMARY_COLOR } from "../../../../common/constants";
 import removeHash from "../../../../utils/removeHash";
 import addressFormat from "../../../../utils/addressFormat";
+import { NETWORK_TYPE } from '../../../../../config/config';
 
 const { viewer } = config;
 const { Title } = Typography;
@@ -197,6 +200,14 @@ const ProposalDetail = () => {
   } = info.proposal;
 
   const { leftOrgInfo = {} } = info.organization;
+
+  const bpCountNumber = useMemo(() => {
+    if (NETWORK_TYPE === 'MAIN') {
+      return getBPCount(status, expiredTime, releasedTime)
+    }
+    return info.bpList.length;
+    
+  }, [info.bpList, status, expiredTime, releasedTime, NETWORK_TYPE]);
 
   const send = async (action) => {
     if (proposalType === proposalTypes.REFERENDUM) {
@@ -389,7 +400,7 @@ const ProposalDetail = () => {
                   abstentions={abstentions}
                   canVote={canVote}
                   votedStatus={votedStatus}
-                  bpCount={info.bpList.length}
+                  bpCount={bpCountNumber}
                   handleApprove={handleApprove}
                   handleReject={handleReject}
                   handleAbstain={handleAbstain}
@@ -398,7 +409,7 @@ const ProposalDetail = () => {
                 <OrganizationCard
                   className="gap-top-large"
                   bpList={info.bpList}
-                  bpCount={info.bpList.length}
+                  bpCount={bpCountNumber}
                   parliamentProposerList={info.parliamentProposerList}
                   {...info.organization}
                 />

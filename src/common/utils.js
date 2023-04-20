@@ -8,12 +8,14 @@ import { endsWith, startsWith } from "lodash";
 import config from "./config";
 import { request } from "./request";
 import constants from "../pages/Proposal/common/constants";
+// eslint-disable-next-line import/no-cycle
 import walletInstance from "../pages/Proposal/common/wallet";
 
 const { ellipticEc } = AElf.wallet;
 
 const { proposalStatus } = constants;
 const bpRecord = [
+  [1675926610000, 19], // 2023.02.09 17 -> 19BPs
   [1642057800000, 17], // 2022.01.13 15 -> 17BPs
   [1641453000000, 15], // 2022.01.06 13 -> 15BP
   [1640849100000, 13], // 2021.12.30 11 -> 13BP
@@ -21,6 +23,31 @@ const bpRecord = [
   [1638429900000, 9], // 2021.12.02 7 -> 9BP
   [1637825100000, 7], // 2021.11.25 5 -> 7BP
 ];
+
+// mainnet: can't depend bpCount from api/proposal/list interface
+// testnet: can depend bpCount from api/proposal/list interface
+function getBpRecordTime(time) {
+  for (let i = 0, len = bpRecord.length; i < len; i += 1) {
+    if (bpRecord[i][0] < time) {
+      return bpRecord[i][1];
+    }
+  }
+  // default 5
+  return 5;
+}
+export function getBPCount(status,expiredAt,releasedAt) {
+  const currentTime = new Date().getTime();
+  const expiredTime = new Date(expiredAt).getTime();
+  const releasedTime = new Date(releasedAt).getTime();
+
+  if (status === proposalStatus.RELEASED) {
+    return getBpRecordTime(releasedTime);
+  }
+  if (status === proposalStatus.EXPIRED) {
+    return getBpRecordTime(expiredTime);
+  }
+  return getBpRecordTime(currentTime);
+}
 
 export function getPublicKeyFromObject(publicKey) {
   try {
@@ -340,7 +367,9 @@ export async function deserializeLog(log, name, address) {
     try {
       dataType = service.lookupType(name);
       break;
-    } catch (e) { }
+    } catch (e) {
+      console.error(e)
+    }
   }
   const serializedData = [...(Indexed || [])];
   if (NonIndexed) {
