@@ -1,6 +1,6 @@
-import { getCsrfToken, getSignParams, getTxResult } from "./common/utils";
+import { getCsrfToken, getSignParams, getTxResult } from "../../redux/common/utils";
 import { request } from "../../common/request";
-import { API_PATH } from "./common/constants";
+import { API_PATH } from "../../redux/common/constants";
 
 import { deserializeLog } from "../../common/utils";
 

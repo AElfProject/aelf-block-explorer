@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import { withRouter } from "../../../routes/utils.js";
 import { Form, Input, Button, Result, message, Spin } from "antd";
 import queryString from "query-string";
 import { APPNAME } from "@config/config";
@@ -9,9 +8,10 @@ import { NO_AUTHORIZATION_ERROR_TIP, UNLOCK_PLUGIN_TIP } from "@src/constants";
 import getCurrentWallet from "@utils/getCurrentWallet";
 import { urlRegExp } from "@pages/Vote/constants";
 import { addUrlPrefix, removeUrlPrefix } from "@utils/formater";
-import "./index.less";
-import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
 import { LockTwoTone } from "@ant-design/icons";
+import "./index.less";
+import { withRouter } from "../../../routes/utils";
+import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
 
 const { TextArea } = Input;
 
@@ -30,6 +30,7 @@ const clsPrefix = "candidate-apply-team-info-key-in";
 
 class KeyInTeamInfo extends PureComponent {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.socialKeys = ["Github", "Facebook", "Telegram", "Twitter", "Steemit"];
@@ -92,7 +93,7 @@ class KeyInTeamInfo extends PureComponent {
             initialValue: data.avatar || "",
           },
           render: (
-            <Input addonBefore='https://' placeholder='Input avatar url:' />
+            <Input addonBefore="https://" placeholder="Input avatar url:" />
           ),
         },
         {
@@ -117,7 +118,7 @@ class KeyInTeamInfo extends PureComponent {
             initialValue: data.officialWebsite || "",
           },
           render: (
-            <Input addonBefore='https://' placeholder='Input your website:' />
+            <Input addonBefore="https://" placeholder="Input your website:" />
           ),
         },
         {
@@ -141,7 +142,7 @@ class KeyInTeamInfo extends PureComponent {
             fieldDecoratorId: "intro",
             initialValue: data.intro || "",
           },
-          render: <TextArea placeholder='Intro your team here:' />,
+          render: <TextArea placeholder="Intro your team here:" />,
         },
       ],
     };
@@ -180,10 +181,10 @@ class KeyInTeamInfo extends PureComponent {
 
   getUnlockPluginText() {
     return (
-      <section className='card-container'>
+      <section className="card-container">
         <Result
-          icon={<LockTwoTone twoToneColor='#2b006c' />}
-          status='warning'
+          icon={<LockTwoTone twoToneColor="#2b006c" />}
+          status="warning"
           title={UNLOCK_PLUGIN_TIP}
         />
       </section>
@@ -215,8 +216,8 @@ class KeyInTeamInfo extends PureComponent {
           ]}
         >
           <Input
-            addonBefore='https://'
-            placeholder='input your social network website'
+            addonBefore="https://"
+            placeholder="input your social network website"
           />
         </Form.Item>
       );
@@ -229,7 +230,7 @@ class KeyInTeamInfo extends PureComponent {
     const socialFormItems = this.getSocialFormItems();
 
     return (
-      <div className='loading-container has-mask-on-mobile'>
+      <div className="loading-container has-mask-on-mobile">
         {isLoading ? (
           <Spin spinning={isLoading} />
         ) : (
@@ -271,8 +272,8 @@ class KeyInTeamInfo extends PureComponent {
                 </Form>
                 <div className={`${clsPrefix}-footer`}>
                   <Button
-                    type='submit'
-                    htmlType='submit'
+                    type="submit"
+                    htmlType="submit"
                     onClick={this.handleSubmit}
                   >
                     Submit
@@ -281,10 +282,10 @@ class KeyInTeamInfo extends PureComponent {
               </React.Fragment>
             ) : (
               <Result
-                status='403'
+                status="403"
                 title={NO_AUTHORIZATION_ERROR_TIP}
                 extra={
-                  <Button type='primary' onClick={this.handleBack}>
+                  <Button type="primary" onClick={this.handleBack}>
                     Go Back
                   </Button>
                 }

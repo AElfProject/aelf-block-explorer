@@ -1,5 +1,4 @@
-import React from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import CodeBlock from "../../../components/CodeBlock/CodeBlock";
 
 export default function ExtensionInfo({ extensionInfo }) {
@@ -25,9 +24,10 @@ export default function ExtensionInfo({ extensionInfo }) {
   );
 
   return (
-    <div className={`wrap basic`}>
+    <div className="wrap basic">
       {(Object.keys(renderObj) || []).map((key, index) => {
         return (
+          // eslint-disable-next-line react/no-array-index-key
           <div key={index} className="row">
             <p className="label">{key} : </p>
             <div className="value">{renderObj[key]}</div>

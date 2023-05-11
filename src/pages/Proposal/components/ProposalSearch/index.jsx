@@ -3,7 +3,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { Form, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { getProposalSelectListWrap } from "../../actions/proposalSelectList";
+import { getProposalSelectListWrap } from "@redux/actions/proposalSelectList";
 
 const toBottomDistance = 30;
 

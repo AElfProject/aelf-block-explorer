@@ -11,7 +11,7 @@ import {
 } from 'react-circular-progressbar';
 import { If, Then, Else } from 'react-if';
 import 'react-circular-progressbar/dist/styles.css';
-import constants from '../../common/constants';
+import constants from '@redux/common/constants';
 
 const {
   proposalActions,

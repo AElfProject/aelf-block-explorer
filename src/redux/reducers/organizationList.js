@@ -2,8 +2,8 @@
  * @file organization list reducer
  * @author atom-yang
  */
-import constants, { LOADING_STATUS } from "@pages/Proposal/common/constants";
-import { GET_ORGANIZATIONS_LIST } from "@pages/Proposal/actions/organizationList";
+import constants, { LOADING_STATUS } from "../common/constants";
+import { GET_ORGANIZATIONS_LIST } from "../actions/organizationList";
 
 const { proposalTypes } = constants;
 

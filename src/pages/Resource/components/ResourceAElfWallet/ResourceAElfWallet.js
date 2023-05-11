@@ -9,16 +9,16 @@ import { Row, Col, Spin, Button, Icon, message } from "antd";
 import { SYMBOL, ELF_DECIMAL } from "@src/constants";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { APPNAME, resourceTokens } from "@config/config";
-import "./ResourceAElfWallet.less";
-import NightElfCheck from "../../../../utils/NightElfCheck";
-import getLogin from "../../../../utils/getLogin";
-import addressFormat from "../../../../utils/addressFormat";
-import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import {
   WalletOutlined,
   SyncOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import "./ResourceAElfWallet.less";
+import NightElfCheck from "../../../../utils/NightElfCheck";
+import getLogin from "../../../../utils/getLogin";
+import addressFormat from "../../../../utils/addressFormat";
+import { isPhoneCheck } from "../../../../utils/deviceCheck";
 
 export default class ResourceAElfWallet extends PureComponent {
   constructor(props) {
@@ -101,7 +101,7 @@ export default class ResourceAElfWallet extends PureComponent {
                 appName: APPNAME,
                 address: currentWallet.address,
               },
-              (error, result) => {
+              () => {
                 localStorage.removeItem("currentWallet");
                 this.refreshWalletInfo();
                 // TODO: more refactor actions for login and logout
@@ -161,6 +161,7 @@ export default class ResourceAElfWallet extends PureComponent {
       title,
       currentWallet,
       tokenContract,
+      // eslint-disable-next-line no-shadow
       resourceTokens,
       balance,
       loginAndInsertKeyPairs,
@@ -173,16 +174,16 @@ export default class ResourceAElfWallet extends PureComponent {
     const wallet = hasLogin ? currentWallet : this.defaultWallet;
 
     return (
-      <div className='resource-wallet resource-block'>
-        <Spin tip='loading....' size='large' spinning={loading}>
-          <div className='resource-wallet-header resource-header'>
-            <WalletOutlined className='resource-icon' />
-            <span className='resource-title'>{propsTile}</span>
+      <div className="resource-wallet resource-block">
+        <Spin tip="loading...." size="large" spinning={loading}>
+          <div className="resource-wallet-header resource-header">
+            <WalletOutlined className="resource-icon" />
+            <span className="resource-title">{propsTile}</span>
           </div>
-          <div className='resource-sub-container'>
-            <Row className='resource-wallet-address'>
+          <div className="resource-sub-container">
+            <Row className="resource-wallet-address">
               {isPhone ? (
-                <Col className='resource-wallet-address-name'>
+                <Col className="resource-wallet-address-name">
                   <div>
                     Name:
                     {wallet.name}
@@ -200,7 +201,7 @@ export default class ResourceAElfWallet extends PureComponent {
                   </div>
                 </Col>
               ) : (
-                <Col className='resource-wallet-address-name'>
+                <Col className="resource-wallet-address-name">
                   {wallet.name}
                   &nbsp;&nbsp;&nbsp;
                   {addressFormat(wallet.address)}
@@ -213,11 +214,11 @@ export default class ResourceAElfWallet extends PureComponent {
                 </Col>
               )}
 
-              <Col className='resource-wallet-operation-container'>
+              <Col className="resource-wallet-operation-container">
                 {!(currentWallet && currentWallet.address && tokenContract) && (
                   <Button
-                    type='text'
-                    className='resource-wallet-address-update update-btn'
+                    type="text"
+                    className="resource-wallet-address-update update-btn"
                     onClick={() => loginAndInsertKeyPairs(false)}
                   >
                     Login
@@ -226,48 +227,49 @@ export default class ResourceAElfWallet extends PureComponent {
 
                 <Button
                   type="text"
-                  className='resource-wallet-address-update update-btn'
+                  className="resource-wallet-address-update update-btn"
                   disabled={
                     !(currentWallet && currentWallet.address && tokenContract)
                   }
                   onClick={this.refreshWalletInfo}
                 >
                   Refresh
-                  <SyncOutlined type='sync' spin={loading} />
+                  <SyncOutlined type="sync" spin={loading} />
                 </Button>
 
                 {!isPhone && currentWallet && currentWallet.name && (
                   <Button
                     type="text"
-                    className='resource-wallet-address-update update-btn'
+                    className="resource-wallet-address-update update-btn"
                     disabled={
                       !(currentWallet && currentWallet.address && tokenContract)
                     }
                     onClick={this.extensionLogout}
                   >
                     Logout
-                    <LogoutOutlined type='logout' />
+                    <LogoutOutlined type="logout" />
                   </Button>
                 )}
               </Col>
             </Row>
 
-            <div className='resource-wallet-info'>
-              <Row type='flex' align='middle'>
+            <div className="resource-wallet-info">
+              <Row type="flex" align="middle">
                 <Col span={24}>
-                  <span className='resource-wallet-info-name balance'>
+                  <span className="resource-wallet-info-name balance">
                     Balance:
                   </span>
-                  <span className='resource-wallet-info-value'>
+                  <span className="resource-wallet-info-value">
                     {thousandsCommaWithDecimal(hasLogin ? balance : "-")} ELF
                   </span>
                 </Col>
                 {resourceTokens.map((v, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Col lg={12} xs={24} sm={12} key={index}>
-                    <span className='resource-wallet-info-name'>
+                    <span className="resource-wallet-info-name">
                       {v.symbol} Quantity:
                     </span>
-                    <span className='resource-wallet-info-value'>
+                    <span className="resource-wallet-info-value">
                       {thousandsCommaWithDecimal(hasLogin ? v.balance : "-")}
                     </span>
                   </Col>

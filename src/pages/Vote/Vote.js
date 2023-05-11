@@ -11,8 +11,6 @@ import { Modal, Form, Input, message, Menu } from "antd";
 import { Route, Routes } from "react-router-dom";
 import { Provider } from "mobx-react";
 import moment from "moment";
-
-import "./index.less";
 import NightElfCheck from "@utils/NightElfCheck";
 import { isPhoneCheck } from "@utils/deviceCheck";
 import { thousandsCommaWithDecimal } from "@utils/formater";
@@ -26,6 +24,10 @@ import contractsStore from "@store/contracts";
 import Decimal from "decimal.js";
 import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from "@src/constants";
 import getStateJudgment from "@utils/getStateJudgment";
+import getCurrentWallet from "@utils/getCurrentWallet";
+import publicKeyToAddress from "@utils/publicKeyToAddress";
+import { getAllTeamDesc } from "@api/vote";
+import "./index.less";
 import MyVote from "./MyVote/MyVote";
 import ElectionNotification from "./ElectionNotification/ElectionNotification";
 import KeyInTeamInfo from "./KeyInTeamInfo";
@@ -33,6 +35,7 @@ import TeamDetail from "./TeamDetail";
 import VoteModal from "./VoteModal";
 import DividendModal from "./DividendModal";
 import RedeemModal from "./RedeemModal";
+// eslint-disable-next-line import/no-named-as-default
 import RedeemAnVoteModal from "./RedeemAnVoteModal";
 // todo: use a import instead
 import * as constants from "./constants";
@@ -43,10 +46,7 @@ import {
   FROM_ACTIVE_VOTES,
   routePaths,
 } from "./constants";
-import getCurrentWallet from "@utils/getCurrentWallet";
-import publicKeyToAddress from "@utils/publicKeyToAddress";
-import { getAllTeamDesc } from "@api/vote";
-import { getFormatedLockTime, handleCannotVote } from "./utils";
+import { getFormatedLockTime } from "./utils";
 import getAllTokens from "../../utils/getAllTokens";
 import { getPublicKeyFromObject } from "../../utils/getPublicKey";
 import addressFormat from "../../utils/addressFormat";
@@ -77,16 +77,16 @@ class VoteContainer extends Component {
       voteRedeemModalVisible: false,
       voteConfirmForm: {},
       voteRedeemForm: {},
+      // eslint-disable-next-line react/no-unused-state
       voteFrom: 1,
       currentWallet: null,
-
       consensusContract: contractsStore.consensusContract,
       dividendContract: contractsStore.dividendContract,
       multiTokenContract: contractsStore.multiTokenContract,
       voteContract: contractsStore.voteContract,
       electionContract: contractsStore.electionContract,
       profitContract: contractsStore.profitContract,
-
+      // eslint-disable-next-line react/no-unused-state
       voteContractFromExt: null,
       electionContractFromExt: null,
       profitContractFromExt: null,
@@ -201,7 +201,7 @@ class VoteContainer extends Component {
       console.error(e);
     }
 
-    let wallet = JSON.parse(localStorage.getItem("currentWallet"));
+    const wallet = JSON.parse(localStorage.getItem("currentWallet"));
     if (
       wallet &&
       new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
@@ -244,11 +244,13 @@ class VoteContainer extends Component {
       voteConfirmLoading: isLoading,
     });
   }
+
   setRedeemConfirmLoading(isLoading) {
     this.setState({
       redeemConfirmLoading: isLoading,
     });
   }
+
   setClaimLoading(isLoading) {
     this.setState({
       claimLoading: isLoading,
@@ -424,9 +426,9 @@ class VoteContainer extends Component {
           }
         } else {
           localStorage.removeItem("currentWallet");
-          const message =
+          const msg =
             error === 200010 ? "Please Login." : errorMessage.message;
-          message.warn(message);
+          message.warn(msg);
         }
       });
     });
@@ -642,7 +644,7 @@ class VoteContainer extends Component {
       if (res) {
         this.setState({ voteType }, this.handleVoteClick.bind(this, ele));
       } else {
-        handleCannotVote();
+        console.log('Cannot Vote');
       }
     });
   }
@@ -898,7 +900,7 @@ class VoteContainer extends Component {
   handleVoteFromWallet() {
     const { voteAmountInput, targetPublicKey, electionContractFromExt } =
       this.state;
-    let { lockTime } = this.state;
+    const { lockTime } = this.state;
 
     const payload = {
       candidatePubkey: targetPublicKey,
@@ -1404,7 +1406,7 @@ class VoteContainer extends Component {
               maskClosable
               keyboard
             >
-              {/*您的NightELF已锁定，请重新解锁*/}
+              {/* 您的NightELF已锁定，请重新解锁 */}
               You NightELF extension is locked. Please unlock it.
             </Modal>
 

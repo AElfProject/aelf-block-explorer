@@ -7,6 +7,13 @@ import React, { useCallback, useState } from "react";
 import { Tabs, Modal, message } from "antd";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import {
+  formatTimeToNano,
+  getContractAddress,
+  getTxResult,
+  showTransactionResult,
+  uint8ToBase64,
+} from "@redux/common/utils";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
@@ -17,13 +24,6 @@ import {
 } from "./utils.callback";
 import ContractProposalModal from "./ContractProposalModal";
 import "./index.less";
-import {
-  formatTimeToNano,
-  getContractAddress,
-  getTxResult,
-  showTransactionResult,
-  uint8ToBase64,
-} from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
 import {
   addContractName,

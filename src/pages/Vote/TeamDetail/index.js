@@ -13,10 +13,7 @@ import {
   fetchCount,
 } from "@api/vote";
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
-import {
-  FROM_WALLET,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
-} from "@src/pages/Vote/constants";
+import { FROM_WALLET, ELF_DECIMAL } from "@src/pages/Vote/constants";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
 import getCurrentWallet from "@utils/getCurrentWallet";
 import {
@@ -24,7 +21,6 @@ import {
   computeUserRedeemableVoteAmountForOneCandidate,
 } from "@utils/voteUtils";
 import "./index.less";
-import { ELF_DECIMAL } from "../constants";
 import addressFormat from "../../../utils/addressFormat";
 
 const { Paragraph } = Typography;
@@ -126,6 +122,7 @@ class TeamDetail extends PureComponent {
       let start = 0;
       let result = [];
       while (start <= total) {
+        // eslint-disable-next-line no-await-in-loop
         const res = await fetchPageableCandidateInformation(electionContract, {
           start,
           length: TableItemCount,
@@ -272,7 +269,15 @@ class TeamDetail extends PureComponent {
     } = this.state;
 
     const avatarSize = isSmallScreen ? 50 : 150;
-
+    const getTag = () => {
+      if (isBP) {
+        return "BP";
+      }
+      if (isCandidate) {
+        return "Candidate";
+      }
+      return "Quited";
+    };
     return (
       <section className={`${clsPrefix}-header card-container`}>
         <Row>
@@ -290,9 +295,7 @@ class TeamDetail extends PureComponent {
               <Col className={`${clsPrefix}-team-info`} md={18} sm={18} xs={18}>
                 <h5 className={`${clsPrefix}-node-name ellipsis`}>
                   {data.name ? data.name : formattedAddress}
-                  <Tag color="#f50">
-                    {isBP ? "BP" : isCandidate ? "Candidate" : "Quited"}
-                  </Tag>
+                  <Tag color="#f50">{getTag()}</Tag>
                 </h5>
                 <Paragraph ellipsis={{ rows: 1 }}>
                   Location: {data.location || "-"}
@@ -402,7 +405,7 @@ class TeamDetail extends PureComponent {
               </Then>
               <Else>
                 <div className="vote-team-detail-empty">
-                  The team didn't fill the introduction.
+                  The team didn&apos;t fill the introduction.
                 </div>
               </Else>
             </If>
@@ -438,7 +441,7 @@ class TeamDetail extends PureComponent {
               </Then>
               <Else>
                 <span className="vote-team-detail-empty">
-                  The team didn't fill the social contacts.
+                  The team didn&apos;t fill the social contacts.
                 </span>
               </Else>
             </If>

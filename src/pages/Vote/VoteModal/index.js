@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-use-before-define
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -29,10 +30,9 @@ import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
-} from "@src/pages/Vote/constants";
+ ELF_DECIMAL } from "@src/pages/Vote/constants";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import "./index.less";
-import { ELF_DECIMAL } from "../constants";
 import { isIPhone } from "../../../utils/deviceCheck";
 
 const { TabPane } = Tabs;
@@ -53,19 +53,6 @@ const switchVotePagination = {
   total: 0,
   showTotal: (total) => `Total ${total} items`,
   pageSize: 3,
-};
-
-// todo: Consider to use it globally
-const validateMessages = {
-  // todo: Why is the fieldDecoratorId still appear?
-  required: INPUT_SOMETHING_TIP,
-  types: {
-    email: "Not a validate email!",
-    number: "Not a validate number!",
-  },
-  number: {
-    range: "Must be between ${min} and ${max}",
-  },
 };
 
 // todo: Consider to use constant in Vote instead
@@ -138,10 +125,9 @@ function getColumns() {
   ];
 }
 
-const defaultDate = moment().add(SHORTEST_LOCK_TIME, "days").endOf("day");
-
 class VoteModal extends Component {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
 
@@ -150,12 +136,14 @@ class VoteModal extends Component {
     this.getFormItems = this.getFormItems.bind(this);
 
     this.state = {
+      // eslint-disable-next-line react/no-unused-state
       currentTab: "fromWallet", // fromActiveVotes
       formattedLockTime: null,
       datePickerTime: null,
     };
   }
 
+  // eslint-disable-next-line class-methods-use-this
   onValuesChange(_, values) {
     console.log("onValuesChange", values);
   }
@@ -249,7 +237,7 @@ class VoteModal extends Component {
             render: (
               <Form.Item
                 noStyle
-                name={"voteAmountInput"}
+                name="voteAmountInput"
                 rules={[
                   {
                     required: true,
@@ -270,7 +258,7 @@ class VoteModal extends Component {
                   },
                 ]}
                 validateTrigger={["onChange", "onBlur"]}
-                validateFirst={true} // todo: How to set it to default?
+                validateFirst // todo: How to set it to default?
               >
                 <Input className='vote-input' placeholder='Enter vote amount' />
               </Form.Item>
@@ -433,7 +421,6 @@ class VoteModal extends Component {
 
   handleAllIn() {
     const { balance, changeVoteState } = this.props;
-
     changeVoteState({ voteAmountInput: { value: balance } });
   }
 

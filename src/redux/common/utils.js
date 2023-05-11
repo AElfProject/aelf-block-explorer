@@ -150,11 +150,11 @@ export function uint8ToBase64(u8Arr) {
     result += String.fromCharCode.apply(null, slice);
     index += CHUNK_SIZE;
   }
-  return btoa(result);
+  return Buffer.from(result, 'base64');
 }
 
 export function base64ToHex(base64) {
-  const raw = atob(base64);
+  const raw = Buffer.from(base64, 'base64');
   let result = '';
   for (let i = 0; i < raw.length; i++) {
     const hex = raw.charCodeAt(i).toString(16);
@@ -210,5 +210,6 @@ export async function getTxResult(aelf, txId, times = 0, delay = 3000, timeLimit
 export const commonFilter = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
 export function getCsrfToken() {
+  // eslint-disable-next-line no-useless-escape
   return document.cookie.replace(/(?:(?:^|.*;\s*)csrfToken\s*\=\s*([^;]*).*$)|^.*$/, '$1');
 }

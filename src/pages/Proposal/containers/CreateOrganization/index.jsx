@@ -20,14 +20,14 @@ import {
   Divider,
   Form,
 } from "antd";
-import constants, { API_PATH } from "../../common/constants";
-import { request } from "../../../../common/request";
+import constants, { API_PATH } from "@redux/common/constants";
 import {
   commonFilter,
   getContractAddress,
   showTransactionResult,
   rand16Num,
-} from "../../common/utils";
+} from "@redux/common/utils";
+import { request } from "../../../../common/request";
 import { getTokenList, getContract, sleep } from "../../../../common/utils";
 import "./index.less";
 

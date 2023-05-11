@@ -14,7 +14,7 @@ import { APPNAME, resourceTokens } from "../../../config/config";
 import DownloadPlugins from "../../components/DownloadPlugins/DownloadPlugins";
 import ResourceAElfWallet from "./components/ResourceAElfWallet/ResourceAElfWallet";
 import NightElfCheck from "../../utils/NightElfCheck";
-import getContractAddress from "../../utils/getContractAddress.js";
+import getContractAddress from "../../utils/getContractAddress";
 import ResourceMoneyMarket from "./components/ResourceMoneyMarket/ResourceMoneyMarket";
 import getLogin from "../../utils/getLogin";
 import { isPhoneCheck } from "../../utils/deviceCheck";
@@ -74,7 +74,7 @@ class Resource extends Component {
                 }
               });
             } else {
-              let wallet = JSON.parse(localStorage.getItem("currentWallet"));
+              const wallet = JSON.parse(localStorage.getItem("currentWallet"));
               if (
                 wallet &&
                 new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
@@ -97,6 +97,7 @@ class Resource extends Component {
   }
 
   getContract(result) {
+    // eslint-disable-next-line no-shadow
     aelf.chain.contractAt(result.multiToken, result.wallet, (error, result) => {
       this.setState({
         tokenContract: result,
@@ -105,6 +106,7 @@ class Resource extends Component {
     aelf.chain.contractAt(
       result.tokenConverter,
       result.wallet,
+      // eslint-disable-next-line no-shadow
       (error, result) => {
         this.setState({
           tokenConverterContract: result,
@@ -131,7 +133,7 @@ class Resource extends Component {
           const wallet = JSON.parse(result.detail);
           nightElf.chain.getChainStatus(() => {
             this.getNightElfKeyPair(wallet);
-          })
+          });
           toastMessage && message.success("Login success!!", 3);
         } else {
           this.loginFailed();
@@ -202,12 +204,13 @@ class Resource extends Component {
       tokenContract,
       tokenConverterContract,
       currentWallet,
+      // eslint-disable-next-line no-shadow
       resourceTokens,
       currentBalance,
     } = this.state;
     return (
       <ResourceAElfWallet
-        title='AELF Wallet'
+        title="AELF Wallet"
         ref={(wallet) => {
           this.walletRef = wallet;
         }}
@@ -226,6 +229,7 @@ class Resource extends Component {
   render() {
     const {
       currentBalance,
+      // eslint-disable-next-line no-shadow
       appName,
       showDownloadPlugins,
       currentWallet,
@@ -233,6 +237,7 @@ class Resource extends Component {
       tokenContract,
       tokenConverterContract,
       nightElf,
+      // eslint-disable-next-line no-shadow
       resourceTokens,
     } = this.state;
     const account = {
@@ -243,17 +248,17 @@ class Resource extends Component {
     if (showDownloadPlugins) {
       downloadPlugins = [
         this.getDownloadPluginsHTML(),
-        <div className='resource-blank' />,
+        <div className="resource-blank" />,
       ];
     }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
     const isPhone = isPhoneCheck();
     return (
-      <div className='resource-body basic-container basic-container-white'>
+      <div className="resource-body basic-container basic-container-white">
         {!isPhone && downloadPlugins}
-        {/*{isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}*/}
+        {/* {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>} */}
         {nightElf && resourceAElfWalletHtml}
-        <div className='resource-money-market'>
+        <div className="resource-money-market">
           <ResourceMoneyMarket
             loginAndInsertKeypairs={this.loginAndInsertKeyPairs}
             currentWallet={currentWallet}

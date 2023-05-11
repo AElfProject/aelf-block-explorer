@@ -1,5 +1,5 @@
-import constants from "@pages/Proposal/common/constants";
-import { GET_PROPOSAL_SELECT_LIST } from "@pages/Proposal/actions/proposalSelectList";
+import constants from "../common/constants";
+import { GET_PROPOSAL_SELECT_LIST } from "../actions/proposalSelectList";
 
 const { proposalTypes, proposalStatus } = constants;
 

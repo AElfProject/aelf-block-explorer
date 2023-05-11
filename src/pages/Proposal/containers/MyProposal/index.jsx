@@ -12,7 +12,7 @@ import constants, {
   ACTIONS_COLOR_MAP,
   API_PATH,
   STATUS_COLOR_MAP,
-} from "../../common/constants";
+} from "../../../../redux/common/constants";
 import {
   omitString,
   removePrefixOrSuffix,

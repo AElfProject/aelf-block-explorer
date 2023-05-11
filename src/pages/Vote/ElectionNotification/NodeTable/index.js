@@ -25,9 +25,9 @@ import publicKeyToAddress from "@utils/publicKeyToAddress";
 import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
+  ELF_DECIMAL,
 } from "@src/pages/Vote/constants";
 import "./index.less";
-import { ELF_DECIMAL } from "../../constants";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
 import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
@@ -360,6 +360,7 @@ class NodeTable extends PureComponent {
     const res = await fetchCount(this.props.electionContract, "");
     const total = res.value?.length || 0;
     const pagination = {
+      // eslint-disable-next-line react/no-access-state-in-setstate
       ...this.state.pagination,
       total,
     };
@@ -375,6 +376,7 @@ class NodeTable extends PureComponent {
     let start = 0;
     let result = [];
     while (start <= total) {
+      // eslint-disable-next-line no-await-in-loop
       const res = await fetchPageableCandidateInformation(electionContract, {
         start,
         length: TableItemCount,

@@ -6,8 +6,8 @@ import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { Col, Row } from "antd";
 import roundTo from "round-to";
+import constants, { organizationInfoPropTypes } from "@redux/common/constants";
 import Circle from "../Circle";
-import constants, { organizationInfoPropTypes } from "../../common/constants";
 import "./index.less";
 import { isPhoneCheck } from "../../../../common/utils";
 

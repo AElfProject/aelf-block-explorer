@@ -17,11 +17,11 @@ import {
   Result,
 } from "antd";
 import { Switch, Case, If, Then } from "react-if";
+import constants, { LOADING_STATUS, LOG_STATUS } from "@redux/common/constants";
+import { setCurrentOrg } from "@actions/proposalDetail";
 import Total from "../../../../components/Total";
-import constants, { LOADING_STATUS, LOG_STATUS } from "../../common/constants";
 import Organization from "./Organization";
-import { setCurrentOrg } from "../../actions/proposalDetail";
-import { getOrganizations } from "../../actions/organizationList";
+import { getOrganizations } from "../../../../redux/actions/organizationList";
 import "./index.less";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";

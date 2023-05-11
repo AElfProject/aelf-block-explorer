@@ -7,13 +7,12 @@
  * @Description: file content
  */
 import React, { memo } from "react";
-import { withRouter } from "../../../../routes/utils";
-import { Button, Icon } from "antd";
-
-import "./ElectionRuleCard.style.less";
+import { Button } from "antd";
 import { FileTextFilled } from "@ant-design/icons";
-import Svg from "../../../../components/Svg/Svg";
 import { useNavigate } from "react-router";
+import { withRouter } from "../../../../routes/utils";
+import "./ElectionRuleCard.style.less";
+import Svg from "../../../../components/Svg/Svg";
 
 function ElectionRuleCard(props) {
   const navigate = useNavigate();
@@ -48,18 +47,18 @@ function ElectionRuleCard(props) {
     //     </div>
     //   );
     // return btnHtml;
-    <div className='btn-group'>
+    <div className="btn-group">
       <Button
         // disabled="true"
-        type='primary'
-        className='apply-to-be-a-node-btn'
+        type="primary"
+        className="apply-to-be-a-node-btn"
         onClick={onClick}
       >
         {isCandidate ? "Modify team information" : "Become a candidate node"}
       </Button>
       {isCandidate && (
-        <div className='quit-button' onClick={quitElection}>
-          Quit <Svg icon='quit' className='quit-logo' />
+        <div className="quit-button" onClick={quitElection}>
+          Quit <Svg icon="quit" className="quit-logo" />
         </div>
       )}
     </div>
@@ -67,13 +66,13 @@ function ElectionRuleCard(props) {
   const btnHtml = renderBtn();
 
   return (
-    <section className='election-rule-card'>
-      <h2 className='election-header-title'>
-        <FileTextFilled className='card-header-icon' />
+    <section className="election-rule-card">
+      <h2 className="election-header-title">
+        <FileTextFilled className="card-header-icon" />
         Node Election
       </h2>
-      <div className='election-container'>
-        <p className='election-intro'>
+      <div className="election-container">
+        <p className="election-intro">
           Every token holder has the opportunity to become a BP node. However,
           in order to make our networks and communities operate more smoothly
           and effectively, we have developed a set of standards and regulations

@@ -2,6 +2,7 @@
  * @file wallet related
  * @author atom-yang
  */
+// eslint-disable-next-line import/no-cycle
 import Extension from "./extension";
 
 const WALLET_TYPE = {

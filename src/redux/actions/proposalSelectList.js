@@ -3,7 +3,7 @@
  * @author atom-yang
  */
 import { API_PATH } from '../common/constants';
-import { request } from '../../../common/request';
+import { request } from '../../common/request';
 import { arrayToMap } from '../common/utils';
 
 export const GET_PROPOSAL_SELECT_LIST = arrayToMap([

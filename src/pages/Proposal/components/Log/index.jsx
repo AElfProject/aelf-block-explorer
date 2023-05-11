@@ -8,8 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { If, Then, Else } from "react-if";
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Menu } from "antd";
-import { logOut, logIn } from "../../actions/common";
-import { LOG_STATUS } from "../../common/constants";
+import { logOut, logIn } from "@redux/actions/proposalCommon";
+import { LOG_STATUS } from "@redux/common/constants";
 import { isPhoneCheck } from "../../../../common/utils";
 
 const OverLay = (props) => {

@@ -20,7 +20,7 @@ import constants, {
   STATUS_COLOR_MAP,
   CONTRACT_TEXT_MAP,
   PROPOSAL_STATUS_CAPITAL,
-} from "../../../common/constants";
+} from "../../../../../redux/common/constants";
 import "./index.less";
 import VoteChart from "../../../components/VoteChart";
 import { PRIMARY_COLOR } from "../../../../../common/constants";

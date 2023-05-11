@@ -21,12 +21,12 @@ import {
 } from "antd";
 import { useEffectOnce } from 'react-use';
 import Total from "../../../../components/Total";
-import constants, { LOADING_STATUS, LOG_STATUS } from "../../common/constants";
+import constants, { LOADING_STATUS, LOG_STATUS } from "../../../../redux/common/constants";
 import Proposal from "./Proposal";
-import { getProposals } from "../../actions/proposalList";
+import { getProposals } from "../../../../redux/actions/proposalList";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import "./index.less";
-import { getContractAddress, sendTransaction } from "../../common/utils";
+import { getContractAddress, sendTransaction } from "../../../../redux/common/utils";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";
 

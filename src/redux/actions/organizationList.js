@@ -2,8 +2,8 @@
  * @file organization actions
  * @author atom-yang
  */
+import { request } from '../../common/request';
 import { API_PATH } from '../common/constants';
-import { request } from '../../../common/request';
 import { arrayToMap } from '../common/utils';
 
 export const GET_ORGANIZATIONS_LIST = arrayToMap([

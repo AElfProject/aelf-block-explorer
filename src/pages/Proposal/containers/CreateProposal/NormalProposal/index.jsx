@@ -19,6 +19,7 @@ import {
   Spin,
 } from "antd";
 import PropTypes from "prop-types";
+import constants, { API_PATH } from "@redux/common/constants";
 import {
   isInnerType,
   isSpecialParameters,
@@ -27,8 +28,7 @@ import {
   commonFilter,
   isSingleStringParameter,
   isEmptyInputType,
-} from "../../../common/utils";
-import constants, { API_PATH } from "../../../common/constants";
+} from "@redux/common/utils";
 import { request } from "../../../../../common/request";
 // import ContractParams from '../../../components/ContractParams';
 // import JSONEditor from '../../../components/JSONEditor';

@@ -2,16 +2,17 @@
  * @file App container
  * @author atom-yang
  */
+// eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate, Outlet, Navigate } from "react-router-dom";
 import useUseLocation from "react-use/lib/useLocation";
 import { useSelector, useDispatch } from "react-redux";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Tabs, Popover } from "antd";
-import { logIn, LOG_IN_ACTIONS } from "./actions/common";
+import { Tabs,Popover } from "antd";
+import { logIn, LOG_IN_ACTIONS } from "@redux/actions/proposalCommon";
+import { LOG_STATUS } from "@redux/common/constants";
+import walletInstance from "@redux/common/wallet";
 import LogButton from "./components/Log";
-import { LOG_STATUS } from "./common/constants";
-import walletInstance from "./common/wallet";
 import Plugin from "../../components/plugin";
 import Rules from "./components/Rules";
 import { isPhoneCheck, sendMessage } from "../../common/utils";
@@ -140,7 +141,7 @@ const App = () => {
         {isLogged && <TabPane tab='My Proposals' key='myProposals' />}
       </Tabs>
       <div className='proposal-container'>
-        <Outlet></Outlet>
+        <Outlet />
       </div>
     </div>
   );

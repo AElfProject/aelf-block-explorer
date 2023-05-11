@@ -8,7 +8,7 @@ import { Row, Col, Button, Card } from "antd";
 import VoteChart from "../../../components/VoteChart";
 import constants, {
   organizationInfoPropTypes,
-} from "../../../common/constants";
+} from "../../../../../redux/common/constants";
 
 const { proposalStatus, proposalTypes } = constants;
 

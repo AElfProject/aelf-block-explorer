@@ -17,15 +17,15 @@ import {
   Form,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { request } from "../../../../../common/request";
-import { API_PATH } from "../../../common/constants";
-import ProposalSearch from "../../../components/ProposalSearch";
+import { API_PATH } from "@redux/common/constants";
 import {
   destorySelectList,
   getProposalSelectListWrap,
-} from "../../../actions/proposalSelectList";
+} from "@redux/actions/proposalSelectList";
+import { getContractAddress } from "@redux/common/utils";
+import { request } from "../../../../../common/request";
+import ProposalSearch from "../../../components/ProposalSearch";
 import { useCallGetMethod } from "../utils.callback";
-import { getContractAddress } from "../../../common/utils";
 import { CHAIN_ID } from "../../../../../constants";
 
 const FormItem = Form.Item;

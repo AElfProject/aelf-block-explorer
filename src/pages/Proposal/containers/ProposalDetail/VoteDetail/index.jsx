@@ -25,8 +25,8 @@ import constants, {
   LOG_STATUS,
   LOADING_STATUS,
   ACTIONS_COLOR_MAP,
-} from "../../../common/constants";
-import { getContractAddress, sendTransaction } from "../../../common/utils";
+} from "../../../../../redux/common/constants";
+import { getContractAddress, sendTransaction } from "../../../../../redux/common/utils";
 import "./index.less";
 import { removePrefixOrSuffix } from "../../../../../common/utils";
 import TableLayer from "../../../../../components/TableLayer/TableLayer";

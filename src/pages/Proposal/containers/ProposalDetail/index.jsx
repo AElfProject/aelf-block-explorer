@@ -35,7 +35,7 @@ import constants, {
   LOG_STATUS,
   STATUS_COLOR_MAP,
   PROPOSAL_STATUS_CAPITAL,
-} from "../../common/constants";
+} from "../../../../redux/common/constants";
 import { request } from "../../../../common/request";
 import VoteData from "./VoteData";
 import VoteDetail from "./VoteDetail";
@@ -43,7 +43,7 @@ import OrganizationCard from "./OrganizationCard";
 import ContractDetail from "./ContractDetail";
 import config from "../../../../common/config";
 import "./index.less";
-import { getContractAddress, sendTransaction } from "../../common/utils";
+import { getContractAddress, sendTransaction } from "../../../../redux/common/utils";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import {
   getBPCount,

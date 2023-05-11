@@ -57,6 +57,7 @@ function getColumns() {
 
 class RedeemModal extends PureComponent {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.handleOk = this.handleOk.bind(this);
@@ -83,17 +84,17 @@ class RedeemModal extends PureComponent {
           style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters, confirm)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -149,6 +150,7 @@ class RedeemModal extends PureComponent {
     const rowSelection = {
       selectedRowKeys: redeemVoteSelectedRowKeys,
       onChange: (value) => {
+        // eslint-disable-next-line no-unused-expressions
         this.formRef.current?.setFieldsValue({
           redeemVoteSelectedRowKeys: value,
         });
@@ -162,19 +164,19 @@ class RedeemModal extends PureComponent {
         {
           label: "Node Name",
           render: (
-            <span className='form-item-value text-ellipsis'>{nodeName}</span>
+            <span className="form-item-value text-ellipsis">{nodeName}</span>
           ),
         },
         {
           label: "Node Add",
           render: (
-            <span className='form-item-value text-ellipsis'>{nodeAddress}</span>
+            <span className="form-item-value text-ellipsis">{nodeAddress}</span>
           ),
         },
         {
           label: "Active Vote",
           render: (
-            <span className='form-item-value'>
+            <span className="form-item-value">
               {activeVoteAmountForOneCandidate} {SYMBOL}
             </span>
           ),
@@ -182,7 +184,7 @@ class RedeemModal extends PureComponent {
         {
           label: "Expired Vote",
           render: (
-            <span className='form-item-value'>
+            <span className="form-item-value">
               {redeemableVoteAmountForOneCandidate} {SYMBOL}
             </span>
           ),
@@ -214,7 +216,7 @@ class RedeemModal extends PureComponent {
         {
           label: "Redeem To",
           render: (
-            <span className='form-item-value'>
+            <span className="form-item-value">
               {currentWallet && currentWallet.name}
             </span>
           ),
@@ -224,11 +226,8 @@ class RedeemModal extends PureComponent {
   }
 
   handleOk() {
-    const {
-      handleRedeemConfirm,
-      changeVoteState,
-      setRedeemConfirmLoading,
-    } = this.props;
+    const { handleRedeemConfirm, changeVoteState, setRedeemConfirmLoading } =
+      this.props;
 
     setRedeemConfirmLoading(true);
 
@@ -238,14 +237,11 @@ class RedeemModal extends PureComponent {
     }, 60 * 1000);
     const redeemVoteSelectedRowKeys = this.formRef.current?.getFieldValue(
       "redeemVoteSelectedRowKeys"
-    )
+    );
     if (redeemVoteSelectedRowKeys) {
-      changeVoteState(
-        { redeemVoteSelectedRowKeys },
-        () => {
-          handleRedeemConfirm();
-        }
-      );
+      changeVoteState({ redeemVoteSelectedRowKeys }, () => {
+        handleRedeemConfirm();
+      });
     } else {
       setRedeemConfirmLoading(false);
     }
@@ -259,8 +255,8 @@ class RedeemModal extends PureComponent {
 
     return (
       <Modal
-        className='vote-redeem-modal'
-        title='Vote Redeem'
+        className="vote-redeem-modal"
+        title="Vote Redeem"
         visible={voteRedeemModalVisible}
         onOk={this.handleOk}
         confirmLoading={redeemConfirmLoading}
@@ -294,7 +290,7 @@ class RedeemModal extends PureComponent {
               </Form.Item>
             ))}
         </Form>
-        <p className='tip-color' style={{ fontSize: 12 }}>
+        <p className="tip-color" style={{ fontSize: 12 }}>
           {FEE_TIP}
         </p>
         <p style={{ marginTop: 10 }}>{NEED_PLUGIN_AUTHORIZE_TIP}</p>

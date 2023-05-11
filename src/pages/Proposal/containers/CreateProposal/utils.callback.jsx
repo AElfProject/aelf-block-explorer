@@ -1,9 +1,9 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { getOriginProposedContractInputHash } from "@redux/common/util.proposed";
+import { getContractAddress, getTxResult } from "@redux/common/utils";
 import { callGetMethod } from "../../../../utils/utils";
-import { getOriginProposedContractInputHash } from "../../common/util.proposed";
-import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
 import { getDeserializeLog } from "../../utils";
 import { get } from "../../../../utils";

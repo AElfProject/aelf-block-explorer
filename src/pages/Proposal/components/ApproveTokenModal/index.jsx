@@ -9,9 +9,9 @@ import {
   getContractAddress,
   getTxResult,
   showTransactionResult,
-} from "../../common/utils";
+} from "@redux/common/utils";
+import constants from "@redux/common/constants";
 import { getContract } from "../../../../common/utils";
-import constants from "../../common/constants";
 import "./index.less";
 
 const FormItem = Form.Item;
@@ -272,7 +272,7 @@ const ApproveTokenModal = (props) => {
 
   return (
     <Modal
-      wrapClassName='approve-token-modal'
+      wrapClassName="approve-token-modal"
       title={action}
       visible={visible}
       onCancel={handleCancel}
@@ -282,24 +282,24 @@ const ApproveTokenModal = (props) => {
       destroyOnClose
       width={720}
     >
-      <div className='gap-bottom-large'>
+      <div className="gap-bottom-large">
         Token Balance: {allowanceInfo.balance} {tokenSymbol}
       </div>
       <Form
         form={form}
-        className='approve-token-form'
+        className="approve-token-form"
         {...formItemLayout}
         onValuesChange={handleValueChange}
       >
-        <FormItem label='Staked Token'>
+        <FormItem label="Staked Token">
           <FormItem noStyle {...formDesc.amount}>
             <InputNumber precision={allowanceInfo.decimals} step={1} min={0} />
           </FormItem>
-          <span className='gap-left-small'>{tokenSymbol}</span>
+          <span className="gap-left-small">{tokenSymbol}</span>
         </FormItem>
         <FormItem colon={false}>
           <Button
-            type='primary'
+            type="primary"
             loading={loadings.tokenLoading}
             disabled={allowanceInfo.balance === 0 || inputAmount === 0}
             onClick={handleStake}
@@ -315,6 +315,7 @@ const ApproveTokenModal = (props) => {
 ApproveTokenModal.propTypes = {
   action: PropTypes.oneOf(Object.values(proposalActions)).isRequired,
   aelf: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
     chain: PropTypes.object,
   }).isRequired,
   tokenSymbol: PropTypes.string.isRequired,
