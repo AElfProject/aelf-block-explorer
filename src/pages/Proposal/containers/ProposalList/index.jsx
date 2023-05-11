@@ -3,6 +3,7 @@
  * @file proposal list
  * @author atom-yang
  */
+// eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState } from "react";
 import { If, Then, Switch, Case } from "react-if";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
@@ -18,6 +19,7 @@ import {
   Empty,
   Result,
 } from "antd";
+import { useEffectOnce } from 'react-use';
 import Total from "../../../../components/Total";
 import constants, { LOADING_STATUS, LOG_STATUS } from "../../common/constants";
 import Proposal from "./Proposal";
@@ -123,11 +125,19 @@ const ProposalList = () => {
       search: "",
     });
   };
-  window.addEventListener("hashchange", () => {
+  const changeKey = () => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
     setActiveKey(key || proposalTypes.PARLIAMENT);
+    return key || proposalTypes.PARLIAMENT;
+  };
+  window.addEventListener("hashchange", () => {
+    changeKey();
   });
+  useEffectOnce(() => {
+    const key = changeKey();
+    handleTabChange(key);
+  })
 
   const send = async (id, action) => {
     if (params.proposalType === proposalTypes.REFERENDUM) {
