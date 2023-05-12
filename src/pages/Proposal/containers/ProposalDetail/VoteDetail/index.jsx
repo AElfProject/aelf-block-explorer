@@ -18,7 +18,7 @@ import Decimal from "decimal.js";
 import moment from "moment";
 import { If, Then } from "react-if";
 import config from "../../../../../common/config";
-import { request } from "../../../../../common/request";
+import request from "../../../../../common/request";
 import Total from "../../../../../components/Total";
 import constants, {
   API_PATH,

@@ -29,7 +29,7 @@ import {
   isEmptyInputType,
 } from "../../../common/utils";
 import constants, { API_PATH } from "../../../common/constants";
-import { request } from "../../../../../common/request";
+import request from "../../../../../common/request";
 // import ContractParams from '../../../components/ContractParams';
 // import JSONEditor from '../../../components/JSONEditor';
 import "./index.less";

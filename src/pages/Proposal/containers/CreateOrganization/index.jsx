@@ -21,7 +21,7 @@ import {
   Form,
 } from "antd";
 import constants, { API_PATH } from "../../common/constants";
-import { request } from "../../../../common/request";
+import request from "../../../../common/request";
 import {
   commonFilter,
   getContractAddress,

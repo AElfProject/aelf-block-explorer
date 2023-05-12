@@ -6,7 +6,7 @@ import AElf from "aelf-sdk";
 import debounce from "lodash.debounce";
 import { endsWith, startsWith } from "lodash";
 import config from "./config";
-import { request } from "./request";
+import request from "./request";
 import constants from "../pages/Proposal/common/constants";
 // eslint-disable-next-line import/no-cycle
 import walletInstance from "../pages/Proposal/common/wallet";
