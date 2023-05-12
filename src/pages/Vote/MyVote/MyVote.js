@@ -1,61 +1,48 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 
 import StatisticalData from '@components/StatisticalData/';
 import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
-import { RANK_NOT_EXISTED_SYMBOL } from '@src/pages/Vote/constants';
+import { RANK_NOT_EXISTED_SYMBOL , ELF_DECIMAL, myVoteStatistData } from '@src/pages/Vote/constants';
 import { MY_VOTE_DATA_TIP } from '@src/constants';
 import { Button, Spin } from 'antd';
 import NightElfCheck from '../../../utils/NightElfCheck';
 import getLogin from '../../../utils/getLogin';
 import MyVoteRecord from './MyVoteRecords';
-import { ELF_DECIMAL, myVoteStatistData } from '../constants';
 import { getPublicKeyFromObject } from '../../../utils/getPublicKey';
 import addressFormat from '../../../utils/addressFormat';
 
 import './MyVote.style.less';
 
-export default class MyVote extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      statistData: myVoteStatistData,
-      tableData: [],
-      spinningLoading: true,
-      currentWallet: {
-        address: null,
-        name: null,
-        pubKey: {
-          x: null,
-          y: null,
-        },
-      },
-    };
+const MyVote = (props) => {
+  const [statistData, setStatistData] = useState(myVoteStatistData);
+  const [tableData, setTableData] = useState([]);
+  const [spinningLoading, setSpinningLoading] = useState(true);
+  const [currentWallet, setCurrentWallet] = useState({
+    address: null,
+    name: null,
+    pubKey: {
+      x: null,
+      y: null,
+    },
+  });
+  const [hasRun, setHasRun] = useState(false);
 
-    this.hasRun = false;
-  }
+  useEffect(() => {
+    if (props.currentWallet) {
+      getCurrentWallet();
+    }
+  }, [props.currentWallet]);
 
-  componentDidMount() {
-    if (this.props.currentWallet) {
-      this.getCurrentWallet();
+  useEffect(() => {
+    if (!hasRun) {
+      fetchTableDataAndStatistData();
     }
-  }
+  }, [hasRun]);
 
-  // todo: update the vote info after switch to this tab
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.currentWallet && !prevProps.currentWallet) {
-      this.getCurrentWallet();
-    }
-    if (prevProps.currentWallet && prevProps.currentWallet.address !== this.props.currentWallet.address) {
-      this.getCurrentWallet();
-    }
-    if (!this.hasRun) {
-      this.fetchTableDataAndStatistData();
-    }
-  }
-
-  getCurrentWallet() {
+  
+  const getCurrentWallet = () => {
     NightElfCheck.getInstance()
       .check.then((ready) => {
         const nightElf = NightElfCheck.getAelfInstanceByExtension();
@@ -64,10 +51,7 @@ export default class MyVote extends Component {
           { file: 'MyVote.js' },
           (result) => {
             if (result.error) {
-              this.setState({
-                spinningLoading: false,
-              });
-              // message.warn(result.message || result.errorMessage.message);
+              setSpinningLoading(false);
             } else {
               const wallet = JSON.parse(result.detail);
               const currentWallet = {
@@ -76,12 +60,10 @@ export default class MyVote extends Component {
                 name: wallet.name,
                 pubKey: getPublicKeyFromObject(wallet.publicKey),
               };
-              this.setState({
-                currentWallet,
-              });
-              this.props.checkExtensionLockStatus();
+              setCurrentWallet(currentWallet);
+              props.checkExtensionLockStatus();
               setTimeout(() => {
-                this.fetchTableDataAndStatistData(currentWallet);
+                fetchTableDataAndStatistData(currentWallet);
               });
             }
           },
@@ -89,20 +71,17 @@ export default class MyVote extends Component {
         );
       })
       .catch((error) => {
-        this.setState({
-          spinningLoading: false,
-        });
-        // message.warn('Please download and install NightELF browser extension.');
+        setSpinningLoading(false);
       });
-  }
+  };
 
-  fetchTableDataAndStatistData(currentWalletTemp) {
-    const { electionContract } = this.props;
+  const fetchTableDataAndStatistData = (currentWalletTemp) => {
+    const { electionContract } = props;
     if (!electionContract) return;
-    this.hasRun = true;
-    const currentWallet = currentWalletTemp || this.state.currentWallet;
+    setHasRun(true);
+    const currentWallet = currentWalletTemp || currentWallet;
     if (!currentWallet || !currentWallet.address) {
-      this.hasRun = false;
+      setHasRun(false);
       return false;
     }
 
@@ -120,15 +99,14 @@ export default class MyVote extends Component {
       }),
     ])
       .then((resArr) => {
-        console.log('resArr', resArr);
-        this.processData(resArr);
+        processData(resArr);
       })
       .catch((err) => {
         console.error('err', 'fetchTableDataAndStatistData', err);
       });
-  }
+  };
 
-  processData(resArr) {
+  const processData = (resArr) => {
     const electorVotes = resArr[0];
     const allNodeInfo = (resArr[2] ? resArr[2].value : [])
       .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
@@ -177,21 +155,20 @@ export default class MyVote extends Component {
       myTotalVotesAmount,
       withdrawableVoteAmount,
     });
-    this.processStatistData(
+    processStatistData(
       'myTotalVotesAmount',
       'num',
       myTotalVotesAmount / ELF_DECIMAL,
     );
-    this.processStatistData(
+    processStatistData(
       'withdrawableVotesAmount',
       'num',
       withdrawableVoteAmount / ELF_DECIMAL,
     );
-    this.processTableData(myVoteRecords, allTeamInfo);
-  }
+    processTableData(myVoteRecords, allTeamInfo);
+  };
 
-  // eslint-disable-next-line class-methods-use-this
-  processTableData(myVoteRecords, allTeamInfo) {
+  const processTableData = (myVoteRecords, allTeamInfo) => {
     // add node name
     const tableData = myVoteRecords;
     tableData.forEach((record) => {
@@ -229,56 +206,45 @@ export default class MyVote extends Component {
       record.formattedUnlockTime = end.format('YYYY-MM-DD HH:mm:ss');
       record.isRedeemable = record.unlockTimestamp.seconds <= moment().unix();
     });
-    // todo: withdrawn's timestamp
+  
+    setTableData(tableData);
+    setSpinningLoading(false);
+  };
+  
 
-    this.setState({
-      tableData,
-      spinningLoading: false,
+  const processStatistData = (key, param, value) => {
+    setStatistData({
+      ...statistData,
+      [key]: {
+        ...(statistData[key] || {}),
+        [param]: value
+      }
     });
-  }
+    setSpinningLoading(false);
+  };
 
-  processStatistData(key, param, value) {
-    const { statistData } = this.state;
-    this.setState({
-      statistData: {
-        ...statistData,
-        [key]: {
-          ...(statistData[key] || {}),
-          [param]: value
-        }
-      },
-      spinningLoading: false,
-    });
-  }
 
-  render() {
-    const {
-      statistData,
-      spinningLoading,
-      tableData,
-      currentWallet,
-    } = this.state;
+  const onLogin = () => {
+    getCurrentWallet();
+  };
 
-    const onLogin = () => {
-      this.getCurrentWallet();
-    };
+  return (
+    <section>
+      {currentWallet.address ? (
+        <Spin spinning={spinningLoading}>
+          <StatisticalData data={statistData} tooltip={MY_VOTE_DATA_TIP} />
+          <MyVoteRecord data={tableData} />
+        </Spin>
+      ) : (
+        <div className="not-logged-section">
+          <p>It seems like you are not logged in.</p>
+          <Button onClick={onLogin} type="primary">
+            Login
+          </Button>
+        </div>
+      )}
+    </section>
+  );
+};
 
-    return (
-      <section>
-        {currentWallet.address ? (
-          <Spin spinning={spinningLoading}>
-            <StatisticalData data={statistData} tooltip={MY_VOTE_DATA_TIP} />
-            <MyVoteRecord data={tableData} />
-          </Spin>
-        ) : (
-          <div className="not-logged-section">
-            <p>It seems like you are not logged in.</p>
-            <Button onClick={onLogin} type="primary">
-              Login
-            </Button>
-          </div>
-        )}
-      </section>
-    );
-  }
-}
+export default MyVote;
