@@ -31,7 +31,8 @@
     "no-use-before-define": 0,
     "@typescript-eslint/no-use-before-define": 2,
     "no-unused-expressions": 0,
-    "no-continue": 0
+    "no-continue": 0,
+    "no-return-assign": 0
   },
   "globals": {
     "window": true,
