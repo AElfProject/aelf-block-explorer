@@ -25,9 +25,8 @@ import publicKeyToAddress from "@utils/publicKeyToAddress";
 import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
-} from "@src/pages/Vote/constants";
+ ELF_DECIMAL } from "@src/pages/Vote/constants";
 import "./index.less";
-import { ELF_DECIMAL } from "../../constants";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
 import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";

@@ -1,5 +1,5 @@
 import { getCsrfToken, getSignParams, getTxResult } from "./common/utils";
-import { request } from "../../common/request";
+import request from "../../common/request";
 import { API_PATH } from "./common/constants";
 
 import { deserializeLog } from "../../common/utils";

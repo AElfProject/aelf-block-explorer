@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 
 import AElf from "aelf-sdk";
-import { request } from "../../../common/request";
+import request from "../../../common/request";
 
 import { deserializeLog } from "../../../common/utils";
 import constants, { API_PATH } from "./constants";

@@ -29,10 +29,9 @@ import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
-} from "@src/pages/Vote/constants";
+ ELF_DECIMAL } from "@src/pages/Vote/constants";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import "./index.less";
-import { ELF_DECIMAL } from "../constants";
 import { isIPhone } from "../../../utils/deviceCheck";
 
 const { TabPane } = Tabs;
@@ -142,6 +141,7 @@ const defaultDate = moment().add(SHORTEST_LOCK_TIME, "days").endOf("day");
 
 class VoteModal extends Component {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
 
@@ -249,7 +249,7 @@ class VoteModal extends Component {
             render: (
               <Form.Item
                 noStyle
-                name={"voteAmountInput"}
+                name="voteAmountInput"
                 rules={[
                   {
                     required: true,
@@ -270,7 +270,7 @@ class VoteModal extends Component {
                   },
                 ]}
                 validateTrigger={["onChange", "onBlur"]}
-                validateFirst={true} // todo: How to set it to default?
+                validateFirst // todo: How to set it to default?
               >
                 <Input className='vote-input' placeholder='Enter vote amount' />
               </Form.Item>

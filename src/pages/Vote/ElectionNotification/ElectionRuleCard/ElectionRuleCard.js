@@ -12,8 +12,8 @@ import { Button, Icon } from "antd";
 
 import "./ElectionRuleCard.style.less";
 import { FileTextFilled } from "@ant-design/icons";
-import Svg from "../../../../components/Svg/Svg";
 import { useNavigate } from "react-router";
+import Svg from "../../../../components/Svg/Svg";
 
 function ElectionRuleCard(props) {
   const navigate = useNavigate();

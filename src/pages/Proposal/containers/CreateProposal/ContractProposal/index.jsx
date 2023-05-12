@@ -17,7 +17,7 @@ import {
   Form,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { request } from "../../../../../common/request";
+import request from "../../../../../common/request";
 import { API_PATH } from "../../../common/constants";
 import ProposalSearch from "../../../components/ProposalSearch";
 import {

@@ -10,12 +10,12 @@ import { Tabs, Button } from "antd";
 
 import ReactEchartsCore from "echarts-for-react/lib/core";
 import echarts from "echarts/lib/echarts";
+import { AreaChartOutlined } from "@ant-design/icons";
 import { get } from "../../../../../utils";
 import {
   RESOURCE_CURRENCY_CHART_FETCH_INTERVAL,
   RESOURCE_TURNOVER,
 } from "../../../../../constants";
-import { AreaChartOutlined } from "@ant-design/icons";
 import "echarts/lib/chart/bar";
 import "echarts/lib/chart/line";
 import "echarts/lib/chart/candlestick";

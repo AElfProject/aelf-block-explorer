@@ -36,7 +36,7 @@ import constants, {
   STATUS_COLOR_MAP,
   PROPOSAL_STATUS_CAPITAL,
 } from "../../common/constants";
-import { request } from "../../../../common/request";
+import request from "../../../../common/request";
 import VoteData from "./VoteData";
 import VoteDetail from "./VoteDetail";
 import OrganizationCard from "./OrganizationCard";

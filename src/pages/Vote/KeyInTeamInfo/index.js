@@ -10,8 +10,8 @@ import getCurrentWallet from "@utils/getCurrentWallet";
 import { urlRegExp } from "@pages/Vote/constants";
 import { addUrlPrefix, removeUrlPrefix } from "@utils/formater";
 import "./index.less";
-import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
 import { LockTwoTone } from "@ant-design/icons";
+import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
 
 const { TextArea } = Input;
 
@@ -30,6 +30,7 @@ const clsPrefix = "candidate-apply-team-info-key-in";
 
 class KeyInTeamInfo extends PureComponent {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.socialKeys = ["Github", "Facebook", "Telegram", "Twitter", "Steemit"];

@@ -9,7 +9,7 @@ import { If, Then } from "react-if";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Card, Divider, Tooltip, Row, Col, Tag } from "antd";
 import { API_PATH } from "../../../common/constants";
-import { request } from "../../../../../common/request";
+import request from "../../../../../common/request";
 import config from "../../../../../common/config";
 import { base64ToHex } from "../../../common/utils";
 import { getContract } from "../../../../../common/utils";

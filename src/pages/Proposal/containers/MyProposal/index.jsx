@@ -20,7 +20,7 @@ import {
 } from "../../../../common/utils";
 import config from "../../../../common/config";
 import OrgAddress from "../../components/OrgAddress";
-import { request } from "../../../../common/request";
+import request from "../../../../common/request";
 
 import "./index.less";
 

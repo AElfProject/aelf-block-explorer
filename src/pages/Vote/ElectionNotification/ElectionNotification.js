@@ -7,7 +7,6 @@
  * @Description: the page of election and nodes's notification
  */
 import React, { PureComponent } from "react";
-import { withRouter } from "../../../routes/utils";
 import Decimal from "decimal.js";
 import { message } from "antd";
 import moment from "moment";
@@ -23,6 +22,7 @@ import {
 } from "@src/constants";
 import { aelf } from "@src/utils";
 import getStateJudgment from "@utils/getStateJudgment";
+import { withRouter } from "../../../routes/utils";
 import NodeTable from "./NodeTable";
 import ElectionRuleCard from "./ElectionRuleCard/ElectionRuleCard";
 import MyWalletCard from "./MyWalletCard/MyWalletCard";

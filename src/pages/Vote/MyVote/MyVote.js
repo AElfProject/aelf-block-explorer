@@ -4,13 +4,12 @@ import moment from 'moment';
 import StatisticalData from '@components/StatisticalData/';
 import { getAllTeamDesc, fetchPageableCandidateInformation } from '@api/vote';
 import publicKeyToAddress from '@utils/publicKeyToAddress';
-import { RANK_NOT_EXISTED_SYMBOL } from '@src/pages/Vote/constants';
+import { RANK_NOT_EXISTED_SYMBOL , ELF_DECIMAL, myVoteStatistData } from '@src/pages/Vote/constants';
 import { MY_VOTE_DATA_TIP } from '@src/constants';
 import { Button, Spin } from 'antd';
 import NightElfCheck from '../../../utils/NightElfCheck';
 import getLogin from '../../../utils/getLogin';
 import MyVoteRecord from './MyVoteRecords';
-import { ELF_DECIMAL, myVoteStatistData } from '../constants';
 import { getPublicKeyFromObject } from '../../../utils/getPublicKey';
 import addressFormat from '../../../utils/addressFormat';
 

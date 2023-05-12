@@ -10,7 +10,6 @@ import {
   types,
 } from 'mobx-state-tree';
 import keys from 'lodash/keys';
-import { Component } from 'react';
 import {
   TXSSTATUS,
 } from './constants';
@@ -41,7 +40,7 @@ export const BlocksStore = types.model('BlocksStore', {
     //     return sortBlocks(values(self.books))
     // },
     findBlockByHeight(height) {
-      return self.blocks.filter(t.block_height === height);
+      return self.blocks.filter(t => t.block_height === height);
     },
   }))
   .actions((self) => ({

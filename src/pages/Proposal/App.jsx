@@ -140,7 +140,7 @@ const App = () => {
         {isLogged && <TabPane tab='My Proposals' key='myProposals' />}
       </Tabs>
       <div className='proposal-container'>
-        <Outlet></Outlet>
+        <Outlet />
       </div>
     </div>
   );

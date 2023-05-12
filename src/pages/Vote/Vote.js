@@ -26,6 +26,9 @@ import contractsStore from "@store/contracts";
 import Decimal from "decimal.js";
 import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from "@src/constants";
 import getStateJudgment from "@utils/getStateJudgment";
+import getCurrentWallet from "@utils/getCurrentWallet";
+import publicKeyToAddress from "@utils/publicKeyToAddress";
+import { getAllTeamDesc } from "@api/vote";
 import MyVote from "./MyVote/MyVote";
 import ElectionNotification from "./ElectionNotification/ElectionNotification";
 import KeyInTeamInfo from "./KeyInTeamInfo";
@@ -43,9 +46,6 @@ import {
   FROM_ACTIVE_VOTES,
   routePaths,
 } from "./constants";
-import getCurrentWallet from "@utils/getCurrentWallet";
-import publicKeyToAddress from "@utils/publicKeyToAddress";
-import { getAllTeamDesc } from "@api/vote";
 import { getFormatedLockTime, handleCannotVote } from "./utils";
 import getAllTokens from "../../utils/getAllTokens";
 import { getPublicKeyFromObject } from "../../utils/getPublicKey";
@@ -201,7 +201,7 @@ class VoteContainer extends Component {
       console.error(e);
     }
 
-    let wallet = JSON.parse(localStorage.getItem("currentWallet"));
+    const wallet = JSON.parse(localStorage.getItem("currentWallet"));
     if (
       wallet &&
       new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
@@ -244,11 +244,13 @@ class VoteContainer extends Component {
       voteConfirmLoading: isLoading,
     });
   }
+
   setRedeemConfirmLoading(isLoading) {
     this.setState({
       redeemConfirmLoading: isLoading,
     });
   }
+
   setClaimLoading(isLoading) {
     this.setState({
       claimLoading: isLoading,
@@ -898,7 +900,7 @@ class VoteContainer extends Component {
   handleVoteFromWallet() {
     const { voteAmountInput, targetPublicKey, electionContractFromExt } =
       this.state;
-    let { lockTime } = this.state;
+    const { lockTime } = this.state;
 
     const payload = {
       candidatePubkey: targetPublicKey,
@@ -1404,7 +1406,7 @@ class VoteContainer extends Component {
               maskClosable
               keyboard
             >
-              {/*您的NightELF已锁定，请重新解锁*/}
+              {/* 您的NightELF已锁定，请重新解锁 */}
               You NightELF extension is locked. Please unlock it.
             </Modal>
 
