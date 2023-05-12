@@ -7,4 +7,5 @@
  * @Description: file content
  */
 // todo: Use the variable in less instead
+// eslint-disable-next-line import/prefer-default-export
 export const PRIMARY_COLOR = '#266CD3';

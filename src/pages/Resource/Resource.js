@@ -74,7 +74,7 @@ class Resource extends Component {
                 }
               });
             } else {
-              let wallet = JSON.parse(localStorage.getItem("currentWallet"));
+              const wallet = JSON.parse(localStorage.getItem("currentWallet"));
               if (
                 wallet &&
                 new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
@@ -251,7 +251,7 @@ class Resource extends Component {
     return (
       <div className='resource-body basic-container basic-container-white'>
         {!isPhone && downloadPlugins}
-        {/*{isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>}*/}
+        {/* {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>} */}
         {nightElf && resourceAElfWalletHtml}
         <div className='resource-money-market'>
           <ResourceMoneyMarket

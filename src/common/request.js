@@ -59,7 +59,7 @@ const makeRequestConfig = (url, params, { headers = {}, ...extraOptions }) => {
   } else if (config.method.toUpperCase() === 'POST') {
     config.data = data;
   } else {
-    throw new Error(`don\'t support http method ${config.method.toUpperCase()}`);
+    throw new Error(`don't support http method ${config.method.toUpperCase()}`);
   }
 
   return config;

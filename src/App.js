@@ -4,13 +4,13 @@
  */
 import React, { Suspense, useCallback, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { useLocation } from "react-use";
 import BrowserHeader from "./components/Header/Header";
 import HeaderBlank from "./components/Header/HeaderBlank";
 import BrowserFooter from "./components/Footer/Footer";
 import BrowserBreadcrumb from "./components/Breadcrumb/Breadcrumb";
 import Container from "./components/Container/Container";
 import { PageRouter } from "./routes/routes";
-import { useLocation } from "react-use";
 
 import "./App.less";
 

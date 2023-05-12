@@ -2,6 +2,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { lazy } from "react";
 import { RouterComponent } from "./App";
+
 const App = lazy(() => import("./App"));
 const CreateOrganization = lazy(() =>
   import("./containers/CreateOrganization")
@@ -35,7 +36,7 @@ export const ProposalRouter = [
           <RouterComponent
             target={<CreateProposal />}
             default='/proposal/proposals'
-          ></RouterComponent>
+           />
         ),
       },
       {
@@ -44,7 +45,7 @@ export const ProposalRouter = [
           <RouterComponent
             target={<CreateProposal />}
             default='/proposal/proposals'
-          ></RouterComponent>
+           />
         ),
       },
       {
@@ -53,7 +54,7 @@ export const ProposalRouter = [
           <RouterComponent
             target={<MyProposal />}
             default='/proposal/proposals'
-          ></RouterComponent>
+           />
         ),
       },
       {
@@ -62,7 +63,7 @@ export const ProposalRouter = [
           <RouterComponent
             target={<CreateOrganization />}
             default='/proposal/organizations'
-          ></RouterComponent>
+           />
         ),
       },
     ],

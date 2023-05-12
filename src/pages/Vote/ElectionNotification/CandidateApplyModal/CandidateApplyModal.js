@@ -17,8 +17,9 @@ import {
 } from "@pages/Vote/constants";
 import getCurrentWallet from "@utils/getCurrentWallet";
 import "./CandidateApplyModal.style.less";
-import addressFormat from "../../../../utils/addressFormat";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import addressFormat from "../../../../utils/addressFormat";
+
 const modalFormItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -73,6 +74,7 @@ function generateCandidateApplyForm() {
 
 class CandidateApplyModal extends PureComponent {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.handleOk = this.handleOk.bind(this);
@@ -157,7 +159,7 @@ class CandidateApplyModal extends PureComponent {
             name='admin'
             rules={rules}
           >
-            <TooltipInput></TooltipInput>
+            <TooltipInput />
           </Form.Item>
         </Form>
         <p className='tip-color'>{NEED_PLUGIN_AUTHORIZE_TIP}</p>

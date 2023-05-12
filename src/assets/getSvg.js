@@ -16,7 +16,7 @@ function readfile(filename) {
   return new Promise((resolve, reject) => {
     fs.readFile(path.join(svgDir, filename), 'utf8', (err, data) => {
       console.log('filename: >>>>>>>>>>>>>>.', filename);
-      data = data.replace(/<\?xml.*?\?>|<\!--.*?-->|<!DOCTYPE.*?>/g, '');
+      data = data.replace(/<\?xml.*?\?>|<!--.*?-->|<!DOCTYPE.*?>/g, '');
 
       // console.log('data: ', data);
       // data = data.replace(/<\?xml version="1.0" encoding="UTF-8"\?>/g, '');
@@ -55,7 +55,7 @@ function readSvgs() {
 
       Promise.all(files.map((filename) => readfile(filename)))
         .then((data) => resolve(data))
-        .catch((err) => reject(err));
+        .catch((error) => reject(error));
     });
   });
 }

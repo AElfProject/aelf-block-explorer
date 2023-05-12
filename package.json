@@ -16,7 +16,8 @@
     "analyze": "npm run clean && cross-env RELOAD_ENV=reload NODE_ENV=production webpack --config ./build/webpack.analyze.js",
     "clean": "rimraf dist/*",
     "commit": "git-cz",
-    "lint": "eslint --fix --ext .js --ext .jsx src/*"
+    "lint": "eslint --fix --ext .js --ext .jsx src/*",
+    "postinstall": "husky install"
   },
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
@@ -103,6 +104,8 @@
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.16.5",
     "@babel/preset-react": "^7.7.0",
+    "@commitlint/cli": "^17.6.3",
+    "@commitlint/config-conventional": "^17.6.3",
     "autoprefixer": "^9.7.1",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
@@ -125,7 +128,7 @@
     "git-cz": "^3.3.0",
     "glob": "^7.1.6",
     "html-webpack-plugin": "^5.5.0",
-    "husky": "^3.0.9",
+    "husky": "^8.0.3",
     "lerna": "^3.18.3",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",

@@ -15,10 +15,9 @@ import {
   ELF_PRECISION,
   TXSSTATUS,
   REAL_TIME_FETCH_INTERVAL,
-} from "@src/constants";
+ RESOURCE_REALTIME_RECORDS } from "@src/constants";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { get } from "../../../../../utils";
-import { RESOURCE_REALTIME_RECORDS } from "../../../../../constants";
 import "./RealTimeTransactions.less";
 
 const fetchLimit = 20;

@@ -10,15 +10,15 @@ import { SYMBOL, ELF_DECIMAL } from "@src/constants";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { APPNAME, resourceTokens } from "@config/config";
 import "./ResourceAElfWallet.less";
-import NightElfCheck from "../../../../utils/NightElfCheck";
-import getLogin from "../../../../utils/getLogin";
-import addressFormat from "../../../../utils/addressFormat";
-import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import {
   WalletOutlined,
   SyncOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import NightElfCheck from "../../../../utils/NightElfCheck";
+import getLogin from "../../../../utils/getLogin";
+import addressFormat from "../../../../utils/addressFormat";
+import { isPhoneCheck } from "../../../../utils/deviceCheck";
 
 export default class ResourceAElfWallet extends PureComponent {
   constructor(props) {
