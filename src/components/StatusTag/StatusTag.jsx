@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import IconFont from "../IconFont/index";
 
 import "./StatusTag.style.less";
+
 export default function StatusTag({ status }) {
   const statusObj = useMemo(
     () => ({

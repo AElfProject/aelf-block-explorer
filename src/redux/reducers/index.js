@@ -13,6 +13,7 @@ import { getOrganization } from "./organizationList";
 import { getProposalList } from "./proposalList";
 import { setModifyOrg } from "./proposalModify";
 import { getProposalSelectList } from "./proposalSelectList";
+
 export default combineReducers({
   common,
   organizations: getOrganization,

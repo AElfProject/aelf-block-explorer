@@ -16,7 +16,7 @@ import { fetchCurrentMinerPubkeyList } from "@api/consensus";
 import {
   FROM_WALLET,
   A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
-} from "@src/pages/Vote/constants";
+ ELF_DECIMAL } from "@src/pages/Vote/constants";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
 import getCurrentWallet from "@utils/getCurrentWallet";
 import {
@@ -24,7 +24,6 @@ import {
   computeUserRedeemableVoteAmountForOneCandidate,
 } from "@utils/voteUtils";
 import "./index.less";
-import { ELF_DECIMAL } from "../constants";
 import addressFormat from "../../../utils/addressFormat";
 
 const { Paragraph } = Typography;

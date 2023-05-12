@@ -57,6 +57,7 @@ function getColumns() {
 
 class RedeemModal extends PureComponent {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.handleOk = this.handleOk.bind(this);
