@@ -12,6 +12,7 @@ import { Tabs, Popover } from "antd";
 import { logIn, LOG_IN_ACTIONS } from "@redux/actions/proposalCommon";
 import { LOG_STATUS } from "@redux/common/constants";
 import walletInstance from "@redux/common/wallet";
+import "@portkey/did-ui-react/dist/assets/index.css";
 import LogButton from "./components/Log";
 import Plugin from "../../components/plugin";
 import Rules from "./components/Rules";

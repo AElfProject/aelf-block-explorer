@@ -14,6 +14,9 @@ ConfigProvider.setGlobalConfig({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
     },
   },
+  requestDefaults: {
+    baseURL: "/portkey",
+  },
   network: {
     defaultNetwork: NETWORK_TYPE,
     networkList: [

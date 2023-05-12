@@ -23,6 +23,28 @@
   },
   {
     "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "target": "http://192.168.66.240:15577",
+    "context": ["/portkey/api"],
+    "pathRewrite": { "/portkey/api": "/api" },
+    "headers": {
+      "Host": "192.168.66.240:15577"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "target": "http://192.168.67.172:8083",
+    "context": ["/portkey/AElfIndexer_DApp"],
+    "pathRewrite": { "/portkey/api": "/AElfIndexer_DApp" },
+    "headers": {
+      "Host": "192.168.67.172:8083"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
     "target": "https://explorer-test.aelf.io",
     "context": ["/api"],
     "headers": {

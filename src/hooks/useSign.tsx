@@ -5,7 +5,7 @@ import AElf from "aelf-sdk";
 import { useEffect, useRef, useState } from "react";
 import { CHAIN_ID } from "../../config/config";
 
-export const KEY_NAME = "currentWallet";
+export const KEY_NAME = "EXPLORER";
 
 const useSign = (Toast: any) => {
   const [loading, setLoading] = useState<boolean>(false);
