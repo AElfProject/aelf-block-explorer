@@ -92,7 +92,6 @@ const baseConfig = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -100,16 +99,6 @@ const baseConfig = {
           },
           "css-loader",
           "postcss-loader",
-        ],
-      },
-      {
-        test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {},
-          },
-          "css-loader",
         ],
       },
       {

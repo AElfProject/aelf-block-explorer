@@ -1,5 +1,5 @@
 import { ConfigProvider, SignIn, SignInInterface } from "@portkey/did-ui-react";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { CHAIN_ID, NETWORK_TYPE } from "../../../config/config";
 import { defaultCountryCodeConfig } from "../../common/constants";
 
@@ -29,11 +29,14 @@ ConfigProvider.setGlobalConfig({
   },
 });
 
-const SignInModal = () => {
+const SignInModal = ({ showLogin }) => {
   const signinRef = useRef<SignInInterface | null>(null);
   const setShowLogin = (show: boolean) => {
     signinRef.current?.setOpen(show);
   };
+  useEffect(() => {
+    setShowLogin(showLogin);
+  }, [showLogin]);
   return (
     <div>
       <SignIn

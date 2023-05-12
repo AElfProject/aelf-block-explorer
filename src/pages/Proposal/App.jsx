@@ -144,7 +144,7 @@ const App = () => {
       <div className="proposal-container">
         <Outlet />
       </div>
-      <SignInModal />
+      <SignInModal showLogin />
     </div>
   );
 };
