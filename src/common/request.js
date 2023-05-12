@@ -71,5 +71,7 @@ const makeRequestConfig = (url, params, { headers = {}, ...extraOptions }) => {
  * @param {Object} params 参数
  * @param {Object} extraOptions 额外的参数
  */
-export const request = (url, params, extraOptions = {}) => http.request(makeRequestConfig(url, params, extraOptions))
-  .then((res) => handleInvalidError(res), handleRequestError);
+export default function request(url, params, extraOptions = {}) {
+  return http.request(makeRequestConfig(url, params, extraOptions))
+    .then((res) => handleInvalidError(res), handleRequestError);
+}
