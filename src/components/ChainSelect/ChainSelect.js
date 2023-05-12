@@ -14,17 +14,16 @@ import { CHAIN_ID } from '../../constants';
 
 const { Option } = Select;
 export default class ChainSelect extends Component {
-  constructor() {
-    super();
-  }
 
   changeChain(chainId) {
-    const chainInfo = this.props.chainList.find((item) => item.chainId === chainId);
-    if (chainInfo.chainsLink) window.location = chainInfo.chainsLink;
+    const { chainList } = this.props;
+    const { chainsLink } = chainList.find((item) => item.chainId === chainId);
+    if (chainsLink) window.location = chainsLink;
   }
 
   renderOptions() {
-    const chainIdHTML = this.props.chainList.map((item) => (
+    const { chainList } = this.props;
+    const chainIdHTML = chainList.map((item) => (
       <Option
         className="common-select-option-wrapper chain-select-option"
         key={item.chainsLink + Math.random()}
