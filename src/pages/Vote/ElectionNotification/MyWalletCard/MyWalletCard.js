@@ -7,10 +7,9 @@
  * @Description: file content
  */
 import React, { PureComponent } from "react";
-import { Button, Icon, message, Spin } from "antd";
+import { Button, message, Spin } from "antd";
 import moment from "moment";
 import { SyncOutlined, WalletFilled, LogoutOutlined } from "@ant-design/icons";
-import "./MyWalletCard.less";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { ELF_DECIMAL, SYMBOL } from "@src/constants";
 import { APPNAME } from "@config/config";
@@ -20,9 +19,8 @@ import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
 import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
+import "./MyWalletCard.less";
 
-// @inject('contractsStore') @observer
-// todo: move the code fetch data on the upper component
 export default class MyWalletCard extends PureComponent {
   constructor(props) {
     super(props);
@@ -275,7 +273,7 @@ export default class MyWalletCard extends PureComponent {
                 appName: APPNAME,
                 address: currentWallet.address,
               },
-              (error, result) => {
+              () => {
                 // TODO: more refactor actions for login and logout
                 message.success(
                   "Logout successful, refresh after 3s.",
@@ -320,14 +318,14 @@ export default class MyWalletCard extends PureComponent {
       {
         type: "Claimable profit",
         value: (
-          <Dividends className='wallet-dividends' dividends={dividends.total} />
+          <Dividends className="wallet-dividends" dividends={dividends.total} />
         ),
         extra: (
           <Button
-            type='primary'
-            size='small'
-            shape='round'
-            className='my-wallet-card-body-wallet-content-withdraw-btn'
+            type="primary"
+            size="small"
+            shape="round"
+            className="my-wallet-card-body-wallet-content-withdraw-btn"
             onClick={handleDividendClick}
           >
             Claim
@@ -349,11 +347,11 @@ export default class MyWalletCard extends PureComponent {
     ];
 
     return (
-      <section className='my-wallet-card'>
+      <section className="my-wallet-card">
         <Spin spinning={loading}>
-          <div className='my-wallet-card-header'>
-            <h2 className='my-wallet-card-header-title'>
-              <WalletFilled className='card-header-icon' />
+          <div className="my-wallet-card-header">
+            <h2 className="my-wallet-card-header-title">
+              <WalletFilled className="card-header-icon" />
               My Wallet
             </h2>
             {!this.isPhone && currentWallet && currentWallet.name && (
@@ -364,7 +362,7 @@ export default class MyWalletCard extends PureComponent {
                 onClick={this.extensionLogout}
               >
                 Logout
-                <LogoutOutlined className='card-header-icon' />
+                <LogoutOutlined className="card-header-icon" />
               </Button>
             )}
             <Button
@@ -386,47 +384,47 @@ export default class MyWalletCard extends PureComponent {
               </Button>
             )}
           </div>
-          <div className='my-wallet-card-body-wallet-title'>
+          <div className="my-wallet-card-body-wallet-title">
             {isPhoneCheck() ? (
               <>
                 <div>
-                  <span className='my-wallet-card-body-wallet-title-key'>
+                  <span className="my-wallet-card-body-wallet-title-key">
                     Name:{" "}
                   </span>
-                  <span className='primary-color'>{currentWallet.name}</span>
+                  <span className="primary-color">{currentWallet.name}</span>
                 </div>
                 <div>
-                  <span className='my-wallet-card-body-wallet-title-key'>
+                  <span className="my-wallet-card-body-wallet-title-key">
                     Address:{" "}
                   </span>
-                  <span className='primary-color'>
+                  <span className="primary-color">
                     {currentWallet.formattedAddress}
                   </span>
                 </div>
               </>
             ) : (
               <>
-                <span className='my-wallet-card-body-wallet-title-key'>
+                <span className="my-wallet-card-body-wallet-title-key">
                   Name:{" "}
                 </span>
-                <span className='primary-color'>{currentWallet.name}</span>
-                <span className='my-wallet-card-body-wallet-title-blank' />
-                <span className='my-wallet-card-body-wallet-title-key'>
+                <span className="primary-color">{currentWallet.name}</span>
+                <span className="my-wallet-card-body-wallet-title-blank" />
+                <span className="my-wallet-card-body-wallet-title-key">
                   Address:{" "}
                 </span>
-                <span className='primary-color'>
+                <span className="primary-color">
                   {currentWallet.formattedAddress}
                 </span>
               </>
             )}
           </div>
-          <div className='my-wallet-card-body'>
-            <ul className='my-wallet-card-body-wallet-content'>
-              {walletItems.map((item, index) => (
-                <li key={index}>
-                  <span className='item-type'>{item.type}:</span>
-                  <span className='item-value'>{item.value}</span>
-                  <span className='item-extra'>{item.extra}</span>
+          <div className="my-wallet-card-body">
+            <ul className="my-wallet-card-body-wallet-content">
+              {walletItems.map((item) => (
+                <li key={item.type}>
+                  <span className="item-type">{item.type}:</span>
+                  <span className="item-value">{item.value}</span>
+                  <span className="item-extra">{item.extra}</span>
                 </li>
               ))}
             </ul>

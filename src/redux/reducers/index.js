@@ -13,6 +13,7 @@ import { getOrganization } from "./organizationList";
 import { getProposalList } from "./proposalList";
 import { setModifyOrg } from "./proposalModify";
 import { getProposalSelectList } from "./proposalSelectList";
+import { handleContract } from "./voteContracts.ts";
 
 export default combineReducers({
   common,
@@ -20,4 +21,5 @@ export default combineReducers({
   proposals: getProposalList,
   proposalSelect: getProposalSelectList,
   proposalModify: setModifyOrg,
+  voteContracts: handleContract,
 });
