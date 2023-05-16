@@ -4,20 +4,9 @@
  * trading - sell
  */
 
-import React, { Component } from 'react';
-import debounce from 'lodash.debounce';
-import {
-  Input,
-  InputNumber,
-  Slider,
-  message,
-  Spin,
-  Form,
-  Button,
-} from 'antd';
-import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
-import getFees from '../../../../../../utils/getFees';
-import './ResourceSell.less';
+import React, { Component } from "react";
+import debounce from "lodash.debounce";
+import { Input, InputNumber, Slider, message, Spin, Form, Button } from "antd";
 import {
   SYMBOL,
   OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP,
@@ -27,20 +16,17 @@ import {
   ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP,
   CHECK_BALANCE_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
-} from '@src/constants';
-import { thousandsCommaWithDecimal } from '@utils/formater';
-import { regPos } from '@utils/regExps';
-import { getMagneticValue } from '@utils/styleUtils';
-import {
-  multiToken,
-} from '../../../../../../../config/config';
-import NightElfCheck from '../../../../../../utils/NightElfCheck';
-import getLogin from '../../../../../../utils/getLogin';
-import { isPhoneCheck } from '../../../../../../utils/deviceCheck';
+} from "@src/constants";
+import { thousandsCommaWithDecimal } from "@utils/formater";
+import { regPos } from "@utils/regExps";
+import { getMagneticValue } from "@utils/styleUtils";
+import getEstimatedValueRes from "../../../../../../utils/getEstimatedValueRes";
+import getFees from "../../../../../../utils/getFees";
+import "./ResourceSell.less";
+import { isPhoneCheck } from "../../../../../../utils/deviceCheck";
+import walletInstance from "../../../../../../redux/common/wallet";
 
-// const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
-const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
-const status = { ERROR: 'error' };
+const status = { ERROR: "error" };
 
 class ResourceSell extends Component {
   constructor(props) {
@@ -54,12 +40,11 @@ class ResourceSell extends Component {
       getSlideMarks: null,
       noCanInput: true,
       toSell: false,
-
       operateNumToSmall: false,
       // todo: put the validateStatus with the validated value
       validate: {
         validateStatus: null,
-        help: '',
+        help: "",
       },
       sellBtnLoading: false,
     };
@@ -67,7 +52,7 @@ class ResourceSell extends Component {
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
     this.onChangeSlide = this.onChangeSlide.bind(this);
     this.getSellModalShow = this.getSellModalShow.bind(this);
-    this.NightELFCheckAndShowSellModal = this.NightELFCheckAndShowSellModal.bind(this);
+    this.checkAndShowSellModal = this.checkAndShowSellModal.bind(this);
     this.getElfValue = debounce(this.getElfValue, 500);
   }
 
@@ -81,12 +66,6 @@ class ResourceSell extends Component {
     if (props.contracts !== state.contracts) {
       return {
         contracts: props.contracts,
-      };
-    }
-
-    if (props.nightElf !== state.nightElf) {
-      return {
-        nightElf: props.nightElf,
       };
     }
 
@@ -139,15 +118,14 @@ class ResourceSell extends Component {
     this.regionLine = [0, region, region * 2, region * 3, balance];
     const marks = {};
     this.regionLine.forEach((item) => {
-      marks[item] = '';
+      marks[item] = "";
     });
     return marks;
   }
 
   getSlideMarksHTML() {
-    const {
-      account, currentResourceIndex, sellEstimateValueLoading, sellNum,
-    } = this.props;
+    const { account, currentResourceIndex, sellEstimateValueLoading, sellNum } =
+      this.props;
     const { purchaseQuantity, sellBtnLoading } = this.state;
     const disabled = false;
     const { balance } = account.resourceTokens[currentResourceIndex];
@@ -166,18 +144,19 @@ class ResourceSell extends Component {
   }
 
   onChangeResourceValue(input) {
-    input = input.target && (input.target.value || +input.target.value === 0)
-      ? input.target.value : input;
+    input =
+      input.target && (input.target.value || +input.target.value === 0)
+        ? input.target.value
+        : input;
 
-    const {
-      handleModifyTradingState, sellNum, account, currentResourceIndex,
-    } = this.props;
+    const { handleModifyTradingState, sellNum, account, currentResourceIndex } =
+      this.props;
     this.inputMax = account.resourceTokens[currentResourceIndex].balance;
     this.setState({
-      purchaseQuantity: isNaN(+input) ? 0 : +input,
+      purchaseQuantity: Number.isNaN(+input) ? 0 : +input,
       validate: {
         validateStatus: null,
-        help: '',
+        help: "",
       },
     });
 
@@ -197,8 +176,8 @@ class ResourceSell extends Component {
       handleModifyTradingState({
         sellNum: null,
       });
-      if (input !== '' && +input !== 0) {
-        message.error('Only support positive float or integer.');
+      if (input !== "" && +input !== 0) {
+        message.error("Only support positive float or integer.");
       }
       return;
     }
@@ -221,12 +200,12 @@ class ResourceSell extends Component {
   getElfValue(value) {
     const { handleModifyTradingState, currentResourceType } = this.props;
     const { tokenConverterContract, tokenContract } = this.state;
-    if (value === '') {
+    if (value === "") {
       this.setState({
         ELFValue: 0,
       });
       handleModifyTradingState({
-        sellNum: '',
+        sellNum: "",
       });
       return;
     }
@@ -234,41 +213,40 @@ class ResourceSell extends Component {
       currentResourceType,
       value,
       tokenConverterContract,
-      tokenContract,
-    ).then((result) => {
-      // todo: handle the case BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP
-      const amountToReceive = result;
-      const fee = getFees(amountToReceive);
-      const amountToReceiveMinusFee = amountToReceive - fee;
-      if (amountToReceiveMinusFee > 0) {
-        handleModifyTradingState({
-          sellEstimateValueLoading: false,
-          sellFee: fee,
-          SellELFValue: amountToReceiveMinusFee,
-        });
-        this.setState({
-          ELFValue: amountToReceiveMinusFee,
-          toSell: true,
-          operateNumToSmall: false,
-        });
-      } else {
-        message.warning(
-          OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP,
-        );
-        this.setState({
-          operateNumToSmall: true,
-        });
-        handleModifyTradingState({
-          // buyNum: null,
-          SellELFValue: 0,
-          sellFee: 0,
-          sellEstimateValueLoading: false,
-        });
-      }
-    })
+      tokenContract
+    )
+      .then((result) => {
+        // todo: handle the case BUY_OR_SELL_MORE_THAN_THE_INVENTORY_TIP
+        const amountToReceive = result;
+        const fee = getFees(amountToReceive);
+        const amountToReceiveMinusFee = amountToReceive - fee;
+        if (amountToReceiveMinusFee > 0) {
+          handleModifyTradingState({
+            sellEstimateValueLoading: false,
+            sellFee: fee,
+            SellELFValue: amountToReceiveMinusFee,
+          });
+          this.setState({
+            ELFValue: amountToReceiveMinusFee,
+            toSell: true,
+            operateNumToSmall: false,
+          });
+        } else {
+          message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
+          this.setState({
+            operateNumToSmall: true,
+          });
+          handleModifyTradingState({
+            // buyNum: null,
+            SellELFValue: 0,
+            sellFee: 0,
+            sellEstimateValueLoading: false,
+          });
+        }
+      })
       .catch((err) => {
-        message.error(err.message || err.msg || 'Error happened');
-        console.error('err', err);
+        message.error(err.message || err.msg || "Error happened");
+        console.error("err", err);
       });
   }
 
@@ -282,37 +260,38 @@ class ResourceSell extends Component {
     this.onChangeResourceValue(e);
   }
 
-  // TODO: in ResourceBuy, there are same codes.
-  NightELFCheckAndShowSellModal() {
-    NightElfCheck.getInstance().check.then((ready) => {
-      const nightElf = NightElfCheck.getAelfInstanceByExtension();
-      getLogin(nightElf, {}, (result) => {
-        this.props.loginAndInsertKeypairs(true, false);
-        if (result.error) {
-          if (result.error === 200010) {
-            message.warn('Please Login.');
-          } else {
-            message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.');
-          }
-        } else {
-          this.getSellModalShow();
+  checkAndShowSellModal() {
+    walletInstance.isExist.then(
+      async () => {
+        const instance = walletInstance.proxy.elfInstance;
+        if (typeof instance.getExtensionInfo === "function") {
+          const info = await walletInstance.getExtensionInfo();
+          this.setState({
+            isPluginLock: info.locked,
+          });
         }
-      });
-    }).catch(() => {
-      message.warn('Please download and install NightELF browser extension.');
-    });
+        try {
+          this.props.loginAndInsertKeypairs(false);
+          this.getSellModalShow();
+        } catch ({ error, errorMessage }) {
+          localStorage.removeItem("currentWallet");
+          const msg =
+            error === 200010
+              ? "Please Login."
+              : errorMessage.message ||
+                "Please check your NightELF browser extension.";
+          message.warn(msg);
+        }
+      },
+      () => {
+        message.warn("Please download and install NightELF browser extension.");
+      }
+    );
   }
 
   getSellModalShow() {
     const { sellNum, currentResourceIndex, account } = this.props;
-    const {
-      currentWallet,
-      contracts,
-      toSell,
-      appName,
-      nightElf,
-      operateNumToSmall,
-    } = this.state;
+    const { currentWallet, contracts, toSell, operateNumToSmall } = this.state;
 
     this.setState({
       sellBtnLoading: true,
@@ -320,7 +299,7 @@ class ResourceSell extends Component {
 
     if (!regPos.test(sellNum) || sellNum === 0) {
       message.error(
-        `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`,
+        `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`
       );
       this.setState({
         sellBtnLoading: false,
@@ -359,14 +338,15 @@ class ResourceSell extends Component {
     const wallet = {
       address: currentWallet.address,
     };
-    nightElf.chain.contractAt(contracts.multiToken, wallet).then((contract) => {
+    const instance = walletInstance.proxy.elfInstance;
+    instance.chain.contractAt(contracts.multiToken, wallet).then((contract) => {
       if (contract) {
         this.getApprove(contract);
       }
     });
   }
 
-  getApprove(result, time = 0) {
+  getApprove(result) {
     const { handleModifyTradingState } = this.props;
     // console.log('getApprove sell result: ', result);
     if (!result) {
@@ -381,20 +361,19 @@ class ResourceSell extends Component {
         this.setState({
           sellBtnLoading: false,
         });
-      },
+      }
     );
   }
 
   render() {
     const {
-      sellEstimateValueLoading, sellNum, currentResourceIndex, currentResourceType, account,
+      sellEstimateValueLoading,
+      sellNum,
+      currentResourceIndex,
+      currentResourceType,
+      account,
     } = this.props;
-    const {
-      purchaseQuantity,
-      ELFValue,
-      validate,
-      sellBtnLoading,
-    } = this.state;
+    const { purchaseQuantity, ELFValue, validate, sellBtnLoading } = this.state;
 
     this.inputMax = account.resourceTokens[currentResourceIndex].balance;
 
@@ -407,9 +386,7 @@ class ResourceSell extends Component {
         <div className="trading">
           <div className="trading-input">
             <div className="resource-action-block">
-              <span className="resource-action-title">
-                Selling quantity:
-              </span>
+              <span className="resource-action-title">Selling quantity:</span>
               <Form.Item
                 className="resource-action-input"
                 validateStatus={validate.validateStatus}
@@ -422,8 +399,10 @@ class ResourceSell extends Component {
                     onChange={this.onChangeResourceValue}
                     placeholder={`Enter ${currentResourceType} amount`}
                     // todo: use parser to set the max decimal to 8, e.g. using parseFloat
-                    parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                    formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
                     disabled={!this.inputMax}
                     min={0}
                     max={this.inputMax}
@@ -432,7 +411,7 @@ class ResourceSell extends Component {
                   <input
                     className="mobile-trading-input"
                     placeholder={`Enter ${currentResourceType} amount`}
-                    value={sellNum || ''}
+                    value={sellNum || ""}
                     type="number"
                     onChange={this.onChangeResourceValue}
                     disabled={!this.inputMax}
@@ -444,49 +423,45 @@ class ResourceSell extends Component {
             </div>
             <div className="ELF-value">
               <Spin spinning={sellEstimateValueLoading}>
-                ≈
-                {' '}
-                {sellNum && ELFValue ? thousandsCommaWithDecimal(ELFValue) : '0.00'}
-                {' '}
+                ≈{" "}
+                {sellNum && ELFValue
+                  ? thousandsCommaWithDecimal(ELFValue)
+                  : "0.00"}{" "}
                 {SYMBOL}
               </Spin>
             </div>
             <div className="resource-action-block">
-              <span className="resource-action-title">
-                Available:
-              </span>
-              {
-                isPhoneCheck()
-                  ? (
-                    <div className="resource-action-input">
-                      {this.inputMax ? thousandsCommaWithDecimal(this.inputMax) : '-'}
-                      {' '}
-                      {currentResourceType}
-                    </div>
-                  )
-                  : (
-                    <Input
-                      className="resource-action-input"
-                      value={thousandsCommaWithDecimal(this.inputMax)}
-                      placeholder={thousandsCommaWithDecimal(this.inputMax)}
-                      addonAfter={currentResourceType}
-                      disabled
-                    />
-                  )
-              }
+              <span className="resource-action-title">Available:</span>
+              {isPhoneCheck() ? (
+                <div className="resource-action-input">
+                  {this.inputMax
+                    ? thousandsCommaWithDecimal(this.inputMax)
+                    : "-"}{" "}
+                  {currentResourceType}
+                </div>
+              ) : (
+                <Input
+                  className="resource-action-input"
+                  value={thousandsCommaWithDecimal(this.inputMax)}
+                  placeholder={thousandsCommaWithDecimal(this.inputMax)}
+                  addonAfter={currentResourceType}
+                  disabled
+                />
+              )}
             </div>
           </div>
           <div className="trading-slide">
             {slideHTML}
             <div className="ElF-value">
-              {sellNum && purchaseQuantity ? thousandsCommaWithDecimal(purchaseQuantity) : '0.00'}
-              {' '}
+              {sellNum && purchaseQuantity
+                ? thousandsCommaWithDecimal(purchaseQuantity)
+                : "0.00"}{" "}
               {currentResourceType}
             </div>
           </div>
           <Button
             className="trading-button sell-btn"
-            onClick={this.NightELFCheckAndShowSellModal}
+            onClick={this.checkAndShowSellModal}
             loading={sellBtnLoading || sellEstimateValueLoading}
             disabled={validate.validateStatus === status.ERROR}
           >

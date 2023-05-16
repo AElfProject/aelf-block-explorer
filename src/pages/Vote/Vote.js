@@ -10,12 +10,11 @@ import React, { Component } from "react";
 import { Modal, Form, Input, message, Menu } from "antd";
 import { Route, Routes } from "react-router-dom";
 import moment from "moment";
-import NightElfCheck from "@utils/NightElfCheck";
 import { isPhoneCheck } from "@utils/deviceCheck";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import getContractAddress from "@utils/getContractAddress";
 import DownloadPlugins from "@components/DownloadPlugins/DownloadPlugins";
-import config, { APPNAME, schemeIds } from "@config/config";
+import config, { schemeIds } from "@config/config";
 import walletInstance from "@redux/common/wallet";
 import { connect } from "react-redux";
 import { aelf } from "@src/utils";
@@ -46,9 +45,7 @@ import {
 } from "./constants";
 import { getFormatedLockTime } from "./utils";
 import getAllTokens from "../../utils/getAllTokens";
-import { getPublicKeyFromObject } from "../../utils/getPublicKey";
 import addressFormat from "../../utils/addressFormat";
-import getLogin from "../../utils/getLogin";
 import { withRouter } from "../../routes/utils";
 
 const voteConfirmFormItemLayout = {
@@ -311,38 +308,6 @@ class VoteContainer extends Component {
           showDownloadPlugin: true,
         });
       });
-    // NightElfCheck.getInstance()
-    //   .check.then((item) => {
-    //     if (item) {
-    //       const nightElf = NightElfCheck.getAelfInstanceByExtension();
-    //       console.log(nightElf, "nightElf");
-    //       if (nightElf) {
-    //         if (typeof nightElf.getExtensionInfo === "function") {
-    //           nightElf.getExtensionInfo().then((info) => {
-    //             this.setState({
-    //               isPluginLock: info.locked,
-    //             });
-    //             if (!info.locked) {
-    //               this.getChainStatus(nightElf);
-    //             } else {
-    //               localStorage.removeItem("currentWallet");
-    //             }
-    //           });
-    //         } else {
-    //           this.getChainStatus(nightElf);
-    //         }
-
-    //         this.setState({
-    //           nightElf,
-    //         });
-    //       }
-    //     }
-    //   })
-    //   .catch(() => {
-    //     this.setState({
-    //       showDownloadPlugin: true,
-    //     });
-    //   });
   }
 
   getChainStatus() {
@@ -914,7 +879,6 @@ class VoteContainer extends Component {
       shouldRefreshMyWallet: true,
       shouldRefreshElectionNotifiStatis: true,
       voteConfirmLoading: false,
-      redeemConfirmLoading: false,
     });
   }
 

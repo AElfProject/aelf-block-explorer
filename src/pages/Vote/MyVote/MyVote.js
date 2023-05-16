@@ -11,10 +11,7 @@ import {
 } from "@src/pages/Vote/constants";
 import { MY_VOTE_DATA_TIP } from "@src/constants";
 import { Button, Spin } from "antd";
-import NightElfCheck from "../../../utils/NightElfCheck";
-import getLogin from "../../../utils/getLogin";
 import MyVoteRecord from "./MyVoteRecords";
-import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
 import addressFormat from "../../../utils/addressFormat";
 
 import "./MyVote.style.less";

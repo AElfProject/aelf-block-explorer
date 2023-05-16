@@ -3,29 +3,24 @@
  * @author zhouminghui
  */
 
-import React, { PureComponent } from 'react';
-import {
-  Row, Col, Spin, message, Button,
-} from 'antd';
-import {
-  CHAIN_ID,
-} from '@config/config';
-import { thousandsCommaWithDecimal, centerEllipsis } from '@utils/formater';
-import { SYMBOL, ELF_DECIMAL } from '@src/constants';
-import getStateJudgment from '../../../../../../utils/getStateJudgment';
-import { aelf } from '../../../../../../utils';
+import React, { PureComponent } from "react";
+import { Row, Col, Spin, message, Button } from "antd";
+import { CHAIN_ID } from "@config/config";
+import { thousandsCommaWithDecimal } from "@utils/formater";
+import { SYMBOL, ELF_DECIMAL } from "@src/constants";
+import getStateJudgment from "../../../../../../utils/getStateJudgment";
+import { aelf } from "../../../../../../utils";
+import walletInstance from "../../../../../../redux/common/wallet";
 
 export default class ResourceSellModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentWallet: this.props.currentWallet,
       sellNum: this.props.sellNum,
       tokenConverterContract: this.props.tokenConverterContract,
       tokenContract: this.props.tokenContract,
       loading: false,
       ELFValue: null,
-      nightElf: this.props.nightElf,
       contracts: this.props.contracts,
     };
 
@@ -33,15 +28,15 @@ export default class ResourceSellModal extends PureComponent {
   }
 
   getSellRes() {
-    const { account, sellFee } = this.props;
-    const { currentWallet, nightElf, contracts } = this.state;
+    const { account, sellFee, currentWallet } = this.props;
+    const { contracts } = this.state;
 
     this.props.maskClosable();
     // todo: maybe we can move the judge to component ResourceSell
     // todo: handle the edge case that account.balance is just equal to the sellFee or nearly equal
     if (account.balance <= sellFee) {
       message.warning(
-        `Your ${SYMBOL} balance is insufficient to pay the service charge.`,
+        `Your ${SYMBOL} balance is insufficient to pay the service charge.`
       );
       return;
     }
@@ -51,66 +46,69 @@ export default class ResourceSellModal extends PureComponent {
     this.setState({
       loading: true,
     });
-    nightElf.chain.contractAt(contracts.tokenConverter, wallet).then((result) => {
-      // console.log('contractAt(contracts.tokenConverter: ', wallet);
-      if (result) {
-        this.requestSell(result);
-      }
-    }).catch((error) => {
-      console.log('Sell contracts.tokenConverter init', error);
-    });
+    const instance = walletInstance.proxy.elfInstance;
+    instance.chain
+      .contractAt(contracts.tokenConverter, wallet)
+      .then((result) => {
+        if (result) {
+          this.requestSell(result);
+        }
+      })
+      .catch((error) => {
+        console.log("Sell contracts.tokenConverter init", error);
+      });
   }
 
-  requestSell(result) {
+  requestSell(tokenConverterRes) {
     const { currentResourceType, handleModifyTradingState } = this.props;
     const { sellNum } = this.state;
     const payload = {
       symbol: currentResourceType,
       amount: +(sellNum * ELF_DECIMAL),
     };
-    result.Sell(payload).then((result) => {
-      if (result.error) {
-        this.setState({
-          loading: false,
-        });
-        message.error(result.errorMessage.message, 3);
-        this.props.handleCancel();
-        return;
-      }
-
-      this.setState({
-        loading: true,
-      });
-      const transactionId = result.result
-        ? result.result.TransactionId
-        : result.TransactionId;
-      setTimeout(() => {
-        aelf.chain.getTxResult(transactionId, (error, result) => {
-          if (!result) {
-            return;
-          }
-          getStateJudgment(result.Status, transactionId);
-          this.props.onRefresh();
+    tokenConverterRes
+      .Sell(payload)
+      .then((result) => {
+        if (result.error) {
           this.setState({
             loading: false,
           });
-          handleModifyTradingState({
-            sellNum: null,
-            // buyFee: 0,
-            // buyElfValue: 0,
-            // buySliderValue: 0
-          });
+          message.error(result.errorMessage.message, 3);
           this.props.handleCancel();
-          this.props.unMaskClosable();
+          return;
+        }
+
+        this.setState({
+          loading: true,
         });
-      }, 4000);
-    }).catch((error) => {
-      this.setState({
-        loading: false,
+        const transactionId = result.result
+          ? result.result.TransactionId
+          : result.TransactionId;
+        setTimeout(() => {
+          aelf.chain.getTxResult(transactionId, (error, txRes) => {
+            if (!txRes) {
+              return;
+            }
+            getStateJudgment(txRes.Status, transactionId);
+            this.props.onRefresh();
+            this.setState({
+              loading: false,
+            });
+            handleModifyTradingState({
+              sellNum: null,
+            });
+            this.props.handleCancel();
+            this.props.unMaskClosable();
+          });
+        }, 4000);
+      })
+      .catch((error) => {
+        this.setState({
+          loading: false,
+        });
+        message.fail("Sell failed, please try again");
+        console.error("result.Sell error", error);
       });
-      message.fail('Sell failed, please try again');
-      console.log('result.Sell error', error);
-    });
   }
 
   render() {
@@ -120,15 +118,14 @@ export default class ResourceSellModal extends PureComponent {
       sellEstimateValueLoading,
       sellNum,
       currentResourceType,
+      currentWallet,
     } = this.props;
-    const { currentWallet, loading } = this.state;
+    const { loading } = this.state;
 
     return (
       <div className="modal resource-modal">
         <Row className="modal-form-item">
-          <Col span={6}>
-            Address
-          </Col>
+          <Col span={6}>Address</Col>
           <Col
             span={18}
             className="text-ellipse"
@@ -138,21 +135,11 @@ export default class ResourceSellModal extends PureComponent {
           </Col>
         </Row>
         <Row className="modal-form-item">
-          <Col span={6}>
-            Sell
-            {' '}
-            {currentResourceType}
-            {' '}
-            Quantity
-          </Col>
+          <Col span={6}>Sell {currentResourceType} Quantity</Col>
           <Col span={18}>{thousandsCommaWithDecimal(sellNum)}</Col>
         </Row>
         <Row className="modal-form-item">
-          <Col span={6}>
-            Sell
-            {' '}
-            {SYMBOL}
-          </Col>
+          <Col span={6}>Sell {SYMBOL}</Col>
           <Col span={18}>
             <Spin spinning={sellEstimateValueLoading}>
               {thousandsCommaWithDecimal(SellELFValue)}
@@ -160,11 +147,7 @@ export default class ResourceSellModal extends PureComponent {
           </Col>
         </Row>
         <div className="service-charge">
-          *Service Charge:
-          {' '}
-          {thousandsCommaWithDecimal(sellFee)}
-          {' '}
-          {SYMBOL}
+          *Service Charge: {thousandsCommaWithDecimal(sellFee)} {SYMBOL}
         </div>
         <Button
           className="modal-button sell-btn"

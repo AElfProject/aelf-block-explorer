@@ -15,10 +15,9 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import "./ResourceAElfWallet.less";
-import NightElfCheck from "../../../../utils/NightElfCheck";
-import getLogin from "../../../../utils/getLogin";
 import addressFormat from "../../../../utils/addressFormat";
 import { isPhoneCheck } from "../../../../utils/deviceCheck";
+import walletInstance from "../../../../redux/common/wallet";
 
 export default class ResourceAElfWallet extends PureComponent {
   constructor(props) {
@@ -39,12 +38,8 @@ export default class ResourceAElfWallet extends PureComponent {
     this.refreshWalletInfo();
   }
 
-  // TODO: 组件要尽量无状态，这是个反模式
-  // 数据都从父组件传递进来。
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps) {
     const { currentWallet, tokenContract } = this.props;
-    // console.log('refreshWalletInfo update: ', tokenContract, currentWallet, prevProps.currentWallet, prevProps.tokenContract);
-
     if (currentWallet && tokenContract && !prevProps.tokenContract) {
       this.refreshWalletInfo();
     } else if (
@@ -85,41 +80,47 @@ export default class ResourceAElfWallet extends PureComponent {
   }
 
   extensionLogout() {
-    const nightElf = NightElfCheck.getAelfInstanceByExtension();
-    getLogin(
-      nightElf,
-      { file: "MyVote.js" },
+    this.setState({
+      loading: true,
+    });
+    const { currentWallet } = this.props;
+    walletInstance.proxy.elfInstance.chain.getChainStatus().then(
       (result) => {
-        console.log("extensionLogout getLogin: ", result);
-        if (result.error && result.error === 200005) {
-          message.warn(result.message || result.errorMessage.message);
-        } else {
-          const { currentWallet } = this.props;
-          nightElf
-            .logout(
-              {
-                appName: APPNAME,
-                address: currentWallet.address,
-              },
+        if (result) {
+          const isPluginLock = result.error === 200005;
+          if (isPluginLock) {
+            message.warn(result.message || result.errorMessage.message);
+          } else {
+            walletInstance.logout(currentWallet.address).then(
               () => {
-                localStorage.removeItem("currentWallet");
-                this.refreshWalletInfo();
-                // TODO: more refactor actions for login and logout
                 message.success(
                   "Logout successful, refresh after 3s.",
                   3,
                   () => {
+                    localStorage.removeItem("currentWallet");
                     window.location.reload();
                   }
                 );
+              },
+              () => {
+                this.setState({
+                  loading: false,
+                });
+                message.error("logout failed");
               }
-            )
-            .catch((error) => {
-              message.error("logout failed");
-            });
+            );
+          }
+          this.setState({
+            loading: false,
+          });
         }
       },
-      false
+      (error) => {
+        this.setState({
+          loading: false,
+        });
+        console.err("walletInstance.chain.getChainStatus:error", error);
+      }
     );
   }
 
@@ -134,7 +135,6 @@ export default class ResourceAElfWallet extends PureComponent {
     getCurrentBalance(balance);
   };
 
-  // 获取资源币数量
   getCurrentWalletResource = async () => {
     const { tokenContract, currentWallet, getResource } = this.props;
     const owner = currentWallet.address || currentWallet;
@@ -161,8 +161,7 @@ export default class ResourceAElfWallet extends PureComponent {
       title,
       currentWallet,
       tokenContract,
-      // eslint-disable-next-line no-shadow
-      resourceTokens,
+      resourceTokens: tokens,
       balance,
       loginAndInsertKeyPairs,
     } = this.props;
@@ -263,7 +262,7 @@ export default class ResourceAElfWallet extends PureComponent {
                     {thousandsCommaWithDecimal(hasLogin ? balance : "-")} ELF
                   </span>
                 </Col>
-                {resourceTokens.map((v, index) => (
+                {tokens.map((v, index) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <Col lg={12} xs={24} sm={12} key={index}>
                     <span className="resource-wallet-info-name">

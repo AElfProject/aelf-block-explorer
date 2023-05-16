@@ -10,17 +10,16 @@ import { message } from "antd";
 import { connect } from "react-redux";
 
 import { aelf } from "../../utils";
-import { APPNAME, resourceTokens } from "../../../config/config";
+import { resourceTokens } from "../../../config/config";
 import DownloadPlugins from "../../components/DownloadPlugins/DownloadPlugins";
 import ResourceAElfWallet from "./components/ResourceAElfWallet/ResourceAElfWallet";
-import NightElfCheck from "../../utils/NightElfCheck";
 import getContractAddress from "../../utils/getContractAddress";
 import ResourceMoneyMarket from "./components/ResourceMoneyMarket/ResourceMoneyMarket";
 import getLogin from "../../utils/getLogin";
 import { isPhoneCheck } from "../../utils/deviceCheck";
 import "./Resource.less";
+import walletInstance from "../../redux/common/wallet";
 
-const appName = APPNAME;
 class Resource extends Component {
   constructor(props) {
     super(props);
@@ -54,46 +53,50 @@ class Resource extends Component {
       }
       this.getContract(result);
     });
-
-    NightElfCheck.getInstance()
-      .check.then((item) => {
+    walletInstance.isExist.then(
+      (item) => {
         if (item) {
-          const nightElf = NightElfCheck.getAelfInstanceByExtension();
-          if (nightElf) {
-            this.setState({
-              nightElf,
-            });
-            if (nightElf.getExtensionInfo) {
-              nightElf.getExtensionInfo().then((info) => {
+          const instance = walletInstance.proxy.elfInstance;
+          if (
+            typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+            "function"
+          ) {
+            walletInstance.getExtensionInfo().then(
+              (info) => {
                 if (!info.locked) {
-                  nightElf.chain.getChainStatus().then((result) => {
+                  instance.chain.getChainStatus().then((result) => {
                     this.loginAndInsertKeyPairs(result);
                   });
                 } else {
                   localStorage.removeItem("currentWallet");
                 }
-              });
-            } else {
-              const wallet = JSON.parse(localStorage.getItem("currentWallet"));
-              if (
-                wallet &&
-                new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
-              ) {
-                nightElf.chain.getChainStatus().then((result) => {
-                  this.loginAndInsertKeyPairs(result);
-                });
-              } else {
-                localStorage.removeItem("currentWallet");
+              },
+              () => {
+                const wallet = JSON.parse(
+                  localStorage.getItem("currentWallet")
+                );
+                if (
+                  wallet &&
+                  new Date().valueOf() - Number(wallet.timestamp) <
+                    15 * 60 * 1000
+                ) {
+                  instance.chain.getChainStatus().then((result) => {
+                    this.loginAndInsertKeyPairs(result);
+                  });
+                } else {
+                  localStorage.removeItem("currentWallet");
+                }
               }
-            }
+            );
           }
         }
-      })
-      .catch((error) => {
+      },
+      () => {
         this.setState({
           showDownloadPlugins: true,
         });
-      });
+      }
+    );
   }
 
   getContract(result) {
@@ -115,31 +118,19 @@ class Resource extends Component {
     );
   }
 
-  loginAndInsertKeyPairs = (useLock = true, toastMessage = true) => {
-    const { nightElf } = this.state;
-
-    getLogin(
-      nightElf,
-      {},
-      (result) => {
-        if (result && result.error === 0) {
-          localStorage.setItem(
-            "currentWallet",
-            JSON.stringify({
-              ...JSON.parse(result.detail),
-              timestamp: new Date().valueOf(),
-            })
-          );
-          const wallet = JSON.parse(result.detail);
-          nightElf.chain.getChainStatus(() => {
-            this.getNightElfKeyPair(wallet);
-          });
-          toastMessage && message.success("Login success!!", 3);
-        } else {
-          this.loginFailed();
-        }
+  loginAndInsertKeyPairs = async (toastMessage = true) => {
+    await walletInstance.login().then(
+      async (result) => {
+        const wallet = result;
+        const instance = walletInstance.proxy.elfInstance;
+        instance.chain.getChainStatus(() => {
+          this.getNightElfKeyPair(wallet);
+        });
+        toastMessage && message.success("Login success!!", 3);
       },
-      useLock
+      () => {
+        this.loginFailed();
+      }
     );
   };
 
@@ -257,7 +248,7 @@ class Resource extends Component {
       <div className="resource-body basic-container basic-container-white">
         {!isPhone && downloadPlugins}
         {/* {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>} */}
-        {nightElf && resourceAElfWalletHtml}
+        {walletInstance && resourceAElfWalletHtml}
         <div className="resource-money-market">
           <ResourceMoneyMarket
             loginAndInsertKeypairs={this.loginAndInsertKeyPairs}

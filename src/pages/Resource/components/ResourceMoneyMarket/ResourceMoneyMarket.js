@@ -4,12 +4,13 @@
  * A collection of resource transactions
  */
 
-import React, { PureComponent } from 'react';
-import { Row, Col, Spin } from 'antd';
-import ResourceCurrencyChart from './ResourceCurrencyChart/ResourceCurrencyChart';
-import ResourceTrading from './ResourceTrading/ResourceTrading';
-import RealTimeTransactions from './RealTimeTransactions/RealTimeTransactions';
-import './ResourceMoneyMarket.less';
+import React, { PureComponent } from "react";
+import { Row, Col, Spin } from "antd";
+import ResourceCurrencyChart from "./ResourceCurrencyChart/ResourceCurrencyChart";
+import ResourceTrading from "./ResourceTrading/ResourceTrading";
+import RealTimeTransactions from "./RealTimeTransactions/RealTimeTransactions";
+import "./ResourceMoneyMarket.less";
+import walletInstance from "../../../../redux/common/wallet";
 
 export default class ResourceMoneyMarket extends PureComponent {
   constructor(props) {
@@ -24,11 +25,11 @@ export default class ResourceMoneyMarket extends PureComponent {
       loading: false,
       echartsLoading: false,
       realTimeTransactionLoading: false,
-      nightElf: this.props.nightElf,
     };
     this.getMenuClick = this.getMenuClick.bind(this);
     this.getEchartsLoading = this.getEchartsLoading.bind(this);
-    this.getRealTimeTransactionLoading = this.getRealTimeTransactionLoading.bind(this);
+    this.getRealTimeTransactionLoading =
+      this.getRealTimeTransactionLoading.bind(this);
   }
 
   getMenuClick(symbol) {
@@ -63,12 +64,6 @@ export default class ResourceMoneyMarket extends PureComponent {
       };
     }
 
-    if (props.nightElf !== state.nightElf) {
-      return {
-        nightElf: props.nightElf,
-      };
-    }
-
     if (props.currentWallet !== state.currentWallet) {
       return {
         currentWallet: props.currentWallet,
@@ -98,23 +93,18 @@ export default class ResourceMoneyMarket extends PureComponent {
       tokenConverterContract,
       tokenContract,
     } = this.state;
-    const { realTimeTransactionLoading, echartsLoading, nightElf } = this.state;
-    const {
-      account,
-      onRefresh,
-      endRefresh,
-      appName,
-      loginAndInsertKeypairs,
-    } = this.props;
+    const { realTimeTransactionLoading, echartsLoading } = this.state;
+    const { account, onRefresh, endRefresh, appName, loginAndInsertKeypairs } =
+      this.props;
     let loading = true;
     if (!realTimeTransactionLoading && !echartsLoading) {
       loading = false;
     }
-    const {
-      resourceTokens,
-    } = account;
+    const { resourceTokens } = account;
     const menuList = resourceTokens.map((v) => v.symbol);
-    const currentIndex = resourceTokens.findIndex((v) => v.symbol === currentResourceSymbol);
+    const currentIndex = resourceTokens.findIndex(
+      (v) => v.symbol === currentResourceSymbol
+    );
 
     return (
       <div className="resource-market-body resource-block">
@@ -128,7 +118,7 @@ export default class ResourceMoneyMarket extends PureComponent {
               getEchartsLoading={this.getEchartsLoading}
             />
             <Row className="resource-sub-container">
-              {nightElf && (
+              {walletInstance && (
                 <Col xxl={14} xl={24} lg={24}>
                   <ResourceTrading
                     loginAndInsertKeypairs={loginAndInsertKeypairs}
@@ -141,7 +131,6 @@ export default class ResourceMoneyMarket extends PureComponent {
                     account={account}
                     onRefresh={onRefresh}
                     endRefresh={endRefresh}
-                    nightElf={nightElf}
                     appName={appName}
                   />
                 </Col>
@@ -149,7 +138,9 @@ export default class ResourceMoneyMarket extends PureComponent {
               <Col xxl={{ span: 9, offset: 1 }} xl={24} lg={24}>
                 <RealTimeTransactions
                   type={currentResourceSymbol}
-                  getRealTimeTransactionLoading={this.getRealTimeTransactionLoading}
+                  getRealTimeTransactionLoading={
+                    this.getRealTimeTransactionLoading
+                  }
                 />
               </Col>
             </Row>
