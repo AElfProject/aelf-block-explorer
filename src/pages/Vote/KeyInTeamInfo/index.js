@@ -154,7 +154,7 @@ class KeyInTeamInfo extends PureComponent {
     if (currentWallet) {
       this.setState(
         {
-          hasAuth: currentWallet.pubkey === this.teamPubkey,
+          hasAuth: currentWallet.publicKey === this.teamPubkey,
         },
         this.fetchCandidateInfo
       );
@@ -171,7 +171,7 @@ class KeyInTeamInfo extends PureComponent {
       ) {
         this.setState(
           {
-            hasAuth: currentWallet.pubkey === this.teamPubkey,
+            hasAuth: currentWallet.publicKey === this.teamPubkey,
           },
           this.fetchCandidateInfo
         );
@@ -301,7 +301,7 @@ class KeyInTeamInfo extends PureComponent {
     const { currentWallet } = this.props;
 
     get("/vote/getTeamDesc", {
-      publicKey: currentWallet.pubkey,
+      publicKey: currentWallet.publicKey,
     })
       .then((res) => {
         this.setState({

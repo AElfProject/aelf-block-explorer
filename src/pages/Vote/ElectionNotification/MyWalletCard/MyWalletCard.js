@@ -59,9 +59,13 @@ export default class MyWalletCard extends PureComponent {
         shouldRefreshMyWallet: true,
       });
     }
-    if (this.props.currentWallet) {
-      this.getCurrentWallet();
-    }
+    const getData = async () => {
+      if (this.props.currentWallet) {
+        await this.getCurrentWallet();
+      }
+      this.fetchData();
+    };
+    getData();
   }
 
   getCurrentWallet() {
@@ -82,7 +86,7 @@ export default class MyWalletCard extends PureComponent {
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
     const getData = async () => {
-      if (this.props.currentWallet && !prevProps.currentWallet) {
+      if (this.props.currentWallet && !prevProps?.currentWallet) {
         await this.getCurrentWallet();
       }
       this.fetchData(prevProps);
@@ -98,13 +102,13 @@ export default class MyWalletCard extends PureComponent {
       changeVoteState,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
-
-    if (multiTokenContract !== prevProps.multiTokenContract) {
+    console.log(multiTokenContract === prevProps?.multiTokenContract, "====");
+    if (multiTokenContract !== prevProps?.multiTokenContract) {
       this.hasRun = true;
       this.fetchWalletBalance();
     }
 
-    if (electionContract !== prevProps.electionContract && electionContract) {
+    if (electionContract !== prevProps?.electionContract && electionContract) {
       this.fetchElectorVoteInfo();
     }
 

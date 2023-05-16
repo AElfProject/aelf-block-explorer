@@ -29,10 +29,7 @@ export default class MyVote extends Component {
       currentWallet: {
         address: null,
         name: null,
-        pubKey: {
-          x: null,
-          y: null,
-        },
+        publicKey: null,
       },
     };
 
@@ -46,7 +43,7 @@ export default class MyVote extends Component {
   }
 
   // todo: update the vote info after switch to this tab
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.currentWallet && !prevProps.currentWallet) {
       this.getCurrentWallet();
     }
@@ -62,44 +59,32 @@ export default class MyVote extends Component {
   }
 
   getCurrentWallet() {
-    NightElfCheck.getInstance()
-      .check.then((ready) => {
-        const nightElf = NightElfCheck.getAelfInstanceByExtension();
-        getLogin(
-          nightElf,
-          { file: "MyVote.js" },
-          (result) => {
-            if (result.error) {
-              this.setState({
-                spinningLoading: false,
-              });
-              // message.warn(result.message || result.errorMessage.message);
-            } else {
-              const wallet = JSON.parse(result.detail);
-              const currentWallet = {
-                formattedAddress: addressFormat(wallet.address),
-                address: wallet.address,
-                name: wallet.name,
-                pubKey: getPublicKeyFromObject(wallet.publicKey),
-              };
-              this.setState({
-                currentWallet,
-              });
-              this.props.checkExtensionLockStatus();
-              setTimeout(() => {
-                this.fetchTableDataAndStatistData(currentWallet);
-              });
-            }
-          },
-          false
-        );
-      })
-      .catch((error) => {
+    const { checkExtensionLockStatus } = this.props;
+    return checkExtensionLockStatus().then(
+      () => {
+        const wallet = JSON.parse(localStorage.getItem("currentWallet"));
+        if (wallet) {
+          this.setState({
+            loading: true,
+            currentWallet: {
+              ...wallet,
+              formattedAddress: addressFormat(wallet.address),
+            },
+          });
+        }
+        this.fetchTableDataAndStatistData(wallet);
+      },
+      () => {
         this.setState({
           spinningLoading: false,
         });
-        // message.warn('Please download and install NightELF browser extension.');
-      });
+      },
+      () => {
+        this.setState({
+          spinningLoading: false,
+        });
+      }
+    );
   }
 
   fetchTableDataAndStatistData(currentWalletTemp) {
@@ -117,7 +102,7 @@ export default class MyVote extends Component {
     // todo: add error handle
     Promise.all([
       electionContract.GetElectorVoteWithAllRecords.call({
-        value: currentWallet.pubKey,
+        value: currentWallet.publicKey,
       }),
       getAllTeamDesc(),
       fetchPageableCandidateInformation(electionContract, {
@@ -127,7 +112,6 @@ export default class MyVote extends Component {
       }),
     ])
       .then((resArr) => {
-        console.log("resArr", resArr);
         this.processData(resArr);
       })
       .catch((err) => {
@@ -180,10 +164,6 @@ export default class MyVote extends Component {
       (total, current) => total + +current.amount,
       0
     );
-    console.log({
-      myTotalVotesAmount,
-      withdrawableVoteAmount,
-    });
     this.processStatistData(
       "myTotalVotesAmount",
       "num",
@@ -205,7 +185,6 @@ export default class MyVote extends Component {
       const teamInfo = allTeamInfo.find(
         (team) => team.public_key === record.candidate
       );
-      console.log("teamInfo", teamInfo);
       if (teamInfo === undefined) {
         record.address = publicKeyToAddress(record.candidate);
         record.name = addressFormat(record.address);
@@ -229,7 +208,6 @@ export default class MyVote extends Component {
           .format("YYYY-MM-DD HH:mm:ss");
       }
       record.status = "Success";
-      console.log("record.lockTime", record.lockTime);
       const start = moment.unix(record.voteTimestamp.seconds);
       const end = moment.unix(record.unlockTimestamp.seconds);
       record.formattedLockTime = end.from(start, true);

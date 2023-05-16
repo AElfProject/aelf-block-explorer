@@ -410,8 +410,6 @@ class NodeTable extends PureComponent {
       .then((resArr) => {
         // process data
         const processedNodesData = this.processNodesData(resArr);
-        // console.log('processedNodesData currentWallet', resArr, processedNodesData, currentWallet.pubKey);
-        //   this.state.currentWallet, currentWalletInput);
         this.setState(
           {
             nodeList: processedNodesData,

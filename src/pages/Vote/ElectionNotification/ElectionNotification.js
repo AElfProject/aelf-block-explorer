@@ -102,10 +102,10 @@ async function getDividend(treasury, consensus) {
 const Display = (props) => {
   const { dividends } = props;
   return (
-    <div className='ant-statistic vote-statistic'>
-      <div className='ant-statistic-title'>Current Mining Reward</div>
-      <div className='ant-statistic-content'>
-        <span className='ant-statistic-content-value'>
+    <div className="ant-statistic vote-statistic">
+      <div className="ant-statistic-title">Current Mining Reward</div>
+      <div className="ant-statistic-content">
+        <span className="ant-statistic-content-value">
           <Dividends dividends={dividends} useButton={false} />
         </span>
       </div>
@@ -281,7 +281,7 @@ class ElectionNotification extends PureComponent {
         currentMiningReward: {
           ...statisData.currentMiningReward,
           isRender: true,
-          num: <Display key='currentMiningReward' dividends={dividends} />,
+          num: <Display key="currentMiningReward" dividends={dividends} />,
         },
       },
       statisDataLoading: false,
@@ -299,7 +299,7 @@ class ElectionNotification extends PureComponent {
     checkExtensionLockStatus().then(() => {
       electionContractFromExt
         .QuitElection({
-          value: currentWallet.pubkey,
+          value: currentWallet.publicKey,
         })
         .then((res) => {
           if (res.error) {
@@ -368,7 +368,7 @@ class ElectionNotification extends PureComponent {
               if (status === txStatusInUpperCase.mined) {
                 this.props.navigate(
                   `/vote/apply/keyin?pubkey=${
-                    currentWallet && currentWallet.pubkey
+                    currentWallet && currentWallet.publicKey
                   }`
                 );
               }
@@ -432,14 +432,14 @@ class ElectionNotification extends PureComponent {
           style={{ marginBottom: 20 }}
           tooltip={ELECTION_NOTIFI_DATA_TIP}
         />
-        <div className='election-blank' />
+        <div className="election-blank" />
         <ElectionRuleCard
           isCandidate={isCandidate}
           currentWallet={currentWallet}
           quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
-        <div className='election-blank' />
+        <div className="election-blank" />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -453,7 +453,7 @@ class ElectionNotification extends PureComponent {
           checkExtensionLockStatus={checkExtensionLockStatus}
           currentWallet={currentWallet}
         />
-        <div className='election-blank' />
+        <div className="election-blank" />
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}

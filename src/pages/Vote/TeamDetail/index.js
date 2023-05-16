@@ -67,7 +67,7 @@ class TeamDetail extends PureComponent {
 
     if (currentWallet) {
       this.setState({
-        hasAuth: currentWallet.pubkey === this.teamPubkey,
+        hasAuth: currentWallet.publicKey === this.teamPubkey,
       });
     }
   }
@@ -86,7 +86,7 @@ class TeamDetail extends PureComponent {
     if (prevProps.currentWallet !== currentWallet) {
       this.setState(
         {
-          hasAuth: currentWallet.pubkey === this.teamPubkey,
+          hasAuth: currentWallet.publicKey === this.teamPubkey,
         },
         this.fetchCandidateInfo
       );
@@ -188,7 +188,7 @@ class TeamDetail extends PureComponent {
     const currentWallet = getCurrentWallet();
 
     fetchElectorVoteWithRecords(electionContract, {
-      value: currentWallet.pubKey,
+      value: currentWallet.publicKey,
     })
       .then((res) => {
         this.computeUserRedeemableVoteAmountForOneCandidate(

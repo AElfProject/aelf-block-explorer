@@ -21,7 +21,7 @@ function ElectionRuleCard(props) {
   const onClick = () => {
     if (isCandidate) {
       navigate(
-        `/vote/apply/keyin?pubkey=${currentWallet && currentWallet.pubkey}`
+        `/vote/apply/keyin?pubkey=${currentWallet && currentWallet.publicKey}`
       );
     } else {
       displayApplyModal();
