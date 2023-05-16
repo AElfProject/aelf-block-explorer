@@ -12,14 +12,11 @@ import moment from "moment";
 import { SyncOutlined, WalletFilled, LogoutOutlined } from "@ant-design/icons";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { ELF_DECIMAL, SYMBOL } from "@src/constants";
-import { APPNAME } from "@config/config";
-import NightElfCheck from "../../../../utils/NightElfCheck";
-import getLogin from "../../../../utils/getLogin";
 import { isPhoneCheck } from "../../../../utils/deviceCheck";
-import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
 import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
 import "./MyWalletCard.less";
+import walletInstance from "../../../../redux/common/wallet";
 
 export default class MyWalletCard extends PureComponent {
   constructor(props) {
@@ -34,19 +31,13 @@ export default class MyWalletCard extends PureComponent {
       currentWallet: {
         address: null,
         name: null,
-        pubKey: {
-          x: null,
-          y: null,
-        },
+        publicKey: null,
       },
     };
-
     this.isPhone = isPhoneCheck();
-
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
     this.getCurrentWallet = this.getCurrentWallet.bind(this);
-
     this.hasRun = false;
   }
 
@@ -73,52 +64,33 @@ export default class MyWalletCard extends PureComponent {
     }
   }
 
-  getCurrentWallet(useLock = true) {
-    NightElfCheck.getInstance()
-      .check.then((ready) => {
-        const nightElf = NightElfCheck.getAelfInstanceByExtension();
-        getLogin(
-          nightElf,
-          { appName: APPNAME },
-          (result) => {
-            console.log("getCurrentWallet: ", result);
-            if (result.error) {
-              localStorage.removeItem("currentWallet");
-              // message.warn(result.message || result.errorMessage.message);
-            } else {
-              const wallet = JSON.parse(result.detail);
-              this.setState({
-                loading: true,
-                currentWallet: {
-                  formattedAddress: addressFormat(wallet.address),
-                  address: wallet.address,
-                  name: wallet.name,
-                  pubKey: getPublicKeyFromObject(wallet.publicKey),
-                },
-              });
-              setTimeout(() => {
-                this.handleUpdateWalletClick();
-              });
-            }
+  getCurrentWallet() {
+    return this.handleUpdateWalletClick().then(() => {
+      const wallet = JSON.parse(localStorage.getItem("currentWallet"));
+      if (wallet) {
+        this.setState({
+          loading: true,
+          currentWallet: {
+            ...wallet,
+            formattedAddress: addressFormat(wallet.address),
           },
-          useLock
-        );
-      })
-      .catch(() => {
-        message.warn("Please download and install NightELF browser extension.");
-      });
+        });
+      }
+    });
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    this.fetchData(prevProps);
-    if (this.props.currentWallet && !prevProps.currentWallet) {
-      this.getCurrentWallet();
-    }
+    const getData = async () => {
+      if (this.props.currentWallet && !prevProps.currentWallet) {
+        await this.getCurrentWallet();
+      }
+      this.fetchData(prevProps);
+    };
+    getData();
   }
 
   fetchData(prevProps) {
-    // todo: optimize the judge
     const {
       multiTokenContract,
       electionContract,
@@ -187,15 +159,13 @@ export default class MyWalletCard extends PureComponent {
 
   fetchElectorVoteInfo() {
     const { electionContract } = this.props;
-
     const { currentWallet } = this.state;
 
     if (!currentWallet || !currentWallet.address || !electionContract) {
       return false;
     }
-
     return electionContract.GetElectorVoteWithRecords.call({
-      value: currentWallet.pubKey,
+      value: currentWallet.publicKey,
     })
       .then((res) => {
         let { activeVotedVotesAmount } = res;
@@ -248,49 +218,36 @@ export default class MyWalletCard extends PureComponent {
   }
 
   handleUpdateWalletClick() {
-    const { changeVoteState, checkExtensionLockStatus } = this.props;
-    checkExtensionLockStatus().then(() => {
-      changeVoteState({
-        shouldRefreshMyWallet: true,
-      });
+    this.setState({
+      loading: true,
     });
+    const { changeVoteState, checkExtensionLockStatus } = this.props;
+    return checkExtensionLockStatus()
+      .then(() => {
+        changeVoteState({
+          shouldRefreshMyWallet: true,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        this.setState({
+          loading: false,
+        });
+      });
   }
 
   extensionLogout() {
-    const nightElf = NightElfCheck.getAelfInstanceByExtension();
-    getLogin(
-      nightElf,
-      { file: "MyVote.js" },
-      (result) => {
-        console.log("extensionLogout getLogin: ", result);
-        if (result.error && result.error === 200005) {
-          message.warn(result.message || result.errorMessage.message);
-        } else {
-          const { currentWallet } = this.state;
-          nightElf
-            .logout(
-              {
-                appName: APPNAME,
-                address: currentWallet.address,
-              },
-              () => {
-                // TODO: more refactor actions for login and logout
-                message.success(
-                  "Logout successful, refresh after 3s.",
-                  3,
-                  () => {
-                    localStorage.removeItem("currentWallet");
-                    window.location.reload();
-                  }
-                );
-              }
-            )
-            .catch((error) => {
-              message.error("logout failed");
-            });
-        }
+    const { currentWallet } = this.state;
+    walletInstance.logout(currentWallet.address).then(
+      () => {
+        message.success("Logout successful, refresh after 3s.", 3, () => {
+          localStorage.removeItem("currentWallet");
+          window.location.reload();
+        });
       },
-      false
+      () => {
+        message.error("logout failed");
+      }
     );
   }
 
@@ -378,7 +335,7 @@ export default class MyWalletCard extends PureComponent {
               <Button
                 type="text"
                 className="my-wallet-card-header-sync-btn update-btn"
-                onClick={() => this.getCurrentWallet(false)}
+                onClick={() => this.getCurrentWallet()}
               >
                 Login
               </Button>

@@ -16,6 +16,7 @@ import { thousandsCommaWithDecimal } from "@utils/formater";
 import getContractAddress from "@utils/getContractAddress";
 import DownloadPlugins from "@components/DownloadPlugins/DownloadPlugins";
 import config, { APPNAME, schemeIds } from "@config/config";
+import walletInstance from "@redux/common/wallet";
 import { connect } from "react-redux";
 import { aelf } from "@src/utils";
 import { setContractWithName } from "@actions/voteContracts.ts";
@@ -144,7 +145,7 @@ class VoteContainer extends Component {
 
     this.isPhone = isPhoneCheck();
     this.loginMessageLock = false;
-    this.loginPlugin = this.loginPlugin.bind(this);
+    // this.loginPlugin = this.loginPlugin.bind(this);
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -204,7 +205,6 @@ class VoteContainer extends Component {
       this.setState({
         currentWallet: {
           ...wallet,
-          pubkey: getPublicKeyFromObject(wallet.publicKey),
         },
       });
     } else {
@@ -284,29 +284,25 @@ class VoteContainer extends Component {
   }
 
   getExtensionKeyPairList() {
-    NightElfCheck.getInstance()
-      .check.then((item) => {
-        if (item) {
-          const nightElf = NightElfCheck.getAelfInstanceByExtension();
-          if (nightElf) {
-            if (typeof nightElf.getExtensionInfo === "function") {
-              nightElf.getExtensionInfo().then((info) => {
-                this.setState({
-                  isPluginLock: info.locked,
-                });
-                if (!info.locked) {
-                  this.getChainStatus(nightElf);
-                } else {
-                  localStorage.removeItem("currentWallet");
-                }
+    walletInstance.isExist
+      .then((result) => {
+        if (result) {
+          if (
+            typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+            "function"
+          ) {
+            walletInstance.getExtensionInfo().then((info) => {
+              this.setState({
+                isPluginLock: info.locked,
               });
-            } else {
-              this.getChainStatus(nightElf);
-            }
-
-            this.setState({
-              nightElf,
+              if (!info.locked) {
+                this.getChainStatus();
+              } else {
+                localStorage.removeItem("currentWallet");
+              }
             });
+          } else {
+            this.getChainStatus();
           }
         }
       })
@@ -315,10 +311,42 @@ class VoteContainer extends Component {
           showDownloadPlugin: true,
         });
       });
+    // NightElfCheck.getInstance()
+    //   .check.then((item) => {
+    //     if (item) {
+    //       const nightElf = NightElfCheck.getAelfInstanceByExtension();
+    //       console.log(nightElf, "nightElf");
+    //       if (nightElf) {
+    //         if (typeof nightElf.getExtensionInfo === "function") {
+    //           nightElf.getExtensionInfo().then((info) => {
+    //             this.setState({
+    //               isPluginLock: info.locked,
+    //             });
+    //             if (!info.locked) {
+    //               this.getChainStatus(nightElf);
+    //             } else {
+    //               localStorage.removeItem("currentWallet");
+    //             }
+    //           });
+    //         } else {
+    //           this.getChainStatus(nightElf);
+    //         }
+
+    //         this.setState({
+    //           nightElf,
+    //         });
+    //       }
+    //     }
+    //   })
+    //   .catch(() => {
+    //     this.setState({
+    //       showDownloadPlugin: true,
+    //     });
+    //   });
   }
 
-  getChainStatus(nightElf) {
-    nightElf.chain
+  getChainStatus() {
+    walletInstance.proxy.elfInstance.chain
       .getChainStatus()
       .then((result) => {
         if (result) {
@@ -330,7 +358,7 @@ class VoteContainer extends Component {
         }
       })
       .catch((error) => {
-        console.err("nightElf.chain.getChainStatus:error", error);
+        console.err("walletInstance.chain.getChainStatus:error", error);
       });
   }
 
@@ -338,14 +366,13 @@ class VoteContainer extends Component {
     if (!wallet) {
       return;
     }
-    wallet.pubkey = getPublicKeyFromObject(wallet.publicKey);
     wallet.formattedAddress = addressFormat(wallet.address);
     localStorage.setItem(
       "currentWallet",
       JSON.stringify({ ...wallet, timestamp: new Date().valueOf() })
     );
     this.setState({
-      currentWallet: wallet,
+      currentWallet: getCurrentWallet(),
       showWallet: true,
     });
   }
@@ -380,44 +407,11 @@ class VoteContainer extends Component {
     });
   }
 
-  loginPlugin() {
-    const nightElf = NightElfCheck.getAelfInstanceByExtension();
-    const getLoginPayload = {
-      appName: APPNAME,
-    };
-    return new Promise((resolve, reject) => {
-      getLogin(nightElf, getLoginPayload, (result) => {
-        // todo: try to extract the code handle the result from extension as there are some repeating code
-        const {
-          error,
-          detail,
-          errorMessage = {
-            message: "Please check your NightELF browser extension.",
-          },
-        } = result;
-        if (error === 0) {
-          const wallet = JSON.parse(detail);
-          this.getNightElfKeyPair(wallet);
-          // todo: Extract
-          this.onExtensionAndWalletReady().then(resolve);
-          if (!this.loginMessageLock) {
-            this.loginMessageLock = true;
-            message.success("Login success!!", 3);
-          }
-        } else {
-          localStorage.removeItem("currentWallet");
-          const msg = error === 200010 ? "Please Login." : errorMessage.message;
-          message.warn(msg);
-        }
-      });
-    });
-  }
-
   onExtensionAndWalletReady() {
     return this.fetchContractFromExt()
-      .then(() => {
+      .then(async () => {
         this.hasGetContractsFromExt = true;
-        this.fetchProfitAmount();
+        await this.fetchProfitAmount();
       })
       .catch((err) => {
         console.error("fetchContractFromExt", err);
@@ -425,9 +419,8 @@ class VoteContainer extends Component {
   }
 
   fetchContractFromExt() {
-    const nightElf = NightElfCheck.getAelfInstanceByExtension();
+    const instance = walletInstance.proxy.elfInstance;
     const { contractsNeedToLoadFromExt } = constants;
-
     const { address } = getCurrentWallet();
     const wallet = { address };
     // todo: get the contract from extension in cdm or other suitable time
@@ -438,7 +431,7 @@ class VoteContainer extends Component {
     return Promise.all(
       contractsNeedToLoadFromExt.map(
         ({ contractAddrValName, contractNickname }) => {
-          return nightElf.chain
+          return instance.chain
             .contractAt(config[contractAddrValName], wallet)
             .then((res) => {
               this.setState({
@@ -481,7 +474,7 @@ class VoteContainer extends Component {
 
     Promise.all([
       electionContract.GetElectorVoteWithRecords.call({
-        value: currentWallet.pubKey,
+        value: currentWallet.publicKey,
       }),
       getAllTeamDesc(),
     ])
@@ -566,9 +559,8 @@ class VoteContainer extends Component {
           );
           return;
         }
-        // todo: Maybe cause problem if the currentWallet is null
         electionContract.GetCandidateInformation.call({
-          value: currentWallet.pubkey,
+          value: currentWallet.publicKey,
         })
           .then((res) => {
             this.setState({
@@ -620,10 +612,10 @@ class VoteContainer extends Component {
     });
   }
 
-  judgeANodeIsCandidate(pubkey) {
+  judgeANodeIsCandidate(publickey) {
     const { electionContract } = this.state;
     return electionContract.GetCandidateInformation.call({
-      value: pubkey,
+      value: publickey,
     })
       .then((res) => res.isCurrentCandidate)
       .catch((err) => {
@@ -667,35 +659,40 @@ class VoteContainer extends Component {
 
   checkExtensionLockStatus() {
     return new Promise((resolve) => {
-      NightElfCheck.getInstance()
-        .check.then(() => {
-          const nightElf = NightElfCheck.getAelfInstanceByExtension();
-          if (this.hasGetContractsFromExt) {
-            resolve();
-          }
-
-          if (typeof nightElf.getExtensionInfo === "function") {
-            nightElf.getExtensionInfo().then((info) => {
+      walletInstance.isExist
+        .then(() => {
+          const instance = walletInstance.proxy.elfInstance;
+          if (
+            typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+            "function"
+          ) {
+            walletInstance.getExtensionInfo().then((info) => {
               this.setState({
                 isPluginLock: info.locked,
               });
             });
           }
-
-          localStorage.setItem(
-            "currentWallet",
-            JSON.stringify({
-              ...this.state.currentWallet,
-              timestamp: new Date().valueOf(),
-            })
+          instance.chain.getChainStatus().then(
+            () => {
+              walletInstance.login().then(async (result) => {
+                const wallet = result;
+                this.getNightElfKeyPair(wallet);
+                // todo: Extract
+                await this.onExtensionAndWalletReady();
+                if (!this.loginMessageLock) {
+                  this.loginMessageLock = true;
+                  message.success("Login success!!", 3);
+                }
+                resolve();
+              });
+            },
+            ({ error, errorMessage }) => {
+              localStorage.removeItem("currentWallet");
+              const msg =
+                error === 200010 ? "Please Login." : errorMessage.message;
+              message.warn(msg);
+            }
           );
-
-          // todo: Unify the format of extension's function return, the function getChainStatus's response is different with others.s
-          nightElf.chain.getChainStatus().then(() => {
-            this.loginPlugin().then(() => {
-              resolve();
-            });
-          });
         })
         .catch(() => {
           message.warn(
@@ -807,7 +804,7 @@ class VoteContainer extends Component {
     const currentWallet = getCurrentWallet();
 
     electionContract.GetElectorVoteWithRecords.call({
-      value: currentWallet.pubKey,
+      value: currentWallet.publicKey,
     })
       .then((res) => {
         // todo: error handle
@@ -1022,6 +1019,9 @@ class VoteContainer extends Component {
   // FIXME: the time calling this method maybe unsuitable
   // FIXME: when the user didn't set the wallet, will it cause problem?
   fetchProfitAmount() {
+    this.setState({
+      currentWallet: getCurrentWallet(),
+    });
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
     const { profitContractFromExt, currentWallet } = this.state;
