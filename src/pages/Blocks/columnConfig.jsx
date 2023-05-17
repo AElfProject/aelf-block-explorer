@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import React from "react";
+import { Tooltip } from "antd";
 import Dividends from "../../components/Dividends";
 import { getFormattedDate } from "../../utils/timeUtils";
 import IconFont from "../../components/IconFont";
 import { isPhoneCheck } from "../../utils/deviceCheck";
-import addressFormat from "../../utils/addressFormat";
+import addressFormat, { hiddenAddress } from "../../utils/addressFormat";
+import CopyButton from "../../components/CopyButton/CopyButton";
 
 export default (timeFormat, handleFormatChange) => {
   const isMobile = isPhoneCheck();
@@ -75,14 +77,17 @@ export default (timeFormat, handleFormatChange) => {
     {
       dataIndex: "miner",
       title: "Miner",
-      width: isMobile ? 146 : 150,
+      width: isMobile ? 180 : 180,
       render: (text) => {
         return (
           <div className="address">
-            <Link
-              title={`${addressFormat(text)}`}
-              to={`/address/${addressFormat(text)}`}
-            >{`${addressFormat(text)}`}</Link>
+            <Tooltip title={addressFormat(text)}>
+              <Link
+                title={`${addressFormat(text)}`}
+                to={`/address/${addressFormat(text)}`}
+              >{`${addressFormat(hiddenAddress(text))}`}</Link>
+            </Tooltip>
+            <CopyButton value={addressFormat(text)} />
           </div>
         );
       },

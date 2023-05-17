@@ -70,9 +70,7 @@ export default function TransactionList() {
   );
 
   useEffect(() => {
-    if (pageIndex === 1) {
-      fetch(pageIndex);
-    } else {
+    if (pageIndex !== 1) {
       setPageIndex(1);
     }
   }, [pathname]);
@@ -90,13 +88,15 @@ export default function TransactionList() {
       className={`txs-page-container basic-container-new ${
         isMobile ? "mobile" : ""
       }`}
-      key="body">
+      key="body"
+    >
       <h2>Transactions</h2>
       <div>
         <div className="before-table">
           <div className="left">
             <p>
-              More than {">"} {Number(actualTotal).toLocaleString()}{" "}transactions found
+              More than {">"} {Number(actualTotal).toLocaleString()}{" "}
+              transactions found
             </p>
             <p>(Showing the last 500k records)</p>
           </div>

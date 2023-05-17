@@ -7,11 +7,12 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Dividends from "../Dividends";
 import { aelf } from "../../utils";
-import addressFormat from "../../utils/addressFormat";
+import addressFormat, { hiddenAddress } from "../../utils/addressFormat";
 import { getFormattedDate } from "../../utils/timeUtils";
 import StatusTag from "../StatusTag/StatusTag";
 import IconFont from "../IconFont";
 import { isPhoneCheck } from "../../utils/deviceCheck";
+import CopyButton from "../CopyButton/CopyButton";
 
 const PreviewCard = ({ info, text, price = { USD: 0 } }) => {
   const nav = useNavigate();
@@ -116,9 +117,13 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "method",
       title: "Method",
-      width: isMobile ? 100 : 150,
+      width: isMobile ? 120 : 150,
       render: (text) => {
-        return <div className="method">{text}</div>;
+        return (
+          <Tooltip title={text}>
+            <div className="method">{text}</div>
+          </Tooltip>
+        );
       },
     },
     {
@@ -150,16 +155,19 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "address_from",
       title: "From",
-      width: isMobile ? 116 : 116,
+      width: isMobile ? 200 : 200,
       render: (text) => {
         return (
           <div className="address">
-            <Link
-              to={`/address/${addressFormat(text)}`}
-              title={addressFormat(text)}
-            >
-              {addressFormat(text)}
-            </Link>
+            <Tooltip title={addressFormat(text)}>
+              <Link
+                to={`/address/${addressFormat(text)}`}
+                title={addressFormat(text)}
+              >
+                {addressFormat(hiddenAddress(text))}
+              </Link>
+            </Tooltip>
+            <CopyButton value={addressFormat(text)} />
             <IconFont type="right2" />
           </div>
         );
@@ -168,16 +176,19 @@ export default (timeFormat, price, handleFormatChange) => {
     {
       dataIndex: "address_to",
       title: "Interacted With (To)",
-      width: isMobile ? 117 : 126,
+      width: isMobile ? 185 : 185,
       render: (text) => {
         return (
           <div className="address">
-            <Link
-              to={`/address/${addressFormat(text)}`}
-              title={addressFormat(text)}
-            >
-              {addressFormat(text)}
-            </Link>
+            <Tooltip title={addressFormat(text)}>
+              <Link
+                to={`/address/${addressFormat(text)}`}
+                title={addressFormat(text)}
+              >
+                {addressFormat(hiddenAddress(text))}
+              </Link>
+            </Tooltip>
+            <CopyButton value={addressFormat(text)} />
           </div>
         );
       },

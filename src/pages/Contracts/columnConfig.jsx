@@ -1,10 +1,12 @@
 // eslint-disable-next-line no-use-before-define
 import React from "react";
-import { Tag } from "antd";
+import { Tag, Tooltip } from "antd";
 import clsx from "clsx";
 import moment from "moment";
-import AddressLink from "../../components/AddressLink";
+import { Link } from "react-router-dom";
 import { validateVersion } from "../../utils/regExps";
+import addressFormat, { hiddenAddress } from "../../utils/addressFormat";
+import CopyButton from "../../components/CopyButton/CopyButton";
 
 export default ({ isMobile }) => {
   return [
@@ -13,7 +15,19 @@ export default ({ isMobile }) => {
       dataIndex: "address",
       width: isMobile ? 232 : 320,
       ellipsis: true,
-      render: (address) => <AddressLink address={address} hash="#contract" />,
+      render: (text) => (
+        <div className="address">
+          <Tooltip title={addressFormat(text)}>
+            <Link
+              to={`/address/${addressFormat(text)}#contracts`}
+              title={addressFormat(text)}
+            >
+              {addressFormat(hiddenAddress(text))}
+            </Link>
+          </Tooltip>
+          <CopyButton value={addressFormat(text)} />
+        </div>
+      ),
     },
     {
       title: "Contract Name",

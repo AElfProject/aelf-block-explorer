@@ -25,7 +25,7 @@ import removeHash from "../../utils/removeHash";
 
 const keyFromHash = {
   "#txns": "transactions",
-  "#transfers": "transfers",
+  "#tokentxns": "tokenTransfers",
   "#contract": "contract",
   "#events": "events",
   "#history": "history",
@@ -124,10 +124,12 @@ export default function AddressDetail() {
   useEffect(() => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
-    setActiveKey(key || "tokens");
     if (isCA) {
       fetchFile();
       fetchHistory();
+      setActiveKey(key || "contract");
+    } else {
+      setActiveKey(key || "tokens");
     }
   }, [isCA, fetchFile]);
 

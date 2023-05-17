@@ -13,3 +13,9 @@ export const getOriginAddress = (address) => {
   }
   return address;
 };
+
+export const hiddenAddress = (str, frontLen = 4, endLen = 4) => {
+  return `${str.substring(0, frontLen)}...${str.substring(
+    str.length - endLen
+  )}`;
+};

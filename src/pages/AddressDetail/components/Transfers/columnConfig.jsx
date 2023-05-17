@@ -3,13 +3,49 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import { Tag } from "antd";
+import { Tag, Tooltip } from "antd";
+import CHAIN_STATE from "@config/configCMS.json";
 import Dividends from "../../../../components/Dividends";
 import IconFont from "../../../../components/IconFont";
 import { getFormattedDate } from "../../../../utils/timeUtils";
 import { numberFormatter } from "../../../../utils/formater";
-import addressFormat from "../../../../utils/addressFormat";
+import addressFormat, { hiddenAddress } from "../../../../utils/addressFormat";
+import CopyButton from "../../../../components/CopyButton/CopyButton";
 
+const CHAINS_LIST = CHAIN_STATE.chainItem;
+
+const getAddress = (address, nowFlag, input, record) => {
+  let complete = "";
+  let hidden = "";
+  let all = "";
+  if (nowFlag) {
+    complete = addressFormat(input, record.symbol);
+    hidden = addressFormat(hiddenAddress(input), record.symbol);
+    // this page
+    all = `/address/${complete}${window.location.hash}`;
+  } else if (record.isCrossChain === "no") {
+    complete = addressFormat(input, record.symbol);
+    hidden = addressFormat(hiddenAddress(input), record.symbol);
+    all = `/address/${complete}`;
+  } else {
+    // isCrossChain
+    complete = addressFormat(input, record.symbol, record.relatedChainId);
+    hidden = addressFormat(
+      hiddenAddress(input),
+      record.symbol,
+      record.relatedChainId
+    );
+    const chainsLink = CHAINS_LIST.find((ele) => {
+      return ele.chainId !== record.relatedChainId;
+    }).chainsLink.replace(/^\/+|\/+$/g, "");
+    all = `${chainsLink}/address/${complete}`;
+  }
+  return {
+    complete,
+    hidden,
+    all,
+  };
+};
 const getColumnConfig = ({
   address,
   isMobile,
@@ -29,8 +65,20 @@ const getColumnConfig = ({
       },
     },
     {
+      dataIndex: "action",
+      title: "Method",
+      width: isMobile ? 110 : 110,
+      render: (text) => {
+        return (
+          <Tooltip title={text}>
+            <div className="method">{text}</div>
+          </Tooltip>
+        );
+      },
+    },
+    {
       dataIndex: "time",
-      width: isMobile ? 156 : 190,
+      width: isMobile ? 120 : 120,
       title: (
         <div className="time" onClick={handleFormatChange}>
           {timeFormat} <IconFont type="change" />
@@ -43,15 +91,22 @@ const getColumnConfig = ({
     {
       title: "From",
       dataIndex: "from",
-      width: isMobile ? 188 : 172,
+      width: isMobile ? 200 : 200,
       className: "color-blue",
-      render(from) {
+      render(from, record) {
         const isOut = from === address;
+        const { complete, hidden, all } = getAddress(
+          address,
+          isOut,
+          from,
+          record
+        );
         return (
           <div className="from">
-            <Link to={`/address/${addressFormat(from)}`}>
-              {addressFormat(from)}
-            </Link>
+            <Tooltip title={complete}>
+              <Link to={all}>{hidden}</Link>
+            </Tooltip>
+            <CopyButton value={complete} />
             <Tag className={clsx(isOut ? "out" : "in")}>
               {isOut ? "OUT" : "IN"}
             </Tag>
@@ -62,30 +117,43 @@ const getColumnConfig = ({
     {
       title: "Interacted With (To )",
       dataIndex: "to",
-      width: isMobile ? 140 : 224,
+      width: isMobile ? 175 : 175,
       ellipsis,
       className: "color-blue",
-      render(to) {
+      render(to, record) {
+        const isIn = to === address;
+        const { complete, hidden, all } = getAddress(address, isIn, to, record);
         return (
-          <Link className="to" to={`/address/${addressFormat(to)}`}>
-            {addressFormat(to)}
-          </Link>
+          <div className="to">
+            <Tooltip title={complete}>
+              <Link to={all}>{hidden}</Link>
+            </Tooltip>
+            <CopyButton value={complete} />
+          </div>
         );
       },
     },
     {
       title: "Amount",
       dataIndex: "amount",
-      width: isMobile ? 96 : 150,
-      render(amount, record) {
-        return `${numberFormatter(amount)} ${record.symbol}`;
+      width: isMobile ? 50 : 50,
+      render(amount) {
+        return `${numberFormatter(amount)}`;
+      },
+    },
+    {
+      title: "Token",
+      dataIndex: "symbol",
+      width: isMobile ? 50 : 50,
+      render(symbol) {
+        return `${symbol}`;
       },
     },
     {
       title: "Txn Fee",
       dataIndex: "txFee",
       align: "right",
-      width: isMobile ? 96 : 120,
+      width: isMobile ? 50 : 50,
       render(fee) {
         return <Dividends dividends={fee} />;
       },

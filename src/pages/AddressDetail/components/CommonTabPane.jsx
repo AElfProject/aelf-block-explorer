@@ -27,8 +27,8 @@ export default function CommonTabPane({
       children: <Transactions address={address} />,
     },
     {
-      key: "transfers",
-      tab: "Transfers",
+      key: "tokenTransfers",
+      tab: "Token Transfers",
       children: <Transfers address={address} />,
     },
   ];

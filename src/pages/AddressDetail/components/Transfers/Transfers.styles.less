@@ -8,17 +8,23 @@
       .color-blue {
         color: @mariner;
       }
+      .method {
+        width: 116px;
+        height: 28px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background-color: #f5f5f5;
+        padding: 4px 8px;
+        text-align: center;
+      }
       .from {
         position: relative;
         a {
-          display: block;
-          width: 116px;
-          overflow-x: hidden;
-          text-overflow: ellipsis;
-          word-wrap: none;
+          display: inline-block;
           white-space: nowrap;
         }
         .ant-tag {
+          display: inline-block;
           position: absolute;
           top: -1px;
           right: 0;
@@ -40,9 +46,7 @@
       }
       .to {
         display: block;
-        width: 126px;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        width: 150px;
       }
     }
   }
