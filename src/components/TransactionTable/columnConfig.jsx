@@ -120,7 +120,7 @@ export default (timeFormat, price, handleFormatChange) => {
       width: isMobile ? 120 : 150,
       render: (text) => {
         return (
-          <Tooltip title={text}>
+          <Tooltip title={text} overlayInnerStyle={{ color: "#fff" }}>
             <div className="method">{text}</div>
           </Tooltip>
         );
@@ -159,7 +159,10 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Tooltip title={addressFormat(text)}>
+            <Tooltip
+              title={addressFormat(text)}
+              overlayInnerStyle={{ color: "#fff" }}
+            >
               <Link
                 to={`/address/${addressFormat(text)}`}
                 title={addressFormat(text)}
@@ -180,7 +183,10 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Tooltip title={addressFormat(text)}>
+            <Tooltip
+              title={addressFormat(text)}
+              overlayInnerStyle={{ color: "#fff" }}
+            >
               <Link
                 to={`/address/${addressFormat(text)}`}
                 title={addressFormat(text)}

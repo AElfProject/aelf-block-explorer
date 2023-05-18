@@ -19,17 +19,17 @@ const getAddress = (address, nowFlag, input, record) => {
   let hidden = "";
   let all = "";
   if (nowFlag) {
-    complete = addressFormat(input, record.symbol);
-    hidden = addressFormat(hiddenAddress(input), record.symbol);
+    complete = addressFormat(input);
+    hidden = addressFormat(hiddenAddress(input));
     // this page
     all = `/address/${complete}${window.location.hash}`;
   } else if (record.isCrossChain === "no") {
-    complete = addressFormat(input, record.symbol);
-    hidden = addressFormat(hiddenAddress(input), record.symbol);
+    complete = addressFormat(input);
+    hidden = addressFormat(hiddenAddress(input));
     all = `/address/${complete}`;
   } else {
     // isCrossChain
-    complete = addressFormat(input, record.symbol, record.relatedChainId);
+    complete = addressFormat(input, record.relatedChainId);
     hidden = addressFormat(
       hiddenAddress(input),
       record.symbol,
@@ -70,7 +70,7 @@ const getColumnConfig = ({
       width: isMobile ? 110 : 110,
       render: (text) => {
         return (
-          <Tooltip title={text}>
+          <Tooltip title={text} overlayInnerStyle={{ color: "#fff" }}>
             <div className="method">{text}</div>
           </Tooltip>
         );
@@ -103,7 +103,7 @@ const getColumnConfig = ({
         );
         return (
           <div className="from">
-            <Tooltip title={complete}>
+            <Tooltip title={complete} overlayInnerStyle={{ color: "#fff" }}>
               <Link to={all}>{hidden}</Link>
             </Tooltip>
             <CopyButton value={complete} />
@@ -125,7 +125,7 @@ const getColumnConfig = ({
         const { complete, hidden, all } = getAddress(address, isIn, to, record);
         return (
           <div className="to">
-            <Tooltip title={complete}>
+            <Tooltip title={complete} overlayInnerStyle={{ color: "#fff" }}>
               <Link to={all}>{hidden}</Link>
             </Tooltip>
             <CopyButton value={complete} />

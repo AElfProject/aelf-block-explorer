@@ -1,7 +1,6 @@
 import { Tooltip } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
-import AddressLink from "../../components/AddressLink";
 import CopyButton from "../../components/CopyButton/CopyButton";
 import addressFormat, { hiddenAddress } from "../../utils/addressFormat";
 import { numberFormatter } from "../../utils/formater";
@@ -24,7 +23,10 @@ export default ({ isMobile, preTotal }) => {
       className: "color-blue",
       render: (text) => (
         <div className="address">
-          <Tooltip title={addressFormat(text)}>
+          <Tooltip
+            title={addressFormat(text)}
+            overlayInnerStyle={{ color: "#fff" }}
+          >
             <Link
               to={`/address/${addressFormat(text)}`}
               title={addressFormat(text)}

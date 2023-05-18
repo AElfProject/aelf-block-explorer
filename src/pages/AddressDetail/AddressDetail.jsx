@@ -26,6 +26,7 @@ import removeHash from "../../utils/removeHash";
 const keyFromHash = {
   "#txns": "transactions",
   "#tokentxns": "tokenTransfers",
+  "#nfttransfers": "nftTransfers",
   "#contract": "contract",
   "#events": "events",
   "#history": "history",

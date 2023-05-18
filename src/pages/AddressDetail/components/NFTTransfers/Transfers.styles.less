@@ -1,0 +1,56 @@
+.transfers-pane {
+  background: @bgBlankGrey;
+  .table-layer {
+    padding-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    tbody {
+      .color-blue {
+        color: @mariner;
+      }
+      .method {
+        width: 116px;
+        height: 28px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background-color: #f5f5f5;
+        padding: 4px 8px;
+        text-align: center;
+      }
+      .from {
+        position: relative;
+        a {
+          display: inline-block;
+          white-space: nowrap;
+        }
+        .ant-tag {
+          display: inline-block;
+          position: absolute;
+          top: -1px;
+          right: 0;
+          width: 40px;
+          line-height: 20px;
+          border-radius: 2px;
+          text-align: center;
+          padding: 2px 0;
+          border: none;
+          &.in {
+            background: #e6f8f0;
+            color: @jade;
+          }
+          &.out {
+            background: @fair-pink;
+            color: @sunset-orange;
+          }
+        }
+      }
+      .to {
+        display: block;
+        width: 150px;
+      }
+    }
+  }
+  .after-table {
+    background: @bgBlankGrey;
+  }
+}

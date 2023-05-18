@@ -17,7 +17,10 @@ export default ({ isMobile }) => {
       ellipsis: true,
       render: (text) => (
         <div className="address">
-          <Tooltip title={addressFormat(text)}>
+          <Tooltip
+            title={addressFormat(text)}
+            overlayInnerStyle={{ color: "#fff" }}
+          >
             <Link
               to={`/address/${addressFormat(text)}#contracts`}
               title={addressFormat(text)}

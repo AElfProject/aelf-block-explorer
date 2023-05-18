@@ -81,7 +81,10 @@ export default (timeFormat, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Tooltip title={addressFormat(text)}>
+            <Tooltip
+              title={addressFormat(text)}
+              overlayInnerStyle={{ color: "#fff" }}
+            >
               <Link
                 title={`${addressFormat(text)}`}
                 to={`/address/${addressFormat(text)}`}
