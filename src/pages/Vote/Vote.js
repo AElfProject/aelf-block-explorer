@@ -13,7 +13,6 @@ import moment from "moment";
 import { isPhoneCheck } from "@utils/deviceCheck";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import getContractAddress from "@utils/getContractAddress";
-import DownloadPlugins from "@components/DownloadPlugins/DownloadPlugins";
 import config, { schemeIds } from "@config/config";
 import walletInstance from "@redux/common/wallet";
 import { connect } from "react-redux";
@@ -84,8 +83,6 @@ class VoteContainer extends Component {
       voteContractFromExt: null,
       electionContractFromExt: null,
       profitContractFromExt: null,
-
-      showDownloadPlugin: false,
       balance: null,
       formattedBalance: null,
       nodeAddress: null,
@@ -303,10 +300,8 @@ class VoteContainer extends Component {
           }
         }
       })
-      .catch(() => {
-        this.setState({
-          showDownloadPlugin: true,
-        });
+      .catch((err) => {
+        console.error(err);
       });
   }
 
@@ -1149,7 +1144,6 @@ class VoteContainer extends Component {
       voteConfirmModalVisible,
       voteRedeemModalVisible,
       voteConfirmForm,
-      showDownloadPlugin,
       voteContract,
       electionContract,
       multiTokenContract,
@@ -1250,12 +1244,6 @@ class VoteContainer extends Component {
     const secondaryLevelNav = this.renderSecondaryLevelNav();
     return (
       <div>
-        {showDownloadPlugin ? (
-          <section className="vote-container vote-container-simple basic-container basic-container-white">
-            <DownloadPlugins style={{ margin: "0 56px" }} />
-          </section>
-        ) : null}
-
         {secondaryLevelNav}
         <section
           className="vote-container vote-container-simple basic-container basic-container-white"

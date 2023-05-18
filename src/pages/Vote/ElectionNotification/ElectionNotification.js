@@ -124,7 +124,6 @@ class ElectionNotification extends PureComponent {
 
       candidates: null,
       nodesCount: null,
-      showDownloadPlugin: true,
       // todo: should I place statisData in state?
       statisData: electionNotifiStatisData,
       statisDataLoading: false,
@@ -414,13 +413,7 @@ class ElectionNotification extends PureComponent {
       checkExtensionLockStatus,
       currentWallet,
     } = this.props;
-    const {
-      totalVotesAmount,
-      showDownloadPlugin,
-      statisData,
-      statisDataLoading,
-      applyModalVisible,
-    } = this.state;
+    const { statisData, statisDataLoading, applyModalVisible } = this.state;
 
     const { electionContract } = this.props;
 

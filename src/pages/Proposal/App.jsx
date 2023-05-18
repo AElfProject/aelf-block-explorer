@@ -8,12 +8,11 @@ import { useLocation, useNavigate, Outlet, Navigate } from "react-router-dom";
 import useUseLocation from "react-use/lib/useLocation";
 import { useSelector, useDispatch } from "react-redux";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Tabs,Popover } from "antd";
+import { Tabs, Popover } from "antd";
 import { logIn, LOG_IN_ACTIONS } from "@redux/actions/proposalCommon";
 import { LOG_STATUS } from "@redux/common/constants";
 import walletInstance from "@redux/common/wallet";
 import LogButton from "./components/Log";
-import Plugin from "../../components/plugin";
 import Rules from "./components/Rules";
 import { isPhoneCheck, sendMessage } from "../../common/utils";
 
@@ -113,16 +112,15 @@ const App = () => {
     navigate(`/proposal/${key}`);
   };
   return (
-    <div className='proposal'>
-      {isExist ? null : <Plugin />}
+    <div className="proposal">
       <Tabs
         defaultActiveKey={tabKey}
         activeKey={tabKey}
         onChange={handleTabChange}
         tabBarExtraContent={
           <>
-            <Popover content={<Rules />} placement='bottom'>
-              <span className='gap-right-small'>
+            <Popover content={<Rules />} placement="bottom">
+              <span className="gap-right-small">
                 <ExclamationCircleOutlined
                   className={
                     isPhoneCheck() ? "main-color" : "gap-right-small main-color"
@@ -135,12 +133,12 @@ const App = () => {
           </>
         }
       >
-        <TabPane tab='Proposals' key='proposals' />
-        {isLogged && <TabPane tab='Apply' key='apply' />}
-        <TabPane tab='Organizations' key='organizations' />
-        {isLogged && <TabPane tab='My Proposals' key='myProposals' />}
+        <TabPane tab="Proposals" key="proposals" />
+        {isLogged && <TabPane tab="Apply" key="apply" />}
+        <TabPane tab="Organizations" key="organizations" />
+        {isLogged && <TabPane tab="My Proposals" key="myProposals" />}
       </Tabs>
-      <div className='proposal-container'>
+      <div className="proposal-container">
         <Outlet />
       </div>
     </div>
