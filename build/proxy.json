@@ -84,10 +84,10 @@
   },
   {
     "description": "portkey services",
-    "target": "https://dapp-portkey-test.portkey.finance",
+    "target": "https://did-portkey.portkey.finance",
     "context": ["/portkey"],
     "headers": {
-      "Host": "dapp-portkey-test.portkey.finance"
+      "Host": "did-portkey.portkey.finance"
     },
     "changeOrigin": true,
     "secure": false,
