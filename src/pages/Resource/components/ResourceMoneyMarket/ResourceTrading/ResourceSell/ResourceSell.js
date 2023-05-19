@@ -25,6 +25,7 @@ import getFees from "../../../../../../utils/getFees";
 import "./ResourceSell.less";
 import { isPhoneCheck } from "../../../../../../utils/deviceCheck";
 import walletInstance from "../../../../../../redux/common/wallet";
+import ButtonWithLoginCheck from "../../../../../../components/ButtonWithLoginCheck";
 
 const status = { ERROR: "error" };
 
@@ -459,14 +460,14 @@ class ResourceSell extends Component {
               {currentResourceType}
             </div>
           </div>
-          <Button
+          <ButtonWithLoginCheck
             className="trading-button sell-btn"
             onClick={this.checkAndShowSellModal}
             loading={sellBtnLoading || sellEstimateValueLoading}
             disabled={validate.validateStatus === status.ERROR}
           >
             Sell
-          </Button>
+          </ButtonWithLoginCheck>
         </div>
       </div>
     );

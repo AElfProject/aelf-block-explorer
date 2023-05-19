@@ -13,6 +13,7 @@ import "./ResourceAElfWallet.less";
 import addressFormat from "../../../../utils/addressFormat";
 import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import walletInstance from "../../../../redux/common/wallet";
+import { WebLoginState, useWebLogin } from "aelf-web-login";
 
 const ResourceWallet = React.forwardRef(({
   title,
@@ -20,7 +21,6 @@ const ResourceWallet = React.forwardRef(({
   tokenContract,
   resourceTokens: tokens,
   balance,
-  loginAndInsertKeyPairs,
   getCurrentBalance,
   getResource,
 }, ref) => {
@@ -31,6 +31,9 @@ const ResourceWallet = React.forwardRef(({
   const isPhone = isPhoneCheck();
 
   const [loading, setLoading] = useState(true);
+
+  const { loginState, login, logout } = useWebLogin();
+
 
   const getCurrentWalletBalance = useCallback(async () => {
     const payload = {
@@ -85,42 +88,42 @@ const ResourceWallet = React.forwardRef(({
     refreshWalletInfo,
   }));
 
-  const extensionLogout = useCallback(() => {
-    setLoading(true);
-    walletInstance.proxy.elfInstance.chain.getChainStatus().then(
-      (result) => {
-        if (result) {
-          const isPluginLock = result.error === 200005;
-          if (isPluginLock) {
-            message.warn(result.message || result.errorMessage.message);
-          } else {
-            walletInstance.logout(currentWallet.address).then(
-              () => {
-                message.success(
-                  "Logout successful, refresh after 3s.",
-                  3,
-                  () => {
-                    localStorage.removeItem("currentWallet");
-                    window.location.reload();
-                  }
-                );
-              },
-              () => {
-                setLoading(false);
-                message.error("logout failed");
-              }
-            );
-          }
-          setLoading(false);
-        }
-      },
-      (error) => {
-        setLoading(false);
-        // eslint-disable-next-line no-console
-        console.error("walletInstance.chain.getChainStatus:error", error);
-      }
-    );
-  }, [currentWallet]);
+  // const extensionLogout = useCallback(() => {
+  //   setLoading(true);
+  //   walletInstance.proxy.elfInstance.chain.getChainStatus().then(
+  //     (result) => {
+  //       if (result) {
+  //         const isPluginLock = result.error === 200005;
+  //         if (isPluginLock) {
+  //           message.warn(result.message || result.errorMessage.message);
+  //         } else {
+  //           walletInstance.logout(currentWallet.address).then(
+  //             () => {
+  //               message.success(
+  //                 "Logout successful, refresh after 3s.",
+  //                 3,
+  //                 () => {
+  //                   localStorage.removeItem("currentWallet");
+  //                   window.location.reload();
+  //                 }
+  //               );
+  //             },
+  //             () => {
+  //               setLoading(false);
+  //               message.error("logout failed");
+  //             }
+  //           );
+  //         }
+  //         setLoading(false);
+  //       }
+  //     },
+  //     (error) => {
+  //       setLoading(false);
+  //       // eslint-disable-next-line no-console
+  //       console.error("walletInstance.chain.getChainStatus:error", error);
+  //     }
+  //   );
+  // }, [currentWallet]);
 
   const hasLogin = currentWallet && currentWallet.address;
   const propsTile = title || "-";
@@ -168,7 +171,7 @@ const ResourceWallet = React.forwardRef(({
             )}
 
             <Col className="resource-wallet-operation-container">
-              {!(currentWallet && currentWallet.address && tokenContract) && (
+              {/* {!(currentWallet && currentWallet.address && tokenContract) && (
                 <Button
                   type="text"
                   className="resource-wallet-address-update update-btn"
@@ -176,28 +179,37 @@ const ResourceWallet = React.forwardRef(({
                 >
                   Login
                 </Button>
-              )}
+              )} */}
+
+              {
+                (loginState === WebLoginState.initial || loginState === WebLoginState.lock) &&
+                <Button
+                  type="text"
+                  className="resource-wallet-address-update update-btn"
+                  onClick={() => login()}
+                >
+                  { loginState === WebLoginState.lock ? "Unlock" : "Login" }
+                </Button>
+              }
 
               <Button
                 type="text"
                 className="resource-wallet-address-update update-btn"
-                disabled={
-                  !(currentWallet && currentWallet.address && tokenContract)
-                }
+                disabled={loginState !== WebLoginState.logined}
                 onClick={refreshWalletInfo}
               >
                 Refresh
                 <SyncOutlined type="sync" spin={loading} />
               </Button>
 
-              {!isPhone && currentWallet && currentWallet.name && (
+              {!isPhone && currentWallet && currentWallet.address && (
                 <Button
                   type="text"
                   className="resource-wallet-address-update update-btn"
                   disabled={
                     !(currentWallet && currentWallet.address && tokenContract)
                   }
-                  onClick={extensionLogout}
+                  onClick={logout}
                 >
                   Logout
                   <LogoutOutlined type="logout" />

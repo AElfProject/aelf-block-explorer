@@ -6,6 +6,7 @@
 
 import React, { Component } from "react";
 import debounce from "lodash.debounce";
+import { connect } from "react-redux";
 import {
   Input,
   InputNumber,
@@ -33,12 +34,15 @@ import {
 } from "@src/constants";
 import { getMagneticValue } from "@utils/styleUtils";
 import { regPos } from "@utils/regExps";
+import ButtonWithLoginCheck from '../../../../../../components/ButtonWithLoginCheck';
 import getEstimatedValueRes from "../../../../../../utils/getEstimatedValueRes";
 import getEstimatedValueELF from "../../../../../../utils/getEstimatedValueELF";
 import getFees from "../../../../../../utils/getFees";
 import "./ResourceBuy.less";
 import { isPhoneCheck } from "../../../../../../utils/deviceCheck";
 import walletInstance from "../../../../../../redux/common/wallet";
+import { LOG_STATUS } from "../../../../../../redux/common/constants";
+import { WebLoginInstance } from "../../../../../../utils/webLogin";
 
 const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
 const status = { ERROR: "error" };
@@ -56,7 +60,15 @@ function getMax(inputMax) {
     processedBuyNumMax,
   };
 }
-export default class ResourceBuy extends Component {
+
+const mapStateToProps = (state) => ({
+  common: {
+    ...state.common
+  }
+});
+
+class ResourceBuy extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -363,32 +375,33 @@ export default class ResourceBuy extends Component {
   }
 
   checkAndShowBuyModal() {
-    walletInstance.isExist.then(
-      async () => {
-        const instance = walletInstance.proxy.elfInstance;
-        if (typeof instance.getExtensionInfo === "function") {
-          const info = await walletInstance.getExtensionInfo();
-          this.setState({
-            isPluginLock: info.locked,
-          });
-        }
-        try {
-          await this.props.loginAndInsertKeypairs(false);
-          this.getBuyModalShow();
-        } catch (error) {
-          localStorage.removeItem("currentWallet");
-          const msg =
-            error === 200010
-              ? "Please Login."
-              : error?.message ||
-                "Please check your NightELF browser extension.";
-          message.warn(msg);
-        }
-      },
-      () => {
-        message.warn("Please download and install NightELF browser extension.");
-      }
-    );
+    this.getBuyModalShow();
+    // walletInstance.isExist.then(
+    //   async () => {
+    //     const instance = walletInstance.proxy.elfInstance;
+    //     if (typeof instance.getExtensionInfo === "function") {
+    //       const info = await walletInstance.getExtensionInfo();
+    //       this.setState({
+    //         isPluginLock: info.locked,
+    //       });
+    //     }
+    //     try {
+    //       await this.props.loginAndInsertKeypairs(false);
+    //       this.getBuyModalShow();
+    //     } catch (error) {
+    //       localStorage.removeItem("currentWallet");
+    //       const msg =
+    //         error === 200010
+    //           ? "Please Login."
+    //           : error?.message ||
+    //             "Please check your NightELF browser extension.";
+    //       message.warn(msg);
+    //     }
+    //   },
+    //   () => {
+    //     message.warn("Please download and install NightELF browser extension.");
+    //   }
+    // );
   }
 
   getBuyModalShow() {
@@ -437,16 +450,33 @@ export default class ResourceBuy extends Component {
       return;
     }
 
-    const wallet = {
-      address: currentWallet.address,
-    };
-
-    const instance = walletInstance.proxy.elfInstance;
-    instance.chain.contractAt(contracts.multiToken, wallet).then((contract) => {
-      if (contract) {
-        this.getApprove(contract);
+    const { handleModifyTradingState } = this.props;
+    handleModifyTradingState(
+      {
+        buyVisible: true,
+      },
+      () => {
+        this.setState({
+          buyBtnLoading: false,
+        });
       }
-    });
+    );
+
+    // const wallet = {
+    //   address: currentWallet.address,
+    // };
+
+    // WebLoginInstance.get().callContract({
+    //   contractAddress: contracts.multiToken,
+    //   methodName: "Approve",
+    // })
+
+    // const instance = walletInstance.proxy.elfInstance;
+    // instance.chain.contractAt(contracts.multiToken, wallet).then((contract) => {
+    //   if (contract) {
+    //     this.getApprove(contract);
+    //   }
+    // });
   }
 
   getApprove(result) {
@@ -629,7 +659,7 @@ export default class ResourceBuy extends Component {
               {SYMBOL}
             </div>
           </div>
-          <Button
+          <ButtonWithLoginCheck
             className="trading-button buy-btn"
             onClick={this.checkAndShowBuyModal}
             loading={
@@ -638,9 +668,11 @@ export default class ResourceBuy extends Component {
             disabled={validate.validateStatus === status.ERROR}
           >
             Buy
-          </Button>
+          </ButtonWithLoginCheck>
         </div>
       </div>
     );
   }
 }
+
+export default connect(mapStateToProps)(ResourceBuy);

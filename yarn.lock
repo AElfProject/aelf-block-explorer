@@ -2,6 +2,19 @@
 # yarn lockfile v1
 
 
+"@aelf-react/core@^0.1.19":
+  version "0.1.19"
+  resolved "https://registry.npmmirror.com/@aelf-react/core/-/core-0.1.19.tgz#b2052c6c29acfc4abddaed316ab9cc5956420d4d"
+  integrity sha512-s329rJOfpNJkw9yRkKA4yqk9iLBn0d2tYZolVt82xwThdslGgvkjf2SUsqkfR4p5cqAMzX94Dm9UdBXVtktNCw==
+  dependencies:
+    "@aelf-react/types" "^0.1.10"
+    aelf-bridge "^0.0.10"
+
+"@aelf-react/types@^0.1.10":
+  version "0.1.10"
+  resolved "https://registry.npmmirror.com/@aelf-react/types/-/types-0.1.10.tgz#dc8e426401140e138def17623f464ac22dc3489d"
+  integrity sha512-oKEI07EeL8dhUqp8ze50mCXOqAS5psoOpdmCNZaFT2R62/GPoAyvtN8oaZAUb1tycpE+eUdkdv8XDblEsIIiLA==
+
 "@aelfqueen/protobufjs@^6.8.9":
   version "6.8.9"
   resolved "https://registry.yarnpkg.com/@aelfqueen/protobufjs/-/protobufjs-6.8.9.tgz#5eb0e6f2d649994501eb472d98052958e237fbfb"
@@ -2363,10 +2376,10 @@
     "@portkey/utils" "^0.0.1-alpha.1.8"
     aelf-sdk "^3.2.44"
 
-"@portkey/did-ui-react@^0.0.1-alpha.7.4":
-  version "0.0.1-alpha.7.4"
-  resolved "https://registry.npmjs.org/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.7.4.tgz#81edd7dca51852d36ea2794d9d4a2e1b130cad07"
-  integrity sha512-J8HPbLiGG96BXQBAJfkgyeCj0DWBWa4dCXOnRJZHvtYcVXBEkIXxgcr1FwTFxFflSJ5MONthQenms6fvYs5pAw==
+"@portkey/did-ui-react@0.0.1-alpha.7.5":
+  version "0.0.1-alpha.7.5"
+  resolved "https://registry.npmmirror.com/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.7.5.tgz#50fefdaba986da5fc157720c89e3decd94e9737b"
+  integrity sha512-7ILhbcbzbrmw6Hkp1aSVQKA3XxPb5P8NcF+J1c6gSm5YVLBzAc/MpU+cotrRjCGBkiEJlMVQ5Z9L+n8HI5bp0Q==
   dependencies:
     "@matt-block/react-recaptcha-v2" "^2.0.0"
     "@portkey/did" "^0.0.1-alpha.3.3"
@@ -2375,6 +2388,27 @@
     antd-mobile "5.26.0"
     bignumber.js "^9.1.0"
     clsx "^1.2.1"
+    lottie-web "5.9.6"
+    query-string "^6.14.1"
+    react-i18next "^11.18.6"
+    react-qrcode-logo "2.9.0"
+    react-use "^17.4.0"
+    reactjs-social-login "^2.6.2"
+    uuid "^8.3.2"
+
+"@portkey/did-ui-react@^0.0.1-alpha.7.9":
+  version "0.0.1-alpha.7.9"
+  resolved "https://registry.npmmirror.com/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.7.9.tgz#a0a0246337782d6d1dee91a67160a36d6f74a439"
+  integrity sha512-w9Ev6Tad+IK+7fnLPnXvuPCrWS5Q37N+6vWmizGOUQ8xjaszIYpMdvXSQO7h2b8UiCdSVdfj76E4R9FsROPlqQ==
+  dependencies:
+    "@matt-block/react-recaptcha-v2" "^2.0.0"
+    "@portkey/did" "^0.0.1-alpha.3.3"
+    aelf-sdk "^3.2.40"
+    antd "4.24.4"
+    antd-mobile "5.26.0"
+    bignumber.js "^9.1.0"
+    clsx "^1.2.1"
+    lottie-web "5.9.6"
     query-string "^6.14.1"
     react-i18next "^11.18.6"
     react-qrcode-logo "2.9.0"
@@ -3331,6 +3365,18 @@ aelf-block-scan@^0.4.1:
     aelf-sdk "^3.2.29"
     cross-env "^5.2.0"
     log4js "^3.0.5"
+
+aelf-bridge@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.npmmirror.com/aelf-bridge/-/aelf-bridge-0.0.10.tgz#8885a5f77c0639edd5ceb9f3fefcd2670af2588f"
+  integrity sha512-jeTPsHnsCaGgzbjPYFhdk7rXIfk2LOyXsASV2tuEfqDnqVvy5RHiK+WT+wgmVu7DSmGkZdood2tVlCMv8zDwLw==
+  dependencies:
+    "@babel/runtime" "^7.6.3"
+    browserify-cipher "^1.0.1"
+    create-hmac "^1.1.7"
+    elliptic "^6.5.1"
+    socket.io-client "^2.3.0"
+    uuid "^3.3.3"
 
 aelf-bridge@^0.0.9:
   version "0.0.9"
@@ -9242,6 +9288,11 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+lottie-web@5.9.6:
+  version "5.9.6"
+  resolved "https://registry.npmmirror.com/lottie-web/-/lottie-web-5.9.6.tgz#62ae68563355d3e04aa75d53dec3dd4bea0e57c9"
+  integrity sha512-JFs7KsHwflugH5qIXBpB4905yC1Sub2MZWtl/elvO/QC6qj1ApqbUZJyjzJseJUtVpgiDaXQLjBlIJGS7UUUXA==
+
 loud-rejection@^1.0.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/loud-rejection/-/loud-rejection-1.6.0.tgz#5b46f80147edee578870f086d04821cf998e551f"
@@ -11490,7 +11541,7 @@ qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"
   integrity sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==
 
-query-string@5.1.1, query-string@^5.1.1:
+query-string@5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-5.1.1.tgz#a78c012b71c17e05f2e3fa2319dd330682efb3cb"
   integrity sha512-gjWOsm2SoGlgLEdAGt7a6slVOk9mGiXmPFMqrEhLQ68rhQuBnpfs3+EmlvqKyxnCo9/PPlF+9MtY02S1aFg+Jw==
@@ -12291,7 +12342,7 @@ react-transition-group@^4.4.5:
 
 react-universal-interface@^0.6.2:
   version "0.6.2"
-  resolved "https://registry.yarnpkg.com/react-universal-interface/-/react-universal-interface-0.6.2.tgz#5e8d438a01729a4dbbcbeeceb0b86be146fe2b3b"
+  resolved "https://registry.npmmirror.com/react-universal-interface/-/react-universal-interface-0.6.2.tgz#5e8d438a01729a4dbbcbeeceb0b86be146fe2b3b"
   integrity sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==
 
 react-use@^17.4.0:
@@ -14249,6 +14300,11 @@ tslib@^2.3.0, tslib@^2.4.1:
   version "2.5.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.5.0.tgz#42bfed86f5787aeb41d031866c8f402429e0fddf"
   integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
+
+tslib@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.npmmirror.com/tslib/-/tslib-2.5.1.tgz#f2ad78c367857d54e49a0ef9def68737e1a67b21"
+  integrity sha512-KaI6gPil5m9vF7DKaoXxx1ia9fxS4qG5YveErRRVknPDXXriu5M8h48YRjB6h5ZUOKuAKlSJYb0GaDe8I39fRw==
 
 tsutils@^3.21.0:
   version "3.21.0"
