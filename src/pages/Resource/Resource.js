@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import { aelf } from "../../utils";
 import { resourceTokens } from "../../../config/config";
 import DownloadPlugins from "../../components/DownloadPlugins/DownloadPlugins";
-import ResourceAElfWallet from "./components/ResourceAElfWallet/ResourceAElfWallet";
+import ResourceWallet from "./components/ResourceAElfWallet/ResourceWallet";
 import getContractAddress from "../../utils/getContractAddress";
 import ResourceMoneyMarket from "./components/ResourceMoneyMarket/ResourceMoneyMarket";
 import getLogin from "../../utils/getLogin";
@@ -200,8 +200,8 @@ class Resource extends Component {
       currentBalance,
     } = this.state;
     return (
-      <ResourceAElfWallet
-        title="AELF Wallet"
+      <ResourceWallet
+        title="My Wallet"
         ref={(wallet) => {
           this.walletRef = wallet;
         }}
