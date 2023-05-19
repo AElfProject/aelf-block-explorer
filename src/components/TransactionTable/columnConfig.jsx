@@ -133,9 +133,7 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="block">
-            <Link to={`/block/${text}`} title={text}>
-              {text}
-            </Link>
+            <Link to={`/block/${text}`}>{text}</Link>
           </div>
         );
       },
@@ -163,11 +161,8 @@ export default (timeFormat, price, handleFormatChange) => {
               title={addressFormat(text)}
               overlayInnerStyle={{ color: "#fff" }}
             >
-              <Link
-                to={`/address/${addressFormat(text)}`}
-                title={addressFormat(text)}
-              >
-                {addressFormat(hiddenAddress(text))}
+              <Link to={`/address/${addressFormat(text)}`}>
+                <span>{addressFormat(hiddenAddress(text))}</span>
               </Link>
             </Tooltip>
             <CopyButton value={addressFormat(text)} />
@@ -187,10 +182,7 @@ export default (timeFormat, price, handleFormatChange) => {
               title={addressFormat(text)}
               overlayInnerStyle={{ color: "#fff" }}
             >
-              <Link
-                to={`/address/${addressFormat(text)}`}
-                title={addressFormat(text)}
-              >
+              <Link to={`/address/${addressFormat(text)}`}>
                 {addressFormat(hiddenAddress(text))}
               </Link>
             </Tooltip>

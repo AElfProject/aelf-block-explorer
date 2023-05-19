@@ -11,13 +11,15 @@ import { getFormattedDate } from "../../../../utils/timeUtils";
 import { numberFormatter } from "../../../../utils/formater";
 import addressFormat, { hiddenAddress } from "../../../../utils/addressFormat";
 import CopyButton from "../../../../components/CopyButton/CopyButton";
+import { TOEKN_LIST } from "../../../../common/constants";
 
 const CHAINS_LIST = CHAIN_STATE.chainItem;
 
-const getAddress = (address, nowFlag, input, record) => {
+const getAddress = (nowFlag, input, record) => {
   let complete = "";
   let hidden = "";
   let all = "";
+  let isBlank = false;
   if (nowFlag) {
     complete = addressFormat(input);
     hidden = addressFormat(hiddenAddress(input));
@@ -39,11 +41,13 @@ const getAddress = (address, nowFlag, input, record) => {
       return ele.chainId !== record.relatedChainId;
     }).chainsLink.replace(/^\/+|\/+$/g, "");
     all = `${chainsLink}/address/${complete}`;
+    isBlank = true;
   }
   return {
     complete,
     hidden,
     all,
+    isBlank,
   };
 };
 const getColumnConfig = ({
@@ -95,8 +99,7 @@ const getColumnConfig = ({
       className: "color-blue",
       render(from, record) {
         const isOut = from === address;
-        const { complete, hidden, all } = getAddress(
-          address,
+        const { complete, hidden, all, isBlank } = getAddress(
           isOut,
           from,
           record
@@ -104,7 +107,9 @@ const getColumnConfig = ({
         return (
           <div className="from">
             <Tooltip title={complete} overlayInnerStyle={{ color: "#fff" }}>
-              <Link to={all}>{hidden}</Link>
+              <Link to={all} target={isBlank && "_blank"}>
+                {hidden}
+              </Link>
             </Tooltip>
             <CopyButton value={complete} />
             <Tag className={clsx(isOut ? "out" : "in")}>
@@ -122,11 +127,13 @@ const getColumnConfig = ({
       className: "color-blue",
       render(to, record) {
         const isIn = to === address;
-        const { complete, hidden, all } = getAddress(address, isIn, to, record);
+        const { complete, hidden, all, isBlank } = getAddress(isIn, to, record);
         return (
           <div className="to">
             <Tooltip title={complete} overlayInnerStyle={{ color: "#fff" }}>
-              <Link to={all}>{hidden}</Link>
+              <Link to={all} target={isBlank && "_blank"}>
+                {hidden}
+              </Link>
             </Tooltip>
             <CopyButton value={complete} />
           </div>
@@ -136,7 +143,7 @@ const getColumnConfig = ({
     {
       title: "Amount",
       dataIndex: "amount",
-      width: isMobile ? 50 : 50,
+      width: isMobile ? 80 : 80,
       render(amount) {
         return `${numberFormatter(amount)}`;
       },
@@ -144,9 +151,22 @@ const getColumnConfig = ({
     {
       title: "Token",
       dataIndex: "symbol",
-      width: isMobile ? 50 : 50,
+      width: isMobile ? 80 : 80,
       render(symbol) {
-        return `${symbol}`;
+        const { logoURI } =
+          TOEKN_LIST.find((ele) => ele.symbol === symbol) || {};
+        return (
+          <div className="token">
+            {logoURI ? (
+              <img alt="logo" src={logoURI} />
+            ) : (
+              <span className="default-icon">
+                {symbol.slice(0, 1).toUpperCase()}
+              </span>
+            )}
+            {symbol}
+          </div>
+        );
       },
     },
     {
