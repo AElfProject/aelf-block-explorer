@@ -27,10 +27,7 @@ export default ({ isMobile, preTotal }) => {
             title={addressFormat(text)}
             overlayInnerStyle={{ color: "#fff" }}
           >
-            <Link
-              to={`/address/${addressFormat(text)}`}
-              title={addressFormat(text)}
-            >
+            <Link to={`/address/${addressFormat(text)}`}>
               {addressFormat(hiddenAddress(text))}
             </Link>
           </Tooltip>
