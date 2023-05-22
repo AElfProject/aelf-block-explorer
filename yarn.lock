@@ -2396,10 +2396,10 @@
     reactjs-social-login "^2.6.2"
     uuid "^8.3.2"
 
-"@portkey/did-ui-react@^0.0.1-alpha.7.9":
-  version "0.0.1-alpha.7.9"
-  resolved "https://registry.npmmirror.com/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.7.9.tgz#a0a0246337782d6d1dee91a67160a36d6f74a439"
-  integrity sha512-w9Ev6Tad+IK+7fnLPnXvuPCrWS5Q37N+6vWmizGOUQ8xjaszIYpMdvXSQO7h2b8UiCdSVdfj76E4R9FsROPlqQ==
+"@portkey/did-ui-react@^0.0.1-alpha.8.0":
+  version "0.0.1-alpha.8.0"
+  resolved "https://registry.npmmirror.com/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.8.0.tgz#37766e6c539f027bab5057364333e3dd5f1992d4"
+  integrity sha512-pPuy1wEmhg7Bbk0Qsg0dWhiTz9FYNPETMLzUdQCR7IRy/b9aChKuWNC3MB25kk/mJrnKwzCbhIQ2R+qdB9mXtQ==
   dependencies:
     "@matt-block/react-recaptcha-v2" "^2.0.0"
     "@portkey/did" "^0.0.1-alpha.3.3"

@@ -20,9 +20,10 @@ import config from "../config/config";
 import { get } from "./utils";
 
 import "./index.less";
-import "./common/webLoginConfig";
 import "@portkey/did-ui-react/dist/assets/index.css";
-import 'aelf-web-login/dist/assets/index.css';
+import 'aelf-web-login/dist/assets/index.css'; 
+
+import "./common/webLoginConfig";
 
 import App from "./App";
 

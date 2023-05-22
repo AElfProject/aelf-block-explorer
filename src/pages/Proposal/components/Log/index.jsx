@@ -10,18 +10,16 @@ import { DownOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Menu } from "antd";
 import { logOut, logIn } from "@redux/actions/proposalCommon";
 import { LOG_STATUS } from "@redux/common/constants";
+import { WebLoginState, useWebLogin } from "aelf-web-login";
 import { isPhoneCheck } from "../../../../common/utils";
 
 const OverLay = (props) => {
   const { address } = props;
   const dispatch = useDispatch();
+  const { loginState, login, logout } = useWebLogin();
 
-  function handleLogout() {
-    localStorage.removeItem("currentWallet");
-    dispatch(logOut(address));
-  }
   return (
-    <Menu onClick={handleLogout}>
+    <Menu onClick={logout}>
       <Menu.Item key='1'>Logout</Menu.Item>
     </Menu>
   );
@@ -31,41 +29,34 @@ OverLay.propTypes = {
 };
 
 const LogButton = (props) => {
-  const { isExist } = props;
   const common = useSelector((state) => state.common);
-  const { loading, logStatus, currentWallet } = common;
+  const { loading, currentWallet } = common;
   const { name, address = "" } = currentWallet;
   const dispatch = useDispatch();
-
-  const handleLogin = () => {
-    dispatch(logIn());
-  };
+  const { loginState, login } = useWebLogin();
 
   return (
     <>
-      <If condition={!!isExist}>
+      <If condition={loginState === WebLoginState.logined}>
         <Then>
-          <If condition={logStatus === LOG_STATUS.LOGGED}>
-            <Then>
-              {isPhoneCheck() ? (
-                <Button>{name}</Button>
-              ) : (
-                <Dropdown
-                  overlay={<OverLay loading={loading} address={address} />}
-                >
-                  <Button>
-                    {name} <DownOutlined />
-                  </Button>
-                </Dropdown>
-              )}
-            </Then>
-            <Else>
-              <Button type='primary' loading={loading} onClick={handleLogin}>
-                Login
+          {isPhoneCheck() ? (
+            <Button>{name}</Button>
+          ) : (
+            <Dropdown
+              overlay={<OverLay loading={loading} address={address} />}
+            >
+              <Button type="primary" className="proposals-login-btn">
+                {name} 
+                <DownOutlined />
               </Button>
-            </Else>
-          </If>
+            </Dropdown>
+          )}
         </Then>
+        <Else>
+          <Button type='primary' loading={loading} onClick={login}>
+            Login
+          </Button>
+        </Else>
       </If>
     </>
   );

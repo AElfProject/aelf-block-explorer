@@ -182,7 +182,7 @@ const WithoutApprovalModal = (props: IProps) => {
         <div className="content">
           {noticeContent.map((ele, index) => {
             return (
-              <div className="content-item">
+              <div className="content-item" key={`notice_${ele}`}>
                 <span>{index + 1}.</span>
                 <span>{ele}</span>
               </div>

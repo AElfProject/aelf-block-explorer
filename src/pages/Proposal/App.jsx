@@ -16,6 +16,7 @@ import LogButton from "./components/Log";
 import Plugin from "../../components/plugin";
 import Rules from "./components/Rules";
 import { isPhoneCheck, sendMessage } from "../../common/utils";
+import { useWebLogin } from "aelf-web-login";
 
 const { TabPane } = Tabs;
 
@@ -59,6 +60,7 @@ const App = () => {
   const { href } = useUseLocation();
 
   const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus]);
+  const { loginState } = useWebLogin();
 
   useEffect(() => {
     sendMessage({
@@ -66,55 +68,54 @@ const App = () => {
     });
   }, [href]);
 
-  useEffect(() => {
-    walletInstance.isExist
-      .then((result) => {
-        const wallet = JSON.parse(localStorage.getItem("currentWallet"));
-        const timeDiff = wallet
-          ? new Date().valueOf() - Number(wallet.timestamp)
-          : 15 * 60 * 1000;
+  // useEffect(() => {
+  //   walletInstance.isExist
+  //     .then((result) => {
+  //       const wallet = JSON.parse(localStorage.getItem("currentWallet"));
+  //       const timeDiff = wallet
+  //         ? new Date().valueOf() - Number(wallet.timestamp)
+  //         : 15 * 60 * 1000;
 
-        setIsExist(result);
-        if (!result) {
-          dispatch({
-            type: LOG_IN_ACTIONS.LOG_IN_FAILED,
-            payload: {},
-          });
-        } else if (
-          typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
-          "function"
-        ) {
-          walletInstance.getExtensionInfo().then((info) => {
-            if (!info.locked) {
-              dispatch(logIn());
-            } else {
-              localStorage.removeItem("currentWallet");
-              dispatch({
-                type: LOG_IN_ACTIONS.LOG_IN_FAILED,
-                payload: {},
-              });
-            }
-          });
-        } else if (timeDiff < 15 * 60 * 1000) {
-          dispatch(logIn());
-        } else {
-          localStorage.removeItem("currentWallet");
-          dispatch({
-            type: LOG_IN_ACTIONS.LOG_IN_FAILED,
-            payload: {},
-          });
-        }
-      })
-      .catch(() => {
-        setIsExist(false);
-      });
-  }, []);
+  //       setIsExist(result);
+  //       if (!result) {
+  //         dispatch({
+  //           type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+  //           payload: {},
+  //         });
+  //       } else if (
+  //         typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+  //         "function"
+  //       ) {
+  //         walletInstance.getExtensionInfo().then((info) => {
+  //           if (!info.locked) {
+  //             dispatch(logIn());
+  //           } else {
+  //             localStorage.removeItem("currentWallet");
+  //             dispatch({
+  //               type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+  //               payload: {},
+  //             });
+  //           }
+  //         });
+  //       } else if (timeDiff < 15 * 60 * 1000) {
+  //         dispatch(logIn());
+  //       } else {
+  //         localStorage.removeItem("currentWallet");
+  //         dispatch({
+  //           type: LOG_IN_ACTIONS.LOG_IN_FAILED,
+  //           payload: {},
+  //         });
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setIsExist(false);
+  //     });
+  // }, []);
   const handleTabChange = (key) => {
     navigate(`/proposal/${key}`);
   };
   return (
     <div className='proposal'>
-      {isExist ? null : <Plugin />}
       <Tabs
         defaultActiveKey={tabKey}
         activeKey={tabKey}
@@ -131,7 +132,7 @@ const App = () => {
                 {isPhoneCheck() ? " Rule" : "Proposal Rules"}
               </span>
             </Popover>
-            <LogButton isExist={!!isExist} />
+            <LogButton />
           </>
         }
       >
