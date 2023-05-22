@@ -4,7 +4,9 @@
  */
 import { message } from 'antd';
 import moment from 'moment';
+import { Buffer } from 'buffer';
 import constants from './constants';
+
 
 const {
   viewer,
@@ -55,15 +57,17 @@ export const rand16Num = (len = 0) => {
 };
 
 export const showTransactionResult = (result) => {
+  console.log(result);
   if (result && +result.error === 0 || !result.error) {
+    const ret = result.transactionId && result || result.result || result.data || result;
     message.info(
       'The transaction is in progress. Please query the transaction ID',
       10,
     );
-    message.info(`Transaction ID: ${result.TransactionId || result.result.TransactionId}`, 10);
+    message.info(`Transaction ID: ${ret.TransactionId}`, 10);
     return result;
   }
-  throw new Error((result.errorMessage || {}).message || 'Send transaction failed');
+  throw new Error((result.errorMessage || {}).message || (result.error && result.error.message) || 'Send transaction failed');
 };
 
 export function isInnerType(inputType) {

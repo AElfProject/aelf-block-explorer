@@ -30,6 +30,7 @@ import {
 import { request } from "../../../../common/request";
 import { getTokenList, getContract, sleep } from "../../../../common/utils";
 import "./index.less";
+import { useWebLogin } from "aelf-web-login";
 
 const { Switch: ConditionSwitch, Case } = ReactIf;
 
@@ -370,6 +371,9 @@ const CreateOrganization = () => {
   const [formData, setFormData] = useState({
     proposalType: proposalTypes.ASSOCIATION,
   });
+
+  const { callContract } = useWebLogin();
+
   // const [whiteList, setWhiteList] = useState([]);
   useEffect(() => {
     getTokenList().then((tokens) => {
@@ -388,10 +392,12 @@ const CreateOrganization = () => {
       const formValue = await validateFields();
       setIsLoading(true);
       let param = getContractParams(formValue, tokenList);
+      console.log(param);
       const contract = await getContract(
         aelf,
         getContractAddress(formValue.proposalType)
       );
+      console.log(contract);
       const orgAddress = await contract.CalculateOrganizationAddress.call(
         param
       );
@@ -405,10 +411,12 @@ const CreateOrganization = () => {
           creationToken: rand16Num(64),
         };
       }
-      const result = await wallet.invoke({
+      
+      console.log('callContract', param)
+      const result = await callContract({
         contractAddress: getContractAddress(formValue.proposalType),
-        param,
-        contractMethod: "CreateOrganization",
+        methodName: "CreateOrganization",
+        args: param,
       });
       showTransactionResult(result);
       await sleep(2000);

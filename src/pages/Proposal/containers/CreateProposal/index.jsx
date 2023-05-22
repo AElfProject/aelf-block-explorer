@@ -37,6 +37,7 @@ import { get } from "../../../../utils";
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
 import { hexStringToByteArray } from "../../../../utils/formater";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
+import { useWebLogin } from "aelf-web-login";
 
 const { TabPane } = Tabs;
 
@@ -70,6 +71,8 @@ const CreateProposal = () => {
   const [applyModal, setApplyModal] = useState(initApplyModal);
   const [withoutApprovalProps, setWithoutApprovalProps] = useState({});
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
+
+  const { callContract } = useWebLogin();
 
   // open without approval modal
   const onOpenWithoutApprovalModal = (params) => {
@@ -564,9 +567,12 @@ const CreateProposal = () => {
         proposalDescriptionUrl,
         params: { decoded },
       } = normalResult;
-      const result = await wallet.invoke({
+
+
+      const result = await callContract({
         contractAddress: getContractAddress(proposalType),
-        param: {
+        methodName: "CreateProposal",
+        args: {
           contractMethodName,
           toAddress,
           params: uint8ToBase64(decoded || []),
@@ -574,7 +580,6 @@ const CreateProposal = () => {
           organizationAddress,
           proposalDescriptionUrl,
         },
-        contractMethod: "CreateProposal",
       });
       showTransactionResult(result);
     } catch (e) {
