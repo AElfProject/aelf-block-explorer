@@ -14,9 +14,7 @@ import { isPhoneCheck } from "@utils/deviceCheck";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import getContractAddress from "@utils/getContractAddress";
 import config, { schemeIds } from "@config/config";
-import walletInstance from "@redux/common/wallet";
 import { connect } from "react-redux";
-import { aelf } from "@src/utils";
 import { setContractWithName } from "@actions/voteContracts.ts";
 import Decimal from "decimal.js";
 import { SYMBOL, ELF_DECIMAL, NEED_PLUGIN_AUTHORIZE_TIP } from "@src/constants";
@@ -24,6 +22,7 @@ import getStateJudgment from "@utils/getStateJudgment";
 import getCurrentWallet from "@utils/getCurrentWallet";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
 import { getAllTeamDesc } from "@api/vote";
+import { WebLoginState } from "aelf-web-login";
 import "./index.less";
 import MyVote from "./MyVote/MyVote";
 import ElectionNotification from "./ElectionNotification/ElectionNotification";
@@ -46,6 +45,7 @@ import { getFormatedLockTime } from "./utils";
 import getAllTokens from "../../utils/getAllTokens";
 import addressFormat from "../../utils/addressFormat";
 import { withRouter } from "../../routes/utils";
+import { WebLoginInstance } from "../../utils/webLogin";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -63,7 +63,6 @@ class VoteContainer extends Component {
     super(props);
     const { contractsStore } = props;
     this.state = {
-      nightElf: null,
       voteModalVisible: false,
       pluginLockModalVisible: false,
       voteConfirmModalVisible: false,
@@ -72,7 +71,6 @@ class VoteContainer extends Component {
       voteRedeemForm: {},
       // eslint-disable-next-line react/no-unused-state
       voteFrom: 1,
-      currentWallet: null,
       consensusContract: contractsStore.consensusContract,
       dividendContract: contractsStore.dividendContract,
       multiTokenContract: contractsStore.multiTokenContract,
@@ -108,13 +106,11 @@ class VoteContainer extends Component {
           amount: {},
         })),
       },
-      // todo: remove useless state
       totalVoteAmountForOneCandidate: 0,
       totalWithdrawnableVoteAmountForOneCandidate: 0,
       redeemableVoteRecordsForOneCandidate: [],
       activeVoteRecordsForOneCandidate: [],
       redeemVoteSelectedRowKeys: [],
-
       targetPublicKey: null,
       nodeTableRefreshTime: new Date().getTime(),
       shouldRefreshNodeTable: false,
@@ -132,7 +128,7 @@ class VoteContainer extends Component {
       redeemOneVoteModalVisible: false,
       voteConfirmLoading: false, // with setVoteConfirmLoading
       redeemConfirmLoading: false, // with setVoteConfirmLoading
-      isPluginLock: false,
+      // isPluginLock: false,
       dividendLoading: false,
       claimLoading: false,
     };
@@ -158,7 +154,7 @@ class VoteContainer extends Component {
     this.handleDividendClick = this.handleDividendClick.bind(this);
     this.handleClaimDividendClick = this.handleClaimDividendClick.bind(this);
     this.changeVoteState = this.changeVoteState.bind(this);
-    this.checkExtensionLockStatus = this.checkExtensionLockStatus.bind(this);
+    // this.checkExtensionLockStatus = this.checkExtensionLockStatus.bind(this);
     this.handleRedeemOneVoteConfirm =
       this.handleRedeemOneVoteConfirm.bind(this);
     this.hasGetContractsFromExt = false;
@@ -190,37 +186,19 @@ class VoteContainer extends Component {
     } catch (e) {
       console.error(e);
     }
-    // get wallet msg from localStorage
-    const wallet = JSON.parse(localStorage.getItem("currentWallet"));
-    if (
-      wallet &&
-      new Date().valueOf() - Number(wallet.timestamp) < 15 * 60 * 1000
-    ) {
-      this.setState({
-        currentWallet: {
-          ...wallet,
-        },
-      });
-    } else {
-      localStorage.removeItem("currentWallet");
-      this.setState({
-        currentWallet: null,
-      });
-    }
-
-    this.getExtensionKeyPairList();
   }
 
   componentDidUpdate() {
     const {
       shouldRefreshMyWallet,
       electionContract,
-      currentWallet,
       shouldJudgeIsCurrentCandidate,
     } = this.state;
+    const { currentWallet } = this.props;
     if (shouldRefreshMyWallet) {
-      // todo: put the method fetchProfitAmount run with the refresh of wallet
-      this.fetchProfitAmount();
+      this.onExtensionAndWalletReady().then((_) => {
+        this.fetchProfitAmount();
+      });
     }
 
     if (electionContract && currentWallet && shouldJudgeIsCurrentCandidate) {
@@ -247,7 +225,8 @@ class VoteContainer extends Component {
   }
 
   getWalletBalance() {
-    const { currentWallet, multiTokenContract } = this.state;
+    const { currentWallet } = this.props;
+    const { multiTokenContract } = this.state;
     return multiTokenContract.GetBalance.call({
       symbol: SYMBOL,
       owner: currentWallet.address,
@@ -261,7 +240,7 @@ class VoteContainer extends Component {
    * @memberof ElectionNotification
    */
   getContractByContractAddress(result, contractAddrValName, contractNickname) {
-    const { setContractWithName: setContract } = this.props;
+    const { setContractWithName: setContract, aelf } = this.props;
     // TODO: 补充error 逻辑
     // FIXME: why can't I get the contract by contract name ? In aelf-command it works.
     aelf.chain
@@ -277,62 +256,57 @@ class VoteContainer extends Component {
       .catch((err) => console.error("err", err));
   }
 
-  getExtensionKeyPairList() {
-    walletInstance.isExist
-      .then((result) => {
-        if (result) {
-          if (
-            typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
-            "function"
-          ) {
-            walletInstance.getExtensionInfo().then((info) => {
-              this.setState({
-                isPluginLock: info.locked,
-              });
-              if (!info.locked) {
-                this.getChainStatus();
-              } else {
-                localStorage.removeItem("currentWallet");
-              }
-            });
-          } else {
-            this.getChainStatus();
-          }
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
+  // getExtensionKeyPairList() {
+  //   walletInstance.isExist
+  //     .then((result) => {
+  //       if (result) {
+  //         if (
+  //           typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+  //           "function"
+  //         ) {
+  //           walletInstance.getExtensionInfo().then((info) => {
+  //             this.setState({
+  //               isPluginLock: info.locked,
+  //             });
+  //             if (!info.locked) {
+  //               this.getChainStatus();
+  //             } else {
+  //               localStorage.removeItem("currentWallet");
+  //             }
+  //           });
+  //         } else {
+  //           this.getChainStatus();
+  //         }
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // }
 
-  getChainStatus() {
-    walletInstance.proxy.elfInstance.chain
-      .getChainStatus()
-      .then((result) => {
-        if (result) {
-          const isPluginLock = result.error === 200005;
-          this.setState({ isPluginLock });
-          if (isPluginLock) {
-            message.warning(result.errorMessage.message, 3);
-          }
-        }
-      })
-      .catch((error) => {
-        console.err("walletInstance.chain.getChainStatus:error", error);
-      });
-  }
+  // getChainStatus() {
+  //   walletInstance.proxy.elfInstance.chain
+  //     .getChainStatus()
+  //     .then((result) => {
+  //       if (result) {
+  //         const isPluginLock = result.error === 200005;
+  //         this.setState({ isPluginLock });
+  //         if (isPluginLock) {
+  //           message.warning(result.errorMessage.message, 3);
+  //         }
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.err("walletInstance.chain.getChainStatus:error", error);
+  //     });
+  // }
 
   getNightElfKeyPair(wallet) {
     if (!wallet) {
       return;
     }
     wallet.formattedAddress = addressFormat(wallet.address);
-    localStorage.setItem(
-      "currentWallet",
-      JSON.stringify({ ...wallet, timestamp: new Date().valueOf() })
-    );
     this.setState({
-      currentWallet: getCurrentWallet(),
       showWallet: true,
     });
   }
@@ -349,8 +323,6 @@ class VoteContainer extends Component {
   }
 
   handleVoteFromExpiredSelectedRowChange(selectedRowKeys, selectedRows) {
-    console.log("selectedRows", selectedRows);
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
     const voteFromExpiredVoteAmount = selectedRows.reduce(
       (total, current) => total + +current.amount,
       0
@@ -379,10 +351,8 @@ class VoteContainer extends Component {
   }
 
   fetchContractFromExt() {
-    const instance = walletInstance.proxy.elfInstance;
     const { contractsNeedToLoadFromExt } = constants;
-    const { address } = getCurrentWallet();
-    const wallet = { address };
+    const { currentWallet: wallet, aelf } = this.props;
     // todo: get the contract from extension in cdm or other suitable time
     // todo: using the code as follows instead the repeat code in project
     // todo: error handle
@@ -391,7 +361,7 @@ class VoteContainer extends Component {
     return Promise.all(
       contractsNeedToLoadFromExt.map(
         ({ contractAddrValName, contractNickname }) => {
-          return instance.chain
+          return aelf.chain
             .contractAt(config[contractAddrValName], wallet)
             .then((res) => {
               this.setState({
@@ -507,7 +477,8 @@ class VoteContainer extends Component {
   }
 
   judgeCurrentUserIsCandidate() {
-    const { electionContract, currentWallet } = this.state;
+    const { currentWallet } = this.props;
+    const { electionContract } = this.state;
     this.setState(
       {
         shouldJudgeIsCurrentCandidate: false,
@@ -617,50 +588,50 @@ class VoteContainer extends Component {
     }, 4000);
   }
 
-  checkExtensionLockStatus() {
-    return new Promise((resolve) => {
-      walletInstance.isExist
-        .then(() => {
-          const instance = walletInstance.proxy.elfInstance;
-          if (
-            typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
-            "function"
-          ) {
-            walletInstance.getExtensionInfo().then((info) => {
-              this.setState({
-                isPluginLock: info.locked,
-              });
-            });
-          }
-          instance.chain.getChainStatus().then(
-            () => {
-              walletInstance.login().then(async (result) => {
-                const wallet = result;
-                this.getNightElfKeyPair(wallet);
-                // todo: Extract
-                await this.onExtensionAndWalletReady();
-                if (!this.loginMessageLock) {
-                  this.loginMessageLock = true;
-                  message.success("Login success!!", 3);
-                }
-                resolve();
-              });
-            },
-            ({ error, errorMessage }) => {
-              localStorage.removeItem("currentWallet");
-              const msg =
-                error === 200010 ? "Please Login." : errorMessage.message;
-              message.warn(msg);
-            }
-          );
-        })
-        .catch(() => {
-          message.warn(
-            "Please download and install NightELF browser extension."
-          );
-        });
-    });
-  }
+  // checkExtensionLockStatus() {
+  //   return new Promise((resolve) => {
+  //     walletInstance.isExist
+  //       .then(() => {
+  //         const instance = walletInstance.proxy.elfInstance;
+  //         if (
+  //           typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+  //           "function"
+  //         ) {
+  //           walletInstance.getExtensionInfo().then((info) => {
+  //             this.setState({
+  //               isPluginLock: info.locked,
+  //             });
+  //           });
+  //         }
+  //         instance.chain.getChainStatus().then(
+  //           () => {
+  //             walletInstance.login().then(async (result) => {
+  //               const wallet = result;
+  //               this.getNightElfKeyPair(wallet);
+  //               // todo: Extract
+  //               await this.onExtensionAndWalletReady();
+  //               if (!this.loginMessageLock) {
+  //                 this.loginMessageLock = true;
+  //                 message.success("Login success!!", 3);
+  //               }
+  //               resolve();
+  //             });
+  //           },
+  //           ({ error, errorMessage }) => {
+  //             localStorage.removeItem("currentWallet");
+  //             const msg =
+  //               error === 200010 ? "Please Login." : errorMessage.message;
+  //             message.warn(msg);
+  //           }
+  //         );
+  //       })
+  //       .catch(() => {
+  //         message.warn(
+  //           "Please download and install NightELF browser extension."
+  //         );
+  //       });
+  //   });
+  // }
 
   handleVoteClick(ele) {
     const {
@@ -674,13 +645,11 @@ class VoteContainer extends Component {
         const balance = +res.balance / ELF_DECIMAL;
         const formattedBalance = thousandsCommaWithDecimal(balance);
         this.fetchDataVoteNeed();
-
         this.setState({
           balance,
           nodeAddress,
           targetPublicKey,
-          currentWalletName: JSON.parse(localStorage.getItem("currentWallet"))
-            .name,
+          currentWalletName: this.props.currentWallet.name,
           formattedBalance,
           nodeName,
         });
@@ -761,7 +730,7 @@ class VoteContainer extends Component {
 
   fetchUserVoteRecords() {
     const { electionContract, targetPublicKey } = this.state;
-    const currentWallet = getCurrentWallet();
+    const { currentWallet } = this.props;
 
     electionContract.GetElectorVoteWithRecords.call({
       value: currentWallet.publicKey,
@@ -941,6 +910,7 @@ class VoteContainer extends Component {
 
   // todo: use this method instead repeat code
   checkTransactionResult(res, modalToClose) {
+    const { aelf } = this.props;
     const transactionId = res.result
       ? res.result.TransactionId
       : res.TransactionId;
@@ -978,12 +948,13 @@ class VoteContainer extends Component {
   // FIXME: the time calling this method maybe unsuitable
   // FIXME: when the user didn't set the wallet, will it cause problem?
   fetchProfitAmount() {
-    this.setState({
-      currentWallet: getCurrentWallet(),
-    });
     // After fetch all data, do the setState work
     // It will reduce the setState's call times to one
-    const { profitContractFromExt, currentWallet } = this.state;
+    const { currentWallet } = this.props;
+    if (!currentWallet.address) {
+      return Promise.resolve();
+    }
+    const { profitContractFromExt } = this.state;
     return Promise.all([
       getAllTokens(),
       ...schemeIds.map((item) => {
@@ -1049,8 +1020,8 @@ class VoteContainer extends Component {
   }
 
   handleDividendClick() {
-    this.checkExtensionLockStatus()
-      .then(async () => {
+    return async function handleDividendClick() {
+      try {
         this.setState({
           dividendModalVisible: true,
           dividendLoading: true,
@@ -1064,52 +1035,50 @@ class VoteContainer extends Component {
             dividendLoading: false,
           });
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("checkExtensionLockStatus", err);
-      });
+      }
+    };
   }
 
   handleClaimDividendClick(schemeId) {
-    const { profitContractFromExt, currentWallet } = this.state;
-    this.checkExtensionLockStatus()
-      .then(() => {
-        profitContractFromExt
-          .ClaimProfits({
-            schemeId,
-            beneficiary: currentWallet.address,
-          })
-          .then((res) => {
-            const { error, errorMessage } = res;
-            if (+error === 0 || !error) {
-              this.checkTransactionResult(res, "dividendModalVisible")
-                .then(() => {
-                  this.setState({
-                    shouldRefreshMyWallet: true,
-                    claimLoading: false,
-                  });
-                })
-                .catch((err) => {
-                  this.setClaimLoading(false);
-                  message.error(err.Error || err.message);
-                  console.error("handleClaimDividendClick", err);
+    const { currentWallet } = this.props;
+    const { profitContractFromExt } = this.state;
+    const webLoginContext = WebLoginInstance.get().getWebLoginContext();
+    const { loginState } = webLoginContext;
+    if (loginState === WebLoginState.logined) {
+      profitContractFromExt
+        .ClaimProfits({
+          schemeId,
+          beneficiary: currentWallet.address,
+        })
+        .then((res) => {
+          const { error, errorMessage } = res;
+          if (+error === 0 || !error) {
+            this.checkTransactionResult(res, "dividendModalVisible")
+              .then(() => {
+                this.setState({
+                  shouldRefreshMyWallet: true,
+                  claimLoading: false,
                 });
-            } else {
-              message.error(errorMessage.message);
-              this.setState({
-                claimLoading: false,
+              })
+              .catch((err) => {
+                this.setClaimLoading(false);
+                message.error(err.Error || err.message);
+                console.error("handleClaimDividendClick", err);
               });
-            }
-          })
-          .catch((err) => {
-            this.setClaimLoading(false);
-            console.error("handleClaimDividendClick", err);
-          });
-      })
-      .catch((err) => {
-        this.setClaimLoading(false);
-        console.error("checkExtensionLockStatus", err);
-      });
+          } else {
+            message.error(errorMessage.message);
+            this.setState({
+              claimLoading: false,
+            });
+          }
+        })
+        .catch((err) => {
+          this.setClaimLoading(false);
+          console.error("handleClaimDividendClick", err);
+        });
+    }
   }
 
   renderSecondaryLevelNav() {
@@ -1138,6 +1107,7 @@ class VoteContainer extends Component {
   }
 
   render() {
+    const { currentWallet } = this.props;
     const {
       voteModalVisible,
       pluginLockModalVisible,
@@ -1155,12 +1125,10 @@ class VoteContainer extends Component {
       balance,
       nodeAddress,
       nodeName,
-      currentWallet,
       currentWalletName,
       voteAmountInput,
       voteFromExpiredVoteAmount,
       lockTime,
-      nightElf,
       isCandidate,
       expiredVotesAmount,
       switchableVoteRecords,
@@ -1197,7 +1165,6 @@ class VoteContainer extends Component {
           profitContractFromExt={profitContractFromExt}
           dividendContract={dividendContract}
           consensusContract={consensusContract}
-          nightElf={nightElf}
           isCandidate={isCandidate}
           judgeCurrentUserIsCandidate={this.judgeCurrentUserIsCandidate}
           handleDividendClick={this.handleDividendClick}
@@ -1217,7 +1184,6 @@ class VoteContainer extends Component {
         <KeyInTeamInfo
           electionContract={electionContract}
           currentWallet={currentWallet}
-          nightElf={nightElf}
           isPluginLock={isPluginLock}
           checkExtensionLockStatus={this.checkExtensionLockStatus}
         />,
@@ -1370,8 +1336,11 @@ class VoteContainer extends Component {
 
 const mapStateToProps = (state) => {
   const contractsStore = state.voteContracts;
+  const { currentWallet, aelf } = state.common;
   return {
+    currentWallet,
     contractsStore,
+    aelf,
   };
 };
 

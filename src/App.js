@@ -7,7 +7,6 @@ import { BrowserRouter } from "react-router-dom";
 import { useLocation } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { useWebLogin, WebLoginState } from "aelf-web-login";
-// import { useWebLoginContext } from "aelf-web-login/dist/_types/src/context";
 import BrowserHeader from "./components/Header/Header";
 import HeaderBlank from "./components/Header/HeaderBlank";
 import BrowserFooter from "./components/Footer/Footer";
