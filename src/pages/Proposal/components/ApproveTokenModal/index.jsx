@@ -5,10 +5,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import Decimal from "decimal.js";
 import { Form, InputNumber, message, Modal, Button } from "antd";
+import { useWebLogin } from "aelf-web-login";
 import {
   getContractAddress,
   getTxResult,
-  showTransactionResult,
+  sendTransactionWith,
 } from "@redux/common/utils";
 import constants from "@redux/common/constants";
 import { getContract } from "../../../../common/utils";
@@ -100,16 +101,6 @@ const formItemLayout = {
   },
 };
 
-const sendTransaction = async (wallet, contractAddress, method, param) => {
-  const result = await wallet.invoke({
-    contractAddress,
-    param,
-    contractMethod: method,
-  });
-  showTransactionResult(result);
-  return result;
-};
-
 function getFormDesc(allowance) {
   return {
     amount: {
@@ -178,6 +169,8 @@ const ApproveTokenModal = (props) => {
     [loadings, allowanceInfo, inputAmount]
   );
 
+  const { callContract } = useWebLogin();
+
   useEffect(() => {
     if (visible) {
       getProposalAllowanceInfo(aelf, proposalId, owner, tokenSymbol)
@@ -228,8 +221,8 @@ const ApproveTokenModal = (props) => {
       });
       const method = amount > 0 ? "Approve" : "UnApprove";
       amount = Math.abs(amount);
-      const result = await sendTransaction(
-        wallet,
+      const result = await sendTransactionWith(
+        callContract,
         getContractAddress("Token"),
         method,
         {

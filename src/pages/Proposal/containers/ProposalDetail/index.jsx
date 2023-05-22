@@ -26,6 +26,7 @@ import {
   Typography,
 } from "antd";
 import { useSelector } from "react-redux";
+import { useWebLogin } from "aelf-web-login";
 import { ACTIONS_ICON_MAP } from "../ProposalList/Proposal";
 import constants, {
   ACTIONS_COLOR_MAP,
@@ -43,7 +44,7 @@ import OrganizationCard from "./OrganizationCard";
 import ContractDetail from "./ContractDetail";
 import config from "../../../../common/config";
 import "./index.less";
-import { getContractAddress, sendTransaction } from "../../../../redux/common/utils";
+import { getContractAddress, sendTransactionWith } from "../../../../redux/common/utils";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import {
   getBPCount,
@@ -201,6 +202,8 @@ const ProposalDetail = () => {
 
   const { leftOrgInfo = {} } = info.organization;
 
+  const { callContract } = useWebLogin();
+
   const bpCountNumber = useMemo(() => {
     if (NETWORK_TYPE === 'MAIN') {
       return getBPCount(status, expiredTime, releasedTime)
@@ -213,8 +216,8 @@ const ProposalDetail = () => {
     if (proposalType === proposalTypes.REFERENDUM) {
       setVisible(action);
     } else {
-      await sendTransaction(
-        wallet,
+      await sendTransactionWith(
+        callContract,
         getContractAddress(proposalType),
         action,
         proposalId
@@ -239,8 +242,8 @@ const ProposalDetail = () => {
   }
 
   async function handleRelease() {
-    await sendTransaction(
-      wallet,
+    await sendTransactionWith(
+      callContract,
       getContractAddress(proposalType),
       "Release",
       proposalId
@@ -249,8 +252,8 @@ const ProposalDetail = () => {
 
   async function handleConfirm(action) {
     if (action) {
-      await sendTransaction(
-        wallet,
+      await sendTransactionWith(
+        callContract,
         getContractAddress(proposalType),
         action,
         proposalId

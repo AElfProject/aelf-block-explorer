@@ -398,6 +398,7 @@ const CreateOrganization = () => {
       const isOrgExist = await contract.ValidateOrganizationExist.call(
         orgAddress
       );
+      console.log(orgAddress, isOrgExist);
       if (isOrgExist) {
         param = {
           ...param,

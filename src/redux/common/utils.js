@@ -178,6 +178,19 @@ export const sendTransaction = async (wallet, contractAddress, method, param) =>
   }
 };
 
+export const sendTransactionWith = async (callContract, contractAddress, method, param) => {
+  try {
+    const result = await callContract({
+      contractAddress,
+      methodName: method,
+      args: param,
+    });
+    showTransactionResult(result);
+  } catch (e) {
+    message.error((e.errorMessage || {}).message || e.message || 'Send Transaction failed');
+  }
+};
+
 export async function getTxResult(aelf, txId, times = 0, delay = 3000, timeLimit = 10) {
   const currentTime = times + 1;
   await new Promise((resolve) => {

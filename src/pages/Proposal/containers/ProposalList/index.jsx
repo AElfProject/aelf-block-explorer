@@ -28,7 +28,7 @@ import Proposal from "./Proposal";
 import { getProposals } from "../../../../redux/actions/proposalList";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import "./index.less";
-import { getContractAddress, showTransactionResult } from "../../../../redux/common/utils";
+import { getContractAddress, sendTransactionWith } from "../../../../redux/common/utils";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";
 
@@ -143,19 +143,6 @@ const ProposalList = () => {
     handleTabChange(key);
   })
 
-  const sendTransaction = async (contractAddress, method, param) => {
-    try {
-      const result = await callContract({
-        contractAddress,
-        methodName: method,
-        args: param,
-      });
-      showTransactionResult(result);
-    } catch (e) {
-      message.error((e.errorMessage || {}).message || e.message || 'Send Transaction failed');
-    }
-  };
-
   const send = async (id, action) => {
     if (params.proposalType === proposalTypes.REFERENDUM) {
       const [proposal] = list.filter((item) => item.proposalId === id);
@@ -168,7 +155,7 @@ const ProposalList = () => {
       });
     } else {
 
-      sendTransaction(getContractAddress(params.proposalType), action, id);
+      sendTransactionWith(callContract, getContractAddress(params.proposalType), action, id);
 
       // await sendTransaction(
       //   wallet,
@@ -181,7 +168,8 @@ const ProposalList = () => {
 
   async function handleConfirm(action) {
     if (action) {
-      await sendTransaction(
+      await sendTransactionWith(
+        callContract,
         getContractAddress(params.proposalType),
         action,
         proposalInfo.proposalId
@@ -195,7 +183,8 @@ const ProposalList = () => {
 
   const handleRelease = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
-    await sendTransaction(
+    await sendTransactionWith(
+      callContract,
       getContractAddress(params.proposalType),
       "Release",
       id
