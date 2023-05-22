@@ -119,7 +119,7 @@ export default class ResourceAElfWallet extends PureComponent {
         this.setState({
           loading: false,
         });
-        console.err("walletInstance.chain.getChainStatus:error", error);
+        console.error("walletInstance.chain.getChainStatus:error", error);
       }
     );
   }

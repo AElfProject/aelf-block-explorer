@@ -18,6 +18,7 @@ import getStateJudgment from "../../../../../../utils/getStateJudgment";
 import { aelf } from "../../../../../../utils";
 import "./ResourceBuyModal.less";
 import walletInstance from "../../../../../../redux/common/wallet";
+import { WebLoginInstance } from "../../../../../../utils/webLogin";
 
 export default class ResourceBuyModal extends PureComponent {
   constructor(props) {
@@ -31,7 +32,7 @@ export default class ResourceBuyModal extends PureComponent {
     };
   }
 
-  getBuyRes() {
+  async getBuyRes() {
     const { currentWallet } = this.props;
     const { contracts } = this.state;
     this.props.maskClosable();
@@ -41,94 +42,177 @@ export default class ResourceBuyModal extends PureComponent {
     this.setState({
       loading: true,
     });
-    const instance = walletInstance.proxy.elfInstance;
-    instance.chain
-      .contractAt(contracts.tokenConverter, wallet)
-      .then((result) => {
-        // console.log('contracts.tokenConverter: ', result);
-        if (result) {
-          this.requestBuy(result);
-        }
-      });
-  }
 
-  requestBuy(bugRes) {
     const { buyNum, handleModifyTradingState, currentResourceType } =
       this.props;
     const payload = {
       symbol: currentResourceType,
       amount: buyNum * ELF_DECIMAL,
     };
-    bugRes
-      .Buy(payload)
-      .then((result) => {
-        if (result.error && result.error !== 0) {
-          message.error(result.errorMessage.message, 3);
-          this.props.handleCancel();
-          return;
-        }
-        this.setState({
-          loading: true,
-        });
-        const transactionId = result.result
-          ? result.result.TransactionId
-          : result.TransactionId;
-        setTimeout(() => {
-          aelf.chain
-            .getTxResult(transactionId)
-            .then((txRes) => {
-              // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
-              getStateJudgment(txRes.Status, transactionId);
-              this.props.onRefresh();
-              this.setState({
+
+    try {
+      const result = await WebLoginInstance.get().callContract({
+        contractAddress: contracts.tokenConverter,
+        methodName: "Buy",
+        args: payload
+      });
+
+      console.log("Buy", result);
+      if (result.error && result.error !== 0) {
+        message.error(result.errorMessage.message, 3);
+        this.props.handleCancel();
+        return;
+      }
+      this.setState({
+        loading: true,
+      });
+      const transactionId = result.result
+        ? result.result.TransactionId
+        : result.TransactionId;
+
+      setTimeout(() => {
+        aelf.chain
+          .getTxResult(transactionId)
+          .then((txRes) => {
+            // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
+            getStateJudgment(txRes.Status, transactionId);
+            this.props.onRefresh();
+            this.setState({
+              loading: false,
+            });
+            handleModifyTradingState({
+              buyNum: null,
+              buyFee: 0,
+              buyElfValue: 0,
+              buySliderValue: 0,
+            });
+            this.props.handleCancel();
+            this.props.unMaskClosable();
+          })
+          .catch((err) => {
+            this.setState(
+              {
                 loading: false,
-              });
-              handleModifyTradingState({
-                buyNum: null,
-                buyFee: 0,
-                buyElfValue: 0,
-                buySliderValue: 0,
-              });
-              this.props.handleCancel();
-              this.props.unMaskClosable();
-            })
-            .catch((err) => {
-              this.setState(
-                {
-                  loading: false,
-                },
-                () => {
-                  if (regBuyTooManyResource.test(err.Error)) {
-                    message.error(
-                      BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
-                      FAILED_MESSAGE_DISPLAY_TIME
-                    );
-                    message.error(
-                      `Transaction id: ${transactionId}`,
-                      FAILED_MESSAGE_DISPLAY_TIME
-                    );
-                    return;
-                  }
+              },
+              () => {
+                if (regBuyTooManyResource.test(err.Error)) {
                   message.error(
-                    "Your transaction seems to has some problem, please query the transaction later:",
+                    BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
                     FAILED_MESSAGE_DISPLAY_TIME
                   );
                   message.error(
                     `Transaction id: ${transactionId}`,
                     FAILED_MESSAGE_DISPLAY_TIME
                   );
+                  return;
                 }
-              );
-            });
-        }, 4000);
-      })
-      .catch((error) => {
-        this.setState({
-          loading: false,
-        });
-        console.error("result.Buy error", error);
+                message.error(
+                  "Your transaction seems to has some problem, please query the transaction later:",
+                  FAILED_MESSAGE_DISPLAY_TIME
+                );
+                message.error(
+                  `Transaction id: ${transactionId}`,
+                  FAILED_MESSAGE_DISPLAY_TIME
+                );
+              }
+            );
+          });
+      }, 4000);
+    } catch (error) {
+      message.error(error.message, 3);
+      this.setState({
+        loading: false,
       });
+    }
+
+    // const instance = walletInstance.proxy.elfInstance;
+    // instance.chain
+    //   .contractAt(contracts.tokenConverter, wallet)
+    //   .then((result) => {
+    //     // console.log('contracts.tokenConverter: ', result);
+    //     if (result) {
+    //       this.requestBuy(result);
+    //     }
+    //   });
   }
+
+  // requestBuy(bugRes) {
+  //   const { buyNum, handleModifyTradingState, currentResourceType } =
+  //     this.props;
+  //   const payload = {
+  //     symbol: currentResourceType,
+  //     amount: buyNum * ELF_DECIMAL,
+  //   };
+  //   bugRes
+  //     .Buy(payload)
+  //     .then((result) => {
+  //       if (result.error && result.error !== 0) {
+  //         message.error(result.errorMessage.message, 3);
+  //         this.props.handleCancel();
+  //         return;
+  //       }
+  //       this.setState({
+  //         loading: true,
+  //       });
+  //       const transactionId = result.result
+  //         ? result.result.TransactionId
+  //         : result.TransactionId;
+  //       setTimeout(() => {
+  //         aelf.chain
+  //           .getTxResult(transactionId)
+  //           .then((txRes) => {
+  //             // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
+  //             getStateJudgment(txRes.Status, transactionId);
+  //             this.props.onRefresh();
+  //             this.setState({
+  //               loading: false,
+  //             });
+  //             handleModifyTradingState({
+  //               buyNum: null,
+  //               buyFee: 0,
+  //               buyElfValue: 0,
+  //               buySliderValue: 0,
+  //             });
+  //             this.props.handleCancel();
+  //             this.props.unMaskClosable();
+  //           })
+  //           .catch((err) => {
+  //             this.setState(
+  //               {
+  //                 loading: false,
+  //               },
+  //               () => {
+  //                 if (regBuyTooManyResource.test(err.Error)) {
+  //                   message.error(
+  //                     BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
+  //                     FAILED_MESSAGE_DISPLAY_TIME
+  //                   );
+  //                   message.error(
+  //                     `Transaction id: ${transactionId}`,
+  //                     FAILED_MESSAGE_DISPLAY_TIME
+  //                   );
+  //                   return;
+  //                 }
+  //                 message.error(
+  //                   "Your transaction seems to has some problem, please query the transaction later:",
+  //                   FAILED_MESSAGE_DISPLAY_TIME
+  //                 );
+  //                 message.error(
+  //                   `Transaction id: ${transactionId}`,
+  //                   FAILED_MESSAGE_DISPLAY_TIME
+  //                 );
+  //               }
+  //             );
+  //           });
+  //       }, 4000);
+  //     })
+  //     .catch((error) => {
+  //       this.setState({
+  //         loading: false,
+  //       });
+  //       console.error("result.Buy error", error);
+  //     });
+  // }
 
   render() {
     const {

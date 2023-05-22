@@ -39,6 +39,7 @@ const common = (state = initialState, { type, payload }) => {
         currentWallet: {},
       };
     case LOG_IN_ACTIONS.LOG_IN_SUCCESS:
+      console.log(payload);
       return {
         ...state,
         logStatus: LOG_STATUS.LOGGED,

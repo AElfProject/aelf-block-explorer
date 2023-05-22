@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import { aelf } from "../../utils";
 import { resourceTokens } from "../../../config/config";
 import DownloadPlugins from "../../components/DownloadPlugins/DownloadPlugins";
-import ResourceAElfWallet from "./components/ResourceAElfWallet/ResourceAElfWallet";
+import ResourceWallet from "./components/ResourceAElfWallet/ResourceWallet";
 import getContractAddress from "../../utils/getContractAddress";
 import ResourceMoneyMarket from "./components/ResourceMoneyMarket/ResourceMoneyMarket";
 import getLogin from "../../utils/getLogin";
@@ -25,7 +25,6 @@ class Resource extends Component {
     super(props);
     this.informationTimer;
     this.state = {
-      currentWallet: null,
       contracts: null,
       tokenContract: null,
       tokenConverterContract: null,
@@ -53,50 +52,58 @@ class Resource extends Component {
       }
       this.getContract(result);
     });
-    walletInstance.isExist.then(
-      (item) => {
-        if (item) {
-          const instance = walletInstance.proxy.elfInstance;
-          if (
-            typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
-            "function"
-          ) {
-            walletInstance.getExtensionInfo().then(
-              (info) => {
-                if (!info.locked) {
-                  instance.chain.getChainStatus().then((result) => {
-                    this.loginAndInsertKeyPairs(result);
-                  });
-                } else {
-                  localStorage.removeItem("currentWallet");
-                }
-              },
-              () => {
-                const wallet = JSON.parse(
-                  localStorage.getItem("currentWallet")
-                );
-                if (
-                  wallet &&
-                  new Date().valueOf() - Number(wallet.timestamp) <
-                    15 * 60 * 1000
-                ) {
-                  instance.chain.getChainStatus().then((result) => {
-                    this.loginAndInsertKeyPairs(result);
-                  });
-                } else {
-                  localStorage.removeItem("currentWallet");
-                }
-              }
-            );
-          }
-        }
-      },
-      () => {
-        this.setState({
-          showDownloadPlugins: true,
-        });
-      }
-    );
+    // walletInstance.isExist.then(
+    //   (item) => {
+    //     if (item) {
+    //       const instance = walletInstance.proxy.elfInstance;
+    //       if (
+    //         typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
+    //         "function"
+    //       ) {
+    //         walletInstance.getExtensionInfo().then(
+    //           (info) => {
+    //             if (!info.locked) {
+    //               instance.chain.getChainStatus().then((result) => {
+    //                 this.loginAndInsertKeyPairs(result);
+    //               });
+    //             } else {
+    //               localStorage.removeItem("currentWallet");
+    //             }
+    //           },
+    //           () => {
+    //             const wallet = JSON.parse(
+    //               localStorage.getItem("currentWallet")
+    //             );
+    //             if (
+    //               wallet &&
+    //               new Date().valueOf() - Number(wallet.timestamp) <
+    //                 15 * 60 * 1000
+    //             ) {
+    //               instance.chain.getChainStatus().then((result) => {
+    //                 this.loginAndInsertKeyPairs(result);
+    //               });
+    //             } else {
+    //               localStorage.removeItem("currentWallet");
+    //             }
+    //           }
+    //         );
+    //       }
+    //     }
+    //   },
+    //   () => {
+    //     this.setState({
+    //       showDownloadPlugins: true,
+    //     });
+    //   }
+    // );
+  }
+
+  componentDidUpdate(preProps) {
+    console.log(4444444, preProps.currentWallet.address, this.props.currentWallet.address);
+    if (this.props.currentWallet.address && !preProps.currentWallet.address) {
+      console.log('refresh', this.walletRef);
+      this.walletRef.refreshWalletInfo();
+    }
   }
 
   getContract(result) {
@@ -118,21 +125,21 @@ class Resource extends Component {
     );
   }
 
-  loginAndInsertKeyPairs = async (toastMessage = true) => {
-    await walletInstance.login().then(
-      async (result) => {
-        const wallet = result;
-        const instance = walletInstance.proxy.elfInstance;
-        instance.chain.getChainStatus(() => {
-          this.getNightElfKeyPair(wallet);
-        });
-        toastMessage && message.success("Login success!!", 3);
-      },
-      () => {
-        this.loginFailed();
-      }
-    );
-  };
+  // loginAndInsertKeyPairs = async (toastMessage = true) => {
+  //   await walletInstance.login().then(
+  //     async (result) => {
+  //       const wallet = result;
+  //       const instance = walletInstance.proxy.elfInstance;
+  //       instance.chain.getChainStatus(() => {
+  //         this.getNightElfKeyPair(wallet);
+  //       });
+  //       toastMessage && message.success("Login success!!", 3);
+  //     },
+  //     () => {
+  //       this.loginFailed();
+  //     }
+  //   );
+  // };
 
   loginFailed(result) {
     this.setState({
@@ -146,18 +153,18 @@ class Resource extends Component {
     message.warn(warningStr);
   }
 
-  getNightElfKeyPair(wallet) {
-    if (wallet) {
-      localStorage.setItem(
-        "currentWallet",
-        JSON.stringify({ ...wallet, timestamp: new Date().valueOf() })
-      );
-      this.setState({
-        currentWallet: wallet,
-        showWallet: true,
-      });
-    }
-  }
+  // getNightElfKeyPair(wallet) {
+  //   if (wallet) {
+  //     localStorage.setItem(
+  //       "currentWallet",
+  //       JSON.stringify({ ...wallet, timestamp: new Date().valueOf() })
+  //     );
+  //     this.setState({
+  //       currentWallet: wallet,
+  //       showWallet: true,
+  //     });
+  //   }
+  // }
 
   getCurrentBalance = (value) => {
     this.setState({
@@ -194,20 +201,19 @@ class Resource extends Component {
     const {
       tokenContract,
       tokenConverterContract,
-      currentWallet,
       // eslint-disable-next-line no-shadow
       resourceTokens,
       currentBalance,
     } = this.state;
     return (
-      <ResourceAElfWallet
-        title="AELF Wallet"
+      <ResourceWallet
+        title="My Wallet"
         ref={(wallet) => {
           this.walletRef = wallet;
         }}
         tokenContract={tokenContract}
         tokenConverterContract={tokenConverterContract}
-        currentWallet={currentWallet}
+        currentWallet={this.props.currentWallet}
         getCurrentBalance={this.getCurrentBalance}
         getResource={this.getResource}
         resourceTokens={resourceTokens}
@@ -223,7 +229,6 @@ class Resource extends Component {
       // eslint-disable-next-line no-shadow
       appName,
       showDownloadPlugins,
-      currentWallet,
       contracts,
       tokenContract,
       tokenConverterContract,
@@ -252,7 +257,7 @@ class Resource extends Component {
         <div className="resource-money-market">
           <ResourceMoneyMarket
             loginAndInsertKeypairs={this.loginAndInsertKeyPairs}
-            currentWallet={currentWallet}
+            currentWallet={this.props.currentWallet}
             contracts={contracts}
             tokenContract={tokenContract}
             tokenConverterContract={tokenConverterContract}

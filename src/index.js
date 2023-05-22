@@ -10,14 +10,18 @@ import Cookies from "js-cookie";
 
 // 为组件内建文案提供统一的国际化支持。
 import { ConfigProvider } from "antd";
+import { PortkeyConfigProvider } from "@portkey/did-ui-react";
+import { WebLoginProvider } from "aelf-web-login";
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from "antd/lib/locale-provider/en_US";
+import "@portkey/did-ui-react/dist/assets/index.css";
 // import { AppIncrStore } from './Store';
 import store from "./redux/store";
 import config from "../config/config";
 import { get } from "./utils";
 
 import "./index.less";
+import "./common/webLoginConfig";
 
 import App from "./App";
 
@@ -50,7 +54,15 @@ const container = document.getElementById("app");
 ReactDOM.render(
   <ConfigProvider locale={en_US}>
     <Provider store={store}>
-      <App />
+      <PortkeyConfigProvider>
+        <WebLoginProvider
+          connectEagerly
+          autoShowUnlock={false}
+          extraWallets={["elf"]}
+        >
+          <App />
+        </WebLoginProvider>
+      </PortkeyConfigProvider>
     </Provider>
   </ConfigProvider>,
   container
