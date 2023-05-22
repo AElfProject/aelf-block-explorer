@@ -20,7 +20,6 @@ import {
 
 import "./App.less";
 import { useWebLogin, WebLoginState } from "aelf-web-login";
-import { useWebLoginContext } from "aelf-web-login/dist/_types/src/context";
 import { WebLoginInstance } from "./utils/webLogin";
 
 function App() {

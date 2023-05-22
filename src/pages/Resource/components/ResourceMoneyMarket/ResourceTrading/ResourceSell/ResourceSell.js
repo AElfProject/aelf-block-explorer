@@ -262,32 +262,33 @@ class ResourceSell extends Component {
   }
 
   checkAndShowSellModal() {
-    walletInstance.isExist.then(
-      async () => {
-        const instance = walletInstance.proxy.elfInstance;
-        if (typeof instance.getExtensionInfo === "function") {
-          const info = await walletInstance.getExtensionInfo();
-          this.setState({
-            isPluginLock: info.locked,
-          });
-        }
-        try {
-          this.props.loginAndInsertKeypairs(false);
-          this.getSellModalShow();
-        } catch ({ error, errorMessage }) {
-          localStorage.removeItem("currentWallet");
-          const msg =
-            error === 200010
-              ? "Please Login."
-              : errorMessage.message ||
-                "Please check your NightELF browser extension.";
-          message.warn(msg);
-        }
-      },
-      () => {
-        message.warn("Please download and install NightELF browser extension.");
-      }
-    );
+    this.getSellModalShow();
+    // walletInstance.isExist.then(
+    //   async () => {
+    //     const instance = walletInstance.proxy.elfInstance;
+    //     if (typeof instance.getExtensionInfo === "function") {
+    //       const info = await walletInstance.getExtensionInfo();
+    //       this.setState({
+    //         isPluginLock: info.locked,
+    //       });
+    //     }
+    //     try {
+    //       this.props.loginAndInsertKeypairs(false);
+          
+    //     } catch ({ error, errorMessage }) {
+    //       localStorage.removeItem("currentWallet");
+    //       const msg =
+    //         error === 200010
+    //           ? "Please Login."
+    //           : errorMessage.message ||
+    //             "Please check your NightELF browser extension.";
+    //       message.warn(msg);
+    //     }
+    //   },
+    //   () => {
+    //     message.warn("Please download and install NightELF browser extension.");
+    //   }
+    // );
   }
 
   getSellModalShow() {
@@ -336,15 +337,32 @@ class ResourceSell extends Component {
       return;
     }
 
-    const wallet = {
-      address: currentWallet.address,
-    };
-    const instance = walletInstance.proxy.elfInstance;
-    instance.chain.contractAt(contracts.multiToken, wallet).then((contract) => {
-      if (contract) {
-        this.getApprove(contract);
+    const { handleModifyTradingState } = this.props;
+    // console.log('getApprove sell result: ', result);
+    // if (!result) {
+    //   return;
+    // }
+    // todo: handle the error case's loading
+    handleModifyTradingState(
+      {
+        sellVisible: true,
+      },
+      () => {
+        this.setState({
+          sellBtnLoading: false,
+        });
       }
-    });
+    );
+
+    // const wallet = {
+    //   address: currentWallet.address,
+    // };
+    // const instance = walletInstance.proxy.elfInstance;
+    // instance.chain.contractAt(contracts.multiToken, wallet).then((contract) => {
+    //   if (contract) {
+    //     this.getApprove(contract);
+    //   }
+    // });
   }
 
   getApprove(result) {

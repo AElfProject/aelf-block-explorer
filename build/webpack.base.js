@@ -94,7 +94,14 @@ const baseConfig = {
             options: {},
           },
           "css-loader",
-          "postcss-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              config: { 
+                path: path.resolve(__dirname, '../postcss.config.js'), 
+              } 
+            }
+          }
         ],
       },
       {
