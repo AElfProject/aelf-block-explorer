@@ -64,7 +64,7 @@ export const showTransactionResult = (result) => {
       'The transaction is in progress. Please query the transaction ID',
       10,
     );
-    message.info(`Transaction ID: ${ret.TransactionId}`, 10);
+    message.info(`Transaction ID: ${ret.transactionId || ret.TransactionId}`, 10);
     return result;
   }
   throw new Error((result.errorMessage || {}).message || (result.error && result.error.message) || 'Send transaction failed');

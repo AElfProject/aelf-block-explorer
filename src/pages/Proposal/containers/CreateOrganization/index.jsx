@@ -20,6 +20,7 @@ import {
   Divider,
   Form,
 } from "antd";
+import { useWebLogin } from "aelf-web-login";
 import constants, { API_PATH } from "@redux/common/constants";
 import {
   commonFilter,
@@ -30,7 +31,6 @@ import {
 import { request } from "../../../../common/request";
 import { getTokenList, getContract, sleep } from "../../../../common/utils";
 import "./index.less";
-import { useWebLogin } from "aelf-web-login";
 
 const { Switch: ConditionSwitch, Case } = ReactIf;
 

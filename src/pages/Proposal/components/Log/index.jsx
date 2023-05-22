@@ -63,7 +63,6 @@ const LogButton = (props) => {
 };
 
 LogButton.propTypes = {
-  isExist: PropTypes.bool.isRequired,
 };
 
 export default LogButton;
