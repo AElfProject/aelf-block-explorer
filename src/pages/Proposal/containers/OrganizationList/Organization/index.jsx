@@ -238,7 +238,7 @@ const Organization = (props) => {
       ),
     [proposalType, releaseThreshold, leftOrgInfo]
   );
-  console.log("votesData", votesData);
+  // console.log("votesData", votesData);
   const leftOrg = useMemo(
     () =>
       getOrganizationLeftInfo(

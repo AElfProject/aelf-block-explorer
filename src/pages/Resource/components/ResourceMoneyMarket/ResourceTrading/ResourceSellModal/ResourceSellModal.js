@@ -11,6 +11,7 @@ import { SYMBOL, ELF_DECIMAL } from "@src/constants";
 import getStateJudgment from "../../../../../../utils/getStateJudgment";
 import { aelf } from "../../../../../../utils";
 import walletInstance from "../../../../../../redux/common/wallet";
+import { WebLoginInstance } from "../../../../../../utils/webLogin";
 
 export default class ResourceSellModal extends PureComponent {
   constructor(props) {
@@ -27,8 +28,8 @@ export default class ResourceSellModal extends PureComponent {
     this.getSellRes = this.getSellRes.bind(this);
   }
 
-  getSellRes() {
-    const { account, sellFee, currentWallet } = this.props;
+  async getSellRes() {
+    const { account, sellFee } = this.props;
     const { contracts } = this.state;
 
     this.props.maskClosable();
@@ -40,76 +41,68 @@ export default class ResourceSellModal extends PureComponent {
       );
       return;
     }
-    const wallet = {
-      address: currentWallet.address,
-    };
     this.setState({
       loading: true,
     });
-    const instance = walletInstance.proxy.elfInstance;
-    instance.chain
-      .contractAt(contracts.tokenConverter, wallet)
-      .then((result) => {
-        if (result) {
-          this.requestSell(result);
-        }
-      })
-      .catch((error) => {
-        console.log("Sell contracts.tokenConverter init", error);
-      });
-  }
 
-  requestSell(tokenConverterRes) {
     const { currentResourceType, handleModifyTradingState } = this.props;
     const { sellNum } = this.state;
     const payload = {
       symbol: currentResourceType,
       amount: +(sellNum * ELF_DECIMAL),
     };
-    tokenConverterRes
-      .Sell(payload)
-      .then((result) => {
-        if (result.error) {
-          this.setState({
-            loading: false,
-          });
-          message.error(result.errorMessage.message, 3);
-          this.props.handleCancel();
-          return;
-        }
 
-        this.setState({
-          loading: true,
-        });
-        const transactionId = result.result
-          ? result.result.TransactionId
-          : result.TransactionId;
-        setTimeout(() => {
-          aelf.chain.getTxResult(transactionId, (error, txRes) => {
-            if (!txRes) {
-              return;
-            }
-            getStateJudgment(txRes.Status, transactionId);
-            this.props.onRefresh();
-            this.setState({
-              loading: false,
-            });
-            handleModifyTradingState({
-              sellNum: null,
-            });
-            this.props.handleCancel();
-            this.props.unMaskClosable();
-          });
-        }, 4000);
+
+    try {
+      const result = await WebLoginInstance.get().callContract({
+        contractAddress: contracts.tokenConverter,
+        methodName: "Sell",
+        args: payload
       })
-      .catch((error) => {
+      if (result.error) {
         this.setState({
           loading: false,
         });
-        message.fail("Sell failed, please try again");
-        console.error("result.Sell error", error);
+        message.error(result.errorMessage.message, 3);
+        this.props.handleCancel();
+        return;
+      }
+
+      this.setState({
+        loading: true,
       });
+      const transactionId = result.result
+        ? result.result.TransactionId
+        : result.TransactionId;
+      setTimeout(() => {
+        aelf.chain.getTxResult(transactionId, (error, txRes) => {
+          if (!txRes) {
+            return;
+          }
+          getStateJudgment(txRes.Status, transactionId);
+          this.props.onRefresh();
+          this.setState({
+            loading: false,
+          });
+          handleModifyTradingState({
+            sellNum: null,
+          });
+          this.props.handleCancel();
+          this.props.unMaskClosable();
+        });
+      }, 4000);
+    } catch (error) {
+      this.setState({
+        loading: false,
+      });
+      message.fail("Sell failed, please try again");
+      console.error("result.Sell error", error);
+    }
   }
+
+  // requestSell(tokenConverterRes) {
+    
+  // }
 
   render() {
     const {

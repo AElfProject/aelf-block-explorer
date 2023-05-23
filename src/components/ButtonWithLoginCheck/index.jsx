@@ -7,14 +7,14 @@ import {
 export default function ButtonWithLoginCheck({ children, onClick, ...props }) {
   const { loginState, login } = useWebLogin();
 
-  const onClickInternal = () => {
+  const onClickInternal = (event) => {
     if (loginState === WebLoginState.initial || 
       loginState === WebLoginState.eagerly || 
       loginState === WebLoginState.lock) {
       login();
     } 
     else if (loginState === WebLoginState.logined) {
-      onClick?.();
+      onClick?.(event);
     }
   };
 

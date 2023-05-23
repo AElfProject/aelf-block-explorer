@@ -15,12 +15,14 @@ import { WebLoginProvider } from "aelf-web-login";
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from "antd/lib/locale-provider/en_US";
 import "@portkey/did-ui-react/dist/assets/index.css";
+import "aelf-web-login/dist/assets/index.css";
 // import { AppIncrStore } from './Store';
 import store from "./redux/store";
 import config from "../config/config";
 import { get } from "./utils";
 
 import "./index.less";
+
 import "./common/webLoginConfig";
 
 import App from "./App";

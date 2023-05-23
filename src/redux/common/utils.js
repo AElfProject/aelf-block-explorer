@@ -4,7 +4,9 @@
  */
 import { message } from 'antd';
 import moment from 'moment';
+import { Buffer } from 'buffer';
 import constants from './constants';
+
 
 const {
   viewer,
@@ -55,15 +57,17 @@ export const rand16Num = (len = 0) => {
 };
 
 export const showTransactionResult = (result) => {
+  console.log(result);
   if (result && +result.error === 0 || !result.error) {
+    const ret = result.transactionId && result || result.result || result.data || result;
     message.info(
       'The transaction is in progress. Please query the transaction ID',
       10,
     );
-    message.info(`Transaction ID: ${result.TransactionId || result.result.TransactionId}`, 10);
+    message.info(`Transaction ID: ${ret.transactionId || ret.TransactionId}`, 10);
     return result;
   }
-  throw new Error((result.errorMessage || {}).message || 'Send transaction failed');
+  throw new Error((result.errorMessage || {}).message || (result.error && result.error.message) || 'Send transaction failed');
 };
 
 export function isInnerType(inputType) {
@@ -173,6 +177,19 @@ export const sendTransaction = async (wallet, contractAddress, method, param) =>
     });
     showTransactionResult(result);
     return result;
+  } catch (e) {
+    message.error((e.errorMessage || {}).message || e.message || 'Send Transaction failed');
+  }
+};
+
+export const sendTransactionWith = async (callContract, contractAddress, method, param) => {
+  try {
+    const result = await callContract({
+      contractAddress,
+      methodName: method,
+      args: param,
+    });
+    showTransactionResult(result);
   } catch (e) {
     message.error((e.errorMessage || {}).message || e.message || 'Send Transaction failed');
   }

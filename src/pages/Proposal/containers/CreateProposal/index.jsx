@@ -14,6 +14,7 @@ import {
   showTransactionResult,
   uint8ToBase64,
 } from "@redux/common/utils";
+import { useWebLogin } from "aelf-web-login";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
@@ -70,6 +71,8 @@ const CreateProposal = () => {
   const [applyModal, setApplyModal] = useState(initApplyModal);
   const [withoutApprovalProps, setWithoutApprovalProps] = useState({});
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
+
+  const { callContract } = useWebLogin();
 
   // open without approval modal
   const onOpenWithoutApprovalModal = (params) => {
@@ -564,9 +567,11 @@ const CreateProposal = () => {
         proposalDescriptionUrl,
         params: { decoded },
       } = normalResult;
-      const result = await wallet.invoke({
+
+      const result = await callContract({
         contractAddress: getContractAddress(proposalType),
-        param: {
+        methodName: "CreateProposal",
+        args: {
           contractMethodName,
           toAddress,
           params: uint8ToBase64(decoded || []),
@@ -574,7 +579,6 @@ const CreateProposal = () => {
           organizationAddress,
           proposalDescriptionUrl,
         },
-        contractMethod: "CreateProposal",
       });
       showTransactionResult(result);
     } catch (e) {

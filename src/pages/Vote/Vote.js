@@ -521,21 +521,26 @@ class VoteContainer extends Component {
 
   checkExtensionLockStatus() {
     const { currentWallet } = this.props;
-    const getData = async () => {
+    const fetchGetContractsAndProfitAmount = async () => {
       if (!this.hasGetContractsFromExt) {
         await this.fetchContractFromExt();
         this.hasGetContractsFromExt = true;
       }
       await this.fetchProfitAmount();
+    };
+    const getData = async () => {
       if (currentWallet?.address) {
+        await fetchGetContractsAndProfitAmount();
         // logined
         return Promise.resolve();
       }
       return new Promise((resolve) => {
-        const { login } = WebLoginInstance.get().getWebLoginContext();
-        login().then((ele) => {
-          resolve();
-        });
+        WebLoginInstance.get()
+          .loginAsync()
+          .then(async () => {
+            await fetchGetContractsAndProfitAmount();
+            resolve();
+          });
       });
     };
     return getData();
@@ -870,7 +875,7 @@ class VoteContainer extends Component {
       return Promise.resolve();
     }
     const { profitContractFromExt } = this.state;
-    const address = "2vLuU4Xi59xz6QkjdmspGHqeMxbb75ahUXZc1wXzbZdLEGdpuv";
+    console.log(profitContractFromExt, profitContractFromExt.GetProfitsMap);
     return Promise.all([
       getAllTokens(),
       ...schemeIds.map((item) => {
