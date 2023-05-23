@@ -9,13 +9,13 @@
 import React, { PureComponent, forwardRef } from "react";
 import AElf from "aelf-sdk";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Form, Input, Button, Modal, message, Tooltip, Icon } from "antd";
+import { Form, Input, Modal, Tooltip } from "antd";
 import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from "@src/constants";
 import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE,
 } from "@pages/Vote/constants";
-import getCurrentWallet from "@utils/getCurrentWallet";
+import { connect } from "react-redux";
 import "./CandidateApplyModal.style.less";
 import addressFormat from "../../../../utils/addressFormat";
 
@@ -31,14 +31,14 @@ const modalFormItemLayout = {
 };
 
 function generateCandidateApplyForm() {
-  const currentWallet = getCurrentWallet();
+  const { currentWallet } = this.props;
   return {
     formItems: [
       {
         label: "Mortgage Add",
         render: (
           <span className="list-item-value">
-            {addressFormat(currentWallet.address)}
+            {addressFormat(currentWallet?.address)}
           </span>
         ),
       },
@@ -58,7 +58,11 @@ function generateCandidateApplyForm() {
       },
       {
         label: "Wallet",
-        render: <span className="list-item-value">{currentWallet.name}</span>,
+        render: (
+          <span className="list-item-value">
+            {currentWallet?.name || currentWallet?.address}
+          </span>
+        ),
       },
       {
         label: "Hardware Advice",
@@ -167,4 +171,11 @@ class CandidateApplyModal extends PureComponent {
   }
 }
 
-export default CandidateApplyModal;
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+
+export default connect(mapStateToProps)(CandidateApplyModal);

@@ -39,13 +39,13 @@ class MyWalletCard extends PureComponent {
     this.hasRun = false;
   }
 
-  // todo: combine
   componentDidMount() {
     const {
       changeVoteState,
       electionContract,
       multiTokenContract,
       profitContractFromExt,
+      currentWallet,
     } = this.props;
     if (
       electionContract &&
@@ -58,7 +58,7 @@ class MyWalletCard extends PureComponent {
       });
     }
     const getData = async () => {
-      if (this.props.currentWallet?.address) {
+      if (currentWallet?.address) {
         this.getCurrentWallet();
       }
       this.fetchData();
@@ -69,18 +69,19 @@ class MyWalletCard extends PureComponent {
   getCurrentWallet() {
     const { login } = WebLoginInstance.get().getWebLoginContext();
     login();
+    // TODO: should be a promise, and then handleUpdateWalletClick
     this.handleUpdateWalletClick();
   }
 
   loginOrUnlock() {
     this.getCurrentWallet();
-    this.fetchData();
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
+    const { currentWallet } = this.props;
     const getData = async () => {
-      if (this.props.currentWallet && !prevProps?.currentWallet) {
+      if (currentWallet?.address && !prevProps?.currentWallet) {
         await this.getCurrentWallet();
       }
       this.fetchData(prevProps);
@@ -96,12 +97,12 @@ class MyWalletCard extends PureComponent {
       changeVoteState,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
-    if (multiTokenContract) {
+    if (multiTokenContract !== prevProps?.multiTokenContract) {
       this.hasRun = true;
       this.fetchWalletBalance();
     }
 
-    if (electionContract) {
+    if (electionContract && electionContract !== prevProps?.electionContract) {
       this.fetchElectorVoteInfo();
     }
 
@@ -137,7 +138,7 @@ class MyWalletCard extends PureComponent {
 
   fetchWalletBalance() {
     const { multiTokenContract, currentWallet } = this.props;
-    if (!currentWallet || !currentWallet?.address) {
+    if (!currentWallet?.address) {
       return false;
     }
     return multiTokenContract.GetBalance.call({
@@ -157,7 +158,6 @@ class MyWalletCard extends PureComponent {
     if (!currentWallet || !currentWallet.address || !electionContract) {
       return false;
     }
-    console.log(currentWallet, "=====");
     return electionContract.GetElectorVoteWithRecords.call({
       value: currentWallet.publicKey,
     })
@@ -224,7 +224,8 @@ class MyWalletCard extends PureComponent {
     const { logout } = WebLoginInstance.get().getWebLoginContext();
     logout();
     const { currentWallet } = this.props;
-    if (!currentWallet.address) {
+    // TODO: revert logic
+    if (currentWallet.address) {
       message.success("Logout successful, refresh after 3s.", 3, () => {
         window.location.reload();
       });

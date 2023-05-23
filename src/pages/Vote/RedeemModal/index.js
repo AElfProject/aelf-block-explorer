@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Modal, Form, Input, Button, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-
+import { connect } from "react-redux";
 import {
   SYMBOL,
   SELECT_SOMETHING_TIP,
@@ -217,7 +217,7 @@ class RedeemModal extends PureComponent {
           label: "Redeem To",
           render: (
             <span className="form-item-value">
-              {currentWallet && currentWallet.name}
+              {currentWallet?.name || currentWallet?.address}
             </span>
           ),
         },
@@ -298,5 +298,10 @@ class RedeemModal extends PureComponent {
     );
   }
 }
-
-export default RedeemModal;
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(RedeemModal);

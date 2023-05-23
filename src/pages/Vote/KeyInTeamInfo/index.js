@@ -5,10 +5,10 @@ import { APPNAME } from "@config/config";
 import { post, get } from "@src/utils";
 import { rand16Num } from "@utils/utils";
 import { NO_AUTHORIZATION_ERROR_TIP, UNLOCK_PLUGIN_TIP } from "@src/constants";
-import getCurrentWallet from "@utils/getCurrentWallet";
 import { urlRegExp } from "@pages/Vote/constants";
 import { addUrlPrefix, removeUrlPrefix } from "@utils/formater";
 import { LockTwoTone } from "@ant-design/icons";
+import { connect } from "react-redux";
 import "./index.less";
 import { withRouter } from "../../../routes/utils";
 import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
@@ -342,9 +342,9 @@ class KeyInTeamInfo extends PureComponent {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { nightElf, checkExtensionLockStatus } = this.props;
+    const { checkExtensionLockStatus, currentWallet, aelf, wallet } =
+      this.props;
     const form = this.formRef.current;
-    const currentWallet = getCurrentWallet();
     const publicKey = getPublicKeyFromObject(currentWallet.publicKey);
     const randomNum = rand16Num(32);
     form?.validateFields().then(
@@ -361,13 +361,14 @@ class KeyInTeamInfo extends PureComponent {
               url: value,
             };
           })
-          .filter(({ type, url }) => {
+          .filter(({ url }) => {
             return url !== undefined && url !== null && url !== "";
           });
         this.processUrl(submitValues, addUrlPrefix);
 
         checkExtensionLockStatus().then(async () => {
-          const { signature } = await nightElf.getSignature({
+          // TODO: how to get getSignature
+          const { signature } = await wallet.getSignature({
             appName: APPNAME,
             address: currentWallet.address,
             hexToBeSign: randomNum,
@@ -407,4 +408,13 @@ class KeyInTeamInfo extends PureComponent {
   }
 }
 
-export default withRouter(KeyInTeamInfo);
+const mapStateToProps = (state) => {
+  const { currentWallet, aelf, wallet } = state.common;
+  return {
+    currentWallet,
+    aelf,
+    wallet,
+  };
+};
+
+export default connect(mapStateToProps)(withRouter(KeyInTeamInfo));

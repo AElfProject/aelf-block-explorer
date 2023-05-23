@@ -11,43 +11,39 @@ import {
 } from "@src/pages/Vote/constants";
 import { MY_VOTE_DATA_TIP } from "@src/constants";
 import { Button, Spin } from "antd";
+import { connect } from "react-redux";
+import { WebLoginState } from "aelf-web-login";
 import MyVoteRecord from "./MyVoteRecords";
 import addressFormat from "../../../utils/addressFormat";
-
 import "./MyVote.style.less";
+import { WebLoginInstance } from "../../../utils/webLogin";
 
-export default class MyVote extends Component {
+class MyVote extends Component {
   constructor(props) {
     super(props);
     this.state = {
       statistData: myVoteStatistData,
       tableData: [],
       spinningLoading: true,
-      currentWallet: {
-        address: null,
-        name: null,
-        publicKey: null,
-      },
     };
 
     this.hasRun = false;
   }
 
   componentDidMount() {
-    if (this.props.currentWallet) {
+    const { currentWallet } = this.props;
+    if (currentWallet.address) {
       this.getCurrentWallet();
     }
   }
 
   // todo: update the vote info after switch to this tab
   componentDidUpdate(prevProps) {
-    if (this.props.currentWallet && !prevProps.currentWallet) {
+    const { currentWallet } = this.props;
+    if (currentWallet.address && !prevProps.currentWallet) {
       this.getCurrentWallet();
     }
-    if (
-      prevProps.currentWallet &&
-      prevProps.currentWallet.address !== this.props.currentWallet.address
-    ) {
+    if (prevProps.currentWallet?.address !== currentWallet?.address) {
       this.getCurrentWallet();
     }
     if (!this.hasRun) {
@@ -59,17 +55,10 @@ export default class MyVote extends Component {
     const { checkExtensionLockStatus } = this.props;
     return checkExtensionLockStatus().then(
       () => {
-        const wallet = JSON.parse(localStorage.getItem("currentWallet"));
-        if (wallet) {
-          this.setState({
-            loading: true,
-            currentWallet: {
-              ...wallet,
-              formattedAddress: addressFormat(wallet.address),
-            },
-          });
-        }
-        this.fetchTableDataAndStatistData(wallet);
+        this.setState({
+          loading: true,
+        });
+        this.fetchTableDataAndStatistData();
       },
       () => {
         this.setState({
@@ -84,19 +73,15 @@ export default class MyVote extends Component {
     );
   }
 
-  fetchTableDataAndStatistData(currentWalletTemp) {
-    const { electionContract } = this.props;
+  fetchTableDataAndStatistData() {
+    const { electionContract, currentWallet } = this.props;
     if (!electionContract) return;
     this.hasRun = true;
-    const currentWallet = currentWalletTemp || this.state.currentWallet;
     if (!currentWallet || !currentWallet.address) {
       this.hasRun = false;
       // eslint-disable-next-line consistent-return
       return false;
     }
-
-    // todo: is it ok to get the same data twice in different tabs
-    // todo: add error handle
     Promise.all([
       electionContract.GetElectorVoteWithAllRecords.call({
         value: currentWallet.publicKey,
@@ -234,23 +219,28 @@ export default class MyVote extends Component {
   }
 
   render() {
-    const { statistData, spinningLoading, tableData, currentWallet } =
-      this.state;
+    const { statistData, spinningLoading, tableData } = this.state;
+    const { currentWallet } = this.props;
 
     const onLogin = () => {
       this.getCurrentWallet();
     };
 
+    const { loginState } = WebLoginInstance.get().getWebLoginContext();
+
     return (
       <section>
-        {currentWallet.address ? (
+        {currentWallet?.address ? (
           <Spin spinning={spinningLoading}>
             <StatisticalData data={statistData} tooltip={MY_VOTE_DATA_TIP} />
             <MyVoteRecord data={tableData} />
           </Spin>
         ) : (
           <div className="not-logged-section">
-            <p>It seems like you are not logged in.</p>
+            <p>
+              It seems like you are{" "}
+              {loginState === WebLoginState.lock ? "locked" : "not logged in"}.
+            </p>
             <Button onClick={onLogin} type="primary">
               Login
             </Button>
@@ -260,3 +250,12 @@ export default class MyVote extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+
+export default connect(mapStateToProps)(MyVote);

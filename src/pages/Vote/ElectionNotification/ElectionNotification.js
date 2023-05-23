@@ -30,6 +30,7 @@ import Dividends from "../../../components/Dividends";
 import "./ElectionNotification.style.less";
 import CandidateApplyModal from "./CandidateApplyModal/CandidateApplyModal";
 import { getTokenDecimal } from "../../../utils/utils";
+import { WebLoginInstance } from "../../../utils/webLogin";
 
 const electionNotifiStatisData = {
   termEndTime: {
@@ -296,9 +297,13 @@ class ElectionNotification extends PureComponent {
     } = this.props;
 
     checkExtensionLockStatus().then(() => {
-      electionContractFromExt
-        .QuitElection({
-          value: currentWallet.publicKey,
+      WebLoginInstance.get()
+        .callContract({
+          contractAddress: electionContractFromExt.address,
+          methodName: "QuitElection",
+          args: {
+            value: currentWallet.publicKey,
+          },
         })
         .then((res) => {
           if (res.error) {
@@ -338,11 +343,13 @@ class ElectionNotification extends PureComponent {
       judgeCurrentUserIsCandidate,
     } = this.props;
 
-    // todo: there are the same code in Vote.js
-    // todo: error handle
     checkExtensionLockStatus().then(() => {
-      electionContractFromExt
-        .AnnounceElection(admin)
+      WebLoginInstance.get()
+        .callContract({
+          contractAddress: electionContractFromExt.address,
+          methodName: "AnnounceElection",
+          args: admin,
+        })
         .then((res) => {
           if (res.error) {
             message.error(res.errorMessage.message);
