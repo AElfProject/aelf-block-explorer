@@ -13,15 +13,14 @@ import moment from "moment";
 
 import StatisticalData from "@components/StatisticalData/";
 import {
-  SYMBOL,
   ELECTION_NOTIFI_DATA_TIP,
   txStatusInUpperCase,
   UNKNOWN_ERROR_TIP,
-  LONG_NOTIFI_TIME,
   ELF_DECIMAL,
 } from "@src/constants";
 import { aelf } from "@src/utils";
 import getStateJudgment from "@utils/getStateJudgment";
+import { connect } from "react-redux";
 import { withRouter } from "../../../routes/utils";
 import NodeTable from "./NodeTable";
 import ElectionRuleCard from "./ElectionRuleCard/ElectionRuleCard";
@@ -302,7 +301,7 @@ class ElectionNotification extends PureComponent {
           contractAddress: electionContractFromExt.address,
           methodName: "QuitElection",
           args: {
-            value: currentWallet.publicKey,
+            value: currentWallet?.publicKey,
           },
         })
         .then((res) => {
@@ -373,9 +372,7 @@ class ElectionNotification extends PureComponent {
               judgeCurrentUserIsCandidate();
               if (status === txStatusInUpperCase.mined) {
                 this.props.navigate(
-                  `/vote/apply/keyin?pubkey=${
-                    currentWallet?.publicKey
-                  }`
+                  `/vote/apply/keyin?pubkey=${currentWallet?.publicKey}`
                 );
               }
             } catch (e) {
@@ -418,7 +415,6 @@ class ElectionNotification extends PureComponent {
       changeVoteState,
       shouldRefreshMyWallet,
       checkExtensionLockStatus,
-      currentWallet,
     } = this.props;
     const { statisData, statisDataLoading, applyModalVisible } = this.state;
 
@@ -435,7 +431,6 @@ class ElectionNotification extends PureComponent {
         <div className="election-blank" />
         <ElectionRuleCard
           isCandidate={isCandidate}
-          currentWallet={currentWallet}
           quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
@@ -451,7 +446,6 @@ class ElectionNotification extends PureComponent {
           shouldRefreshMyWallet={shouldRefreshMyWallet}
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
-          currentWallet={currentWallet}
         />
         <div className="election-blank" />
         <NodeTable
@@ -461,17 +455,20 @@ class ElectionNotification extends PureComponent {
           shouldRefreshNodeTable={shouldRefreshNodeTable}
           nodeTableRefreshTime={nodeTableRefreshTime}
           changeVoteState={changeVoteState}
-          currentWallet={currentWallet}
         />
         <CandidateApplyModal
           visible={applyModalVisible}
           onOk={this.handleApplyModalOk}
           onCancel={this.handleApplyModalCancel}
-          currentWallet={currentWallet}
         />
       </section>
     );
   }
 }
-
-export default withRouter(ElectionNotification);
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(withRouter(ElectionNotification));

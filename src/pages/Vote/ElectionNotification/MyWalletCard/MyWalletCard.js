@@ -206,17 +206,18 @@ class MyWalletCard extends PureComponent {
   }
 
   extensionLogout() {
-    const { logout } = WebLoginInstance.get().getWebLoginContext();
-    logout();
-    const { currentWallet } = this.props;
-    // TODO: revert logic
-    if (currentWallet.address) {
-      message.success("Logout successful, refresh after 3s.", 3, () => {
-        window.location.reload();
-      });
-    } else {
-      message.error("logout failed");
-    }
+    WebLoginInstance.get()
+      .logoutAsync()
+      .then(
+        () => {
+          message.success("Logout successful, refresh after 3s.", 3, () => {
+            window.location.reload();
+          });
+        },
+        () => {
+          message.error("logout failed");
+        }
+      );
   }
 
   render() {

@@ -296,9 +296,12 @@ class VoteContainer extends Component {
   fetchContractFromExt() {
     const { contractsNeedToLoadFromExt } = constants;
     const { currentWallet: wallet, aelf } = this.props;
+    const instance = WebLoginInstance.get().getWebLoginContext();
+    console.log(instance, "instance");
     return Promise.all(
       contractsNeedToLoadFromExt.map(
         ({ contractAddrValName, contractNickname }) => {
+          // TODO: need instance replace aelf
           return aelf.chain
             .contractAt(config[contractAddrValName], wallet)
             .then((res) => {

@@ -106,7 +106,7 @@ function genMyVoteRecordsCols() {
             data-amount={record.amount}
             disabled={!record.isRedeemable || record.type === "Redeem"}
             data-shoulddetectlock
-            key={JSON.stringify(record.voteId)}
+            data-voteId={JSON.stringify(record.voteId)}
           >
             Redeem
           </Button>
