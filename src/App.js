@@ -19,12 +19,12 @@ import {
 } from "./redux/actions/proposalCommon";
 
 import "./App.less";
-import { useWebLogin, WebLoginState } from "aelf-web-login";
+import { useWebLogin, WebLoginState, useLoginState } from "aelf-web-login";
 import { WebLoginInstance } from "./utils/webLogin";
 
 function App() {
   const { pathname } = useLocation();
-  const { wallet, loginState, loginError } = useWebLogin();
+  const { wallet, loginError } = useWebLogin();
   const dispatch = useDispatch();
   const currentWallet = useSelector(state => {
     return state.common.currentWallet;
@@ -45,8 +45,7 @@ function App() {
     back2Top()
   }, [pathname])
 
-  useEffect(() => {
-    console.log(loginState, wallet);
+  useLoginState(loginState => {
     if (loginState === WebLoginState.initial && currentWallet.address) {
       dispatch({
         type: LOG_OUT_ACTIONS.LOG_OUT_SUCCESS,
@@ -68,7 +67,8 @@ function App() {
         payload: wallet,
       })
     }
-  }, [loginState])
+    WebLoginInstance.get().onLoginStateChanged(loginState, loginError);
+  }, [dispatch])
 
   return (
     <Suspense fallback={null}>

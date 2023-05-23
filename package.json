@@ -32,7 +32,7 @@
     "aelf-block-scan": "^0.4.1",
     "aelf-bridge": "^0.0.9",
     "aelf-sdk": "3.2.40",
-    "aelf-web-login": "0.0.6-alpha",
+    "aelf-web-login": "^0.0.8-alpha",
     "antd": "^4.22.4",
     "apisauce": "^0.16.0",
     "axios": "^0.19.0",
