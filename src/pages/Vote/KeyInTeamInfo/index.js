@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import "./index.less";
 import { withRouter } from "../../../routes/utils";
 import { getPublicKeyFromObject } from "../../../utils/getPublicKey";
+import { WebLoginInstance } from "../../../utils/webLogin";
 
 const { TextArea } = Input;
 
@@ -342,10 +343,9 @@ class KeyInTeamInfo extends PureComponent {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { checkExtensionLockStatus, currentWallet, aelf, wallet } =
-      this.props;
+    const { checkExtensionLockStatus, currentWallet } = this.props;
     const form = this.formRef.current;
-    const publicKey = getPublicKeyFromObject(currentWallet.publicKey);
+    const { publicKey } = currentWallet;
     const randomNum = rand16Num(32);
     form?.validateFields().then(
       (values) => {
@@ -367,8 +367,8 @@ class KeyInTeamInfo extends PureComponent {
         this.processUrl(submitValues, addUrlPrefix);
 
         checkExtensionLockStatus().then(async () => {
-          // TODO: how to get getSignature
-          const { signature } = await wallet.getSignature({
+          const { getSignature } = WebLoginInstance.get().getWebLoginContext();
+          const { signature } = await getSignature({
             appName: APPNAME,
             address: currentWallet.address,
             hexToBeSign: randomNum,

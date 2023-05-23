@@ -30,8 +30,7 @@ const modalFormItemLayout = {
   },
 };
 
-function generateCandidateApplyForm() {
-  const { currentWallet } = this.props;
+function generateCandidateApplyForm(currentWallet) {
   return {
     formItems: [
       {
@@ -96,8 +95,8 @@ class CandidateApplyModal extends PureComponent {
   }
 
   render() {
-    const { onCancel, visible } = this.props;
-    const candidateApplyForm = generateCandidateApplyForm();
+    const { onCancel, visible,currentWallet } = this.props;
+    const candidateApplyForm = generateCandidateApplyForm(currentWallet);
     const rules = [
       {
         required: true,

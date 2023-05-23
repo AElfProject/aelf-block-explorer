@@ -61,7 +61,7 @@ class TeamDetail extends PureComponent {
       this.justifyIsBP();
     }
 
-    if (electionContract !== null) {
+    if (currentWallet?.address && electionContract) {
       this.fetchDataFromElectionContract();
     }
 
@@ -78,8 +78,7 @@ class TeamDetail extends PureComponent {
     if (consensusContract !== prevProps.consensusContract) {
       this.justifyIsBP();
     }
-
-    if (electionContract !== prevProps.electionContract) {
+    if (currentWallet?.address && electionContract) {
       this.fetchDataFromElectionContract();
     }
 
@@ -184,8 +183,6 @@ class TeamDetail extends PureComponent {
 
   fetchTheUsersActiveVoteRecords() {
     const { electionContract, currentWallet } = this.props;
-    // todo: Will it break the data consistency?
-
     fetchElectorVoteWithRecords(electionContract, {
       value: currentWallet?.publicKey,
     })
@@ -195,7 +192,7 @@ class TeamDetail extends PureComponent {
         );
       })
       .catch((err) => {
-        console.error("fetchElectorVoteWithRecords", err);
+        console.error("fetchTheUsersActiveVoteRecords", err);
       });
   }
 

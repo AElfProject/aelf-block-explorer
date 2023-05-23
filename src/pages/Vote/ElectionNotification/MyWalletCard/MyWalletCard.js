@@ -34,7 +34,6 @@ class MyWalletCard extends PureComponent {
     this.isPhone = isPhoneCheck();
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
-    this.getCurrentWallet = this.getCurrentWallet.bind(this);
     this.loginOrUnlock = this.loginOrUnlock.bind(this);
     this.hasRun = false;
   }
@@ -57,34 +56,27 @@ class MyWalletCard extends PureComponent {
         shouldRefreshMyWallet: true,
       });
     }
-    const getData = async () => {
-      if (currentWallet?.address) {
-        this.getCurrentWallet();
-      }
-      this.fetchData();
-    };
-    getData();
+    if (currentWallet) {
+      setTimeout(() => {
+        this.handleUpdateWalletClick();
+      });
+    }
   }
 
-  getCurrentWallet() {
+  loginOrUnlock() {
     const { login } = WebLoginInstance.get().getWebLoginContext();
     login();
     // TODO: should be a promise, and then handleUpdateWalletClick
     this.handleUpdateWalletClick();
   }
 
-  loginOrUnlock() {
-    this.getCurrentWallet();
-  }
-
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
     const { currentWallet } = this.props;
     const getData = async () => {
-      if (currentWallet?.address && !prevProps?.currentWallet) {
-        await this.getCurrentWallet();
+      if (currentWallet?.address && !prevProps?.currentWallet?.address) {
+        this.fetchData(prevProps);
       }
-      this.fetchData(prevProps);
     };
     getData();
   }

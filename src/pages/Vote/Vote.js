@@ -194,10 +194,10 @@ class VoteContainer extends Component {
       shouldJudgeIsCurrentCandidate,
     } = this.state;
     const { currentWallet } = this.props;
-    if (shouldRefreshMyWallet) {
-      this.onExtensionAndWalletReady();
-    }
 
+    // if (shouldRefreshMyWallet) {
+    //   this.onExtensionAndWalletReady();
+    // }
     if (
       electionContract &&
       currentWallet?.address &&
@@ -255,34 +255,6 @@ class VoteContainer extends Component {
       .catch((err) => console.error("err", err));
   }
 
-  // getExtensionKeyPairList() {
-  //   walletInstance.isExist
-  //     .then((result) => {
-  //       if (result) {
-  //         if (
-  //           typeof walletInstance.proxy.elfInstance.getExtensionInfo ===
-  //           "function"
-  //         ) {
-  //           walletInstance.getExtensionInfo().then((info) => {
-  //             this.setState({
-  //               isPluginLock: info.locked,
-  //             });
-  //             if (!info.locked) {
-  //               this.getChainStatus();
-  //             } else {
-  //               localStorage.removeItem("currentWallet");
-  //             }
-  //           });
-  //         } else {
-  //           this.getChainStatus();
-  //         }
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // }
-
   getNightElfKeyPair(wallet) {
     if (!wallet) {
       return;
@@ -319,17 +291,6 @@ class VoteContainer extends Component {
     this.setState({
       redeemVoteSelectedRowKeys: selectedRowKeys,
     });
-  }
-
-  onExtensionAndWalletReady() {
-    return this.fetchContractFromExt()
-      .then(async () => {
-        this.hasGetContractsFromExt = true;
-        await this.fetchProfitAmount();
-      })
-      .catch((err) => {
-        console.error("fetchContractFromExt", err);
-      });
   }
 
   fetchContractFromExt() {
@@ -560,15 +521,24 @@ class VoteContainer extends Component {
 
   checkExtensionLockStatus() {
     const { currentWallet } = this.props;
-    // logined
-    if (currentWallet?.address) {
-      return Promise.resolve();
-    }
-    return new Promise((resolve) => {
-      const { login } = WebLoginInstance.get().getWebLoginContext();
-      login();
-      resolve();
-    });
+    const getData = async () => {
+      if (!this.hasGetContractsFromExt) {
+        await this.fetchContractFromExt();
+        this.hasGetContractsFromExt = true;
+      }
+      await this.fetchProfitAmount();
+      if (currentWallet?.address) {
+        // logined
+        return Promise.resolve();
+      }
+      return new Promise((resolve) => {
+        const { login } = WebLoginInstance.get().getWebLoginContext();
+        login().then((ele) => {
+          resolve();
+        });
+      });
+    };
+    return getData();
   }
 
   handleVoteClick(ele) {
@@ -743,7 +713,6 @@ class VoteContainer extends Component {
         nanos: lockTime.milliseconds() * 1000000,
       },
     };
-
     WebLoginInstance.get()
       .callContract({
         contractAddress: electionContractFromExt.address,
@@ -895,16 +864,13 @@ class VoteContainer extends Component {
     });
   }
 
-  // FIXME: the time calling this method maybe unsuitable
-  // FIXME: when the user didn't set the wallet, will it cause problem?
   fetchProfitAmount() {
-    // After fetch all data, do the setState work
-    // It will reduce the setState's call times to one
     const { currentWallet } = this.props;
     if (!currentWallet?.address) {
       return Promise.resolve();
     }
     const { profitContractFromExt } = this.state;
+    const address = "2vLuU4Xi59xz6QkjdmspGHqeMxbb75ahUXZc1wXzbZdLEGdpuv";
     return Promise.all([
       getAllTokens(),
       ...schemeIds.map((item) => {
@@ -965,7 +931,7 @@ class VoteContainer extends Component {
         });
       })
       .catch((err) => {
-        console.error("GetAllProfitAmount", err);
+        console.error("fetchProfitAmount", err);
       });
   }
 

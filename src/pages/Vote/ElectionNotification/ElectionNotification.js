@@ -374,7 +374,7 @@ class ElectionNotification extends PureComponent {
               if (status === txStatusInUpperCase.mined) {
                 this.props.navigate(
                   `/vote/apply/keyin?pubkey=${
-                    currentWallet && currentWallet.publicKey
+                    currentWallet?.publicKey
                   }`
                 );
               }
