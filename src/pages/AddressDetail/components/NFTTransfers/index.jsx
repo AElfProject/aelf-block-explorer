@@ -58,7 +58,7 @@ export default function NFTTransfers({ address }) {
   }, [fetchTransfers]);
 
   return (
-    <div className="transfers-pane">
+    <div className="nft-transfers-pane">
       <TableLayer>
         <Table
           dataSource={dataSource}

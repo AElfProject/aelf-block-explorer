@@ -128,7 +128,12 @@ export default function AddressDetail() {
     if (isCA) {
       fetchFile();
       fetchHistory();
-      setActiveKey(key || "contract");
+      if (!hash) {
+        // token tab without hash
+        setActiveKey(key || "tokens");
+      } else {
+        setActiveKey(key || "contract");
+      }
     } else {
       setActiveKey(key || "tokens");
     }

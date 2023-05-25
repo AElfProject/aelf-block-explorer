@@ -25,7 +25,7 @@ export default ({ isMobile, preTotal }) => {
         <div className="address">
           <Tooltip
             title={addressFormat(text)}
-            overlayInnerStyle={{ color: "#fff" }}
+            overlayClassName="table-item-tooltip__white"
           >
             <Link to={`/address/${addressFormat(text)}`}>
               {addressFormat(hiddenAddress(text))}
