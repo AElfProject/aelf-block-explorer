@@ -31,7 +31,7 @@ const getAddress = (nowFlag, input, record) => {
     all = `/address/${complete}`;
   } else {
     // isCrossChain
-    complete = addressFormat(input, record.relatedChainId);
+    complete = addressFormat(input, "", record.relatedChainId);
     hidden = addressFormat(
       hiddenAddress(input),
       record.symbol,
@@ -74,7 +74,7 @@ const getColumnConfig = ({
       width: isMobile ? 110 : 110,
       render: (text) => {
         return (
-          <Tooltip title={text} overlayInnerStyle={{ color: "#fff" }}>
+          <Tooltip title={text} overlayClassName="table-item-tooltip__white">
             <div className="method">{text}</div>
           </Tooltip>
         );
@@ -106,7 +106,10 @@ const getColumnConfig = ({
         );
         return (
           <div className="from">
-            <Tooltip title={complete} overlayInnerStyle={{ color: "#fff" }}>
+            <Tooltip
+              title={complete}
+              overlayClassName="table-item-tooltip__white"
+            >
               <Link to={all} target={isBlank && "_blank"}>
                 {hidden}
               </Link>
@@ -130,7 +133,10 @@ const getColumnConfig = ({
         const { complete, hidden, all, isBlank } = getAddress(isIn, to, record);
         return (
           <div className="to">
-            <Tooltip title={complete} overlayInnerStyle={{ color: "#fff" }}>
+            <Tooltip
+              title={complete}
+              overlayClassName="table-item-tooltip__white"
+            >
               <Link to={all} target={isBlank && "_blank"}>
                 {hidden}
               </Link>

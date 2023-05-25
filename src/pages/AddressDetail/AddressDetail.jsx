@@ -128,7 +128,12 @@ export default function AddressDetail() {
     if (isCA) {
       fetchFile();
       fetchHistory();
-      setActiveKey(key || "contract");
+      if (!hash) {
+        // token tab without hash
+        setActiveKey(key || "tokens");
+      } else {
+        setActiveKey(key || "contract");
+      }
     } else {
       setActiveKey(key || "tokens");
     }
@@ -158,7 +163,11 @@ export default function AddressDetail() {
   window.addEventListener("hashchange", () => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
-    setActiveKey(key || "tokens");
+    if (isCA && hash) {
+      setActiveKey(key || "contract");
+    } else {
+      setActiveKey(key || "tokens");
+    }
   });
   return (
     <div
