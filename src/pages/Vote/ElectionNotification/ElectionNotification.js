@@ -120,14 +120,10 @@ class ElectionNotification extends PureComponent {
     this.state = {
       contracts: null,
       showWallet: false,
-      nightElf: null,
-
       candidates: null,
       nodesCount: null,
-      // todo: should I place statisData in state?
       statisData: electionNotifiStatisData,
       statisDataLoading: false,
-
       applyModalVisible: false,
     };
 
@@ -162,7 +158,7 @@ class ElectionNotification extends PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     this.fetchData();
   }
 
@@ -335,23 +331,30 @@ class ElectionNotification extends PureComponent {
   }
 
   handleApplyModalOk(admin) {
-    const {
-      currentWallet,
-      electionContractFromExt,
-      checkExtensionLockStatus,
-      judgeCurrentUserIsCandidate,
-    } = this.props;
-
+    const { checkExtensionLockStatus } = this.props;
     checkExtensionLockStatus().then(() => {
+      // checkExtensionLockStatus will change props
+      const {
+        currentWallet,
+        electionContractFromExt,
+        judgeCurrentUserIsCandidate,
+      } = this.props;
+      console.log(electionContractFromExt.address, admin, "=====");
       WebLoginInstance.get()
         .callContract({
           contractAddress: electionContractFromExt.address,
           methodName: "AnnounceElection",
           args: admin,
         })
+        // WebLoginInstance.get()
+        //   .callContract({
+        //     contractAddress: "NrVf8B7XUduXn1oGHZeF1YANFXEXAhvCymz2WPyKZt4DE2zSg",
+        //     methodName: "AnnounceElection",
+        //     args: "ELF_2vLuU4Xi59xz6QkjdmspGHqeMxbb75ahUXZc1wXzbZdLEGdpuv_AELF",
+        //   })
         .then((res) => {
           if (res.error) {
-            message.error(res.errorMessage.message);
+            message.error(res.error.message || res.errorMessage.message);
             return;
           }
           if (!res) {
@@ -405,7 +408,6 @@ class ElectionNotification extends PureComponent {
       multiTokenContract,
       profitContract,
       dividendContract,
-      nightElf,
       isCandidate,
       handleDividendClick,
       dividends,
@@ -451,7 +453,6 @@ class ElectionNotification extends PureComponent {
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}
-          nightElf={nightElf}
           shouldRefreshNodeTable={shouldRefreshNodeTable}
           nodeTableRefreshTime={nodeTableRefreshTime}
           changeVoteState={changeVoteState}

@@ -68,13 +68,13 @@ class MyWalletCard extends PureComponent {
       .loginAsync()
       .then(() => {
         this.handleUpdateWalletClick();
-        // this.fetchData();
       });
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    this.fetchData(prevProps);
+    const { currentWallet } = this.props;
+    if (currentWallet.address) this.fetchData(prevProps);
   }
 
   fetchData(prevProps) {

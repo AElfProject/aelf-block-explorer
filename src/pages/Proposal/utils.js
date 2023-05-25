@@ -1,4 +1,8 @@
-import { getCsrfToken, getSignParams, getTxResult } from "../../redux/common/utils";
+import {
+  getCsrfToken,
+  getSignParams,
+  getTxResult,
+} from "../../redux/common/utils";
 import { request } from "../../common/request";
 import { API_PATH } from "../../redux/common/constants";
 

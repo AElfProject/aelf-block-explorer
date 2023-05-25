@@ -150,10 +150,7 @@ const CreateProposal = () => {
             "Parliament",
             "GetProposal",
             {
-              value: hexStringToByteArray(
-                proposalId
-                // "b4cbd0a1e2ad563f58850c05a22e9380cd87cb4527462dca46b7df5826a60d42"
-              ),
+              value: hexStringToByteArray(proposalId),
             }
           );
           if (proposalInfo === null || !!proposalInfo.toBeRelease) {
@@ -366,12 +363,21 @@ const CreateProposal = () => {
           });
           // get transaction id
           const result = await contractSend(action, params);
-          // according to Error show modal
+          // if (result.data) {
+          //   // for portkey
+          //   txRes = result.data;
+          // } else {
+          console.log(result, "=====");
           const txRes = await getTransactionResult(
             aelf,
-            result?.TransactionId || result?.result?.TransactionId || ""
+            result?.TransactionId ||
+              result?.result?.TransactionId ||
+              result.transactionId ||
+              ""
           );
-
+          // }
+          console.log(txRes, "xxxxxx");
+          // debugger;
           const {
             TransactionId: transactionId,
             Error: error,

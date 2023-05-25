@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getOriginProposedContractInputHash } from "@redux/common/util.proposed";
 import { getContractAddress, getTxResult } from "@redux/common/utils";
+import { useWebLogin } from "aelf-web-login";
 import { callGetMethod } from "../../../../utils/utils";
 import CopylistItem from "../../components/CopylistItem";
 import { getDeserializeLog } from "../../utils";
@@ -13,20 +14,24 @@ import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 export const useCallbackAssem = () => {
   const common = useSelector((state) => state.common);
   const { wallet } = common;
+  const { callContract } = useWebLogin();
   // eslint-disable-next-line no-return-await
   const contractSend = useCallback(
     async (action, params, isOriginResult) => {
-      const result = await wallet.invoke({
+      const result = await callContract({
         contractAddress: getContractAddress("Genesis"),
-        param: params,
-        contractMethod: action,
+        args: params,
+        methodName: action,
       });
       if (isOriginResult) return result;
+
       if ((result && +result.error === 0) || !result.error) {
         return result;
       }
       throw new Error(
-        (result.errorMessage || {}).message || "Send transaction failed"
+        result.error.message ||
+          (result.errorMessage || {}).message ||
+          "Send transaction failed"
       );
     },
     [wallet]

@@ -45,6 +45,7 @@ import getAllTokens from "../../utils/getAllTokens";
 import addressFormat from "../../utils/addressFormat";
 import { withRouter } from "../../routes/utils";
 import { WebLoginInstance } from "../../utils/webLogin";
+import { fakeWallet } from "../../common/utils";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -195,9 +196,10 @@ class VoteContainer extends Component {
     } = this.state;
     const { currentWallet } = this.props;
 
-    // if (shouldRefreshMyWallet) {
-    //   this.onExtensionAndWalletReady();
-    // }
+    if (shouldRefreshMyWallet) {
+      // this.fetchProfitAmount();
+      this.checkExtensionLockStatus();
+    }
     if (
       electionContract &&
       currentWallet?.address &&
@@ -295,23 +297,26 @@ class VoteContainer extends Component {
 
   fetchContractFromExt() {
     const { contractsNeedToLoadFromExt } = constants;
-    const { currentWallet: wallet, aelf } = this.props;
-    const instance = WebLoginInstance.get().getWebLoginContext();
-    console.log(instance, "instance");
-    return Promise.all(
-      contractsNeedToLoadFromExt.map(
-        ({ contractAddrValName, contractNickname }) => {
-          // TODO: need instance replace aelf
-          return aelf.chain
-            .contractAt(config[contractAddrValName], wallet)
-            .then((res) => {
-              this.setState({
-                [contractNickname]: res,
+    const { aelf } = this.props;
+    const result = {};
+    return new Promise((resolve) => {
+      Promise.all(
+        contractsNeedToLoadFromExt.map(
+          ({ contractAddrValName, contractNickname }) => {
+            // TODO: need instance replace aelf
+            return aelf.chain
+              .contractAt(config[contractAddrValName], fakeWallet)
+              .then((res) => {
+                result[contractNickname] = res;
               });
-            });
-        }
-      )
-    );
+          }
+        )
+      ).then(() => {
+        this.setState(result, () => {
+          resolve();
+        });
+      });
+    });
   }
 
   changeModalVisible(modal, visible) {
@@ -522,31 +527,27 @@ class VoteContainer extends Component {
     }, 4000);
   }
 
+  async fetchGetContractsAndProfitAmount() {
+    if (!this.hasGetContractsFromExt) {
+      await this.fetchContractFromExt();
+      this.hasGetContractsFromExt = true;
+      await this.fetchProfitAmount();
+    }
+  }
+
   checkExtensionLockStatus() {
     const { currentWallet } = this.props;
-    const fetchGetContractsAndProfitAmount = async () => {
-      if (!this.hasGetContractsFromExt) {
-        await this.fetchContractFromExt();
-        this.hasGetContractsFromExt = true;
-      }
-      await this.fetchProfitAmount();
-    };
-    const getData = async () => {
+    return new Promise((resolve) => {
       if (currentWallet?.address) {
-        await fetchGetContractsAndProfitAmount();
-        // logined
-        return Promise.resolve();
+        return this.fetchGetContractsAndProfitAmount().then(resolve);
       }
-      return new Promise((resolve) => {
-        WebLoginInstance.get()
-          .loginAsync()
-          .then(async () => {
-            await fetchGetContractsAndProfitAmount();
-            resolve();
-          });
-      });
-    };
-    return getData();
+      return WebLoginInstance.get()
+        .loginAsync()
+        .then(async () => {
+          await this.fetchGetContractsAndProfitAmount();
+          resolve();
+        });
+    });
   }
 
   handleVoteClick(ele) {
@@ -723,10 +724,24 @@ class VoteContainer extends Component {
     };
     WebLoginInstance.get()
       .callContract({
-        contractAddress: electionContractFromExt.address,
+        contractAddress: "NrVf8B7XUduXn1oGHZeF1YANFXEXAhvCymz2WPyKZt4DE2zSg",
         methodName: "Vote",
-        args: payload,
+        args: {
+          candidatePubkey:
+            "047794e5b424177bf03f9d5e541e7bda28056209d814c68aed2670e46d963c85d04da5f69ef82458e86174890743985e297843485b10d0295fc28b8853355cfb8b",
+          amount: 100000000,
+          endTimestamp: {
+            seconds: 1714533239,
+            nanos: 58000000,
+          },
+        },
       })
+      // WebLoginInstance.get()
+      //   .callContract({
+      //     contractAddress: electionContractFromExt.address,
+      //     methodName: "Vote",
+      //     args: payload,
+      //   })
       .then((res) => {
         const { error, errorMessage } = res;
         if (+error === 0 || !error) {
@@ -745,7 +760,7 @@ class VoteContainer extends Component {
             );
           });
         } else {
-          message.error(errorMessage.message);
+          message.error(error.message || errorMessage.message);
           this.setState({
             voteConfirmLoading: false,
           });
@@ -878,7 +893,6 @@ class VoteContainer extends Component {
       return Promise.resolve();
     }
     const { profitContractFromExt } = this.state;
-    console.log(profitContractFromExt, profitContractFromExt.GetProfitsMap);
     return Promise.all([
       getAllTokens(),
       ...schemeIds.map((item) => {

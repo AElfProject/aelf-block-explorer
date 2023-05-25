@@ -168,7 +168,9 @@ export const removePrefixOrSuffix = (address) => {
   return result;
 };
 
-const fakeWallet = AElf.wallet.getWalletByPrivateKey(config.wallet.privateKey);
+export const fakeWallet = AElf.wallet.getWalletByPrivateKey(
+  config.wallet.privateKey
+);
 
 const DEFAUT_RPCSERVER =
   process.env.NODE_ENV === "production"
