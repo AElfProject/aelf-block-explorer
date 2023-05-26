@@ -20,12 +20,17 @@ const prodConfig = {
   mode: "production",
   resolve: {
     alias: {
-      react: nodeModule("react", "umd", "react.production.min.js"),
-      "react-dom": nodeModule(
-        "react-dom",
-        "umd",
-        "react-dom.production.min.js"
-      ),
+      // react: nodeModule("react", "umd", "react.production.min.js"),
+      // "react-dom": nodeModule(
+      //   "react-dom",
+      //   "umd",
+      //   "react-dom.production.min.js"
+      // ),
+      // "react/jsx-runtime": nodeModule(
+      //   "react",
+      //   "cjs",
+      //   "react-jsx-runtime.production.min.js"
+      // ),
     },
   },
   output: {

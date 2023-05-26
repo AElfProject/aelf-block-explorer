@@ -47,8 +47,8 @@ const baseConfig = {
       "@utils": path.resolve(ROOT, "src/utils"),
       "@store": path.resolve(ROOT, "src/store"),
       "@api": path.resolve(ROOT, "src/api"),
-      "@actions": path.resolve(ROOT,"src/redux/actions/"),
-      "@redux": path.resolve(ROOT,"src/redux/"),
+      "@actions": path.resolve(ROOT, "src/redux/actions/"),
+      "@redux": path.resolve(ROOT, "src/redux/"),
     },
     modules: [path.resolve(ROOT, "src"), path.resolve(ROOT, "node_modules")],
     extensions: [".jsx", ".js", ".mjs", ".tsx"],
@@ -97,11 +97,11 @@ const baseConfig = {
           {
             loader: "postcss-loader",
             options: {
-              config: { 
-                path: path.resolve(__dirname, '../postcss.config.js'), 
-              } 
-            }
-          }
+              config: {
+                path: path.resolve(__dirname, "../postcss.config.js"),
+              },
+            },
+          },
         ],
       },
       {
@@ -148,7 +148,7 @@ const baseConfig = {
         resolve: {
           fullySpecified: false, // disable the behavior
         },
-      }
+      },
     ],
   },
   plugins: [
