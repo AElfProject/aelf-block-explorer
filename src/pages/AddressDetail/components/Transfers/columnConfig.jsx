@@ -32,11 +32,7 @@ const getAddress = (nowFlag, input, record) => {
   } else {
     // isCrossChain
     complete = addressFormat(input, "", record.relatedChainId);
-    hidden = addressFormat(
-      hiddenAddress(input),
-      record.symbol,
-      record.relatedChainId
-    );
+    hidden = addressFormat(hiddenAddress(input), "", record.relatedChainId);
     const chainsLink = CHAINS_LIST.find((ele) => {
       return ele.chainId !== record.relatedChainId;
     }).chainsLink.replace(/^\/+|\/+$/g, "");
@@ -56,14 +52,14 @@ const getColumnConfig = ({
   timeFormat,
   handleFormatChange,
   ellipsis = true,
+  withLogo = true,
 }) => {
   return [
     {
       title: "Txn Hash",
-      width: isMobile ? 149 : 206,
+      width: isMobile ? 124 : 124,
       ellipsis,
       dataIndex: "txId",
-      className: "color-blue",
       render(hash) {
         return <Link to={`/tx/${hash}`}>{hash}</Link>;
       },
@@ -71,7 +67,7 @@ const getColumnConfig = ({
     {
       dataIndex: "action",
       title: "Method",
-      width: isMobile ? 110 : 110,
+      width: isMobile ? 100 : 100,
       render: (text) => {
         return (
           <Tooltip title={text} overlayClassName="table-item-tooltip__white">
@@ -82,7 +78,7 @@ const getColumnConfig = ({
     },
     {
       dataIndex: "time",
-      width: isMobile ? 120 : 120,
+      width: isMobile ? 140 : 120,
       title: (
         <div className="time" onClick={handleFormatChange}>
           {timeFormat} <IconFont type="change" />
@@ -96,7 +92,6 @@ const getColumnConfig = ({
       title: "From",
       dataIndex: "from",
       width: isMobile ? 200 : 200,
-      className: "color-blue",
       render(from, record) {
         const isOut = from === address;
         const { complete, hidden, all, isBlank } = getAddress(
@@ -125,9 +120,8 @@ const getColumnConfig = ({
     {
       title: "Interacted With (To )",
       dataIndex: "to",
-      width: isMobile ? 175 : 175,
+      width: isMobile ? 160 : 160,
       ellipsis,
-      className: "color-blue",
       render(to, record) {
         const isIn = to === address;
         const { complete, hidden, all, isBlank } = getAddress(isIn, to, record);
@@ -149,7 +143,7 @@ const getColumnConfig = ({
     {
       title: "Amount",
       dataIndex: "amount",
-      width: isMobile ? 80 : 80,
+      width: isMobile ? 124 : 124,
       render(amount) {
         return `${numberFormatter(amount)}`;
       },
@@ -157,19 +151,20 @@ const getColumnConfig = ({
     {
       title: "Token",
       dataIndex: "symbol",
-      width: isMobile ? 80 : 80,
+      width: isMobile ? 60 : 60,
       render(symbol) {
         const { logoURI } =
           TOEKN_LIST.find((ele) => ele.symbol === symbol) || {};
+        const logoFragment = logoURI ? (
+          <img alt="logo" src={logoURI} />
+        ) : (
+          <span className="default-icon">
+            {symbol.slice(0, 1).toUpperCase()}
+          </span>
+        );
         return (
           <div className="token">
-            {logoURI ? (
-              <img alt="logo" src={logoURI} />
-            ) : (
-              <span className="default-icon">
-                {symbol.slice(0, 1).toUpperCase()}
-              </span>
-            )}
+            {withLogo ? logoFragment : ""}
             {symbol}
           </div>
         );
@@ -179,7 +174,7 @@ const getColumnConfig = ({
       title: "Txn Fee",
       dataIndex: "txFee",
       align: "right",
-      width: isMobile ? 50 : 50,
+      width: isMobile ? 120 : 120,
       render(fee) {
         return <Dividends dividends={fee} />;
       },

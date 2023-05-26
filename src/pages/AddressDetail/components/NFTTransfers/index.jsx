@@ -25,6 +25,7 @@ export default function NFTTransfers({ address }) {
       handleFormatChange: () => {
         setTimeFormat(timeFormat === "Age" ? "Date Time" : "Age");
       },
+      withLogo: false,
     });
   }, [address, isMobile, timeFormat]);
 
