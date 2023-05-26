@@ -57,7 +57,7 @@ const getColumnConfig = ({
   return [
     {
       title: "Txn Hash",
-      width: isMobile ? 124 : 124,
+      width: isMobile ? 120 : 124,
       ellipsis,
       dataIndex: "txId",
       render(hash) {
@@ -67,7 +67,8 @@ const getColumnConfig = ({
     {
       dataIndex: "action",
       title: "Method",
-      width: isMobile ? 100 : 100,
+      // mobile need longer than pc, padding is 16px, except first line
+      width: isMobile ? 116 : 100,
       render: (text) => {
         return (
           <Tooltip title={text} overlayClassName="table-item-tooltip__white">
@@ -78,7 +79,7 @@ const getColumnConfig = ({
     },
     {
       dataIndex: "time",
-      width: isMobile ? 140 : 120,
+      width: isMobile ? 156 : 120,
       title: (
         <div className="time" onClick={handleFormatChange}>
           {timeFormat} <IconFont type="change" />
@@ -91,7 +92,7 @@ const getColumnConfig = ({
     {
       title: "From",
       dataIndex: "from",
-      width: isMobile ? 200 : 200,
+      width: isMobile ? 224 : 200,
       render(from, record) {
         const isOut = from === address;
         const { complete, hidden, all, isBlank } = getAddress(
@@ -120,7 +121,7 @@ const getColumnConfig = ({
     {
       title: "Interacted With (To )",
       dataIndex: "to",
-      width: isMobile ? 160 : 160,
+      width: isMobile ? 176 : 160,
       ellipsis,
       render(to, record) {
         const isIn = to === address;
@@ -143,7 +144,7 @@ const getColumnConfig = ({
     {
       title: "Amount",
       dataIndex: "amount",
-      width: isMobile ? 124 : 124,
+      width: isMobile ? 140 : 124,
       render(amount) {
         return `${numberFormatter(amount)}`;
       },
@@ -151,7 +152,7 @@ const getColumnConfig = ({
     {
       title: "Token",
       dataIndex: "symbol",
-      width: isMobile ? 60 : 60,
+      width: isMobile ? 76 : 60,
       render(symbol) {
         const { logoURI } =
           TOEKN_LIST.find((ele) => ele.symbol === symbol) || {};
@@ -174,7 +175,7 @@ const getColumnConfig = ({
       title: "Txn Fee",
       dataIndex: "txFee",
       align: "right",
-      width: isMobile ? 120 : 120,
+      width: isMobile ? 136 : 120,
       render(fee) {
         return <Dividends dividends={fee} />;
       },
