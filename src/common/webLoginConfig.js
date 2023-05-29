@@ -8,17 +8,7 @@ setGlobalConfig({
   portkey: {
     useLocalStorage: true,
     graphQLUrl: '/AElfIndexer_DApp/PortKeyIndexerCASchema/graphql',
-    // reCaptchaConfig: {
-    //   siteKey: '6LfR_bElAAAAAJSOBuxle4dCFaciuu9zfxRQfQC0',
-    // },
     socialLogin: {
-      Apple: {
-        clientId: 'did.portkey',
-        redirectURI: 'https://apple-bingo.portkey.finance/api/app/appleAuth/bingoReceive',
-      },
-      Google: {
-        clientId: '176147744733-a2ks681uuqrmb8ajqrpu17te42gst6lq.apps.googleusercontent.com',
-      },
       Portkey: {
         websiteName: 'explorer.aelf.io',
         websiteIcon: 'https://explorer.aelf.io/favicon.main.ico',
