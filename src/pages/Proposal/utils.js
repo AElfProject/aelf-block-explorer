@@ -7,9 +7,18 @@ import { request } from "../../common/request";
 import { API_PATH } from "../../redux/common/constants";
 
 import { deserializeLog } from "../../common/utils";
+import { WebLoginInstance } from "../../utils/webLogin";
 
-export async function updateContractName(wallet, currentWallet, params) {
-  const signedParams = await getSignParams(wallet, currentWallet);
+export async function updateContractName(currentWallet, params) {
+  const { getSignature } = WebLoginInstance.get().getWebLoginContext();
+  const timestamp = new Date().getTime();
+  const { signature } = await getSignature(timestamp);
+  const signedParams = {
+    address: currentWallet.address,
+    signature,
+    pubKey: currentWallet.publicKey,
+    timestamp,
+  };
   if (Object.keys(signedParams).length > 0) {
     return request(
       API_PATH.UPDATE_CONTRACT_NAME,
@@ -27,8 +36,16 @@ export async function updateContractName(wallet, currentWallet, params) {
   throw new Error("get signature failed");
 }
 
-export async function addContractName(wallet, currentWallet, params) {
-  const signedParams = await getSignParams(wallet, currentWallet);
+export async function addContractName(currentWallet, params) {
+  const { getSignature } = WebLoginInstance.get().getWebLoginContext();
+  const timestamp = new Date().getTime();
+  const { signature } = await getSignature(timestamp);
+  const signedParams = {
+    address: currentWallet.address,
+    signature,
+    pubKey: currentWallet.publicKey,
+    timestamp,
+  };
   if (Object.keys(signedParams).length > 0) {
     return request(
       API_PATH.ADD_CONTRACT_NAME,

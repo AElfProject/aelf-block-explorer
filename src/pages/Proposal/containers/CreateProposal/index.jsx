@@ -4,6 +4,7 @@
  */
 // eslint-disable-next-line no-use-before-define
 import React, { useCallback, useState } from "react";
+import AElf from "aelf-sdk";
 import { Tabs, Modal, message } from "antd";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -36,7 +37,11 @@ import { deserializeLog } from "../../../../common/utils";
 import { interval } from "../../../../utils/timeUtils";
 import { get } from "../../../../utils";
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
-import { hexStringToByteArray } from "../../../../utils/formater";
+import {
+  base64ToByteArray,
+  byteArrayToHexString,
+  hexStringToByteArray,
+} from "../../../../utils/formater";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 
 const { TabPane } = Tabs;
@@ -205,10 +210,9 @@ const CreateProposal = () => {
   // eslint-disable-next-line consistent-return
   const minedStatusWithoutApproval = async (name, txRes, isUpdate, address) => {
     try {
-      const { Logs = [], ReturnValue, TransactionId } = txRes;
+      const { Logs = [], TransactionId, codeHash } = txRes;
       const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
       const releaseRes = await ifToBeRelease(log, isUpdate, TransactionId);
-
       if (releaseRes === "acs12 etc fail") {
         openFailedWithoutApprovalModal(isUpdate, TransactionId);
         return Promise.reject(new Error("acs12 etc fail"));
@@ -240,12 +244,6 @@ const CreateProposal = () => {
           contractVersion,
         };
       }
-      const { codeHash = "" } = await callGetMethodSend(
-        "Genesis",
-        "DeployUserSmartContract",
-        hexStringToByteArray(ReturnValue),
-        "unpackOutput"
-      );
       const startTime = new Date().getTime();
       return new Promise((resolve) => {
         try {
@@ -266,23 +264,28 @@ const CreateProposal = () => {
                   value: hexStringToByteArray(codeHash),
                 }
               );
-              if (contractRegistration.contractAddress) {
-                // get contractVersion
-                const { contractAddress, contractVersion } =
-                  contractRegistration;
-                // get contractName
-                const {
-                  data: { name: contractName },
-                } = await get(VIEWER_GET_CONTRACT_NAME, {
-                  address: contractAddress,
-                });
+              try {
+                if (contractRegistration.contractAddress) {
+                  // get contractVersion
+                  const { contractAddress, contractVersion } =
+                    contractRegistration;
+                  // get contractName
+                  const {
+                    data: { name: contractName },
+                  } = await get(VIEWER_GET_CONTRACT_NAME, {
+                    address: contractAddress,
+                  });
+                  interval.clear();
+                  resolve({
+                    status: "success",
+                    contractAddress,
+                    contractName: contractName || name || "-1",
+                    contractVersion,
+                  });
+                }
+              } catch (e) {
                 interval.clear();
-                resolve({
-                  status: "success",
-                  contractAddress,
-                  contractName: contractName || name || "-1",
-                  contractVersion,
-                });
+                message.error(e.message);
               }
             }
           }, 10000);
@@ -312,7 +315,7 @@ const CreateProposal = () => {
     try {
       // bp and without approval, both process is below when onlyUpdateName.
       if (isOnlyUpdateName) {
-        await updateContractName(wallet, currentWallet, {
+        await updateContractName(currentWallet, {
           contractAddress: address,
           contractName: name,
           address: currentWallet.address,
@@ -363,11 +366,11 @@ const CreateProposal = () => {
           });
           // get transaction id
           const result = await contractSend(action, params);
-          // if (result.data) {
-          //   // for portkey
-          //   txRes = result.data;
-          // } else {
-          console.log(result, "=====");
+          const byteArray = AElf.utils.sha256.array(
+            base64ToByteArray(params.code)
+          );
+          // get codeHash from code
+          const codeHash = byteArrayToHexString(byteArray);
           const txRes = await getTransactionResult(
             aelf,
             result?.TransactionId ||
@@ -375,9 +378,7 @@ const CreateProposal = () => {
               result.transactionId ||
               ""
           );
-          // }
-          console.log(txRes, "xxxxxx");
-          // debugger;
+          txRes.codeHash = codeHash;
           const {
             TransactionId: transactionId,
             Error: error,
@@ -401,7 +402,7 @@ const CreateProposal = () => {
           } else if (status === "MINED") {
             // add contract name
             if (name && +name !== -1) {
-              await addContractName(wallet, currentWallet, {
+              await addContractName(currentWallet, {
                 contractName: name,
                 txId: transactionId,
                 action: isUpdate ? "UPDATE" : "DEPLOY",
@@ -462,11 +463,21 @@ const CreateProposal = () => {
         return;
       }
       const result = await contractSend(action, params);
-      let Log;
-      const txsId = result?.TransactionId || result?.result?.TransactionId;
+      const txsId =
+        result?.TransactionId ||
+        result?.result?.TransactionId ||
+        result.transactionId ||
+        "";
       if (!txsId)
         throw new Error("Transaction failed. Please reinitiate this step.");
-      const txResult = await getTxResult(aelf, txsId ?? "");
+      let Log;
+      let txResult;
+      if (result.data) {
+        // portkey sdk login
+        txResult = result.data;
+      } else {
+        txResult = await getTxResult(aelf, txsId ?? "");
+      }
       if (txResult.Error) {
         throw new Error(txResult.Error);
       }
@@ -508,12 +519,8 @@ const CreateProposal = () => {
             <CopylistItem
               label="Transaction ID"
               isParentHref
-              value={
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }
-              href={`/tx/${
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }`}
+              value={txsId}
+              href={`/tx/${txsId}`}
             />
           </div>
         ),

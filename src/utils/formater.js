@@ -58,6 +58,23 @@ const hexStringToByteArray = (hexString) => {
   return result;
 };
 
+const byteArrayToHexString = (byteArray) => {
+  function mapFn(byte) {
+    // eslint-disable-next-line no-bitwise
+    return `0${(byte & 0xff).toString(16)}`.slice(-2);
+  }
+  return Array.from(byteArray, mapFn).join("");
+};
+
+const base64ToByteArray = (base64String) => {
+  const binaryString = window.atob(base64String);
+  const byteArray = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    byteArray[i] = binaryString.charCodeAt(i);
+  }
+  return byteArray;
+};
+
 export {
   hexStringToByteArray,
   thousandsComma,
@@ -66,4 +83,6 @@ export {
   removeUrlPrefix,
   thousandsCommaWithDecimal,
   centerEllipsis,
+  byteArrayToHexString,
+  base64ToByteArray,
 };

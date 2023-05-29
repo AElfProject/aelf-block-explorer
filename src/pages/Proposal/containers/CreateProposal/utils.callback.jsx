@@ -24,7 +24,6 @@ export const useCallbackAssem = () => {
         methodName: action,
       });
       if (isOriginResult) return result;
-
       if ((result && +result.error === 0) || !result.error) {
         return result;
       }
@@ -104,11 +103,12 @@ export const useReleaseApprovedContractAction = () => {
           (result.errorMessage || {}).message || "Send transaction failed"
         );
       }
-      const Log = await getDeserializeLog(
-        aelf,
-        result?.TransactionId || result?.result?.TransactionId || "",
-        "ProposalCreated"
-      );
+      const txsId =
+        result?.TransactionId ||
+        result?.result?.TransactionId ||
+        result.transactionId ||
+        "";
+      const Log = await getDeserializeLog(aelf, txsId, "ProposalCreated");
       const { proposalId: newProposalId } = Log ?? "";
       return {
         visible: true,
@@ -178,11 +178,18 @@ export const useReleaseCodeCheckedContractAction = () => {
           (result.errorMessage || {}).message || "Send transaction failed"
         );
       }
-      const txResult = await getTxResult(
-        aelf,
-        result?.TransactionId || result?.result?.TransactionId || ""
-      );
-
+      const txsId =
+        result?.TransactionId ||
+        result?.result?.TransactionId ||
+        result.transactionId ||
+        "";
+      let txResult;
+      if (result.data) {
+        // portkey sdk login
+        txResult = result.data;
+      } else {
+        txResult = await getTxResult(aelf, txsId ?? "");
+      }
       if (!txResult) {
         throw Error("Can not get transaction result.");
       }
