@@ -57,11 +57,15 @@ const getColumnConfig = ({
   return [
     {
       title: "Txn Hash",
-      width: isMobile ? 120 : 124,
+      width: isMobile ? 120 : 140,
       ellipsis,
       dataIndex: "txId",
       render(hash) {
-        return <Link to={`/tx/${hash}`}>{hash}</Link>;
+        return (
+          <span className="txn-hash">
+            <Link to={`/tx/${hash}`}>{hash}</Link>
+          </span>
+        );
       },
     },
     {
@@ -79,7 +83,7 @@ const getColumnConfig = ({
     },
     {
       dataIndex: "time",
-      width: isMobile ? 156 : 120,
+      width: isMobile ? 156 : 140,
       title: (
         <div className="time" onClick={handleFormatChange}>
           {timeFormat} <IconFont type="change" />
@@ -92,7 +96,7 @@ const getColumnConfig = ({
     {
       title: "From",
       dataIndex: "from",
-      width: isMobile ? 224 : 200,
+      width: isMobile ? 224 : 196,
       render(from, record) {
         const isOut = from === address;
         const { complete, hidden, all, isBlank } = getAddress(

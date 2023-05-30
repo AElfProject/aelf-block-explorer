@@ -8,6 +8,13 @@
       .color-blue {
         color: @mariner;
       }
+      .txn-hash {
+        width: 100%;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: @mariner;
+      }
       .method {
         width: 100px;
         height: 28px;
@@ -24,17 +31,21 @@
           display: inline-block;
           white-space: nowrap;
         }
+        svg {
+          padding: 2px;
+        }
         .ant-tag {
           display: inline-block;
           position: absolute;
           top: -1px;
-          right: 0;
+          right: -8px;
           width: 40px;
           line-height: 20px;
           border-radius: 2px;
           text-align: center;
           padding: 2px 0;
           border: none;
+          margin: 0;
           &.in {
             background: #e6f8f0;
             color: @jade;
@@ -48,6 +59,26 @@
       .to {
         display: block;
         width: 150px;
+        svg {
+          padding: 2px;
+        }
+      }
+      .token {
+        img {
+          margin-right: 2px;
+        }
+        .default-icon {
+          display: inline-block;
+          width: 22px;
+          height: 22px;
+          line-height: 22px;
+          border-radius: 50%;
+          font-size: 12px;
+          text-align: center;
+          background: #f7f8f9;
+          border: 1px solid #c5cbd5;
+          margin-right: 2px;
+        }
       }
     }
   }
