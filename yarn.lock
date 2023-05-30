@@ -2412,10 +2412,10 @@
     reactjs-social-login "^2.6.2"
     uuid "^8.3.2"
 
-"@portkey/did-ui-react@^0.0.1-alpha.8.0":
-  version "0.0.1-alpha.8.0"
-  resolved "https://registry.npmmirror.com/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.8.0.tgz#37766e6c539f027bab5057364333e3dd5f1992d4"
-  integrity sha512-pPuy1wEmhg7Bbk0Qsg0dWhiTz9FYNPETMLzUdQCR7IRy/b9aChKuWNC3MB25kk/mJrnKwzCbhIQ2R+qdB9mXtQ==
+"@portkey/did-ui-react@^0.0.1-alpha.8.1":
+  version "0.0.1-alpha.8.1"
+  resolved "https://registry.npmmirror.com/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.8.1.tgz#1f0791227fdafaf351774f6defeefdc6abdb5173"
+  integrity sha512-pq6iQ0QjDQVD1MjQGAgS6ASuv7600/kN5+6/ZnkizIuKg7M+UGHBHKVCYtW4lDFGyY4e8/Ibf1FGuB0ij3Dwvg==
   dependencies:
     "@matt-block/react-recaptcha-v2" "^2.0.0"
     "@portkey/did" "^0.0.1-alpha.3.3"
@@ -2466,9 +2466,9 @@
     query-string "^6.14.1"
 
 "@portkey/services@^0.0.1-alpha.2.3":
-  version "0.0.1-alpha.2.4"
-  resolved "https://registry.npmjs.org/@portkey/services/-/services-0.0.1-alpha.2.4.tgz#8c3bf719069962b0357926092c73d73eaced7403"
-  integrity sha512-hdZsl3lmR1r0t7aEKUEZvjGlU/HvaQiTIb0geTuOcy3kv0nUqIGkB2dyZHhXmP6+LN52n4fVCrS55uM5beFJVQ==
+  version "0.0.1-alpha.2.5"
+  resolved "https://registry.npmmirror.com/@portkey/services/-/services-0.0.1-alpha.2.5.tgz#cc9975b92fe719a31ae3dc72537cfdcf87c26e32"
+  integrity sha512-S5kw3ZP5a4bTjGWTvlYrX8Zlbi9IhRlimWi7C8ig4rBRhcw4GW0ZBJK7MNhRUDFz/TnrKIPYfYPAB3CXgpngeQ==
   dependencies:
     "@portkey/graphql" "^0.0.1-alpha.1.8"
     "@portkey/request" "^0.0.1-alpha.1.7"
