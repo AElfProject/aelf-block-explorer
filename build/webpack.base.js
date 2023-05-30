@@ -50,6 +50,9 @@ const baseConfig = {
       "@actions": path.resolve(ROOT,"src/redux/actions/"),
       "@redux": path.resolve(ROOT,"src/redux/"),
     },
+    fallback: {
+      buffer: require.resolve('buffer'),
+    },
     modules: [path.resolve(ROOT, "src"), path.resolve(ROOT, "node_modules")],
     extensions: [".jsx", ".js", ".mjs", ".tsx"],
   },
@@ -180,6 +183,7 @@ const baseConfig = {
     }),
     new webpack.ProvidePlugin({
       React: "react",
+      Buffer: ['buffer', 'Buffer'],
     }),
     new MomentLocalesPlugin({
       localesToKeep: ["es-us", "en-ca", "zh-cn"],
