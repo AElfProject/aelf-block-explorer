@@ -100,7 +100,9 @@ export const useReleaseApprovedContractAction = () => {
       if (!((result && +result.error === 0) || !result.error)) {
         isError = true;
         throw new Error(
-          (result.errorMessage || {}).message || "Send transaction failed"
+          (result.errorMessage || {}).message ||
+            result?.error?.message ||
+            "Send transaction failed"
         );
       }
       const txsId =

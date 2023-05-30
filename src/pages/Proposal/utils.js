@@ -1,18 +1,23 @@
-import {
-  getCsrfToken,
-  getSignParams,
-  getTxResult,
-} from "../../redux/common/utils";
+import { getCsrfToken, getTxResult } from "../../redux/common/utils";
 import { request } from "../../common/request";
 import { API_PATH } from "../../redux/common/constants";
 
 import { deserializeLog } from "../../common/utils";
 import { WebLoginInstance } from "../../utils/webLogin";
+import { APPNAME } from "../../../config/config";
 
-export async function updateContractName(currentWallet, params) {
+async function sign(currentWallet, hexToBeSign) {
   const { getSignature } = WebLoginInstance.get().getWebLoginContext();
+  const { signature } = await getSignature({
+    appName: APPNAME,
+    address: currentWallet.address,
+    hexToBeSign,
+  });
+  return signature;
+}
+export async function updateContractName(currentWallet, params) {
   const timestamp = new Date().getTime();
-  const { signature } = await getSignature(timestamp);
+  const signature = await sign(currentWallet, timestamp);
   const signedParams = {
     address: currentWallet.address,
     signature,
@@ -37,9 +42,8 @@ export async function updateContractName(currentWallet, params) {
 }
 
 export async function addContractName(currentWallet, params) {
-  const { getSignature } = WebLoginInstance.get().getWebLoginContext();
   const timestamp = new Date().getTime();
-  const { signature } = await getSignature(timestamp);
+  const signature = await sign(currentWallet, timestamp);
   const signedParams = {
     address: currentWallet.address,
     signature,
