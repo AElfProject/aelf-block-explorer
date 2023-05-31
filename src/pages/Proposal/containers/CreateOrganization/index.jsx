@@ -20,7 +20,7 @@ import {
   Divider,
   Form,
 } from "antd";
-import { useWebLogin } from "aelf-web-login";
+import { useWebLogin, WebLoginContext } from "aelf-web-login";
 import constants, { API_PATH } from "@redux/common/constants";
 import {
   commonFilter,
@@ -31,6 +31,7 @@ import {
 import { request } from "../../../../common/request";
 import { getTokenList, getContract, sleep } from "../../../../common/utils";
 import "./index.less";
+import { WebLoginInstance } from "../../../../utils/webLogin";
 
 const { Switch: ConditionSwitch, Case } = ReactIf;
 
@@ -77,7 +78,7 @@ const FIELDS_MAP = {
           After selecting one, you will need to operate according to its rules.
           For specific rules, see 'Proposal rules'"
         >
-          <QuestionCircleOutlined className='main-color' />
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -160,8 +161,8 @@ const FIELDS_MAP = {
     label: (
       <span>
         Proposer Authority Required&nbsp;
-        <Tooltip title='set to false to allow anyone to create a new proposal'>
-          <QuestionCircleOutlined className='main-color' />
+        <Tooltip title="set to false to allow anyone to create a new proposal">
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -180,11 +181,11 @@ const FIELDS_MAP = {
       <span>
         Organization members&nbsp;
         <Tooltip
-          title='Input the address list of members,
+          title="Input the address list of members,
           separated by commas, such as
-          `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`'
+          `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`"
         >
-          <QuestionCircleOutlined className='main-color' />
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -204,11 +205,11 @@ const FIELDS_MAP = {
       <span>
         Proposer White List&nbsp;
         <Tooltip
-          title='Input the address list of proposers,
+          title="Input the address list of proposers,
           separated by commas, such as
-           `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`'
+           `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`"
         >
-          <QuestionCircleOutlined className='main-color' />
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -411,9 +412,10 @@ const CreateOrganization = () => {
           creationToken: rand16Num(64),
         };
       }
-      
-      console.log('callContract', param)
-      const result = await callContract({
+
+      console.log("callContract", param);
+      // debugger;
+      const result = await WebLoginInstance.get().callContract({
         contractAddress: getContractAddress(formValue.proposalType),
         methodName: "CreateOrganization",
         args: param,
@@ -451,13 +453,13 @@ const CreateOrganization = () => {
   );
 
   return (
-    <div className='create-organization'>
-      <div className='create-organization-header'>
-        <div className='create-organization-header-title'>
+    <div className="create-organization">
+      <div className="create-organization-header">
+        <div className="create-organization-header-title">
           Create Organization
         </div>
-        <div className='create-organization-header-action'>
-          <Link to='/proposal/organizations'>
+        <div className="create-organization-header-action">
+          <Link to="/proposal/organizations">
             &lt;Back to Organization List
           </Link>
         </div>
@@ -503,7 +505,7 @@ const CreateOrganization = () => {
             >
               <Select
                 showSearch
-                optionFilterProp='children'
+                optionFilterProp="children"
                 filterOption={commonFilter}
                 placeholder={FIELDS_MAP.tokenSymbol.placeholder}
               >
@@ -555,8 +557,8 @@ const CreateOrganization = () => {
         </FormItem>
         <FormItem {...tailFormItemLayout}>
           <Button
-            shape='round'
-            type='primary'
+            shape="round"
+            type="primary"
             loading={isLoading}
             onClick={handleSubmit}
           >

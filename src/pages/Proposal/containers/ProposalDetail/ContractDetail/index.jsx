@@ -16,6 +16,7 @@ import { getContract } from "../../../../../common/utils";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
 import { getContractURL } from "../../../utils";
 import addressFormat from "../../../../../utils/addressFormat";
+import { isJsonString } from "../../../../../utils/utils";
 
 const { viewer } = config;
 
@@ -52,8 +53,16 @@ const ContractDetail = (props) => {
     // deploy contract on mainnet before node code update
     // will cause the contractParams cannot be parsed to json
     // so we need to check the contractMethod is 'PerformDeployUserSmartContract' or not
-    if (createdBy === "SYSTEM_CONTRACT" && contractMethod !== 'PerformDeployUserSmartContract') {
-      setParams(JSON.stringify(JSON.parse(contractParams), null, 2));
+    if (
+      (createdBy === "SYSTEM_CONTRACT" &&
+        contractMethod !== "PerformDeployUserSmartContract") ||
+      isJsonString(contractParams)
+    ) {
+      try {
+        setParams(JSON.stringify(JSON.parse(contractParams), null, 2));
+      } catch (e) {
+        setParams(contractParams);
+      }
     } else if (contractParams) {
       getContract(aelf, contractAddress)
         .then((contract) => {
@@ -77,8 +86,8 @@ const ContractDetail = (props) => {
       title={
         <span>
           Contract Details
-          <Tooltip title='Specific information about the contract invoked by the proposal'>
-            <QuestionCircleOutlined className='gap-left main-color' />
+          <Tooltip title="Specific information about the contract invoked by the proposal">
+            <QuestionCircleOutlined className="gap-left main-color" />
           </Tooltip>
         </span>
       }
@@ -88,7 +97,7 @@ const ContractDetail = (props) => {
           <>
             <Row>
               <Col sm={4} xs={24}>
-                <span className='sub-title'>Contract Name</span>
+                <span className="sub-title">Contract Name</span>
               </Col>
               <Col sm={20} xs={24}>
                 {name}
@@ -100,13 +109,13 @@ const ContractDetail = (props) => {
       </If>
       <Row>
         <Col sm={4} xs={24}>
-          <span className='sub-title'>Contract Address</span>
+          <span className="sub-title">Contract Address</span>
         </Col>
         <Col sm={20} xs={24}>
           <a
             href={getContractURL(addressFormat(contractAddress))}
-            target='_blank'
-            rel='noopener noreferrer'
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {`ELF_${contractAddress}_${viewer.chainId}`}
           </a>
@@ -115,7 +124,7 @@ const ContractDetail = (props) => {
       <Divider />
       <Row>
         <Col sm={4} xs={24}>
-          <span className='sub-title'>Contract Method Name</span>
+          <span className="sub-title">Contract Method Name</span>
         </Col>
         <Col sm={20} xs={24}>
           <Tag color={PRIMARY_COLOR}>{contractMethod}</Tag>
@@ -124,12 +133,10 @@ const ContractDetail = (props) => {
       <Divider />
       <Row>
         <Col sm={4} xs={24}>
-          <span className='sub-title'>Contract Params</span>
+          <span className="sub-title">Contract Params</span>
         </Col>
         <Col sm={20} xs={24}>
-          <pre className='view-params'>
-              {params}
-          </pre>
+          <pre className="view-params">{params}</pre>
         </Col>
       </Row>
     </Card>

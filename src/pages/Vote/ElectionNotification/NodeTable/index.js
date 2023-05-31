@@ -22,11 +22,8 @@ import {
 } from "@api/vote";
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
-import {
-  FROM_WALLET,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
-  ELF_DECIMAL,
-} from "@src/pages/Vote/constants";
+import { FROM_WALLET, ELF_DECIMAL } from "@src/pages/Vote/constants";
+import { connect } from "react-redux";
 import "./index.less";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
@@ -40,7 +37,6 @@ class NodeTable extends PureComponent {
     super(props);
     this.state = {
       nodeList: [],
-      currentWallet: {},
       totalVotesAmount: null,
       isLoading: false,
       producedBlocks: null,
@@ -86,7 +82,8 @@ class NodeTable extends PureComponent {
       if (
         (!prevProps.currentWallet && this.props.currentWallet) ||
         (this.props.currentWallet &&
-          this.props.currentWallet.address !== prevProps.currentWallet.address)
+          this.props.currentWallet?.address !==
+            prevProps.currentWallet?.address)
       ) {
         this.fetchNodes({});
       }
@@ -400,9 +397,9 @@ class NodeTable extends PureComponent {
     Promise.all([
       this.fetchAllCandidateInfo(),
       getAllTeamDesc(),
-      currentWallet && currentWallet.publicKey
+      currentWallet && currentWallet?.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: getPublicKeyFromObject(currentWallet.publicKey),
+            value: getPublicKeyFromObject(currentWallet?.publicKey),
           })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract),
@@ -596,5 +593,10 @@ class NodeTable extends PureComponent {
     );
   }
 }
-
-export default NodeTable;
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(NodeTable);

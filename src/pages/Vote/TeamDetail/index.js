@@ -15,11 +15,11 @@ import {
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
 import { FROM_WALLET, ELF_DECIMAL } from "@src/pages/Vote/constants";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
-import getCurrentWallet from "@utils/getCurrentWallet";
 import {
   filterUserVoteRecordsForOneCandidate,
   computeUserRedeemableVoteAmountForOneCandidate,
 } from "@utils/voteUtils";
+import { connect } from "react-redux";
 import "./index.less";
 import addressFormat from "../../../utils/addressFormat";
 
@@ -61,13 +61,13 @@ class TeamDetail extends PureComponent {
       this.justifyIsBP();
     }
 
-    if (electionContract !== null) {
+    if (currentWallet?.address && electionContract) {
       this.fetchDataFromElectionContract();
     }
 
-    if (currentWallet) {
+    if (currentWallet?.address) {
       this.setState({
-        hasAuth: currentWallet.publicKey === this.teamPubkey,
+        hasAuth: currentWallet?.publicKey === this.teamPubkey,
       });
     }
   }
@@ -78,15 +78,14 @@ class TeamDetail extends PureComponent {
     if (consensusContract !== prevProps.consensusContract) {
       this.justifyIsBP();
     }
-
-    if (electionContract !== prevProps.electionContract) {
+    if (currentWallet?.address && electionContract) {
       this.fetchDataFromElectionContract();
     }
 
     if (prevProps.currentWallet !== currentWallet) {
       this.setState(
         {
-          hasAuth: currentWallet.publicKey === this.teamPubkey,
+          hasAuth: currentWallet?.publicKey === this.teamPubkey,
         },
         this.fetchCandidateInfo
       );
@@ -183,12 +182,9 @@ class TeamDetail extends PureComponent {
   }
 
   fetchTheUsersActiveVoteRecords() {
-    const { electionContract } = this.props;
-    // todo: Will it break the data consistency?
-    const currentWallet = getCurrentWallet();
-
+    const { electionContract, currentWallet } = this.props;
     fetchElectorVoteWithRecords(electionContract, {
-      value: currentWallet.publicKey,
+      value: currentWallet?.publicKey,
     })
       .then((res) => {
         this.computeUserRedeemableVoteAmountForOneCandidate(
@@ -196,7 +192,7 @@ class TeamDetail extends PureComponent {
         );
       })
       .catch((err) => {
-        console.error("fetchElectorVoteWithRecords", err);
+        console.error("fetchTheUsersActiveVoteRecords", err);
       });
   }
 
@@ -451,5 +447,10 @@ class TeamDetail extends PureComponent {
     );
   }
 }
-
-export default TeamDetail;
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(TeamDetail);

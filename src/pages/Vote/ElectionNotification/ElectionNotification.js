@@ -13,15 +13,14 @@ import moment from "moment";
 
 import StatisticalData from "@components/StatisticalData/";
 import {
-  SYMBOL,
   ELECTION_NOTIFI_DATA_TIP,
   txStatusInUpperCase,
   UNKNOWN_ERROR_TIP,
-  LONG_NOTIFI_TIME,
   ELF_DECIMAL,
 } from "@src/constants";
 import { aelf } from "@src/utils";
 import getStateJudgment from "@utils/getStateJudgment";
+import { connect } from "react-redux";
 import { withRouter } from "../../../routes/utils";
 import NodeTable from "./NodeTable";
 import ElectionRuleCard from "./ElectionRuleCard/ElectionRuleCard";
@@ -30,6 +29,7 @@ import Dividends from "../../../components/Dividends";
 import "./ElectionNotification.style.less";
 import CandidateApplyModal from "./CandidateApplyModal/CandidateApplyModal";
 import { getTokenDecimal } from "../../../utils/utils";
+import { WebLoginInstance } from "../../../utils/webLogin";
 
 const electionNotifiStatisData = {
   termEndTime: {
@@ -120,15 +120,10 @@ class ElectionNotification extends PureComponent {
     this.state = {
       contracts: null,
       showWallet: false,
-      nightElf: null,
-
       candidates: null,
       nodesCount: null,
-      showDownloadPlugin: true,
-      // todo: should I place statisData in state?
       statisData: electionNotifiStatisData,
       statisDataLoading: false,
-
       applyModalVisible: false,
     };
 
@@ -163,7 +158,7 @@ class ElectionNotification extends PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     this.fetchData();
   }
 
@@ -297,9 +292,13 @@ class ElectionNotification extends PureComponent {
     } = this.props;
 
     checkExtensionLockStatus().then(() => {
-      electionContractFromExt
-        .QuitElection({
-          value: currentWallet.publicKey,
+      WebLoginInstance.get()
+        .callContract({
+          contractAddress: electionContractFromExt.address,
+          methodName: "QuitElection",
+          args: {
+            value: currentWallet?.publicKey,
+          },
         })
         .then((res) => {
           if (res.error) {
@@ -332,21 +331,29 @@ class ElectionNotification extends PureComponent {
   }
 
   handleApplyModalOk(admin) {
-    const {
-      currentWallet,
-      electionContractFromExt,
-      checkExtensionLockStatus,
-      judgeCurrentUserIsCandidate,
-    } = this.props;
-
-    // todo: there are the same code in Vote.js
-    // todo: error handle
+    const { checkExtensionLockStatus } = this.props;
     checkExtensionLockStatus().then(() => {
-      electionContractFromExt
-        .AnnounceElection(admin)
+      // checkExtensionLockStatus will change props
+      const {
+        currentWallet,
+        electionContractFromExt,
+        judgeCurrentUserIsCandidate,
+      } = this.props;
+      WebLoginInstance.get()
+        .callContract({
+          contractAddress: electionContractFromExt.address,
+          methodName: "AnnounceElection",
+          args: admin,
+        })
+        // WebLoginInstance.get()
+        //   .callContract({
+        //     contractAddress: "NrVf8B7XUduXn1oGHZeF1YANFXEXAhvCymz2WPyKZt4DE2zSg",
+        //     methodName: "AnnounceElection",
+        //     args: "ELF_2vLuU4Xi59xz6QkjdmspGHqeMxbb75ahUXZc1wXzbZdLEGdpuv_AELF",
+        //   })
         .then((res) => {
           if (res.error) {
-            message.error(res.errorMessage.message);
+            message.error(res.error.message || res.errorMessage.message);
             return;
           }
           if (!res) {
@@ -367,9 +374,7 @@ class ElectionNotification extends PureComponent {
               judgeCurrentUserIsCandidate();
               if (status === txStatusInUpperCase.mined) {
                 this.props.navigate(
-                  `/vote/apply/keyin?pubkey=${
-                    currentWallet && currentWallet.publicKey
-                  }`
+                  `/vote/apply/keyin?pubkey=${currentWallet?.publicKey}`
                 );
               }
             } catch (e) {
@@ -402,7 +407,6 @@ class ElectionNotification extends PureComponent {
       multiTokenContract,
       profitContract,
       dividendContract,
-      nightElf,
       isCandidate,
       handleDividendClick,
       dividends,
@@ -412,15 +416,8 @@ class ElectionNotification extends PureComponent {
       changeVoteState,
       shouldRefreshMyWallet,
       checkExtensionLockStatus,
-      currentWallet,
     } = this.props;
-    const {
-      totalVotesAmount,
-      showDownloadPlugin,
-      statisData,
-      statisDataLoading,
-      applyModalVisible,
-    } = this.state;
+    const { statisData, statisDataLoading, applyModalVisible } = this.state;
 
     const { electionContract } = this.props;
 
@@ -435,7 +432,6 @@ class ElectionNotification extends PureComponent {
         <div className="election-blank" />
         <ElectionRuleCard
           isCandidate={isCandidate}
-          currentWallet={currentWallet}
           quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
@@ -451,27 +447,28 @@ class ElectionNotification extends PureComponent {
           shouldRefreshMyWallet={shouldRefreshMyWallet}
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
-          currentWallet={currentWallet}
         />
         <div className="election-blank" />
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}
-          nightElf={nightElf}
           shouldRefreshNodeTable={shouldRefreshNodeTable}
           nodeTableRefreshTime={nodeTableRefreshTime}
           changeVoteState={changeVoteState}
-          currentWallet={currentWallet}
         />
         <CandidateApplyModal
           visible={applyModalVisible}
           onOk={this.handleApplyModalOk}
           onCancel={this.handleApplyModalCancel}
-          currentWallet={currentWallet}
         />
       </section>
     );
   }
 }
-
-export default withRouter(ElectionNotification);
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(withRouter(ElectionNotification));

@@ -5,9 +5,9 @@ let instance;
 export class WebLoginInstance {
   static get() {
     if (!instance) {
-      instance = new WebLoginInstance()
+      instance = new WebLoginInstance();
     }
-    return instance
+    return instance;
   }
 
   setWebLoginContext(context) {
@@ -27,7 +27,7 @@ export class WebLoginInstance {
       this._loginResolve = resolve;
       this._loginReject = reject;
       this._context.login();
-    })
+    });
   }
 
   async logoutAsync() {
@@ -35,16 +35,19 @@ export class WebLoginInstance {
       this._logoutResolve = resolve;
       this._logoutReject = reject;
       this._context.logout();
-    })
+    });
   }
 
   onLoginStateChanged(loginState, loginError) {
-    if (loginState === WebLoginState.initial && this._loginState === WebLoginState.logined) {
+    if (
+      loginState === WebLoginState.initial &&
+      this._loginState === WebLoginState.logined
+    ) {
       this._loginState = loginState;
       if (loginError) {
         this._logoutReject?.(loginError);
       } else {
-        this._logoutResolve?.()
+        this._logoutResolve?.();
       }
       this._logoutReject = null;
       this._logoutResolve = null;
@@ -61,5 +64,4 @@ export class WebLoginInstance {
       this._loginResolve = null;
     }
   }
-
 }

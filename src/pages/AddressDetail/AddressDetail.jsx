@@ -25,7 +25,8 @@ import removeHash from "../../utils/removeHash";
 
 const keyFromHash = {
   "#txns": "transactions",
-  "#transfers": "transfers",
+  "#tokentxns": "tokenTransfers",
+  "#nfttransfers": "nftTransfers",
   "#contract": "contract",
   "#events": "events",
   "#history": "history",
@@ -124,10 +125,17 @@ export default function AddressDetail() {
   useEffect(() => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
-    setActiveKey(key || "tokens");
     if (isCA) {
       fetchFile();
       fetchHistory();
+      if (!hash) {
+        // token tab without hash
+        setActiveKey(key || "tokens");
+      } else {
+        setActiveKey(key || "contract");
+      }
+    } else {
+      setActiveKey(key || "tokens");
     }
   }, [isCA, fetchFile]);
 
@@ -155,7 +163,11 @@ export default function AddressDetail() {
   window.addEventListener("hashchange", () => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
-    setActiveKey(key || "tokens");
+    if (isCA && hash) {
+      setActiveKey(key || "contract");
+    } else {
+      setActiveKey(key || "tokens");
+    }
   });
   return (
     <div

@@ -10,6 +10,7 @@ import React, { memo } from "react";
 import { Button } from "antd";
 import { FileTextFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router";
+import { connect } from "react-redux";
 import { withRouter } from "../../../../routes/utils";
 import "./ElectionRuleCard.style.less";
 import Svg from "../../../../components/Svg/Svg";
@@ -20,9 +21,7 @@ function ElectionRuleCard(props) {
 
   const onClick = () => {
     if (isCandidate) {
-      navigate(
-        `/vote/apply/keyin?pubkey=${currentWallet && currentWallet.publicKey}`
-      );
+      navigate(`/vote/apply/keyin?pubkey=${currentWallet?.publicKey}`);
     } else {
       displayApplyModal();
     }
@@ -88,5 +87,10 @@ function ElectionRuleCard(props) {
     </section>
   );
 }
-
-export default withRouter(memo(ElectionRuleCard));
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(withRouter(memo(ElectionRuleCard)));

@@ -14,14 +14,14 @@ import { PortkeyConfigProvider } from "@portkey/did-ui-react";
 import { WebLoginProvider } from "aelf-web-login";
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from "antd/lib/locale-provider/en_US";
+import "@portkey/did-ui-react/dist/assets/index.css";
+import "aelf-web-login/dist/assets/index.css";
 // import { AppIncrStore } from './Store';
 import store from "./redux/store";
 import config from "../config/config";
 import { get } from "./utils";
 
 import "./index.less";
-import "@portkey/did-ui-react/dist/assets/index.css";
-import 'aelf-web-login/dist/assets/index.css'; 
 
 import "./common/webLoginConfig";
 
@@ -57,9 +57,13 @@ ReactDOM.render(
   <ConfigProvider locale={en_US}>
     <Provider store={store}>
       <PortkeyConfigProvider>
-      <WebLoginProvider connectEagerly autoShowUnlock={false} extraWallets={["elf"]}>
-        <App />
-      </WebLoginProvider>
+        <WebLoginProvider
+          connectEagerly
+          autoShowUnlock={false}
+          extraWallets={["elf"]}
+        >
+          <App />
+        </WebLoginProvider>
       </PortkeyConfigProvider>
     </Provider>
   </ConfigProvider>,

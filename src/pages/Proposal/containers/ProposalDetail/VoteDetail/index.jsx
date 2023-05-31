@@ -17,6 +17,7 @@ import {
 import Decimal from "decimal.js";
 import moment from "moment";
 import { If, Then } from "react-if";
+import { useWebLogin } from "aelf-web-login";
 import config from "../../../../../common/config";
 import { request } from "../../../../../common/request";
 import Total from "../../../../../components/Total";
@@ -26,7 +27,10 @@ import constants, {
   LOADING_STATUS,
   ACTIONS_COLOR_MAP,
 } from "../../../../../redux/common/constants";
-import { getContractAddress, sendTransaction } from "../../../../../redux/common/utils";
+import {
+  getContractAddress,
+  sendTransactionWith,
+} from "../../../../../redux/common/utils";
 import "./index.less";
 import { removePrefixOrSuffix } from "../../../../../common/utils";
 import TableLayer from "../../../../../components/TableLayer/TableLayer";
@@ -133,6 +137,7 @@ const VoteDetail = (props) => {
     status,
     symbol,
   } = props;
+  const { callContract } = useWebLogin();
   const [list, setList] = useState({
     loadingStatus: LOADING_STATUS.LOADING,
     list: [],
@@ -178,8 +183,8 @@ const VoteDetail = (props) => {
   }
 
   async function reclaimToken() {
-    await sendTransaction(
-      wallet,
+    await sendTransactionWith(
+      callContract,
       getContractAddress(proposalTypes.REFERENDUM),
       "ReclaimVoteToken",
       proposalId

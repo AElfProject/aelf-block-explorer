@@ -4,7 +4,7 @@ import Dividends from "../../../components/Dividends";
 import IconFont from "../../../components/IconFont";
 import useMobile from "../../../hooks/useMobile";
 import { getFormattedDate } from "../../../utils/timeUtils";
-import addressFormat from "../../../utils/addressFormat";
+import addressFormat, { hiddenAddress } from "../../../utils/addressFormat";
 
 export default function LatestInfo({ blocks = [], transactions = [] }) {
   const isMobile = useMobile();
@@ -91,14 +91,14 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
                   <Link
                     to={`/address/${addressFormat(transaction.address_from)}`}
                   >
-                    {addressFormat(transaction.address_from)}
+                    {addressFormat(hiddenAddress(transaction.address_from))}
                   </Link>
                 </p>
                 <p className="to">
                   <Link
                     to={`/address/${addressFormat(transaction.address_to)}`}
                   >
-                    {addressFormat(transaction.address_to)}
+                    {addressFormat(hiddenAddress(transaction.address_to))}
                   </Link>
                 </p>
                 <p className="age">{getFormattedDate(transaction.time)}</p>

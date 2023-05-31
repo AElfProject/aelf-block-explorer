@@ -180,3 +180,14 @@ export const callGetMethod = async (params, fnName) => {
   const con = await aelf.chain.contractAt(contractAddress, FAKE_WALLET);
   return con[contractMethod][fnName](param);
 };
+
+export const isJsonString = (str) => {
+  try {
+    if (typeof JSON.parse(str) === "object") {
+      return true;
+    }
+  } catch (e) {
+    // nothing
+  }
+  return false;
+};

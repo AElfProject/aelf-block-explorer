@@ -106,7 +106,7 @@ function genMyVoteRecordsCols() {
             data-amount={record.amount}
             disabled={!record.isRedeemable || record.type === "Redeem"}
             data-shoulddetectlock
-            key={JSON.stringify(record.voteId)}
+            data-voteId={JSON.stringify(record.voteId)}
           >
             Redeem
           </Button>
@@ -196,7 +196,6 @@ class MyVoteRecords extends Component {
 
   render() {
     const { data } = this.props;
-    console.log(data, "data");
     const myVoteRecordsCols = genMyVoteRecordsCols.call(this);
 
     return (

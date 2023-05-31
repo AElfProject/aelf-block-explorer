@@ -12,13 +12,15 @@ import moment from "moment";
 import { SyncOutlined, WalletFilled, LogoutOutlined } from "@ant-design/icons";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { ELF_DECIMAL, SYMBOL } from "@src/constants";
+import { WebLoginState } from "aelf-web-login";
+import { connect } from "react-redux";
 import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
 import "./MyWalletCard.less";
-import walletInstance from "../../../../redux/common/wallet";
+import { WebLoginInstance } from "../../../../utils/webLogin";
 
-export default class MyWalletCard extends PureComponent {
+class MyWalletCard extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,26 +30,21 @@ export default class MyWalletCard extends PureComponent {
       totalAssets: "-",
       loading: false,
       lastestUnlockTime: null, // todo: rename the variable
-      currentWallet: {
-        address: null,
-        name: null,
-        publicKey: null,
-      },
     };
     this.isPhone = isPhoneCheck();
     this.handleUpdateWalletClick = this.handleUpdateWalletClick.bind(this);
     this.extensionLogout = this.extensionLogout.bind(this);
-    this.getCurrentWallet = this.getCurrentWallet.bind(this);
+    this.loginOrUnlock = this.loginOrUnlock.bind(this);
     this.hasRun = false;
   }
 
-  // todo: combine
   componentDidMount() {
     const {
       changeVoteState,
       electionContract,
       multiTokenContract,
       profitContractFromExt,
+      currentWallet,
     } = this.props;
     if (
       electionContract &&
@@ -59,39 +56,25 @@ export default class MyWalletCard extends PureComponent {
         shouldRefreshMyWallet: true,
       });
     }
-    const getData = async () => {
-      if (this.props.currentWallet) {
-        await this.getCurrentWallet();
-      }
-      this.fetchData();
-    };
-    getData();
+    if (currentWallet?.address) {
+      setTimeout(() => {
+        this.handleUpdateWalletClick();
+      });
+    }
   }
 
-  getCurrentWallet() {
-    return this.handleUpdateWalletClick().then(() => {
-      const wallet = JSON.parse(localStorage.getItem("currentWallet"));
-      if (wallet) {
-        this.setState({
-          loading: true,
-          currentWallet: {
-            ...wallet,
-            formattedAddress: addressFormat(wallet.address),
-          },
-        });
-      }
-    });
+  loginOrUnlock() {
+    WebLoginInstance.get()
+      .loginAsync()
+      .then(() => {
+        this.handleUpdateWalletClick();
+      });
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    const getData = async () => {
-      if (this.props.currentWallet && !prevProps?.currentWallet) {
-        await this.getCurrentWallet();
-      }
-      this.fetchData(prevProps);
-    };
-    getData();
+    const { currentWallet } = this.props;
+    if (currentWallet.address) this.fetchData(prevProps);
   }
 
   fetchData(prevProps) {
@@ -102,13 +85,12 @@ export default class MyWalletCard extends PureComponent {
       changeVoteState,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
-    console.log(multiTokenContract === prevProps?.multiTokenContract, "====");
     if (multiTokenContract !== prevProps?.multiTokenContract) {
       this.hasRun = true;
       this.fetchWalletBalance();
     }
 
-    if (electionContract !== prevProps?.electionContract && electionContract) {
+    if (electionContract && electionContract !== prevProps?.electionContract) {
       this.fetchElectorVoteInfo();
     }
 
@@ -143,10 +125,8 @@ export default class MyWalletCard extends PureComponent {
   }
 
   fetchWalletBalance() {
-    const { multiTokenContract } = this.props;
-    const { currentWallet } = this.state;
-
-    if (!currentWallet || !currentWallet.address) {
+    const { multiTokenContract, currentWallet } = this.props;
+    if (!currentWallet?.address) {
       return false;
     }
     return multiTokenContract.GetBalance.call({
@@ -162,9 +142,7 @@ export default class MyWalletCard extends PureComponent {
   }
 
   fetchElectorVoteInfo() {
-    const { electionContract } = this.props;
-    const { currentWallet } = this.state;
-
+    const { electionContract, currentWallet } = this.props;
     if (!currentWallet || !currentWallet.address || !electionContract) {
       return false;
     }
@@ -218,45 +196,32 @@ export default class MyWalletCard extends PureComponent {
       .catch((err) => {
         console.error("updateWallet", err);
       });
-    // this.fetchProfitAmount();
   }
 
   handleUpdateWalletClick() {
-    this.setState({
-      loading: true,
+    const { changeVoteState } = this.props;
+    changeVoteState({
+      shouldRefreshMyWallet: true,
     });
-    const { changeVoteState, checkExtensionLockStatus } = this.props;
-    return checkExtensionLockStatus()
-      .then(() => {
-        changeVoteState({
-          shouldRefreshMyWallet: true,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        this.setState({
-          loading: false,
-        });
-      });
   }
 
   extensionLogout() {
-    const { currentWallet } = this.state;
-    walletInstance.logout(currentWallet.address).then(
-      () => {
-        message.success("Logout successful, refresh after 3s.", 3, () => {
-          localStorage.removeItem("currentWallet");
-          window.location.reload();
-        });
-      },
-      () => {
-        message.error("logout failed");
-      }
-    );
+    WebLoginInstance.get()
+      .logoutAsync()
+      .then(
+        () => {
+          message.success("Logout successful, refresh after 3s.", 3, () => {
+            window.location.reload();
+          });
+        },
+        () => {
+          message.error("logout failed");
+        }
+      );
   }
 
   render() {
-    const { handleDividendClick, dividends } = this.props;
+    const { handleDividendClick, dividends, currentWallet } = this.props;
     const {
       balance,
       withdrawnVotedVotesAmount,
@@ -264,9 +229,9 @@ export default class MyWalletCard extends PureComponent {
       totalAssets,
       loading,
       lastestUnlockTime,
-      currentWallet,
     } = this.state;
-
+    const { loginState } = WebLoginInstance.get().getWebLoginContext();
+    const formattedAddress = addressFormat(currentWallet.address);
     const walletItems = [
       {
         type: "Total assets",
@@ -315,33 +280,36 @@ export default class MyWalletCard extends PureComponent {
               <WalletFilled className="card-header-icon" />
               My Wallet
             </h2>
-            {!this.isPhone && currentWallet && currentWallet.name && (
+            {(loginState === WebLoginState.initial ||
+              loginState === WebLoginState.lock ||
+              loginState === WebLoginState.logining) && (
               <Button
                 type="text"
                 className="my-wallet-card-header-sync-btn update-btn"
-                disabled={!(currentWallet && currentWallet.address)}
-                onClick={this.extensionLogout}
+                onClick={this.loginOrUnlock}
               >
-                Logout
-                <LogoutOutlined className="card-header-icon" />
+                {loginState === WebLoginState.initial ? "Login" : "Unlock"}
               </Button>
             )}
             <Button
               type="text"
               className="my-wallet-card-header-sync-btn update-btn"
-              disabled={!(currentWallet && currentWallet.address)}
+              disabled={!currentWallet?.address}
               onClick={this.handleUpdateWalletClick}
             >
               Refresh
               <SyncOutlined spin={loading} />
             </Button>
-            {!(currentWallet && currentWallet.address) && (
+
+            {!this.isPhone && currentWallet?.address && (
               <Button
                 type="text"
                 className="my-wallet-card-header-sync-btn update-btn"
-                onClick={() => this.getCurrentWallet()}
+                disabled={!currentWallet?.address}
+                onClick={this.extensionLogout}
               >
-                Login
+                Logout
+                <LogoutOutlined className="card-header-icon" />
               </Button>
             )}
           </div>
@@ -352,15 +320,13 @@ export default class MyWalletCard extends PureComponent {
                   <span className="my-wallet-card-body-wallet-title-key">
                     Name:{" "}
                   </span>
-                  <span className="primary-color">{currentWallet.name}</span>
+                  <span className="primary-color">{currentWallet?.name}</span>
                 </div>
                 <div>
                   <span className="my-wallet-card-body-wallet-title-key">
                     Address:{" "}
                   </span>
-                  <span className="primary-color">
-                    {currentWallet.formattedAddress}
-                  </span>
+                  <span className="primary-color">{formattedAddress}</span>
                 </div>
               </>
             ) : (
@@ -368,14 +334,12 @@ export default class MyWalletCard extends PureComponent {
                 <span className="my-wallet-card-body-wallet-title-key">
                   Name:{" "}
                 </span>
-                <span className="primary-color">{currentWallet.name}</span>
+                <span className="primary-color">{currentWallet?.name}</span>
                 <span className="my-wallet-card-body-wallet-title-blank" />
                 <span className="my-wallet-card-body-wallet-title-key">
                   Address:{" "}
                 </span>
-                <span className="primary-color">
-                  {currentWallet.formattedAddress}
-                </span>
+                <span className="primary-color">{formattedAddress}</span>
               </>
             )}
           </div>
@@ -395,3 +359,12 @@ export default class MyWalletCard extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+
+export default connect(mapStateToProps)(MyWalletCard);
