@@ -66,9 +66,14 @@ export default class ResourceBuyModal extends PureComponent {
       this.setState({
         loading: true,
       });
-      const transactionId = result.result
+      console.log(result);
+      let transactionId = result.result
         ? result.result.TransactionId
         : result.TransactionId;
+
+      if (!transactionId) {
+        transactionId = result.transactionId;
+      }
 
       setTimeout(() => {
         aelf.chain
