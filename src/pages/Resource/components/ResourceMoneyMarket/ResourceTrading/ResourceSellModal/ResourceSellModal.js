@@ -71,9 +71,14 @@ export default class ResourceSellModal extends PureComponent {
       this.setState({
         loading: true,
       });
-      const transactionId = result.result
+      let transactionId = result.result
         ? result.result.TransactionId
         : result.TransactionId;
+
+      if (!transactionId) {
+        transactionId = result.transactionId;
+      }
+
       setTimeout(() => {
         aelf.chain.getTxResult(transactionId, (error, txRes) => {
           if (!txRes) {

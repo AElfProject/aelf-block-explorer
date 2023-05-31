@@ -58,6 +58,7 @@ const ContractDetail = (props) => {
         contractMethod !== "PerformDeployUserSmartContract") ||
       isJsonString(contractParams)
     ) {
+      console.log(contractParams)
       try {
         setParams(JSON.stringify(JSON.parse(contractParams), null, 2));
       } catch (e) {

@@ -13,7 +13,7 @@ setGlobalConfig({
   chainId: CHAIN_ID,
   portkey: {
     useLocalStorage: true,
-    graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema',
+    graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema/graphql',
     socialLogin: {
       Portkey: {
         websiteName: APPNAME,
@@ -32,7 +32,7 @@ setGlobalConfig({
           networkType: NETWORK_TYPE,
           isActive: true,
           apiUrl: '',
-          graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema',
+          graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema/graphql',
           connectUrl: '',
         },
       ],

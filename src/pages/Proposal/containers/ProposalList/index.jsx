@@ -155,6 +155,7 @@ const ProposalList = () => {
       });
     } else {
 
+      console.log(params.proposalType, getContractAddress(params.proposalType));
       sendTransactionWith(callContract, getContractAddress(params.proposalType), action, id);
 
       // await sendTransaction(
