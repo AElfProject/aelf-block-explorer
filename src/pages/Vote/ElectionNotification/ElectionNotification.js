@@ -339,7 +339,6 @@ class ElectionNotification extends PureComponent {
         electionContractFromExt,
         judgeCurrentUserIsCandidate,
       } = this.props;
-      console.log(electionContractFromExt.address, admin, "=====");
       WebLoginInstance.get()
         .callContract({
           contractAddress: electionContractFromExt.address,
