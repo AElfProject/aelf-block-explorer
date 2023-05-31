@@ -74,7 +74,7 @@ const ResourceWallet = React.forwardRef(
     }, [currentWallet, tokenContract]);
 
     const refreshWalletInfo = useCallback(() => {
-      if (tokenContract && currentWallet) {
+      if (tokenContract && currentWallet && currentWallet.address) {
         setLoading(true);
         Promise.all([getCurrentWalletBalance(), getCurrentWalletResource()])
           .then(() => {

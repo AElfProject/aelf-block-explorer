@@ -22,6 +22,7 @@ import config from "../config/config";
 import { get } from "./utils";
 
 import "./index.less";
+import "./portkey.less";
 
 import "./common/webLoginConfig";
 
