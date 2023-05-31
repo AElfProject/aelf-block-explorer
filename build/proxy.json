@@ -72,15 +72,12 @@
   {
     "description": "portkey indexer",
     "target": "https://dapp-portkey-test.portkey.finance",
-    "context": ["/AElfIndexer_DApp"],
+    "context": ["/Portkey_DID"],
     "headers": {
       "Host": "dapp-portkey-test.portkey.finance"
     },
     "changeOrigin": true,
-    "secure": false,
-    "pathRewrite": {
-      "^/AElfIndexer_DApp/PortKeyIndexerCASchema": "/Portkey_DID/PortKeyIndexerCASchema"
-    }
+    "secure": false
   },
   {
     "description": "portkey services",

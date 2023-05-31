@@ -7,7 +7,7 @@ setGlobalConfig({
   chainId: CHAIN_ID,
   portkey: {
     useLocalStorage: true,
-    graphQLUrl: '/AElfIndexer_DApp/PortKeyIndexerCASchema/graphql',
+    graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema',
     socialLogin: {
       Portkey: {
         websiteName: 'explorer.aelf.io',
@@ -26,7 +26,7 @@ setGlobalConfig({
           networkType: IS_MAINNET ? 'MAIN' : 'TESTNET',
           isActive: true,
           apiUrl: '',
-          graphQLUrl: '/AElfIndexer_DApp/PortKeyIndexerCASchema/graphql',
+          graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema',
           connectUrl: '',
         },
       ],
