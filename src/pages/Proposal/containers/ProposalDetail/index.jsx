@@ -242,12 +242,13 @@ const ProposalDetail = () => {
   }
 
   async function handleRelease() {
-    await sendTransactionWith(
-      callContract,
-      getContractAddress(proposalType),
-      "Release",
-      proposalId
-    );
+    await send("Release");
+    // await sendTransactionWith(
+    //   callContract,
+    //   getContractAddress(proposalType),
+    //   "Release",
+    //   proposalId
+    // );
   }
 
   async function handleConfirm(action) {

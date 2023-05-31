@@ -570,6 +570,7 @@ const CreateProposal = () => {
     });
   }
   async function submitNormalResult() {
+    console.log(normalResult);
     setNormalResult({
       ...normalResult,
       confirming: true,
@@ -585,7 +586,14 @@ const CreateProposal = () => {
         params: { decoded },
       } = normalResult;
 
-      const result = await callContract({
+      const createProposalParamsBase64 = uint8ToBase64(decoded || []);
+      console.log(createProposalParamsBase64);
+      if (createProposalParamsBase64.length <= 0) {
+        console.error("params is empty");
+        return;
+      }
+
+      const params = {
         contractAddress: getContractAddress(proposalType),
         methodName: "CreateProposal",
         args: {
@@ -596,7 +604,10 @@ const CreateProposal = () => {
           organizationAddress,
           proposalDescriptionUrl,
         },
-      });
+      };
+
+      console.log("callContract", params);
+      const result = await callContract(params);
       showTransactionResult(result);
     } catch (e) {
       console.error(e);

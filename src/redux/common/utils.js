@@ -4,7 +4,6 @@
  */
 import { message } from "antd";
 import moment from "moment";
-import { Buffer } from "buffer";
 import constants from "./constants";
 
 const { viewer } = constants;
@@ -166,17 +165,19 @@ export function formatTimeToNano(time) {
 }
 
 export function uint8ToBase64(u8Arr) {
-  const CHUNK_SIZE = 0x8000;
-  let index = 0;
-  const arrLength = u8Arr.length;
-  let result = "";
-  let slice;
-  while (index < arrLength) {
-    slice = u8Arr.subarray(index, Math.min(index + CHUNK_SIZE, arrLength));
-    result += String.fromCharCode.apply(null, slice);
-    index += CHUNK_SIZE;
-  }
-  return Buffer.from(result, "base64");
+  return Buffer.from(u8Arr).toString("base64");
+  // const CHUNK_SIZE = 0x8000;
+  // let index = 0;
+  // const arrLength = u8Arr.length;
+  // let result = "";
+  // let slice;
+  // while (index < arrLength) {
+  //   slice = u8Arr.subarray(index, Math.min(index + CHUNK_SIZE, arrLength));
+  //   result += String.fromCharCode.apply(null, slice);
+  //   index += CHUNK_SIZE;
+  // }
+  // console.log(u8Arr, u8Arr.length, result);
+  // return result;
 }
 
 export function base64ToHex(base64) {
@@ -218,6 +219,11 @@ export const sendTransactionWith = async (
   param
 ) => {
   try {
+    console.log("callContract", {
+      contractAddress,
+      methodName: method,
+      args: param,
+    })
     const result = await callContract({
       contractAddress,
       methodName: method,
