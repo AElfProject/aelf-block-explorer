@@ -46,6 +46,7 @@ import addressFormat from "../../utils/addressFormat";
 import { withRouter } from "../../routes/utils";
 import { WebLoginInstance } from "../../utils/webLogin";
 import { fakeWallet } from "../../common/utils";
+import { onlyOkModal } from "../../components/SimpleModal/index.tsx";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -64,7 +65,6 @@ class VoteContainer extends Component {
     const { contractsStore } = props;
     this.state = {
       voteModalVisible: false,
-      pluginLockModalVisible: false,
       voteConfirmModalVisible: false,
       voteRedeemModalVisible: false,
       voteConfirmForm: {},
@@ -473,6 +473,13 @@ class VoteContainer extends Component {
   }
 
   handleVote(targetPublicKey, voteType, ele) {
+    const { currentWallet } = this.props;
+    if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
+      onlyOkModal({
+        message: `Becoming candidate nodes with smart contract wallet addresses are currently not supported.`,
+      });
+      return;
+    }
     this.judgeANodeIsCandidate(targetPublicKey).then((res) => {
       if (res) {
         this.setState({ voteType }, this.handleVoteClick.bind(this, ele));
@@ -724,24 +731,10 @@ class VoteContainer extends Component {
     };
     WebLoginInstance.get()
       .callContract({
-        contractAddress: "NrVf8B7XUduXn1oGHZeF1YANFXEXAhvCymz2WPyKZt4DE2zSg",
+        contractAddress: electionContractFromExt.address,
         methodName: "Vote",
-        args: {
-          candidatePubkey:
-            "047794e5b424177bf03f9d5e541e7bda28056209d814c68aed2670e46d963c85d04da5f69ef82458e86174890743985e297843485b10d0295fc28b8853355cfb8b",
-          amount: 100000000,
-          endTimestamp: {
-            seconds: 1714533239,
-            nanos: 58000000,
-          },
-        },
+        args: payload,
       })
-      // WebLoginInstance.get()
-      //   .callContract({
-      //     contractAddress: electionContractFromExt.address,
-      //     methodName: "Vote",
-      //     args: payload,
-      //   })
       .then((res) => {
         const { error, errorMessage } = res;
         if (+error === 0 || !error) {
@@ -1051,7 +1044,6 @@ class VoteContainer extends Component {
   render() {
     const {
       voteModalVisible,
-      pluginLockModalVisible,
       voteConfirmModalVisible,
       voteRedeemModalVisible,
       voteConfirmForm,
@@ -1189,18 +1181,6 @@ class VoteContainer extends Component {
             }
             changeVoteState={this.changeVoteState}
           />
-
-          <Modal
-            className="plugin-lock-modal"
-            visible={pluginLockModalVisible}
-            onOk={() => this.handleOk("pluginLockModalVisible")}
-            onCancel={() => this.handleCancel("pluginLockModalVisible")}
-            centered
-            maskClosable
-            keyboard
-          >
-            You NightELF extension is locked. Please unlock it.
-          </Modal>
 
           <Modal
             className="vote-confirm-modal"

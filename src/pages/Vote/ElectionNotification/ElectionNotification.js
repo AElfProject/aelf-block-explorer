@@ -345,12 +345,6 @@ class ElectionNotification extends PureComponent {
           methodName: "AnnounceElection",
           args: admin,
         })
-        // WebLoginInstance.get()
-        //   .callContract({
-        //     contractAddress: "NrVf8B7XUduXn1oGHZeF1YANFXEXAhvCymz2WPyKZt4DE2zSg",
-        //     methodName: "AnnounceElection",
-        //     args: "ELF_2vLuU4Xi59xz6QkjdmspGHqeMxbb75ahUXZc1wXzbZdLEGdpuv_AELF",
-        //   })
         .then((res) => {
           if (res.error) {
             message.error(res.error.message || res.errorMessage.message);

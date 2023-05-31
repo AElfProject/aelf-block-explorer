@@ -18,6 +18,7 @@ import {
 import { connect } from "react-redux";
 import "./CandidateApplyModal.style.less";
 import addressFormat from "../../../../utils/addressFormat";
+import { onlyOkModal } from "../../../../components/SimpleModal/index.tsx";
 
 const modalFormItemLayout = {
   labelCol: {
@@ -83,7 +84,13 @@ class CandidateApplyModal extends PureComponent {
   }
 
   handleOk() {
-    const { onOk } = this.props;
+    const { onOk, currentWallet } = this.props;
+    if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
+      onlyOkModal({
+        message: `Becoming candidate nodes with smart contract wallet addresses are currently not supported.`,
+      });
+      return;
+    }
     this.formRef.current
       .validateFields()
       .then((values) => {
@@ -95,7 +102,7 @@ class CandidateApplyModal extends PureComponent {
   }
 
   render() {
-    const { onCancel, visible,currentWallet } = this.props;
+    const { onCancel, visible, currentWallet } = this.props;
     const candidateApplyForm = generateCandidateApplyForm(currentWallet);
     const rules = [
       {

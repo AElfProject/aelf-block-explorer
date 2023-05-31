@@ -14,12 +14,19 @@ import { connect } from "react-redux";
 import { withRouter } from "../../../../routes/utils";
 import "./ElectionRuleCard.style.less";
 import Svg from "../../../../components/Svg/Svg";
+import { onlyOkModal } from "../../../../components/SimpleModal/index.tsx";
 
 function ElectionRuleCard(props) {
   const navigate = useNavigate();
   const { isCandidate, displayApplyModal, currentWallet, quitElection } = props;
 
   const onClick = () => {
+    if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
+      onlyOkModal({
+        message: `Voting with smart contract wallet addresses are currently not supported.`,
+      });
+      return;
+    }
     if (isCandidate) {
       navigate(`/vote/apply/keyin?pubkey=${currentWallet?.publicKey}`);
     } else {
