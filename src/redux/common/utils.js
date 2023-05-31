@@ -181,13 +181,13 @@ export function uint8ToBase64(u8Arr) {
 }
 
 export function base64ToHex(base64) {
-  const raw = Buffer.from(base64, "base64");
-  let result = "";
-  for (let i = 0; i < raw.length; i++) {
-    const hex = raw.charCodeAt(i).toString(16);
-    result += hex.length === 2 ? hex : `0${hex}`;
-  }
-  return result.toUpperCase();
+  return Buffer.from(base64, "base64").toString("hex");
+  // let result = "";
+  // for (let i = 0; i < raw.length; i++) {
+  //   const hex = raw.charCodeAt(i).toString(16);
+  //   result += hex.length === 2 ? hex : `0${hex}`;
+  // }
+  // return result.toUpperCase();
 }
 
 export const sendTransaction = async (
