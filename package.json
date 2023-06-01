@@ -79,6 +79,7 @@
     "react-hot-loader": "^4.13.0",
     "react-i18next": "^11.1.0",
     "react-if": "^3.4.3",
+    "react-image": "^4.1.0",
     "react-redux": "^7.2.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
