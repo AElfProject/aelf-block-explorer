@@ -186,7 +186,7 @@ function readFile(file) {
 }
 
 const ContractProposal = (props) => {
-  const { loading,submit } = props;
+  const { loading, submit } = props;
   const [disabled, setDisabled] = useState(false);
   const [form] = Form.useForm();
   const proposalSelect = useSelector((state) => state.proposalSelect);
@@ -225,11 +225,11 @@ const ContractProposal = (props) => {
       });
   }, [update]);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [isUpdateName,setUpdateName] = useState(false);
-  
+  const [isUpdateName, setUpdateName] = useState(false);
+
   const noticeList = useMemo(() => {
     let list = isUpdate ? noticeUpdateList : noticeDeployList;
-    if(CHAIN_ID !== 'AELF') {
+    if (CHAIN_ID !== "AELF") {
       list = list.slice(1);
     }
     return list;
@@ -605,7 +605,7 @@ const ContractProposal = (props) => {
             extra="Support DLL or PATCHED file, less than 2MB"
             // if upload is disabled, avoid being triggered by label
           >
-            <Button disabled={fileLength === 1}>
+            <Button type="primary" disabled={fileLength === 1}>
               <UploadOutlined className="gap-right-small" />
               Click to Upload
             </Button>
@@ -685,16 +685,14 @@ const ContractProposal = (props) => {
         {approvalMode === "withoutApproval" && (
           <Form.Item label="Notice">
             <div className="contract-proposal-notice-content">
-              {noticeList.map(
-                (ele, index) => {
-                  return (
-                    <div className="content-item">
-                      <span>{index + 1}.</span>
-                      <span>{ele}</span>
-                    </div>
-                  );
-                }
-              )}
+              {noticeList.map((ele, index) => {
+                return (
+                  <div className="content-item">
+                    <span>{index + 1}.</span>
+                    <span>{ele}</span>
+                  </div>
+                );
+              })}
             </div>
           </Form.Item>
         )}

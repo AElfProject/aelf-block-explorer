@@ -132,12 +132,8 @@ export const useReleaseApprovedContractAction = () => {
             <CopylistItem
               label="Transaction ID"
               isParentHref
-              value={
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }
-              href={`/tx/${
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }`}
+              value={txsId}
+              href={`/tx/${txsId}`}
             />
           </div>
         ),
@@ -177,7 +173,9 @@ export const useReleaseCodeCheckedContractAction = () => {
       if (!((result && +result.error === 0) || !result.error)) {
         isError = true;
         throw new Error(
-          (result.errorMessage || {}).message || "Send transaction failed"
+          (result.errorMessage || {}).message ||
+            result?.error?.message ||
+            "Send transaction failed"
         );
       }
       const txsId =
@@ -204,11 +202,10 @@ export const useReleaseCodeCheckedContractAction = () => {
       let contractAddress = "";
       let contractVersion = "";
       if (!isError) {
-        const logs = await getDeserializeLog(
-          aelf,
-          result?.TransactionId || result?.result?.TransactionId || "",
-          ["ContractDeployed", "CodeUpdated"]
-        );
+        const logs = await getDeserializeLog(aelf, txsId, [
+          "ContractDeployed",
+          "CodeUpdated",
+        ]);
         const { address } = logs ?? {};
         contractVersion = (logs || {}).contractVersion;
         contractAddress = address;
