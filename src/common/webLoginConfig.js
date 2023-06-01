@@ -8,12 +8,15 @@ import {
   CHAINS_LINK_NAMES,
 } from "@config/config";
 
+const graphQLServer = NETWORK_TYPE === "TESTNET" ? "https://dapp-portkey-test.portkey.finance" : "https://dapp-portkey.portkey.finance";
+const portkeyApiServer = NETWORK_TYPE === "TESTNET" ? "https://did-portkey-test.portkey.finance" : "https://did-portkey.portkey.finance"
+
 setGlobalConfig({
   appName: APPNAME,
   chainId: CHAIN_ID,
   portkey: {
     useLocalStorage: true,
-    graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema/graphql',
+    graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
     socialLogin: {
       Portkey: {
         websiteName: APPNAME,
@@ -21,7 +24,7 @@ setGlobalConfig({
       },
     },
     requestDefaults: {
-      baseURL: "/portkey",
+      baseURL: `${portkeyApiServer}`,
     },
     network: {
       defaultNetwork: NETWORK_TYPE,
@@ -32,7 +35,7 @@ setGlobalConfig({
           networkType: NETWORK_TYPE,
           isActive: true,
           apiUrl: '',
-          graphQLUrl: '/Portkey_DID/PortKeyIndexerCASchema/graphql',
+          graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
           connectUrl: '',
         },
       ],
@@ -56,5 +59,3 @@ setGlobalConfig({
     },
   },
 });
-
-console.log(getConfig());

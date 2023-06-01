@@ -2392,10 +2392,10 @@
     "@portkey/utils" "^0.0.1-alpha.1.8"
     aelf-sdk "^3.2.44"
 
-"@portkey/did-ui-react@0.0.1-alpha.7.5":
-  version "0.0.1-alpha.7.5"
-  resolved "https://registry.npmjs.org/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.7.5.tgz#50fefdaba986da5fc157720c89e3decd94e9737b"
-  integrity sha512-7ILhbcbzbrmw6Hkp1aSVQKA3XxPb5P8NcF+J1c6gSm5YVLBzAc/MpU+cotrRjCGBkiEJlMVQ5Z9L+n8HI5bp0Q==
+"@portkey/did-ui-react@0.0.1-alpha.8.1":
+  version "0.0.1-alpha.8.1"
+  resolved "https://registry.npmmirror.com/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.8.1.tgz#1f0791227fdafaf351774f6defeefdc6abdb5173"
+  integrity sha512-pq6iQ0QjDQVD1MjQGAgS6ASuv7600/kN5+6/ZnkizIuKg7M+UGHBHKVCYtW4lDFGyY4e8/Ibf1FGuB0ij3Dwvg==
   dependencies:
     "@matt-block/react-recaptcha-v2" "^2.0.0"
     "@portkey/did" "^0.0.1-alpha.3.3"
@@ -3465,13 +3465,13 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.2.44:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@^0.0.8-alpha:
-  version "0.0.8-alpha"
-  resolved "https://registry.npmmirror.com/aelf-web-login/-/aelf-web-login-0.0.8-alpha.tgz#ef6903cf0ab1148dd7d3dbcf71c1d3208850db20"
-  integrity sha512-5XpNERs37EoGul64yIXc5aJfCHM7ut/W9Sl1OEaC5wQWFyn8sfi0ZIKofOKpI5u6v3TQVdClDiy32Kt9G4/gdA==
+aelf-web-login@0.0.10-alpha:
+  version "0.0.10-alpha"
+  resolved "https://registry.npmmirror.com/aelf-web-login/-/aelf-web-login-0.0.10-alpha.tgz#63b60bc7c4ae1c56ef8a00c25e44f5c135d88f47"
+  integrity sha512-ApbNhb0ZgVO4XHE6Dfpur5hwu7JrBZ99T9OAbKqFiWQZSQjTJnc8EhWEB7tZ0DcDAJ9l60Ty/ncwDRqNa4cTNg==
   dependencies:
     "@aelf-react/core" "^0.1.19"
-    "@portkey/did-ui-react" "0.0.1-alpha.7.5"
+    "@portkey/did-ui-react" "0.0.1-alpha.8.1"
     aelf-sdk "^3.2.40"
 
 after@0.8.2:
