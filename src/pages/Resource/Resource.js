@@ -99,9 +99,8 @@ class Resource extends Component {
   }
 
   componentDidUpdate(preProps) {
-    console.log(4444444, preProps.currentWallet.address, this.props.currentWallet.address);
     if (this.props.currentWallet.address && !preProps.currentWallet.address) {
-      console.log('refresh', this.walletRef);
+      console.log("refresh", this.walletRef);
       this.walletRef.refreshWalletInfo();
     }
   }

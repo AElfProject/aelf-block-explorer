@@ -159,22 +159,17 @@ const getColumnConfig = ({
       dataIndex: "symbol",
       width: isMobile ? 76 : 60,
       render(symbol) {
-        const { logoURI } =
-          TOEKN_LIST.find((ele) => ele.symbol === symbol) || {};
-        const logoFragment = logoURI ? (
-          <Img
-            alt="logo"
-            src={logoURI}
-            unloader={
-              <span className="default-icon">
-                {symbol.slice(0, 1).toUpperCase()}
-              </span>
-            }
-          />
-        ) : (
+        const defaultIcon = (
           <span className="default-icon">
             {symbol.slice(0, 1).toUpperCase()}
           </span>
+        );
+        const { logoURI } =
+          TOEKN_LIST.find((ele) => ele.symbol === symbol) || {};
+        const logoFragment = logoURI ? (
+          <Img alt="logo" src={logoURI} unloader={defaultIcon} />
+        ) : (
+          defaultIcon
         );
         return (
           <div className="token">

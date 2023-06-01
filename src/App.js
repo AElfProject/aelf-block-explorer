@@ -29,7 +29,6 @@ function App() {
   });
 
   const webLoginContext = useWebLogin();
-  console.log(webLoginContext);
   WebLoginInstance.get().setWebLoginContext(webLoginContext);
 
   const back2Top = useCallback(() => {
