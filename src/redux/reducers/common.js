@@ -9,10 +9,7 @@
 // todo: Consider to save isSmallScreen as a global variable instead of saving in redux
 import AElf from "aelf-sdk";
 import walletInstance from "../common/wallet";
-import {
-  LOG_OUT_ACTIONS,
-  LOG_IN_ACTIONS,
-} from "../actions/proposalCommon";
+import { LOG_OUT_ACTIONS, LOG_IN_ACTIONS } from "../actions/proposalCommon";
 import constants, { LOG_STATUS } from "../common/constants";
 
 const { DEFAUT_RPCSERVER } = constants;
@@ -39,7 +36,6 @@ const common = (state = initialState, { type, payload }) => {
         currentWallet: {},
       };
     case LOG_IN_ACTIONS.LOG_IN_SUCCESS:
-      console.log(payload);
       return {
         ...state,
         logStatus: LOG_STATUS.LOGGED,

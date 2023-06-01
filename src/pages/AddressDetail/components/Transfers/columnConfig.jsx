@@ -4,6 +4,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { Tag, Tooltip } from "antd";
+import { Img } from "react-image";
 import CHAIN_STATE from "@config/configCMS.json";
 import Dividends from "../../../../components/Dividends";
 import IconFont from "../../../../components/IconFont";
@@ -158,14 +159,17 @@ const getColumnConfig = ({
       dataIndex: "symbol",
       width: isMobile ? 76 : 60,
       render(symbol) {
-        const { logoURI } =
-          TOEKN_LIST.find((ele) => ele.symbol === symbol) || {};
-        const logoFragment = logoURI ? (
-          <img alt="logo" src={logoURI} />
-        ) : (
+        const defaultIcon = (
           <span className="default-icon">
             {symbol.slice(0, 1).toUpperCase()}
           </span>
+        );
+        const { logoURI } =
+          TOEKN_LIST.find((ele) => ele.symbol === symbol) || {};
+        const logoFragment = logoURI ? (
+          <Img alt="logo" src={logoURI} unloader={defaultIcon} />
+        ) : (
+          defaultIcon
         );
         return (
           <div className="token">

@@ -288,7 +288,7 @@ class MyWalletCard extends PureComponent {
                 className="my-wallet-card-header-sync-btn update-btn"
                 onClick={this.loginOrUnlock}
               >
-                {loginState === WebLoginState.initial ? "Login" : "Unlock"}
+                Login
               </Button>
             )}
             <Button
