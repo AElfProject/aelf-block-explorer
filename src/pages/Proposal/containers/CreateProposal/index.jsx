@@ -586,20 +586,13 @@ const CreateProposal = () => {
         params: { decoded },
       } = normalResult;
 
-      const createProposalParamsBase64 = uint8ToBase64(decoded || []);
-      console.log(createProposalParamsBase64);
-      if (createProposalParamsBase64.length <= 0) {
-        console.error("params is empty");
-        return;
-      }
-
       const params = {
         contractAddress: getContractAddress(proposalType),
         methodName: "CreateProposal",
         args: {
           contractMethodName,
           toAddress,
-          params: uint8ToBase64(decoded || []),
+          params: uint8ToBase64(decoded || []) || [],
           expiredTime: formatTimeToNano(expiredTime),
           organizationAddress,
           proposalDescriptionUrl,
