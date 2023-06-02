@@ -74,7 +74,7 @@ class MyWalletCard extends PureComponent {
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
     const { currentWallet } = this.props;
-    if (currentWallet.address) this.fetchData(prevProps);
+    if (currentWallet.address && !this.hasRun) this.fetchData(prevProps);
   }
 
   fetchData(prevProps) {
@@ -85,12 +85,18 @@ class MyWalletCard extends PureComponent {
       changeVoteState,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
-    if (multiTokenContract !== prevProps?.multiTokenContract) {
+    if (
+      multiTokenContract &&
+      multiTokenContract?.address !== prevProps?.multiTokenContract?.address
+    ) {
       this.hasRun = true;
       this.fetchWalletBalance();
     }
 
-    if (electionContract && electionContract !== prevProps?.electionContract) {
+    if (
+      electionContract &&
+      electionContract?.address !== prevProps?.electionContract?.address
+    ) {
       this.fetchElectorVoteInfo();
     }
 

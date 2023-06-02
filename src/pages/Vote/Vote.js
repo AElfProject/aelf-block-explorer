@@ -195,9 +195,7 @@ class VoteContainer extends Component {
       shouldJudgeIsCurrentCandidate,
     } = this.state;
     const { currentWallet } = this.props;
-
     if (shouldRefreshMyWallet) {
-      // this.fetchProfitAmount();
       this.checkExtensionLockStatus();
     }
     if (
