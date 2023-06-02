@@ -86,7 +86,7 @@ class MyWalletCard extends PureComponent {
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
     if (
-      multiTokenContract &&
+      multiTokenContract?.address &&
       multiTokenContract?.address !== prevProps?.multiTokenContract?.address
     ) {
       this.hasRun = true;
@@ -94,7 +94,7 @@ class MyWalletCard extends PureComponent {
     }
 
     if (
-      electionContract &&
+      electionContract?.address &&
       electionContract?.address !== prevProps?.electionContract?.address
     ) {
       this.fetchElectorVoteInfo();
