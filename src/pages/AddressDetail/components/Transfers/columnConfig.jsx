@@ -149,7 +149,7 @@ const getColumnConfig = ({
     {
       title: "Amount",
       dataIndex: "amount",
-      width: isMobile ? 140 : 124,
+      width: isMobile ? 120 : 104,
       render(amount) {
         return `${numberFormatter(amount)}`;
       },
@@ -157,7 +157,7 @@ const getColumnConfig = ({
     {
       title: "Token",
       dataIndex: "symbol",
-      width: isMobile ? 76 : 60,
+      width: isMobile ? 96 : 80,
       render(symbol) {
         const defaultIcon = (
           <span className="default-icon">
