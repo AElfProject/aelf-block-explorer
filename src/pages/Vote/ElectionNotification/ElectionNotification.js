@@ -30,6 +30,7 @@ import "./ElectionNotification.style.less";
 import CandidateApplyModal from "./CandidateApplyModal/CandidateApplyModal";
 import { getTokenDecimal } from "../../../utils/utils";
 import { WebLoginInstance } from "../../../utils/webLogin";
+import { onlyOkModal } from "../../../components/SimpleModal/index.tsx";
 
 const electionNotifiStatisData = {
   termEndTime: {
@@ -339,6 +340,15 @@ class ElectionNotification extends PureComponent {
         electionContractFromExt,
         judgeCurrentUserIsCandidate,
       } = this.props;
+      if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
+        onlyOkModal({
+          message: `Becoming candidate nodes with smart contract wallet addresses are currently not supported.`,
+        });
+        this.setState({
+          applyModalVisible: false,
+        });
+        return;
+      }
       WebLoginInstance.get()
         .callContract({
           contractAddress: electionContractFromExt.address,
