@@ -197,6 +197,9 @@ class VoteContainer extends Component {
     const { currentWallet } = this.props;
     if (shouldRefreshMyWallet) {
       this.checkExtensionLockStatus();
+      this.setState({
+        shouldRefreshMyWallet: false,
+      });
     }
     if (
       electionContract &&

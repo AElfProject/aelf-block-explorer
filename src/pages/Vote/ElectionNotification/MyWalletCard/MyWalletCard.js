@@ -39,27 +39,9 @@ class MyWalletCard extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      changeVoteState,
-      electionContract,
-      multiTokenContract,
-      profitContractFromExt,
-      currentWallet,
-    } = this.props;
-    if (
-      electionContract &&
-      multiTokenContract &&
-      profitContractFromExt &&
-      !this.hasRun
-    ) {
-      changeVoteState({
-        shouldRefreshMyWallet: true,
-      });
-    }
+    const { currentWallet } = this.props;
     if (currentWallet?.address) {
-      setTimeout(() => {
-        this.handleUpdateWalletClick();
-      });
+      this.fetchData();
     }
   }
 
@@ -74,7 +56,9 @@ class MyWalletCard extends PureComponent {
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
     const { currentWallet } = this.props;
-    if (currentWallet.address && !this.hasRun) this.fetchData(prevProps);
+    if (currentWallet.address && !this.hasRun) {
+      this.fetchData(prevProps);
+    }
   }
 
   fetchData(prevProps) {
@@ -85,18 +69,17 @@ class MyWalletCard extends PureComponent {
       changeVoteState,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
-    if (
-      multiTokenContract?.address &&
-      multiTokenContract?.address !== prevProps?.multiTokenContract?.address
-    ) {
+    console.log(
+      multiTokenContract.address,
+      prevProps?.multiTokenContract?.address,
+      "!!!"
+    );
+    if (multiTokenContract) {
       this.hasRun = true;
       this.fetchWalletBalance();
     }
 
-    if (
-      electionContract?.address &&
-      electionContract?.address !== prevProps?.electionContract?.address
-    ) {
+    if (electionContract) {
       this.fetchElectorVoteInfo();
     }
 
@@ -110,7 +93,6 @@ class MyWalletCard extends PureComponent {
     ) {
       this.computedTotalAssets();
     }
-
     if (shouldRefreshMyWallet) {
       changeVoteState(
         {
