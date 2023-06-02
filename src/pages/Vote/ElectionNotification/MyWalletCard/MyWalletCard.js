@@ -69,11 +69,6 @@ class MyWalletCard extends PureComponent {
       changeVoteState,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
-    console.log(
-      multiTokenContract.address,
-      prevProps?.multiTokenContract?.address,
-      "!!!"
-    );
     if (multiTokenContract) {
       this.hasRun = true;
       this.fetchWalletBalance();
