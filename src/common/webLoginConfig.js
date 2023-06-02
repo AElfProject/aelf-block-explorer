@@ -1,4 +1,5 @@
 import { getConfig, setGlobalConfig } from "aelf-web-login";
+import { did } from '@portkey/did-ui-react';
 import {
   APPNAME,
   CHAIN_ID,
@@ -10,6 +11,8 @@ import {
 
 const graphQLServer = NETWORK_TYPE === "TESTNET" ? "https://dapp-portkey-test.portkey.finance" : "https://dapp-portkey.portkey.finance";
 const portkeyApiServer = NETWORK_TYPE === "TESTNET" ? "https://did-portkey-test.portkey.finance" : "https://did-portkey.portkey.finance"
+
+// did.config.setConfig
 
 setGlobalConfig({
   appName: APPNAME,
@@ -24,6 +27,7 @@ setGlobalConfig({
       },
     },
     requestDefaults: {
+      timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
       baseURL: `${portkeyApiServer}`,
     },
     network: {
