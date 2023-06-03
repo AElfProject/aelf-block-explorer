@@ -197,7 +197,7 @@ const ResourceWallet = React.forwardRef(
                     className="resource-wallet-address-update update-btn"
                     onClick={() => login()}
                   >
-                    {loginState === WebLoginState.lock ? "Unlock" : "Login"}
+                    Login
                   </Button>
                 )}
 
