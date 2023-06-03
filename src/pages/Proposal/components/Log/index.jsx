@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { If, Then, Else } from "react-if";
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Menu } from "antd";
+import { log } from "lodash-decorators/utils";
 import { logOut, logIn } from "@redux/actions/proposalCommon";
 import { LOG_STATUS } from "@redux/common/constants";
 import { WebLoginState, useWebLogin } from "aelf-web-login";
@@ -20,7 +21,7 @@ const OverLay = (props) => {
 
   return (
     <Menu onClick={logout}>
-      <Menu.Item key='1'>Logout</Menu.Item>
+      <Menu.Item key="1">Logout</Menu.Item>
     </Menu>
   );
 };
@@ -32,13 +33,14 @@ const LogButton = (props) => {
   const common = useSelector((state) => state.common);
   const { loading, currentWallet } = common;
   const { name, address = "" } = currentWallet;
-  const { loginState, login } = useWebLogin();
+  const { loginState, loginError, login } = useWebLogin();
 
   let nickName = name;
   if (currentWallet.portkeyInfo && currentWallet.portkeyInfo.nickName) {
     nickName = currentWallet.portkeyInfo.nickName;
   }
 
+  console.log(loginState, loginError);
   return (
     <>
       <If condition={loginState === WebLoginState.logined}>
@@ -46,18 +48,20 @@ const LogButton = (props) => {
           {isPhoneCheck() ? (
             <Button>{name}</Button>
           ) : (
-            <Dropdown
-              overlay={<OverLay loading={loading} address={address} />}
-            >
+            <Dropdown overlay={<OverLay loading={loading} address={address} />}>
               <Button type="primary" className="proposals-login-btn">
-                {nickName} 
+                {nickName}
                 <DownOutlined />
               </Button>
             </Dropdown>
           )}
         </Then>
         <Else>
-          <Button type='primary' loading={loginState === WebLoginState.logining} onClick={login}>
+          <Button
+            type="primary"
+            loading={loginState === WebLoginState.logining}
+            onClick={login}
+          >
             Login
           </Button>
         </Else>
@@ -66,7 +70,6 @@ const LogButton = (props) => {
   );
 };
 
-LogButton.propTypes = {
-};
+LogButton.propTypes = {};
 
 export default LogButton;
