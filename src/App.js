@@ -22,7 +22,7 @@ import { WebLoginInstance } from "./utils/webLogin";
 
 function App() {
   const { pathname } = useLocation();
-  const { wallet, loginState, loginError } = useWebLogin();
+  const { wallet, loginError } = useWebLogin();
   const dispatch = useDispatch();
   const currentWallet = useSelector((state) => {
     return state.common.currentWallet;
@@ -37,10 +37,6 @@ function App() {
       app.scrollIntoView({ block: "start", behavior: "auto" });
     }
   }, []);
-
-  useEffect(() => {
-    console.log(loginState, loginError);
-  })
 
   useEffect(() => {
     back2Top();
