@@ -544,8 +544,8 @@ class VoteContainer extends Component {
     if (!this.hasGetContractsFromExt) {
       await this.fetchContractFromExt();
       this.hasGetContractsFromExt = true;
+      await this.fetchProfitAmount();
     }
-    await this.fetchProfitAmount();
     return Promise.resolve();
   }
 
@@ -553,7 +553,6 @@ class VoteContainer extends Component {
     const { currentWallet } = this.props;
     return new Promise((resolve) => {
       if (currentWallet?.address) {
-        // resolve();
         return this.fetchGetContractsAndProfitAmount().then(resolve);
       }
       return WebLoginInstance.get()
@@ -894,6 +893,7 @@ class VoteContainer extends Component {
       return Promise.resolve();
     }
     const { profitContractFromExt } = this.state;
+    console.log("xxxxxx");
     return Promise.all([
       getAllTokens(),
       ...schemeIds.map((item) => {
@@ -961,14 +961,22 @@ class VoteContainer extends Component {
 
   handleDividendClick() {
     const handleDividendClick = async () => {
+      const { currentWallet } = this.props;
       try {
+        if (!currentWallet?.address) {
+          await WebLoginInstance.get().loginAsync();
+        }
         this.setState({
           dividendModalVisible: true,
           dividendLoading: true,
         });
         try {
-          await this.fetchProfitAmount();
+          await this.fetchGetContractsAndProfitAmount();
+          this.setState({
+            shouldRefreshMyWallet: true,
+          });
         } catch (e) {
+          console.log(e);
           message.error("Error happened when getting claim amount");
         } finally {
           this.setState({

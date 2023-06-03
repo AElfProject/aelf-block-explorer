@@ -71,14 +71,14 @@ class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    const { currentWallet, shouldRefreshMyWallet } = this.props;
-    if (
-      currentWallet &&
-      (currentWallet.address !== prevProps?.currentWallet?.address ||
-        shouldRefreshMyWallet)
-    ) {
-      this.fetchData(prevProps);
-    }
+    // const { currentWallet, shouldRefreshMyWallet } = this.props;
+    // if (
+    //   currentWallet &&
+    //   (currentWallet.address !== prevProps?.currentWallet?.address ||
+    //     shouldRefreshMyWallet)
+    // ) {
+    this.fetchData(prevProps);
+    // }
   }
 
   fetchData(prevProps) {
@@ -94,6 +94,7 @@ class MyWalletCard extends PureComponent {
       multiTokenContract &&
       multiTokenContract !== prevProps?.multiTokenContract
     ) {
+      console.log(11111);
       this.hasRun = true;
       this.fetchWalletBalance();
     }
