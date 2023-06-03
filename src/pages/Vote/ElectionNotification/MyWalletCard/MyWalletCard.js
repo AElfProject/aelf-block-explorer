@@ -40,6 +40,7 @@ class MyWalletCard extends PureComponent {
 
   componentDidMount() {
     const { currentWallet } = this.props;
+    console.log("currentWallet", currentWallet);
     if (currentWallet?.address) {
       this.fetchData();
     }
@@ -55,11 +56,11 @@ class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    const { currentWallet } = this.props;
+    const { currentWallet, shouldRefreshMyWallet } = this.props;
     if (
       currentWallet.address &&
-      this.props.shouldRefreshMyWallet &&
-      !this.hasRun
+      ((shouldRefreshMyWallet && !this.hasRun) ||
+        !prevProps.currentWallet?.address)
     ) {
       this.fetchData(prevProps);
     }
