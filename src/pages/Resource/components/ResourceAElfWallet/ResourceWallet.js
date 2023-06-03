@@ -190,7 +190,8 @@ const ResourceWallet = React.forwardRef(
               )} */}
 
                 {(loginState === WebLoginState.initial ||
-                  loginState === WebLoginState.lock) && (
+                  loginState === WebLoginState.lock ||
+                  loginState === WebLoginState.logining) && (
                   <Button
                     type="text"
                     className="resource-wallet-address-update update-btn"

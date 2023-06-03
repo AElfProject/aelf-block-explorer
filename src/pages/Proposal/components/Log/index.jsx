@@ -59,7 +59,7 @@ const LogButton = (props) => {
         <Else>
           <Button
             type="primary"
-            loading={loginState === WebLoginState.logining}
+            loading={loginState === WebLoginState.logining || loginState === WebLoginState.logouting}
             onClick={login}
           >
             Login

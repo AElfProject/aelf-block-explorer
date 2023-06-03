@@ -18,5 +18,6 @@ export default function ButtonWithLoginCheck({ children, onClick, ...props }) {
     }
   };
 
-  return (<Button {...props} onClick={onClickInternal}>{children}</Button>);
+  return (<Button {...props} onClick={onClickInternal} 
+    loading={loginState === WebLoginState.logining || loginState === WebLoginState.logouting}>{children}</Button>);
 }

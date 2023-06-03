@@ -3045,13 +3045,13 @@
     "@portkey/utils" "^0.0.1-alpha.1.8"
     aelf-sdk "^3.2.44"
 
-"@portkey/did-ui-react@0.0.1-alpha.8.5", "@portkey/did-ui-react@^0.0.1-alpha.8.5":
-  version "0.0.1-alpha.8.5"
-  resolved "https://registry.npmjs.org/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.8.5.tgz#208271818b5ca0a07da17a5fd185cd984c20cfce"
-  integrity sha512-dwqb1OXucXROdP0iaRz/9zGZvjwBWRaGX4v2eqFsalBfXwUOfoQr8ttou2/LhkGiaePWk5SptcDQEy+ossK2jQ==
+"@portkey/did-ui-react@0.0.1-alpha.8.6", "@portkey/did-ui-react@^0.0.1-alpha.8.6":
+  version "0.0.1-alpha.8.6"
+  resolved "https://registry.npmjs.org/@portkey/did-ui-react/-/did-ui-react-0.0.1-alpha.8.6.tgz#ae83baf705e9e9dff4bb6c16806a8261e3aeba56"
+  integrity sha512-o+UKviaNP9KUq0cH/f+VO8EAHY1UFmOB8IbeekSI/UcnOx1JZhvfWjFQvgiPlqw9+pZ7K2G8zBJODagGMLVs4g==
   dependencies:
     "@matt-block/react-recaptcha-v2" "^2.0.0"
-    "@portkey/did" "^0.0.1-alpha.3.7"
+    "@portkey/did" "^0.0.1-alpha.3.8"
     aelf-sdk "^3.2.40"
     antd "4.24.4"
     antd-mobile "5.26.0"
@@ -3065,10 +3065,10 @@
     reactjs-social-login "^2.6.2"
     uuid "^8.3.2"
 
-"@portkey/did@^0.0.1-alpha.3.7":
-  version "0.0.1-alpha.3.7"
-  resolved "https://registry.npmjs.org/@portkey/did/-/did-0.0.1-alpha.3.7.tgz#e2bdaf756f1532876a5888fb85c32ea29221868a"
-  integrity sha512-zlCyq5trGoSGOPqyxnPRrW70trsAQE4EtDYQg4gbookvPVctSJf/r04Sz27rfQ97OdYX1jw33hxIqTFR9fqeuQ==
+"@portkey/did@^0.0.1-alpha.3.8":
+  version "0.0.1-alpha.3.8"
+  resolved "https://registry.npmjs.org/@portkey/did/-/did-0.0.1-alpha.3.8.tgz#912fc6748975b0bccf0f729a1a24f41158258aa4"
+  integrity sha512-vPMw4jmwHG0At6KsDN+kfy+02j6ig087U6lowqa/UOgYHKbosih6Mas5h4+YzIwQDhGsVO6gAdRgtqyPvsLzEA==
   dependencies:
     "@portkey/accounts" "^0.0.1-alpha.1.6"
     "@portkey/contracts" "^0.0.1-alpha.1.8"
@@ -4202,13 +4202,13 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.2.44:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@^0.0.14-alpha:
-  version "0.0.14-alpha"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.0.14-alpha.tgz#41af86bddf8749886efe0480f6d03d2c85698617"
-  integrity sha512-2eper895ZkJJOcvLMXKjfyatjtq+cdwc+1ML6gr7eIo4b8cyuP9c+0YwgXHs23xj73ZuM4h9rHShkbk5Q/Gztw==
+aelf-web-login@^0.0.19-alpha:
+  version "0.0.19-alpha"
+  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.0.19-alpha.tgz#7468ac9ec2ffa96ef01bd142588e51edf5832b94"
+  integrity sha512-EcKX0bdvsF1o1bCfUsWujKkuQqqKfofqRv47uthk07lNO/fOldn0GRUI8LMBbtZreVPKdSvEX7EH9NN1UkoXZw==
   dependencies:
     "@aelf-react/core" "^0.1.19"
-    "@portkey/did-ui-react" "0.0.1-alpha.8.5"
+    "@portkey/did-ui-react" "0.0.1-alpha.8.6"
     aelf-sdk "^3.2.40"
 
 after@0.8.2:

@@ -44,6 +44,7 @@ function App() {
 
   useLoginState(
     (loginState) => {
+      console.log(loginState, loginError);
       if (loginState === WebLoginState.initial && currentWallet.address) {
         dispatch({
           type: LOG_OUT_ACTIONS.LOG_OUT_SUCCESS,
