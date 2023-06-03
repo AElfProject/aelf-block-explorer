@@ -196,10 +196,15 @@ class VoteContainer extends Component {
     } = this.state;
     const { currentWallet } = this.props;
     if (shouldRefreshMyWallet) {
-      this.checkExtensionLockStatus();
-      this.setState({
-        shouldRefreshMyWallet: false,
-      });
+      if (!this.hasGetContractsFromExt) {
+        this.fetchContractFromExt().then(() => {
+          this.hasGetContractsFromExt = true;
+          this.fetchProfitAmount();
+        });
+      } else {
+        this.fetchProfitAmount();
+      }
+      // this.checkExtensionLockStatus();
     }
     if (
       electionContract &&
@@ -541,6 +546,7 @@ class VoteContainer extends Component {
       this.hasGetContractsFromExt = true;
       await this.fetchProfitAmount();
     }
+    return Promise.resolve();
   }
 
   checkExtensionLockStatus() {

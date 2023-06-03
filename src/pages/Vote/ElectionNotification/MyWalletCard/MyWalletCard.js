@@ -40,6 +40,7 @@ class MyWalletCard extends PureComponent {
 
   componentDidMount() {
     const { currentWallet } = this.props;
+    console.log("currentWallet", currentWallet);
     if (currentWallet?.address) {
       this.fetchData();
     }
@@ -55,61 +56,68 @@ class MyWalletCard extends PureComponent {
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    const { currentWallet } = this.props;
-    if (currentWallet.address && !this.hasRun) {
+    const { currentWallet, shouldRefreshMyWallet } = this.props;
+    if (
+      currentWallet.address &&
+      ((shouldRefreshMyWallet && !this.hasRun) ||
+        !prevProps.currentWallet?.address)
+    ) {
       this.fetchData(prevProps);
     }
   }
 
   fetchData(prevProps) {
-    const {
-      multiTokenContract,
-      electionContract,
-      shouldRefreshMyWallet,
-      changeVoteState,
-    } = this.props;
-    const { activeVotedVotesAmount, balance } = this.state;
-    console.log(
-      multiTokenContract.address,
-      prevProps?.multiTokenContract?.address,
-      "!!!"
-    );
-    if (multiTokenContract) {
+    const getData = async () => {
+      const {
+        multiTokenContract,
+        electionContract,
+        shouldRefreshMyWallet,
+        changeVoteState,
+      } = this.props;
       this.hasRun = true;
-      this.fetchWalletBalance();
-    }
+      this.setState({
+        loading: true,
+      });
+      if (multiTokenContract) {
+        await this.fetchWalletBalance();
+      }
 
-    if (electionContract) {
-      this.fetchElectorVoteInfo();
-    }
-
-    // todo: maybe we need to use electionContractFromExt instead
-    // After get balance and lockAmount, calculate the total assets
-    if (
-      electionContract &&
-      multiTokenContract &&
-      activeVotedVotesAmount !== "-" &&
-      balance !== "-"
-    ) {
-      this.computedTotalAssets();
-    }
-    if (shouldRefreshMyWallet) {
-      changeVoteState(
-        {
-          shouldRefreshMyWallet: false,
-        },
-        () => {
-          this.setState({
-            loading: true,
-          });
-          this.updateWallet().then(() => {
-            this.setState({
-              loading: false,
+      if (electionContract) {
+        await this.fetchElectorVoteInfo();
+      }
+      const { activeVotedVotesAmount, balance } = this.state;
+      // todo: maybe we need to use electionContractFromExt instead
+      // After get balance and lockAmount, calculate the total assets
+      if (
+        electionContract &&
+        multiTokenContract &&
+        activeVotedVotesAmount !== "-" &&
+        balance !== "-"
+      ) {
+        this.computedTotalAssets();
+      }
+      if (shouldRefreshMyWallet) {
+        changeVoteState(
+          {
+            shouldRefreshMyWallet: false,
+          },
+          () => {
+            this.updateWallet().then(() => {
+              this.setState({
+                loading: false,
+              });
+              this.hasRun = false;
             });
-          });
-        }
-      );
-    }
+          }
+        );
+      } else {
+        this.setState({
+          loading: false,
+        });
+        this.hasRun = false;
+      }
+    };
+    getData();
   }
 
   fetchWalletBalance() {
