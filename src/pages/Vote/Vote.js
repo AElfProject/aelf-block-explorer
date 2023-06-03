@@ -473,8 +473,16 @@ class VoteContainer extends Component {
     const { [role]: fun } = role2Fun;
 
     if (shouldDetectLock && fun) {
+      const { currentWallet } = this.props;
       // To make sure that all the operation use wallet take effects on the correct wallet
-      this.checkExtensionLockStatus().then(fun);
+      this.checkExtensionLockStatus().then(() => {
+        if (!currentWallet.address) {
+          this.setState({
+            shouldRefreshMyWallet: true,
+          });
+        }
+        fun();
+      });
     }
   }
 
@@ -553,7 +561,9 @@ class VoteContainer extends Component {
     const { currentWallet } = this.props;
     return new Promise((resolve) => {
       if (currentWallet?.address) {
-        return this.fetchGetContractsAndProfitAmount().then(resolve);
+        return this.fetchGetContractsAndProfitAmount().then(() => {
+          resolve();
+        });
       }
       return WebLoginInstance.get()
         .loginAsync()

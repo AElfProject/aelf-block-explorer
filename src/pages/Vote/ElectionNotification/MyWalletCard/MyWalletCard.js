@@ -89,37 +89,8 @@ class MyWalletCard extends PureComponent {
       changeVoteState,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
-
-    if (
-      multiTokenContract &&
-      multiTokenContract !== prevProps?.multiTokenContract
-    ) {
-      console.log(11111);
-      this.hasRun = true;
-      this.fetchWalletBalance();
-    }
-
-    if (
-      electionContract &&
-      electionContract !== prevProps?.electionContract &&
-      electionContract
-    ) {
-      this.fetchElectorVoteInfo();
-    }
-
-    // todo: maybe we need to use electionContractFromExt instead
-    // After get balance and lockAmount, calculate the total assets
-    if (
-      electionContract &&
-      multiTokenContract &&
-      activeVotedVotesAmount !== "-" &&
-      balance !== "-"
-    ) {
-      this.computedTotalAssets();
-    }
-
     if (shouldRefreshMyWallet) {
-      console.log(33333);
+      console.log(44444);
       changeVoteState(
         {
           shouldRefreshMyWallet: false,
@@ -135,6 +106,33 @@ class MyWalletCard extends PureComponent {
           });
         }
       );
+    } else {
+      if (
+        multiTokenContract &&
+        multiTokenContract !== prevProps?.multiTokenContract
+      ) {
+        console.log(11111);
+        this.hasRun = true;
+        this.fetchWalletBalance();
+      }
+      if (
+        electionContract &&
+        electionContract !== prevProps?.electionContract
+      ) {
+        console.log(22222);
+        this.fetchElectorVoteInfo();
+      }
+
+      // todo: maybe we need to use electionContractFromExt instead
+      // After get balance and lockAmount, calculate the total assets
+      if (
+        electionContract &&
+        multiTokenContract &&
+        activeVotedVotesAmount !== "-" &&
+        balance !== "-"
+      ) {
+        this.computedTotalAssets();
+      }
     }
   }
 
