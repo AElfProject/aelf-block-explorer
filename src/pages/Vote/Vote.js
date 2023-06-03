@@ -188,14 +188,17 @@ class VoteContainer extends Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const {
       shouldRefreshMyWallet,
       electionContract,
       shouldJudgeIsCurrentCandidate,
     } = this.state;
     const { currentWallet } = this.props;
-    if (shouldRefreshMyWallet) {
+    if (
+      currentWallet?.address &&
+      (shouldRefreshMyWallet || !prevProps.currentWallet?.address)
+    ) {
       if (!this.hasGetContractsFromExt) {
         this.fetchContractFromExt().then(() => {
           this.hasGetContractsFromExt = true;
@@ -948,6 +951,7 @@ class VoteContainer extends Component {
           total,
           amounts: dividendAmounts,
         };
+        console.log("=====", dividends);
         this.setState({
           dividends,
         });
