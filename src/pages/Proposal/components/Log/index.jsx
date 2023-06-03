@@ -12,6 +12,7 @@ import { logOut, logIn } from "@redux/actions/proposalCommon";
 import { LOG_STATUS } from "@redux/common/constants";
 import { WebLoginState, useWebLogin } from "aelf-web-login";
 import { isPhoneCheck } from "../../../../common/utils";
+import { log } from "lodash-decorators/utils";
 
 const OverLay = (props) => {
   const { address } = props;
@@ -32,13 +33,14 @@ const LogButton = (props) => {
   const common = useSelector((state) => state.common);
   const { loading, currentWallet } = common;
   const { name, address = "" } = currentWallet;
-  const { loginState, login } = useWebLogin();
+  const { loginState, loginError, login } = useWebLogin();
 
   let nickName = name;
   if (currentWallet.portkeyInfo && currentWallet.portkeyInfo.nickName) {
     nickName = currentWallet.portkeyInfo.nickName;
   }
 
+  console.log(loginState, loginError);
   return (
     <>
       <If condition={loginState === WebLoginState.logined}>
