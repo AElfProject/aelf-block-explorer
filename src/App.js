@@ -57,6 +57,9 @@ function App() {
           type: LOG_IN_ACTIONS.LOG_IN_START,
         });
       } else if (loginState === WebLoginState.logined) {
+        if (wallet.portkeyInfo && wallet.portkeyInfo.nickName) {
+          wallet.name = wallet.portkeyInfo.nickName;
+        }
         dispatch({
           type: LOG_IN_ACTIONS.LOG_IN_SUCCESS,
           payload: wallet,
