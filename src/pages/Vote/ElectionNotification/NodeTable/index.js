@@ -79,9 +79,11 @@ class NodeTable extends PureComponent {
       electionContract &&
       consensusContract
     ) {
+      console.log(1);
       this.fetchNodes();
     }
     if (nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+      console.log(2);
       this.fetchNodes();
     }
     if (electionContract && consensusContract) {
@@ -90,6 +92,7 @@ class NodeTable extends PureComponent {
         (currentWallet &&
           currentWallet.address !== prevProps.currentWallet?.address)
       ) {
+        console.log(3);
         this.fetchNodes();
       }
     }
@@ -261,7 +264,6 @@ class NodeTable extends PureComponent {
         width: 210,
         render: (text, record) => (
           <div className={`${clsPrefix}-btn-group`}>
-            {/* todo: replace pubkey by address? */}
             <Button
               className="table-btn vote-btn"
               key={record.pubkey}
@@ -372,6 +374,7 @@ class NodeTable extends PureComponent {
       fetchCurrentMinerPubkeyList(consensusContract),
     ])
       .then((resArr) => {
+        console.log(resArr, "resArr");
         // process data
         const processedNodesData = this.processNodesData(resArr);
         this.setState(

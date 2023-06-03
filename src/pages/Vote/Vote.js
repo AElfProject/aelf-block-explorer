@@ -559,12 +559,13 @@ class VoteContainer extends Component {
     const { currentWallet } = this.props;
     return new Promise((resolve) => {
       if (currentWallet?.address) {
-        return this.fetchGetContractsAndProfitAmount().then(resolve);
+        resolve();
+        // return this.fetchGetContractsAndProfitAmount().then(resolve);
       }
       return WebLoginInstance.get()
         .loginAsync()
         .then(async () => {
-          await this.fetchGetContractsAndProfitAmount();
+          // await this.fetchGetContractsAndProfitAmount();
           resolve();
         });
     });
