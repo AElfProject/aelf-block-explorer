@@ -13,6 +13,7 @@ const graphQLServer = NETWORK_TYPE === "TESTNET" ? "https://dapp-portkey-test.po
 const portkeyApiServer = NETWORK_TYPE === "TESTNET" ? "https://did-portkey-test.portkey.finance" : "https://did-portkey.portkey.finance"
 
 // did.config.setConfig
+export const connectUrl = NETWORK_TYPE === "TESTNET" ? 'https://auth-portkey-test.portkey.finance' : 'https://auth-portkey.portkey.finance';
 
 setGlobalConfig({
   appName: APPNAME,
