@@ -32,8 +32,12 @@ const LogButton = (props) => {
   const common = useSelector((state) => state.common);
   const { loading, currentWallet } = common;
   const { name, address = "" } = currentWallet;
-  const dispatch = useDispatch();
   const { loginState, login } = useWebLogin();
+
+  let nickName = name;
+  if (currentWallet.portkeyInfo && currentWallet.portkeyInfo.nickName) {
+    nickName = currentWallet.portkeyInfo.nickName;
+  }
 
   return (
     <>
@@ -46,14 +50,14 @@ const LogButton = (props) => {
               overlay={<OverLay loading={loading} address={address} />}
             >
               <Button type="primary" className="proposals-login-btn">
-                {name} 
+                {nickName} 
                 <DownOutlined />
               </Button>
             </Dropdown>
           )}
         </Then>
         <Else>
-          <Button type='primary' loading={loading} onClick={login}>
+          <Button type='primary' loading={loginState === WebLoginState.logining} onClick={login}>
             Login
           </Button>
         </Else>

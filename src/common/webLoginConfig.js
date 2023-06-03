@@ -1,5 +1,5 @@
 import { getConfig, setGlobalConfig } from "aelf-web-login";
-import { did } from '@portkey/did-ui-react';
+import { did, ConfigProvider } from '@portkey/did-ui-react';
 import {
   APPNAME,
   CHAIN_ID,
@@ -21,6 +21,7 @@ setGlobalConfig({
   portkey: {
     useLocalStorage: true,
     graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
+    connectUrl,
     socialLogin: {
       Portkey: {
         websiteName: APPNAME,
@@ -39,9 +40,9 @@ setGlobalConfig({
           walletType: "aelf",
           networkType: NETWORK_TYPE,
           isActive: true,
-          apiUrl: '',
+          apiUrl: portkeyApiServer,
           graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
-          connectUrl: '',
+          connectUrl,
         },
       ],
     },
