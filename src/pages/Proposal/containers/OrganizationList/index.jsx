@@ -57,12 +57,13 @@ const OrganizationList = () => {
     // get activeKey according to hash
     const { hash } = location;
     setActiveKey(keyFromHash[hash] || proposalTypes.PARLIAMENT);
+    fetchList({
+      ...params,
+      proposalType: activeKey,
+    });
     if (isALLSettle === true) {
       // change redux state
-      fetchList({
-        ...params,
-        proposalType: activeKey,
-      });
+      
     }
   }, [isALLSettle, logStatus]);
 

@@ -681,7 +681,7 @@ const CreateProposal = () => {
           </div>
           <div className="proposal-result-list-item gap-bottom">
             <span className="sub-title gap-right">Contract Params:</span>
-            <pre className="proposal-result-list-item-value">
+            <pre className="proposal-result-list-item-value contract-params">
               {JSON.stringify((normalResult.params || {}).origin, null, 2)}
             </pre>
           </div>
