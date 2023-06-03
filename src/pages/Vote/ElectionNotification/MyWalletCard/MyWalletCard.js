@@ -40,7 +40,6 @@ class MyWalletCard extends PureComponent {
 
   componentDidMount() {
     const { currentWallet } = this.props;
-    console.log("currentWallet", currentWallet);
     if (currentWallet?.address) {
       this.fetchData();
     }
