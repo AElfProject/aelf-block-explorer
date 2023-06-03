@@ -239,18 +239,19 @@ class Resource extends Component {
       balance: currentBalance,
       resourceTokens,
     };
-    let downloadPlugins = null;
-    if (showDownloadPlugins) {
-      downloadPlugins = [
-        this.getDownloadPluginsHTML(),
-        <div className="resource-blank" />,
-      ];
-    }
+    // let downloadPlugins = null;
+    // // console.log(showDownloadPlugins)
+    // if (showDownloadPlugins) {
+    //   downloadPlugins = [
+    //     this.getDownloadPluginsHTML(),
+    //     <div className="resource-blank" />,
+    //   ];
+    // }
     const resourceAElfWalletHtml = this.resourceAElfWalletHtml();
-    const isPhone = isPhoneCheck();
+    // const isPhone = isPhoneCheck();
     return (
       <div className="resource-body basic-container basic-container-white">
-        {!isPhone && downloadPlugins}
+        {/* {!isPhone && downloadPlugins} */}
         {/* {isPhone && <div className='resource-pc-note'>In PC, you can find more operations and information.</div>} */}
         {walletInstance && resourceAElfWalletHtml}
         <div className="resource-money-market">
