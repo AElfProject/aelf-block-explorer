@@ -147,16 +147,16 @@ class ElectionNotification extends PureComponent {
 
     await this.fetchData();
 
-    if (
-      dividendContract &&
-      electionContract &&
-      multiTokenContract &&
-      profitContractFromExt
-    ) {
-      changeVoteState({
-        shouldRefreshMyWallet: true,
-      });
-    }
+    // if (
+    //   dividendContract &&
+    //   electionContract &&
+    //   multiTokenContract &&
+    //   profitContractFromExt
+    // ) {
+    //   changeVoteState({
+    //     shouldRefreshMyWallet: true,
+    //   });
+    // }
   }
 
   componentDidUpdate() {
