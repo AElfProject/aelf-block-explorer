@@ -960,7 +960,7 @@ class VoteContainer extends Component {
   }
 
   handleDividendClick() {
-    return async function handleDividendClick() {
+    const handleDividendClick = async () => {
       try {
         this.setState({
           dividendModalVisible: true,
@@ -979,6 +979,7 @@ class VoteContainer extends Component {
         console.error("checkExtensionLockStatus", err);
       }
     };
+    handleDividendClick();
   }
 
   handleClaimDividendClick(schemeId) {
