@@ -22,7 +22,7 @@ import { WebLoginInstance } from "./utils/webLogin";
 
 function App() {
   const { pathname } = useLocation();
-  const { wallet, loginError } = useWebLogin();
+  const { wallet, loginState, loginError } = useWebLogin();
   const dispatch = useDispatch();
   const currentWallet = useSelector((state) => {
     return state.common.currentWallet;
@@ -39,11 +39,16 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log(loginState, loginError);
+  })
+
+  useEffect(() => {
     back2Top();
   }, [pathname]);
 
   useLoginState(
     (loginState) => {
+      console.log(loginState, loginError);
       if (loginState === WebLoginState.initial && currentWallet.address) {
         dispatch({
           type: LOG_OUT_ACTIONS.LOG_OUT_SUCCESS,
