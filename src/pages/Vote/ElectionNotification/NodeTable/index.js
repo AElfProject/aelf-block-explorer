@@ -59,7 +59,7 @@ class NodeTable extends PureComponent {
   componentDidMount() {
     this.wsProducedBlocks();
     if (this.props.electionContract && this.props.consensusContract) {
-      this.fetchNodes({});
+      this.fetchNodes();
     }
   }
 
@@ -67,25 +67,30 @@ class NodeTable extends PureComponent {
     this.socket.disconnect();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
+    const {
+      electionContract,
+      consensusContract,
+      nodeTableRefreshTime,
+      currentWallet,
+    } = this.props;
     if (
       (!prevProps.electionContract || !prevProps.consensusContract) &&
-      this.props.electionContract &&
-      this.props.consensusContract
+      electionContract &&
+      consensusContract
     ) {
-      this.fetchNodes({});
+      this.fetchNodes();
     }
-    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
-      this.fetchNodes({});
+    if (nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+      this.fetchNodes();
     }
-    if (this.props.electionContract && this.props.consensusContract) {
+    if (electionContract && consensusContract) {
       if (
-        (!prevProps.currentWallet && this.props.currentWallet) ||
-        (this.props.currentWallet &&
-          this.props.currentWallet?.address !==
-            prevProps.currentWallet?.address)
+        (!prevProps.currentWallet && currentWallet) ||
+        (currentWallet &&
+          currentWallet.address !== prevProps.currentWallet?.address)
       ) {
-        this.fetchNodes({});
+        this.fetchNodes();
       }
     }
   }
@@ -318,41 +323,6 @@ class NodeTable extends PureComponent {
     confirm();
   };
 
-  // fetchData(currentWallet) {
-  //   const {
-  //     electionContract,
-  //     consensusContract,
-  //     shouldRefreshNodeTable,
-  //     changeVoteState,
-  //   } = this.props;
-  //   // todo: It seems to has useless render in cdm
-  //   console.log({
-  //     flag: !this.hasRun || shouldRefreshNodeTable,
-  //     shouldRefreshNodeTable,
-  //   });
-  //   if (
-  //     electionContract &&
-  //     consensusContract &&
-  //     (!this.hasRun || shouldRefreshNodeTable)
-  //   ) {
-  //     changeVoteState(
-  //       {
-  //         shouldRefreshNodeTable: false,
-  //       },
-  //       async () => {
-  //         this.setState({
-  //           isLoading: true,
-  //         });
-  //         // Need await to ensure the totalVotesCount take its seat.
-  //         // todo: fetchTheTotalVotesAmount after contract changed
-  //         // await this.fetchTotalVotesAmount();
-  //         this.fetchNodes(currentWallet);
-  //       }
-  //     );
-  //     this.hasRun = true;
-  //   }
-  // }
-
   async fetchTotal() {
     const res = await fetchCount(this.props.electionContract, "");
     const total = res.value?.length || 0;
@@ -386,14 +356,11 @@ class NodeTable extends PureComponent {
 
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
-  fetchNodes(currentWalletInput) {
+  fetchNodes() {
     this.setState({
       isLoading: true,
     });
-    const { electionContract, consensusContract } = this.props;
-    const currentWallet =
-      (Object.keys(currentWalletInput).length && currentWalletInput) ||
-      this.props.currentWallet;
+    const { electionContract, consensusContract, currentWallet } = this.props;
     Promise.all([
       this.fetchAllCandidateInfo(),
       getAllTeamDesc(),
@@ -417,10 +384,6 @@ class NodeTable extends PureComponent {
             });
           }
         );
-        console.log("GetPageableCandidateInformation", {
-          processedNodesData,
-          resArr,
-        });
       })
       .catch((err) => {
         this.setState({

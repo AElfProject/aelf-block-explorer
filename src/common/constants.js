@@ -2,7 +2,7 @@
 export const PRIMARY_COLOR = "#266CD3";
 
 const TOKEN_ICON_URL =
-  "https://raw.githubusercontent.com/AElf-devops/token-list/feature/logo/assets/";
+  "https://raw.githubusercontent.com/AElf-devops/token-list/master/assets/";
 
 export const TOEKN_LIST = [
   {
