@@ -183,6 +183,9 @@ class VoteContainer extends Component {
           contractItem.contractNickname
         );
       });
+      if (this.props.currentWallet?.address) {
+        this.fetchGetContractsAndProfitAmount();
+      }
     } catch (e) {
       console.error(e);
     }
