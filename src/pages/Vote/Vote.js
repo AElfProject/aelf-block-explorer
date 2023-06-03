@@ -183,6 +183,7 @@ class VoteContainer extends Component {
           contractItem.contractNickname
         );
       });
+      // jump from other page with wallet address
       if (this.props.currentWallet?.address) {
         this.fetchGetContractsAndProfitAmount();
       }
@@ -202,15 +203,8 @@ class VoteContainer extends Component {
       currentWallet?.address &&
       (shouldRefreshMyWallet || !prevProps.currentWallet?.address)
     ) {
-      if (!this.hasGetContractsFromExt) {
-        this.fetchContractFromExt().then(() => {
-          this.hasGetContractsFromExt = true;
-          this.fetchProfitAmount();
-        });
-      } else {
-        this.fetchProfitAmount();
-      }
-      // this.checkExtensionLockStatus();
+      // this.fetchGetContractsAndProfitAmount();
+      this.checkExtensionLockStatus();
     }
     if (
       electionContract &&
@@ -550,8 +544,8 @@ class VoteContainer extends Component {
     if (!this.hasGetContractsFromExt) {
       await this.fetchContractFromExt();
       this.hasGetContractsFromExt = true;
-      await this.fetchProfitAmount();
     }
+    await this.fetchProfitAmount();
     return Promise.resolve();
   }
 
@@ -559,13 +553,13 @@ class VoteContainer extends Component {
     const { currentWallet } = this.props;
     return new Promise((resolve) => {
       if (currentWallet?.address) {
-        resolve();
-        // return this.fetchGetContractsAndProfitAmount().then(resolve);
+        // resolve();
+        return this.fetchGetContractsAndProfitAmount().then(resolve);
       }
       return WebLoginInstance.get()
         .loginAsync()
         .then(async () => {
-          // await this.fetchGetContractsAndProfitAmount();
+          await this.fetchGetContractsAndProfitAmount();
           resolve();
         });
     });

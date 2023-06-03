@@ -73,26 +73,22 @@ class NodeTable extends PureComponent {
       consensusContract,
       nodeTableRefreshTime,
       currentWallet,
+      shouldRefreshNodeTable,
     } = this.props;
     if (
-      (!prevProps.electionContract || !prevProps.consensusContract) &&
-      electionContract &&
-      consensusContract
+      nodeTableRefreshTime !== prevProps.nodeTableRefreshTime ||
+      shouldRefreshNodeTable
     ) {
-      console.log(1);
       this.fetchNodes();
-    }
-    if (nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
-      console.log(2);
-      this.fetchNodes();
-    }
-    if (electionContract && consensusContract) {
+    } else if (electionContract && consensusContract) {
       if (
         (!prevProps.currentWallet && currentWallet) ||
+        !prevProps.electionContract ||
+        !prevProps.consensusContract ||
+        // shouldRefreshNodeTable
         (currentWallet &&
           currentWallet.address !== prevProps.currentWallet?.address)
       ) {
-        console.log(3);
         this.fetchNodes();
       }
     }
