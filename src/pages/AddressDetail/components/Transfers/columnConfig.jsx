@@ -35,7 +35,7 @@ const getAddress = (nowFlag, input, record) => {
     complete = addressFormat(input, "", record.relatedChainId);
     hidden = addressFormat(hiddenAddress(input), "", record.relatedChainId);
     const chainsLink = CHAINS_LIST.find((ele) => {
-      return ele.chainId !== record.relatedChainId;
+      return ele.chainId === record.relatedChainId;
     }).chainsLink.replace(/^\/+|\/+$/g, "");
     all = `${chainsLink}/address/${complete}`;
     isBlank = true;
@@ -111,9 +111,13 @@ const getColumnConfig = ({
               title={complete}
               overlayClassName="table-item-tooltip__white"
             >
-              <Link to={all} target={isBlank && "_blank"}>
-                {hidden}
-              </Link>
+              {isBlank ? (
+                <a target="_blank" href={all} rel="noreferrer">
+                  {hidden}
+                </a>
+              ) : (
+                <Link to={all}>{hidden}</Link>
+              )}
             </Tooltip>
             <CopyButton value={complete} />
             <Tag className={clsx(isOut ? "out" : "in")}>
@@ -137,9 +141,13 @@ const getColumnConfig = ({
               title={complete}
               overlayClassName="table-item-tooltip__white"
             >
-              <Link to={all} target={isBlank && "_blank"}>
-                {hidden}
-              </Link>
+              {isBlank ? (
+                <a target="_blank" href={all} rel="noreferrer">
+                  {hidden}
+                </a>
+              ) : (
+                <Link to={all}>{hidden}</Link>
+              )}
             </Tooltip>
             <CopyButton value={complete} />
           </div>
