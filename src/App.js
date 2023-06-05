@@ -44,6 +44,7 @@ function App() {
 
   useLoginState(
     (loginState) => {
+      console.log(wallet)
       console.log(loginState, loginError);
       if (loginState === WebLoginState.initial && currentWallet.address) {
         dispatch({
