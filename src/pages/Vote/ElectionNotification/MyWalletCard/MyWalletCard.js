@@ -63,11 +63,10 @@ class MyWalletCard extends PureComponent {
   }
 
   loginOrUnlock() {
-    WebLoginInstance.get()
-      .login()
-      // .then(() => {
-      //   // this.handleUpdateWalletClick();
-      // });
+    WebLoginInstance.get().loginAsync();
+    // .then(() => {
+    //   // this.handleUpdateWalletClick();
+    // });
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
@@ -228,7 +227,7 @@ class MyWalletCard extends PureComponent {
       .logoutAsync()
       .then(
         () => {
-          message.success("Logout successful, refresh after 3s.",3,() => {
+          message.success("Logout successful, refresh after 3s.", 3, () => {
             window.location.reload();
           });
         },
