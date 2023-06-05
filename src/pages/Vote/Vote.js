@@ -476,7 +476,7 @@ class VoteContainer extends Component {
     const { [role]: fun } = role2Fun;
 
     if (shouldDetectLock && fun) {
-      const { currentWallet } = this.props;
+      // const { currentWallet } = this.props;
       // To make sure that all the operation use wallet take effects on the correct wallet
       this.checkExtensionLockStatus().then(() => {
         // if (!currentWallet.address) {
@@ -569,25 +569,22 @@ class VoteContainer extends Component {
 
     return new Promise((resolve) => {
       if (currentWallet?.address) {
-        if (this.hasGetContractsFromExt) {
-          return resolve();
-        }
-        return this.fetchGetContractsAndProfitAmount().then(() => {
-          resolve();
-        });
+        return resolve();
+        // if (this.hasGetContractsFromExt) {
+        //   return resolve();
+        // }
+        // return this.fetchGetContractsAndProfitAmount().then(() => {
+        //   resolve();
+        // });
       }
-      return (
-        WebLoginInstance.get()
-          .loginAsync()
-          // eslint-disable-next-line consistent-return
-          .then(async () => {
-            if (this.hasGetContractsFromExt) {
-              return resolve();
-            }
-            await this.fetchGetContractsAndProfitAmount();
-            resolve();
-          })
-      );
+      return WebLoginInstance.get().loginAsync();
+      // .then(async () => {
+      //   if (this.hasGetContractsFromExt) {
+      //     return resolve();
+      //   }
+      //   await this.fetchGetContractsAndProfitAmount();
+      //   return resolve();
+      // });
     });
   }
 
