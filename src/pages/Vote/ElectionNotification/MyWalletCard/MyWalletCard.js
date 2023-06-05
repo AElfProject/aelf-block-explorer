@@ -66,7 +66,7 @@ class MyWalletCard extends PureComponent {
     WebLoginInstance.get()
       .loginAsync()
       .then(() => {
-        this.handleUpdateWalletClick();
+        // this.handleUpdateWalletClick();
       });
   }
 
@@ -228,15 +228,20 @@ class MyWalletCard extends PureComponent {
       .logoutAsync()
       .then(
         () => {
-          console.log("logout!!!");
+          console.log("logout!!! success");
           message.success("Logout successful, refresh after 3s.", 3, () => {
             window.location.reload();
           });
         },
         () => {
+          console.log("logout!!! failed");
           message.error("logout failed");
         }
-      );
+      )
+      .catch((e) => {
+        console.log("logout!!! failed", e);
+      });
+    console.log("extensionLogout");
   }
 
   render() {

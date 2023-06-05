@@ -184,7 +184,6 @@ class VoteContainer extends Component {
           contractItem.contractNickname
         );
       });
-      console.log(1111111111);
       // jump from other page with wallet address
       if (this.props.currentWallet?.address) {
         console.log("mount fetchGetContractsAndProfitAmount");
@@ -207,7 +206,6 @@ class VoteContainer extends Component {
       (shouldRefreshMyWallet || !prevProps.currentWallet?.address)
     ) {
       console.log("checkExtensionLockStatus", shouldRefreshMyWallet);
-      // this.fetchGetContractsAndProfitAmount();
       this.checkExtensionLockStatus();
     }
     if (
@@ -215,7 +213,6 @@ class VoteContainer extends Component {
       currentWallet?.address &&
       shouldJudgeIsCurrentCandidate
     ) {
-      console.log("judgeCurrentUserIsCandidate");
       this.judgeCurrentUserIsCandidate();
     }
   }
