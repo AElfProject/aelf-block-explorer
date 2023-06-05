@@ -568,8 +568,12 @@ class VoteContainer extends Component {
 
   checkExtensionLockStatus() {
     const { currentWallet } = this.props;
+
     return new Promise((resolve) => {
       if (currentWallet?.address) {
+        if (this.hasGetContractsFromExt) {
+          resolve();
+        }
         return this.fetchGetContractsAndProfitAmount().then(() => {
           resolve();
         });
@@ -577,6 +581,9 @@ class VoteContainer extends Component {
       return WebLoginInstance.get()
         .loginAsync()
         .then(async () => {
+          if (this.hasGetContractsFromExt) {
+            resolve();
+          }
           await this.fetchGetContractsAndProfitAmount();
           resolve();
         });
@@ -984,15 +991,12 @@ class VoteContainer extends Component {
         if (!currentWallet?.address) {
           await WebLoginInstance.get().loginAsync();
         }
-        this.setState({
-          dividendModalVisible: true,
-          dividendLoading: true,
-        });
         try {
-          await this.fetchGetContractsAndProfitAmount();
           this.setState({
-            shouldRefreshMyWallet: true,
+            dividendModalVisible: true,
+            dividendLoading: true,
           });
+          await this.fetchGetContractsAndProfitAmount();
         } catch (e) {
           console.log(e);
           message.error("Error happened when getting claim amount");
