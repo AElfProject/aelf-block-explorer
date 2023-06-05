@@ -55,10 +55,11 @@ class MyWalletCard extends PureComponent {
       changeVoteState({
         shouldRefreshMyWallet: true,
       });
-    } else if (currentWallet?.address) {
-      // jump from other page with wallet address
-      this.fetchData();
     }
+    // else if (currentWallet?.address) {
+    //   // jump from other page with wallet address
+    //   this.fetchData();
+    // }
   }
 
   loginOrUnlock() {
@@ -87,6 +88,7 @@ class MyWalletCard extends PureComponent {
       electionContract,
       shouldRefreshMyWallet,
       changeVoteState,
+      currentWallet,
     } = this.props;
     const { activeVotedVotesAmount, balance } = this.state;
     if (shouldRefreshMyWallet) {
@@ -109,17 +111,18 @@ class MyWalletCard extends PureComponent {
     } else {
       if (
         multiTokenContract &&
-        multiTokenContract !== prevProps?.multiTokenContract
+        (currentWallet?.address !== prevProps.currentWallet?.address ||
+          multiTokenContract !== prevProps?.multiTokenContract)
       ) {
-        console.log(11111);
         this.hasRun = true;
         this.fetchWalletBalance();
       }
       if (
         electionContract &&
-        electionContract !== prevProps?.electionContract
+        (currentWallet?.address !== prevProps.currentWallet?.address ||
+          electionContract !== prevProps?.electionContract)
       ) {
-        console.log(22222);
+        this.hasRun = true;
         this.fetchElectorVoteInfo();
       }
 
@@ -138,9 +141,11 @@ class MyWalletCard extends PureComponent {
 
   fetchWalletBalance() {
     const { multiTokenContract, currentWallet } = this.props;
+
     if (!currentWallet?.address) {
       return false;
     }
+    console.log(currentWallet?.address, "fetchWalletBalance");
     return multiTokenContract.GetBalance.call({
       symbol: SYMBOL,
       owner: currentWallet.address,
@@ -155,9 +160,10 @@ class MyWalletCard extends PureComponent {
 
   fetchElectorVoteInfo() {
     const { electionContract, currentWallet } = this.props;
-    if (!currentWallet || !currentWallet.address || !electionContract) {
+    if (!currentWallet?.address) {
       return false;
     }
+    console.log(currentWallet?.address, "fetchElectorVoteInfo");
     return electionContract.GetElectorVoteWithRecords.call({
       value: currentWallet.publicKey,
     })

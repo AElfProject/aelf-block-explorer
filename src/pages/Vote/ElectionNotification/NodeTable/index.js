@@ -68,27 +68,25 @@ class NodeTable extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      electionContract,
-      consensusContract,
-      nodeTableRefreshTime,
-      currentWallet,
-      shouldRefreshNodeTable,
-    } = this.props;
     if (
-      nodeTableRefreshTime !== prevProps.nodeTableRefreshTime ||
-      shouldRefreshNodeTable
+      (!prevProps.electionContract || !prevProps.consensusContract) &&
+      this.props.electionContract &&
+      this.props.consensusContract
     ) {
+      console.log(1);
       this.fetchNodes();
-    } else if (electionContract && consensusContract) {
+    }
+    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+      console.log(2);
+      this.fetchNodes();
+    }
+    if (this.props.electionContract && this.props.consensusContract) {
       if (
-        (!prevProps.currentWallet && currentWallet) ||
-        !prevProps.electionContract ||
-        !prevProps.consensusContract ||
-        // shouldRefreshNodeTable
-        (currentWallet &&
-          currentWallet.address !== prevProps.currentWallet?.address)
+        (!prevProps.currentWallet && this.props.currentWallet) ||
+        (this.props.currentWallet &&
+          this.props.currentWallet.address !== prevProps.currentWallet.address)
       ) {
+        console.log(3);
         this.fetchNodes();
       }
     }
@@ -355,6 +353,11 @@ class NodeTable extends PureComponent {
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
   fetchNodes() {
+    if (this.hasRun) {
+      return;
+    }
+    console.log("fetchNodes");
+    this.hasRun = true;
     this.setState({
       isLoading: true,
     });
@@ -370,7 +373,6 @@ class NodeTable extends PureComponent {
       fetchCurrentMinerPubkeyList(consensusContract),
     ])
       .then((resArr) => {
-        console.log(resArr, "resArr");
         // process data
         const processedNodesData = this.processNodesData(resArr);
         this.setState(
@@ -381,6 +383,7 @@ class NodeTable extends PureComponent {
             this.setState({
               isLoading: false,
             });
+            this.hasRun = false;
           }
         );
       })
@@ -388,12 +391,14 @@ class NodeTable extends PureComponent {
         this.setState({
           isLoading: false,
         });
+        this.hasRun = false;
         console.error("GetPageableCandidateInformation", err);
       });
   }
 
   // eslint-disable-next-line class-methods-use-this
   processNodesData(resArr) {
+    console.log(resArr, "resArr");
     const { producedBlocks } = this.state;
 
     let totalActiveVotesAmount = 0;
