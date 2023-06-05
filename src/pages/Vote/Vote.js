@@ -577,7 +577,7 @@ class VoteContainer extends Component {
         //   resolve();
         // });
       }
-      return WebLoginInstance.get().loginAsync();
+      return WebLoginInstance.get().loginAsync().then(resolve);
       // .then(async () => {
       //   if (this.hasGetContractsFromExt) {
       //     return resolve();
