@@ -219,6 +219,7 @@ export const sendTransactionWith = async (
   param
 ) => {
   try {
+    param = param || {};
     console.log("callContract", {
       contractAddress,
       methodName: method,
@@ -230,6 +231,9 @@ export const sendTransactionWith = async (
       args: param,
     });
     showTransactionResult(result);
+    if (result.transactionId) {
+      result.TransactionId = result.transactionId;
+    }
     return result;
   } catch (e) {
     message.error(
