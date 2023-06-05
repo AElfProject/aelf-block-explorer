@@ -228,6 +228,7 @@ class MyWalletCard extends PureComponent {
       .logoutAsync()
       .then(
         () => {
+          console.log("logout!!!");
           message.success("Logout successful, refresh after 3s.", 3, () => {
             window.location.reload();
           });

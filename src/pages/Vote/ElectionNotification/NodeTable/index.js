@@ -27,7 +27,6 @@ import { connect } from "react-redux";
 import "./index.less";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
-import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const clsPrefix = "node-table";
@@ -51,8 +50,6 @@ class NodeTable extends PureComponent {
     this.socket = io({
       path: SOCKET_URL_NEW,
     });
-
-    this.hasRun = false;
   }
 
   // todo: how to combine cdm & cdu
@@ -68,23 +65,28 @@ class NodeTable extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    const {
+      electionContract,
+      consensusContract,
+      currentWallet,
+      nodeTableRefreshTime,
+    } = this.props;
     if (
       (!prevProps.electionContract || !prevProps.consensusContract) &&
-      this.props.electionContract &&
-      this.props.consensusContract
+      electionContract &&
+      consensusContract
     ) {
       console.log(1);
       this.fetchNodes();
     }
-    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+    if (nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
       console.log(2);
       this.fetchNodes();
     }
-    if (this.props.electionContract && this.props.consensusContract) {
+    if (electionContract && consensusContract && currentWallet.address) {
       if (
-        (!prevProps.currentWallet && this.props.currentWallet) ||
-        (this.props.currentWallet &&
-          this.props.currentWallet.address !== prevProps.currentWallet.address)
+        !prevProps.currentWallet.address ||
+        currentWallet.address !== prevProps.currentWallet.address
       ) {
         console.log(3);
         this.fetchNodes();
@@ -353,10 +355,6 @@ class NodeTable extends PureComponent {
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
   fetchNodes() {
-    if (this.hasRun) {
-      return;
-    }
-    this.hasRun = true;
     this.setState({
       isLoading: true,
     });
@@ -364,7 +362,7 @@ class NodeTable extends PureComponent {
     Promise.all([
       this.fetchAllCandidateInfo(),
       getAllTeamDesc(),
-      currentWallet && currentWallet?.publicKey
+      currentWallet?.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
             value: currentWallet?.publicKey,
           })
@@ -382,7 +380,6 @@ class NodeTable extends PureComponent {
             this.setState({
               isLoading: false,
             });
-            this.hasRun = false;
           }
         );
       })
@@ -390,7 +387,6 @@ class NodeTable extends PureComponent {
         this.setState({
           isLoading: false,
         });
-        this.hasRun = false;
         console.error("GetPageableCandidateInformation", err);
       });
   }
