@@ -217,6 +217,7 @@ export const sendTransactionWith = async (
   contractAddress,
   method,
   param
+  // eslint-disable-next-line consistent-return
 ) => {
   try {
     param = param || {};
@@ -224,7 +225,7 @@ export const sendTransactionWith = async (
       contractAddress,
       methodName: method,
       args: param,
-    })
+    });
     const result = await callContract({
       contractAddress,
       methodName: method,
