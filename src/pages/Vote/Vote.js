@@ -206,7 +206,8 @@ class VoteContainer extends Component {
       (shouldRefreshMyWallet || !prevProps.currentWallet?.address)
     ) {
       console.log("checkExtensionLockStatus", shouldRefreshMyWallet);
-      this.checkExtensionLockStatus();
+      // this.checkExtensionLockStatus();
+      this.fetchGetContractsAndProfitAmount();
     }
     if (
       electionContract &&
