@@ -479,11 +479,11 @@ class VoteContainer extends Component {
       const { currentWallet } = this.props;
       // To make sure that all the operation use wallet take effects on the correct wallet
       this.checkExtensionLockStatus().then(() => {
-        if (!currentWallet.address) {
-          this.setState({
-            shouldRefreshMyWallet: true,
-          });
-        }
+        // if (!currentWallet.address) {
+        //   this.setState({
+        //     shouldRefreshMyWallet: true,
+        //   });
+        // }
         fun();
       });
     }
@@ -1034,7 +1034,7 @@ class VoteContainer extends Component {
             this.checkTransactionResult(res, "dividendModalVisible")
               .then(() => {
                 this.setState({
-                  shouldRefreshMyWallet: true,
+                  // shouldRefreshMyWallet: true,
                   claimLoading: false,
                 });
               })
