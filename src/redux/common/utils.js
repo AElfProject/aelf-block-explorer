@@ -230,6 +230,7 @@ export const sendTransactionWith = async (
       args: param,
     });
     showTransactionResult(result);
+    return result;
   } catch (e) {
     message.error(
       (e.errorMessage || {}).message || e.message || "Send Transaction failed"
