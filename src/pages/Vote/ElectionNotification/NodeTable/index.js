@@ -356,7 +356,6 @@ class NodeTable extends PureComponent {
     if (this.hasRun) {
       return;
     }
-    console.log("fetchNodes");
     this.hasRun = true;
     this.setState({
       isLoading: true,
@@ -367,7 +366,7 @@ class NodeTable extends PureComponent {
       getAllTeamDesc(),
       currentWallet && currentWallet?.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: getPublicKeyFromObject(currentWallet?.publicKey),
+            value: currentWallet?.publicKey,
           })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract),
