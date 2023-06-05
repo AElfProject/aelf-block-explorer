@@ -231,6 +231,7 @@ const ApproveTokenModal = (props) => {
           symbol: tokenSymbol,
         }
       );
+      console.log(result);
       const txId = result.TransactionId || result.result.TransactionId;
       const txResult = await getTxResult(aelf, txId, 0, 6000);
       message.info(`Transactions ${txId} is ${txResult.Status}`);

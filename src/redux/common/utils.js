@@ -217,19 +217,25 @@ export const sendTransactionWith = async (
   contractAddress,
   method,
   param
+  // eslint-disable-next-line consistent-return
 ) => {
   try {
+    param = param || {};
     console.log("callContract", {
       contractAddress,
       methodName: method,
       args: param,
-    })
+    });
     const result = await callContract({
       contractAddress,
       methodName: method,
       args: param,
     });
     showTransactionResult(result);
+    if (result.transactionId) {
+      result.TransactionId = result.transactionId;
+    }
+    return result;
   } catch (e) {
     message.error(
       (e.errorMessage || {}).message || e.message || "Send Transaction failed"
