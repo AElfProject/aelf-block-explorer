@@ -41,7 +41,7 @@ export class WebLoginInstance {
   onLoginStateChanged(loginState, loginError) {
     if (
       loginState === WebLoginState.initial &&
-      this._loginState === WebLoginState.logined
+      this._loginState === WebLoginState.logouting
     ) {
       this._loginState = loginState;
       if (loginError) {
