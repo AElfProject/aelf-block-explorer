@@ -27,7 +27,6 @@ import { connect } from "react-redux";
 import "./index.less";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
-import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const clsPrefix = "node-table";
@@ -51,8 +50,6 @@ class NodeTable extends PureComponent {
     this.socket = io({
       path: SOCKET_URL_NEW,
     });
-
-    this.hasRun = false;
   }
 
   // todo: how to combine cdm & cdu
@@ -71,24 +68,27 @@ class NodeTable extends PureComponent {
     const {
       electionContract,
       consensusContract,
-      nodeTableRefreshTime,
       currentWallet,
-      shouldRefreshNodeTable,
+      nodeTableRefreshTime,
     } = this.props;
     if (
-      nodeTableRefreshTime !== prevProps.nodeTableRefreshTime ||
-      shouldRefreshNodeTable
+      (!prevProps.electionContract || !prevProps.consensusContract) &&
+      electionContract &&
+      consensusContract
     ) {
+      console.log(1);
       this.fetchNodes();
-    } else if (electionContract && consensusContract) {
+    }
+    if (nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+      console.log(2);
+      this.fetchNodes();
+    }
+    if (electionContract && consensusContract && currentWallet.address) {
       if (
-        (!prevProps.currentWallet && currentWallet) ||
-        !prevProps.electionContract ||
-        !prevProps.consensusContract ||
-        // shouldRefreshNodeTable
-        (currentWallet &&
-          currentWallet.address !== prevProps.currentWallet?.address)
+        !prevProps.currentWallet.address ||
+        currentWallet.address !== prevProps.currentWallet.address
       ) {
+        console.log(3);
         this.fetchNodes();
       }
     }
@@ -362,15 +362,14 @@ class NodeTable extends PureComponent {
     Promise.all([
       this.fetchAllCandidateInfo(),
       getAllTeamDesc(),
-      currentWallet && currentWallet?.publicKey
+      currentWallet?.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: getPublicKeyFromObject(currentWallet?.publicKey),
+            value: currentWallet?.publicKey,
           })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract),
     ])
       .then((resArr) => {
-        console.log(resArr, "resArr");
         // process data
         const processedNodesData = this.processNodesData(resArr);
         this.setState(
@@ -394,6 +393,7 @@ class NodeTable extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   processNodesData(resArr) {
+    console.log(resArr, "resArr");
     const { producedBlocks } = this.state;
 
     let totalActiveVotesAmount = 0;

@@ -158,6 +158,7 @@ class VoteContainer extends Component {
     this.handleRedeemOneVoteConfirm =
       this.handleRedeemOneVoteConfirm.bind(this);
     this.hasGetContractsFromExt = false;
+    this.hasfetchProfitAmount = false;
     this.setVoteConfirmLoading = this.setVoteConfirmLoading.bind(this);
     this.setRedeemConfirmLoading = this.setRedeemConfirmLoading.bind(this);
     this.setClaimLoading = this.setClaimLoading.bind(this);
@@ -176,8 +177,8 @@ class VoteContainer extends Component {
         );
         return;
       }
-      contractsNeedToLoad.forEach((contractItem) => {
-        this.getContractByContractAddress(
+      await contractsNeedToLoad.forEach(async (contractItem) => {
+        await this.getContractByContractAddress(
           result,
           contractItem.contractAddrValName,
           contractItem.contractNickname
@@ -185,7 +186,8 @@ class VoteContainer extends Component {
       });
       // jump from other page with wallet address
       if (this.props.currentWallet?.address) {
-        this.fetchGetContractsAndProfitAmount();
+        console.log("mount fetchGetContractsAndProfitAmount");
+        await this.fetchGetContractsAndProfitAmount();
       }
     } catch (e) {
       console.error(e);
@@ -203,7 +205,7 @@ class VoteContainer extends Component {
       currentWallet?.address &&
       (shouldRefreshMyWallet || !prevProps.currentWallet?.address)
     ) {
-      // this.fetchGetContractsAndProfitAmount();
+      console.log("checkExtensionLockStatus", shouldRefreshMyWallet);
       this.checkExtensionLockStatus();
     }
     if (
@@ -552,15 +554,23 @@ class VoteContainer extends Component {
     if (!this.hasGetContractsFromExt) {
       await this.fetchContractFromExt();
       this.hasGetContractsFromExt = true;
-      await this.fetchProfitAmount();
     }
+    await this.fetchProfitAmount();
+    // if (!this.hasfetchProfitAmount) {
+    //   this.hasfetchProfitAmount = true;
+
+    // }
     return Promise.resolve();
   }
 
   checkExtensionLockStatus() {
     const { currentWallet } = this.props;
+
     return new Promise((resolve) => {
       if (currentWallet?.address) {
+        if (this.hasGetContractsFromExt) {
+          resolve();
+        }
         return this.fetchGetContractsAndProfitAmount().then(() => {
           resolve();
         });
@@ -568,6 +578,9 @@ class VoteContainer extends Component {
       return WebLoginInstance.get()
         .loginAsync()
         .then(async () => {
+          if (this.hasGetContractsFromExt) {
+            resolve();
+          }
           await this.fetchGetContractsAndProfitAmount();
           resolve();
         });
@@ -903,7 +916,6 @@ class VoteContainer extends Component {
       return Promise.resolve();
     }
     const { profitContractFromExt } = this.state;
-    console.log("xxxxxx");
     return Promise.all([
       getAllTokens(),
       ...schemeIds.map((item) => {
@@ -959,7 +971,7 @@ class VoteContainer extends Component {
           total,
           amounts: dividendAmounts,
         };
-        console.log("=====", dividends);
+        console.log(dividends, "fetchProfitAmount");
         this.setState({
           dividends,
         });
@@ -976,15 +988,12 @@ class VoteContainer extends Component {
         if (!currentWallet?.address) {
           await WebLoginInstance.get().loginAsync();
         }
-        this.setState({
-          dividendModalVisible: true,
-          dividendLoading: true,
-        });
         try {
-          await this.fetchGetContractsAndProfitAmount();
           this.setState({
-            shouldRefreshMyWallet: true,
+            dividendModalVisible: true,
+            dividendLoading: true,
           });
+          await this.fetchGetContractsAndProfitAmount();
         } catch (e) {
           console.log(e);
           message.error("Error happened when getting claim amount");
