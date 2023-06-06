@@ -413,6 +413,18 @@ const CreateOrganization = () => {
         };
       }
 
+      if (param.proposalReleaseThreshold) {
+        const thredshold = param.proposalReleaseThreshold;
+        param.proposalReleaseThreshold = {}
+        // eslint-disable-next-line no-restricted-syntax, guard-for-in
+        for (const key in thredshold) {
+          const val = thredshold[key];
+          if (val instanceof Decimal) {
+            param.proposalReleaseThreshold[key] = val.toString();
+          }
+        }
+      }
+      
       console.log("callContract", param);
       // debugger;
       const result = await WebLoginInstance.get().callContract({
