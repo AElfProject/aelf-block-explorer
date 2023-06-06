@@ -79,7 +79,7 @@ export async function getFee(transaction) {
       .reduce(
         (acc, v) => ({
           ...acc,
-          [v.symbol]: v.amount,
+          [v.symbol]: (acc[v.symbol] ?? 0) + +v.amount,
         }),
         {}
       ),
