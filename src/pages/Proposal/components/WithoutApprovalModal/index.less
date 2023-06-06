@@ -1,4 +1,15 @@
 .without-approval-modal {
+  .ant-modal-footer {
+    border: none;
+    text-align: center;
+    padding-bottom: 32px;
+    .ant-btn {
+      width: 320px;
+      &:first-child {
+        display: none;
+      }
+    }
+  }
   .ant-modal-content {
     border-radius: 8px;
     .without-approval-modal-degree {

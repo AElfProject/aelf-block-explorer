@@ -63,7 +63,6 @@ const OrganizationList = () => {
     });
     if (isALLSettle === true) {
       // change redux state
-      
     }
   }, [isALLSettle, logStatus]);
 
@@ -121,6 +120,7 @@ const OrganizationList = () => {
         dispatch(setCurrentOrg(org));
         navigate(`/proposal/apply/${org.orgAddress}`);
       },
+      cancelButtonProps: { type: "primary" },
       icon: null,
     });
   };

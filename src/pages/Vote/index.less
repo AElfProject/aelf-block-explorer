@@ -163,36 +163,23 @@ button {
   }
 }
 
-.ant-modal {
+.vote-confirm-modal {
   text-align: center;
   overflow: hidden;
-  &.plugin-lock-modal {
-    .ant-modal-body {
-      padding: 50px;
+  .ant-modal-body {
+    padding: 30px 30px 10px;
+    .form-item-label {
+      text-align: right;
     }
-    .ant-modal-footer {
-      .ant-btn:first-child {
-        display: none;
-      }
-    }
-  }
-  &.vote-confirm-modal {
-    .ant-modal-body {
-      padding: 30px 30px 10px;
-      .form-item-label {
-        text-align: right;
-      }
-      // todo: Is the code about form-item-xxx useless now?
-      .form-item-value {
-        text-align: left;
-        text-indent: 10px;
-      }
-    }
-    .ant-modal-footer button + button {
-      margin-left: 50px;
+    // todo: Is the code about form-item-xxx useless now?
+    .form-item-value {
+      text-align: left;
+      text-indent: 10px;
     }
   }
-
+  .ant-modal-footer button + button {
+    margin-left: 50px;
+  }
   .ant-form-item {
     text-align: left;
     .ant-form-item-label label {
@@ -226,9 +213,7 @@ button {
 
   .ant-tabs {
     label {
-      // color: #ccc;
       &:hover {
-        //color: #1890ff;
         color: @hoverColor;
         cursor: pointer;
       }
@@ -239,45 +224,65 @@ button {
       }
     }
   }
-  .remove-antd-tabs-default-style;
 }
-
-.text-wrap-container {
-  text-align: left;
-  white-space: pre-line;
-}
-
-// todo: Consider to using a more proper name to instead table-btn
-.table-btn {
-  line-height: 1;
-  border: none;
-  width: 78px;
-  height: 26px;
-  border-radius: 13px;
-  &.ant-btn-primary[disabled] {
-    background-color: #f5f5f5 !important;
+.plugin-lock-modal {
+  text-align: center;
+  overflow: hidden;
+  .ant-modal-body {
+    padding: 50px;
   }
-  &.vote-btn {
-    //background-color: @buyColor;
-    background-color: @bgMain;
-    &:hover {
-      background: @bgMainHover;
+  .ant-form-item {
+    text-align: left;
+    .ant-form-item-label label {
+      color: #fff;
+    }
+    .ant-input-affix-wrapper {
+      width: auto;
+    }
+    .ant-input {
+      width: auto;
     }
   }
-  &.redeem-btn {
-    background-color: @buyColor;
-  }
-}
 
-// todo: Consider to write the code myself rather than modify antd's component
-// todo: Move the code to asset/less/common.less
-// .vote-modal,
-// .vote-redeem-modal,
-// .apply-node-modal,
-// .dividend-modal,
-// .vote-confirm-modal,
-// .plugin-lock-modal {
-.ant-modal {
+  .ant-slider-mark-text {
+    color: #fff;
+  }
+  span.ant-radio + * {
+    color: #fff;
+  }
+  .ant-modal-content {
+    text-align: center;
+    .ant-modal-header {
+      padding: 10px;
+      height: auto;
+    }
+    .ant-modal-footer {
+      text-align: center;
+      padding-bottom: 32px;
+      border: none;
+      .ant-btn {
+        width: 320px;
+        &:first-child {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .ant-tabs {
+    label {
+      &:hover {
+        color: @hoverColor;
+        cursor: pointer;
+      }
+    }
+    .ant-tabs-tab-active {
+      label {
+        color: @primary-color;
+      }
+    }
+  }
+
   .ant-form {
     width: 70%;
     margin: 0 auto;
@@ -337,9 +342,161 @@ button {
       }
     }
   }
+}
+
+.ant-modal {
+  // text-align: center;
+  // overflow: hidden;
+
+  // .ant-form-item {
+  //   text-align: left;
+  //   .ant-form-item-label label {
+  //     color: #fff;
+  //   }
+  //   .ant-input-affix-wrapper {
+  //     width: auto;
+  //   }
+  //   .ant-input {
+  //     width: auto;
+  //   }
+  // }
+
+  // .ant-slider-mark-text {
+  //   color: #fff;
+  // }
+  // span.ant-radio + * {
+  //   color: #fff;
+  // }
+  // .ant-modal-content {
+  //   text-align: center;
+  //   .ant-modal-header {
+  //     padding: 10px;
+  //     height: auto;
+  //   }
+  //   .ant-modal-footer {
+  //     text-align: center;
+  //     padding-bottom: 32px;
+  //   }
+  // }
+
+  // .ant-tabs {
+  //   label {
+  //     &:hover {
+  //       color: @hoverColor;
+  //       cursor: pointer;
+  //     }
+  //   }
+  //   .ant-tabs-tab-active {
+  //     label {
+  //       color: @primary-color;
+  //     }
+  //   }
+  // }
+}
+
+.text-wrap-container {
+  text-align: left;
+  white-space: pre-line;
+}
+
+// todo: Consider to using a more proper name to instead table-btn
+.table-btn {
+  line-height: 1;
+  border: none;
+  width: 78px;
+  height: 26px;
+  border-radius: 13px;
+  &.ant-btn-primary[disabled] {
+    background-color: #f5f5f5 !important;
+  }
+  &.vote-btn {
+    //background-color: @buyColor;
+    background-color: @bgMain;
+    &:hover {
+      background: @bgMainHover;
+    }
+  }
+  &.redeem-btn {
+    background-color: @buyColor;
+  }
+}
+
+// todo: Consider to write the code myself rather than modify antd's component
+// todo: Move the code to asset/less/common.less
+.vote-modal,
+.vote-redeem-modal,
+.apply-node-modal,
+.dividend-modal,
+.vote-confirm-modal,
+.plugin-lock-modal {
+  // .ant-modal {
+  text-align: center;
+  overflow: hidden;
+  .ant-form {
+    width: 70%;
+    margin: 0 auto;
+    .ant-form-item {
+      text-align: left;
+      margin-bottom: 24px;
+      color: #000;
+      // overflow: hidden;
+      &.form-item-with-extra {
+        position: relative;
+        .form-item-extra {
+          position: absolute;
+          right: 0;
+          top: -18px;
+          color: #ccc;
+          font-size: 13px;
+        }
+      }
+      .ant-form-item-label,
+      .form-item-value {
+        font-size: 14px;
+        text-align: left !important;
+        line-height: @modalFormItemHeight;
+        // border: 1px solid @tipColor;
+      }
+      .ant-form-item-label {
+        // border-top-left-radius: 16px;
+        // border-bottom-left-radius: 16px;
+        label {
+          // color: @cusBlack;
+          color: @tipColor;
+          margin-left: 20px;
+        }
+      }
+      .form-item-value,
+      .ant-input {
+        width: 100%;
+        // height: @modalFormItemHeight;
+        // border: none;
+        text-align: center;
+      }
+      .ant-form-item-control {
+        // line-height: @modalFormItemHeight;
+        line-height: inherit;
+        .right-icon {
+          position: absolute;
+          right: -30px;
+          top: 0;
+          color: @tipColor;
+        }
+      }
+      .ant-calendar-picker {
+        width: 100%;
+        > div {
+          height: @modalFormItemHeight;
+        }
+      }
+    }
+  }
+  .ant-modal-content {
+    text-align: center;
+  }
   .ant-modal-footer {
     border: none;
-
+    padding-bottom: 32px;
     .ant-btn {
       width: 320px;
       &:first-child {

@@ -272,6 +272,7 @@ const ApproveTokenModal = (props) => {
       onCancel={handleCancel}
       onOk={handleOk}
       okText={action}
+      cancelButtonProps={{ type: "primary" }}
       okButtonProps={okProps}
       destroyOnClose
       width={720}
