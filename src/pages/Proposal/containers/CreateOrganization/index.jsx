@@ -19,6 +19,7 @@ import {
   message,
   Divider,
   Form,
+  Modal,
 } from "antd";
 import { useWebLogin, WebLoginContext } from "aelf-web-login";
 import constants, { API_PATH } from "@redux/common/constants";
@@ -32,6 +33,7 @@ import { request } from "../../../../common/request";
 import { getTokenList, getContract, sleep } from "../../../../common/utils";
 import "./index.less";
 import { WebLoginInstance } from "../../../../utils/webLogin";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 
 const { Switch: ConditionSwitch, Case } = ReactIf;
 
@@ -363,7 +365,7 @@ const CreateOrganization = () => {
   const [form] = Form.useForm();
   const { validateFields } = form;
   const common = useSelector((state) => state.common);
-  const { aelf, wallet, currentWallet } = common;
+  const { aelf, currentWallet } = common;
   const [tokenList, setTokenList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectOptions, setSelectOptions] = useState(
@@ -373,7 +375,7 @@ const CreateOrganization = () => {
     proposalType: proposalTypes.ASSOCIATION,
   });
 
-  const { callContract } = useWebLogin();
+  const { callContract, wallet } = useWebLogin();
 
   // const [whiteList, setWhiteList] = useState([]);
   useEffect(() => {
@@ -423,6 +425,11 @@ const CreateOrganization = () => {
             param.proposalReleaseThreshold[key] = val.toString();
           }
         }
+      }
+
+      if (!wallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
       }
       
       console.log("callContract", param);

@@ -24,9 +24,11 @@ import {
   Col,
   Tabs,
   Typography,
+  Modal,
 } from "antd";
 import { useSelector } from "react-redux";
 import { useWebLogin } from "aelf-web-login";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import { ACTIONS_ICON_MAP } from "../ProposalList/Proposal";
 import constants, {
   ACTIONS_COLOR_MAP,
@@ -202,7 +204,7 @@ const ProposalDetail = () => {
 
   const { leftOrgInfo = {} } = info.organization;
 
-  const { callContract } = useWebLogin();
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
 
   const bpCountNumber = useMemo(() => {
     if (NETWORK_TYPE === 'MAIN') {
@@ -216,6 +218,11 @@ const ProposalDetail = () => {
     if (proposalType === proposalTypes.REFERENDUM) {
       setVisible(action);
     } else {
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
       await sendTransactionWith(
         callContract,
         getContractAddress(proposalType),
@@ -253,6 +260,11 @@ const ProposalDetail = () => {
 
   async function handleConfirm(action) {
     if (action) {
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
       await sendTransactionWith(
         callContract,
         getContractAddress(proposalType),

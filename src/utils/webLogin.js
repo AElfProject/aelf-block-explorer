@@ -14,6 +14,10 @@ export class WebLoginInstance {
     this._context = context;
   }
 
+  isAccountInfoSynced() {
+    return this._context.accountInfoSync.syncCompleted;
+  }
+
   getWebLoginContext() {
     return this._context;
   }
