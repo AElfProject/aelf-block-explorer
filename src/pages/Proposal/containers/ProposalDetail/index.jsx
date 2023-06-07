@@ -28,7 +28,7 @@ import {
 } from "antd";
 import { useSelector } from "react-redux";
 import { useWebLogin } from "aelf-web-login";
-import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import { ACTIONS_ICON_MAP } from "../ProposalList/Proposal";
 import constants, {
   ACTIONS_COLOR_MAP,

@@ -33,7 +33,7 @@ import { request } from "../../../../common/request";
 import { getTokenList, getContract, sleep } from "../../../../common/utils";
 import "./index.less";
 import { WebLoginInstance } from "../../../../utils/webLogin";
-import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 
 const { Switch: ConditionSwitch, Case } = ReactIf;
 

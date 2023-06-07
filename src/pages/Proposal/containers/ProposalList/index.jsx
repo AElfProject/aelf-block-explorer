@@ -23,7 +23,7 @@ import {
 } from "antd";
 import { useEffectOnce } from 'react-use';
 import { useWebLogin } from "aelf-web-login";
-import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import Total from "../../../../components/Total";
 import constants, { LOADING_STATUS, LOG_STATUS } from "../../../../redux/common/constants";
 import Proposal from "./Proposal";

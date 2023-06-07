@@ -12,7 +12,7 @@ import {
   sendTransactionWith,
 } from "@redux/common/utils";
 import constants from "@redux/common/constants";
-import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import { getContract } from "../../../../common/utils";
 import "./index.less";
 

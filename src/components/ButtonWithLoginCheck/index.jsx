@@ -3,7 +3,7 @@ import { WebLoginState, useWebLogin } from "aelf-web-login"
 import {
   Button,
 } from "antd";
-import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
+import { showAccountInfoSyncingModal } from "../SimpleModal/index.tsx";
 
 export default function ButtonWithLoginCheck({ children, onClick, checkAccountInfoSync, ...props }) {
   const { loginState, login, wallet } = useWebLogin();
