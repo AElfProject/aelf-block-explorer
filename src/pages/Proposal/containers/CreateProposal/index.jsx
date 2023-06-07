@@ -319,6 +319,7 @@ const CreateProposal = () => {
           contractAddress: address,
           contractName: name,
           address: currentWallet.address,
+          caHash: currentWallet.portkeyInfo?.caInfo.caHash,
         });
         message.success("Contract Name has been updated！");
         return;
