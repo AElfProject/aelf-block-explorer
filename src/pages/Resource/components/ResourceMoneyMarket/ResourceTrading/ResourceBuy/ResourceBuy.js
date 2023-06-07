@@ -662,6 +662,7 @@ class ResourceBuy extends Component {
           <ButtonWithLoginCheck
             className="trading-button buy-btn"
             onClick={this.checkAndShowBuyModal}
+            checkAccountInfoSync
             loading={
               buyEstimateValueLoading || buyBtnLoading || buyInputLoading
             }

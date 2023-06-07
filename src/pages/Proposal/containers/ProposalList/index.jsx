@@ -19,9 +19,11 @@ import {
   Col,
   Empty,
   Result,
+  Modal,
 } from "antd";
 import { useEffectOnce } from 'react-use';
 import { useWebLogin } from "aelf-web-login";
+import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
 import Total from "../../../../components/Total";
 import constants, { LOADING_STATUS, LOG_STATUS } from "../../../../redux/common/constants";
 import Proposal from "./Proposal";
@@ -55,7 +57,7 @@ const ProposalList = () => {
   const [searchValue, setSearchValue] = useState(params.search);
   const [activeKey, setActiveKey] = useState(params.proposalType);
 
-  const { callContract } = useWebLogin();
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
 
   useEffect(() => {
     sendHeight(500);
@@ -154,8 +156,11 @@ const ProposalList = () => {
         visible: true,
       });
     } else {
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
 
-      console.log(params.proposalType, getContractAddress(params.proposalType));
       sendTransactionWith(callContract, getContractAddress(params.proposalType), action, id);
 
       // await sendTransaction(
@@ -169,6 +174,10 @@ const ProposalList = () => {
 
   async function handleConfirm(action) {
     if (action) {
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
       await sendTransactionWith(
         callContract,
         getContractAddress(params.proposalType),

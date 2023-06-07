@@ -14,3 +14,9 @@ export const onlyOkModal = ({ message }: IOnlyOkModal) => {
     cancelButtonProps: { style: { display: "none" } },
   });
 };
+
+export const showAccountInfoSyncingModal = () => {
+  onlyOkModal({
+    message: "Synchronizing on-chain account information..."
+  })
+}

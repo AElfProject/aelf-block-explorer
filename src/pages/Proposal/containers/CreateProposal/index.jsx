@@ -43,6 +43,7 @@ import {
   hexStringToByteArray,
 } from "../../../../utils/formater";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 
 const { TabPane } = Tabs;
 
@@ -77,7 +78,7 @@ const CreateProposal = () => {
   const [withoutApprovalProps, setWithoutApprovalProps] = useState({});
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
 
-  const { callContract } = useWebLogin();
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
 
   // open without approval modal
   const onOpenWithoutApprovalModal = (params) => {
@@ -313,6 +314,12 @@ const CreateProposal = () => {
     } = contract;
     let params = {};
     try {
+
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
       // bp and without approval, both process is below when onlyUpdateName.
       if (isOnlyUpdateName) {
         await updateContractName(currentWallet, {
@@ -576,6 +583,12 @@ const CreateProposal = () => {
       confirming: true,
     });
     try {
+
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
       const {
         expiredTime,
         contractMethodName,

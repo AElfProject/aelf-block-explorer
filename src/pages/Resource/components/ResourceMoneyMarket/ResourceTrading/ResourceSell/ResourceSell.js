@@ -480,6 +480,7 @@ class ResourceSell extends Component {
           </div>
           <ButtonWithLoginCheck
             className="trading-button sell-btn"
+            checkAccountInfoSync
             onClick={this.checkAndShowSellModal}
             loading={sellBtnLoading || sellEstimateValueLoading}
             disabled={validate.validateStatus === status.ERROR}

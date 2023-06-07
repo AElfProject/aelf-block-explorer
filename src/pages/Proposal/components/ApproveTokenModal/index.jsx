@@ -12,6 +12,7 @@ import {
   sendTransactionWith,
 } from "@redux/common/utils";
 import constants from "@redux/common/constants";
+import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
 import { getContract } from "../../../../common/utils";
 import "./index.less";
 
@@ -169,7 +170,7 @@ const ApproveTokenModal = (props) => {
     [loadings, allowanceInfo, inputAmount]
   );
 
-  const { callContract } = useWebLogin();
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
 
   useEffect(() => {
     if (visible) {
@@ -208,6 +209,11 @@ const ApproveTokenModal = (props) => {
   }
 
   async function handleStake() {
+    if (!webLoginWallet.accountInfoSync.syncCompleted) {
+      showAccountInfoSyncingModal();
+      return;
+    }
+
     try {
       const results = await validateFields();
       let { amount } = results;

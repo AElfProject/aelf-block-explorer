@@ -3,9 +3,10 @@ import { WebLoginState, useWebLogin } from "aelf-web-login"
 import {
   Button,
 } from "antd";
+import { showAccountInfoSyncingModal } from "@/components/SimpleModal/index.tsx";
 
-export default function ButtonWithLoginCheck({ children, onClick, ...props }) {
-  const { loginState, login } = useWebLogin();
+export default function ButtonWithLoginCheck({ children, onClick, checkAccountInfoSync, ...props }) {
+  const { loginState, login, wallet } = useWebLogin();
 
   const onClickInternal = (event) => {
     if (loginState === WebLoginState.initial || 
@@ -14,6 +15,12 @@ export default function ButtonWithLoginCheck({ children, onClick, ...props }) {
       login();
     } 
     else if (loginState === WebLoginState.logined) {
+      if (checkAccountInfoSync) {
+        if (!wallet.accountInfoSync.syncCompleted) {
+          showAccountInfoSyncingModal();
+          return;
+        }
+      }
       onClick?.(event);
     }
   };
