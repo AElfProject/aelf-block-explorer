@@ -22,6 +22,7 @@ const getAddress = (nowFlag, input, record) => {
   let all = "";
   let isBlank = false;
   if (nowFlag) {
+    // except same address but cross chain
     complete = addressFormat(input);
     hidden = addressFormat(hiddenAddress(input));
     // this page
@@ -99,7 +100,9 @@ const getColumnConfig = ({
       dataIndex: "from",
       width: isMobile ? 224 : 196,
       render(from, record) {
-        const isOut = from === address;
+        const isOut =
+          from === address &&
+          (record.isCrossChain === "no" || record.isCrossChain === "Transfer");
         const { complete, hidden, all, isBlank } = getAddress(
           isOut,
           from,
@@ -133,7 +136,9 @@ const getColumnConfig = ({
       width: isMobile ? 176 : 160,
       ellipsis,
       render(to, record) {
-        const isIn = to === address;
+        const isIn =
+          to === address &&
+          (record.isCrossChain === "no" || record.isCrossChain === "Receive");
         const { complete, hidden, all, isBlank } = getAddress(isIn, to, record);
         return (
           <div className="to">

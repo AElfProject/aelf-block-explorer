@@ -1,4 +1,5 @@
 import React from "react";
+import { Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import Dividends from "../../../components/Dividends";
 import IconFont from "../../../components/IconFont";
@@ -80,30 +81,54 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
             <p className="age">Age</p>
           </div>
           <div className="table-body">
-            {transactions.map((transaction) => (
-              <div key={transaction.tx_id} className="row">
-                <p className="hash">
-                  <Link to={`/tx/${transaction.tx_id}`}>
-                    {transaction.tx_id}
-                  </Link>
-                </p>
-                <p className="from">
-                  <Link
-                    to={`/address/${addressFormat(transaction.address_from)}`}
-                  >
-                    {addressFormat(hiddenAddress(transaction.address_from))}
-                  </Link>
-                </p>
-                <p className="to">
-                  <Link
-                    to={`/address/${addressFormat(transaction.address_to)}`}
-                  >
-                    {addressFormat(hiddenAddress(transaction.address_to))}
-                  </Link>
-                </p>
-                <p className="age">{getFormattedDate(transaction.time)}</p>
-              </div>
-            ))}
+            {transactions.map((transaction) => {
+              const fromHtml = (
+                <Link
+                  to={`/address/${addressFormat(transaction.address_from)}`}
+                >
+                  {addressFormat(hiddenAddress(transaction.address_from))}
+                </Link>
+              );
+              const toHtml = (
+                <Link to={`/address/${addressFormat(transaction.address_to)}`}>
+                  {addressFormat(hiddenAddress(transaction.address_to))}
+                </Link>
+              );
+              return (
+                <div key={transaction.tx_id} className="row">
+                  <p className="hash">
+                    <Link to={`/tx/${transaction.tx_id}`}>
+                      {transaction.tx_id}
+                    </Link>
+                  </p>
+                  <p className="from">
+                    {isMobile ? (
+                      fromHtml
+                    ) : (
+                      <Tooltip
+                        title={addressFormat(transaction.address_from)}
+                        overlayClassName="table-item-tooltip__white"
+                      >
+                        {fromHtml}
+                      </Tooltip>
+                    )}
+                  </p>
+                  <p className="to">
+                    {isMobile ? (
+                      toHtml
+                    ) : (
+                      <Tooltip
+                        title={addressFormat(transaction.address_to)}
+                        overlayClassName="table-item-tooltip__white"
+                      >
+                        {toHtml}
+                      </Tooltip>
+                    )}
+                  </p>
+                  <p className="age">{getFormattedDate(transaction.time)}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="table-footer">
