@@ -26,6 +26,7 @@ const commonPrivateKey =
   "0000000000000000000000000000000000000000000000000000000000000001";
 const DEFAUTRPCSERVER = `${location.protocol}//${location.host}/chain`;
 
+console.log(config)
 module.exports = {
   DEFAUTRPCSERVER,
   commonPrivateKey,

@@ -1,6 +1,8 @@
 /* eslint-disable global-require */
 const queriedConfig = require('./config.json');
 
+console.log(queriedConfig)
+
 let config = {};
 
 if (process.env.NODE_ENV === 'production') {

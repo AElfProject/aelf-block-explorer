@@ -13,7 +13,8 @@ const minimist = require("minimist");
 const { isObject } = require("lodash");
 const mockMapper = require("./mock.json");
 const { OUTPUT_PATH } = require("./util");
-const proxy = require("./proxy.json");
+const proxyMain = require("./proxy.json");
+const proxyTDVW = require("./proxy-tdvw.json");
 const baseConfig = require("./webpack.base");
 
 const defaultTargetOptions = {
@@ -25,6 +26,8 @@ const defaultTargetOptions = {
 };
 const args = minimist(process.argv.slice(2), defaultTargetOptions);
 const devMode = args["dev-mode"];
+
+const proxy = process.env.CHAIN_TDVW ? proxyTDVW : proxyMain;
 
 const proxyServer =
   devMode === "local"
@@ -59,6 +62,20 @@ const devConfig = {
     filename: "[name].js",
   },
   plugins: [new MiniCssExtractPlugin()],
+  module: {
+      rules: [ 
+          { 
+              test: /config\.json$/, 
+              use: [{
+                loader: path.resolve(__dirname, './configJsonLoader.js'),
+                options: {
+                  tdvw: !!process.env.CHAIN_TDVW
+                },
+              }] ,
+              type: "javascript/auto"
+          }
+    ]
+  },
   devServer: {
     // disableHostCheck: true,
     // webpack5 require

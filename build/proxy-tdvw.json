@@ -1,0 +1,95 @@
+[
+  {
+    "description": "aelf-contract-viewer运行的API，可本地运行或者代理到线上，只需要更改target",
+    "target": "https://explorer-test-tdvw.aelf.io",
+    "context": ["/api/viewer", "/api/proposal"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "target": "https://explorer-test-tdvw.aelf.io/",
+    "context": ["/api/blockChain"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "pathRewrite": {
+      "^/api/blockChain": "/chain/api/blockChain"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "target": "https://explorer-test-tdvw.aelf.io",
+    "context": ["/api"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "target": "https://explorer-test-tdvw.aelf.io",
+    "context": ["/cms"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "链节点，只需要更改target",
+    "target": "https://explorer-test-tdvw.aelf.io",
+    "context": ["/chain"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "不需要修改",
+    "target": "https://api.huobi.pro",
+    "context": ["/market"],
+    "headers": {},
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "aelf-block-api运行的websocket服务，只需更改target",
+    "target": "wss://explorer-test.aelf.io",
+    "context": ["/socket"],
+    "headers": {
+      "Host": "explorer-test.aelf.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "portkey indexer",
+    "target": "https://dapp-portkey-test.portkey.finance",
+    "context": ["/Portkey_DID"],
+    "headers": {
+      "Host": "dapp-portkey-test.portkey.finance"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "portkey services",
+    "target": "https://did-portkey-test.portkey.finance",
+    "context": ["/portkey"],
+    "headers": {
+      "Host": "did-portkey-test.portkey.finance"
+    },
+    "changeOrigin": true,
+    "secure": false,
+    "pathRewrite": {
+      "^/portkey/api": "/api"
+    }
+  }
+]
