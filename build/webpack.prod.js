@@ -10,6 +10,7 @@ const merge = require("webpack-merge");
 const TerserPlugin = require("terser-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const baseConfig = require("./webpack.base");
 const { OUTPUT_PATH, ROOT } = require("./util");
 
@@ -48,6 +49,18 @@ const prodConfig = {
     removeEmptyChunks: true,
     sideEffects: true,
     minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          // 删除注释
+          output: {
+            comments: false,
+          },
+          compress: {
+            // just delete console.log
+            pure_funcs: ["console.log"],
+          },
+        },
+      }),
       new TerserPlugin({
         parallel: true,
         terserOptions: {
