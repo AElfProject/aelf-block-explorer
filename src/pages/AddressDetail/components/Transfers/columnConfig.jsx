@@ -13,39 +13,79 @@ import { numberFormatter } from "../../../../utils/formater";
 import addressFormat, { hiddenAddress } from "../../../../utils/addressFormat";
 import CopyButton from "../../../../components/CopyButton/CopyButton";
 import { TOEKN_LIST } from "../../../../common/constants";
+import { CHAIN_ID } from "../../../../../config/config";
 
 const CHAINS_LIST = CHAIN_STATE.chainItem;
 
-const getAddress = (nowFlag, input, record) => {
-  let complete = "";
-  let hidden = "";
-  let all = "";
-  let isBlank = false;
-  if (nowFlag) {
-    // except same address but cross chain
-    complete = addressFormat(input);
-    hidden = addressFormat(hiddenAddress(input));
-    // this page
-    all = `/address/${complete}${window.location.hash}`;
-  } else if (record.isCrossChain === "no") {
-    complete = addressFormat(input);
-    hidden = addressFormat(hiddenAddress(input));
-    all = `/address/${complete}`;
+const getAdd = (address, record) => {
+  const { from, to, isCrossChain, relatedChainId } = record;
+  let fromAddress;
+  let toAddress;
+  const chainsLink = CHAINS_LIST.find((ele) => {
+    return ele.chainId === record.relatedChainId;
+  })?.chainsLink.replace(/^\/+|\/+$/g, "");
+  if (isCrossChain === "Transfer") {
+    fromAddress = {
+      complete: addressFormat(from, "", CHAIN_ID),
+      hidden: addressFormat(hiddenAddress(from), "", CHAIN_ID),
+    };
+    if (from === address) {
+      // this page
+      fromAddress.all = `/address/${fromAddress.complete}${window.location.hash}`;
+    } else {
+      fromAddress.all = `/address/${fromAddress.complete}`;
+    }
+    // relatedChainId must different from CHAIN_ID
+    toAddress = {
+      complete: addressFormat(to, "", relatedChainId),
+      hidden: addressFormat(hiddenAddress(to), "", relatedChainId),
+      isBlank: true,
+    };
+    toAddress.all = `${chainsLink}/address/${toAddress.complete}`;
+  } else if (isCrossChain === "Receive") {
+    fromAddress = {
+      complete: addressFormat(from, "", relatedChainId),
+      hidden: addressFormat(hiddenAddress(from), "", relatedChainId),
+      isBlank: true,
+    };
+    fromAddress.all = `${chainsLink}/address/${fromAddress.complete}`;
+    toAddress = {
+      complete: addressFormat(to, "", CHAIN_ID),
+      hidden: addressFormat(hiddenAddress(to), "", CHAIN_ID),
+    };
+    if (to === address) {
+      // this page
+      toAddress.all = `/address/${toAddress.complete}${window.location.hash}`;
+    } else {
+      toAddress.all = `/address/${toAddress.complete}`;
+    }
+  } else if (from === address) {
+    fromAddress = {
+      complete: addressFormat(from, "", CHAIN_ID),
+      hidden: addressFormat(hiddenAddress(from), "", CHAIN_ID),
+    };
+    fromAddress.all = `/address/${fromAddress.complete}${window.location.hash}`;
+    toAddress = {
+      complete: addressFormat(to, "", CHAIN_ID),
+      hidden: addressFormat(hiddenAddress(to), "", CHAIN_ID),
+    };
+    toAddress.all = `/address/${toAddress.complete}`;
   } else {
-    // isCrossChain
-    complete = addressFormat(input, "", record.relatedChainId);
-    hidden = addressFormat(hiddenAddress(input), "", record.relatedChainId);
-    const chainsLink = CHAINS_LIST.find((ele) => {
-      return ele.chainId === record.relatedChainId;
-    }).chainsLink.replace(/^\/+|\/+$/g, "");
-    all = `${chainsLink}/address/${complete}`;
-    isBlank = true;
+    // to === address
+    fromAddress = {
+      complete: addressFormat(from, "", CHAIN_ID),
+      hidden: addressFormat(hiddenAddress(from), "", CHAIN_ID),
+    };
+    fromAddress.all = `/address/${fromAddress.complete}`;
+    toAddress = {
+      complete: addressFormat(to, "", CHAIN_ID),
+      hidden: addressFormat(hiddenAddress(to), "", CHAIN_ID),
+    };
+    toAddress.all = `/address/${toAddress.complete}${window.location.hash}`;
   }
   return {
-    complete,
-    hidden,
-    all,
-    isBlank,
+    fromAddress,
+    toAddress,
   };
 };
 
@@ -63,6 +103,7 @@ const checkIsOut = (address, record) => {
   }
   return true;
 };
+
 const getColumnConfig = ({
   address,
   isMobile,
@@ -116,11 +157,10 @@ const getColumnConfig = ({
       width: isMobile ? 224 : 196,
       render(from, record) {
         const isOut = checkIsOut(address, record);
-        const { complete, hidden, all, isBlank } = getAddress(
-          isOut,
-          from,
+        const { complete, hidden, all, isBlank } = getAdd(
+          address,
           record
-        );
+        ).fromAddress;
         return (
           <div className="from">
             <Tooltip
@@ -149,8 +189,10 @@ const getColumnConfig = ({
       width: isMobile ? 176 : 160,
       ellipsis,
       render(to, record) {
-        const isIn = !checkIsOut(address, record);
-        const { complete, hidden, all, isBlank } = getAddress(isIn, to, record);
+        const { complete, hidden, all, isBlank } = getAdd(
+          address,
+          record
+        ).toAddress;
         return (
           <div className="to">
             <Tooltip
