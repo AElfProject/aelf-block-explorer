@@ -33,7 +33,7 @@ import {
   updateContractName,
 } from "../../utils";
 import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.tsx";
-import { deserializeLog } from "../../../../common/utils";
+import { deserializeLog, isPhoneCheck } from "../../../../common/utils";
 import { interval } from "../../../../utils/timeUtils";
 import { get } from "../../../../utils";
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
@@ -558,8 +558,9 @@ const CreateProposal = () => {
       confirming: true,
     });
     const { isOnlyUpdateName } = results;
+    const isMobile = isPhoneCheck();
     Modal.confirm({
-      className: "sure-modal-content",
+      className: `sure-modal-content${isMobile ? '-mobile': ''}`,
       width: "720",
       cancelButtonProps: { type: "primary", ghost: true },
       title: (
