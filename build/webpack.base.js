@@ -51,7 +51,7 @@ const baseConfig = {
       "@redux": path.resolve(ROOT, "src/redux/"),
     },
     fallback: {
-      buffer: require.resolve('buffer'),
+      buffer: require.resolve("buffer"),
     },
     modules: [path.resolve(ROOT, "src"), path.resolve(ROOT, "node_modules")],
     extensions: [".jsx", ".js", ".mjs", ".tsx"],
@@ -179,11 +179,11 @@ const baseConfig = {
       favicon: isTestNet
         ? "public/favicon.test.ico"
         : "public/favicon.main.ico",
-      hash: true,
+      // hash: true,
     }),
     new webpack.ProvidePlugin({
       React: "react",
-      Buffer: ['buffer', 'Buffer'],
+      Buffer: ["buffer", "Buffer"],
     }),
     new MomentLocalesPlugin({
       localesToKeep: ["es-us", "en-ca", "zh-cn"],
