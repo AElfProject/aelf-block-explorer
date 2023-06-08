@@ -192,6 +192,10 @@ const ProposalList = () => {
   }
 
   const handleRelease = async (event) => {
+    if (!webLoginWallet.accountInfoSync.syncCompleted) {
+      showAccountInfoSyncingModal();
+      return;
+    }
     const id = event.currentTarget.getAttribute("proposal-id");
     await sendTransactionWith(
       callContract,
