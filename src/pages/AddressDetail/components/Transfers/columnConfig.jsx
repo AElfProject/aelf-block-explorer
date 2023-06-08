@@ -39,16 +39,16 @@ const getAdd = (address, record) => {
     toAddress = {
       complete: addressFormat(to, "", relatedChainId),
       hidden: addressFormat(hiddenAddress(to), "", relatedChainId),
-      all: `${chainsLink}/address/${fromAddress.complete}`,
       isBlank: true,
     };
+    toAddress.all = `${chainsLink}/address/${toAddress.complete}`;
   } else if (isCrossChain === "Receive") {
     fromAddress = {
       complete: addressFormat(from, "", relatedChainId),
       hidden: addressFormat(hiddenAddress(from), "", relatedChainId),
-      all: `${chainsLink}/address/${fromAddress.complete}`,
       isBlank: true,
     };
+    fromAddress.all = `${chainsLink}/address/${fromAddress.complete}`;
     toAddress = {
       complete: addressFormat(to, "", CHAIN_ID),
       hidden: addressFormat(hiddenAddress(to), "", CHAIN_ID),
@@ -57,7 +57,7 @@ const getAdd = (address, record) => {
       // this page
       toAddress.all = `/address/${toAddress.complete}${window.location.hash}`;
     } else {
-      toAddress.all = `/address/${fromAddress.complete}`;
+      toAddress.all = `/address/${toAddress.complete}`;
     }
   } else if (from === address) {
     fromAddress = {
