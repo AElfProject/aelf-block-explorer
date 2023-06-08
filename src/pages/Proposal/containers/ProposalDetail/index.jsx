@@ -24,8 +24,11 @@ import {
   Col,
   Tabs,
   Typography,
+  Modal,
 } from "antd";
 import { useSelector } from "react-redux";
+import { useWebLogin } from "aelf-web-login";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import { ACTIONS_ICON_MAP } from "../ProposalList/Proposal";
 import constants, {
   ACTIONS_COLOR_MAP,
@@ -35,7 +38,7 @@ import constants, {
   LOG_STATUS,
   STATUS_COLOR_MAP,
   PROPOSAL_STATUS_CAPITAL,
-} from "../../common/constants";
+} from "../../../../redux/common/constants";
 import { request } from "../../../../common/request";
 import VoteData from "./VoteData";
 import VoteDetail from "./VoteDetail";
@@ -43,7 +46,7 @@ import OrganizationCard from "./OrganizationCard";
 import ContractDetail from "./ContractDetail";
 import config from "../../../../common/config";
 import "./index.less";
-import { getContractAddress, sendTransaction } from "../../common/utils";
+import { getContractAddress, sendTransactionWith } from "../../../../redux/common/utils";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import {
   getBPCount,
@@ -201,6 +204,8 @@ const ProposalDetail = () => {
 
   const { leftOrgInfo = {} } = info.organization;
 
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
+
   const bpCountNumber = useMemo(() => {
     if (NETWORK_TYPE === 'MAIN') {
       return getBPCount(status, expiredTime, releasedTime)
@@ -213,8 +218,13 @@ const ProposalDetail = () => {
     if (proposalType === proposalTypes.REFERENDUM) {
       setVisible(action);
     } else {
-      await sendTransaction(
-        wallet,
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
+      await sendTransactionWith(
+        callContract,
         getContractAddress(proposalType),
         action,
         proposalId
@@ -239,18 +249,24 @@ const ProposalDetail = () => {
   }
 
   async function handleRelease() {
-    await sendTransaction(
-      wallet,
-      getContractAddress(proposalType),
-      "Release",
-      proposalId
-    );
+    await send("Release");
+    // await sendTransactionWith(
+    //   callContract,
+    //   getContractAddress(proposalType),
+    //   "Release",
+    //   proposalId
+    // );
   }
 
   async function handleConfirm(action) {
     if (action) {
-      await sendTransaction(
-        wallet,
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
+      await sendTransactionWith(
+        callContract,
         getContractAddress(proposalType),
         action,
         proposalId

@@ -22,15 +22,11 @@ import {
 } from "@api/vote";
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
-import {
-  FROM_WALLET,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
-} from "@src/pages/Vote/constants";
+import { FROM_WALLET, ELF_DECIMAL } from "@src/pages/Vote/constants";
+import { connect } from "react-redux";
 import "./index.less";
-import { ELF_DECIMAL } from "../../constants";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
-import { getPublicKeyFromObject } from "../../../../utils/getPublicKey";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
 
 const clsPrefix = "node-table";
@@ -40,7 +36,6 @@ class NodeTable extends PureComponent {
     super(props);
     this.state = {
       nodeList: [],
-      currentWallet: {},
       totalVotesAmount: null,
       isLoading: false,
       producedBlocks: null,
@@ -55,15 +50,13 @@ class NodeTable extends PureComponent {
     this.socket = io({
       path: SOCKET_URL_NEW,
     });
-
-    this.hasRun = false;
   }
 
   // todo: how to combine cdm & cdu
   componentDidMount() {
     this.wsProducedBlocks();
     if (this.props.electionContract && this.props.consensusContract) {
-      this.fetchNodes({});
+      this.fetchNodes();
     }
   }
 
@@ -71,24 +64,32 @@ class NodeTable extends PureComponent {
     this.socket.disconnect();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
+    const {
+      electionContract,
+      consensusContract,
+      currentWallet,
+      nodeTableRefreshTime,
+    } = this.props;
     if (
       (!prevProps.electionContract || !prevProps.consensusContract) &&
-      this.props.electionContract &&
-      this.props.consensusContract
+      electionContract &&
+      consensusContract
     ) {
-      this.fetchNodes({});
+      console.log(1);
+      this.fetchNodes();
     }
-    if (this.props.nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
-      this.fetchNodes({});
+    if (nodeTableRefreshTime !== prevProps.nodeTableRefreshTime) {
+      console.log(2);
+      this.fetchNodes();
     }
-    if (this.props.electionContract && this.props.consensusContract) {
+    if (electionContract && consensusContract && currentWallet.address) {
       if (
-        (!prevProps.currentWallet && this.props.currentWallet) ||
-        (this.props.currentWallet &&
-          this.props.currentWallet.address !== prevProps.currentWallet.address)
+        !prevProps.currentWallet.address ||
+        currentWallet.address !== prevProps.currentWallet.address
       ) {
-        this.fetchNodes({});
+        console.log(3);
+        this.fetchNodes();
       }
     }
   }
@@ -259,7 +260,6 @@ class NodeTable extends PureComponent {
         width: 210,
         render: (text, record) => (
           <div className={`${clsPrefix}-btn-group`}>
-            {/* todo: replace pubkey by address? */}
             <Button
               className="table-btn vote-btn"
               key={record.pubkey}
@@ -321,45 +321,11 @@ class NodeTable extends PureComponent {
     confirm();
   };
 
-  // fetchData(currentWallet) {
-  //   const {
-  //     electionContract,
-  //     consensusContract,
-  //     shouldRefreshNodeTable,
-  //     changeVoteState,
-  //   } = this.props;
-  //   // todo: It seems to has useless render in cdm
-  //   console.log({
-  //     flag: !this.hasRun || shouldRefreshNodeTable,
-  //     shouldRefreshNodeTable,
-  //   });
-  //   if (
-  //     electionContract &&
-  //     consensusContract &&
-  //     (!this.hasRun || shouldRefreshNodeTable)
-  //   ) {
-  //     changeVoteState(
-  //       {
-  //         shouldRefreshNodeTable: false,
-  //       },
-  //       async () => {
-  //         this.setState({
-  //           isLoading: true,
-  //         });
-  //         // Need await to ensure the totalVotesCount take its seat.
-  //         // todo: fetchTheTotalVotesAmount after contract changed
-  //         // await this.fetchTotalVotesAmount();
-  //         this.fetchNodes(currentWallet);
-  //       }
-  //     );
-  //     this.hasRun = true;
-  //   }
-  // }
-
   async fetchTotal() {
     const res = await fetchCount(this.props.electionContract, "");
     const total = res.value?.length || 0;
     const pagination = {
+      // eslint-disable-next-line react/no-access-state-in-setstate
       ...this.state.pagination,
       total,
     };
@@ -375,6 +341,7 @@ class NodeTable extends PureComponent {
     let start = 0;
     let result = [];
     while (start <= total) {
+      // eslint-disable-next-line no-await-in-loop
       const res = await fetchPageableCandidateInformation(electionContract, {
         start,
         length: TableItemCount,
@@ -387,20 +354,17 @@ class NodeTable extends PureComponent {
 
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
-  fetchNodes(currentWalletInput) {
+  fetchNodes() {
     this.setState({
       isLoading: true,
     });
-    const { electionContract, consensusContract } = this.props;
-    const currentWallet =
-      (Object.keys(currentWalletInput).length && currentWalletInput) ||
-      this.props.currentWallet;
+    const { electionContract, consensusContract, currentWallet } = this.props;
     Promise.all([
       this.fetchAllCandidateInfo(),
       getAllTeamDesc(),
-      currentWallet && currentWallet.publicKey
+      currentWallet?.publicKey
         ? fetchElectorVoteWithRecords(electionContract, {
-            value: getPublicKeyFromObject(currentWallet.publicKey),
+            value: currentWallet?.publicKey,
           })
         : null,
       fetchCurrentMinerPubkeyList(consensusContract),
@@ -408,8 +372,6 @@ class NodeTable extends PureComponent {
       .then((resArr) => {
         // process data
         const processedNodesData = this.processNodesData(resArr);
-        // console.log('processedNodesData currentWallet', resArr, processedNodesData, currentWallet.pubKey);
-        //   this.state.currentWallet, currentWalletInput);
         this.setState(
           {
             nodeList: processedNodesData,
@@ -420,10 +382,6 @@ class NodeTable extends PureComponent {
             });
           }
         );
-        console.log("GetPageableCandidateInformation", {
-          processedNodesData,
-          resArr,
-        });
       })
       .catch((err) => {
         this.setState({
@@ -435,6 +393,7 @@ class NodeTable extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   processNodesData(resArr) {
+    console.log(resArr, "resArr");
     const { producedBlocks } = this.state;
 
     let totalActiveVotesAmount = 0;
@@ -596,5 +555,10 @@ class NodeTable extends PureComponent {
     );
   }
 }
-
-export default NodeTable;
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(NodeTable);

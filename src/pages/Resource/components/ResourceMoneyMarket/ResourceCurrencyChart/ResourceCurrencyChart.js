@@ -10,11 +10,6 @@ import { Tabs, Button } from "antd";
 
 import ReactEchartsCore from "echarts-for-react/lib/core";
 import echarts from "echarts/lib/echarts";
-import { get } from "../../../../../utils";
-import {
-  RESOURCE_CURRENCY_CHART_FETCH_INTERVAL,
-  RESOURCE_TURNOVER,
-} from "../../../../../constants";
 import { AreaChartOutlined } from "@ant-design/icons";
 import "echarts/lib/chart/bar";
 import "echarts/lib/chart/line";
@@ -23,6 +18,11 @@ import "echarts/lib/component/dataZoom";
 import "echarts/lib/component/tooltip";
 import "echarts/lib/component/toolbox";
 import "echarts/lib/component/legend";
+import { get } from "../../../../../utils";
+import {
+  RESOURCE_CURRENCY_CHART_FETCH_INTERVAL,
+  RESOURCE_TURNOVER,
+} from "../../../../../constants";
 import "./ResourceCurrencyChart.less";
 
 function calculateMA(dayCount, data) {
@@ -381,10 +381,11 @@ class ResourceCurrencyChart extends PureComponent {
     const { buttonIndex } = this.state;
     const buttonsHTML = buttons.map((item, index) => (
       <Button
-        className='time-button'
-        shape='round'
+        className="time-button"
+        shape="round"
         type={index === buttonIndex ? "primary" : ""}
-        size='small'
+        size="small"
+        // eslint-disable-next-line react/no-array-index-key
         key={index}
         onClick={this.handleButtonClick.bind(this, index)}
       >
@@ -399,16 +400,16 @@ class ResourceCurrencyChart extends PureComponent {
     const selectButton = this.selectButtonHTML();
 
     return (
-      <div className='resource-currency-chart'>
-        <div className='resource-header'>
-          <div className='resource-header-title'>
-            <AreaChartOutlined className='resource-icon' />
-            <span className='resource-title'>Resource Money Market</span>
+      <div className="resource-currency-chart">
+        <div className="resource-header">
+          <div className="resource-header-title">
+            <AreaChartOutlined className="resource-icon" />
+            <span className="resource-title">Resource Money Market</span>
           </div>
-          <div className='resource-header-title-btn'>{selectButton}</div>
+          <div className="resource-header-title-btn">{selectButton}</div>
         </div>
-        <div className='resource-sub-container'>
-          <Tabs className='resource-type-switch' onChange={this.typeChange}>
+        <div className="resource-sub-container">
+          <Tabs className="resource-type-switch" onChange={this.typeChange}>
             {list.map((v) => (
               <Tabs.TabPane key={v} tab={v} />
             ))}

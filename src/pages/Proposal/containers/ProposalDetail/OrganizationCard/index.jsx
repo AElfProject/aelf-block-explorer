@@ -11,7 +11,7 @@ import {
 } from "../../OrganizationList/Organization";
 import constants, {
   organizationInfoPropTypes,
-} from "../../../common/constants";
+} from "../../../../../redux/common/constants";
 import addressFormat from "../../../../../utils/addressFormat";
 
 const { proposalActions } = constants;

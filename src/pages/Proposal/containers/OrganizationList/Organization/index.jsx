@@ -8,13 +8,13 @@ import { Switch, Case } from "react-if";
 import moment from "moment";
 import PropTypes from "prop-types";
 import { EditOutlined } from "@ant-design/icons";
-import { Card, Row, Select, Col, Divider } from "antd";
-import config from "../../../../../common/config";
-import Circle from "../../../components/Circle";
+import { Card,Row,Select,Col,Divider } from "antd";
 import constants, {
   LOG_STATUS,
   organizationInfoPropTypes,
-} from "../../../common/constants";
+} from "@redux/common/constants";
+import config from "../../../../../common/config";
+import Circle from "../../../components/Circle";
 import "./index.less";
 import { isPhoneCheck } from "../../../../../common/utils";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
@@ -238,7 +238,7 @@ const Organization = (props) => {
       ),
     [proposalType, releaseThreshold, leftOrgInfo]
   );
-  console.log("votesData", votesData);
+  // console.log("votesData", votesData);
   const leftOrg = useMemo(
     () =>
       getOrganizationLeftInfo(

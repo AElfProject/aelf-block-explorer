@@ -96,11 +96,11 @@ function genMyVoteRecordsCols() {
       title: "Operations",
       key: "operations",
       render: (text, record) => (
-        <div className='node-list-btn-group'>
+        <div className="node-list-btn-group">
           <Button
-            type='primary'
-            className='table-btn redeem-btn'
-            data-role='redeemOne'
+            type="primary"
+            className="table-btn redeem-btn"
+            data-role="redeemOne"
             data-nodeaddress={publicKeyToAddress(record.candidate)}
             data-nodename={record.nane || publicKeyToAddress(record.candidate)}
             data-amount={record.amount}
@@ -156,17 +156,17 @@ class MyVoteRecords extends Component {
           style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
           icon={<SearchOutlined />}
-          size='small'
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters, confirm)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset

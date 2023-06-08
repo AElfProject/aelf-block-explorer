@@ -1,5 +1,8 @@
+import { Tooltip } from "antd";
 import React from "react";
-import AddressLink from "../../components/AddressLink";
+import { Link } from "react-router-dom";
+import CopyButton from "../../components/CopyButton/CopyButton";
+import addressFormat, { hiddenAddress } from "../../utils/addressFormat";
 import { numberFormatter } from "../../utils/formater";
 
 export default ({ isMobile, preTotal }) => {
@@ -18,7 +21,19 @@ export default ({ isMobile, preTotal }) => {
       width: isMobile ? 216 : 320,
       ellipsis: true,
       className: "color-blue",
-      render: (address) => <AddressLink address={address} />,
+      render: (text) => (
+        <div className="address">
+          <Tooltip
+            title={addressFormat(text)}
+            overlayClassName="table-item-tooltip__white"
+          >
+            <Link to={`/address/${addressFormat(text)}`}>
+              {addressFormat(hiddenAddress(text))}
+            </Link>
+          </Tooltip>
+          <CopyButton value={addressFormat(text)} />
+        </div>
+      ),
     },
     {
       title: "Balance",

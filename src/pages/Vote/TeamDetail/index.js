@@ -13,18 +13,14 @@ import {
   fetchCount,
 } from "@api/vote";
 import { fetchCurrentMinerPubkeyList } from "@api/consensus";
-import {
-  FROM_WALLET,
-  A_NUMBER_LARGE_ENOUGH_TO_GET_ALL,
-} from "@src/pages/Vote/constants";
+import { FROM_WALLET, ELF_DECIMAL } from "@src/pages/Vote/constants";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
-import getCurrentWallet from "@utils/getCurrentWallet";
 import {
   filterUserVoteRecordsForOneCandidate,
   computeUserRedeemableVoteAmountForOneCandidate,
 } from "@utils/voteUtils";
+import { connect } from "react-redux";
 import "./index.less";
-import { ELF_DECIMAL } from "../constants";
 import addressFormat from "../../../utils/addressFormat";
 
 const { Paragraph } = Typography;
@@ -65,13 +61,13 @@ class TeamDetail extends PureComponent {
       this.justifyIsBP();
     }
 
-    if (electionContract !== null) {
+    if (currentWallet?.address && electionContract) {
       this.fetchDataFromElectionContract();
     }
 
-    if (currentWallet) {
+    if (currentWallet?.address) {
       this.setState({
-        hasAuth: currentWallet.pubkey === this.teamPubkey,
+        hasAuth: currentWallet?.publicKey === this.teamPubkey,
       });
     }
   }
@@ -82,15 +78,14 @@ class TeamDetail extends PureComponent {
     if (consensusContract !== prevProps.consensusContract) {
       this.justifyIsBP();
     }
-
-    if (electionContract !== prevProps.electionContract) {
+    if (currentWallet?.address && electionContract) {
       this.fetchDataFromElectionContract();
     }
 
     if (prevProps.currentWallet !== currentWallet) {
       this.setState(
         {
-          hasAuth: currentWallet.pubkey === this.teamPubkey,
+          hasAuth: currentWallet?.publicKey === this.teamPubkey,
         },
         this.fetchCandidateInfo
       );
@@ -126,6 +121,7 @@ class TeamDetail extends PureComponent {
       let start = 0;
       let result = [];
       while (start <= total) {
+        // eslint-disable-next-line no-await-in-loop
         const res = await fetchPageableCandidateInformation(electionContract, {
           start,
           length: TableItemCount,
@@ -186,12 +182,9 @@ class TeamDetail extends PureComponent {
   }
 
   fetchTheUsersActiveVoteRecords() {
-    const { electionContract } = this.props;
-    // todo: Will it break the data consistency?
-    const currentWallet = getCurrentWallet();
-
+    const { electionContract, currentWallet } = this.props;
     fetchElectorVoteWithRecords(electionContract, {
-      value: currentWallet.pubKey,
+      value: currentWallet?.publicKey,
     })
       .then((res) => {
         this.computeUserRedeemableVoteAmountForOneCandidate(
@@ -199,7 +192,7 @@ class TeamDetail extends PureComponent {
         );
       })
       .catch((err) => {
-        console.error("fetchElectorVoteWithRecords", err);
+        console.error("fetchTheUsersActiveVoteRecords", err);
       });
   }
 
@@ -272,7 +265,15 @@ class TeamDetail extends PureComponent {
     } = this.state;
 
     const avatarSize = isSmallScreen ? 50 : 150;
-
+    const getTag = () => {
+      if (isBP) {
+        return "BP";
+      }
+      if (isCandidate) {
+        return "Candidate";
+      }
+      return "Quited";
+    };
     return (
       <section className={`${clsPrefix}-header card-container`}>
         <Row>
@@ -290,9 +291,7 @@ class TeamDetail extends PureComponent {
               <Col className={`${clsPrefix}-team-info`} md={18} sm={18} xs={18}>
                 <h5 className={`${clsPrefix}-node-name ellipsis`}>
                   {data.name ? data.name : formattedAddress}
-                  <Tag color="#f50">
-                    {isBP ? "BP" : isCandidate ? "Candidate" : "Quited"}
-                  </Tag>
+                  <Tag color="#f50">{getTag()}</Tag>
                 </h5>
                 <Paragraph ellipsis={{ rows: 1 }}>
                   Location: {data.location || "-"}
@@ -402,7 +401,7 @@ class TeamDetail extends PureComponent {
               </Then>
               <Else>
                 <div className="vote-team-detail-empty">
-                  The team didn't fill the introduction.
+                  The team didn&apos;t fill the introduction.
                 </div>
               </Else>
             </If>
@@ -438,7 +437,7 @@ class TeamDetail extends PureComponent {
               </Then>
               <Else>
                 <span className="vote-team-detail-empty">
-                  The team didn't fill the social contacts.
+                  The team didn&apos;t fill the social contacts.
                 </span>
               </Else>
             </If>
@@ -448,5 +447,10 @@ class TeamDetail extends PureComponent {
     );
   }
 }
-
-export default TeamDetail;
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+export default connect(mapStateToProps)(TeamDetail);

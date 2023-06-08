@@ -19,17 +19,21 @@ import {
   message,
   Divider,
   Form,
+  Modal,
 } from "antd";
-import constants, { API_PATH } from "../../common/constants";
-import { request } from "../../../../common/request";
+import { useWebLogin, WebLoginContext } from "aelf-web-login";
+import constants, { API_PATH } from "@redux/common/constants";
 import {
   commonFilter,
   getContractAddress,
   showTransactionResult,
   rand16Num,
-} from "../../common/utils";
+} from "@redux/common/utils";
+import { request } from "../../../../common/request";
 import { getTokenList, getContract, sleep } from "../../../../common/utils";
 import "./index.less";
+import { WebLoginInstance } from "../../../../utils/webLogin";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 
 const { Switch: ConditionSwitch, Case } = ReactIf;
 
@@ -76,7 +80,7 @@ const FIELDS_MAP = {
           After selecting one, you will need to operate according to its rules.
           For specific rules, see 'Proposal rules'"
         >
-          <QuestionCircleOutlined className='main-color' />
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -159,8 +163,8 @@ const FIELDS_MAP = {
     label: (
       <span>
         Proposer Authority Required&nbsp;
-        <Tooltip title='set to false to allow anyone to create a new proposal'>
-          <QuestionCircleOutlined className='main-color' />
+        <Tooltip title="set to false to allow anyone to create a new proposal">
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -179,11 +183,11 @@ const FIELDS_MAP = {
       <span>
         Organization members&nbsp;
         <Tooltip
-          title='Input the address list of members,
+          title="Input the address list of members,
           separated by commas, such as
-          `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`'
+          `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`"
         >
-          <QuestionCircleOutlined className='main-color' />
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -203,11 +207,11 @@ const FIELDS_MAP = {
       <span>
         Proposer White List&nbsp;
         <Tooltip
-          title='Input the address list of proposers,
+          title="Input the address list of proposers,
           separated by commas, such as
-           `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`'
+           `28Y8JA1i2cN6oHvdv7EraXJr9a1gY6D1PpJXw9QtRMRwKcBQMK,x7G7VYqqeVAH8aeAsb7gYuTQ12YS1zKuxur9YES3cUj72QMxJ`"
         >
-          <QuestionCircleOutlined className='main-color' />
+          <QuestionCircleOutlined className="main-color" />
         </Tooltip>
       </span>
     ),
@@ -361,7 +365,7 @@ const CreateOrganization = () => {
   const [form] = Form.useForm();
   const { validateFields } = form;
   const common = useSelector((state) => state.common);
-  const { aelf, wallet, currentWallet } = common;
+  const { aelf, currentWallet } = common;
   const [tokenList, setTokenList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectOptions, setSelectOptions] = useState(
@@ -370,6 +374,9 @@ const CreateOrganization = () => {
   const [formData, setFormData] = useState({
     proposalType: proposalTypes.ASSOCIATION,
   });
+
+  const { callContract, wallet } = useWebLogin();
+
   // const [whiteList, setWhiteList] = useState([]);
   useEffect(() => {
     getTokenList().then((tokens) => {
@@ -388,26 +395,51 @@ const CreateOrganization = () => {
       const formValue = await validateFields();
       setIsLoading(true);
       let param = getContractParams(formValue, tokenList);
+      console.log(param);
       const contract = await getContract(
         aelf,
         getContractAddress(formValue.proposalType)
       );
+      console.log(contract);
       const orgAddress = await contract.CalculateOrganizationAddress.call(
         param
       );
       const isOrgExist = await contract.ValidateOrganizationExist.call(
         orgAddress
       );
+      console.log(orgAddress, isOrgExist);
       if (isOrgExist) {
         param = {
           ...param,
           creationToken: rand16Num(64),
         };
       }
-      const result = await wallet.invoke({
+
+      if (param.proposalReleaseThreshold) {
+        const thredshold = param.proposalReleaseThreshold;
+        param.proposalReleaseThreshold = {}
+        // eslint-disable-next-line no-restricted-syntax, guard-for-in
+        for (const key in thredshold) {
+          const val = thredshold[key];
+          if (val instanceof Decimal) {
+            param.proposalReleaseThreshold[key] = val.toString();
+          } else {
+            param.proposalReleaseThreshold[key] = val;
+          }
+        }
+      }
+
+      if (!wallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+      
+      console.log("callContract", param);
+      // debugger;
+      const result = await WebLoginInstance.get().callContract({
         contractAddress: getContractAddress(formValue.proposalType),
-        param,
-        contractMethod: "CreateOrganization",
+        methodName: "CreateOrganization",
+        args: param,
       });
       showTransactionResult(result);
       await sleep(2000);
@@ -442,13 +474,13 @@ const CreateOrganization = () => {
   );
 
   return (
-    <div className='create-organization'>
-      <div className='create-organization-header'>
-        <div className='create-organization-header-title'>
+    <div className="create-organization">
+      <div className="create-organization-header">
+        <div className="create-organization-header-title">
           Create Organization
         </div>
-        <div className='create-organization-header-action'>
-          <Link to='/proposal/organizations'>
+        <div className="create-organization-header-action">
+          <Link to="/proposal/organizations">
             &lt;Back to Organization List
           </Link>
         </div>
@@ -494,7 +526,7 @@ const CreateOrganization = () => {
             >
               <Select
                 showSearch
-                optionFilterProp='children'
+                optionFilterProp="children"
                 filterOption={commonFilter}
                 placeholder={FIELDS_MAP.tokenSymbol.placeholder}
               >
@@ -546,8 +578,8 @@ const CreateOrganization = () => {
         </FormItem>
         <FormItem {...tailFormItemLayout}>
           <Button
-            shape='round'
-            type='primary'
+            shape="round"
+            type="primary"
             loading={isLoading}
             onClick={handleSubmit}
           >

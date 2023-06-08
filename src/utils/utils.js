@@ -79,7 +79,7 @@ export async function getFee(transaction) {
       .reduce(
         (acc, v) => ({
           ...acc,
-          [v.symbol]: v.amount,
+          [v.symbol]: (acc[v.symbol] ?? 0) + +v.amount,
         }),
         {}
       ),
@@ -179,4 +179,15 @@ export const callGetMethod = async (params, fnName) => {
   const { contractAddress, param, contractMethod } = params;
   const con = await aelf.chain.contractAt(contractAddress, FAKE_WALLET);
   return con[contractMethod][fnName](param);
+};
+
+export const isJsonString = (str) => {
+  try {
+    if (typeof JSON.parse(str) === "object") {
+      return true;
+    }
+  } catch (e) {
+    // nothing
+  }
+  return false;
 };

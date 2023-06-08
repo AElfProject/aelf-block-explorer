@@ -4,9 +4,18 @@
  */
 // eslint-disable-next-line no-use-before-define
 import React, { useCallback, useState } from "react";
+import AElf from "aelf-sdk";
 import { Tabs, Modal, message } from "antd";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import {
+  formatTimeToNano,
+  getContractAddress,
+  getTxResult,
+  showTransactionResult,
+  uint8ToBase64,
+} from "@redux/common/utils";
+import { useWebLogin } from "aelf-web-login";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
@@ -17,13 +26,6 @@ import {
 } from "./utils.callback";
 import ContractProposalModal from "./ContractProposalModal";
 import "./index.less";
-import {
-  formatTimeToNano,
-  getContractAddress,
-  getTxResult,
-  showTransactionResult,
-  uint8ToBase64,
-} from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
 import {
   addContractName,
@@ -31,12 +33,17 @@ import {
   updateContractName,
 } from "../../utils";
 import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.tsx";
-import { deserializeLog } from "../../../../common/utils";
+import { deserializeLog, isPhoneCheck } from "../../../../common/utils";
 import { interval } from "../../../../utils/timeUtils";
 import { get } from "../../../../utils";
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
-import { hexStringToByteArray } from "../../../../utils/formater";
+import {
+  base64ToByteArray,
+  byteArrayToHexString,
+  hexStringToByteArray,
+} from "../../../../utils/formater";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 
 const { TabPane } = Tabs;
 
@@ -70,6 +77,8 @@ const CreateProposal = () => {
   const [applyModal, setApplyModal] = useState(initApplyModal);
   const [withoutApprovalProps, setWithoutApprovalProps] = useState({});
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
+
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
 
   // open without approval modal
   const onOpenWithoutApprovalModal = (params) => {
@@ -147,10 +156,7 @@ const CreateProposal = () => {
             "Parliament",
             "GetProposal",
             {
-              value: hexStringToByteArray(
-                proposalId
-                // "b4cbd0a1e2ad563f58850c05a22e9380cd87cb4527462dca46b7df5826a60d42"
-              ),
+              value: hexStringToByteArray(proposalId),
             }
           );
           if (proposalInfo === null || !!proposalInfo.toBeRelease) {
@@ -205,10 +211,9 @@ const CreateProposal = () => {
   // eslint-disable-next-line consistent-return
   const minedStatusWithoutApproval = async (name, txRes, isUpdate, address) => {
     try {
-      const { Logs = [], ReturnValue, TransactionId } = txRes;
+      const { Logs = [], TransactionId, codeHash } = txRes;
       const log = (Logs || []).filter((v) => v.Name === "ProposalCreated");
       const releaseRes = await ifToBeRelease(log, isUpdate, TransactionId);
-
       if (releaseRes === "acs12 etc fail") {
         openFailedWithoutApprovalModal(isUpdate, TransactionId);
         return Promise.reject(new Error("acs12 etc fail"));
@@ -240,12 +245,6 @@ const CreateProposal = () => {
           contractVersion,
         };
       }
-      const { codeHash = "" } = await callGetMethodSend(
-        "Genesis",
-        "DeployUserSmartContract",
-        hexStringToByteArray(ReturnValue),
-        "unpackOutput"
-      );
       const startTime = new Date().getTime();
       return new Promise((resolve) => {
         try {
@@ -266,23 +265,28 @@ const CreateProposal = () => {
                   value: hexStringToByteArray(codeHash),
                 }
               );
-              if (contractRegistration.contractAddress) {
-                // get contractVersion
-                const { contractAddress, contractVersion } =
-                  contractRegistration;
-                // get contractName
-                const {
-                  data: { name: contractName },
-                } = await get(VIEWER_GET_CONTRACT_NAME, {
-                  address: contractAddress,
-                });
+              try {
+                if (contractRegistration.contractAddress) {
+                  // get contractVersion
+                  const { contractAddress, contractVersion } =
+                    contractRegistration;
+                  // get contractName
+                  const {
+                    data: { name: contractName },
+                  } = await get(VIEWER_GET_CONTRACT_NAME, {
+                    address: contractAddress,
+                  });
+                  interval.clear();
+                  resolve({
+                    status: "success",
+                    contractAddress,
+                    contractName: contractName || name || "-1",
+                    contractVersion,
+                  });
+                }
+              } catch (e) {
                 interval.clear();
-                resolve({
-                  status: "success",
-                  contractAddress,
-                  contractName: contractName || name || "-1",
-                  contractVersion,
-                });
+                message.error(e.message);
               }
             }
           }, 10000);
@@ -310,12 +314,19 @@ const CreateProposal = () => {
     } = contract;
     let params = {};
     try {
+
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
       // bp and without approval, both process is below when onlyUpdateName.
       if (isOnlyUpdateName) {
-        await updateContractName(wallet, currentWallet, {
+        await updateContractName(currentWallet, {
           contractAddress: address,
           contractName: name,
           address: currentWallet.address,
+          caHash: currentWallet.portkeyInfo?.caInfo.caHash,
         });
         message.success("Contract Name has been updated！");
         return;
@@ -363,12 +374,19 @@ const CreateProposal = () => {
           });
           // get transaction id
           const result = await contractSend(action, params);
-          // according to Error show modal
+          const byteArray = AElf.utils.sha256.array(
+            base64ToByteArray(params.code)
+          );
+          // get codeHash from code
+          const codeHash = byteArrayToHexString(byteArray);
           const txRes = await getTransactionResult(
             aelf,
-            result?.TransactionId || result?.result?.TransactionId || ""
+            result?.TransactionId ||
+              result?.result?.TransactionId ||
+              result.transactionId ||
+              ""
           );
-
+          txRes.codeHash = codeHash;
           const {
             TransactionId: transactionId,
             Error: error,
@@ -392,7 +410,7 @@ const CreateProposal = () => {
           } else if (status === "MINED") {
             // add contract name
             if (name && +name !== -1) {
-              await addContractName(wallet, currentWallet, {
+              await addContractName(currentWallet, {
                 contractName: name,
                 txId: transactionId,
                 action: isUpdate ? "UPDATE" : "DEPLOY",
@@ -453,11 +471,21 @@ const CreateProposal = () => {
         return;
       }
       const result = await contractSend(action, params);
-      let Log;
-      const txsId = result?.TransactionId || result?.result?.TransactionId;
+      const txsId =
+        result?.TransactionId ||
+        result?.result?.TransactionId ||
+        result.transactionId ||
+        "";
       if (!txsId)
         throw new Error("Transaction failed. Please reinitiate this step.");
-      const txResult = await getTxResult(aelf, txsId ?? "");
+      let Log;
+      let txResult;
+      if (result.data) {
+        // portkey sdk login
+        txResult = result.data;
+      } else {
+        txResult = await getTxResult(aelf, txsId ?? "");
+      }
       if (txResult.Error) {
         throw new Error(txResult.Error);
       }
@@ -471,9 +499,13 @@ const CreateProposal = () => {
       }
       const { proposalId } = Log ?? "";
       if (name && +name !== -1) {
-        await addContractName(wallet, currentWallet, {
+        await addContractName(currentWallet, {
           contractName: name,
-          txId: result.TransactionId || result.result.TransactionId,
+          txId:
+            result?.TransactionId ||
+            result?.result?.TransactionId ||
+            result.transactionId ||
+            "",
           action: action === "ProposeNewContract" ? "DEPLOY" : "UPDATE",
           address: currentWallet.address,
         });
@@ -499,12 +531,8 @@ const CreateProposal = () => {
             <CopylistItem
               label="Transaction ID"
               isParentHref
-              value={
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }
-              href={`/tx/${
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }`}
+              value={txsId}
+              href={`/tx/${txsId}`}
             />
           </div>
         ),
@@ -530,8 +558,9 @@ const CreateProposal = () => {
       confirming: true,
     });
     const { isOnlyUpdateName } = results;
+    const isMobile = isPhoneCheck();
     Modal.confirm({
-      className: "sure-modal-content",
+      className: `sure-modal-content${isMobile ? '-mobile': ''}`,
       width: "720",
       cancelButtonProps: { type: "primary", ghost: true },
       title: (
@@ -550,11 +579,18 @@ const CreateProposal = () => {
     });
   }
   async function submitNormalResult() {
+    console.log(normalResult);
     setNormalResult({
       ...normalResult,
       confirming: true,
     });
     try {
+
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
       const {
         expiredTime,
         contractMethodName,
@@ -564,18 +600,22 @@ const CreateProposal = () => {
         proposalDescriptionUrl,
         params: { decoded },
       } = normalResult;
-      const result = await wallet.invoke({
+
+      const params = {
         contractAddress: getContractAddress(proposalType),
-        param: {
+        methodName: "CreateProposal",
+        args: {
           contractMethodName,
           toAddress,
-          params: uint8ToBase64(decoded || []),
+          params: uint8ToBase64(decoded || []) || [],
           expiredTime: formatTimeToNano(expiredTime),
           organizationAddress,
           proposalDescriptionUrl,
         },
-        contractMethod: "CreateProposal",
-      });
+      };
+
+      console.log("callContract", params);
+      const result = await callContract(params);
       showTransactionResult(result);
     } catch (e) {
       console.error(e);
@@ -656,7 +696,7 @@ const CreateProposal = () => {
           </div>
           <div className="proposal-result-list-item gap-bottom">
             <span className="sub-title gap-right">Contract Params:</span>
-            <pre className="proposal-result-list-item-value">
+            <pre className="proposal-result-list-item-value contract-params">
               {JSON.stringify((normalResult.params || {}).origin, null, 2)}
             </pre>
           </div>

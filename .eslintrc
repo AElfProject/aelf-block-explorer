@@ -19,7 +19,19 @@
     "import/newline-after-import": "error",
     "react/jsx-props-no-spreading": 0,
     "jsx-a11y/anchor-is-valid": 0,
-    "react/jsx-no-bind": 0
+    "react/jsx-no-bind": 0,
+    "import/prefer-default-export": 0,
+    "no-plusplus": 0,
+    "react/sort-comp": 0,
+    "react/no-unused-state": 0,
+    "class-methods-use-this": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "react/destructuring-assignment": 0,
+    "no-use-before-define": 0,
+    "@typescript-eslint/no-use-before-define": 2,
+    "no-unused-expressions": 0,
+    "no-continue": 0
   },
   "globals": {
     "window": true,
@@ -36,9 +48,15 @@
         "map": [
           ["@", "./src/"],
           ["@src", "./src/"],
-          ["@utils", "./src/utils"],
-          ["@actions", "./src/redux/actions"],
-          ["@pages", "./src/pages"]
+          ["@config", "./config/"],
+          ["@utils", "./src/utils/"],
+          ["@actions", "./src/redux/actions/"],
+          ["@pages", "./src/pages/"],
+          ["@components", "./src/components/"],
+          ["@store", "./src/store/"],
+          ["@api", "./src/api/"],
+          ["@actions", "./src/redux/actions/"],
+          ["@redux", "./src/redux/"]
         ]
       }
     }

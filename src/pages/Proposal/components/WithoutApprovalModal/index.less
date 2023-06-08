@@ -1,4 +1,16 @@
 .without-approval-modal {
+  text-align: center;
+  .ant-modal-footer {
+    border: none;
+    text-align: center;
+    padding-bottom: 32px;
+    .ant-btn {
+      width: 320px;
+      &:first-child {
+        display: none;
+      }
+    }
+  }
   .ant-modal-content {
     border-radius: 8px;
     .without-approval-modal-degree {
@@ -146,6 +158,9 @@
   }
 }
 .without-approval-modal-mobile {
+  .ant-modal {
+    padding: 0 8px 24px;
+  }
   .ant-modal-content {
     .ant-modal-body {
       padding: 32px 16px 0;

@@ -1,17 +1,10 @@
-import { getPublicKeyFromObject } from './getPublicKey';
-
 const getCurrentWallet = () => {
-  let currentWallet = JSON.parse(localStorage.getItem('currentWallet'));
-  if (currentWallet !== null && currentWallet.publicKey) {
-    currentWallet.pubKey = getPublicKeyFromObject(currentWallet.publicKey);
-  } else {
+  let currentWallet = JSON.parse(localStorage.getItem("currentWallet"));
+  if (!currentWallet || !currentWallet.publicKey) {
     currentWallet = {
       address: null,
       name: null,
-      pubKey: {
-        x: null,
-        y: null,
-      },
+      publicKey: null,
     };
   }
   return currentWallet;

@@ -7,7 +7,7 @@ import Promise from "core-js-pure/actual/promise";
 
 import contants from "./constants";
 // eslint-disable-next-line import/no-cycle
-import { getPublicKeyFromObject } from "../../../common/utils";
+import { getPublicKeyFromObject } from "../../common/utils";
 
 const { viewer, APP_NAME, DEFAUT_RPCSERVER } = contants;
 

@@ -37,6 +37,15 @@ module.exports = (api) => {
       [
         "import",
         {
+          libraryName: "antd-mobile",
+          libraryDirectory: "cjs",
+          style: true,
+        },
+        "antd-mobile",
+      ],
+      [
+        "import",
+        {
           libraryName: "react-use",
           libraryDirectory: "lib",
           camel2DashComponentName: false,

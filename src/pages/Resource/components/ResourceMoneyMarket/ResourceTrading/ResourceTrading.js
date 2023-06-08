@@ -4,18 +4,17 @@
  * Purchase and Sell of Resources
  */
 
-import React, { PureComponent } from 'react';
-import {
-  Row, Col, Modal, Divider,
-} from 'antd';
-import { connect } from 'react-redux';
+import React, { PureComponent } from "react";
+import { Row, Col, Modal, Divider } from "antd";
+import { connect } from "react-redux";
 
-import ResourceBuy from './ResourceBuy/ResourceBuy';
-import ResourceSell from './ResourceSell/ResourceSell';
-import ResourceBuyModal from './ResourceBuyModal/ResourceBuyModal';
-import ResourceSellModal from './ResourceSellModal/ResourceSellModal';
-import { isPhoneCheck } from '../../../../../utils/deviceCheck';
-import './ResourceTrading.less';
+import ResourceBuy from "./ResourceBuy/ResourceBuy";
+import ResourceSell from "./ResourceSell/ResourceSell";
+import ResourceBuyModal from "./ResourceBuyModal/ResourceBuyModal";
+import ResourceSellModal from "./ResourceSellModal/ResourceSellModal";
+import { isPhoneCheck } from "../../../../../utils/deviceCheck";
+import "./ResourceTrading.less";
+import walletInstance from "../../../../../redux/common/wallet";
 
 class ResourceTrading extends PureComponent {
   constructor(props) {
@@ -30,7 +29,6 @@ class ResourceTrading extends PureComponent {
       ELFValue: 0,
       SellELFValue: 0,
       maskClosable: true,
-      nightElf: this.props.nightElf,
       buyNum: null,
       buyFee: 0,
       buyElfValue: 0,
@@ -50,12 +48,6 @@ class ResourceTrading extends PureComponent {
     if (props.currentWallet !== state.currentWallet) {
       return {
         currentWallet: props.currentWallet,
-      };
-    }
-
-    if (props.nightElf !== state.nightElf) {
-      return {
-        nightElf: props.nightElf,
       };
     }
 
@@ -80,7 +72,7 @@ class ResourceTrading extends PureComponent {
     return null;
   }
 
-  handleSellModalShow(value, ELFValue) {
+  handleSellModalShow() {
     this.setState({
       sellVisible: true,
     });
@@ -125,7 +117,6 @@ class ResourceTrading extends PureComponent {
       tokenConverterContract,
       SellELFValue,
       buyElfValue,
-      nightElf,
       buyNum,
       buyFee,
       buyInputLoading,
@@ -137,42 +128,38 @@ class ResourceTrading extends PureComponent {
 
     return (
       <div className="resource-trading">
-        {!nightElf ? (
+        {!walletInstance ? (
           <div className="mobile-mask">
             <p className="mobile-mask-text">Can not find wallet extension</p>
           </div>
         ) : null}
         <div className="resource-trading-body">
-          {
-            isPhoneCheck()
-              ? null
-              : (
-                <Row>
-                  <Col
-                    className="trading-title-buy"
-                    xxl={12}
-                    xl={12}
-                    lg={12}
-                    md={12}
-                    sm={24}
-                    xs={24}
-                  >
-                    Buy
-                  </Col>
-                  <Col
-                    className="trading-title-sell"
-                    xxl={12}
-                    xl={12}
-                    lg={12}
-                    md={12}
-                    sm={24}
-                    xs={24}
-                  >
-                    Sell
-                  </Col>
-                </Row>
-              )
-          }
+          {isPhoneCheck() ? null : (
+            <Row>
+              <Col
+                className="trading-title-buy"
+                xxl={12}
+                xl={12}
+                lg={12}
+                md={12}
+                sm={24}
+                xs={24}
+              >
+                Buy
+              </Col>
+              <Col
+                className="trading-title-sell"
+                xxl={12}
+                xl={12}
+                lg={12}
+                md={12}
+                sm={24}
+                xs={24}
+              >
+                Sell
+              </Col>
+            </Row>
+          )}
           <Divider className="resource-buy-divider" />
           <Row>
             <Col xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
@@ -186,7 +173,6 @@ class ResourceTrading extends PureComponent {
                 tokenConverterContract={tokenConverterContract}
                 tokenContract={tokenContract}
                 account={account}
-                nightElf={nightElf}
                 buyNum={buyNum}
                 buyElfValue={buyElfValue}
                 buyInputLoading={buyInputLoading}
@@ -194,7 +180,15 @@ class ResourceTrading extends PureComponent {
                 handleModifyTradingState={this.handleModifyTradingState}
               />
             </Col>
-            <Col offset={isPhoneCheck() ? 0 : 1} xxl={11} xl={11} lg={11} md={11} sm={24} xs={24}>
+            <Col
+              offset={isPhoneCheck() ? 0 : 1}
+              xxl={11}
+              xl={11}
+              lg={11}
+              md={11}
+              sm={24}
+              xs={24}
+            >
               {isPhoneCheck() && <div className="trading-title-sell">Sell</div>}
               <ResourceSell
                 loginAndInsertKeypairs={loginAndInsertKeypairs}
@@ -206,7 +200,6 @@ class ResourceTrading extends PureComponent {
                 tokenConverterContract={tokenConverterContract}
                 tokenContract={tokenContract}
                 account={account}
-                nightElf={nightElf}
                 sellNum={sellNum}
                 sellEstimateValueLoading={sellEstimateValueLoading}
                 handleModifyTradingState={this.handleModifyTradingState}
@@ -236,7 +229,6 @@ class ResourceTrading extends PureComponent {
             onRefresh={this.props.onRefresh}
             maskClosable={this.modalMaskClosable.bind(this)}
             unMaskClosable={this.modalUnMaskClosable.bind(this)}
-            nightElf={nightElf}
             contracts={contracts}
             buyNum={buyNum}
             buyElfValue={buyElfValue}
@@ -269,7 +261,6 @@ class ResourceTrading extends PureComponent {
             onRefresh={this.props.onRefresh}
             maskClosable={this.modalMaskClosable.bind(this)}
             unMaskClosable={this.modalUnMaskClosable.bind(this)}
-            nightElf={nightElf}
             contracts={contracts}
             account={account}
             SellELFValue={SellELFValue}

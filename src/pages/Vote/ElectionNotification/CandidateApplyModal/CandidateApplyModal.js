@@ -8,17 +8,17 @@
  */
 import React, { PureComponent, forwardRef } from "react";
 import AElf from "aelf-sdk";
-import { Form, Input, Button, Modal, message, Tooltip, Icon } from "antd";
-
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { Form, Input, Modal, Tooltip } from "antd";
 import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from "@src/constants";
 import {
   ELECTION_MORTGAGE_NUM_STR,
   HARDWARE_ADVICE,
 } from "@pages/Vote/constants";
-import getCurrentWallet from "@utils/getCurrentWallet";
+import { connect } from "react-redux";
 import "./CandidateApplyModal.style.less";
 import addressFormat from "../../../../utils/addressFormat";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+
 const modalFormItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -30,22 +30,21 @@ const modalFormItemLayout = {
   },
 };
 
-function generateCandidateApplyForm() {
-  const currentWallet = getCurrentWallet();
+function generateCandidateApplyForm(currentWallet) {
   return {
     formItems: [
       {
         label: "Mortgage Add",
         render: (
-          <span className='list-item-value'>
-            {addressFormat(currentWallet.address)}
+          <span className="list-item-value">
+            {addressFormat(currentWallet?.address)}
           </span>
         ),
       },
       {
         label: "Mortgage Amount",
         render: (
-          <span className='list-item-value'>
+          <span className="list-item-value">
             {ELECTION_MORTGAGE_NUM_STR} {SYMBOL} &nbsp;&nbsp;&nbsp;
             <Tooltip
               title={`The ${SYMBOL} cannot be redeemed during the time being a BP
@@ -58,13 +57,17 @@ function generateCandidateApplyForm() {
       },
       {
         label: "Wallet",
-        render: <span className='list-item-value'>{currentWallet.name}</span>,
+        render: (
+          <span className="list-item-value">
+            {currentWallet?.name || currentWallet?.address}
+          </span>
+        ),
       },
       {
         label: "Hardware Advice",
         render: (
           // <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-          <span className='list-item-value'>{HARDWARE_ADVICE}</span>
+          <span className="list-item-value">{HARDWARE_ADVICE}</span>
         ),
       },
     ],
@@ -73,6 +76,7 @@ function generateCandidateApplyForm() {
 
 class CandidateApplyModal extends PureComponent {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.handleOk = this.handleOk.bind(this);
@@ -91,8 +95,8 @@ class CandidateApplyModal extends PureComponent {
   }
 
   render() {
-    const { onCancel, visible } = this.props;
-    const candidateApplyForm = generateCandidateApplyForm();
+    const { onCancel, visible, currentWallet } = this.props;
+    const candidateApplyForm = generateCandidateApplyForm(currentWallet);
     const rules = [
       {
         required: true,
@@ -117,10 +121,10 @@ class CandidateApplyModal extends PureComponent {
           <Input
             ref={ref}
             {...props}
-            placeholder='Please input admin address'
+            placeholder="Please input admin address"
           />
           <Tooltip
-            className='candidate-admin-tip'
+            className="candidate-admin-tip"
             title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
           >
             <ExclamationCircleOutlined />
@@ -130,11 +134,11 @@ class CandidateApplyModal extends PureComponent {
     });
     return (
       <Modal
-        className='apply-node-modal'
+        className="apply-node-modal"
         destroyOnClose
-        title='Apply Node'
+        title="Apply Node"
         visible={visible}
-        okText='Apply Now'
+        okText="Apply Now"
         onOk={this.handleOk}
         onCancel={onCancel}
         centered
@@ -152,18 +156,25 @@ class CandidateApplyModal extends PureComponent {
               );
             })}
           <Form.Item
-            label='Candidate Admin:'
-            className='candidate-admin'
-            name='admin'
+            label="Candidate Admin:"
+            className="candidate-admin"
+            name="admin"
             rules={rules}
           >
-            <TooltipInput></TooltipInput>
+            <TooltipInput />
           </Form.Item>
         </Form>
-        <p className='tip-color'>{NEED_PLUGIN_AUTHORIZE_TIP}</p>
+        <p className="tip-color">{NEED_PLUGIN_AUTHORIZE_TIP}</p>
       </Modal>
     );
   }
 }
 
-export default CandidateApplyModal;
+const mapStateToProps = (state) => {
+  const { currentWallet } = state.common;
+  return {
+    currentWallet,
+  };
+};
+
+export default connect(mapStateToProps)(CandidateApplyModal);

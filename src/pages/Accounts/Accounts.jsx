@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-use-before-define
 import React, { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import { Pagination, Table } from "antd";
@@ -6,7 +7,7 @@ import useMobile from "../../hooks/useMobile";
 import TableLayer from "../../components/TableLayer/TableLayer";
 import { get } from "../../utils";
 import { defaultAElfInstance, getContract } from "../../common/utils";
-import { getContractAddress } from "../Proposal/common/utils";
+import { getContractAddress } from "../../redux/common/utils";
 import getColumn from "./columnConfig";
 
 import "./Accounts.styles.less";

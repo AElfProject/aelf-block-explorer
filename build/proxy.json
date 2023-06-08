@@ -68,5 +68,28 @@
     },
     "changeOrigin": true,
     "secure": false
+  },
+  {
+    "description": "portkey indexer",
+    "target": "https://dapp-portkey-test.portkey.finance",
+    "context": ["/Portkey_DID"],
+    "headers": {
+      "Host": "dapp-portkey-test.portkey.finance"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
+    "description": "portkey services",
+    "target": "https://did-portkey-test.portkey.finance",
+    "context": ["/portkey"],
+    "headers": {
+      "Host": "did-portkey-test.portkey.finance"
+    },
+    "changeOrigin": true,
+    "secure": false,
+    "pathRewrite": {
+      "^/portkey/api": "/api"
+    }
   }
 ]

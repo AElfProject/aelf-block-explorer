@@ -1,9 +1,10 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { getOriginProposedContractInputHash } from "@redux/common/util.proposed";
+import { getContractAddress, getTxResult } from "@redux/common/utils";
+import { useWebLogin } from "aelf-web-login";
 import { callGetMethod } from "../../../../utils/utils";
-import { getOriginProposedContractInputHash } from "../../common/util.proposed";
-import { getContractAddress, getTxResult } from "../../common/utils";
 import CopylistItem from "../../components/CopylistItem";
 import { getDeserializeLog } from "../../utils";
 import { get } from "../../../../utils";
@@ -13,20 +14,23 @@ import AddressNameVer from "../../components/AddressNameVer/index.tsx";
 export const useCallbackAssem = () => {
   const common = useSelector((state) => state.common);
   const { wallet } = common;
+  const { callContract } = useWebLogin();
   // eslint-disable-next-line no-return-await
   const contractSend = useCallback(
     async (action, params, isOriginResult) => {
-      const result = await wallet.invoke({
+      const result = await callContract({
         contractAddress: getContractAddress("Genesis"),
-        param: params,
-        contractMethod: action,
+        args: params,
+        methodName: action,
       });
       if (isOriginResult) return result;
       if ((result && +result.error === 0) || !result.error) {
         return result;
       }
       throw new Error(
-        (result.errorMessage || {}).message || "Send transaction failed"
+        result.error.message ||
+          (result.errorMessage || {}).message ||
+          "Send transaction failed"
       );
     },
     [wallet]
@@ -96,14 +100,17 @@ export const useReleaseApprovedContractAction = () => {
       if (!((result && +result.error === 0) || !result.error)) {
         isError = true;
         throw new Error(
-          (result.errorMessage || {}).message || "Send transaction failed"
+          (result.errorMessage || {}).message ||
+            result?.error?.message ||
+            "Send transaction failed"
         );
       }
-      const Log = await getDeserializeLog(
-        aelf,
-        result?.TransactionId || result?.result?.TransactionId || "",
-        "ProposalCreated"
-      );
+      const txsId =
+        result?.TransactionId ||
+        result?.result?.TransactionId ||
+        result.transactionId ||
+        "";
+      const Log = await getDeserializeLog(aelf, txsId, "ProposalCreated");
       const { proposalId: newProposalId } = Log ?? "";
       return {
         visible: true,
@@ -125,12 +132,8 @@ export const useReleaseApprovedContractAction = () => {
             <CopylistItem
               label="Transaction ID"
               isParentHref
-              value={
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }
-              href={`/tx/${
-                result?.TransactionId || result?.result?.TransactionId || ""
-              }`}
+              value={txsId}
+              href={`/tx/${txsId}`}
             />
           </div>
         ),
@@ -170,14 +173,23 @@ export const useReleaseCodeCheckedContractAction = () => {
       if (!((result && +result.error === 0) || !result.error)) {
         isError = true;
         throw new Error(
-          (result.errorMessage || {}).message || "Send transaction failed"
+          (result.errorMessage || {}).message ||
+            result?.error?.message ||
+            "Send transaction failed"
         );
       }
-      const txResult = await getTxResult(
-        aelf,
-        result?.TransactionId || result?.result?.TransactionId || ""
-      );
-
+      const txsId =
+        result?.TransactionId ||
+        result?.result?.TransactionId ||
+        result.transactionId ||
+        "";
+      let txResult;
+      if (result.data) {
+        // portkey sdk login
+        txResult = result.data;
+      } else {
+        txResult = await getTxResult(aelf, txsId ?? "");
+      }
       if (!txResult) {
         throw Error("Can not get transaction result.");
       }
@@ -190,11 +202,10 @@ export const useReleaseCodeCheckedContractAction = () => {
       let contractAddress = "";
       let contractVersion = "";
       if (!isError) {
-        const logs = await getDeserializeLog(
-          aelf,
-          result?.TransactionId || result?.result?.TransactionId || "",
-          ["ContractDeployed", "CodeUpdated"]
-        );
+        const logs = await getDeserializeLog(aelf, txsId, [
+          "ContractDeployed",
+          "CodeUpdated",
+        ]);
         const { address } = logs ?? {};
         contractVersion = (logs || {}).contractVersion;
         contractAddress = address;

@@ -4,7 +4,7 @@
  */
 import PropTypes from 'prop-types';
 import AElf from 'aelf-sdk';
-import config from '../../../common/config';
+import config from '../../common/config';
 
 const { constants, viewer, wallet } = config;
 

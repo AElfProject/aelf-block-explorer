@@ -8,12 +8,9 @@
  */
 // todo: Consider to save isSmallScreen as a global variable instead of saving in redux
 import AElf from "aelf-sdk";
-import walletInstance from "@pages/Proposal/common/wallet";
-import {
-  LOG_OUT_ACTIONS,
-  LOG_IN_ACTIONS,
-} from "@pages/Proposal/actions/common";
-import constants, { LOG_STATUS } from "@pages/Proposal/common/constants";
+import walletInstance from "../common/wallet";
+import { LOG_OUT_ACTIONS, LOG_IN_ACTIONS } from "../actions/proposalCommon";
+import constants, { LOG_STATUS } from "../common/constants";
 
 const { DEFAUT_RPCSERVER } = constants;
 

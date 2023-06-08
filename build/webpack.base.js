@@ -38,6 +38,8 @@ const baseConfig = {
     alias: {
       process: "process/browser",
       "aelf-sdk": "aelf-sdk/dist/aelf.umd.js",
+      "react-use": "react-use/lib",
+      "antd-mobile": "antd-mobile/cjs",
       "@config": path.resolve(ROOT, "config"),
       "@src": path.resolve(ROOT, "src"),
       "@pages": path.resolve(ROOT, "src/pages"),
@@ -46,6 +48,10 @@ const baseConfig = {
       "@store": path.resolve(ROOT, "src/store"),
       "@api": path.resolve(ROOT, "src/api"),
       "@actions": path.resolve(ROOT, "src/redux/actions/"),
+      "@redux": path.resolve(ROOT, "src/redux/"),
+    },
+    fallback: {
+      buffer: require.resolve("buffer"),
     },
     modules: [path.resolve(ROOT, "src"), path.resolve(ROOT, "node_modules")],
     extensions: [".jsx", ".js", ".mjs", ".tsx"],
@@ -54,7 +60,7 @@ const baseConfig = {
     rules: [
       {
         test: /\.(js|ts)x?$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: {
           loader: require.resolve("babel-loader"),
           options: {
@@ -91,7 +97,14 @@ const baseConfig = {
             options: {},
           },
           "css-loader",
-          "postcss-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              config: {
+                path: path.resolve(__dirname, "../postcss.config.js"),
+              },
+            },
+          },
         ],
       },
       {
@@ -133,6 +146,12 @@ const baseConfig = {
           },
         ],
       },
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false, // disable the behavior
+        },
+      },
     ],
   },
   plugins: [
@@ -160,10 +179,11 @@ const baseConfig = {
       favicon: isTestNet
         ? "public/favicon.test.ico"
         : "public/favicon.main.ico",
-      hash: true,
+      // hash: true,
     }),
     new webpack.ProvidePlugin({
       React: "react",
+      Buffer: ["buffer", "Buffer"],
     }),
     new MomentLocalesPlugin({
       localesToKeep: ["es-us", "en-ca", "zh-cn"],

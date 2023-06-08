@@ -4,8 +4,9 @@
  * trading - sell
  */
 
-import React, { Component } from 'react';
-import debounce from 'lodash.debounce';
+import React, { Component } from "react";
+import debounce from "lodash.debounce";
+import { connect } from "react-redux";
 import {
   Input,
   InputNumber,
@@ -15,8 +16,8 @@ import {
   Button,
   Tooltip,
   Form,
-} from 'antd';
-import { thousandsCommaWithDecimal } from '@utils/formater';
+} from "antd";
+import { thousandsCommaWithDecimal } from "@utils/formater";
 import {
   SYMBOL,
   GENERAL_PRECISION,
@@ -30,21 +31,44 @@ import {
   CHECK_BALANCE_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
   FEE_RATE,
-} from '@src/constants';
-import { getMagneticValue } from '@utils/styleUtils';
-import { regPos } from '@utils/regExps';
-import getEstimatedValueRes from '../../../../../../utils/getEstimatedValueRes';
-import getEstimatedValueELF from '../../../../../../utils/getEstimatedValueELF';
-import getFees from '../../../../../../utils/getFees';
-import getLogin from '../../../../../../utils/getLogin';
-import './ResourceBuy.less';
-import NightElfCheck from '../../../../../../utils/NightElfCheck';
-import { isPhoneCheck } from '../../../../../../utils/deviceCheck';
+} from "@src/constants";
+import { getMagneticValue } from "@utils/styleUtils";
+import { regPos } from "@utils/regExps";
+import ButtonWithLoginCheck from '../../../../../../components/ButtonWithLoginCheck';
+import getEstimatedValueRes from "../../../../../../utils/getEstimatedValueRes";
+import getEstimatedValueELF from "../../../../../../utils/getEstimatedValueELF";
+import getFees from "../../../../../../utils/getFees";
+import "./ResourceBuy.less";
+import { isPhoneCheck } from "../../../../../../utils/deviceCheck";
+import walletInstance from "../../../../../../redux/common/wallet";
+import { LOG_STATUS } from "../../../../../../redux/common/constants";
+import { WebLoginInstance } from "../../../../../../utils/webLogin";
 
 const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
-const status = { ERROR: 'error' };
+const status = { ERROR: "error" };
 
-export default class ResourceBuy extends Component {
+function getMax(inputMax) {
+  const rawBuyNumMax = +(
+    inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+  ).toFixed(GENERAL_PRECISION);
+  // const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
+  const processedBuyNumMax =
+    rawBuyNumMax > 0 ? Number.parseInt(rawBuyNumMax, 10) : null;
+
+  return {
+    rawBuyNumMax,
+    processedBuyNumMax,
+  };
+}
+
+const mapStateToProps = (state) => ({
+  common: {
+    ...state.common
+  }
+});
+
+class ResourceBuy extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -53,29 +77,23 @@ export default class ResourceBuy extends Component {
       region: 0,
       getSlideMarks: null,
       noCanInput: true,
-      nightElf: null,
       toBuy: true,
-
-      // todo: use an individual variable for slider as it's stuck using the father component's state elfValue
-      // todo: after fix the stuck problem, instead with father component's state
       inputMax: 0,
       operateNumToSmall: false,
-      // todo: put the validateStatus with the validated value
       validate: {
         validateStatus: null,
-        help: '',
+        help: "",
       },
       inputValue: 0,
       buyBtnLoading: false,
     };
 
     this.onChangeSlideZeroCheck = false;
-
     this.getEstimatedElf = debounce(this.getEstimatedElf, 500);
     this.getEstimatedInput = debounce(this.getEstimatedInput, 500);
     this.onChangeResourceValue = this.onChangeResourceValue.bind(this);
     this.getBuyModalShow = this.getBuyModalShow.bind(this);
-    this.NightELFCheckAndShowBuyModal = this.NightELFCheckAndShowBuyModal.bind(this);
+    this.checkAndShowBuyModal = this.checkAndShowBuyModal.bind(this);
     this.onChangeSlide = this.onChangeSlide.bind(this);
   }
 
@@ -89,12 +107,6 @@ export default class ResourceBuy extends Component {
     if (props.contracts !== state.contracts) {
       return {
         contracts: props.contracts,
-      };
-    }
-
-    if (props.nightElf !== state.nightElf) {
-      return {
-        nightElf: props.nightElf,
       };
     }
 
@@ -147,7 +159,7 @@ export default class ResourceBuy extends Component {
   getSlideMarks() {
     const { account } = this.props;
     const { region } = this.state;
-    if (region < RESOURCE_OPERATE_LIMIT) return { 0: '' };
+    if (region < RESOURCE_OPERATE_LIMIT) return { 0: "" };
 
     this.regionLine = [
       0,
@@ -157,8 +169,8 @@ export default class ResourceBuy extends Component {
       account.balance.toFixed(GENERAL_PRECISION),
     ];
     const marks = {};
-    this.regionLine.map((item) => {
-      marks[item] = '';
+    this.regionLine.forEach((item) => {
+      marks[item] = "";
     });
     return marks;
   }
@@ -167,19 +179,19 @@ export default class ResourceBuy extends Component {
   onChangeResourceValue(input) {
     const { handleModifyTradingState, buyNum } = this.props;
     const { inputMax } = this.state;
-    const {
-      rawBuyNumMax,
-    } = getMax(inputMax);
+    const { rawBuyNumMax } = getMax(inputMax);
 
     this.setState({
       validate: {
         validateStatus: null,
-        help: '',
+        help: "",
       },
     });
 
-    input = input.target && (input.target.value || +input.target.value === 0)
-      ? input.target.value : input;
+    input =
+      input.target && (input.target.value || +input.target.value === 0)
+        ? input.target.value
+        : input;
     input = +input;
     input = input > rawBuyNumMax ? rawBuyNumMax : input;
     // todo: give a friendly notify when verify the max and min
@@ -198,8 +210,8 @@ export default class ResourceBuy extends Component {
         buyNum: null,
         buyEstimateValueLoading: false,
       });
-      if (input !== '' && input !== 0) {
-        message.error('Only support positive float or integer.');
+      if (input !== "" && input !== 0) {
+        message.error("Only support positive float or integer.");
       }
       return;
     }
@@ -212,80 +224,80 @@ export default class ResourceBuy extends Component {
       },
       () => {
         this.getEstimatedElf(input);
-      },
+      }
     );
   }
 
   getEstimatedElf(value) {
-    const { handleModifyTradingState, account, currentResourceType } = this.props;
-    const {
-      tokenConverterContract,
-      tokenContract,
-    } = this.state;
+    const { handleModifyTradingState, account, currentResourceType } =
+      this.props;
+    const { tokenConverterContract, tokenContract } = this.state;
     value = +value;
     getEstimatedValueELF(
       currentResourceType,
       value,
       tokenConverterContract,
-      tokenContract,
-    ).then((result) => {
-      const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
-      const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
-      if (regPos.test(result) || regNeg.test(result)) {
-        // todo: the code of rounding off maybe wrong so I comment it.
-        const amountToPay = result;
-        const buyFee = getFees(amountToPay);
+      tokenContract
+    )
+      .then((result) => {
+        const regNeg =
+          /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+        if (regPos.test(result) || regNeg.test(result)) {
+          // todo: the code of rounding off maybe wrong so I comment it.
+          const amountToPay = result;
+          const buyFee = getFees(amountToPay);
 
-        // todo: figure out the case need to add the fees.
-        const amountToPayPlusFee = amountToPay + buyFee;
-        // ---- Start: Handle the case input's cost larger than the elf's balance ----
-        // buySliderValue = buyElfValue >= balance ? balance : buyElfValue;
-        // ---- End: Handle the case input's cost larger than the elf's balance ----
+          // todo: figure out the case need to add the fees.
+          const amountToPayPlusFee = amountToPay + buyFee;
+          // ---- Start: Handle the case input's cost larger than the elf's balance ----
+          // buySliderValue = buyElfValue >= balance ? balance : buyElfValue;
+          // ---- End: Handle the case input's cost larger than the elf's balance ----
 
-        if (amountToPayPlusFee > account.balance) {
-          this.setState({
-            validate: {
-              validateStatus: status.ERROR,
-              help: BETWEEN_ZEOR_AND_BALANCE_TIP,
-            },
-          });
-        }
-        if (amountToPayPlusFee > 0) {
-          this.setState({
-            toBuy: true,
-            operateNumToSmall: false,
-            inputValue: amountToPayPlusFee,
-          });
-          handleModifyTradingState({
-            buyElfValue: amountToPayPlusFee,
-            buyFee,
-            buyEstimateValueLoading: false,
-          });
+          if (amountToPayPlusFee > account.balance) {
+            this.setState({
+              validate: {
+                validateStatus: status.ERROR,
+                help: BETWEEN_ZEOR_AND_BALANCE_TIP,
+              },
+            });
+          }
+          if (amountToPayPlusFee > 0) {
+            this.setState({
+              toBuy: true,
+              operateNumToSmall: false,
+              inputValue: amountToPayPlusFee,
+            });
+            handleModifyTradingState({
+              buyElfValue: amountToPayPlusFee,
+              buyFee,
+              buyEstimateValueLoading: false,
+            });
+          } else {
+            message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
+            this.setState({
+              operateNumToSmall: true,
+            });
+            handleModifyTradingState({
+              // buyNum: null,
+              buyElfValue: 0,
+              buyFee: 0,
+              buyEstimateValueLoading: false,
+            });
+          }
         } else {
-          message.warning(OPERATE_NUM_TOO_SMALL_TO_CALCULATE_REAL_PRICE_TIP);
           this.setState({
-            operateNumToSmall: true,
+            toBuy: false,
           });
+
           handleModifyTradingState({
-            // buyNum: null,
-            buyElfValue: 0,
-            buyFee: 0,
             buyEstimateValueLoading: false,
           });
         }
-      } else {
-        this.setState({
-          toBuy: false,
-        });
-
-        handleModifyTradingState({
-          buyEstimateValueLoading: false,
-        });
-      }
-    }).catch((e) => {
-      console.log('Error happened: ', e);
-      message.error(e.message || e.msg || 'Error happened');
-    });
+      })
+      .catch((e) => {
+        console.log("Error happened: ", e);
+        message.error(e.message || e.msg || "Error happened");
+      });
   }
 
   onChangeSlide(e) {
@@ -306,9 +318,12 @@ export default class ResourceBuy extends Component {
       return;
     }
     this.onChangeSlideZeroCheck = false;
-    handleModifyTradingState({
-      buyInputLoading: true,
-    }, () => this.getEstimatedInput(e));
+    handleModifyTradingState(
+      {
+        buyInputLoading: true,
+      },
+      () => this.getEstimatedInput(e)
+    );
   }
 
   getEstimatedInput(e) {
@@ -320,8 +335,8 @@ export default class ResourceBuy extends Component {
       buyElfValue: e,
       buyFee,
     });
-    this.prepareParamsForEstimatedResource(e / (1 + FEE_RATE)).then(
-      (result) => {
+    this.prepareParamsForEstimatedResource(e / (1 + FEE_RATE))
+      .then((result) => {
         handleModifyTradingState({
           buyInputLoading: false,
         });
@@ -337,12 +352,12 @@ export default class ResourceBuy extends Component {
           value = Math.abs(result).toFixed(GENERAL_PRECISION);
           handleModifyTradingState({ buyNum: value });
         }
-      },
-    ).catch(() => {
-      handleModifyTradingState({
-        buyInputLoading: false,
+      })
+      .catch(() => {
+        handleModifyTradingState({
+          buyInputLoading: false,
+        });
       });
-    });
   }
 
   prepareParamsForEstimatedResource(elfAmount) {
@@ -355,37 +370,43 @@ export default class ResourceBuy extends Component {
       elfAmount,
       tokenConverterContract,
       tokenContract,
-      true,
+      true
     );
   }
 
-  NightELFCheckAndShowBuyModal() {
-    NightElfCheck.getInstance().check.then((ready) => {
-      const nightElf = NightElfCheck.getAelfInstanceByExtension();
-      getLogin(nightElf, {}, (result) => {
-        console.log('NightELFCheckAndShowBuyModal: ', result);
-        this.props.loginAndInsertKeypairs(true, false);
-        if (result.error) {
-          message.warn(result.errorMessage.message || 'Please check your NightELF browser extension.');
-        } else {
-          this.getBuyModalShow();
-        }
-      });
-    }).catch(() => {
-      message.warn('Please download and install NightELF browser extension.');
-    });
+  checkAndShowBuyModal() {
+    this.getBuyModalShow();
+    // walletInstance.isExist.then(
+    //   async () => {
+    //     const instance = walletInstance.proxy.elfInstance;
+    //     if (typeof instance.getExtensionInfo === "function") {
+    //       const info = await walletInstance.getExtensionInfo();
+    //       this.setState({
+    //         isPluginLock: info.locked,
+    //       });
+    //     }
+    //     try {
+    //       await this.props.loginAndInsertKeypairs(false);
+    //       this.getBuyModalShow();
+    //     } catch (error) {
+    //       localStorage.removeItem("currentWallet");
+    //       const msg =
+    //         error === 200010
+    //           ? "Please Login."
+    //           : error?.message ||
+    //             "Please check your NightELF browser extension.";
+    //       message.warn(msg);
+    //     }
+    //   },
+    //   () => {
+    //     message.warn("Please download and install NightELF browser extension.");
+    //   }
+    // );
   }
 
   getBuyModalShow() {
     const { buyElfValue, buyNum, account } = this.props;
-    const {
-      currentWallet,
-      contracts,
-      toBuy,
-      appName,
-      nightElf,
-      operateNumToSmall,
-    } = this.state;
+    const { currentWallet, contracts, toBuy, operateNumToSmall } = this.state;
 
     this.setState({
       buyBtnLoading: true,
@@ -393,7 +414,7 @@ export default class ResourceBuy extends Component {
 
     if (!regPos.test(buyNum) || buyNum === 0) {
       message.error(
-        `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`,
+        `${ONLY_POSITIVE_FLOAT_OR_INTEGER_TIP}${CHECK_BALANCE_TIP}`
       );
       this.setState({
         buyBtnLoading: false,
@@ -429,21 +450,37 @@ export default class ResourceBuy extends Component {
       return;
     }
 
-    const wallet = {
-      address: currentWallet.address,
-    };
+    const { handleModifyTradingState } = this.props;
+    handleModifyTradingState(
+      {
+        buyVisible: true,
+      },
+      () => {
+        this.setState({
+          buyBtnLoading: false,
+        });
+      }
+    );
 
-    nightElf.chain.contractAt(contracts.multiToken, wallet)
-      .then((contract) => {
-        if (contract) {
-          this.getApprove(contract);
-        }
-      });
+    // const wallet = {
+    //   address: currentWallet.address,
+    // };
+
+    // WebLoginInstance.get().callContract({
+    //   contractAddress: contracts.multiToken,
+    //   methodName: "Approve",
+    // })
+
+    // const instance = walletInstance.proxy.elfInstance;
+    // instance.chain.contractAt(contracts.multiToken, wallet).then((contract) => {
+    //   if (contract) {
+    //     this.getApprove(contract);
+    //   }
+    // });
   }
 
-  // todo: remove the useless code
-  getApprove(result, time = 0) {
-    const { buyElfValue, buyNum, handleModifyTradingState } = this.props;
+  getApprove(result) {
+    const { handleModifyTradingState } = this.props;
     const contract = result || null;
     // todo: handle the error case's loading
     if (contract) {
@@ -456,7 +493,7 @@ export default class ResourceBuy extends Component {
             this.setState({
               buyBtnLoading: false,
             });
-          },
+          }
         );
       }
     }
@@ -480,17 +517,18 @@ export default class ResourceBuy extends Component {
     if (region < RESOURCE_OPERATE_LIMIT) {
       disabled = true;
     }
-
-    // console.log('buy num:', buyNum, inputValue, buyElfValue);
     return (
-      <Tooltip
-        title={BALANCE_LESS_THAN_OPERATE_LIMIT_TIP}
-      >
+      <Tooltip title={BALANCE_LESS_THAN_OPERATE_LIMIT_TIP}>
         <Slider
           marks={this.getSlideMarks()}
           dots={false}
           step={0.01}
-          disabled={disabled || buyBtnLoading || buyEstimateValueLoading || buyInputLoading}
+          disabled={
+            disabled ||
+            buyBtnLoading ||
+            buyEstimateValueLoading ||
+            buyInputLoading
+          }
           min={0}
           value={buyNum || buyElfValue ? inputValue : 0}
           // value={inputValue}
@@ -498,8 +536,8 @@ export default class ResourceBuy extends Component {
           // todo: the max is set in this way for avoid the elf paid larger than elf's balance
           max={
             +(
-              +balance
-              - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
+              +balance -
+              A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
             ).toFixed(GENERAL_PRECISION)
           }
           tipFormatter={
@@ -523,7 +561,7 @@ export default class ResourceBuy extends Component {
         });
       })
       .catch((err) => {
-        console.error('err', err);
+        console.error("err", err);
       });
   }
 
@@ -536,24 +574,15 @@ export default class ResourceBuy extends Component {
       account,
       currentResourceType,
     } = this.props;
-    const {
-      inputMax, buyBtnLoading, validate, inputValue,
-    } = this.state;
+    const { inputMax, buyBtnLoading, validate, inputValue } = this.state;
     const sliderHTML = this.getSlideMarksHTML();
-    const {
-      rawBuyNumMax,
-      processedBuyNumMax,
-    } = getMax(inputMax);
-
-    console.log('buy num processedBuyNumMax', processedBuyNumMax, buyNum, rawBuyNumMax);
+    const { rawBuyNumMax, processedBuyNumMax } = getMax(inputMax);
     return (
       <div className="trading-box trading-buy">
         <div className="trading">
           <div className="trading-input">
             <div className="resource-action-block">
-              <span className="resource-action-title">
-                Buying quantity:
-              </span>
+              <span className="resource-action-title">Buying quantity:</span>
               <Spin
                 spinning={buyInputLoading}
                 wrapperClassName="resource-action-input"
@@ -569,8 +598,10 @@ export default class ResourceBuy extends Component {
                       placeholder={`Enter ${currentResourceType} amount`}
                       // todo: use parser to set the max decimal to 8, e.g. using parseFloat
                       // parser={value => value.replace(/[^.\d]+/g, '')}
-                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                      formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
                       disabled={rawBuyNumMax <= 0}
                       min={0}
                       max={processedBuyNumMax}
@@ -580,7 +611,7 @@ export default class ResourceBuy extends Component {
                       className="mobile-trading-input"
                       placeholder={`Enter ${currentResourceType} amount`}
                       type="number"
-                      value={buyNum || ''}
+                      value={buyNum || ""}
                       onChange={this.onChangeResourceValue}
                       disabled={rawBuyNumMax <= 0}
                       min={0}
@@ -592,69 +623,57 @@ export default class ResourceBuy extends Component {
             </div>
             <div className="ELF-value">
               <Spin spinning={buyEstimateValueLoading}>
-                ≈
-                {' '}
-                {inputValue && buyNum ? thousandsCommaWithDecimal(buyElfValue) : '0.00'}
-                {' '}
+                ≈{" "}
+                {inputValue && buyNum
+                  ? thousandsCommaWithDecimal(buyElfValue)
+                  : "0.00"}{" "}
                 {SYMBOL}
               </Spin>
             </div>
             <div className="resource-action-block">
-              <span className="resource-action-title">
-                Available:
-              </span>
-              {
-                isPhoneCheck()
-                  ? (
-                    <div className="resource-action-input">
-                      {account.balance ? thousandsCommaWithDecimal(account.balance) : '-'}
-                      {' '}
-                      {SYMBOL}
-                    </div>
-                  )
-                  : (
-                    <Input
-                      className="resource-action-input"
-                      value={thousandsCommaWithDecimal(account.balance)}
-                      placeholder={thousandsCommaWithDecimal(account.balance)}
-                      addonAfter={SYMBOL}
-                      disabled
-                    />
-                  )
-              }
+              <span className="resource-action-title">Available:</span>
+              {isPhoneCheck() ? (
+                <div className="resource-action-input">
+                  {account.balance
+                    ? thousandsCommaWithDecimal(account.balance)
+                    : "-"}{" "}
+                  {SYMBOL}
+                </div>
+              ) : (
+                <Input
+                  className="resource-action-input"
+                  value={thousandsCommaWithDecimal(account.balance)}
+                  placeholder={thousandsCommaWithDecimal(account.balance)}
+                  addonAfter={SYMBOL}
+                  disabled
+                />
+              )}
             </div>
           </div>
           <div className="trading-slide">
             {sliderHTML}
             <div className="ElF-value">
-              {buyElfValue && inputValue && buyNum ? thousandsCommaWithDecimal(inputValue) : '0.00'}
-              {' '}
+              {buyElfValue && inputValue && buyNum
+                ? thousandsCommaWithDecimal(inputValue)
+                : "0.00"}{" "}
               {SYMBOL}
             </div>
           </div>
-          <Button
+          <ButtonWithLoginCheck
             className="trading-button buy-btn"
-            onClick={this.NightELFCheckAndShowBuyModal}
-            loading={buyEstimateValueLoading || buyBtnLoading || buyInputLoading}
+            onClick={this.checkAndShowBuyModal}
+            checkAccountInfoSync
+            loading={
+              buyEstimateValueLoading || buyBtnLoading || buyInputLoading
+            }
             disabled={validate.validateStatus === status.ERROR}
           >
             Buy
-          </Button>
+          </ButtonWithLoginCheck>
         </div>
       </div>
     );
   }
 }
 
-function getMax(inputMax) {
-  const rawBuyNumMax = +(
-    inputMax - A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE
-  ).toFixed(GENERAL_PRECISION);
-  // const processedBuyNumMax = rawBuyNumMax > 0 ? rawBuyNumMax : null;
-  const processedBuyNumMax = rawBuyNumMax > 0 ? Number.parseInt(rawBuyNumMax, 10) : null;
-
-  return {
-    rawBuyNumMax,
-    processedBuyNumMax,
-  };
-}
+export default connect(mapStateToProps)(ResourceBuy);

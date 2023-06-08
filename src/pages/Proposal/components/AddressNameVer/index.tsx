@@ -1,11 +1,11 @@
 // eslint-disable-next-line no-use-before-define
 import React from "react";
-import { Button, message } from "antd";
+import { message } from "antd";
 import copy from "copy-to-clipboard";
 import { omitString } from "../../../../common/utils";
-import IconFont from "../../../../components/IconFont";
 import addressFormat from "../../../../utils/addressFormat";
 import "./index.less";
+import CopyButton from "../../../../components/CopyButton/CopyButton";
 
 const checkName = (name: string) => {
   if (name === "-1") {
@@ -32,11 +32,9 @@ const AddressNameVer = ({ address, name, ver }) => {
             <a href={`/address/${addressFormat(address)}`}>
               {omitString(address, 10, 10)}
             </a>
-            <Button
-              onClick={handleCopy}
-              icon={<IconFont type="copy" />}
-              title="Copy code"
-              className="copy-btn"
+            <CopyButton
+              value={`/address/${addressFormat(address)}` as any}
+              onClick={handleCopy as any}
             />
           </span>
         </div>

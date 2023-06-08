@@ -3,30 +3,27 @@
  * @author zhouminghui
  */
 
-import React, { PureComponent } from 'react';
-import {
-  Row, Col, Spin, message, Button,
-} from 'antd';
-import {
-  CHAIN_ID,
-} from '@config/config';
+import React, { PureComponent } from "react";
+import { Row, Col, Spin, message, Button } from "antd";
+import { CHAIN_ID } from "@config/config";
 import {
   SYMBOL,
   ELF_DECIMAL,
   BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
   FAILED_MESSAGE_DISPLAY_TIME,
-} from '@src/constants';
-import { thousandsCommaWithDecimal } from '@utils/formater';
-import { regBuyTooManyResource } from '@utils/regExps';
-import getStateJudgment from '../../../../../../utils/getStateJudgment';
-import { aelf } from '../../../../../../utils';
-import './ResourceBuyModal.less';
+} from "@src/constants";
+import { thousandsCommaWithDecimal } from "@utils/formater";
+import { regBuyTooManyResource } from "@utils/regExps";
+import getStateJudgment from "../../../../../../utils/getStateJudgment";
+import { aelf } from "../../../../../../utils";
+import "./ResourceBuyModal.less";
+import walletInstance from "../../../../../../redux/common/wallet";
+import { WebLoginInstance } from "../../../../../../utils/webLogin";
 
 export default class ResourceBuyModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentWallet: this.props.currentWallet || null,
       tokenConverterContract: this.props.tokenConverterContract,
       tokenContract: this.props.tokenContract,
       loading: false,
@@ -35,8 +32,9 @@ export default class ResourceBuyModal extends PureComponent {
     };
   }
 
-  getBuyRes() {
-    const { currentWallet, nightElf, contracts } = this.state;
+  async getBuyRes() {
+    const { currentWallet } = this.props;
+    const { contracts } = this.state;
     this.props.maskClosable();
     const wallet = {
       address: currentWallet.address,
@@ -44,22 +42,22 @@ export default class ResourceBuyModal extends PureComponent {
     this.setState({
       loading: true,
     });
-    nightElf.chain.contractAt(contracts.tokenConverter, wallet).then((result) => {
-      // console.log('contracts.tokenConverter: ', result);
-      if (result) {
-        this.requestBuy(result);
-      }
-    });
-  }
 
-  requestBuy(result) {
-    const { buyNum, handleModifyTradingState, currentResourceType } = this.props;
+    const { buyNum, handleModifyTradingState, currentResourceType } =
+      this.props;
     const payload = {
       symbol: currentResourceType,
       amount: buyNum * ELF_DECIMAL,
     };
-    result.Buy(payload).then((result) => {
-      // console.log('result.Buy result', result);
+
+    try {
+      const result = await WebLoginInstance.get().callContract({
+        contractAddress: contracts.tokenConverter,
+        methodName: "Buy",
+        args: payload
+      });
+
+      console.log("Buy", result);
       if (result.error && result.error !== 0) {
         message.error(result.errorMessage.message, 3);
         this.props.handleCancel();
@@ -68,15 +66,21 @@ export default class ResourceBuyModal extends PureComponent {
       this.setState({
         loading: true,
       });
-      const transactionId = result.result
+      console.log(result);
+      let transactionId = result.result
         ? result.result.TransactionId
         : result.TransactionId;
+
+      if (!transactionId) {
+        transactionId = result.transactionId;
+      }
+
       setTimeout(() => {
         aelf.chain
           .getTxResult(transactionId)
-          .then((result) => {
+          .then((txRes) => {
             // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
-            getStateJudgment(result.Status, transactionId);
+            getStateJudgment(txRes.Status, transactionId);
             this.props.onRefresh();
             this.setState({
               loading: false,
@@ -99,33 +103,121 @@ export default class ResourceBuyModal extends PureComponent {
                 if (regBuyTooManyResource.test(err.Error)) {
                   message.error(
                     BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
-                    FAILED_MESSAGE_DISPLAY_TIME,
+                    FAILED_MESSAGE_DISPLAY_TIME
                   );
                   message.error(
                     `Transaction id: ${transactionId}`,
-                    FAILED_MESSAGE_DISPLAY_TIME,
+                    FAILED_MESSAGE_DISPLAY_TIME
                   );
                   return;
                 }
                 message.error(
-                  'Your transaction seems to has some problem, please query the transaction later:',
-                  FAILED_MESSAGE_DISPLAY_TIME,
+                  "Your transaction seems to has some problem, please query the transaction later:",
+                  FAILED_MESSAGE_DISPLAY_TIME
                 );
                 message.error(
                   `Transaction id: ${transactionId}`,
-                  FAILED_MESSAGE_DISPLAY_TIME,
+                  FAILED_MESSAGE_DISPLAY_TIME
                 );
-              },
+              }
             );
           });
       }, 4000);
-    }).catch((error) => {
+    } catch (error) {
+      message.error(error.message, 3);
       this.setState({
         loading: false,
       });
-      console.log('result.Buy error', error);
-    });
+    }
+
+    // const instance = walletInstance.proxy.elfInstance;
+    // instance.chain
+    //   .contractAt(contracts.tokenConverter, wallet)
+    //   .then((result) => {
+    //     // console.log('contracts.tokenConverter: ', result);
+    //     if (result) {
+    //       this.requestBuy(result);
+    //     }
+    //   });
   }
+
+  // requestBuy(bugRes) {
+  //   const { buyNum, handleModifyTradingState, currentResourceType } =
+  //     this.props;
+  //   const payload = {
+  //     symbol: currentResourceType,
+  //     amount: buyNum * ELF_DECIMAL,
+  //   };
+  //   bugRes
+  //     .Buy(payload)
+  //     .then((result) => {
+  //       if (result.error && result.error !== 0) {
+  //         message.error(result.errorMessage.message, 3);
+  //         this.props.handleCancel();
+  //         return;
+  //       }
+  //       this.setState({
+  //         loading: true,
+  //       });
+  //       const transactionId = result.result
+  //         ? result.result.TransactionId
+  //         : result.TransactionId;
+  //       setTimeout(() => {
+  //         aelf.chain
+  //           .getTxResult(transactionId)
+  //           .then((txRes) => {
+  //             // todo: 没有将token合约的approve方法添加到白名单时，发交易在这里会出错
+  //             getStateJudgment(txRes.Status, transactionId);
+  //             this.props.onRefresh();
+  //             this.setState({
+  //               loading: false,
+  //             });
+  //             handleModifyTradingState({
+  //               buyNum: null,
+  //               buyFee: 0,
+  //               buyElfValue: 0,
+  //               buySliderValue: 0,
+  //             });
+  //             this.props.handleCancel();
+  //             this.props.unMaskClosable();
+  //           })
+  //           .catch((err) => {
+  //             this.setState(
+  //               {
+  //                 loading: false,
+  //               },
+  //               () => {
+  //                 if (regBuyTooManyResource.test(err.Error)) {
+  //                   message.error(
+  //                     BUY_MORE_THAN_HALT_OF_INVENTORY_TIP,
+  //                     FAILED_MESSAGE_DISPLAY_TIME
+  //                   );
+  //                   message.error(
+  //                     `Transaction id: ${transactionId}`,
+  //                     FAILED_MESSAGE_DISPLAY_TIME
+  //                   );
+  //                   return;
+  //                 }
+  //                 message.error(
+  //                   "Your transaction seems to has some problem, please query the transaction later:",
+  //                   FAILED_MESSAGE_DISPLAY_TIME
+  //                 );
+  //                 message.error(
+  //                   `Transaction id: ${transactionId}`,
+  //                   FAILED_MESSAGE_DISPLAY_TIME
+  //                 );
+  //               }
+  //             );
+  //           });
+  //       }, 4000);
+  //     })
+  //     .catch((error) => {
+  //       this.setState({
+  //         loading: false,
+  //       });
+  //       console.error("result.Buy error", error);
+  //     });
+  // }
 
   render() {
     const {
@@ -135,15 +227,14 @@ export default class ResourceBuyModal extends PureComponent {
       buyInputLoading,
       buyEstimateValueLoading,
       currentResourceType,
+      currentWallet,
     } = this.props;
-    const { currentWallet, loading } = this.state;
+    const { loading } = this.state;
 
     return (
       <div className="modal resource-modal">
         <Row className="modal-form-item">
-          <Col span={6}>
-            Address
-          </Col>
+          <Col span={6}>Address</Col>
           <Col
             className="text-ellipse"
             span={18}
@@ -153,13 +244,7 @@ export default class ResourceBuyModal extends PureComponent {
           </Col>
         </Row>
         <Row className="modal-form-item">
-          <Col span={6}>
-            Buy
-            {' '}
-            {currentResourceType}
-            {' '}
-            Quantity
-          </Col>
+          <Col span={6}>Buy {currentResourceType} Quantity</Col>
           <Col span={18}>
             <Spin spinning={buyInputLoading}>
               {thousandsCommaWithDecimal(buyNum)}
@@ -167,9 +252,7 @@ export default class ResourceBuyModal extends PureComponent {
           </Col>
         </Row>
         <Row className="modal-form-item">
-          <Col span={6}>
-            {SYMBOL}
-          </Col>
+          <Col span={6}>{SYMBOL}</Col>
           <Col span={18}>
             <Spin spinning={buyEstimateValueLoading}>
               {thousandsCommaWithDecimal(buyElfValue)}
@@ -177,11 +260,7 @@ export default class ResourceBuyModal extends PureComponent {
           </Col>
         </Row>
         <div className="service-charge">
-          *Service Charge:
-          {' '}
-          {thousandsCommaWithDecimal(buyFee)}
-          {' '}
-          {SYMBOL}
+          *Service Charge: {thousandsCommaWithDecimal(buyFee)} {SYMBOL}
         </div>
         <Button
           type="primary"

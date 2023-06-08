@@ -15,10 +15,10 @@ import {
   ELF_PRECISION,
   TXSSTATUS,
   REAL_TIME_FETCH_INTERVAL,
+  RESOURCE_REALTIME_RECORDS,
 } from "@src/constants";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { get } from "../../../../../utils";
-import { RESOURCE_REALTIME_RECORDS } from "../../../../../constants";
 import "./RealTimeTransactions.less";
 
 const fetchLimit = 20;
@@ -45,7 +45,7 @@ class RealTimeTransactions extends PureComponent {
 
   getTableHeadHTML() {
     return (
-      <Row className='table-head' type='flex' align='middle'>
+      <Row className="table-head" type="flex" align="middle">
         <Col span={6} offset={6}>
           Average price(
           {SYMBOL})
@@ -90,6 +90,7 @@ class RealTimeTransactions extends PureComponent {
     clearTimeout(this.getResourceRealtimeRecordsTimer);
   }
 
+  // eslint-disable-next-line consistent-return
   getSellInfoHTML() {
     const { recordsData } = this.state;
     let data = null;
@@ -102,11 +103,12 @@ class RealTimeTransactions extends PureComponent {
         elf /= ELF_DECIMAL;
         fee /= ELF_DECIMAL;
         return (
-          <Row className='table-sell' type='flex' align='middle' key={index}>
+          // eslint-disable-next-line react/no-array-index-key
+          <Row className="table-sell" type="flex" align="middle" key={index}>
             <Col span={4}>
               <Link to={`/tx/${item.tx_id}`}>{date}</Link>
             </Col>
-            <Col span={3} className='sell'>
+            <Col span={3} className="sell">
               Sell
             </Col>
             <Col span={5}>{(elf / resource).toFixed(ELF_PRECISION)}</Col>
@@ -127,6 +129,7 @@ class RealTimeTransactions extends PureComponent {
   }
 
   // todo: decrease the repeating code
+  // eslint-disable-next-line consistent-return
   getBuyInfoHTML() {
     const { recordsData } = this.state;
 
@@ -140,11 +143,12 @@ class RealTimeTransactions extends PureComponent {
         elf /= ELF_DECIMAL;
         fee /= ELF_DECIMAL;
         return (
-          <Row className='table-buy' type='flex' align='middle' key={index}>
+          // eslint-disable-next-line react/no-array-index-key
+          <Row className="table-buy" type="flex" align="middle" key={index}>
             <Col span={4}>
               <Link to={`/tx/${item.tx_id}`}>{date}</Link>
             </Col>
-            <Col span={3} className='sell'>
+            <Col span={3} className="sell">
               Buy
             </Col>
             <Col span={5}>{(elf / resource).toFixed(ELF_PRECISION)}</Col>
@@ -161,14 +165,14 @@ class RealTimeTransactions extends PureComponent {
     const sellInfo = this.getSellInfoHTML();
     const buyInfo = this.getBuyInfoHTML();
     return (
-      <div className='real-time-transactions'>
+      <div className="real-time-transactions">
         <Row>
-          <Col className='real-time-transactions-head'>
+          <Col className="real-time-transactions-head">
             Real Time Transactions
           </Col>
         </Row>
-        <Divider className='resource-buy-divider' />
-        <div className='real-time-transactions-body'>
+        <Divider className="resource-buy-divider" />
+        <div className="real-time-transactions-body">
           {tableHead}
           {sellInfo}
           {buyInfo}

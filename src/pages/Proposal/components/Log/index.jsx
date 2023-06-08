@@ -8,21 +8,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { If, Then, Else } from "react-if";
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Menu } from "antd";
-import { logOut, logIn } from "../../actions/common";
-import { LOG_STATUS } from "../../common/constants";
+import { log } from "lodash-decorators/utils";
+import { logOut, logIn } from "@redux/actions/proposalCommon";
+import { LOG_STATUS } from "@redux/common/constants";
+import { WebLoginState, useWebLogin } from "aelf-web-login";
 import { isPhoneCheck } from "../../../../common/utils";
 
 const OverLay = (props) => {
   const { address } = props;
   const dispatch = useDispatch();
+  const { loginState, login, logout } = useWebLogin();
 
-  function handleLogout() {
-    localStorage.removeItem("currentWallet");
-    dispatch(logOut(address));
-  }
   return (
-    <Menu onClick={handleLogout}>
-      <Menu.Item key='1'>Logout</Menu.Item>
+    <Menu onClick={logout}>
+      <Menu.Item key="1">Logout</Menu.Item>
     </Menu>
   );
 };
@@ -31,48 +30,46 @@ OverLay.propTypes = {
 };
 
 const LogButton = (props) => {
-  const { isExist } = props;
   const common = useSelector((state) => state.common);
-  const { loading, logStatus, currentWallet } = common;
+  const { loading, currentWallet } = common;
   const { name, address = "" } = currentWallet;
-  const dispatch = useDispatch();
+  const { loginState, loginError, login } = useWebLogin();
 
-  const handleLogin = () => {
-    dispatch(logIn());
-  };
+  let nickName = name;
+  if (currentWallet.portkeyInfo && currentWallet.portkeyInfo.nickName) {
+    nickName = currentWallet.portkeyInfo.nickName;
+  }
 
+  console.log(loginState, loginError);
   return (
     <>
-      <If condition={!!isExist}>
+      <If condition={loginState === WebLoginState.logined}>
         <Then>
-          <If condition={logStatus === LOG_STATUS.LOGGED}>
-            <Then>
-              {isPhoneCheck() ? (
-                <Button>{name}</Button>
-              ) : (
-                <Dropdown
-                  overlay={<OverLay loading={loading} address={address} />}
-                >
-                  <Button>
-                    {name} <DownOutlined />
-                  </Button>
-                </Dropdown>
-              )}
-            </Then>
-            <Else>
-              <Button type='primary' loading={loading} onClick={handleLogin}>
-                Login
+          {isPhoneCheck() ? (
+            <Button>{name}</Button>
+          ) : (
+            <Dropdown overlay={<OverLay loading={loading} address={address} />}>
+              <Button type="primary" className="proposals-login-btn">
+                {nickName}
+                <DownOutlined />
               </Button>
-            </Else>
-          </If>
+            </Dropdown>
+          )}
         </Then>
+        <Else>
+          <Button
+            type="primary"
+            loading={loginState === WebLoginState.logining || loginState === WebLoginState.logouting}
+            onClick={login}
+          >
+            Login
+          </Button>
+        </Else>
       </If>
     </>
   );
 };
 
-LogButton.propTypes = {
-  isExist: PropTypes.bool.isRequired,
-};
+LogButton.propTypes = {};
 
 export default LogButton;

@@ -1,4 +1,5 @@
 import React from "react";
+import NFTTransfers from "./NFTTransfers";
 import Tokens from "./Tokens/Tokens";
 import Transactions from "./Transactions/Transactions";
 import Transfers from "./Transfers/Transfers";
@@ -27,9 +28,14 @@ export default function CommonTabPane({
       children: <Transactions address={address} />,
     },
     {
-      key: "transfers",
-      tab: "Transfers",
+      key: "tokenTransfers",
+      tab: "Token Transfers",
       children: <Transfers address={address} />,
+    },
+    {
+      key: "nftTransfers",
+      tab: "NFT Transfers",
+      children: <NFTTransfers address={address} />,
     },
   ];
 }

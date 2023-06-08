@@ -14,6 +14,10 @@
       overflow: auto;
       flex-grow: 1;
       margin-bottom: 0;
+
+      &.contract-params {
+        text-align: left;
+      }
     }
   }
 }
@@ -61,12 +65,16 @@
       }
     }
     .ant-modal-footer {
+      border: none;
       padding-bottom: 24px;
       .ant-btn {
         width: 240px;
         height: 40px;
         border-radius: 2px;
         display: inline-block;
+        &:first-child {
+          display: none;
+        }
       }
     }
   }
@@ -99,26 +107,23 @@
   }
 }
 
-.sure-modal-content {
+.sure-modal-content,
+.sure-modal-content-mobile {
   width: 720px;
   .ant-modal-content {
-    // height: 204px;
     border-radius: 8px;
     .ant-modal-body {
       height: 100%;
+      padding: 56px 24px 36px;
       .ant-modal-confirm-body-wrapper {
         width: 100%;
         height: 100%;
-        .ant-modal-confirm-body {
-          margin-top: 24px;
-        }
         .ant-modal-confirm-btns {
           text-align: center;
           margin-top: 56px;
           .ant-btn {
             width: 120px;
             height: 40px;
-            margin-bottom: 24px;
           }
           .ant-btn-primary:focus {
             border-color: #266cd3;
@@ -128,4 +133,7 @@
       }
     }
   }
+}
+.sure-modal-content-mobile {
+  padding: 0 8px 24px;
 }

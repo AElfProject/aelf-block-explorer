@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
-import { Modal, Form } from 'antd';
+import React, { PureComponent } from "react";
+import { Modal, Form } from "antd";
 
-import { NEED_PLUGIN_AUTHORIZE_TIP } from '@src/constants';
+import { NEED_PLUGIN_AUTHORIZE_TIP } from "@src/constants";
 
 const formItemLayout = {
   labelCol: {
@@ -14,27 +14,29 @@ const formItemLayout = {
   },
 };
 
-export class RedeemAnVoteModal extends PureComponent {
+class RedeemAnVoteModal extends PureComponent {
   generateVoteAnRedeemForm() {
     const { voteToRedeem } = this.props;
 
     return {
       formItems: [
         {
-          label: 'Node Name',
+          label: "Node Name",
           render: (
             <span className="form-item-value">{voteToRedeem.nodeName}</span>
           ),
         },
         {
-          label: 'Node Add',
+          label: "Node Add",
           render: (
             <span className="form-item-value">{voteToRedeem.nodeAddress}</span>
           ),
         },
         {
-          label: 'Redeem Amount',
-          render: <span className="form-item-value">{voteToRedeem.amount}</span>,
+          label: "Redeem Amount",
+          render: (
+            <span className="form-item-value">{voteToRedeem.amount}</span>
+          ),
         },
       ],
     };
@@ -64,8 +66,8 @@ export class RedeemAnVoteModal extends PureComponent {
         keyboard
       >
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-          {voteAnRedeemForm.formItems
-            && voteAnRedeemForm.formItems.map((item) => (
+          {voteAnRedeemForm.formItems &&
+            voteAnRedeemForm.formItems.map((item) => (
               <Form.Item label={item.label} key={item.label}>
                 {item.render}
               </Form.Item>

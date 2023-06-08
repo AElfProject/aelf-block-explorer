@@ -7,8 +7,8 @@ import PropTypes from "prop-types";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { setCurrentOrg } from "@redux/actions/proposalDetail";
 import config from "../../../../common/config";
-import { setCurrentOrg } from "../../actions/proposalDetail";
 import "./index.less";
 
 const OrgAddress = (props) => {

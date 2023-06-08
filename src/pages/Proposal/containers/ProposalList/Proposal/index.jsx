@@ -20,13 +20,14 @@ import constants, {
   STATUS_COLOR_MAP,
   CONTRACT_TEXT_MAP,
   PROPOSAL_STATUS_CAPITAL,
-} from "../../../common/constants";
+} from "../../../../../redux/common/constants";
 import "./index.less";
 import VoteChart from "../../../components/VoteChart";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
 import addressFormat from "../../../../../utils/addressFormat";
 import { NETWORK_TYPE } from '../../../../../../config/config';
 import { getBPCount } from '../../../../../common/utils';
+import ButtonWithLoginCheck from "../../../../../components/ButtonWithLoginCheck";
 
 const { proposalTypes, proposalStatus, proposalActions } = constants;
 
@@ -182,7 +183,7 @@ const Proposal = (props) => {
         <Divider />
         <div className="proposal-list-item-actions">
           <div className="proposal-list-item-buttons">
-            <Button
+            <ButtonWithLoginCheck
               type="primary"
               disabled={!canThisUserVote}
               className="approve-color gap-right"
@@ -191,8 +192,8 @@ const Proposal = (props) => {
               onClick={handleApprove}
             >
               Approve
-            </Button>
-            <Button
+            </ButtonWithLoginCheck>
+            <ButtonWithLoginCheck
               type="danger"
               shape="round"
               disabled={!canThisUserVote}
@@ -200,9 +201,9 @@ const Proposal = (props) => {
               onClick={handleReject}
             >
               &nbsp;Reject&nbsp;
-            </Button>
+            </ButtonWithLoginCheck>
           </div>
-          <Button
+          <ButtonWithLoginCheck
             className="proposal-list-item-abstain"
             type="link"
             disabled={!canThisUserVote}
@@ -210,7 +211,7 @@ const Proposal = (props) => {
             proposal-id={proposalId}
           >
             Abstain
-          </Button>
+          </ButtonWithLoginCheck>
         </div>
       </Card>
     </div>

@@ -3,10 +3,12 @@
  * @file proposal list
  * @author atom-yang
  */
+// eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState } from "react";
 import { If, Then, Switch, Case } from "react-if";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import {
+  message,
   Tabs,
   Pagination,
   Input,
@@ -17,14 +19,18 @@ import {
   Col,
   Empty,
   Result,
+  Modal,
 } from "antd";
+import { useEffectOnce } from 'react-use';
+import { useWebLogin } from "aelf-web-login";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import Total from "../../../../components/Total";
-import constants, { LOADING_STATUS, LOG_STATUS } from "../../common/constants";
+import constants, { LOADING_STATUS, LOG_STATUS } from "../../../../redux/common/constants";
 import Proposal from "./Proposal";
-import { getProposals } from "../../actions/proposalList";
+import { getProposals } from "../../../../redux/actions/proposalList";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import "./index.less";
-import { getContractAddress, sendTransaction } from "../../common/utils";
+import { getContractAddress, sendTransactionWith } from "../../../../redux/common/utils";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";
 
@@ -50,6 +56,8 @@ const ProposalList = () => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(params.search);
   const [activeKey, setActiveKey] = useState(params.proposalType);
+
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
 
   useEffect(() => {
     sendHeight(500);
@@ -123,11 +131,19 @@ const ProposalList = () => {
       search: "",
     });
   };
-  window.addEventListener("hashchange", () => {
+  const changeKey = () => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
     setActiveKey(key || proposalTypes.PARLIAMENT);
+    return key || proposalTypes.PARLIAMENT;
+  };
+  window.addEventListener("hashchange", () => {
+    changeKey();
   });
+  useEffectOnce(() => {
+    const key = changeKey();
+    handleTabChange(key);
+  })
 
   const send = async (id, action) => {
     if (params.proposalType === proposalTypes.REFERENDUM) {
@@ -140,19 +156,30 @@ const ProposalList = () => {
         visible: true,
       });
     } else {
-      await sendTransaction(
-        wallet,
-        getContractAddress(params.proposalType),
-        action,
-        id
-      );
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+
+      sendTransactionWith(callContract, getContractAddress(params.proposalType), action, id);
+
+      // await sendTransaction(
+      //   wallet,
+      //   getContractAddress(params.proposalType),
+      //   action,
+      //   id
+      // );
     }
   };
 
   async function handleConfirm(action) {
     if (action) {
-      await sendTransaction(
-        wallet,
+      if (!webLoginWallet.accountInfoSync.syncCompleted) {
+        showAccountInfoSyncingModal();
+        return;
+      }
+      await sendTransactionWith(
+        callContract,
         getContractAddress(params.proposalType),
         action,
         proposalInfo.proposalId
@@ -165,9 +192,13 @@ const ProposalList = () => {
   }
 
   const handleRelease = async (event) => {
+    if (!webLoginWallet.accountInfoSync.syncCompleted) {
+      showAccountInfoSyncingModal();
+      return;
+    }
     const id = event.currentTarget.getAttribute("proposal-id");
-    await sendTransaction(
-      wallet,
+    await sendTransactionWith(
+      callContract,
       getContractAddress(params.proposalType),
       "Release",
       id

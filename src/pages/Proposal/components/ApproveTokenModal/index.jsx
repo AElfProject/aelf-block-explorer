@@ -5,13 +5,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import Decimal from "decimal.js";
 import { Form, InputNumber, message, Modal, Button } from "antd";
+import { useWebLogin } from "aelf-web-login";
 import {
   getContractAddress,
   getTxResult,
-  showTransactionResult,
-} from "../../common/utils";
+  sendTransactionWith,
+} from "@redux/common/utils";
+import constants from "@redux/common/constants";
+import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import { getContract } from "../../../../common/utils";
-import constants from "../../common/constants";
 import "./index.less";
 
 const FormItem = Form.Item;
@@ -100,16 +102,6 @@ const formItemLayout = {
   },
 };
 
-const sendTransaction = async (wallet, contractAddress, method, param) => {
-  const result = await wallet.invoke({
-    contractAddress,
-    param,
-    contractMethod: method,
-  });
-  showTransactionResult(result);
-  return result;
-};
-
 function getFormDesc(allowance) {
   return {
     amount: {
@@ -178,6 +170,8 @@ const ApproveTokenModal = (props) => {
     [loadings, allowanceInfo, inputAmount]
   );
 
+  const { wallet: webLoginWallet, callContract } = useWebLogin();
+
   useEffect(() => {
     if (visible) {
       getProposalAllowanceInfo(aelf, proposalId, owner, tokenSymbol)
@@ -215,6 +209,11 @@ const ApproveTokenModal = (props) => {
   }
 
   async function handleStake() {
+    if (!webLoginWallet.accountInfoSync.syncCompleted) {
+      showAccountInfoSyncingModal();
+      return;
+    }
+
     try {
       const results = await validateFields();
       let { amount } = results;
@@ -228,8 +227,8 @@ const ApproveTokenModal = (props) => {
       });
       const method = amount > 0 ? "Approve" : "UnApprove";
       amount = Math.abs(amount);
-      const result = await sendTransaction(
-        wallet,
+      const result = await sendTransactionWith(
+        callContract,
         getContractAddress("Token"),
         method,
         {
@@ -238,6 +237,7 @@ const ApproveTokenModal = (props) => {
           symbol: tokenSymbol,
         }
       );
+      console.log(result);
       const txId = result.TransactionId || result.result.TransactionId;
       const txResult = await getTxResult(aelf, txId, 0, 6000);
       message.info(`Transactions ${txId} is ${txResult.Status}`);
@@ -272,34 +272,35 @@ const ApproveTokenModal = (props) => {
 
   return (
     <Modal
-      wrapClassName='approve-token-modal'
+      wrapClassName="approve-token-modal"
       title={action}
       visible={visible}
       onCancel={handleCancel}
       onOk={handleOk}
       okText={action}
+      cancelButtonProps={{ type: "primary" }}
       okButtonProps={okProps}
       destroyOnClose
       width={720}
     >
-      <div className='gap-bottom-large'>
+      <div className="gap-bottom-large">
         Token Balance: {allowanceInfo.balance} {tokenSymbol}
       </div>
       <Form
         form={form}
-        className='approve-token-form'
+        className="approve-token-form"
         {...formItemLayout}
         onValuesChange={handleValueChange}
       >
-        <FormItem label='Staked Token'>
+        <FormItem label="Staked Token">
           <FormItem noStyle {...formDesc.amount}>
             <InputNumber precision={allowanceInfo.decimals} step={1} min={0} />
           </FormItem>
-          <span className='gap-left-small'>{tokenSymbol}</span>
+          <span className="gap-left-small">{tokenSymbol}</span>
         </FormItem>
         <FormItem colon={false}>
           <Button
-            type='primary'
+            type="primary"
             loading={loadings.tokenLoading}
             disabled={allowanceInfo.balance === 0 || inputAmount === 0}
             onClick={handleStake}
@@ -315,6 +316,7 @@ const ApproveTokenModal = (props) => {
 ApproveTokenModal.propTypes = {
   action: PropTypes.oneOf(Object.values(proposalActions)).isRequired,
   aelf: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
     chain: PropTypes.object,
   }).isRequired,
   tokenSymbol: PropTypes.string.isRequired,
