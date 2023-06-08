@@ -423,6 +423,8 @@ const CreateOrganization = () => {
           const val = thredshold[key];
           if (val instanceof Decimal) {
             param.proposalReleaseThreshold[key] = val.toString();
+          } else {
+            param.proposalReleaseThreshold[key] = val;
           }
         }
       }
