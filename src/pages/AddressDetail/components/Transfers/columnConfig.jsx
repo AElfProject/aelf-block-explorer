@@ -59,9 +59,9 @@ const checkIsOut = (address, record) => {
   }
   // isCrossChain: Receive
   if (to === address) {
-    return true;
+    return false;
   }
-  return false;
+  return true;
 };
 const getColumnConfig = ({
   address,
