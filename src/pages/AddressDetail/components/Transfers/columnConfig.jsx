@@ -48,6 +48,21 @@ const getAddress = (nowFlag, input, record) => {
     isBlank,
   };
 };
+
+const checkIsOut = (address, record) => {
+  const { from, to, isCrossChain } = record;
+  if (isCrossChain === "Transfer" || isCrossChain === "no") {
+    if (from === address) {
+      return true;
+    }
+    return false;
+  }
+  // isCrossChain: Receive
+  if (to === address) {
+    return false;
+  }
+  return true;
+};
 const getColumnConfig = ({
   address,
   isMobile,
@@ -100,9 +115,7 @@ const getColumnConfig = ({
       dataIndex: "from",
       width: isMobile ? 224 : 196,
       render(from, record) {
-        const isOut =
-          from === address &&
-          (record.isCrossChain === "no" || record.isCrossChain === "Transfer");
+        const isOut = checkIsOut(address, record);
         const { complete, hidden, all, isBlank } = getAddress(
           isOut,
           from,
@@ -136,9 +149,7 @@ const getColumnConfig = ({
       width: isMobile ? 176 : 160,
       ellipsis,
       render(to, record) {
-        const isIn =
-          to === address &&
-          (record.isCrossChain === "no" || record.isCrossChain === "Receive");
+        const isIn = !checkIsOut(address, record);
         const { complete, hidden, all, isBlank } = getAddress(isIn, to, record);
         return (
           <div className="to">
