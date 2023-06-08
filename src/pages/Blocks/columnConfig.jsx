@@ -66,7 +66,7 @@ export default (timeFormat, handleFormatChange) => {
       width: isMobile ? 143 : 213,
       render: (text, record) => {
         return (
-          <div className="address">
+          <div className="block-hash">
             <Link title={text} to={`/block/${record.block_height}`}>
               {text}
             </Link>
