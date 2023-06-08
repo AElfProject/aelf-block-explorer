@@ -23,7 +23,7 @@ const getAdd = (address, record) => {
   let toAddress;
   const chainsLink = CHAINS_LIST.find((ele) => {
     return ele.chainId === record.relatedChainId;
-  }).chainsLink.replace(/^\/+|\/+$/g, "");
+  })?.chainsLink.replace(/^\/+|\/+$/g, "");
   if (isCrossChain === "Transfer") {
     fromAddress = {
       complete: addressFormat(from, "", CHAIN_ID),
