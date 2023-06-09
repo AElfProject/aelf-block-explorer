@@ -1,13 +1,15 @@
-import { Pagination, Table } from "antd";
+import { Pagination, Table, Tooltip } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { useDebounce } from "react-use";
 import useMobile from "../../../hooks/useMobile";
 import TableLayer from "../../../components/TableLayer/TableLayer";
-import AddressLink from "../../../components/AddressLink";
 import { get } from "../../../utils";
 import { VIEWER_ACCOUNT_LIST } from "../../../api/url";
 import { numberFormatter } from "../../../utils/formater";
+import addressFormat, { hiddenAddress } from "../../../utils/addressFormat";
+import CopyButton from "../../../components/CopyButton/CopyButton";
 
 export default function Holders() {
   const isMobile = useMobile();
@@ -42,7 +44,15 @@ export default function Holders() {
         render(address) {
           return (
             <div className="address">
-              <AddressLink address={address} />
+              <Tooltip
+                title={addressFormat(address)}
+                overlayClassName="table-item-tooltip__white"
+              >
+                <Link to={`/address/${addressFormat(address)}`}>
+                  {addressFormat(hiddenAddress(address))}
+                </Link>
+              </Tooltip>
+              <CopyButton value={addressFormat(address)} />
             </div>
           );
         },

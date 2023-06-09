@@ -4195,10 +4195,10 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.2.44:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@^0.0.34-alpha:
-  version "0.0.34-alpha"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.0.34-alpha.tgz#ba89faccc93f4d3f8ebc667f757e6428aa9104f4"
-  integrity sha512-bHmnG22/J7NDJq87F5BMo3TZLwIDh4s6nC+g5BOxdXnKUPZdbl6Ox9PnYeDZ8KcdqbgHByBPpPmx7V+25X8HJQ==
+aelf-web-login@^0.0.45-alpha:
+  version "0.0.45-alpha"
+  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.0.45-alpha.tgz#2fc9a27d5c55e651103379e3e1fec9fe0c4e74d7"
+  integrity sha512-w9kFqJk9sZFzubdnTYWu5ErmawfoGqIV7kzCJaqcWiqMJ/wyP33EL0Gz9RL4Nq3Rv03Sz7YvTRQSezzYv8joPg==
   dependencies:
     "@aelf-react/core" "^0.1.19"
     "@portkey/did-ui-react" "0.0.1-alpha.8.8"
@@ -15727,10 +15727,10 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vconsole@^3.9.5:
-  version "3.14.6"
-  resolved "https://registry.yarnpkg.com/vconsole/-/vconsole-3.14.6.tgz#74cbbf9c14e66d26325958cee8a9e8c4086a5115"
-  integrity sha512-8Ffk2SfNe6EzKqZ0aNnNjpAVBVT7zgJo81lYEJdKySYLVYBeSawdSkWi9fSjDg3WsQhgS1vNPmRqJDTuwdVbnQ==
+vconsole@^3.15.1:
+  version "3.15.1"
+  resolved "https://registry.npmjs.org/vconsole/-/vconsole-3.15.1.tgz#569a8ab15f353259527bbcf004f02946b4482cff"
+  integrity sha512-KH8XLdrq9T5YHJO/ixrjivHfmF2PC2CdVoK6RWZB4yftMykYIaXY1mxZYAic70vADM54kpMQF+dYmvl5NRNy1g==
   dependencies:
     "@babel/runtime" "^7.17.2"
     copy-text-to-clipboard "^3.0.1"

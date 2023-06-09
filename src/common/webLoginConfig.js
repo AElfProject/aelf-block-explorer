@@ -1,5 +1,4 @@
 import { getConfig, setGlobalConfig } from "aelf-web-login";
-import { did, ConfigProvider } from '@portkey/did-ui-react';
 import {
   APPNAME,
   CHAIN_ID,
@@ -8,6 +7,7 @@ import {
   CHAINS_LINK,
   CHAINS_LINK_NAMES,
 } from "@config/config";
+import isWebview from "../utils/isWebView";
 
 const graphQLServer = NETWORK_TYPE === "TESTNET" ? "https://dapp-portkey-test.portkey.finance" : "https://dapp-portkey.portkey.finance";
 const portkeyApiServer = NETWORK_TYPE === "TESTNET" ? "https://did-portkey-test.portkey.finance" : "https://did-portkey.portkey.finance"
@@ -23,7 +23,7 @@ setGlobalConfig({
     graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
     connectUrl,
     socialLogin: {
-      Portkey: {
+      Portkey: isWebview() ? undefined : {
         websiteName: APPNAME,
         websiteIcon: `${CHAINS_LINK[CHAIN_ID]}/favicon.main.ico`,
       },
@@ -51,15 +51,15 @@ setGlobalConfig({
     appName: APPNAME,
     nodes: {
       AELF: {
-        chainId: CHAIN_ID,
+        chainId: 'AELF',
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVW: {
-        chainId: CHAIN_ID,
+        chainId: 'tDVW',
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVV: {
-        chainId: CHAIN_ID,
+        chainId: 'tDVV',
         rpcUrl: DEFAUTRPCSERVER,
       },
     },

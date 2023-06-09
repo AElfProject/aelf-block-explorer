@@ -19,6 +19,7 @@ import "./ResourceAElfWallet.less";
 import addressFormat from "../../../../utils/addressFormat";
 import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import walletInstance from "../../../../redux/common/wallet";
+import { isPortkeyApp } from "../../../../utils/isWebView";
 
 const ResourceWallet = React.forwardRef(
   (
@@ -189,7 +190,7 @@ const ResourceWallet = React.forwardRef(
                 </Button>
               )} */}
 
-                {(loginState === WebLoginState.initial ||
+                {!isPortkeyApp() && (loginState === WebLoginState.initial ||
                   loginState === WebLoginState.lock ||
                   loginState === WebLoginState.logining) && (
                   <Button
