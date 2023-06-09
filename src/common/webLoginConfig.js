@@ -1,5 +1,4 @@
 import { getConfig, setGlobalConfig } from "aelf-web-login";
-import { did, ConfigProvider } from '@portkey/did-ui-react';
 import {
   APPNAME,
   CHAIN_ID,
@@ -52,15 +51,15 @@ setGlobalConfig({
     appName: APPNAME,
     nodes: {
       AELF: {
-        chainId: CHAIN_ID,
+        chainId: 'AELF',
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVW: {
-        chainId: CHAIN_ID,
+        chainId: 'tDVW',
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVV: {
-        chainId: CHAIN_ID,
+        chainId: 'tDVV',
         rpcUrl: DEFAUTRPCSERVER,
       },
     },

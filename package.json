@@ -34,7 +34,7 @@
     "aelf-block-scan": "^0.4.1",
     "aelf-bridge": "^0.0.9",
     "aelf-sdk": "3.2.40",
-    "aelf-web-login": "^0.0.35-alpha",
+    "aelf-web-login": "^0.0.36-alpha",
     "antd": "^4.22.4",
     "apisauce": "^0.16.0",
     "axios": "^0.19.0",
@@ -99,7 +99,7 @@
     "socket.io-client": "^2.2.0",
     "tslib": "^2.5.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
-    "vconsole": "^3.9.5",
+    "vconsole": "^3.15.1",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.10.0"
