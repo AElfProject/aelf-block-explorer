@@ -31,7 +31,7 @@ import App from "./App";
 
 if (process.env.NODE_ENV === "development") {
   const vConsole = new VConsole();
-  localStorage.clear();
+  // localStorage.clear();
 }
 
 async function getNodesInfo() {

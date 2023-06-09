@@ -4195,10 +4195,10 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.2.44:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@^0.0.41-alpha:
-  version "0.0.41-alpha"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.0.41-alpha.tgz#4a112611fd098e4129f92ce99bf0da991e26eef1"
-  integrity sha512-n/3umip8Lu6mbmM5x6owRA2b2UWgtn7dbA8fDyBGscW2vuGbjMs8BqdCirKStZgoQlQB4Wj8Qf2oTX10w9QVKA==
+aelf-web-login@^0.0.44-alpha:
+  version "0.0.44-alpha"
+  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.0.44-alpha.tgz#8205cf89ecd3aea8ccbb252aa3b213af0ef1e414"
+  integrity sha512-yJNrT/F/7gQYxBlDXbFMQWrs9GvywrnHAfq3ioXBdvNvXUSn3OTGRvsJgicNLYgEwkAwKJAUDBq4WdhSk2wV9w==
   dependencies:
     "@aelf-react/core" "^0.1.19"
     "@portkey/did-ui-react" "0.0.1-alpha.8.8"
