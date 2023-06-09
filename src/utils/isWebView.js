@@ -12,6 +12,6 @@ const rules =  [
 
 const webviewRegExp = new RegExp(`(${  rules.join('|')  })`, 'ig')
 
-export default function isWebview(ua) {
-  return !!navigator.userAgent.match(webviewRegExp)
+export default function isWebview() {
+  return !!navigator.userAgent.match(webviewRegExp) || window.ReactNativeWebView
 }
