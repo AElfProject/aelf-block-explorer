@@ -46,7 +46,7 @@ const LogButton = (props) => {
       <If condition={loginState === WebLoginState.logined}>
         <Then>
           {isPhoneCheck() ? (
-            <Button>{name}</Button>
+            <Button className="proposals-login-btn">{name}</Button>
           ) : (
             <Dropdown overlay={<OverLay loading={loading} address={address} />}>
               <Button type="primary" className="proposals-login-btn">
