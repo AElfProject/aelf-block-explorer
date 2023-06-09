@@ -26,6 +26,7 @@ import "./ResourceSell.less";
 import { isPhoneCheck } from "../../../../../../utils/deviceCheck";
 import walletInstance from "../../../../../../redux/common/wallet";
 import ButtonWithLoginCheck from "../../../../../../components/ButtonWithLoginCheck";
+import { isPortkeyApp } from "../../../../../../utils/isWebView";
 
 const status = { ERROR: "error" };
 
@@ -483,7 +484,7 @@ class ResourceSell extends Component {
             checkAccountInfoSync
             onClick={this.checkAndShowSellModal}
             loading={sellBtnLoading || sellEstimateValueLoading}
-            disabled={validate.validateStatus === status.ERROR}
+            disabled={validate.validateStatus === status.ERROR || isPortkeyApp()}
           >
             Sell
           </ButtonWithLoginCheck>
