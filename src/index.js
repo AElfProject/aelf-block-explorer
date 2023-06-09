@@ -7,6 +7,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
+import VConsole from 'vconsole';
 
 // 为组件内建文案提供统一的国际化支持。
 import { ConfigProvider } from "antd";
@@ -27,6 +28,11 @@ import "./portkey.less";
 import "./common/webLoginConfig";
 
 import App from "./App";
+
+if (process.env.NODE_ENV === "development") {
+  const vConsole = new VConsole();
+  localStorage.clear();
+}
 
 async function getNodesInfo() {
   const nodesInfoProvider = "/nodes/info";

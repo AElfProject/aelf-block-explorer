@@ -13,6 +13,7 @@ import { logOut, logIn } from "@redux/actions/proposalCommon";
 import { LOG_STATUS } from "@redux/common/constants";
 import { WebLoginState, useWebLogin } from "aelf-web-login";
 import { isPhoneCheck } from "../../../../common/utils";
+import isWebview from "../../../../utils/isWebView";
 
 const OverLay = (props) => {
   const { address } = props;
@@ -59,7 +60,7 @@ const LogButton = (props) => {
         <Else>
           <Button
             type="primary"
-            loading={loginState === WebLoginState.logining || loginState === WebLoginState.logouting}
+            loading={(loginState === WebLoginState.logining || loginState === WebLoginState.logouting)}
             onClick={login}
           >
             Login
