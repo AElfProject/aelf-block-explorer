@@ -19,6 +19,7 @@ import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
 import "./MyWalletCard.less";
 import { WebLoginInstance } from "../../../../utils/webLogin";
+import { isPortkeyApp } from "../../../../utils/isWebView";
 
 class MyWalletCard extends PureComponent {
   constructor(props) {
@@ -297,7 +298,7 @@ class MyWalletCard extends PureComponent {
               <WalletFilled className="card-header-icon" />
               My Wallet
             </h2>
-            {(loginState === WebLoginState.initial ||
+            {!isPortkeyApp() && (loginState === WebLoginState.initial ||
               loginState === WebLoginState.lock ||
               loginState === WebLoginState.logining) && (
               <Button

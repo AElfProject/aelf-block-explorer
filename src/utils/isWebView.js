@@ -15,3 +15,11 @@ const webviewRegExp = new RegExp(`(${  rules.join('|')  })`, 'ig')
 export default function isWebview() {
   return !!navigator.userAgent.match(webviewRegExp) || window.ReactNativeWebView
 }
+
+export function isPortkeyApp() {
+  return window.ReactNativeWebView;
+}
+
+export function isNightElfApp() {
+  return isWebview() && !isPortkeyApp();
+}
