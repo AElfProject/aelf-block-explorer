@@ -266,7 +266,6 @@ export default class ResourceBuyModal extends PureComponent {
         <Button
           type="primary"
           className="modal-button buy-btn"
-          disabled={isPortkeyApp()}
           onClick={this.getBuyRes.bind(this)}
           loading={loading}
         >
