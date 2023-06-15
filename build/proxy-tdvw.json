@@ -1,6 +1,6 @@
 [
   {
-    "description": "aelf-contract-viewer运行的API，可本地运行或者代理到线上，只需要更改target",
+    "description": "aelf-contract-viewer service, run it locally or proxy to online, only change target",
     "target": "https://explorer-test-tdvw.aelf.io",
     "context": ["/api/viewer", "/api/proposal"],
     "headers": {
@@ -22,7 +22,7 @@
     "secure": false
   },
   {
-    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "description": "aelf-block-api service, run it locally or proxy to online, only change target",
     "target": "https://explorer-test-tdvw.aelf.io",
     "context": ["/api"],
     "headers": {
@@ -32,7 +32,7 @@
     "secure": false
   },
   {
-    "description": "aelf-block-api运行的API，可本地运行或代理到线上，只需要更改target",
+    "description": "aelf-block-api service, run it locally or proxy to online, only change target",
     "target": "https://explorer-test-tdvw.aelf.io",
     "context": ["/cms"],
     "headers": {
@@ -42,7 +42,7 @@
     "secure": false
   },
   {
-    "description": "链节点，只需要更改target",
+    "description": "chain node, only change target",
     "target": "https://explorer-test-tdvw.aelf.io",
     "context": ["/chain"],
     "headers": {
@@ -52,7 +52,7 @@
     "secure": false
   },
   {
-    "description": "不需要修改",
+    "description": "Please don't change this proxy",
     "target": "https://api.huobi.pro",
     "context": ["/market"],
     "headers": {},
@@ -60,7 +60,7 @@
     "secure": false
   },
   {
-    "description": "aelf-block-api运行的websocket服务，只需更改target",
+    "description": "aelf-block-api websocket service, only change target",
     "target": "wss://explorer-test.aelf.io",
     "context": ["/socket"],
     "headers": {
