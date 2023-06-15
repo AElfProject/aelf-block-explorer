@@ -103,7 +103,17 @@ class MyVote extends Component {
   }
 
   processData(resArr) {
-    const electorVotes = resArr[0];
+    let electorVotes = resArr[0];
+    if (!electorVotes) {
+      const { currentWallet } = this.props;
+      const isCAAccount = currentWallet.portkeyInfo || currentWallet.discoverInfo;
+      if (isCAAccount) {
+        electorVotes = {
+          activeVotingRecords: [],
+          withdrawnVotesRecords: [],
+        };
+      }
+    }
     const allNodeInfo = (resArr[2] ? resArr[2].value : [])
       .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
       .map((item, index) => {

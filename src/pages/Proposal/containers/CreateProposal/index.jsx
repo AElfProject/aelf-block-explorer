@@ -15,7 +15,8 @@ import {
   showTransactionResult,
   uint8ToBase64,
 } from "@redux/common/utils";
-import { useWebLogin } from "aelf-web-login";
+import { getConfig, useWebLogin } from "aelf-web-login";
+import { did } from "@portkey/did";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
@@ -322,11 +323,25 @@ const CreateProposal = () => {
 
       // bp and without approval, both process is below when onlyUpdateName.
       if (isOnlyUpdateName) {
+        let caHash = "";
+        if (currentWallet.portkeyInfo || currentWallet.discoverInfo) {
+          did.setConfig({
+            graphQLUrl: getConfig().portkey.graphQLUrl,
+          })
+          const holderInfo = await did.didGraphQL.getHolderInfoByManager({
+            caAddresses: [currentWallet.address],
+          });
+          if (!holderInfo || !holderInfo.caHolderManagerInfo || !holderInfo.caHolderManagerInfo.length) {
+            message.error("Can't query holder info");
+            return;
+          }
+          caHash = holderInfo.caHolderManagerInfo[0].caHash;
+        }
         await updateContractName(currentWallet, {
           contractAddress: address,
           contractName: name,
           address: currentWallet.address,
-          caHash: currentWallet.portkeyInfo?.caInfo.caHash,
+          caHash,
         });
         message.success("Contract Name has been updated！");
         return;
