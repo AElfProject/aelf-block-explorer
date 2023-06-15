@@ -266,7 +266,6 @@ class NodeTable extends PureComponent {
               key={record.pubkey}
               type="primary"
               style={{ marginRight: 14 }}
-              disabled={isPortkeyApp()}
               data-nodeaddress={record.formattedAddress}
               data-targetpublickey={record.pubkey}
               data-role="vote"
