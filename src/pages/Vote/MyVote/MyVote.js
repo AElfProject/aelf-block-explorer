@@ -17,6 +17,7 @@ import MyVoteRecord from "./MyVoteRecords";
 import addressFormat from "../../../utils/addressFormat";
 import "./MyVote.style.less";
 import { WebLoginInstance } from "../../../utils/webLogin";
+import { isPortkeyApp } from "../../../utils/isWebView";
 
 class MyVote extends Component {
   constructor(props) {
@@ -228,6 +229,28 @@ class MyVote extends Component {
 
     const { loginState } = WebLoginInstance.get().getWebLoginContext();
 
+    const renderNotLogin = () => {
+      if (isPortkeyApp()) {
+        return (<div className="not-logged-section">
+          <p>
+            It seems like you are using Portkey App, please login in PC browser
+          </p>
+        </div>)
+      } 
+      return (
+        <div className="not-logged-section">
+          <p>
+            It seems like you are{" "}
+            {loginState === WebLoginState.lock ? "locked" : "not logged in"}.
+          </p>
+          <Button onClick={onLogin} type="primary">
+            Login
+          </Button>
+        </div>
+      )
+      
+    };
+
     return (
       <section>
         {currentWallet?.address ? (
@@ -236,15 +259,7 @@ class MyVote extends Component {
             <MyVoteRecord data={tableData} />
           </Spin>
         ) : (
-          <div className="not-logged-section">
-            <p>
-              It seems like you are{" "}
-              {loginState === WebLoginState.lock ? "locked" : "not logged in"}.
-            </p>
-            <Button onClick={onLogin} type="primary">
-              Login
-            </Button>
-          </div>
+          renderNotLogin()
         )}
       </section>
     );

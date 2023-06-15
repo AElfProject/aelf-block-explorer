@@ -269,6 +269,7 @@ class MyWalletCard extends PureComponent {
             type="primary"
             size="small"
             shape="round"
+            disabled={isPortkeyApp()}
             className="my-wallet-card-body-wallet-content-withdraw-btn"
             onClick={handleDividendClick}
           >
