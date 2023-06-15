@@ -28,7 +28,6 @@ import "./index.less";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
-import { isPortkeyApp } from "../../../../utils/isWebView";
 
 const clsPrefix = "node-table";
 const TableItemCount = 20;

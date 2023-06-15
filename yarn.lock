@@ -3063,13 +3063,6 @@
     "@portkey/utils" "^0.0.1-alpha.8.9"
     aelf-sdk "^3.2.44"
 
-"@portkey/detect-provider@0.0.1-alpha.22":
-  version "0.0.1-alpha.22"
-  resolved "https://registry.npmjs.org/@portkey/detect-provider/-/detect-provider-0.0.1-alpha.22.tgz#35b262ea30dadbc1f6e09eb75ed082783ca746ab"
-  integrity sha512-mnjX+m22akOoXVvKm1QYtd5OjuwJ0Bx6gbl1Ou1F59Br1ZhTgRT4n/NpizsYnJW+QWLZ61CMy194Ymt07Yd34g==
-  dependencies:
-    "@portkey/provider-types" "^0.0.1-alpha.22"
-
 "@portkey/detect-provider@0.0.1-alpha.23":
   version "0.0.1-alpha.23"
   resolved "https://registry.npmjs.org/@portkey/detect-provider/-/detect-provider-0.0.1-alpha.23.tgz#cf906d2d699fa2cf5fd3533fdcc38ca8bcf3cc17"
@@ -4305,19 +4298,20 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.2.44:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@0.1.0-alpha.7:
-  version "0.1.0-alpha.7"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.1.0-alpha.7.tgz#52a42578309dc020df60e19b5bbf931435c171c0"
-  integrity sha512-J25rdDS52jk6tT+NFTUdsDYG9VziKNlmCvjghfyp5OgpyuO5rfE6aZNUCPG2K/isDMBqhGVZA6TWow0G6VrsPw==
+aelf-web-login@0.1.0-alpha.8:
+  version "0.1.0-alpha.8"
+  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.1.0-alpha.8.tgz#25959922deb5d7ab9ec07396dca126ed3e1409db"
+  integrity sha512-+1AaQIFVhX49jYpujuHQdO+6kd9qrKvQF2g/mUegKlaFG6RY5jKBMGYCTqXibOTf0zMbxNuA2AhwEEiMXDcEwA==
   dependencies:
     "@aelf-react/core" "^0.1.19"
-    "@portkey/detect-provider" "0.0.1-alpha.22"
+    "@portkey/detect-provider" "0.0.1-alpha.23"
     "@portkey/did" "0.0.1-alpha.8.9"
     "@portkey/did-ui-react" "0.0.1-alpha.8.8"
     "@portkey/graphql" "0.0.1-alpha.8.9"
     "@portkey/provider-types" "0.0.1-alpha.22"
     "@portkey/types" "0.0.1-alpha.8.9"
     aelf-sdk "^3.2.40"
+    antd "4.24.4"
     react "^18.2.0"
     react-use "^17.4.0"
 
