@@ -344,7 +344,7 @@ class ElectionNotification extends PureComponent {
       changeVoteState({
         shouldRefreshMyWallet: true,
       });
-      if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
+      if ((currentWallet.discoverInfo || currentWallet.portkeyInfo) && !currentWallet.nightElfInfo) {
         onlyOkModal({
           message: `Voting with smart contract wallet addresses are currently not supported.`,
         });
