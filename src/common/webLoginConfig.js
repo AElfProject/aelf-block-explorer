@@ -18,6 +18,7 @@ export const connectUrl = NETWORK_TYPE === "TESTNET" ? 'https://auth-portkey-tes
 setGlobalConfig({
   appName: APPNAME,
   chainId: CHAIN_ID,
+  networkType: NETWORK_TYPE === "TESTNET" ? "TESTNET" : "MAIN",
   portkey: {
     useLocalStorage: true,
     graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,

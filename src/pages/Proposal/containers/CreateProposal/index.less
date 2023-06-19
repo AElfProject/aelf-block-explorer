@@ -37,6 +37,17 @@
 .ant-modal-footer {
   text-align: center;
 }
+@media only screen and (max-width: 481px) {
+  .create-proposal-modal.ant-modal-wrap {
+    .ant-modal-footer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+    } 
+  }
+}
+
 .create-proposal-modal.ant-modal-wrap,
 .contract-proposal-modal.ant-modal-wrap {
   .ant-modal {

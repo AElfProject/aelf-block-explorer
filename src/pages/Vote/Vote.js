@@ -491,7 +491,7 @@ class VoteContainer extends Component {
 
   handleVote(targetPublicKey, voteType, ele) {
     const { currentWallet } = this.props;
-    if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
+    if ((currentWallet.portkeyInfo || currentWallet.discoverInfo) && !currentWallet.nightElfInfo) {
       onlyOkModal({
         message: `Voting with smart contract wallet addresses are currently not supported.`,
       });

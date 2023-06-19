@@ -15,7 +15,8 @@ import {
   showTransactionResult,
   uint8ToBase64,
 } from "@redux/common/utils";
-import { useWebLogin } from "aelf-web-login";
+import { getConfig, useWebLogin } from "aelf-web-login";
+import { did } from "@portkey/did";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
@@ -36,6 +37,7 @@ import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.ts
 import { deserializeLog, isPhoneCheck } from "../../../../common/utils";
 import { interval } from "../../../../utils/timeUtils";
 import { get } from "../../../../utils";
+import { isPortkeyApp } from '../../../../utils/isWebView';
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
 import {
   base64ToByteArray,
@@ -43,7 +45,7 @@ import {
   hexStringToByteArray,
 } from "../../../../utils/formater";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
-import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
+import { onlyOkModal, showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 
 const { TabPane } = Tabs;
 
@@ -314,19 +316,27 @@ const CreateProposal = () => {
     } = contract;
     let params = {};
     try {
-
-      if (!webLoginWallet.accountInfoSync.syncCompleted) {
-        showAccountInfoSyncingModal();
-        return;
-      }
-
       // bp and without approval, both process is below when onlyUpdateName.
       if (isOnlyUpdateName) {
+        let caHash = "";
+        if (currentWallet.portkeyInfo || currentWallet.discoverInfo) {
+          did.setConfig({
+            graphQLUrl: getConfig().portkey.graphQLUrl,
+          })
+          const holderInfo = await did.didGraphQL.getHolderInfoByManager({
+            caAddresses: [currentWallet.address],
+          });
+          if (!holderInfo || !holderInfo.caHolderManagerInfo || !holderInfo.caHolderManagerInfo.length) {
+            message.error("Can't query holder info");
+            return;
+          }
+          caHash = holderInfo.caHolderManagerInfo[0].caHash;
+        }
         await updateContractName(currentWallet, {
           contractAddress: address,
           contractName: name,
           address: currentWallet.address,
-          caHash: currentWallet.portkeyInfo?.caInfo.caHash,
+          caHash,
         });
         message.success("Contract Name has been updated！");
         return;
@@ -559,6 +569,26 @@ const CreateProposal = () => {
     });
     const { isOnlyUpdateName } = results;
     const isMobile = isPhoneCheck();
+
+
+    if (!webLoginWallet.accountInfoSync.syncCompleted) {
+      setContractResult((v) => ({ ...v, confirming: false }));
+      handleCancel();
+      showAccountInfoSyncingModal();
+      return;
+    }
+    
+    if (results.name && currentWallet.discoverInfo) {
+      setContractResult((v) => ({ ...v, confirming: false }));
+      handleCancel();
+
+      const portkeyName = isPortkeyApp() ? 'Portkey App' : `Portkey extension`;
+      onlyOkModal({
+        message: `Setting contract names with the ${portkeyName} is currently not supported.`,
+      })
+      return;
+    }
+
     Modal.confirm({
       className: `sure-modal-content${isMobile ? '-mobile': ''}`,
       width: "720",

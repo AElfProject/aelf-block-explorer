@@ -40,10 +40,6 @@ import getEstimatedValueELF from "../../../../../../utils/getEstimatedValueELF";
 import getFees from "../../../../../../utils/getFees";
 import "./ResourceBuy.less";
 import { isPhoneCheck } from "../../../../../../utils/deviceCheck";
-import walletInstance from "../../../../../../redux/common/wallet";
-import { LOG_STATUS } from "../../../../../../redux/common/constants";
-import { WebLoginInstance } from "../../../../../../utils/webLogin";
-import { isPortkeyApp } from "../../../../../../utils/isWebView";
 
 const A_PARAM_TO_AVOID_THE_MAX_BUY_AMOUNT_LARGE_THAN_ELF_BALANCE = 0.01;
 const status = { ERROR: "error" };
@@ -667,7 +663,7 @@ class ResourceBuy extends Component {
             loading={
               buyEstimateValueLoading || buyBtnLoading || buyInputLoading
             }
-            disabled={validate.validateStatus === status.ERROR || isPortkeyApp()}
+            disabled={validate.validateStatus === status.ERROR}
           >
             Buy
           </ButtonWithLoginCheck>

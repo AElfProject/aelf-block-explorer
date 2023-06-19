@@ -17,9 +17,7 @@ import { regBuyTooManyResource } from "@utils/regExps";
 import getStateJudgment from "../../../../../../utils/getStateJudgment";
 import { aelf } from "../../../../../../utils";
 import "./ResourceBuyModal.less";
-import walletInstance from "../../../../../../redux/common/wallet";
 import { WebLoginInstance } from "../../../../../../utils/webLogin";
-import { isPortkeyApp } from "../../../../../../utils/isWebView";
 
 export default class ResourceBuyModal extends PureComponent {
   constructor(props) {

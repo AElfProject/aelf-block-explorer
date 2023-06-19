@@ -17,7 +17,6 @@ import MyVoteRecord from "./MyVoteRecords";
 import addressFormat from "../../../utils/addressFormat";
 import "./MyVote.style.less";
 import { WebLoginInstance } from "../../../utils/webLogin";
-import { isPortkeyApp } from "../../../utils/isWebView";
 
 class MyVote extends Component {
   constructor(props) {
@@ -103,7 +102,17 @@ class MyVote extends Component {
   }
 
   processData(resArr) {
-    const electorVotes = resArr[0];
+    let electorVotes = resArr[0];
+    if (!electorVotes) {
+      const { currentWallet } = this.props;
+      const isCAAccount = currentWallet.portkeyInfo || currentWallet.discoverInfo;
+      if (isCAAccount) {
+        electorVotes = {
+          activeVotingRecords: [],
+          withdrawnVotesRecords: [],
+        };
+      }
+    }
     const allNodeInfo = (resArr[2] ? resArr[2].value : [])
       .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
       .map((item, index) => {
@@ -229,28 +238,6 @@ class MyVote extends Component {
 
     const { loginState } = WebLoginInstance.get().getWebLoginContext();
 
-    const renderNotLogin = () => {
-      if (isPortkeyApp()) {
-        return (<div className="not-logged-section">
-          <p>
-            It seems like you are using Portkey App, please login in PC browser
-          </p>
-        </div>)
-      } 
-      return (
-        <div className="not-logged-section">
-          <p>
-            It seems like you are{" "}
-            {loginState === WebLoginState.lock ? "locked" : "not logged in"}.
-          </p>
-          <Button onClick={onLogin} type="primary">
-            Login
-          </Button>
-        </div>
-      )
-      
-    };
-
     return (
       <section>
         {currentWallet?.address ? (
@@ -259,7 +246,15 @@ class MyVote extends Component {
             <MyVoteRecord data={tableData} />
           </Spin>
         ) : (
-          renderNotLogin()
+          <div className="not-logged-section">
+            <p>
+              It seems like you are{" "}
+              {loginState === WebLoginState.lock ? "locked" : "not logged in"}.
+            </p>
+            <Button onClick={onLogin} type="primary">
+              Login
+            </Button>
+          </div>
         )}
       </section>
     );
