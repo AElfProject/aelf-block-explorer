@@ -6,7 +6,15 @@ import React, { Suspense, useCallback, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { useLocation } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
-import { useWebLoginEvent, useWebLogin, WebLoginState, useLoginState, WebLoginEvents, ERR_CODE } from "aelf-web-login";
+import {
+  useWebLoginEvent,
+  useWebLogin,
+  WebLoginState,
+  useLoginState,
+  WebLoginEvents,
+  ERR_CODE,
+} from "aelf-web-login";
+import { message } from "antd";
 import BrowserHeader from "./components/Header/Header";
 import HeaderBlank from "./components/Header/HeaderBlank";
 import BrowserFooter from "./components/Footer/Footer";
@@ -19,7 +27,7 @@ import {
 } from "./redux/actions/proposalCommon";
 import "./App.less";
 import { WebLoginInstance } from "./utils/webLogin";
-import { onlyOkModal } from "./components/SimpleModal";
+import { onlyOkModal } from "./components/SimpleModal/index.tsx";
 
 function App() {
   const { pathname } = useLocation();
@@ -46,7 +54,7 @@ function App() {
 
   useLoginState(
     (loginState) => {
-      console.log(wallet)
+      console.log(wallet);
       console.log(loginState, loginError);
       if (loginState === WebLoginState.initial && currentWallet.address) {
         dispatch({
@@ -75,14 +83,14 @@ function App() {
     if (error.code) {
       if (error.code === ERR_CODE.NETWORK_TYPE_NOT_MATCH) {
         onlyOkModal({
-          message: 'Please switch the extension to the correct network.'
-        })
+          message: "Please switch the extension to the correct network.",
+        });
       }
       return;
     }
     message.error(error.message);
   }, []);
-  useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, onLoginError)
+  useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, onLoginError);
 
   return (
     <Suspense fallback={null}>
