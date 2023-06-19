@@ -4298,10 +4298,10 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.2.44:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@0.1.0-alpha.13:
-  version "0.1.0-alpha.13"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.1.0-alpha.13.tgz#f7508045e44dee4ae2b420f65ecffd52ab692afc"
-  integrity sha512-yRuAAJvPWaibXrvtWKLoIEB8U8dhkYAnqznRghk6BFyHftBlTGG19LajSfl4OGubDu8u1MyhVsjbys7qOtSVMQ==
+aelf-web-login@0.1.0-alpha.15:
+  version "0.1.0-alpha.15"
+  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.1.0-alpha.15.tgz#473e93e4f6758d2964e9bf501d445cf18d190b03"
+  integrity sha512-mPXJsuXbDJi17eWcdWfPI5YG+skx4Q4H18YQ+jXerJnd3iVm/P13nV+/gazKTRXuz6q1/7BqiEupq1+93gqspg==
   dependencies:
     "@aelf-react/core" "^0.1.19"
     "@portkey/detect-provider" "0.0.1-alpha.23"
