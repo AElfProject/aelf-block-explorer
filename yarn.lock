@@ -4298,10 +4298,10 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.2.44:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@0.1.0-alpha.11:
-  version "0.1.0-alpha.11"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.1.0-alpha.11.tgz#6657b674bf803637e637c1117a35632fbc302dc3"
-  integrity sha512-phwmCZ/HzHotYhxhjj7XdxmY+CrFztBTesa2oHFGZQkdRg/vqmKt1t8PELIYhQltVITdrAzJ+ZcQ2Z1PksWqug==
+aelf-web-login@0.1.0-alpha.13:
+  version "0.1.0-alpha.13"
+  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-0.1.0-alpha.13.tgz#f7508045e44dee4ae2b420f65ecffd52ab692afc"
+  integrity sha512-yRuAAJvPWaibXrvtWKLoIEB8U8dhkYAnqznRghk6BFyHftBlTGG19LajSfl4OGubDu8u1MyhVsjbys7qOtSVMQ==
   dependencies:
     "@aelf-react/core" "^0.1.19"
     "@portkey/detect-provider" "0.0.1-alpha.23"
@@ -4311,9 +4311,9 @@ aelf-web-login@0.1.0-alpha.11:
     "@portkey/provider-types" "0.0.1-alpha.22"
     "@portkey/types" "0.0.1-alpha.8.9"
     aelf-sdk "^3.2.40"
+    ahooks "^3.7.7"
     antd "4.24.4"
     react "^18.2.0"
-    react-use "^17.4.0"
 
 after@0.8.2:
   version "0.8.2"
@@ -4361,7 +4361,7 @@ ahooks-v3-count@^1.0.0:
   resolved "https://registry.npmjs.org/ahooks-v3-count/-/ahooks-v3-count-1.0.0.tgz#ddeb392e009ad6e748905b3cbf63a9fd8262ca80"
   integrity sha512-V7uUvAwnimu6eh/PED4mCDjE7tokeZQLKlxg9lCTMPhN+NjsSbtdacByVlR1oluXQzD3MOw55wylDmQo4+S9ZQ==
 
-ahooks@^3.7.2:
+ahooks@^3.7.2, ahooks@^3.7.7:
   version "3.7.7"
   resolved "https://registry.npmjs.org/ahooks/-/ahooks-3.7.7.tgz#b046f8a23a6e6d6695a37ba44f5f4331cf09f1eb"
   integrity sha512-5e5WlPq81Y84UnTLOKIQeq2cJw4aa7yj8fR2Nb/oMmXPrWMjIMCbPS1o+fpxSfCaNA3AzOnnMc8AehWRZltkJQ==
