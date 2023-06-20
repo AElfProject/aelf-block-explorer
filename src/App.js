@@ -6,7 +6,8 @@ import React, { Suspense, useCallback, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { useLocation } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
-import { useWebLogin, WebLoginState, useLoginState } from "aelf-web-login";
+import { message } from 'antd';
+import { useWebLoginEvent, useWebLogin, WebLoginState, useLoginState, WebLoginEvents, ERR_CODE } from "aelf-web-login";
 import BrowserHeader from "./components/Header/Header";
 import HeaderBlank from "./components/Header/HeaderBlank";
 import BrowserFooter from "./components/Footer/Footer";
@@ -18,6 +19,7 @@ import {
   LOG_OUT_ACTIONS,
 } from "./redux/actions/proposalCommon";
 import "./App.less";
+import { onlyOkModal, showAccountInfoSyncingModal } from "./components/SimpleModal/index.tsx";
 import { WebLoginInstance } from "./utils/webLogin";
 
 function App() {
@@ -60,9 +62,6 @@ function App() {
           type: LOG_IN_ACTIONS.LOG_IN_START,
         });
       } else if (loginState === WebLoginState.logined) {
-        if (wallet.portkeyInfo && wallet.portkeyInfo.nickName) {
-          wallet.name = wallet.portkeyInfo.nickName;
-        }
         dispatch({
           type: LOG_IN_ACTIONS.LOG_IN_SUCCESS,
           payload: wallet,
@@ -72,6 +71,22 @@ function App() {
     },
     [dispatch]
   );
+
+  const onLoginError = useCallback((error) => {
+    if (error.code) {
+      if (error.code === ERR_CODE.NETWORK_TYPE_NOT_MATCH) {
+        onlyOkModal({
+          message: 'Please switch the extension to the correct network.'
+        });
+      }
+      else if (error.code === ERR_CODE.ACCOUNTS_IS_EMPTY) {
+        showAccountInfoSyncingModal();
+      }
+      return;
+    }
+    message.error(error.message);
+  }, []);
+  useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, onLoginError);
 
   return (
     <Suspense fallback={null}>

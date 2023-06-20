@@ -98,7 +98,9 @@ class TeamDetail extends PureComponent {
         if (res.code !== 0) {
           return;
         }
-        this.setState({ data: res.data });
+        const { data } = res;
+        const formattedAddress = addressFormat(data.address);
+        this.setState({ data, formattedAddress });
       })
       .catch((err) => message.error(err));
   }

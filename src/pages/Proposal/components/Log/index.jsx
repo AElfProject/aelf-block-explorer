@@ -36,12 +36,6 @@ const LogButton = (props) => {
   const { name, address = "" } = currentWallet;
   const { loginState, loginError, login } = useWebLogin();
 
-  let nickName = name;
-  if (currentWallet.portkeyInfo && currentWallet.portkeyInfo.nickName) {
-    nickName = currentWallet.portkeyInfo.nickName;
-  }
-
-  console.log(loginState, loginError);
   return (
     <>
       <If condition={loginState === WebLoginState.logined}>
@@ -51,7 +45,7 @@ const LogButton = (props) => {
           ) : (
             <Dropdown overlay={<OverLay loading={loading} address={address} />}>
               <Button type="primary" className="proposals-login-btn">
-                {nickName}
+                {name}
                 <DownOutlined />
               </Button>
             </Dropdown>

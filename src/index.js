@@ -65,9 +65,16 @@ ReactDOM.render(
     <Provider store={store}>
       <PortkeyConfigProvider>
         <WebLoginProvider
-          connectEagerly
-          autoShowUnlock={false}
-          extraWallets={["elf"]}
+          extraWallets={['discover', 'elf']}
+          nightElf={{ connectEagerly: true }}
+          portkey={{ autoShowUnlock: false, checkAccountInfoSync: true }}
+          discover={{
+            autoRequestAccount: true,
+            autoLogoutOnAccountMismatch: true,
+            autoLogoutOnChainMismatch: true,
+            autoLogoutOnDisconnected: true,
+            autoLogoutOnNetworkMismatch: true,
+          }}
         >
           <App />
         </WebLoginProvider>

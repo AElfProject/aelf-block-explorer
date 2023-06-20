@@ -19,7 +19,6 @@ import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
 import "./MyWalletCard.less";
 import { WebLoginInstance } from "../../../../utils/webLogin";
-import { isPortkeyApp } from "../../../../utils/isWebView";
 
 class MyWalletCard extends PureComponent {
   constructor(props) {
@@ -128,12 +127,7 @@ class MyWalletCard extends PureComponent {
 
       // todo: maybe we need to use electionContractFromExt instead
       // After get balance and lockAmount, calculate the total assets
-      if (
-        electionContract &&
-        multiTokenContract &&
-        activeVotedVotesAmount !== "-" &&
-        balance !== "-"
-      ) {
+      if (electionContract && multiTokenContract && balance !== "-") {
         this.computedTotalAssets();
       }
     }
@@ -201,8 +195,11 @@ class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
+    const totalAssets = this.props.currentWallet.discoverInfo
+      ? balance
+      : activeVotedVotesAmount + balance;
     this.setState({
-      totalAssets: activeVotedVotesAmount + balance,
+      totalAssets,
     });
   }
 
@@ -269,7 +266,6 @@ class MyWalletCard extends PureComponent {
             type="primary"
             size="small"
             shape="round"
-            disabled={isPortkeyApp()}
             className="my-wallet-card-body-wallet-content-withdraw-btn"
             onClick={handleDividendClick}
           >
@@ -299,7 +295,7 @@ class MyWalletCard extends PureComponent {
               <WalletFilled className="card-header-icon" />
               My Wallet
             </h2>
-            {!isPortkeyApp() && (loginState === WebLoginState.initial ||
+            {(loginState === WebLoginState.initial ||
               loginState === WebLoginState.lock ||
               loginState === WebLoginState.logining) && (
               <Button
