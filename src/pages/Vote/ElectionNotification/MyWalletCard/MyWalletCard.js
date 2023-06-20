@@ -200,8 +200,13 @@ class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
+    const totalAssets = [activeVotedVotesAmount, balance].some(
+      (ele) => ele === "-"
+    )
+      ? "-"
+      : activeVotedVotesAmount + balance;
     this.setState({
-      totalAssets: activeVotedVotesAmount + balance,
+      totalAssets,
     });
   }
 
