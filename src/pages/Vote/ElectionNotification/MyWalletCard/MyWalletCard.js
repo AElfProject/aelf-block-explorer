@@ -19,6 +19,7 @@ import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
 import "./MyWalletCard.less";
 import { WebLoginInstance } from "../../../../utils/webLogin";
+import { isActivityBrowser } from "../../../../utils/isWebView";
 
 class MyWalletCard extends PureComponent {
   constructor(props) {
@@ -267,6 +268,7 @@ class MyWalletCard extends PureComponent {
             size="small"
             shape="round"
             className="my-wallet-card-body-wallet-content-withdraw-btn"
+            disabled={isActivityBrowser()}
             onClick={handleDividendClick}
           >
             Claim
@@ -295,7 +297,7 @@ class MyWalletCard extends PureComponent {
               <WalletFilled className="card-header-icon" />
               My Wallet
             </h2>
-            {(loginState === WebLoginState.initial ||
+            {!isActivityBrowser() && (loginState === WebLoginState.initial ||
               loginState === WebLoginState.lock ||
               loginState === WebLoginState.logining) && (
               <Button
