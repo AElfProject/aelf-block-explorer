@@ -341,10 +341,13 @@ class ElectionNotification extends PureComponent {
         judgeCurrentUserIsCandidate,
         changeVoteState,
       } = this.props;
-      changeVoteState({
-        shouldRefreshMyWallet: true,
-      });
-      if ((currentWallet.discoverInfo || currentWallet.portkeyInfo) && !currentWallet.nightElfInfo) {
+      // changeVoteState({
+      //   shouldRefreshMyWallet: true,
+      // });
+      if (
+        (currentWallet.discoverInfo || currentWallet.portkeyInfo) &&
+        !currentWallet.nightElfInfo
+      ) {
         onlyOkModal({
           message: `Becoming candidate nodes with smart contract wallet addresses are currently not supported.`,
         });
