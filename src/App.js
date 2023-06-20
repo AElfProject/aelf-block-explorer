@@ -19,7 +19,7 @@ import {
   LOG_OUT_ACTIONS,
 } from "./redux/actions/proposalCommon";
 import "./App.less";
-import { onlyOkModal } from "./components/SimpleModal/index.tsx";
+import { onlyOkModal, showAccountInfoSyncingModal } from "./components/SimpleModal/index.tsx";
 import { WebLoginInstance } from "./utils/webLogin";
 
 function App() {
@@ -78,6 +78,9 @@ function App() {
         onlyOkModal({
           message: 'Please switch the extension to the correct network.'
         });
+      }
+      else if (error.code === ERR_CODE.ACCOUNTS_IS_EMPTY) {
+        showAccountInfoSyncingModal();
       }
       return;
     }
