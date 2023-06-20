@@ -127,12 +127,7 @@ class MyWalletCard extends PureComponent {
 
       // todo: maybe we need to use electionContractFromExt instead
       // After get balance and lockAmount, calculate the total assets
-      if (
-        electionContract &&
-        multiTokenContract &&
-        activeVotedVotesAmount !== "-" &&
-        balance !== "-"
-      ) {
+      if (electionContract && multiTokenContract && balance !== "-") {
         this.computedTotalAssets();
       }
     }
@@ -200,10 +195,8 @@ class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
-    const totalAssets = [activeVotedVotesAmount, balance].some(
-      (ele) => ele === "-"
-    )
-      ? "-"
+    const totalAssets = this.props.currentWallet.discoverInfo
+      ? balance
       : activeVotedVotesAmount + balance;
     this.setState({
       totalAssets,
