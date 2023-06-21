@@ -28,6 +28,7 @@ import "./index.less";
 import { SOCKET_URL_NEW } from "../../../../constants";
 import addressFormat from "../../../../utils/addressFormat";
 import TableLayer from "../../../../components/TableLayer/TableLayer";
+import { isActivityBrowser } from "../../../../utils/isWebView";
 
 const clsPrefix = "node-table";
 const TableItemCount = 20;
@@ -265,6 +266,7 @@ class NodeTable extends PureComponent {
               key={record.pubkey}
               type="primary"
               style={{ marginRight: 14 }}
+              disabled={isActivityBrowser()}
               data-nodeaddress={record.formattedAddress}
               data-targetpublickey={record.pubkey}
               data-role="vote"

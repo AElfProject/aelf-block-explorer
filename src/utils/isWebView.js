@@ -20,6 +20,16 @@ export function isPortkeyApp() {
   return window.ReactNativeWebView;
 }
 
+export function isPortkeyAppWithDiscover() {
+  const ua = navigator.userAgent;
+  return ua.indexOf('Portkey did Mobile') !== -1;
+}
+
+// readonly browser, don't show login
+export function isActivityBrowser() {
+  return isPortkeyApp() && !isPortkeyAppWithDiscover();
+}
+
 export function isNightElfApp() {
   return isWebview() && !isPortkeyApp();
 }

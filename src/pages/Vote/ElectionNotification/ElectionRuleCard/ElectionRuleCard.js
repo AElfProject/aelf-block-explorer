@@ -15,6 +15,7 @@ import { withRouter } from "../../../../routes/utils";
 import "./ElectionRuleCard.style.less";
 import Svg from "../../../../components/Svg/Svg";
 import { onlyOkModal } from "../../../../components/SimpleModal/index.tsx";
+import { isActivityBrowser } from "../../../../utils/isWebView";
 
 function ElectionRuleCard(props) {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ function ElectionRuleCard(props) {
         // disabled="true"
         type="primary"
         className="apply-to-be-a-node-btn"
+        disabled={isActivityBrowser()}
         onClick={onClick}
       >
         {isCandidate ? "Modify team information" : "Become a candidate node"}

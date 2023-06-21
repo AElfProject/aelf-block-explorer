@@ -14,6 +14,7 @@ import { useWebLogin } from "aelf-web-login";
 import LogButton from "./components/Log";
 import Rules from "./components/Rules";
 import { isPhoneCheck, sendMessage } from "../../common/utils";
+import { isActivityBrowser } from "../../utils/isWebView";
 
 const { TabPane } = Tabs;
 
@@ -129,7 +130,7 @@ const App = () => {
                 {isPhoneCheck() ? " Rule" : "Proposal Rules"}
               </span>
             </Popover>
-            <LogButton />
+            {!isActivityBrowser() && <LogButton />}
           </>
         }
       >
