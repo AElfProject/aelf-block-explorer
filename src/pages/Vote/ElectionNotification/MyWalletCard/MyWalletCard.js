@@ -196,9 +196,10 @@ class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
-    const totalAssets = this.props.currentWallet.discoverInfo
-      ? balance
-      : activeVotedVotesAmount + balance;
+    const totalAssets =
+      activeVotedVotesAmount === "-"
+        ? balance
+        : activeVotedVotesAmount + balance;
     this.setState({
       totalAssets,
     });
@@ -297,17 +298,18 @@ class MyWalletCard extends PureComponent {
               <WalletFilled className="card-header-icon" />
               My Wallet
             </h2>
-            {!isActivityBrowser() && (loginState === WebLoginState.initial ||
-              loginState === WebLoginState.lock ||
-              loginState === WebLoginState.logining) && (
-              <Button
-                type="text"
-                className="my-wallet-card-header-sync-btn update-btn"
-                onClick={this.loginOrUnlock}
-              >
-                Login
-              </Button>
-            )}
+            {!isActivityBrowser() &&
+              (loginState === WebLoginState.initial ||
+                loginState === WebLoginState.lock ||
+                loginState === WebLoginState.logining) && (
+                <Button
+                  type="text"
+                  className="my-wallet-card-header-sync-btn update-btn"
+                  onClick={this.loginOrUnlock}
+                >
+                  Login
+                </Button>
+              )}
             <Button
               type="text"
               className="my-wallet-card-header-sync-btn update-btn"
