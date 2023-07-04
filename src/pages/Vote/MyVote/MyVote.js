@@ -93,6 +93,9 @@ class MyVote extends Component {
         // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
         length: 20,
       }),
+      electionContract.GetElectorVoteWithAllRecords.call({
+        value: currentWallet.address,
+      }),
     ])
       .then((resArr) => {
         this.processData(resArr);
@@ -103,16 +106,17 @@ class MyVote extends Component {
   }
 
   processData(resArr) {
-    let electorVotes = resArr[0];
+    let electorVotes = resArr[0] || resArr[3];
     if (!electorVotes) {
-      const { currentWallet } = this.props;
-      const isCAAccount = currentWallet.portkeyInfo || currentWallet.discoverInfo;
-      if (isCAAccount) {
-        electorVotes = {
-          activeVotingRecords: [],
-          withdrawnVotesRecords: [],
-        };
-      }
+      // const { currentWallet } = this.props;
+      // const isCAAccount =
+      //   currentWallet.portkeyInfo || currentWallet.discoverInfo;
+      // if (isCAAccount) {
+      electorVotes = {
+        activeVotingRecords: [],
+        withdrawnVotesRecords: [],
+      };
+      // }
     }
     const allNodeInfo = (resArr[2] ? resArr[2].value : [])
       .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
@@ -241,12 +245,15 @@ class MyVote extends Component {
 
     const renderNotLogin = () => {
       if (isActivityBrowser()) {
-        return (<div className="not-logged-section">
-          <p>
-            It seems like you are using Portkey App, please login in PC browser
-          </p>
-        </div>)
-      } 
+        return (
+          <div className="not-logged-section">
+            <p>
+              It seems like you are using Portkey App, please login in PC
+              browser
+            </p>
+          </div>
+        );
+      }
       return (
         <div className="not-logged-section">
           <p>
@@ -257,7 +264,7 @@ class MyVote extends Component {
             Login
           </Button>
         </div>
-      )
+      );
     };
 
     return (
@@ -267,7 +274,9 @@ class MyVote extends Component {
             <StatisticalData data={statistData} tooltip={MY_VOTE_DATA_TIP} />
             <MyVoteRecord data={tableData} />
           </Spin>
-        ) : (renderNotLogin())}
+        ) : (
+          renderNotLogin()
+        )}
       </section>
     );
   }

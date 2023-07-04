@@ -159,10 +159,17 @@ class MyWalletCard extends PureComponent {
       return false;
     }
     console.log(currentWallet?.address, "fetchElectorVoteInfo");
-    return electionContract.GetElectorVoteWithRecords.call({
-      value: currentWallet.publicKey,
-    })
-      .then((res) => {
+    return Promise.all([
+      electionContract.GetElectorVoteWithRecords.call({
+        value: currentWallet.publicKey,
+      }),
+      electionContract.GetElectorVoteWithRecords.call({
+        value: currentWallet.address,
+      }),
+    ])
+      .then((result) => {
+        const res = result[0] || result[1];
+        if (!res) return;
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;
         if (activeVotedVotesAmount) {

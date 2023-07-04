@@ -362,6 +362,9 @@ class VoteContainer extends Component {
         value: currentWallet?.publicKey,
       }),
       getAllTeamDesc(),
+      electionContract.GetElectorVoteWithRecords.call({
+        value: currentWallet?.address,
+      }),
     ])
       .then((resArr) => {
         this.processDataVoteNeed(resArr);
@@ -374,7 +377,7 @@ class VoteContainer extends Component {
   processDataVoteNeed(resArr) {
     // todo: the process code are  similar, can i unify it? Don't forget to consider the changablity.
     const { targetPublicKey } = this.state;
-    const electorVote = resArr[0];
+    const electorVote = resArr[0] || resArr[2];
     let allTeamInfo = null;
     let expiredVotesAmount = 0;
     if (resArr[1].code === 0) {
@@ -491,7 +494,10 @@ class VoteContainer extends Component {
 
   handleVote(targetPublicKey, voteType, ele) {
     const { currentWallet } = this.props;
-    if ((currentWallet.portkeyInfo || currentWallet.discoverInfo) && !currentWallet.nightElfInfo) {
+    if (
+      (currentWallet.portkeyInfo || currentWallet.discoverInfo) &&
+      !currentWallet.nightElfInfo
+    ) {
       onlyOkModal({
         message: `Voting with smart contract wallet addresses are currently not supported.`,
       });
