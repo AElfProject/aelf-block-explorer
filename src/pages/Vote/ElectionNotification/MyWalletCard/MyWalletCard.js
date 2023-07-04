@@ -153,22 +153,34 @@ class MyWalletCard extends PureComponent {
       .catch((err) => console.error("fetchWalletBalance", err));
   }
 
+
+  async getElectorVote(currentWallet, electionContract) {
+    const { publicKey, address } = currentWallet;
+    if (!publicKey && !address) {
+      return null;
+    }
+    let res;
+    if (publicKey) {
+      res = await electionContract.GetElectorVoteWithRecords.call({
+        value: publicKey,
+      });
+    }
+    if (!res) {
+      res = await electionContract.GetElectorVoteWithRecords.call({
+        value: address,
+      });
+    }
+    return res;
+  }
+
   fetchElectorVoteInfo() {
     const { electionContract, currentWallet } = this.props;
     if (!currentWallet?.address) {
       return false;
     }
     console.log(currentWallet?.address, "fetchElectorVoteInfo");
-    return Promise.all([
-      electionContract.GetElectorVoteWithRecords.call({
-        value: currentWallet.publicKey,
-      }),
-      electionContract.GetElectorVoteWithRecords.call({
-        value: currentWallet.address,
-      }),
-    ])
-      .then((result) => {
-        const res = result[0] || result[1];
+    return this.getElectorVote(currentWallet, electionContract)
+      .then((res) => {
         if (!res) return;
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;

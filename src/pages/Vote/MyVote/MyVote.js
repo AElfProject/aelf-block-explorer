@@ -74,6 +74,22 @@ class MyVote extends Component {
     );
   }
 
+  async fetchElectorVote(currentWallet, electionContract) {
+    const { publicKey, address } = currentWallet;
+    let res;
+    if (publicKey) {
+      res = await electionContract.GetElectorVoteWithAllRecords.call({
+        value: publicKey,
+      });
+    }
+    if (!res) {
+      res = await electionContract.GetElectorVoteWithAllRecords.call({
+        value: address,
+      });
+    }
+    return res;
+  }
+
   fetchTableDataAndStatistData() {
     const { electionContract, currentWallet } = this.props;
     if (!electionContract) return;
@@ -84,9 +100,7 @@ class MyVote extends Component {
       return false;
     }
     Promise.all([
-      electionContract.GetElectorVoteWithAllRecords.call({
-        value: currentWallet.publicKey,
-      }),
+      this.fetchElectorVote(currentWallet, electionContract),
       getAllTeamDesc(),
       fetchPageableCandidateInformation(electionContract, {
         start: 0,

@@ -358,13 +358,8 @@ class VoteContainer extends Component {
     const { currentWallet } = this.props;
 
     Promise.all([
-      electionContract.GetElectorVoteWithRecords.call({
-        value: currentWallet?.publicKey,
-      }),
+      this.getElectorVote(currentWallet, electionContract),
       getAllTeamDesc(),
-      electionContract.GetElectorVoteWithRecords.call({
-        value: currentWallet?.address,
-      }),
     ])
       .then((resArr) => {
         this.processDataVoteNeed(resArr);
@@ -377,13 +372,13 @@ class VoteContainer extends Component {
   processDataVoteNeed(resArr) {
     // todo: the process code are  similar, can i unify it? Don't forget to consider the changablity.
     const { targetPublicKey } = this.state;
-    const electorVote = resArr[0] || resArr[2];
+    const electorVote = resArr[0] || {};
     let allTeamInfo = null;
     let expiredVotesAmount = 0;
     if (resArr[1].code === 0) {
       allTeamInfo = resArr[1].data;
     }
-    const { activeVotingRecords } = electorVote;
+    const { activeVotingRecords = [] } = electorVote;
     const switchableVoteRecords = [];
     const withdrawableVoteRecords = [];
     activeVotingRecords.forEach((record) => {
@@ -434,6 +429,25 @@ class VoteContainer extends Component {
     });
   }
 
+  async getCandidateInfo(currentWallet, electionContract) {
+    const { publicKey, address } = currentWallet;
+    if (!publicKey && !address) {
+      return null;
+    }
+    let res;
+    if (publicKey) {
+      res = await electionContract.GetCandidateInformation.call({
+        value: publicKey,
+      });
+    }
+    if (!res) {
+      res = await electionContract.GetCandidateInformation.call({
+        value: address,
+      });
+    }
+    return res;
+  }
+
   judgeCurrentUserIsCandidate() {
     const { currentWallet } = this.props;
     const { electionContract } = this.state;
@@ -442,9 +456,7 @@ class VoteContainer extends Component {
         shouldJudgeIsCurrentCandidate: false,
       },
       () => {
-        electionContract.GetCandidateInformation.call({
-          value: currentWallet?.publicKey,
-        })
+        this.getCandidateInfo(currentWallet, electionContract)
           .then((res) => {
             this.setState({
               isCandidate: res.isCurrentCandidate,
@@ -693,13 +705,30 @@ class VoteContainer extends Component {
     }
   }
 
+  async getElectorVote(currentWallet, electionContract) {
+    const { publicKey, address } = currentWallet;
+    if (!publicKey && !address) {
+      return null;
+    }
+    let res;
+    if (publicKey) {
+      res = await electionContract.GetElectorVoteWithRecords.call({
+        value: publicKey,
+      });
+    }
+    if (!res) {
+      res = await electionContract.GetElectorVoteWithRecords.call({
+        value: address,
+      });
+    }
+    return res;
+  }
+
   fetchUserVoteRecords() {
     const { electionContract, targetPublicKey } = this.state;
     const { currentWallet } = this.props;
 
-    electionContract.GetElectorVoteWithRecords.call({
-      value: currentWallet?.publicKey,
-    })
+    this.getElectorVote(currentWallet, electionContract)
       .then((res) => {
         // todo: error handle
         const activeVoteRecordsForOneCandidate = res.activeVotingRecords.filter(

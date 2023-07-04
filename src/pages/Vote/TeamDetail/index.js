@@ -183,11 +183,25 @@ class TeamDetail extends PureComponent {
     });
   }
 
+  async fetchElectorVote(currentWallet, electionContract) {
+    const { publicKey, address } = currentWallet;
+    let res;
+    if (publicKey) {
+      res = await fetchElectorVoteWithRecords(electionContract, {
+        value: publicKey,
+      });
+    }
+    if (!res) {
+      res = await fetchElectorVoteWithRecords(electionContract, {
+        value: address,
+      });
+    }
+    return res;
+  }
+
   fetchTheUsersActiveVoteRecords() {
     const { electionContract, currentWallet } = this.props;
-    fetchElectorVoteWithRecords(electionContract, {
-      value: currentWallet?.publicKey,
-    })
+    this.fetchElectorVote(currentWallet, electionContract)
       .then((res) => {
         this.computeUserRedeemableVoteAmountForOneCandidate(
           res.activeVotingRecords
@@ -198,7 +212,9 @@ class TeamDetail extends PureComponent {
       });
   }
 
-  computeUserRedeemableVoteAmountForOneCandidate(usersActiveVotingRecords) {
+  computeUserRedeemableVoteAmountForOneCandidate(
+    usersActiveVotingRecords = []
+  ) {
     const userVoteRecordsForOneCandidate = filterUserVoteRecordsForOneCandidate(
       usersActiveVotingRecords,
       this.teamPubkey
