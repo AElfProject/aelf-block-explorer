@@ -196,7 +196,7 @@ class TeamDetail extends PureComponent {
         value: address,
       });
     }
-    return res;
+    return res || {};
   }
 
   fetchTheUsersActiveVoteRecords() {

@@ -170,7 +170,7 @@ class MyWalletCard extends PureComponent {
         value: address,
       });
     }
-    return res;
+    return res || {};
   }
 
   fetchElectorVoteInfo() {

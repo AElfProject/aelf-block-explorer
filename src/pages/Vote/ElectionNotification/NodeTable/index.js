@@ -370,7 +370,7 @@ class NodeTable extends PureComponent {
         value: address,
       });
     }
-    return res;
+    return res || {};
   }
 
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records

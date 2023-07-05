@@ -445,7 +445,7 @@ class VoteContainer extends Component {
         value: address,
       });
     }
-    return res;
+    return res || {};
   }
 
   judgeCurrentUserIsCandidate() {
@@ -721,7 +721,7 @@ class VoteContainer extends Component {
         value: address,
       });
     }
-    return res;
+    return res || {};
   }
 
   fetchUserVoteRecords() {
