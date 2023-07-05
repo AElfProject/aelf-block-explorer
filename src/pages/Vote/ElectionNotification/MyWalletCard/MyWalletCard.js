@@ -153,7 +153,6 @@ class MyWalletCard extends PureComponent {
       .catch((err) => console.error("fetchWalletBalance", err));
   }
 
-
   async getElectorVote(currentWallet, electionContract) {
     const { publicKey, address } = currentWallet;
     if (!publicKey && !address) {
@@ -170,7 +169,7 @@ class MyWalletCard extends PureComponent {
         value: address,
       });
     }
-    return res || {};
+    return res;
   }
 
   fetchElectorVoteInfo() {

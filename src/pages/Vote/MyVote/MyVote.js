@@ -87,7 +87,7 @@ class MyVote extends Component {
         value: address,
       });
     }
-    return res || {};
+    return res;
   }
 
   fetchTableDataAndStatistData() {
