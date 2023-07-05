@@ -354,6 +354,25 @@ class NodeTable extends PureComponent {
     return result;
   }
 
+  async fetchElectorVote(currentWallet, electionContract) {
+    const { publicKey, address } = currentWallet;
+    if (!publicKey && !address) {
+      return null;
+    }
+    let res;
+    if (publicKey) {
+      res = await fetchElectorVoteWithRecords(electionContract, {
+        value: publicKey,
+      });
+    }
+    if (!res) {
+      res = await fetchElectorVoteWithRecords(electionContract, {
+        value: address,
+      });
+    }
+    return res || {};
+  }
+
   // todo: the comment as follows maybe wrong, the data needs to share is the user's vote records
   // todo: consider to move the method to Vote comonent, because that also NodeTable and Redeem Modal needs the data;
   fetchNodes() {
@@ -364,11 +383,7 @@ class NodeTable extends PureComponent {
     Promise.all([
       this.fetchAllCandidateInfo(),
       getAllTeamDesc(),
-      currentWallet?.publicKey
-        ? fetchElectorVoteWithRecords(electionContract, {
-            value: currentWallet?.publicKey,
-          })
-        : null,
+      this.fetchElectorVote(currentWallet, electionContract),
       fetchCurrentMinerPubkeyList(consensusContract),
     ])
       .then((resArr) => {

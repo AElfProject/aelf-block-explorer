@@ -49,7 +49,7 @@ function BlockDetail(props) {
   }, [blockHeight]);
 
   useEffect(() => {
-    const { params, location } = props;
+    const { params } = props;
     const { id } = params;
     if (id !== pageId) {
       setPageId(id);
@@ -57,10 +57,7 @@ function BlockDetail(props) {
       setShowExtensionInfo(false);
     }
     setActiveKey("overview");
-    if (
-      (location.search && location.search.includes("tab=txns")) ||
-      window.location.hash === "#txns"
-    ) {
+    if (window.location.hash === "#txns") {
       setActiveKey("transactions");
     }
   }, [props]);

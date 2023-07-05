@@ -153,16 +153,34 @@ class MyWalletCard extends PureComponent {
       .catch((err) => console.error("fetchWalletBalance", err));
   }
 
+  async getElectorVote(currentWallet, electionContract) {
+    const { publicKey, address } = currentWallet;
+    if (!publicKey && !address) {
+      return null;
+    }
+    let res;
+    if (publicKey) {
+      res = await electionContract.GetElectorVoteWithRecords.call({
+        value: publicKey,
+      });
+    }
+    if (!res) {
+      res = await electionContract.GetElectorVoteWithRecords.call({
+        value: address,
+      });
+    }
+    return res;
+  }
+
   fetchElectorVoteInfo() {
     const { electionContract, currentWallet } = this.props;
     if (!currentWallet?.address) {
       return false;
     }
     console.log(currentWallet?.address, "fetchElectorVoteInfo");
-    return electionContract.GetElectorVoteWithRecords.call({
-      value: currentWallet.publicKey,
-    })
+    return this.getElectorVote(currentWallet, electionContract)
       .then((res) => {
+        if (!res) return;
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;
         if (activeVotedVotesAmount) {
@@ -196,9 +214,10 @@ class MyWalletCard extends PureComponent {
 
   computedTotalAssets() {
     const { activeVotedVotesAmount, balance } = this.state;
-    const totalAssets = this.props.currentWallet.discoverInfo
-      ? balance
-      : activeVotedVotesAmount + balance;
+    const totalAssets =
+      activeVotedVotesAmount === "-"
+        ? balance
+        : activeVotedVotesAmount + balance;
     this.setState({
       totalAssets,
     });
@@ -297,17 +316,18 @@ class MyWalletCard extends PureComponent {
               <WalletFilled className="card-header-icon" />
               My Wallet
             </h2>
-            {!isActivityBrowser() && (loginState === WebLoginState.initial ||
-              loginState === WebLoginState.lock ||
-              loginState === WebLoginState.logining) && (
-              <Button
-                type="text"
-                className="my-wallet-card-header-sync-btn update-btn"
-                onClick={this.loginOrUnlock}
-              >
-                Login
-              </Button>
-            )}
+            {!isActivityBrowser() &&
+              (loginState === WebLoginState.initial ||
+                loginState === WebLoginState.lock ||
+                loginState === WebLoginState.logining) && (
+                <Button
+                  type="text"
+                  className="my-wallet-card-header-sync-btn update-btn"
+                  onClick={this.loginOrUnlock}
+                >
+                  Login
+                </Button>
+              )}
             <Button
               type="text"
               className="my-wallet-card-header-sync-btn update-btn"

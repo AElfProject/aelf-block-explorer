@@ -302,6 +302,18 @@ class ElectionNotification extends PureComponent {
           },
         })
         .then((res) => {
+          if (!res) {
+            return WebLoginInstance.get().callContract({
+              contractAddress: electionContractFromExt.address,
+              methodName: "QuitElection",
+              args: {
+                value: currentWallet?.address,
+              },
+            });
+          }
+          return res;
+        })
+        .then((res = {}) => {
           if (res.error) {
             message.error(res.errorMessage.message);
             return;

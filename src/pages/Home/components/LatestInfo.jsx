@@ -38,7 +38,7 @@ export default function LatestInfo({ blocks = [], transactions = [] }) {
                 </p>
                 <p className="age">{getFormattedDate(block.time)}</p>
                 <Link
-                  to={`/block/${block.block_height}?tab=txns`}
+                  to={`/block/${block.block_height}#txns`}
                   className="txns"
                 >
                   {block.tx_count}
