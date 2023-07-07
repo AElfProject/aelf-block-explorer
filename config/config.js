@@ -24,8 +24,19 @@ const WALLET_DOMAIN = "https://wallet-test.aelf.io/";
 const APPNAME = "explorer.aelf.io";
 const commonPrivateKey =
   "0000000000000000000000000000000000000000000000000000000000000001";
-const DEFAUTRPCSERVER = `${location.protocol}//${location.host}/chain`;
-
+const DEFAUTRPCSERVER = `${window.location.protocol}//${window.location.host}/chain`;
+const NETWORK_LIST = [
+  {
+    title: "AELF Mainnet",
+    url: "https://explorer.aelf.io",
+    netWorkType: "MAIN",
+  },
+  {
+    title: "AELF Testnet",
+    url: "https://explorer-test.aelf.io",
+    netWorkType: "TESTNET",
+  },
+];
 module.exports = {
   DEFAUTRPCSERVER,
   commonPrivateKey,
@@ -37,5 +48,6 @@ module.exports = {
   // The following variable are with suitable name
   WALLET_DOMAIN,
   BUILD_ENDPOINT,
+  NETWORK_LIST,
   ...config,
 };

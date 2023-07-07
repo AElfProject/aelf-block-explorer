@@ -14,7 +14,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import "./header.styles.less";
 import Search from "../Search/Search";
 import ChainSelect from "../ChainSelect/ChainSelect";
-import config, { NETWORK_TYPE } from "../../../config/config";
+import config, { NETWORK_LIST, NETWORK_TYPE } from "../../../config/config";
 import CHAIN_STATE from "../../../config/configCMS.json";
 import { isPhoneCheck } from "../../utils/deviceCheck";
 import HeaderTop from "./HeaderTop";
@@ -22,18 +22,7 @@ import IconFont from "../IconFont";
 import NetSelect from "../NetSelect/NetSelect";
 import { getCMSDelayRequest } from "../../utils/getCMS";
 
-const networkList = [
-  {
-    title: "AELF Mainnet",
-    url: "https://explorer.aelf.io",
-    netWorkType: "MAIN",
-  },
-  {
-    title: "AELF Testnet",
-    url: "https://explorer-test.aelf.io",
-    netWorkType: "TESTNET",
-  },
-];
+const networkList = NETWORK_LIST;
 
 const CHAINS_LIST = CHAIN_STATE.chainItem || [];
 const { SubMenu } = Menu;
