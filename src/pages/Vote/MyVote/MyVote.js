@@ -77,15 +77,19 @@ class MyVote extends Component {
   async fetchElectorVote(currentWallet, electionContract) {
     const { publicKey, address } = currentWallet;
     let res;
-    if (publicKey) {
-      res = await electionContract.GetElectorVoteWithAllRecords.call({
-        value: publicKey,
-      });
-    }
-    if (!res) {
-      res = await electionContract.GetElectorVoteWithAllRecords.call({
-        value: address,
-      });
+    try {
+      if (publicKey) {
+        res = await electionContract.GetElectorVoteWithAllRecords.call({
+          value: publicKey,
+        });
+      }
+      if (!res) {
+        res = await electionContract.GetElectorVoteWithAllRecords.call({
+          value: address,
+        });
+      }
+    } catch (e) {
+      console.log(e, "fetchElectorVote");
     }
     return res;
   }
@@ -107,9 +111,6 @@ class MyVote extends Component {
         // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
         length: 20,
       }),
-      electionContract.GetElectorVoteWithAllRecords.call({
-        value: currentWallet.address,
-      }),
     ])
       .then((resArr) => {
         this.processData(resArr);
@@ -120,7 +121,7 @@ class MyVote extends Component {
   }
 
   processData(resArr) {
-    let electorVotes = resArr[0] || resArr[3];
+    let electorVotes = resArr[0];
     if (!electorVotes) {
       // const { currentWallet } = this.props;
       // const isCAAccount =
