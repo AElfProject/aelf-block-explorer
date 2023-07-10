@@ -163,6 +163,7 @@ class MyWalletCard extends PureComponent {
       value: currentWallet.publicKey,
     })
       .then((res) => {
+        if (!res) return;
         let { activeVotedVotesAmount } = res;
         const { allVotedVotesAmount, activeVotingRecords } = res;
         if (activeVotedVotesAmount) {
