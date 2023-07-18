@@ -16,6 +16,7 @@ import {
   Tooltip,
   Form,
 } from "antd";
+import { onlyOkModal } from "@components/SimpleModal/index.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { API_PATH } from "@redux/common/constants";
 import {
@@ -353,6 +354,19 @@ const ContractProposal = (props) => {
     try {
       setDisabled(true);
       const result = await customValidateFields();
+      // ca wallet deploy contract in AELF chain
+      if (
+        (currentWallet.discoverInfo || currentWallet.portkeyInfo) &&
+        !currentWallet.nightElfInfo &&
+        approvalMode === "withoutApproval" &&
+        !isUpdate &&
+        CHAIN_ID === "AELF"
+      ) {
+        onlyOkModal({
+          message: `Smart contract wallet address currently do not support deploying contracts on the AELF MainChain without approval.`,
+        });
+        return;
+      }
       const {
         address = "",
         // eslint-disable-next-line no-shadow

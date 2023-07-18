@@ -505,16 +505,16 @@ class VoteContainer extends Component {
   }
 
   handleVote(targetPublicKey, voteType, ele) {
-    const { currentWallet } = this.props;
-    if (
-      (currentWallet.portkeyInfo || currentWallet.discoverInfo) &&
-      !currentWallet.nightElfInfo
-    ) {
-      onlyOkModal({
-        message: `Voting with smart contract wallet addresses are currently not supported.`,
-      });
-      return;
-    }
+    // const { currentWallet } = this.props;
+    // if (
+    //   (currentWallet.portkeyInfo || currentWallet.discoverInfo) &&
+    //   !currentWallet.nightElfInfo
+    // ) {
+    //   onlyOkModal({
+    //     message: `Voting with smart contract wallet addresses are currently not supported.`,
+    //   });
+    //   return;
+    // }
     this.judgeANodeIsCandidate(targetPublicKey).then((res) => {
       if (res) {
         this.setState({ voteType }, this.handleVoteClick.bind(this, ele));

@@ -37,7 +37,7 @@ import WithoutApprovalModal from "../../components/WithoutApprovalModal/index.ts
 import { deserializeLog, isPhoneCheck } from "../../../../common/utils";
 import { interval } from "../../../../utils/timeUtils";
 import { get } from "../../../../utils";
-import { isPortkeyApp } from '../../../../utils/isWebView';
+import { isPortkeyApp } from "../../../../utils/isWebView";
 import { VIEWER_GET_CONTRACT_NAME } from "../../../../api/url";
 import {
   base64ToByteArray,
@@ -45,7 +45,10 @@ import {
   hexStringToByteArray,
 } from "../../../../utils/formater";
 import AddressNameVer from "../../components/AddressNameVer/index.tsx";
-import { onlyOkModal, showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
+import {
+  onlyOkModal,
+  showAccountInfoSyncingModal,
+} from "../../../../components/SimpleModal/index.tsx";
 
 const { TabPane } = Tabs;
 
@@ -322,11 +325,15 @@ const CreateProposal = () => {
         if (currentWallet.portkeyInfo || currentWallet.discoverInfo) {
           did.setConfig({
             graphQLUrl: getConfig().portkey.graphQLUrl,
-          })
+          });
           const holderInfo = await did.didGraphQL.getHolderInfoByManager({
             caAddresses: [currentWallet.address],
           });
-          if (!holderInfo || !holderInfo.caHolderManagerInfo || !holderInfo.caHolderManagerInfo.length) {
+          if (
+            !holderInfo ||
+            !holderInfo.caHolderManagerInfo ||
+            !holderInfo.caHolderManagerInfo.length
+          ) {
             message.error("Can't query holder info");
             return;
           }
@@ -570,27 +577,26 @@ const CreateProposal = () => {
     const { isOnlyUpdateName } = results;
     const isMobile = isPhoneCheck();
 
-
     if (!webLoginWallet.accountInfoSync.syncCompleted) {
       setContractResult((v) => ({ ...v, confirming: false }));
       handleCancel();
       showAccountInfoSyncingModal();
       return;
     }
-    
-    if (results.name && currentWallet.discoverInfo) {
-      setContractResult((v) => ({ ...v, confirming: false }));
-      handleCancel();
 
-      const portkeyName = isPortkeyApp() ? 'Portkey App' : `Portkey extension`;
-      onlyOkModal({
-        message: `Setting contract names with the ${portkeyName} is currently not supported.`,
-      })
-      return;
-    }
+    // if (results.name && currentWallet.discoverInfo) {
+    //   setContractResult((v) => ({ ...v, confirming: false }));
+    //   handleCancel();
+
+    //   const portkeyName = isPortkeyApp() ? 'Portkey App' : `Portkey extension`;
+    //   onlyOkModal({
+    //     message: `Setting contract names with the ${portkeyName} is currently not supported.`,
+    //   })
+    //   return;
+    // }
 
     Modal.confirm({
-      className: `sure-modal-content${isMobile ? '-mobile': ''}`,
+      className: `sure-modal-content${isMobile ? "-mobile" : ""}`,
       width: "720",
       cancelButtonProps: { type: "primary", ghost: true },
       title: (
@@ -615,7 +621,6 @@ const CreateProposal = () => {
       confirming: true,
     });
     try {
-
       if (!webLoginWallet.accountInfoSync.syncCompleted) {
         showAccountInfoSyncingModal();
         return;
