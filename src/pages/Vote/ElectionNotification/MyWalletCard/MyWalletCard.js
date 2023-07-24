@@ -57,29 +57,15 @@ class MyWalletCard extends PureComponent {
         shouldRefreshMyWallet: true,
       });
     }
-    // else if (currentWallet?.address) {
-    //   // jump from other page with wallet address
-    //   this.fetchData();
-    // }
   }
 
   loginOrUnlock() {
     WebLoginInstance.get().loginAsync();
-    // .then(() => {
-    //   // this.handleUpdateWalletClick();
-    // });
   }
 
   // todo: maybe we can fetch the data after all contract are ready as it will reduce the difficulty of code and reduce the code by do the same thing in cdm and cdu
   componentDidUpdate(prevProps) {
-    // const { currentWallet, shouldRefreshMyWallet } = this.props;
-    // if (
-    //   currentWallet &&
-    //   (currentWallet.address !== prevProps?.currentWallet?.address ||
-    //     shouldRefreshMyWallet)
-    // ) {
     this.fetchData(prevProps);
-    // }
   }
 
   fetchData(prevProps) {
@@ -90,7 +76,16 @@ class MyWalletCard extends PureComponent {
       changeVoteState,
       currentWallet,
     } = this.props;
-    const { activeVotedVotesAmount, balance } = this.state;
+    const { balance } = this.state;
+    if (!currentWallet?.address) {
+      this.setState({
+        balance: "-",
+        withdrawnVotedVotesAmount: "-",
+        activeVotedVotesAmount: "-",
+        totalAssets: "-",
+        lastestUnlockTime: null,
+      });
+    }
     if (shouldRefreshMyWallet) {
       console.log(44444);
       changeVoteState(

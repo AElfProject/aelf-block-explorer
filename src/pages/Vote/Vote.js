@@ -802,6 +802,7 @@ class VoteContainer extends Component {
         args: payload,
       })
       .then((res) => {
+        // todo: error format maybe wrong
         const { error, errorMessage } = res;
         if (+error === 0 || !error) {
           this.checkTransactionResult(res).then(() => {
@@ -912,9 +913,11 @@ class VoteContainer extends Component {
   // todo: use this method instead repeat code
   checkTransactionResult(res, modalToClose) {
     const { aelf } = this.props;
-    const transactionId = res.result
-      ? res.result.TransactionId
-      : res.TransactionId;
+    const transactionId =
+      res?.TransactionId ||
+      res?.result?.TransactionId ||
+      res.transactionId ||
+      "";
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         aelf.chain.getTxResult(transactionId, (error, result) => {

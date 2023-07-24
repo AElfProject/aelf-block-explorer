@@ -6,8 +6,15 @@ import React, { Suspense, useCallback, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { useLocation } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
-import { message } from 'antd';
-import { useWebLoginEvent, useWebLogin, WebLoginState, useLoginState, WebLoginEvents, ERR_CODE } from "aelf-web-login";
+import { message } from "antd";
+import {
+  useWebLoginEvent,
+  useWebLogin,
+  WebLoginState,
+  useLoginState,
+  WebLoginEvents,
+  ERR_CODE,
+} from "aelf-web-login";
 import BrowserHeader from "./components/Header/Header";
 import HeaderBlank from "./components/Header/HeaderBlank";
 import BrowserFooter from "./components/Footer/Footer";
@@ -19,12 +26,15 @@ import {
   LOG_OUT_ACTIONS,
 } from "./redux/actions/proposalCommon";
 import "./App.less";
-import { onlyOkModal, showAccountInfoSyncingModal } from "./components/SimpleModal/index.tsx";
+import {
+  onlyOkModal,
+  showAccountInfoSyncingModal,
+} from "./components/SimpleModal/index.tsx";
 import { WebLoginInstance } from "./utils/webLogin";
 
 function App() {
   const { pathname } = useLocation();
-  const { wallet, loginError } = useWebLogin();
+  const { wallet, loginError, eventEmitter } = useWebLogin();
   const dispatch = useDispatch();
   const currentWallet = useSelector((state) => {
     return state.common.currentWallet;
@@ -47,8 +57,7 @@ function App() {
 
   useLoginState(
     (loginState) => {
-      console.log(wallet)
-      console.log(loginState, loginError);
+      console.log(wallet, loginState, loginError, eventEmitter, "xxxx");
       if (loginState === WebLoginState.initial && currentWallet.address) {
         dispatch({
           type: LOG_OUT_ACTIONS.LOG_OUT_SUCCESS,
@@ -76,10 +85,9 @@ function App() {
     if (error.code) {
       if (error.code === ERR_CODE.NETWORK_TYPE_NOT_MATCH) {
         onlyOkModal({
-          message: 'Please switch the extension to the correct network.'
+          message: "Please switch the extension to the correct network.",
         });
-      }
-      else if (error.code === ERR_CODE.ACCOUNTS_IS_EMPTY) {
+      } else if (error.code === ERR_CODE.ACCOUNTS_IS_EMPTY) {
         showAccountInfoSyncingModal();
       }
       return;
