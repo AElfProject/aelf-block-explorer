@@ -325,7 +325,7 @@ class NodeTable extends PureComponent {
 
   async fetchTotal() {
     const res = await fetchCount(this.props.electionContract, "");
-    console.error(res, "res");
+    console.error(this.props.electionContract, res, "res");
     const total = res?.value?.length || 0;
     const pagination = {
       // eslint-disable-next-line react/no-access-state-in-setstate
