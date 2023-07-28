@@ -7,7 +7,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
-import VConsole from 'vconsole';
+import VConsole from "vconsole";
 
 // 为组件内建文案提供统一的国际化支持。
 import { ConfigProvider } from "antd";
@@ -21,13 +21,13 @@ import "aelf-web-login/dist/assets/index.css";
 import store from "./redux/store";
 import config from "../config/config";
 import { get } from "./utils";
-
 import "./index.less";
 import "./portkey.less";
 
 import "./common/webLoginConfig";
 
 import App from "./App";
+import { WALLET_IMG } from "./common/constants";
 
 if (process.env.NODE_ENV === "development") {
   const vConsole = new VConsole();
@@ -65,9 +65,17 @@ ReactDOM.render(
     <Provider store={store}>
       <PortkeyConfigProvider>
         <WebLoginProvider
-          extraWallets={['discover', 'elf']}
+          commonConfig={{
+            showClose: true,
+            iconSrc: WALLET_IMG,
+          }}
+          extraWallets={["discover", "elf"]}
           nightElf={{ connectEagerly: true }}
-          portkey={{ autoShowUnlock: false, checkAccountInfoSync: true }}
+          portkey={{
+            autoShowUnlock: false,
+            checkAccountInfoSync: true,
+            design: "SocialDesign",
+          }}
           discover={{
             autoRequestAccount: true,
             autoLogoutOnAccountMismatch: true,

@@ -3070,12 +3070,14 @@
     "@portkey/validator" "^1.0.10"
     aelf-sdk "^3.2.44"
 
-"@portkey/contracts@^0.0.1-alpha.8.9":
-  version "0.0.1-alpha.8.9"
-  resolved "https://registry.npmjs.org/@portkey/contracts/-/contracts-0.0.1-alpha.8.9.tgz#e1fc49c2aed6e81fb605627c7fd257f8ee85685a"
-  integrity sha512-GObw9qyodjKvo5c4+4MMai9GhUfWqg5UALOsXL34AhiQbx4zKB1Qkb9NNAWkaGKKns7bkSpS8sZHN6mABNCnHQ==
+"@portkey/contracts@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/@portkey/contracts/-/contracts-1.2.0.tgz#66ae9ef221928b9964e6e67246ae62bb03d63cd0"
+  integrity sha512-eMRibEtZfToyiFhFNs1SXiEGljIBtpMOkrxYAEHTPd1JPQ4G4I+kSFaeJPKMPgfYfMqz5L6IUou/6Qfu9Cicpg==
   dependencies:
-    "@portkey/utils" "^0.0.1-alpha.8.9"
+    "@portkey/provider-types" "^1.0.1-alpha.0"
+    "@portkey/types" "^1.2.0"
+    "@portkey/utils" "^1.2.0"
     aelf-sdk "^3.2.44"
 
 "@portkey/contracts@^1.0.10":
@@ -3093,7 +3095,7 @@
   resolved "https://registry.npmjs.org/@portkey/detect-provider/-/detect-provider-0.0.1-alpha.23.tgz#cf906d2d699fa2cf5fd3533fdcc38ca8bcf3cc17"
   integrity sha512-ZIWTGbN41eMNfzkmETfU5wvBvxBrNEBHwOtt76KjaZliOEYRO7qpsfSkiNBTthy0lT3fOFL7M2xfrzUFbI84yQ==
   dependencies:
-    "@portkey/provider-types" "^0.0.1-alpha.22"
+    "@portkey/provider-types" "^1.0.1-alpha.0"
 
 "@portkey/detect-provider@^0.0.1-alpha.23":
   version "0.0.1-alpha.26"
@@ -3176,6 +3178,7 @@
   resolved "https://registry.npmjs.org/@portkey/provider-types/-/provider-types-0.0.1-alpha.22.tgz#89aef3b358650bcea3ddccfdc8c865e7bd7e814a"
   integrity sha512-0EWV2a2v8+ZvHhs6RLtegMJUYPAHB3aeLWgzKMU5vUqG6OzOtmTAFbTvIBmZcW3xSHxyPDkkvMwjxPiSaSCigw==
   dependencies:
+    "@portkey/types" "1.0.0-alpha.4"
     "@types/readable-stream" "^2.3.15"
 
 "@portkey/provider-types@^0.0.1-alpha.26":
@@ -3240,6 +3243,7 @@
   integrity sha512-8nMSmTqT4ZHipmWVLXpNMPuYyJ1BlCnNJyl+803ifUnEVpLXGXfKHnkq2Rcgm+LXpNnhuiuGqq2XkvpYf/XTDg==
   dependencies:
     aelf-sdk "^3.2.44"
+    query-string "^7.1.1"
 
 "@portkey/utils@^1.0.10":
   version "1.0.10"
@@ -15723,6 +15727,11 @@ typescript@^4.6.4:
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
+
+typescript@^4.9.5:
+  version "4.9.5"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
+  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 uglify-js@^3.1.4:
   version "3.16.3"
