@@ -2,12 +2,13 @@
  * @Author: aelf-lxy
  * @Date: 2023-08-02 00:20:45
  * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-02 01:09:16
+ * @LastEditTime: 2023-08-02 11:49:24
  * @Description: server
  */
 
 async function service(url: string, options?: RequestInit) {
   try {
+    console.log('xxxxxx', options);
     const response = await fetch(url, options);
     if (response.ok) {
       return await response.json();
