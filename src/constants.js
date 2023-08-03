@@ -119,7 +119,7 @@ const MY_VOTE_DATA_TIP =
   "The Total Votes is the votes amount you voted, and the Redeemable Votes is the number of votes that has expired.";
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
-const SHORTEST_LOCK_TIME = 1; // hour
+const SHORTEST_LOCK_TIME = 1.1; // hour
 
 // TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
