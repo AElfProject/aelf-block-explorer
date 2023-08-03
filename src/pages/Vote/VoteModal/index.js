@@ -68,7 +68,7 @@ function disabledDate(current) {
   // Can not select days before today and today
   return (
     current &&
-    (current < moment().add(SHORTEST_LOCK_TIME, "h").startOf("day") ||
+    (current < moment().add(SHORTEST_LOCK_TIME, "d").startOf("day") ||
       current > moment().add(3, "y"))
   );
 }
@@ -76,7 +76,7 @@ function disabledDate(current) {
 function getLockTimeByDate(value) {
   const ifToday = moment(value).isSame(moment(), "day");
   if (ifToday) {
-    return moment().add(SHORTEST_LOCK_TIME, "h");
+    return moment().add(SHORTEST_LOCK_TIME, "d");
   }
   const { years, months, date } = moment(value).toObject();
   const { hours, minutes, seconds } = moment().toObject();
@@ -313,7 +313,7 @@ class VoteModal extends Component {
                       dateFormat="yyyy-MM-dd"
                       minDate={
                         new Date(
-                          moment().add(SHORTEST_LOCK_TIME, "h").startOf("day")
+                          moment().add(SHORTEST_LOCK_TIME, "d").startOf("day")
                         )
                       }
                       maxDate={new Date(moment().add(3, "y"))}
@@ -333,7 +333,7 @@ class VoteModal extends Component {
                       includeDateIntervals={[
                         {
                           start: new Date(
-                            moment().add(SHORTEST_LOCK_TIME, "h")
+                            moment().add(SHORTEST_LOCK_TIME, "d")
                           ),
                           end: new Date(moment().add(3, "y")),
                         },
