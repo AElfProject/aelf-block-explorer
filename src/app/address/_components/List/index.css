@@ -1,0 +1,8 @@
+.user-list{
+    li{   
+        color: green;
+        &:hover{
+            color:blue
+        }
+    }
+}

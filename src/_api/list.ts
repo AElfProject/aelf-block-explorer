@@ -2,13 +2,14 @@
  * @Author: aelf-lxy
  * @Date: 2023-07-31 20:06:58
  * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-02 00:41:40
+ * @LastEditTime: 2023-08-03 17:24:22
  * @Description: the paths to the request module
  */
+import { RequestWithParams } from './server';
 
 const Block_API_List = {
   getBlockList: 'https://dummyjson.com/products',
-  getBlockByHash: 'api/getBlockByHash',
+  query: 'https://dummyjson.com/products/search',
 };
 
 const Transaction_API_List = {
@@ -20,7 +21,7 @@ export const API_List = {
   tx: Transaction_API_List,
 };
 
-type REQUEST_FUNCTION = (opt?: Request) => Promise<any>;
+type REQUEST_FUNCTION = (opt?: RequestWithParams) => Promise<any>;
 
 export type REQUEST_API_TYPE = {
   [X in keyof typeof API_List]: {
