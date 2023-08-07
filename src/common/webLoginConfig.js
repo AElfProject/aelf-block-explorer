@@ -15,8 +15,8 @@ export const connectUrl = "http://192.168.66.203:8001";
 
 // const graphQLServer =
 //   NETWORK_TYPE === "TESTNET"
-//     ? "https://dapp-portkey-test.portkey.finance"
-//     : "https://dapp-portkey.portkey.finance";
+//     ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"
+//     : "https://dapp-portkey.portkey.finance/Portkey_DID";
 // const portkeyApiServer =
 //   NETWORK_TYPE === "TESTNET"
 //     ? "https://did-portkey-test.portkey.finance"
@@ -32,7 +32,7 @@ setGlobalConfig({
   networkType: NETWORK_TYPE === "TESTNET" ? "TESTNET" : "MAIN",
   portkey: {
     useLocalStorage: true,
-    graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
+    graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
     connectUrl,
     socialLogin: {
       Portkey: isWebview()
@@ -55,7 +55,7 @@ setGlobalConfig({
           networkType: NETWORK_TYPE,
           isActive: true,
           apiUrl: portkeyApiServer,
-          graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
+          graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
           connectUrl,
         },
       ],
