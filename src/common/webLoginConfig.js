@@ -9,11 +9,14 @@ import {
 } from "@config/config";
 import isWebview from "../utils/isWebView";
 
-const graphQLServer = NETWORK_TYPE === "TESTNET" ? "https://dapp-portkey-test.portkey.finance" : "https://dapp-portkey.portkey.finance";
-const portkeyApiServer = NETWORK_TYPE === "TESTNET" ? "https://did-portkey-test.portkey.finance" : "https://did-portkey.portkey.finance"
+const graphQLServer = "http://192.168.66.203:8083";
+// NETWORK_TYPE === "TESTNET" ? "https://dapp-portkey-test.portkey.finance" : "https://dapp-portkey.portkey.finance";
+const portkeyApiServer = "http://192.168.66.203:5001";
+// NETWORK_TYPE === "TESTNET" ? "https://did-portkey-test.portkey.finance" : "https://did-portkey.portkey.finance"
 
 // did.config.setConfig
-export const connectUrl = NETWORK_TYPE === "TESTNET" ? 'https://auth-portkey-test.portkey.finance' : 'https://auth-portkey.portkey.finance';
+export const connectUrl = "http://192.168.66.203:8001";
+// NETWORK_TYPE === "TESTNET" ? 'https://auth-portkey-test.portkey.finance' : 'https://auth-portkey.portkey.finance';
 
 setGlobalConfig({
   appName: APPNAME,
@@ -24,10 +27,12 @@ setGlobalConfig({
     graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
     connectUrl,
     socialLogin: {
-      Portkey: isWebview() ? undefined : {
-        websiteName: APPNAME,
-        websiteIcon: `${CHAINS_LINK[CHAIN_ID]}/favicon.main.ico`,
-      },
+      Portkey: isWebview()
+        ? undefined
+        : {
+            websiteName: APPNAME,
+            websiteIcon: `${CHAINS_LINK[CHAIN_ID]}/favicon.main.ico`,
+          },
     },
     requestDefaults: {
       timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
@@ -52,15 +57,15 @@ setGlobalConfig({
     appName: APPNAME,
     nodes: {
       AELF: {
-        chainId: 'AELF',
+        chainId: "AELF",
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVW: {
-        chainId: 'tDVW',
+        chainId: "tDVW",
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVV: {
-        chainId: 'tDVV',
+        chainId: "tDVV",
         rpcUrl: DEFAUTRPCSERVER,
       },
     },
