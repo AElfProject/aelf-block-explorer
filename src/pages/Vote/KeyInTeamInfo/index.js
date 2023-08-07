@@ -371,7 +371,7 @@ class KeyInTeamInfo extends PureComponent {
           const { signature } = await getSignature({
             appName: APPNAME,
             address: currentWallet.address,
-            hexToBeSign: randomNum,
+            signInfo: randomNum,
           });
           post("/vote/addTeamDesc", {
             isActive: true,
