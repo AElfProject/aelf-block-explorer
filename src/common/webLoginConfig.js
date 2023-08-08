@@ -9,22 +9,22 @@ import {
 } from "@config/config";
 import isWebview from "../utils/isWebView";
 
-const graphQLServer = "http://192.168.66.203:8083/AElfIndexer_DApp";
-const portkeyApiServer = "http://192.168.66.203:5001";
-export const connectUrl = "http://192.168.66.203:8001";
+// const graphQLServer = "http://192.168.66.203:8083/AElfIndexer_DApp";
+// const portkeyApiServer = "http://192.168.66.203:5001";
+// export const connectUrl = "http://192.168.66.203:8001";
 
-// const graphQLServer =
-//   NETWORK_TYPE === "TESTNET"
-//     ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"
-//     : "https://dapp-portkey.portkey.finance/Portkey_DID";
-// const portkeyApiServer =
-//   NETWORK_TYPE === "TESTNET"
-//     ? "https://did-portkey-test.portkey.finance"
-//     : "https://did-portkey.portkey.finance";
-// export const connectUrl =
-//   NETWORK_TYPE === "TESTNET"
-//     ? "https://auth-portkey-test.portkey.finance"
-//     : "https://auth-portkey.portkey.finance";
+const graphQLServer =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"
+    : "https://dapp-portkey.portkey.finance/Portkey_DID";
+const portkeyApiServer =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://did-portkey-test.portkey.finance"
+    : "https://did-portkey.portkey.finance";
+export const connectUrl =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://auth-portkey-test.portkey.finance"
+    : "https://auth-portkey.portkey.finance";
 
 setGlobalConfig({
   appName: APPNAME,
