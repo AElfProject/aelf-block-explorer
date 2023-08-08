@@ -4,10 +4,11 @@
     font-size: 16px;
     border-radius: 24px;
     margin-bottom: 24px;
-  } 
+  }
 }
 
-.ant-modal.portkey-ui-common-modal, .ant-modal.portkey-ui-common-modals {
+.ant-modal.portkey-ui-common-modal,
+.ant-modal.portkey-ui-common-modals {
   .ant-modal-header {
     .ant-modal-title {
       border-bottom: none !important;
@@ -31,7 +32,8 @@
   flex: 1;
 }
 
-.aelf-web-logout-dialog .ok-btn, .aelf-web-logout-dialog .cancel-btn {
+.aelf-web-logout-dialog .ok-btn,
+.aelf-web-logout-dialog .cancel-btn {
   display: block;
   border-radius: 4px;
   padding: 0;
@@ -44,7 +46,6 @@
   font-size: 16px;
 }
 
-
 .aelf-web-logout-dialog .ok-btn {
   border: 1px solid transparent;
 }
@@ -54,5 +55,22 @@
 }
 
 .aelf-web-logout-dialog .cancel-btn:hover {
-  color:#4c8ce0 !important;
+  color: #4c8ce0 !important;
+}
+
+// mobile
+@media all and (max-width: 769px) {
+  .portkey-ant-modal-root {
+    .aelf-web-login {
+      &.aelf-extra-wallets {
+        .social-header {
+          .header {
+            .header-btn {
+              margin-right: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
 }
