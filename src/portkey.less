@@ -23,12 +23,21 @@
     color: #4c8ce0 !important;
   }
 }
-
+.aelf-web-logout-dialog-close {
+  margin-top: 24px;
+  i {
+    margin-right: 2px;
+  }
+}
 .aelf-web-logout-dialog-content {
   flex-direction: column !important;
 }
+.aelf-web-logout-dialog-title {
+  margin-top: 8px;
+}
 
 .aelf-web-logout-dialog-content:last-child {
+  padding-bottom: 16px;
   flex: 1;
 }
 
@@ -57,18 +66,62 @@
 .aelf-web-logout-dialog .cancel-btn:hover {
   color: #4c8ce0 !important;
 }
-
+.portkey-ant-modal-content {
+  .aelf-extra-wallets {
+    .social-header {
+      .title-icon {
+        margin-top: 10px;
+      }
+    }
+    .wallet-entries.social-content {
+      margin-bottom: 24px;
+    }
+  }
+  .account-type-list {
+    margin-bottom: 122px;
+  }
+  .portkey-ui-account-type-wrapper {
+    .account-type-list {
+      .portkey-ui-custom-svg {
+        &:first-child {
+          margin-left: 0;
+        }
+        &:last-child {
+          margin-left: 12px;
+          margin-right: 0px;
+        }
+      }
+    }
+  }
+}
 // mobile
 @media all and (max-width: 769px) {
   .portkey-ant-modal-root {
+    .portkey-ant-modal-content {
+      width: 343px;
+      margin: auto;
+    }
     .aelf-web-login {
       &.aelf-extra-wallets {
         .social-header {
           .header {
             .header-btn {
-              margin-right: 0px;
+              margin-right: 8px;
             }
           }
+        }
+        .social-content {
+          width: 311px;
+        }
+      }
+    }
+    .account-type-list {
+      .portkey-ui-custom-svg {
+        &:first-child {
+          margin-left: 7.5px;
+        }
+        &:last-child {
+          margin-right: 7.5px;
         }
       }
     }
