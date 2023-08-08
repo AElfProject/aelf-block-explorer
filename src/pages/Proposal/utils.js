@@ -33,9 +33,8 @@ export async function updateContractName(currentWallet, params) {
   const timestamp = new Date().getTime();
   const signature = await sign(currentWallet, timestamp);
   const signedParams = {
-    address: currentWallet.portkeyInfo
-      ? currentWallet.portkeyInfo.walletInfo.address
-      : currentWallet.address,
+    // differ to addContractName
+    address: currentWallet.address,
     signature,
     pubKey: currentWallet.publicKey,
     timestamp,

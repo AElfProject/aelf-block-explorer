@@ -8,7 +8,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
 import VConsole from "vconsole";
-
+import { scheme } from "@portkey/utils";
 // 为组件内建文案提供统一的国际化支持。
 import { ConfigProvider } from "antd";
 import { PortkeyConfigProvider } from "@portkey/did-ui-react";
@@ -28,6 +28,7 @@ import "./common/webLoginConfig";
 
 import App from "./App";
 import { WALLET_IMG } from "./common/constants";
+import { isPhoneCheck } from "./common/utils";
 
 if (process.env.NODE_ENV === "development") {
   const vConsole = new VConsole();
@@ -59,7 +60,30 @@ if (module.hot) {
   module.hot.accept();
 }
 
+const continueDefaultBehaviour = () => {
+  const downloadUrl = "https://portkey.finance/";
+  const href = scheme.formatScheme({
+    action: "linkDapp",
+    domain: window.location.host,
+    custom: {
+      url: window.location.href,
+    },
+  });
+  window.location.href = href;
+  setTimeout(() => {
+    const hidden =
+      window.document.hidden ||
+      window.document.mozHidden ||
+      window.document.msHidden ||
+      window.document.webkitHidden;
+    if (typeof hidden !== "undefined" && hidden === true) {
+      return;
+    }
+    window.location.href = downloadUrl;
+  }, 2000);
+};
 const container = document.getElementById("app");
+const isMobile = isPhoneCheck();
 ReactDOM.render(
   <ConfigProvider locale={en_US}>
     <Provider store={store}>
@@ -82,6 +106,11 @@ ReactDOM.render(
             autoLogoutOnChainMismatch: true,
             autoLogoutOnDisconnected: true,
             autoLogoutOnNetworkMismatch: true,
+            onClick: isMobile
+              ? () => {
+                  continueDefaultBehaviour();
+                }
+              : null,
           }}
         >
           <App />
