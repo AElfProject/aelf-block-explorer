@@ -9,10 +9,6 @@ import {
 } from "@config/config";
 import isWebview from "../utils/isWebView";
 
-// const graphQLServer = "http://192.168.66.203:8083/AElfIndexer_DApp";
-// const portkeyApiServer = "http://192.168.66.203:5001";
-// export const connectUrl = "http://192.168.66.203:8001";
-
 const graphQLServer =
   NETWORK_TYPE === "TESTNET"
     ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"

@@ -68,26 +68,9 @@ function disabledDate(current) {
   // Can not select days before today and today
   return (
     current &&
-    (current < moment().add(SHORTEST_LOCK_TIME, "d").startOf("day") ||
-      current > moment().add(3, "y"))
+    (current < moment().add(SHORTEST_LOCK_TIME, "days").endOf("day") ||
+      current > moment().add(1080, "d"))
   );
-}
-
-function getLockTimeByDate(value) {
-  const ifToday = moment(value).isSame(moment(), "day");
-  if (ifToday) {
-    return moment().add(SHORTEST_LOCK_TIME, "d");
-  }
-  const { years, months, date } = moment(value).toObject();
-  const { hours, minutes, seconds } = moment().toObject();
-  return moment().set({
-    years,
-    months,
-    date,
-    hours,
-    minutes,
-    seconds,
-  });
 }
 
 function getColumns() {
@@ -312,15 +295,12 @@ class VoteModal extends Component {
                     <DatePickerReact
                       dateFormat="yyyy-MM-dd"
                       minDate={
-                        new Date(
-                          moment().add(SHORTEST_LOCK_TIME, "d").startOf("day")
-                        )
+                        new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))
                       }
-                      maxDate={new Date(moment().add(3, "y"))}
+                      maxDate={new Date(moment().add(1080, "d"))}
                       showYearDropdown
                       selected={datePickerTime}
-                      onChange={(value) => {
-                        const date = getLockTimeByDate(value);
+                      onChange={(date) => {
                         this.setState({
                           datePickerTime: date,
                         });
@@ -335,7 +315,7 @@ class VoteModal extends Component {
                           start: new Date(
                             moment().add(SHORTEST_LOCK_TIME, "d")
                           ),
-                          end: new Date(moment().add(3, "y")),
+                          end: new Date(moment().add(1080, "d")),
                         },
                       ]}
                       placeholderText="Select date"
@@ -344,12 +324,11 @@ class VoteModal extends Component {
                     <DatePicker
                       disabledDate={disabledDate}
                       onChange={(value) => {
-                        const date = getLockTimeByDate(value);
                         this.setState({
-                          datePickerTime: new Date(date),
+                          datePickerTime: new Date(value),
                         });
                         this.formRef.current.setFieldsValue({
-                          lockTime: date,
+                          lockTime: value,
                         });
                       }}
                     />

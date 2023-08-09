@@ -50,7 +50,6 @@ import {
   showAccountInfoSyncingModal,
 } from "../../../../components/SimpleModal/index.tsx";
 
-
 const { TabPane } = Tabs;
 
 const initApplyModal = {
@@ -584,17 +583,6 @@ const CreateProposal = () => {
       showAccountInfoSyncingModal();
       return;
     }
-
-    // if (results.name && currentWallet.discoverInfo) {
-    //   setContractResult((v) => ({ ...v, confirming: false }));
-    //   handleCancel();
-
-    //   const portkeyName = isPortkeyApp() ? 'Portkey App' : `Portkey extension`;
-    //   onlyOkModal({
-    //     message: `Setting contract names with the ${portkeyName} is currently not supported.`,
-    //   })
-    //   return;
-    // }
 
     Modal.confirm({
       className: `sure-modal-content${isMobile ? "-mobile" : ""}`,
