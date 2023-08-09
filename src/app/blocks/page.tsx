@@ -9,12 +9,14 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement } from '@_store/features/counterSlice';
 import { Button } from 'antd';
+import HeadTitle from '@_components/HeaderTitle';
 export default function BlockList() {
   const { value } = useSelector((store: any) => store.counter);
   const dispatch = useDispatch();
 
   return (
     <div>
+      <HeadTitle content="Blocks"></HeadTitle>
       <p>{value}</p>
       <Button
         onClick={() => {
