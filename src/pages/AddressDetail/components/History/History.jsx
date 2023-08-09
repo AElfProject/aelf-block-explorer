@@ -77,20 +77,19 @@ export default function History({ history }) {
       </>
     );
   };
+  const items = history?.map((v, index) => {
+    return {
+      key: v.txId,
+      title: EventMap[v.event],
+      subTitle: moment(v.updateTime).format("YYYY/MM/DD HH:mm:ss"),
+      description: StepDescription({ ...v, isLast: index === 0 }),
+    };
+  });
 
   return (
     <div className="history-pane">
       {history ? (
-        <Steps progressDot current={0} direction="vertical">
-          {history.map((v, index) => (
-            <Steps.Step
-              key={v.txId}
-              title={EventMap[v.event]}
-              subTitle={moment(v.updateTime).format("YYYY/MM/DD HH:mm:ss")}
-              description={StepDescription({ ...v, isLast: index === 0 })}
-            />
-          ))}
-        </Steps>
+        <Steps progressDot current={0} direction="vertical" items={items} />
       ) : (
         <Skeleton />
       )}
