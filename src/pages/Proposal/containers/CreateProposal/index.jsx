@@ -584,6 +584,15 @@ const CreateProposal = () => {
       return;
     }
 
+    if (results.name && currentWallet.discoverInfo) {
+      setContractResult((v) => ({ ...v, confirming: false }));
+      handleCancel();
+      onlyOkModal({
+        message: `Setting contract names with the Portkey extension is currently not supported.`,
+      });
+      return;
+    }
+
     Modal.confirm({
       className: `sure-modal-content${isMobile ? "-mobile" : ""}`,
       width: "720",
