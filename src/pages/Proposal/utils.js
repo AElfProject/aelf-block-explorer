@@ -1,3 +1,4 @@
+import AElf from "aelf-sdk";
 import { getCsrfToken, getTxResult } from "../../redux/common/utils";
 import { request } from "../../common/request";
 import { API_PATH } from "../../redux/common/constants";
@@ -7,11 +8,24 @@ import { WebLoginInstance } from "../../utils/webLogin";
 import { APPNAME } from "../../../config/config";
 
 async function sign(currentWallet, hexToBeSign) {
+  if (currentWallet.portkeyInfo) {
+    const keypair = currentWallet.portkeyInfo.walletInfo.keyPair;
+    const keypairAndUtils = AElf.wallet.ellipticEc.keyFromPrivate(
+      keypair.getPrivate()
+    );
+    const signedMsgObject = keypairAndUtils.sign(hexToBeSign);
+    const signature = [
+      signedMsgObject.r.toString(16, 64),
+      signedMsgObject.s.toString(16, 64),
+      `0${signedMsgObject.recoveryParam.toString()}`,
+    ].join("");
+    return signature;
+  }
   const { getSignature } = WebLoginInstance.get().getWebLoginContext();
   const { signature } = await getSignature({
     appName: APPNAME,
     address: currentWallet.address,
-    hexToBeSign,
+    signInfo: hexToBeSign,
   });
   return signature;
 }
@@ -19,6 +33,7 @@ export async function updateContractName(currentWallet, params) {
   const timestamp = new Date().getTime();
   const signature = await sign(currentWallet, timestamp);
   const signedParams = {
+    // differ to addContractName
     address: currentWallet.address,
     signature,
     pubKey: currentWallet.publicKey,
@@ -45,7 +60,9 @@ export async function addContractName(currentWallet, params) {
   const timestamp = new Date().getTime();
   const signature = await sign(currentWallet, timestamp);
   const signedParams = {
-    address: currentWallet.address,
+    address: currentWallet.portkeyInfo
+      ? currentWallet.portkeyInfo.walletInfo.address
+      : currentWallet.address,
     signature,
     pubKey: currentWallet.publicKey,
     timestamp,

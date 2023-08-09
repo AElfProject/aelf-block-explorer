@@ -4,10 +4,11 @@
     font-size: 16px;
     border-radius: 24px;
     margin-bottom: 24px;
-  } 
+  }
 }
 
-.ant-modal.portkey-ui-common-modal, .ant-modal.portkey-ui-common-modals {
+.ant-modal.portkey-ui-common-modal,
+.ant-modal.portkey-ui-common-modals {
   .ant-modal-header {
     .ant-modal-title {
       border-bottom: none !important;
@@ -22,16 +23,28 @@
     color: #4c8ce0 !important;
   }
 }
-
+.aelf-web-logout-dialog-close {
+  margin-top: 24px;
+  height: 16px;
+  line-height: 16px;
+  i {
+    margin-right: 2px;
+  }
+}
 .aelf-web-logout-dialog-content {
   flex-direction: column !important;
 }
+.aelf-web-logout-dialog-title {
+  margin-top: 16px;
+}
 
 .aelf-web-logout-dialog-content:last-child {
+  padding-bottom: 24px;
   flex: 1;
 }
 
-.aelf-web-logout-dialog .ok-btn, .aelf-web-logout-dialog .cancel-btn {
+.aelf-web-logout-dialog .ok-btn,
+.aelf-web-logout-dialog .cancel-btn {
   display: block;
   border-radius: 4px;
   padding: 0;
@@ -44,7 +57,6 @@
   font-size: 16px;
 }
 
-
 .aelf-web-logout-dialog .ok-btn {
   border: 1px solid transparent;
 }
@@ -54,5 +66,79 @@
 }
 
 .aelf-web-logout-dialog .cancel-btn:hover {
-  color:#4c8ce0 !important;
+  color: #4c8ce0 !important;
+}
+.portkey-ant-modal-content {
+  .aelf-extra-wallets {
+    .social-header {
+      .title-icon {
+        margin-top: 10px;
+      }
+      .header {
+        .header-btn {
+          height: 16px;
+          line-height: 0px;
+        }
+      }
+    }
+    .wallet-entries.social-content {
+      margin-bottom: 24px;
+      .plugin-entry {
+        .icon.discover {
+          background-size: 40px;
+          background-position:center;
+        }
+        
+      }
+    }
+  }
+  .account-type-list {
+    margin-bottom: 122px;
+  }
+  .portkey-ui-account-type-wrapper {
+    .account-type-list {
+      .portkey-ui-custom-svg {
+        &:first-child {
+          margin-left: 0;
+        }
+        &:last-child {
+          margin-left: 12px;
+          margin-right: 0px;
+        }
+      }
+    }
+  }
+}
+// mobile
+@media all and (max-width: 769px) {
+  .portkey-ant-modal-root {
+    .portkey-ant-modal-content {
+      width: 343px;
+      margin: auto;
+    }
+    .aelf-web-login {
+      &.aelf-extra-wallets {
+        .social-header {
+          .header {
+            .header-btn {
+              margin-right: 8px;
+            }
+          }
+        }
+        .social-content {
+          width: 311px;
+        }
+      }
+    }
+    .account-type-list {
+      .portkey-ui-custom-svg {
+        &:first-child {
+          margin-left: 7.5px;
+        }
+        &:last-child {
+          margin-right: 7.5px;
+        }
+      }
+    }
+  }
 }

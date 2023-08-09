@@ -30,7 +30,8 @@ import {
   FROM_WALLET,
   FROM_EXPIRED_VOTES,
   FROM_ACTIVE_VOTES,
- ELF_DECIMAL } from "@src/pages/Vote/constants";
+  ELF_DECIMAL,
+} from "@src/pages/Vote/constants";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import "./index.less";
 import { isIPhone } from "../../../utils/deviceCheck";
@@ -89,7 +90,7 @@ function getColumns() {
               pathname: "/vote/team",
               search: `pubkey=${record.candidate}`,
             }}
-            className='node-name-in-table'
+            className="node-name-in-table"
             // style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
             style={{ width: 150 }}
             onClick={() => {
@@ -217,7 +218,7 @@ class VoteModal extends Component {
             label: "Node Name",
             // FIXME: handle the other case
             render: (
-              <span className='form-item-value'>
+              <span className="form-item-value">
                 {/* {centerEllipsis(nodeName)} */}
                 {nodeName}
               </span>
@@ -226,7 +227,7 @@ class VoteModal extends Component {
           {
             label: "Node Address",
             render: (
-              <span className='form-item-value'>
+              <span className="form-item-value">
                 {/* {centerEllipsis(nodeAddress)} */}
                 {nodeAddress}
               </span>
@@ -260,7 +261,7 @@ class VoteModal extends Component {
                 validateTrigger={["onChange", "onBlur"]}
                 validateFirst // todo: How to set it to default?
               >
-                <Input className='vote-input' placeholder='Enter vote amount' />
+                <Input className="vote-input" placeholder="Enter vote amount" />
               </Form.Item>
             ),
             // todo: extra should compatible with ReactElement and string
@@ -288,11 +289,11 @@ class VoteModal extends Component {
                     },
                   ]}
                   // initialValue={defaultDate}
-                  name='lockTime'
+                  name="lockTime"
                 >
                   {isIPhone() ? (
                     <DatePickerReact
-                      dateFormat='yyyy-MM-dd'
+                      dateFormat="yyyy-MM-dd"
                       minDate={
                         new Date(moment().add(SHORTEST_LOCK_TIME + 1, "d"))
                       }
@@ -307,7 +308,7 @@ class VoteModal extends Component {
                           lockTime: moment(date),
                         });
                       }}
-                      className='react-datepicker-custom-container date-picker-in-modal'
+                      className="react-datepicker-custom-container date-picker-in-modal"
                       dayClassName={() => "day-class"}
                       includeDateIntervals={[
                         {
@@ -317,7 +318,7 @@ class VoteModal extends Component {
                           end: new Date(moment().add(1080, "d")),
                         },
                       ]}
-                      placeholderText='Select date'
+                      placeholderText="Select date"
                     />
                   ) : (
                     <DatePicker
@@ -348,17 +349,17 @@ class VoteModal extends Component {
         formItems: [
           {
             label: "Node Name",
-            render: <span className='form-item-value'>{nodeName}</span>,
+            render: <span className="form-item-value">{nodeName}</span>,
           },
           {
             label: "Node Address",
-            render: <span className='form-item-value'>{nodeAddress}</span>,
+            render: <span className="form-item-value">{nodeAddress}</span>,
           },
           {
             label: "Select Vote",
             render: (
               <Form.Item
-                name='switchVoteRowSelection'
+                name="switchVoteRowSelection"
                 initialValue={[
                   switchVoteSelectedRowKeys.length > 0
                     ? switchVoteSelectedRowKeys[0]
@@ -372,7 +373,7 @@ class VoteModal extends Component {
                 ]}
               >
                 <Table
-                  size='middle'
+                  size="middle"
                   dataSource={switchableVoteRecords}
                   columns={columns}
                   rowSelection={switchVoteRowSelection}
@@ -483,17 +484,17 @@ class VoteModal extends Component {
           style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
-          type='primary'
+          type="primary"
           onClick={() => this.handleSearch(selectedKeys, confirm)}
-          icon='search'
-          size='small'
+          icon="search"
+          size="small"
           style={{ width: 90, marginRight: 8 }}
         >
           Search
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters, confirm)}
-          size='small'
+          size="small"
           style={{ width: 90 }}
         >
           Reset
@@ -543,11 +544,11 @@ class VoteModal extends Component {
     const formItems = this.getFormItems();
 
     const { formattedLockTime } = this.state;
-    let tipHTML = <p className='tip-color'>{FEE_TIP}</p>;
+    let tipHTML = <p className="tip-color">{FEE_TIP}</p>;
     if (voteType !== "fromWallet") {
       tipHTML = (
         <>
-          <p className='tip-color'>
+          <p className="tip-color">
             <div>
               Once the transfer is confirmed, your lock-up time will be reset.
               Another {formattedLockTime || "days"} will be counted from today.
@@ -560,11 +561,11 @@ class VoteModal extends Component {
 
     return (
       <Modal
-        className='vote-modal'
-        title='Node Vote'
+        className="vote-modal"
+        title="Node Vote"
         visible={voteModalVisible}
         onOk={this.handleOk}
-        okText='OK'
+        okText="OK"
         confirmLoading={voteConfirmLoading}
         width={980}
         // okText='Next'
@@ -591,7 +592,7 @@ class VoteModal extends Component {
               tab={
                 <span>
                   <input
-                    type='radio'
+                    type="radio"
                     checked={voteType === form.type}
                     value={form.type}
                     style={{ marginRight: 10 }}
@@ -604,7 +605,7 @@ class VoteModal extends Component {
             >
               <Form
                 ref={this.formRef}
-                className='vote-modal-form'
+                className="vote-modal-form"
                 {...formItemLayout}
                 onSubmit={this.handleSubmit}
               >
@@ -625,7 +626,7 @@ class VoteModal extends Component {
                     {item.tip ? (
                       <span style={{ position: "relative" }}>
                         <Tooltip title={item.tip}>
-                          <InfoCircleFilled className='right-icon' />
+                          <InfoCircleFilled className="right-icon" />
                         </Tooltip>
                       </span>
                     ) : null}

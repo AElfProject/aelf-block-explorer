@@ -21,7 +21,7 @@ export default async function fetchPriceAndPrevious() {
       d.getTimezoneOffset() * 60000 -
       24 * 3600 * 1000,
   }).then((res) => {
-    if (!res.message) {
+    if (!res?.message) {
       previousPrice = res;
     }
   });

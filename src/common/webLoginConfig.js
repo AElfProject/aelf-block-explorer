@@ -9,11 +9,18 @@ import {
 } from "@config/config";
 import isWebview from "../utils/isWebView";
 
-const graphQLServer = NETWORK_TYPE === "TESTNET" ? "https://dapp-portkey-test.portkey.finance" : "https://dapp-portkey.portkey.finance";
-const portkeyApiServer = NETWORK_TYPE === "TESTNET" ? "https://did-portkey-test.portkey.finance" : "https://did-portkey.portkey.finance"
-
-// did.config.setConfig
-export const connectUrl = NETWORK_TYPE === "TESTNET" ? 'https://auth-portkey-test.portkey.finance' : 'https://auth-portkey.portkey.finance';
+const graphQLServer =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"
+    : "https://dapp-portkey.portkey.finance/Portkey_DID";
+const portkeyApiServer =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://did-portkey-test.portkey.finance"
+    : "https://did-portkey.portkey.finance";
+export const connectUrl =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://auth-portkey-test.portkey.finance"
+    : "https://auth-portkey.portkey.finance";
 
 setGlobalConfig({
   appName: APPNAME,
@@ -21,13 +28,15 @@ setGlobalConfig({
   networkType: NETWORK_TYPE === "TESTNET" ? "TESTNET" : "MAIN",
   portkey: {
     useLocalStorage: true,
-    graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
+    graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
     connectUrl,
     socialLogin: {
-      Portkey: isWebview() ? undefined : {
-        websiteName: APPNAME,
-        websiteIcon: `${CHAINS_LINK[CHAIN_ID]}/favicon.main.ico`,
-      },
+      Portkey: isWebview()
+        ? undefined
+        : {
+            websiteName: APPNAME,
+            websiteIcon: `${CHAINS_LINK[CHAIN_ID]}/favicon.main.ico`,
+          },
     },
     requestDefaults: {
       timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
@@ -42,7 +51,7 @@ setGlobalConfig({
           networkType: NETWORK_TYPE,
           isActive: true,
           apiUrl: portkeyApiServer,
-          graphQLUrl: `${graphQLServer}/Portkey_DID/PortKeyIndexerCASchema/graphql`,
+          graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
           connectUrl,
         },
       ],
@@ -52,15 +61,15 @@ setGlobalConfig({
     appName: APPNAME,
     nodes: {
       AELF: {
-        chainId: 'AELF',
+        chainId: "AELF",
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVW: {
-        chainId: 'tDVW',
+        chainId: "tDVW",
         rpcUrl: DEFAUTRPCSERVER,
       },
       tDVV: {
-        chainId: 'tDVV',
+        chainId: "tDVV",
         rpcUrl: DEFAUTRPCSERVER,
       },
     },

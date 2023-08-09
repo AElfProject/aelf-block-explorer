@@ -11,6 +11,7 @@ import { DEFAUTRPCSERVER, SYMBOL, CHAIN_ID } from "../config/config";
 import addressFormat from "./utils/addressFormat";
 // eslint-disable-next-line import/no-cycle
 import { removeAElfPrefix } from "./utils/utils";
+// eslint-disable-next-line import/no-cycle
 import Dividends from "./components/Dividends";
 
 dayjs.extend(relativeTime);
@@ -118,7 +119,7 @@ const MY_VOTE_DATA_TIP =
   "The Total Votes is the votes amount you voted, and the Redeemable Votes is the number of votes that has expired.";
 const GET_NULL = "Cannot read property 'error' of null";
 const FEE_RATE = 0.005;
-const SHORTEST_LOCK_TIME = 90; // day
+const SHORTEST_LOCK_TIME = 1; // day
 
 // TODO 用户可选RPCSERVER
 const RPCSERVER = DEFAUTRPCSERVER;
@@ -155,7 +156,8 @@ const BLOCKS_LIST_COLUMNS = [
       return (
         <Link
           title={`${SYMBOL}_${text}_${CHAIN_ID}`}
-          to={`/address/${addressFormat(text)}`}>{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
+          to={`/address/${addressFormat(text)}`}
+        >{`${SYMBOL}_${text}_${CHAIN_ID}`}</Link>
       );
     },
   },
