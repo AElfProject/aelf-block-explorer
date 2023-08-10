@@ -10,7 +10,12 @@
 
 import { Provider as ReduxProvider } from 'react-redux';
 import store from '@_store';
+import { ConfigProvider } from 'antd';
 
 export default function RootProvider({ children }) {
-  return <ReduxProvider store={store}>{children}</ReduxProvider>;
+  return (
+    <ConfigProvider>
+      <ReduxProvider store={store}>{children}</ReduxProvider>
+    </ConfigProvider>
+  );
 }
