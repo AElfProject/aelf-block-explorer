@@ -60,7 +60,10 @@ function TransactionDetail(props) {
 
   const logIsAllParsed = useMemo(() => {
     const { Logs = [] } = info || {};
-    const arr = Logs.filter((item) => item.Name === "Transferred");
+    const arr = Logs.filter(
+      (item) =>
+        item.Name === "Transferred" || item.Name === "CrossChainTransferred"
+    );
     return arr.length === parsedLogs.length;
   }, [parsedLogs, info]);
 
