@@ -43,7 +43,10 @@ function TransactionDetail(props) {
     const { Logs = [] } = info || {};
     const logs = [...parsedLogs];
     if (Logs.length) {
-      const arr = Logs.filter((item) => item.Name === "Transferred");
+      const arr = Logs.filter(
+        (item) =>
+          item.Name === "Transferred" || item.Name === "CrossChainTransferred"
+      );
       arr.forEach((item, index) => {
         deserializeLog(item).then((res) => {
           logs.push({ ...res, key: arr[index].Name + arr[index].Address });
