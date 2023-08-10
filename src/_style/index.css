@@ -1,0 +1,12 @@
+@layer components{
+
+    .user-list{
+        li{   
+            @apply text-red-300;
+            
+            &:hover{
+                @apply text-blue-50 font-bold
+            }
+        }
+    }
+}

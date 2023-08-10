@@ -2,7 +2,7 @@
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:37:10
  * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-02 15:13:46
+ * @LastEditTime: 2023-08-10 15:01:40
  * @Description: root layout
  */
 import '@_style/globals.css';
