@@ -43,7 +43,12 @@ function TransactionDetail(props) {
     const { Logs = [] } = info || {};
     const logs = [...parsedLogs];
     if (Logs.length) {
-      const arr = Logs.filter((item) => item.Name === "Transferred");
+      const arr = Logs.filter(
+        (item) =>
+          item.Name === "Transferred" ||
+          item.Name === "CrossChainTransferred" ||
+          item.Name === "CrossChainReceived"
+      );
       arr.forEach((item, index) => {
         deserializeLog(item).then((res) => {
           logs.push({ ...res, key: arr[index].Name + arr[index].Address });
@@ -57,7 +62,12 @@ function TransactionDetail(props) {
 
   const logIsAllParsed = useMemo(() => {
     const { Logs = [] } = info || {};
-    const arr = Logs.filter((item) => item.Name === "Transferred");
+    const arr = Logs.filter(
+      (item) =>
+        item.Name === "Transferred" ||
+        item.Name === "CrossChainTransferred" ||
+        item.Name === "CrossChainReceived"
+    );
     return arr.length === parsedLogs.length;
   }, [parsedLogs, info]);
 
