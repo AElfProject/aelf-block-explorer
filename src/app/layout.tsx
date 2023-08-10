@@ -2,7 +2,7 @@
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:37:10
  * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-02 15:13:46
+ * @LastEditTime: 2023-08-10 15:01:40
  * @Description: root layout
  */
 import '@_style/globals.css';
@@ -11,6 +11,7 @@ import { Inter } from 'next/font/google';
 import RootProvider from './pageProvider';
 import Header from '@_components/Header';
 import Footer from '@_components/Footer';
+import StyledComponentsRegistry from '@_lib/AntdRegistry';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        <RootProvider>{children}</RootProvider>
+        <RootProvider>
+          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        </RootProvider>
         <Footer />
       </body>
     </html>
