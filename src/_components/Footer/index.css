@@ -1,0 +1,97 @@
+.footer-container {
+  @apply bg-white bottom-0 w-full h-[330px] relative;
+  &-bg {
+    @apply absolute top-0 left-0;
+  }
+  &-wrapper {
+    @apply max-w-[1400px] flex py-6 px-5 m-auto relative;
+  }
+  &-content {
+    @apply flex mt-[44px] gap-4 justify-between w-full border-y-[1px] py-6;
+    .left {
+      @apply w-full;
+      .title {
+        @apply flex leading-[22px];
+        .anticon {
+          @apply mr-2;
+          svg {
+            @apply w-6 h-6;
+          }
+        }
+        .text {
+          @apply font-[20px] leading-5;
+        }
+      }
+      .description {
+        @apply mt-4 leading-5 font-[400px] text-[12px] w-[443px] text-[#858585];
+      }
+    }
+    .right {
+      @apply flex-row flex gap-4 w-full;
+      .ecosystem,
+      .community,
+      .developer {
+        @apply flex-col flex-1;
+        span {
+          @apply block;
+        }
+        .title {
+          @apply font-[700] text-[14px] leading-[22px];
+        }
+        .text {
+          @apply mt-1 text-[12px] font-[400] leading-5 text-[#595959];
+        }
+      }
+    }
+  }
+  .copywrite {
+    @apply absolute bottom-6 w-full text-center text-[#858585] text-[12px] font-[400];
+  }
+}
+.footer-container__mobile {
+  @apply h-[528px] w-full;
+  .footer-container-bg {
+    @apply h-full object-cover;
+  }
+  .footer-container-wrapper {
+    @apply w-full;
+  }
+  .footer-container-content {
+    @apply flex-wrap;
+    .right {
+      @apply mt-6 flex-wrap;
+      .ecosystem,
+      .community,
+      .developer {
+        @apply w-[175.5px] flex-none;
+      }
+    }
+  }
+}
+.footer-container__main {
+  @apply bg-main-blue;
+  .footer-container-wrapper {
+  }
+  .footer-container-content {
+    @apply text-white border-[#3A4668];
+    .left {
+      .description {
+        @apply text-white;
+      }
+    }
+    .right {
+      .ecosystem,
+      .community,
+      .developer {
+        .text {
+          @apply text-white;
+        }
+      }
+    }
+  }
+  .copywrite {
+    @apply text-white;
+  }
+  &..footer-container__mobile {
+  }
+}

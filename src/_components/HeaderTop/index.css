@@ -20,7 +20,7 @@
   }
 }
 .header-top-container__main {
-  @apply bg-white h-14;
+  @apply bg-main-blue h-14;
   .header-top-container-content {
     max-width: 1360px;
     @apply mx-auto flex h-full items-center justify-between px-5;

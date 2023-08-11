@@ -29,11 +29,11 @@ const searchValidator: TSearchValidator = {
 };
 export default function Home() {
   return (
-    <main className="p-4">
+    <main className="p-4 h-[3000px]">
       <div className="text-base-200">home page </div>
 
       <Link
-        className="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-base-100 hover:border-transparent "
+        className="px-4 py-1 text-sm font-semibold text-purple-600 border border-purple-200 rounded-full hover:text-white hover:bg-base-100 hover:border-transparent "
         href="/address">
         Address
       </Link>

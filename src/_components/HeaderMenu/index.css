@@ -6,8 +6,17 @@
       @apply border-y-0 my-auto leading-[64px];
       .ant-menu-item,
       .ant-menu-submenu {
+        @apply mr-2;
         &:after {
           @apply border-y-0;
+        }
+        .submenu-title-wrapper {
+          @apply mr-2;
+        }
+        .submenu-right-arrow {
+          svg {
+            @apply w-4 h-4;
+          }
         }
       }
     }

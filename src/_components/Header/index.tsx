@@ -90,13 +90,13 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [handleScroll]);
 
   return (
-    <div className={`header-fixed-container ${onlyMenu}${isMainNet}`}>
+    <div className={`header-container ${onlyMenu}${isMainNet}`}>
       <div>
         {<HeaderTop price={price.USD} range={range} networkList={NETWORK_LIST} isMobile={isMobile}></HeaderTop>}
-        <HeaderMenu></HeaderMenu>
+        <HeaderMenu isMobile={isMobile}></HeaderMenu>
       </div>
     </div>
   );

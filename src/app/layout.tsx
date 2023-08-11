@@ -15,6 +15,7 @@ import { headers } from 'next/headers';
 import request from '@_api';
 import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
+import clsx from 'clsx';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -39,11 +40,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={clsx(inter.className, 'relative min-h-screen')}>
         <StyledComponentsRegistry>
           <Header priceSSR={price} previousPriceSSR={previousPrice} isMobileSSR={isMobile} />
           <RootProvider>{children}</RootProvider>
-          <Footer />
+          <Footer isMobileSSR={isMobile} />
         </StyledComponentsRegistry>
       </body>
     </html>

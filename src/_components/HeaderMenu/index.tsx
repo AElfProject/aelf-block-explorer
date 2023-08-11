@@ -4,69 +4,84 @@ import { useState } from 'react';
 import clsx from 'clsx';
 const clsPrefix = 'header-menu-container';
 import './index.css';
+import IconFont from '@_components/IconFont';
+import Link from 'next/link';
 
-const items: MenuProps['items'] = [
-  {
-    label: 'Home',
-    key: 'home',
-  },
-  {
-    label: 'BlockChain',
-    key: 'blockChain',
-    children: [
-      {
-        label: 'Blocks',
-        key: 'blocks',
-      },
-      {
-        label: 'Transactions',
-        key: 'transactions',
-      },
-      {
-        type: 'group',
-        label: 'Address',
-        children: [
-          {
-            label: 'Top Accounts',
-            key: 'accounts',
-          },
-          {
-            label: 'Contracts',
-            key: 'contracts',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Token',
-    key: 'token',
-  },
-  {
-    label: 'NFTs',
-    key: 'nfts',
-  },
-  {
-    label: 'Governance',
-    key: 'governance',
-    children: [
-      {
-        label: 'Proposals',
-        key: 'proposals',
-      },
-      {
-        label: 'Vote',
-        key: 'vote',
-      },
-      {
-        label: 'Resource',
-        key: 'resource',
-      },
-    ],
-  },
-];
-export default function HeaderMenu() {
-  const [current, setCurrent] = useState('mail');
+interface IProps {
+  isMobile: boolean;
+}
+export default function HeaderMenu({ isMobile }: IProps) {
+  const items: MenuProps['items'] = [
+    {
+      label: 'Home',
+      key: '/',
+    },
+    {
+      label: (
+        <div>
+          <span className="submenu-title-wrapper">BlockChain</span>
+          {!isMobile && <IconFont className="submenu-right-arrow" type="menu-down" />}
+        </div>
+      ),
+      key: 'blockChain',
+      children: [
+        {
+          label: <Link href="/blocks">Blocks</Link>,
+          key: '/blocks',
+        },
+        {
+          label: <Link href="/transactions">Transactions</Link>,
+          key: '/transactions',
+        },
+        {
+          type: 'group',
+          label: 'Address',
+          children: [
+            {
+              label: <Link href="/accounts">Top Accounts</Link>,
+              key: '/accounts',
+            },
+            {
+              label: <Link href="/contracts">Contracts</Link>,
+              key: '/contracts',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: <Link href="/token">Token</Link>,
+      key: '/token',
+    },
+    {
+      label: <Link href="/nfts">NFTs</Link>,
+      key: '/nfts',
+    },
+    {
+      label: (
+        <div>
+          <span className="submenu-title-wrapper">Governance</span>
+          <IconFont className="submenu-right-arrow" type="menu-down" />
+        </div>
+      ),
+      key: 'governance',
+      children: [
+        {
+          label: <Link href="/proposals">Proposals</Link>,
+          key: '/proposals',
+        },
+        {
+          label: <Link href="/vote">Vote</Link>,
+          key: '/vote',
+        },
+        {
+          label: <Link href="/resource">Resource</Link>,
+          key: '/resource',
+        },
+      ],
+    },
+  ];
+  const [current, setCurrent] = useState('home');
   const onClick: MenuProps['onClick'] = (e) => {
     console.log('click ', e);
     setCurrent(e.key);
@@ -80,7 +95,9 @@ export default function HeaderMenu() {
           selectedKeys={[current]}
           mode="horizontal"
           items={items}
-          expandIcon={<IconFont className="submenu-right-arrow" type="Down" />}></Menu>
+          // expandIcon={<DiffOutlined />}
+          // expandIcon={<IconFont className="submenu-right-arrow" type="menu-down" />}
+        ></Menu>
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ export default function HeaderTop({ price, range, networkList, isMobile }: IProp
     }
   };
   return (
-    <div className={clsx(clsPrefix, IsMain && `${clsPrefix}__main bg-main-blue`)}>
+    <div className={clsx(clsPrefix, IsMain && `${clsPrefix}__main`)}>
       <div className={clsx(`${clsPrefix}-content`)} onClick={clickIcon}>
         <Image
           className={clsx(`${clsPrefix}-icon`)}
