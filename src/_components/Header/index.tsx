@@ -96,7 +96,7 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
     <div className={`header-container ${onlyMenu}${isMainNet}`}>
       <div>
         {<HeaderTop price={price.USD} range={range} networkList={NETWORK_LIST} isMobile={isMobile}></HeaderTop>}
-        <HeaderMenu isMobile={isMobile}></HeaderMenu>
+        {!isMobile && <HeaderMenu isMobile={isMobile}></HeaderMenu>}
       </div>
     </div>
   );

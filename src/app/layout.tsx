@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-08-10 15:01:40
  * @Description: root layout
  */
+
 import '@_style/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';

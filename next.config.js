@@ -7,14 +7,14 @@
  */
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    async rewrites() {
-        return [  
-            {
-                source: '/xxx',
-                destination: '/address',
-            }
-        ]
-    },
-}
+  async rewrites() {
+    return [
+      {
+        source: '/xxx',
+        destination: '/address',
+      },
+    ];
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

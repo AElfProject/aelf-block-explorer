@@ -1,0 +1,9 @@
+.home-container {
+  @apply max-w-[1200px] flex align-middle flex-col m-auto;
+  .banner-section {
+    @apply relative w-full h-[184px] items-center flex justify-between gap-6 px-0 py-10 flex-col;
+    h2 {
+      @apply text-center text-[24px];
+    }
+  }
+}

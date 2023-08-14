@@ -41,3 +41,5 @@
     @apply w-10 h-10 flex items-center justify-center rounded border border-[#3A4668];
   }
 }
+.header-top-container__mobile {
+}
