@@ -1,0 +1,68 @@
+.ep-pagination {
+  @apply flex justify-between items-center p-4;
+  .ant-select {
+    @apply mx-2 w-auto  !important;
+    .ant-select-selector {
+      @apply border py-2 rounded border-D0 flex items-center !important;
+      .ant-select-selection-item {
+        @apply pe-5 font-normal text-base-100 leading-5 text-xs;
+      }
+    }
+  }
+  .ep-pagination-right {
+    @apply flex items-center;
+    .ant-pagination-simple-pager {
+      @apply hidden;
+    }
+    .ant-btn-primary {
+      @apply rounded !important;
+    }
+    .pagination-first {
+      .ant-btn-primary.ant-btn-background-ghost:disabled {
+        @apply bg-F7 border-D0 text-base-200 !important;
+      }
+    }
+    .pagination-last {
+      .ant-btn-primary.ant-btn-background-ghost:disabled {
+        @apply bg-F7 border-D0 text-base-200 !important;
+      }
+    }
+    .pagination-first>.first-button {
+      @apply border-link text-link !important;
+    }
+    .pagination-last>.last-button {
+      @apply border-link text-link !important;
+    }
+    .pagination-prev {
+      .ant-btn-primary:disabled {
+        @apply bg-F7 border-D0 text-base-200 !important;
+      }
+    }
+    .pagination-next {
+      .ant-btn-primary:disabled {
+        @apply bg-F7 border-D0 text-base-200 !important;
+      }
+    }
+    
+    .pagination-prev,.pagination-next {
+      @apply h-8 rounded-lg mr-0;
+    }
+    .prev,.next {
+      @apply flex justify-center items-center h-8 rounded-lg px-2 border bg-32 border-32;
+      .left-arrow,.right-arrow {
+        @apply w-3.5 h-3;
+      }
+    }
+    .ant-pagination-disabled {
+      @apply bg-F7 !important;
+      .prev:hover,.next:hover {
+        @apply bg-F7  bg-F7 border-D0 !important;
+        cursor: auto;
+      }
+    }
+    .pagination-page {
+      box-sizing: border-box;
+      @apply border h-8 mx-2 border-D0 bg-F7 rounded px-2 py-1.5;
+    }
+  }
+}

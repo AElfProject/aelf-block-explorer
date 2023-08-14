@@ -1,0 +1,37 @@
+.ep-table {
+  .ant-table {
+    .ant-table-cell {
+      @apply p-4 bg-white border-none !important;
+      box-shadow: 0px -1px 0px 0px #E6E6E6 inset;
+    }
+    .ant-table-thead {
+      .ant-table-cell::before {
+        @apply bg-inherit w-0 h-0 !important; 
+      }
+      .ant-table-cell {
+        @apply p-4 text-xs bg-white border-none leading-5 text-base-100 font-bold !important; 
+      }
+      .header-top {
+        @apply flex items-center !important; 
+      }
+    }
+  }
+  .ant-pagination {
+    .ant-pagination-item {
+      @apply hidden;
+    }
+    .ant-pagination-jump-prev,.ant-pagination-jump-next {
+      @apply hidden;
+    }
+    .ant-pagination-item-1 {
+      @apply inline-block h-[1.875rem] px-2 bg-F7 border-D0;
+    }
+  } 
+
+  .ep-table-header {
+    @apply flex items-center justify-between !important;
+    .ep-pagination {
+      @apply p-0 !important;
+    }
+  }
+}

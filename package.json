@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.2.3",
+    "@ant-design/icons": "^5.2.5",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/node": "20.4.5",
     "@types/react": "18.2.17",
@@ -29,6 +29,9 @@
     "socket.io": "^4.7.1",
     "socket.io-client": "^4.7.1",
     "typescript": "5.1.6"
+  },
+  "resolutions": {
+    "antd": "^5.8.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",

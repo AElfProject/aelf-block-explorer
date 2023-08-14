@@ -11,6 +11,7 @@ import { Inter } from 'next/font/google';
 import RootProvider from './pageProvider';
 import Header from '@_components/Header';
 import Footer from '@_components/Footer';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,6 +28,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RootProvider>{children}</RootProvider>
         <Footer />
       </body>
+      <Script
+        src="https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/icons_27664_13.df1dc658833885e2b6c5f25257eacd8b.js"
+        strategy="afterInteractive"
+      />
     </html>
   );
 }
