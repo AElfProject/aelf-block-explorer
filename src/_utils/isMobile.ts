@@ -188,3 +188,10 @@ export function isMobileDevices() {
   const isM = isMobile();
   return isM.apple.device || isM.android.device;
 }
+
+export function isMobileOnServer(headers) {
+  const userAgent = headers.get('user-agent');
+  // Let's check if the device is a mobile device
+  const isMobile = userAgent!.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i);
+  return !!isMobile;
+}

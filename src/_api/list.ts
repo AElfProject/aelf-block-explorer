@@ -16,9 +16,14 @@ const Transaction_API_List = {
   getTransaction: '',
 };
 
+const Common_API_List = {
+  getPrice: '',
+};
+
 export const API_List = {
   block: Block_API_List,
   tx: Transaction_API_List,
+  common: Common_API_List,
 };
 
 type REQUEST_FUNCTION = (opt?: RequestWithParams) => Promise<any>;

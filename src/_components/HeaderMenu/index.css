@@ -1,0 +1,24 @@
+.header-menu-container {
+  @apply bg-white h-16 shadow-[0_3px_6px_0_#D0D0D0];
+  &-content {
+    @apply max-w-[1440px] mx-auto px-5 h-full;
+    .ant-menu-light.ant-menu-horizontal {
+      @apply border-y-0 my-auto leading-[64px];
+      .ant-menu-item,
+      .ant-menu-submenu {
+        @apply mr-2;
+        &:after {
+          @apply border-y-0;
+        }
+        .submenu-title-wrapper {
+          @apply mr-2;
+        }
+        .submenu-right-arrow {
+          svg {
+            @apply w-4 h-4;
+          }
+        }
+      }
+    }
+  }
+}
