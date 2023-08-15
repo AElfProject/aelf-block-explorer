@@ -19,6 +19,9 @@ const Transaction_API_List = {
 const Common_API_List = {
   getPrice: '',
 };
+export const Socket_API_List = {
+  overview: '/signalr-hubs/overview',
+};
 
 export const API_List = {
   block: Block_API_List,

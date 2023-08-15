@@ -6,4 +6,10 @@
       @apply text-center text-[24px];
     }
   }
+  .latest-all {
+    @apply flex flex-row mt-4 gap-4;
+    > .home-latest {
+      @apply w-[50%];
+    }
+  }
 }
