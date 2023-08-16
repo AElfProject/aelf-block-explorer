@@ -2,7 +2,7 @@
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:37:10
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 14:34:05
+ * @LastEditTime: 2023-08-16 15:57:46
  * @Description: root layout
  */
 
@@ -14,7 +14,6 @@ import Header from '@_components/Header';
 import Footer from '@_components/Footer';
 import MainContainer from '@_components/Main';
 import { headers } from 'next/headers';
-import request from '@_api';
 import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
 import clsx from 'clsx';

@@ -1,9 +1,9 @@
 /*
- * @Author: aelf-lxy
- * @Date: 2023-08-02 14:50:15
+ * @author: Peterbjx
+ * @Date: 2023-08-16 16:02:25
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-16 16:01:11
- * @Description: footer
+ * @LastEditTime: 2023-08-16 16:02:43
+ * @Description: 
  */
 'use client';
 import clsx from 'clsx';
@@ -14,7 +14,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { isMobileDevices } from '@_utils/isMobile';
 const FoorterBgTets = '/image/footer-bg.png';
-const NetworkType = process.env.NEXT_PUBLIC_NETWORK_TYPE;
+// const NetworkType = process.env.NEXT_PUBLIC_NETWORK_TYPE;
 const IsMain = !!(process.env.NEXT_PUBLIC_NETWORK_TYPE === 'MAIN');
 const clsPrefix = 'footer-container';
 interface IProps {
