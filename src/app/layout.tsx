@@ -1,8 +1,8 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:37:10
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-14 14:27:29
+ * @LastEditors: Peterbjx
+ * @LastEditTime: 2023-08-16 15:57:46
  * @Description: root layout
  */
 
@@ -12,6 +12,7 @@ import { Inter } from 'next/font/google';
 import RootProvider from './pageProvider';
 import Header from '@_components/Header';
 import Footer from '@_components/Footer';
+import MainContainer from '@_components/Main';
 import { headers } from 'next/headers';
 import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
@@ -43,7 +44,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={clsx(inter.className, 'relative min-h-screen')}>
         <StyledComponentsRegistry>
           <Header priceSSR={price} previousPriceSSR={previousPrice} isMobileSSR={isMobile} />
-          <RootProvider>{children}</RootProvider>
+          <RootProvider>
+            <MainContainer>{children}</MainContainer>
+          </RootProvider>
           <Footer isMobileSSR={isMobile} />
         </StyledComponentsRegistry>
       </body>

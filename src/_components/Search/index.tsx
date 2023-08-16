@@ -1,8 +1,8 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-08-11 00:15:47
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-16 14:02:27
+ * @LastEditors: Peterbjx
+ * @LastEditTime: 2023-08-16 16:02:54
  * @Description: root of search component
  */
 import { SearchContextProvider } from './SearchProvider';
