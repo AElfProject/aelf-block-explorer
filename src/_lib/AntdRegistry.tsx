@@ -2,7 +2,7 @@
  * @Author: aelf-lxy
  * @Date: 2023-08-10 14:59:15
  * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-10 15:00:46
+ * @LastEditTime: 2023-08-15 14:50:34
  * @Description: Extract the antd first screen style as needed and implant it into HTML to avoid page flickering
  */
 'use client';

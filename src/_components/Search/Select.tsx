@@ -2,34 +2,37 @@
  * @Author: aelf-lxy
  * @Date: 2023-08-09 20:35:48
  * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-10 15:04:13
+ * @LastEditTime: 2023-08-15 17:36:00
  * @Description: filter condition
  */
-import { Select } from 'antd';
-import { useState, useEffect } from 'react';
+import { Dropdown, MenuProps } from 'antd';
 import { TSearchValidator } from './type';
+import IconFont from '@_components/IconFont';
+import { memo, useContext } from 'react';
+import { SearchContext } from './SearchProvider';
+import { setFilterType } from './action';
 
-export default function SearchSelect({ searchValidator }: { searchValidator: TSearchValidator }) {
-  const [selectValue, setSelectValue] = useState<number>(0);
-
-  useEffect(() => {
-    console.log(selectValue);
-  }, [selectValue]);
-
-  function selectChangeHandler(val) {
-    setSelectValue(val);
-  }
-
-  if (Object.keys(searchValidator).length === 0) {
+function SearchSelect({ searchValidator }: { searchValidator?: TSearchValidator }) {
+  console.log(11111);
+  const { state, dispatch } = useContext(SearchContext);
+  const { filterType } = state;
+  if (!searchValidator || Object.keys(searchValidator).length === 0) {
     return null;
   }
+
+  const items = searchValidator.map((ele) => ({ label: ele.label, key: ele.key }));
+
+  const filterClickHandler: MenuProps['onClick'] = (obj) => {
+    dispatch(setFilterType(searchValidator[obj.key]));
+  };
   return (
-    <Select
-      defaultValue={0}
-      onChange={selectChangeHandler}
-      bordered={false}
-      style={{ width: 120 }}
-      options={Object.entries(searchValidator).map(([k, v]) => ({ value: v.value, label: k }))}
-    />
+    <Dropdown menu={{ items, onClick: filterClickHandler }}>
+      <div className="filter-wrap">
+        <span>{filterType.label}</span>
+        <IconFont className="right-arrow" type="menu-down" />
+      </div>
+    </Dropdown>
   );
 }
+
+export default memo(SearchSelect);
