@@ -1,5 +1,5 @@
 .home-info-section {
-  @apply max-w-[1360px] flex py-5 px-4 border-r-2 shadow-[0_8px_16px_0_rgba(0,0,0,0.04)] bg-white  flex-wrap;
+  @apply rounded-lg max-w-[1360px] flex py-5 px-4 border-r-2 shadow-[0_8px_16px_0_rgba(0,0,0,0.04)] bg-white  flex-wrap;
   &-col-item {
     @apply flex-[1_1_auto] border-r-[1px] px-5 overflow-hidden;
     &:first-child {
@@ -29,6 +29,15 @@
       }
       .desc {
         @apply text-[20px] font-[500] leading-[28px] text-base-100;
+        .range {
+          @apply ml-1 text-[14px] font-[400] leading-[22px];
+          &.rise {
+            @apply text-rise-red;
+          }
+          &.fall {
+            @apply text-fall-green;
+          }
+        }
       }
     }
   }

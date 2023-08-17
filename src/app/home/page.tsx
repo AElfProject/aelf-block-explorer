@@ -17,6 +17,8 @@ import { HubConnection, HubConnectionBuilder, HttpTransportType, LogLevel } from
 import { IOverviewSSR } from './type';
 import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
 import Latest from './_components/Latest';
+import TPSChart from './_components/TPSChart';
+import tpsData from './mock';
 const BannerPc = '/image/banner_pc.png';
 const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
@@ -99,14 +101,148 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
   };
 
   const LatestAll = () => {
+    const blocks = [
+      {
+        blockHeight: 123123123123,
+        timestamp: '1111111',
+        txns: 222,
+        reward: '123',
+        producer: {
+          name: 'hehehehehehehehehehehehehehe',
+          address: 'www.baidu.com',
+        },
+      },
+      {
+        blockHeight: 1,
+        timestamp: '1111111',
+        txns: 222,
+        reward: '123',
+        producer: {
+          name: 'hehehehehehehehehehehehehehe',
+          address: 'www.baidu.com',
+        },
+      },
+      {
+        blockHeight: 2,
+        timestamp: '1111111',
+        txns: 222,
+        reward: '123',
+        producer: {
+          name: 'hehehehehehehehehehehehehehe',
+          address: 'www.baidu.com',
+        },
+      },
+      {
+        blockHeight: 3,
+        timestamp: '1111111',
+        txns: 222,
+        reward: '123',
+        producer: {
+          name: 'hehehehehehehehehehehehehehe',
+          address: 'www.baidu.com',
+        },
+      },
+      {
+        blockHeight: 4,
+        timestamp: '1111111',
+        txns: 222,
+        reward: '123',
+        producer: {
+          name: 'hehehehehehehehehehehehehehe',
+          address: 'www.baidu.com',
+        },
+      },
+      {
+        blockHeight: 1234,
+        timestamp: '1111111',
+        txns: 222,
+        reward: '123',
+        producer: {
+          name: 'hehe',
+          address: 'www.baidu.com',
+        },
+      },
+      {
+        blockHeight: 123456,
+        timestamp: '1111111',
+        txns: 222,
+        reward: '123',
+        producer: {
+          name: 'hehe',
+          address: 'www.baidu.com',
+        },
+      },
+    ];
+    const transactions = [
+      {
+        id: 1,
+        transactionHash: '111111113903740370',
+        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        timestamp: 1279407412740,
+        txnValue: 1.23,
+      },
+      {
+        id: 2,
+        transactionHash: '111111113903740370',
+        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        timestamp: 1279407412740,
+        txnValue: 1.23,
+      },
+      {
+        id: 3,
+        transactionHash: '111111113903740370',
+        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        timestamp: 1279407412740,
+        txnValue: 1.23,
+      },
+      {
+        id: 4,
+        transactionHash: '111111113903740370',
+        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        timestamp: 1279407412740,
+        txnValue: 1.23,
+      },
+      {
+        id: 5,
+        transactionHash: '111111113903740370',
+        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        timestamp: 1279407412740,
+        txnValue: 1.23,
+      },
+      {
+        id: 6,
+        transactionHash: '111111113903740370',
+        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        timestamp: 1279407412740,
+        txnValue: 1.23,
+      },
+      {
+        id: 7,
+        transactionHash: '111111113903740370',
+        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
+        timestamp: 1279407412740,
+        txnValue: 1.23,
+      },
+    ];
     return (
-      <div className="latest-all">
-        <Latest></Latest>
-        <Latest></Latest>
+      <div className={clsx('latest-all', isMobile && 'latest-all__mobile')}>
+        <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
+        <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest>
       </div>
     );
   };
 
+  const Chart = () => {
+    const data = tpsData;
+    return <TPSChart isMobile={isMobile} data={data}></TPSChart>;
+  };
   return (
     <main className={clsx(`${clsPrefix}`, isMobile && `${clsPrefix}-mobile`)}>
       <div className="banner-section">
@@ -126,6 +262,7 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
       </div>
       <OverView></OverView>
       <LatestAll></LatestAll>
+      <Chart></Chart>
       {/* <Link
         className="px-4 py-1 text-sm font-semibold text-purple-600 border border-purple-200 rounded-full hover:text-white hover:bg-base-100 hover:border-transparent "
         href="/address">

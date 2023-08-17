@@ -21,6 +21,8 @@
     "antd": "^5.8.2",
     "bignumber.js": "^9.1.1",
     "clsx": "^2.0.0",
+    "echarts": "^5.4.3",
+    "echarts-for-react": "^3.0.2",
     "moment": "^2.29.4",
     "next": "13.4.12",
     "next-headers": "^0.0.5",

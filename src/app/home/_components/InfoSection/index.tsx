@@ -4,13 +4,18 @@ import './index.css';
 
 import IconFont from '@_components/IconFont';
 import { IOverviewSSR } from '@app/home/type';
+import { useEffect, useState } from 'react';
 const clsPrefix = 'home-info-section';
 interface IProps {
   isMobile: boolean;
   overview: IOverviewSSR;
 }
 
-export default function infoSection({ isMobile, overview }: IProps) {
+const InfoSection = ({ isMobile, overview }: IProps) => {
+  const [range, setRange] = useState('');
+  useEffect(() => {
+    setRange(overview.tokenPricePercent);
+  }, [overview]);
   return (
     <div className={clsx(`${clsPrefix}`, isMobile && `${clsPrefix}__mobile`)}>
       <div className={`${clsPrefix}-col-item`}>
@@ -18,7 +23,13 @@ export default function infoSection({ isMobile, overview }: IProps) {
           <IconFont type="elf-price"></IconFont>
           <div className="content">
             <span className="title">Price</span>
-            <span className="desc">{overview.tokenPriceInUsd}</span>
+            <span className="desc">
+              {overview.tokenPriceInUsd || '-'}
+              <span className={clsx('range', +range >= 0 ? 'rise' : 'fall')}>
+                ({+range >= 0 ? '+' : ''}
+                {(+range)?.toFixed(2)}%)
+              </span>
+            </span>
           </div>
         </div>
         <div className={clsx(`${clsPrefix}-row-item`, `${clsPrefix}-height`)}>
@@ -68,4 +79,5 @@ export default function infoSection({ isMobile, overview }: IProps) {
       </div>
     </div>
   );
-}
+};
+export default InfoSection;
