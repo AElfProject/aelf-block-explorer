@@ -6,4 +6,16 @@
       @apply text-center text-[24px];
     }
   }
+  .latest-all {
+    @apply flex flex-row mt-4 gap-4;
+    > .home-latest {
+      @apply w-[50%];
+    }
+    &__mobile {
+      @apply mx-3 flex flex-wrap;
+      > .home-latest {
+        @apply w-full;
+      }
+    }
+  }
 }

@@ -17,6 +17,7 @@ module.exports = {
         'main-blue': '#1D2A51',
         'rise-red': '#FF4D4F',
         'fall-green': '#05bd72',
+        'global-grey': '#f7f8f9',
         base: {
           100: '#252525',
           200: '#858585',

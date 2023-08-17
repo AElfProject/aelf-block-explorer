@@ -1,0 +1,106 @@
+.home-latest {
+  @apply bg-white rounded-[8px] shadow-[0_8px_16px_0_rgba(0,0,0,0.04)];
+  .title {
+    @apply px-4 py-[15px] h-[52px] text-[14px] font-[500] leading-[22px] text-base-100 shadow-[0_-1px_0_0_#E6E6E6_inset];
+  }
+  .content {
+    @apply h-[480px] px-4 overflow-auto;
+    .item {
+      @apply py-4 h-[80px] shadow-[0_-1px_0_0_#E6E6E6_inset] flex flex-row align-middle;
+      .left {
+        @apply flex flex-row flex-wrap  w-[203px];
+        .anticon {
+          @apply mr-2;
+          svg {
+            @apply w-12 h-12;
+          }
+        }
+        .text {
+          @apply flex flex-col justify-center;
+          .height {
+            @apply text-[12px] font-[400] leading-5 text-link max-w-[99px] overflow-hidden text-ellipsis whitespace-nowrap;
+          }
+          .time {
+            @apply text-[10px] font-[400] leading-[18px] text-base-200;
+          }
+        }
+      }
+      .middle {
+        @apply flex flex-wrap flex-col justify-center w-[203px];
+        .producer {
+          @apply text-[12px] font-[400] leading-5 w-full overflow-hidden text-ellipsis whitespace-nowrap;
+          a {
+            @apply text-link ml-2;
+          }
+        }
+        .txns {
+          @apply text-[10px] font-[400] leading-[18px] text-base-200;
+          a {
+            @apply text-link mr-1;
+          }
+        }
+        .from,
+        .to {
+          @apply text-[12px] font-[400] leading-5 text-base-100 flex;
+          a {
+            @apply ml-2 text-link w-[134px] inline-block;
+          }
+        }
+      }
+      .right {
+        @apply flex w-[138px] flex-1 items-center;
+        .button {
+          @apply h-6 flex justify-center ml-auto border-[1px] rounded-[4px] px-2 text-[10px] font-[500] leading-[18px] items-center;
+          .reward {
+            @apply mr-1;
+          }
+        }
+      }
+    }
+  }
+  .link {
+    @apply rounded-b-lg px-4 py-[14px] flex justify-center align-middle text-[10px] font-[500] leading-[18px] text-base-200 bg-[#F7F8FA] shadow-[0_1px_0_0_#E6E6E6_inset];
+    a {
+      @apply hover:text-link;
+    }
+    .anticon {
+      @apply ml-2;
+      svg {
+        @apply hover:text-link;
+      }
+    }
+  }
+}
+
+.home-latest__mobile {
+  .content {
+    @apply h-[576px] overflow-auto;
+    .item {
+      @apply flex flex-wrap h-[96px];
+      .left {
+        @apply w-full;
+        .time {
+          @apply ml-2;
+        }
+        .anticon {
+          @apply hidden;
+        }
+        .text {
+          @apply flex flex-row;
+        }
+      }
+      .middle {
+        @apply w-full;
+        .txns {
+          /* @apply leading-6; */
+        }
+        .button {
+          @apply h-6 border-[1px] rounded-[4px] px-2 text-[10px] font-[500] inline-block ml-2 text-base-100 leading-5;
+          .reward {
+            @apply mr-1;
+          }
+        }
+      }
+    }
+  }
+}
