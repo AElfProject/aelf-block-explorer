@@ -1,8 +1,8 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-08-02 01:50:01
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-04 17:53:31
+ * @LastEditors: Peterbjx
+ * @LastEditTime: 2023-08-15 17:14:30
  * @Description: tailwind config
  */
 /** @type {import('tailwindcss').Config} */
@@ -23,6 +23,16 @@ module.exports = {
           200: '#858585',
         },
         link: '#266CD3',
+        D0: '#D0D0D0',
+        32: '#327DEC',
+        F7: '#F7F8FA',
+        'color-divider': '#E6E6E6',
+      },
+      boxShadow: {
+        table: '0px 8px 16px 0px rgba(0, 0, 0, 0.04)',
+      },
+      lineHeight: {
+        22: '1.375rem',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

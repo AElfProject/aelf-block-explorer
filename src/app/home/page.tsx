@@ -1,8 +1,8 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:37:10
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-09 19:52:47
+ * @LastEditors: Peterbjx
+ * @LastEditTime: 2023-08-16 16:03:16
  * @Description: home page
  */
 'use client';
@@ -24,24 +24,28 @@ const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
 const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
 const HOST = process.env.NEXT_PUBLIC_API_URL;
-const searchValidator: TSearchValidator = {
-  default: {
-    value: 0,
+const searchValidator: TSearchValidator = [
+  {
+    label: 'All Filters',
+    key: 0,
     limitNumber: 1,
   },
-  token: {
-    value: 1,
+  {
+    label: 'token',
+    key: 1,
     limitNumber: 1,
   },
-  account: {
-    value: 2,
+  {
+    label: 'account',
+    key: 2,
     limitNumber: 9,
   },
-  contract: {
-    value: 3,
+  {
+    label: 'contract',
+    key: 3,
     limitNumber: 2,
   },
-};
+];
 interface IProps {
   isMobile: boolean;
   overviewSSR: IOverviewSSR;
@@ -258,7 +262,7 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
           <Image src={BannerPc} layout="fill" objectFit="contain" priority alt="Picture of the banner"></Image>
         )}
         <h2>AELF Explorer</h2>
-        <Search searchValidator={searchValidator} />
+        <Search searchValidator={searchValidator} placeholder={'Search by Address / Txn Hash / Block'} />
       </div>
       <OverView></OverView>
       <LatestAll></LatestAll>
