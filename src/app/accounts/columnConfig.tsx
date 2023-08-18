@@ -2,7 +2,7 @@
  * @Author: Peterbjx jianxiong.bai@aelf.io
  * @Date: 2023-08-14 18:13:54
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 20:19:02
+ * @LastEditTime: 2023-08-16 16:46:11
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
@@ -13,19 +13,17 @@ import Copy from '@_components/Copy';
 import { Tooltip } from 'antd';
 import IconFont from '@_components/IconFont';
 const chain_id = 'AELF';
-export default function getColumns({ preTotal }: { preTotal: number }): ColumnsType<TableDataType> {
+const symbol = 'ELF';
+export default function getColumns(): ColumnsType<TableDataType> {
   return [
     {
       title: '#',
-      dataIndex: 'id',
+      dataIndex: 'rank',
       width: '112px',
-      render(id, record, index) {
-        return preTotal + index + 1;
-      },
     },
     {
       title: 'Address',
-      dataIndex: 'owner',
+      dataIndex: 'address',
       width: '394px',
       render: (text) => (
         <div className="address">
@@ -43,8 +41,8 @@ export default function getColumns({ preTotal }: { preTotal: number }): ColumnsT
       title: 'Balance',
       dataIndex: 'balance',
       width: '394px',
-      render(balance, record) {
-        return `${numberFormatter(balance)} ${record.symbol}`;
+      render(balance) {
+        return `${numberFormatter(balance)} ${symbol}`;
       },
     },
     {
@@ -68,7 +66,7 @@ export default function getColumns({ preTotal }: { preTotal: number }): ColumnsT
           </Tooltip>
         </div>
       ),
-      dataIndex: 'count',
+      dataIndex: 'txnCount',
       width: '224px',
     },
   ];

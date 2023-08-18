@@ -2,7 +2,7 @@
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:57:13
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 20:15:10
+ * @LastEditTime: 2023-08-16 16:44:31
  * @Description: BlockList
  */
 'use client';
@@ -12,80 +12,66 @@ import getColumns from './columnConfig';
 import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
+import fetchData from './mock';
 
 export interface TableDataType {
-  key: string | number;
+  rank: number;
   balance: string;
-  count: number;
+  txnCount: number;
   percentage: string;
-  symbol: string;
-  owner: string;
+  address: string;
 }
 
-const data: TableDataType[] = [
-  {
-    key: '1',
-    balance: '277482680.46581',
-    count: 32,
-    owner: '25CuX2FXDvhaj7etTpezDQDunk5xGhytxE68yTYJJfMkQwvj5p',
-    percentage: '27.7483%',
-    symbol: 'ELF',
-  },
-  {
-    key: '2',
-    balance: '277482680.46581',
-    count: 32,
-    owner: '25CuX2FXDvhaj7etTpezDQDunk5xGhytxE68yTYJJfMkQwvj5p',
-    percentage: '27.7483%',
-    symbol: 'ELF',
-  },
-  {
-    key: '3',
-    balance: '277482680.46581',
-    count: 32,
-    owner: '25CuX2FXDvhaj7etTpezDQDunk5xGhytxE68yTYJJfMkQwvj5p',
-    percentage: '27.7483%',
-    symbol: 'ELF',
-  },
-];
-
-export default function List({ isMobileSSR }) {
+export default function List({ isMobileSSR, SSRData }) {
   const [isMobile, setIsMobile] = useState(isMobileSSR);
   useEffect(() => {
     setIsMobile(isMobileDevices());
   }, []);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
-  const [total, setTotal] = useState<number>(101);
+  const [pageSize, setPageSize] = useState<number>(25);
+  const [total, setTotal] = useState<number>(SSRData.total);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<TableDataType[]>(SSRData.data);
   const multiTitle = useMemo(() => {
-    return `A total of 1,999,999 accounts found (${total} ELF)`;
+    return `A total of ${total} accounts found (${total} ELF)`;
   }, [total]);
 
   const multiTitleDesc = useMemo(() => {
     return '(Showing the top 10,000 accounts only)';
   }, []);
   const columns = useMemo<ColumnsType<TableDataType>>(() => {
-    return getColumns({ preTotal: Number(pageSize) * (currentPage - 1) });
-  }, [currentPage, pageSize]);
+    return getColumns();
+  }, []);
 
-  const pageChange = (page: number, pageSize?: number) => {
-    console.log(page, pageSize, 'blocks');
+  const pageChange = async (page: number) => {
+    setLoading(true);
     setCurrentPage(page);
+    const data = await fetchData({ page, pageSize: pageSize });
+    setData(data.data);
+    setTotal(data.total);
+    setLoading(false);
   };
 
-  const pageSizeChange = (size) => {
-    console.log(size, 'size blocks');
+  const pageSizeChange = async (size) => {
+    setLoading(true);
     setPageSize(size);
+    setCurrentPage(1);
+    const data = await fetchData({ page: 1, pageSize: size });
+    setData(data.data);
+    setTotal(data.total);
+    setLoading(false);
   };
+
   return (
     <div>
       <HeadTitle content="Top Accounts by ELF Balance"></HeadTitle>
       <Table
         titleType="multi"
         dataSource={data}
+        loading={loading}
         columns={columns}
         isMobile={isMobile}
-        rowKey="key"
+        rowKey="rank"
         total={total}
         pageSize={pageSize}
         pageNum={currentPage}

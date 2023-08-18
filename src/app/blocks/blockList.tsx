@@ -2,7 +2,7 @@
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:57:13
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 14:00:24
+ * @LastEditTime: 2023-08-16 17:02:47
  * @Description: BlockList
  */
 'use client';
@@ -12,68 +12,32 @@ import getColumns from './columnConfig';
 import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
+import fetchData from './mock';
 
 export interface TableDataType {
-  key: string | number;
-  block_height: number;
-  time: string;
-  Txn: number;
+  blockHeight: number;
+  timestamp: string;
+  txns: number;
   Producer: {
     name: string;
     chain_id: string;
   };
-  Reward: string;
-  'Burnt Fees': string;
+  blockHash?: string;
+  reward: string;
+  burntFee: string;
 }
 
-const data: TableDataType[] = [
-  {
-    key: '1',
-    block_height: 165018684,
-    time: '2023-08-14T08:20:16.3833194Z',
-    Txn: 32,
-    Producer: {
-      name: '29JHMRj99HfhiNUfXFu6jbfujTnZS4KC8NGx3zJeHCKbjbQDP4',
-      chain_id: 'AELF',
-    },
-    Reward: '0.00112726 ELF',
-    'Burnt Fees': '1,550.00011273 ELF',
-  },
-  {
-    key: '2',
-    block_height: 165018684,
-    time: '2023-08-14T08:20:16.3833194Z',
-    Txn: 32,
-    Producer: {
-      name: '29JHMRj99HfhiNUfXFu6jbfujTnZS4KC8NGx3zJeHCKbjbQDP4',
-      chain_id: 'AELF',
-    },
-    Reward: '0.00112726 ELF',
-    'Burnt Fees': '1,550.00011273 ELF',
-  },
-  {
-    key: '3',
-    block_height: 165018684,
-    time: '2023-08-14T08:20:16.3833194Z',
-    Txn: 32,
-    Producer: {
-      name: '29JHMRj99HfhiNUfXFu6jbfujTnZS4KC8NGx3zJeHCKbjbQDP4',
-      chain_id: 'AELF',
-    },
-    Reward: '0.00112726 ELF',
-    'Burnt Fees': '1,550.00011273 ELF',
-  },
-];
-
-export default function BlockList({ isMobileSSR }) {
+export default function BlockList({ isMobileSSR, SSRData }) {
   const [isMobile, setIsMobile] = useState(isMobileSSR);
   useEffect(() => {
     setIsMobile(isMobileDevices());
   }, []);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
-  const [total, setTotal] = useState<number>(101);
+  const [pageSize, setPageSize] = useState<number>(25);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(SSRData.total);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
+  const [data, setData] = useState<TableDataType[]>(SSRData.blocks);
   const handleTimeChange = () => {
     if (timeFormat === 'Age') {
       setTimeFormat('Date Time (UTC)');
@@ -85,30 +49,43 @@ export default function BlockList({ isMobileSSR }) {
     return getColumns({ timeFormat, handleTimeChange });
   }, [timeFormat]);
 
-  const pageChange = (page: number, pageSize?: number) => {
-    console.log(page, pageSize, 'blocks');
+  const pageChange = async (page: number) => {
+    setLoading(true);
     setCurrentPage(page);
+    const data = await fetchData({ page, pageSize: pageSize });
+    setData(data.blocks);
+    setTotal(data.total);
+    setLoading(false);
   };
+  const multiTitle = useMemo(() => {
+    return `A total of ${total} transactions found`;
+  }, [total]);
 
-  const pageSizeChange = (size) => {
-    console.log(size, 'size blocks');
+  const pageSizeChange = async (size) => {
+    setLoading(true);
     setPageSize(size);
+    setCurrentPage(1);
+    const data = await fetchData({ page: 1, pageSize: size });
+    setData(data.blocks);
+    setTotal(data.total);
+    setLoading(false);
   };
   return (
     <div>
       <HeadTitle content="Blocks"></HeadTitle>
       <Table
         titleType="multi"
+        loading={loading}
         dataSource={data}
         columns={columns}
         isMobile={isMobile}
-        rowKey="key"
+        rowKey="blockHeight"
         total={total}
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}
         pageSizeChange={pageSizeChange}
-        multiTitle="A total of 344,256,109 transactions found"
+        multiTitle={multiTitle}
         multiTitleDesc="(Showing blocks between #17785761 to #17785785)"></Table>
     </div>
   );
