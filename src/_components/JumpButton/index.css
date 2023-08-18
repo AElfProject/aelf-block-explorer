@@ -1,0 +1,32 @@
+.jump-link {
+  .jum-button {
+    @apply w-6 h-6 cursor-pointer flex items-center justify-center border border-D0 bg-white rounded ;
+    svg {
+      @apply text-base-100;
+    }
+  }
+  .jum-button:hover {
+    @apply bg-32 border-32;
+    svg {
+      @apply text-white;
+    }
+  }
+  .jum-button:active {
+    @apply bg-button_active border-button_active;
+    svg {
+      @apply text-white;
+    }
+  }
+  .disabled-button {
+    @apply border-D0 bg-F7 cursor-not-allowed;
+    svg {
+      @apply text-D0;
+    }
+  }
+  .disabled-button:hover {
+    @apply border-D0 bg-F7;
+    svg {
+      @apply text-D0;
+    }
+  }
+}

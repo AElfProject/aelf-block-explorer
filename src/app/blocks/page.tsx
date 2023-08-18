@@ -1,8 +1,10 @@
 import BlockList from './blockList';
 import { headers } from 'next/headers';
 import { isMobileOnServer } from '@_utils/isMobile';
-export default function BlocksPage() {
+import fetchData from './mock';
+export default async function BlocksPage() {
   const headersList = headers();
   const isMobile = isMobileOnServer(headersList);
-  return <BlockList isMobileSSR={isMobile} />;
+  const data = await fetchData({ page: 1, pageSize: 25 });
+  return <BlockList SSRData={data} isMobileSSR={isMobile} />;
 }

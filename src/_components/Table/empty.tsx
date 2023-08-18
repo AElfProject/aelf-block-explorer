@@ -45,7 +45,7 @@ export default function CommonEmpty({ type, desc, className, size = 'large' }: C
       curType = typesMap[type];
     }
     return (
-      <div className={clsx('empty-placeholder', sizeStyle, className)}>
+      <div className={clsx('empty-placeholder flex items-center justify-center', sizeStyle, className)}>
         {curType.src && <Image alt="empty" src={curType.src} />}
         {curType.desc && <span>{desc || curType.desc}</span>}
       </div>
