@@ -72,7 +72,7 @@
   }
 }
 
-.home-latest__mobile {
+.home-latest-mobile {
   .content {
     @apply h-[576px] overflow-auto;
     .item {

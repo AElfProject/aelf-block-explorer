@@ -10,7 +10,7 @@
     @apply text-[12px] text-[#252525];
   }
 }
-.back-to-top__main {
+.back-to-top-main {
   .anticon {
     svg {
       @apply text-white;

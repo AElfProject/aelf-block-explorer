@@ -6,6 +6,7 @@ const clsPrefix = 'header-menu-container';
 import './index.css';
 import IconFont from '@_components/IconFont';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface IProps {
   isMobile: boolean;
@@ -13,7 +14,7 @@ interface IProps {
 export default function HeaderMenu({ isMobile }: IProps) {
   const items: MenuProps['items'] = [
     {
-      label: 'Home',
+      label: <Link href="/">Home</Link>,
       key: '/',
     },
     {
@@ -57,6 +58,7 @@ export default function HeaderMenu({ isMobile }: IProps) {
       label: <Link href="/nfts">NFTs</Link>,
       key: '/nfts',
     },
+
     {
       label: (
         <div>
@@ -81,23 +83,18 @@ export default function HeaderMenu({ isMobile }: IProps) {
       ],
     },
   ];
-  const [current, setCurrent] = useState('home');
+  const pathname = usePathname();
+  const [current, setCurrent] = useState(pathname);
+  console.log(current, 'current');
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
+    console.log('click ', e.key);
     setCurrent(e.key);
   };
 
   return (
     <div className={clsx(`${clsPrefix}`)}>
       <div className={`${clsPrefix}-content`}>
-        <Menu
-          onClick={onClick}
-          selectedKeys={[current]}
-          mode="horizontal"
-          items={items}
-          // expandIcon={<DiffOutlined />}
-          // expandIcon={<IconFont className="submenu-right-arrow" type="menu-down" />}
-        ></Menu>
+        <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items}></Menu>
       </div>
     </div>
   );

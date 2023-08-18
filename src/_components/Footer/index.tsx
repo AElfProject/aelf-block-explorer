@@ -3,7 +3,7 @@
  * @Date: 2023-08-16 16:02:25
  * @LastEditors: Peterbjx
  * @LastEditTime: 2023-08-16 16:02:43
- * @Description: 
+ * @Description:
  */
 'use client';
 import clsx from 'clsx';
@@ -26,7 +26,7 @@ export default function Footer({ isMobileSSR }: IProps) {
     setIsMobile(isMobileDevices());
   }, []);
   return (
-    <div className={clsx(clsPrefix, IsMain && `${clsPrefix}__main`, isMobile && `${clsPrefix}__mobile`)}>
+    <div className={clsx(clsPrefix, IsMain && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
       {!IsMain && (
         <Image src={`${FoorterBgTets}`} alt={''} width="1400" height="330" className={`${clsPrefix}-bg`}></Image>
       )}

@@ -42,7 +42,7 @@
     }
   }
 }
-.home-info-section__mobile {
+.home-info-section-mobile {
   @apply mx-3 rounded-lg shadow-[0px_8px_16px_0px_rgba(0,0,0,0.04)] py-0;
   .home-info-section-col-item {
     @apply w-full border-0 px-0;
