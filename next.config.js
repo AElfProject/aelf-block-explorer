@@ -13,6 +13,22 @@ const nextConfig = {
         source: '/xxx',
         destination: '/address',
       },
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3001/api/:path*',
+      },
+      {
+        source: '/chain/:path*',
+        destination: 'http://localhost:3001/chain/:path*',
+      },
+      {
+        source: '/cms/:path*',
+        destination: 'http://localhost:3001/cms/:path*',
+      },
+      {
+        source: '/new-socket/:path*',
+        destination: 'http://localhost:3001/new-socket/:path*',
+      },
     ];
   },
 };
