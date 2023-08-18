@@ -32,6 +32,8 @@ module.exports = {
         'confirm-bg': '#EAF5F3',
         ECEEF2: '#ECEEF2',
         button_active: '#155ABF',
+        pink_stroke: '#FFD0D0',
+        pink_fill: '#FFEDED',
       },
       boxShadow: {
         table: '0px 8px 16px 0px rgba(0, 0, 0, 0.04)',

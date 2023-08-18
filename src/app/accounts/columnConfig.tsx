@@ -6,15 +6,14 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { TableDataType } from './list';
-import { splitAddress, addressFormat, numberFormatter } from '@_utils/formatter';
+import { ITableDataType } from './list';
+import { numberFormatter } from '@_utils/formatter';
+import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
 import { Tooltip } from 'antd';
 import IconFont from '@_components/IconFont';
-const chain_id = 'AELF';
-const symbol = 'ELF';
-export default function getColumns(): ColumnsType<TableDataType> {
+export default function getColumns(): ColumnsType<ITableDataType> {
   return [
     {
       title: '#',
@@ -28,12 +27,12 @@ export default function getColumns(): ColumnsType<TableDataType> {
       render: (text) => (
         <div className="address">
           <IconFont className="mr-1 text-xs" type="Contract" />
-          <Tooltip title={addressFormat(text, chain_id, chain_id)} overlayClassName="table-item-tooltip__white">
-            <Link className="text-link" href={`/address/${addressFormat(text, chain_id, chain_id)}`}>
-              {addressFormat(splitAddress(text, 8, 8), chain_id, chain_id)}
+          <Tooltip title={addressFormat(text)} overlayClassName="table-item-tooltip-white">
+            <Link className="text-link" href={`/address/${addressFormat(text)}`}>
+              {addressFormat(hiddenAddress(text, 4, 4))}
             </Link>
           </Tooltip>
-          <Copy value={addressFormat(text, chain_id, chain_id)} />
+          <Copy value={addressFormat(text)} />
         </div>
       ),
     },
@@ -42,14 +41,14 @@ export default function getColumns(): ColumnsType<TableDataType> {
       dataIndex: 'balance',
       width: '394px',
       render(balance) {
-        return `${numberFormatter(balance)} ${symbol}`;
+        return `${numberFormatter(balance)}`;
       },
     },
     {
       title: (
         <div>
           <span>Percentage</span>
-          <Tooltip title="Percentage" overlayClassName="table-item-tooltip__white">
+          <Tooltip title="Percentage" overlayClassName="table-item-tooltip-white">
             <IconFont className="text-xs" style={{ marginLeft: '6px' }} type="question-circle" />
           </Tooltip>
         </div>
@@ -61,7 +60,7 @@ export default function getColumns(): ColumnsType<TableDataType> {
       title: (
         <div>
           <span>Transfers</span>
-          <Tooltip title="Transfers" overlayClassName="table-item-tooltip__white">
+          <Tooltip title="Transfers" overlayClassName="table-item-tooltip-white">
             <IconFont className="text-xs" style={{ marginLeft: '6px' }} type="question-circle" />
           </Tooltip>
         </div>

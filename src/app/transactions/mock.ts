@@ -7,7 +7,7 @@ const data = Array.from(new Array(100).keys()).map((item) => {
     timestamp: '2023-08-15T08:42:41.1123602Z',
     from: {
       name: 'AELF',
-      address: 'AELF_YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy_AELF',
+      address: 'YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy',
     },
     to: {
       name: 'AELF',

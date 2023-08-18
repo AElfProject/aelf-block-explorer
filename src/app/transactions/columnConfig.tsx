@@ -6,18 +6,20 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { TableDataType } from './type';
-import { formatDate, splitAddress, addressFormat } from '@_utils/formatter';
+import { ITableDataType } from './type';
+import { formatDate } from '@_utils/formatter';
+import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import Link from 'next/link';
 import IconFont from '@_components/IconFont';
 import { Tooltip } from 'antd';
-const chain_id = 'AELF';
+import Method from '@_components/Method';
+import ContractToken from '@_components/ContractToken';
 enum Status {
   Success = 'Success',
   fail = 'Fail',
 }
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<TableDataType> {
+export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableDataType> {
   return [
     {
       title: <IconFont className="text-xs" style={{ marginLeft: '6px' }} type="question-circle" />,
@@ -39,7 +41,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
         return (
           <div className="flex items-center">
             {records.status === Status.fail && <IconFont className="mr-1" type="question-circle-error" />}
-            <Link className="text-link text-xs block w-[120px] truncate leading-5" href={`Transactions/${text}`}>
+            <Link className="text-link text-xs block w-[120px] truncate leading-5" href={`tx/${text}`}>
               {text}
             </Link>
           </div>
@@ -56,13 +58,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: 128,
       dataIndex: 'method',
       key: 'method',
-      render: (text) => (
-        <Tooltip title={text} overlayClassName="table-item-tooltip__white">
-          <div className="border text-center box-border px-[15px] rounded border-D0 bg-F7 w-24 h-6 flex items-center justify-center method">
-            <div className="truncate">{text}</div>
-          </div>
-        </Tooltip>
-      ),
+      render: (text) => <Method text={text} tip={text} />,
     },
     {
       title: 'Block',
@@ -99,12 +95,12 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
         const { address } = text;
         return (
           <div className="address flex items-center">
-            <Tooltip title={addressFormat(address, chain_id, chain_id)} overlayClassName="table-item-tooltip__white">
-              <Link className="text-link" href={`/address/${addressFormat(address, chain_id, chain_id)}`}>
-                {addressFormat(splitAddress(address, 4, 4), chain_id, chain_id)}
+            <Tooltip title={addressFormat(address)} overlayClassName="table-item-tooltip-white">
+              <Link className="text-link" href={`/address/${addressFormat(address)}`}>
+                {addressFormat(hiddenAddress(address, 4, 4))}
               </Link>
             </Tooltip>
-            <Copy value={addressFormat(address, chain_id, chain_id)} />
+            <Copy value={addressFormat(address)} />
             <div className="flex items-center"></div>
           </div>
         );
@@ -122,16 +118,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: 'To',
       width: 196,
       render: (text) => {
-        const { address } = text;
-        return (
-          <div className="address">
-            <IconFont className="mr-1 text-xs" type="Contract" />
-            <Tooltip title={address} overlayClassName="table-item-tooltip__white">
-              <Link href={`/address/${address}`}>{address}</Link>
-            </Tooltip>
-            <Copy value={address} />
-          </div>
-        );
+        return <ContractToken address={text.address} />;
       },
     },
     {

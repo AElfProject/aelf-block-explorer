@@ -6,6 +6,7 @@
  * @Description: code block
  */
 import React from 'react';
+import './index.css';
 
 export default function CodeBlock({ value, rows = 8 }) {
   let jsonFormatted = value;
