@@ -5,11 +5,17 @@
  * @LastEditTime: 2023-08-01 17:11:41
  * @Description: collection item
  */
-export default function ItemDetails({ params }: { params: ChainId & CollectionSymbol & ItemSymbol }) {
-  return (
-    <div>
-      ItemDetails, my chainId is {params.chain}, my collectionSymbol is {params.collectionSymbol}, my ItemSymbol is{' '}
-      {params.itemSymbol}
-    </div>
-  );
+import { notFound } from 'next/navigation';
+import request from '@_api';
+import NFTDetails from './NFTDetails';
+export default async function NFTDetailsPage({ params }: { params: ChainId & CollectionSymbol & ItemSymbol }) {
+  if (!params.collectionSymbol) {
+    return notFound();
+  }
+  const { products } = await request.block.query({ params: { q: params.collectionSymbol } });
+  if (!products) {
+    return notFound();
+  }
+
+  return <NFTDetails />;
 }

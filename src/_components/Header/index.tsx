@@ -37,6 +37,7 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
   const [price, setPrice] = useState(priceSSR);
   const [previousPrice, setPreviousPrice] = useState(previousPriceSSR);
   const pathname = usePathname();
+  const isHideSearch = pathname === '/' || pathname.includes('search-');
   useEffect(() => {
     setIsMobile(isMobileDevices());
   }, []);
@@ -95,7 +96,14 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
   return (
     <div className={`header-container ${onlyMenu}${isMainNet}`}>
       <div>
-        {<HeaderTop price={price.USD} range={range} networkList={NETWORK_LIST} isMobile={isMobile}></HeaderTop>}
+        {
+          <HeaderTop
+            price={price.USD}
+            range={range}
+            networkList={NETWORK_LIST}
+            isMobile={isMobile}
+            isHideSearch={isHideSearch}></HeaderTop>
+        }
         {!isMobile && <HeaderMenu isMobile={isMobile}></HeaderMenu>}
       </div>
     </div>

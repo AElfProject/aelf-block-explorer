@@ -10,6 +10,7 @@
     "font-family-name-quotes": null,
     "rule-empty-line-before": null,
     "selector-pseudo-class-no-unknown": null,
-    "no-descending-specificity": null
+    "no-descending-specificity": null,
+    "selector-class-pattern": null
   }
 }
