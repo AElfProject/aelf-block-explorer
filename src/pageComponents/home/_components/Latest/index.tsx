@@ -1,11 +1,11 @@
 const clsPrefix = 'home-latest';
 import './index.css';
-import Image from 'next/image';
+
 import IconFont from '@_components/IconFont';
 import { getFormattedDate } from '@_utils/timeUtils';
 import Link from 'next/link';
 import { Tooltip } from 'antd';
-import { IBlockItem, ITransactionItem } from '@app/home/type';
+import { IBlockItem, ITransactionItem } from '@pageComponents/home/type';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import clsx from 'clsx';
 
@@ -25,7 +25,7 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
     );
   };
   return (
-    <div className={clsx(clsPrefix, isMobile && `${clsPrefix}__mobile`)}>
+    <div className={clsx(clsPrefix, isMobile && `${clsPrefix}-mobile`)}>
       <div className="title">{`Latest ${isBlocks ? 'Blocks' : 'Transactions'}`}</div>
       <div className="content">
         {data.map((ele) => {

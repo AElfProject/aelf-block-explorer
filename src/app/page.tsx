@@ -9,8 +9,8 @@ import request from '@_api';
 import { Socket_API_List } from '@_api/list';
 import { isMobileOnServer } from '@_utils/isMobile';
 import { headers } from 'next/headers';
-import Home from './home/page';
-import { IOverviewSSR } from './home/type';
+import Home from '../pageComponents/home/page';
+import { IOverviewSSR } from '../pageComponents/home/type';
 import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 
 const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;

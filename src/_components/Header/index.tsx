@@ -61,7 +61,7 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
         fetchData();
       }
     }
-  }, [pathname]);
+  }, [pathname, isMobile]);
   const range = useMemo(() => {
     if (price.USD && previousPrice.usd) {
       const res = ((price.USD - previousPrice.usd) / previousPrice.usd) * 100;
@@ -80,17 +80,18 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
     }
     return showSearch;
   };
-  const handleScroll = () => {
-    if (window.location.pathname === '/') {
-      setShowSearch(getSearchStatus());
-    }
-  };
+
   useEffect(() => {
+    const handleScroll = () => {
+      if (window.location.pathname === '/') {
+        setShowSearch(getSearchStatus());
+      }
+    };
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [handleScroll]);
+  }, []);
 
   return (
     <div className={`header-container ${onlyMenu}${isMainNet}`}>

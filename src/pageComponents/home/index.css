@@ -11,7 +11,7 @@
     > .home-latest {
       @apply w-[50%];
     }
-    &__mobile {
+    &-mobile {
       @apply mx-3 flex flex-wrap;
       > .home-latest {
         @apply w-full;
