@@ -25,7 +25,7 @@ import "./index.less";
 import "./portkey.less";
 
 import "./common/webLoginConfig";
-
+import "./public-path";
 import App from "./App";
 import { WALLET_IMG } from "./common/constants";
 import { isPhoneCheck } from "./common/utils";
