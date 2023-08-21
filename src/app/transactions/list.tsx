@@ -19,14 +19,14 @@ export default function List({ isMobileSSR, SSRData }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<TableDataType[]>(SSRData.data);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const handleTimeChange = () => {
-    if (timeFormat === 'Age') {
-      setTimeFormat('Date Time (UTC)');
-    } else {
-      setTimeFormat('Age');
-    }
-  };
   const columns = useMemo<ColumnsType<TableDataType>>(() => {
+    const handleTimeChange = () => {
+      if (timeFormat === 'Age') {
+        setTimeFormat('Date Time (UTC)');
+      } else {
+        setTimeFormat('Age');
+      }
+    };
     return getColumns({ timeFormat, handleTimeChange });
   }, [timeFormat]);
 

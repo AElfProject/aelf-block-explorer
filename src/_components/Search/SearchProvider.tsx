@@ -1,16 +1,25 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-08-10 23:31:32
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-16 14:38:31
+ * @LastEditors: aelf-lxy xiyang.liu@aelf.io
+ * @LastEditTime: 2023-08-16 19:06:04
  * @Description: provider
  */
 'use client';
-import { createContext, useMemo, useReducer } from 'react';
+import { createContext, useContext, useMemo, useReducer } from 'react';
 import { SearchActions, TSearchState, BasicActions, TSearchValidator } from './type';
 import reducer from './reducer';
 
 const SearchContext = createContext<any>({});
+
+const useSearchContext = () => {
+  return useContext(SearchContext);
+};
+
+// function useSearchContext(): { a: TSearchState; b: BasicActions<SearchActions>['dispatch'] } {
+//   return useContext(SearchContext);
+// }
+
 const SearchContextProvider = ({
   children,
   validator,
@@ -32,6 +41,7 @@ const SearchContextProvider = ({
     },
     filterType: validator && validator.length > 0 ? validator[0] : undefined,
   };
+  console.log('SearchContextProvider');
   const [state, dispatch]: [TSearchState, BasicActions<SearchActions>['dispatch']] = useReducer(reducer, INITIAL_STATE);
   return (
     <SearchContext.Provider
@@ -46,4 +56,4 @@ const SearchContextProvider = ({
     </SearchContext.Provider>
   );
 };
-export { SearchContext, SearchContextProvider };
+export { useSearchContext, SearchContextProvider };

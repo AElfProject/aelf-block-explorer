@@ -1,10 +1,3 @@
-/*
- * @author: Peterbjx
- * @Date: 2023-08-16 16:02:25
- * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-16 16:02:43
- * @Description: 
- */
 'use client';
 import clsx from 'clsx';
 import './index.css';

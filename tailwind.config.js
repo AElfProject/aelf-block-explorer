@@ -35,11 +35,13 @@ module.exports = {
       },
       boxShadow: {
         table: '0px 8px 16px 0px rgba(0, 0, 0, 0.04)',
+        search: '0px 6px 24px 0px rgba(0, 0, 0, 0.24)',
         row_tab: '0px -2px 0px 0px #266CD3',
         row_tab_inset: '0px -2px 0px 0px #266CD3 inset',
         title_bot: '0px -1px 0px 0px #E6E6E6 inset',
       },
       lineHeight: {
+        20: '20px',
         22: '1.375rem',
       },
       backgroundImage: {

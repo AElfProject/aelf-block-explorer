@@ -19,7 +19,8 @@
       "@typescript-eslint/no-unsafe-assignment": 0,
       "@typescript-eslint/ban-ts-comment": 0,
       "@typescript-eslint/no-var-requires": 0,
-      "react-hooks/exhaustive-deps": 1
+      "react-hooks/exhaustive-deps": 1,
+      "@typescript-eslint/no-unused-vars": 1
     },
     "env": {
       "browser": true,
