@@ -1,0 +1,62 @@
+.approve-token-modal {
+  .ant-modal {
+    .ant-modal-content {
+      .ant-modal-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f0f0f0;
+        .ant-modal-title {
+          padding: 0;
+          border-bottom: 0;
+          text-align: left;
+        }
+      }
+      .ant-modal-body {
+        text-align: left;
+        .approve-token-form.ant-form {
+          width: auto;
+          .ant-input-number {
+            width: 80%;
+          }
+          .ant-form-item {
+            margin-bottom: 0;
+            .ant-form-item-label {
+              label {
+                margin-left: 0;
+              }
+            }
+          }
+        }
+      }
+      .ant-modal-footer {
+        border: none;
+        text-align: center;
+        padding-bottom: 32px;
+        .ant-btn {
+          width: 320px;
+          &:first-child {
+            display: none;
+          }
+        }
+      }
+      .ant-modal-footer {
+        padding: 10px 16px;
+        border-top: 1px solid #f0f0f0;
+        .ant-btn {
+          width: auto;
+          &:first-child {
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+}
+
+.approve-token-transaction-result {
+  background-color: #eeeeee;
+  max-height: 220px;
+  border-radius: 5px;
+  overflow: auto;
+  flex-grow: 1;
+  margin-bottom: 0;
+}

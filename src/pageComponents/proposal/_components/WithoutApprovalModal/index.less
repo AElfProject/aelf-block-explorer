@@ -1,0 +1,204 @@
+.without-approval-modal {
+  text-align: center;
+  .ant-modal-footer {
+    border: none;
+    text-align: center;
+    padding-bottom: 32px;
+    .ant-btn {
+      width: 320px;
+      &:first-child {
+        display: none;
+      }
+    }
+  }
+  .ant-modal-content {
+    border-radius: 8px;
+    .without-approval-modal-degree {
+      display: flex;
+      margin: 56px auto;
+      justify-content: center;
+
+      .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      .icon2 {
+        background: #266cd3;
+        color: #fff;
+      }
+      .icon3 {
+        color: #858585;
+        border: 2px solid #858585;
+      }
+      .circle-icon {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        font-size: 24px;
+        margin-right: 8px;
+
+        &.check {
+          color: #266cd3;
+        }
+        &.close {
+          color: #ff4d4f;
+        }
+      }
+      .title {
+        font-weight: 400;
+        font-size: 14px;
+        display: flex;
+      }
+      .title0 {
+        color: #595959;
+      }
+      .title1 {
+        color: #ff4d4f;
+      }
+
+      .title2 {
+        color: #266cd3;
+      }
+      .title3 {
+        color: #858585;
+      }
+      .deployment-verification {
+        display: flex;
+        flex-wrap: nowrap;
+      }
+      .middle-line {
+        margin: auto 8px;
+        width: 120px;
+        height: 1px;
+        background: #e6e6e6;
+      }
+      .deployment-execution {
+        display: flex;
+        flex-wrap: nowrap;
+      }
+    }
+    .without-approval-modal-message {
+      .verification-loading,
+      .execution-loading,
+      .fail-message,
+      .success-message {
+        font-weight: 500;
+        font-size: 18px;
+        font-family: "Roboto Medium";
+      }
+      .circle-icon {
+        display: inline-block;
+        width: 21px;
+        height: 21px;
+        font-size: 21px;
+        margin-right: 9.5px;
+        margin-bottom: 24px;
+        &.close {
+          color: #ff4d4f;
+        }
+        &.check {
+          color: #05bd72;
+        }
+      }
+      .verification-fail,
+      .execution-fail {
+        .content {
+          margin-top: 18px;
+          color: #ff4d4f;
+          font-size: 14px;
+          margin-bottom: 24px;
+          &.text-left {
+            text-align: left;
+            margin-left: 96px;
+          }
+        }
+        .copy-list-item-wrapper {
+          text-align: left;
+          margin-left: 96px;
+        }
+      }
+    }
+    .without-approval-modal-notice {
+      margin: 64px 80px 0;
+      background: #f7f8fa;
+      border-radius: 4px;
+      padding: 16px 40px;
+
+      .title {
+        color: #595959;
+        font-weight: 500;
+        font-size: 14px;
+        display: flex;
+        font-family: "Roboto Medium";
+      }
+      .content {
+        display: flex;
+        font-weight: 400;
+        font-size: 12px;
+        color: #595959;
+        text-align: left;
+        flex-wrap: wrap;
+        &-item {
+          display: flex;
+          align-items: flex-start;
+        }
+      }
+    }
+    .ant-modal-footer {
+      .ant-btn {
+        width: 240px;
+        height: 40px;
+      }
+    }
+  }
+}
+.without-approval-modal-mobile {
+  .ant-modal {
+    padding: 0 8px 24px;
+  }
+  .ant-modal-content {
+    .ant-modal-body {
+      padding: 32px 16px 0;
+      .without-approval-modal-degree {
+        margin: 8px auto;
+        .deployment-verification,
+        .deployment-execution {
+          flex-wrap: wrap;
+          justify-content: center;
+          .icon,
+          .circle-icon {
+            margin-bottom: 8px;
+          }
+        }
+      }
+      .without-approval-modal-message {
+        margin-top: 48px;
+        .verification-fail,
+        .execution-fail {
+          .content {
+            margin-left: 0;
+          }
+        }
+        .copy-list-item-wrapper {
+          margin-left: 0;
+        }
+        .address-name-ver {
+          .contract-address,
+          .contract-name,
+          .contract-version {
+            margin-left: 0;
+          }
+        }
+      }
+      .without-approval-modal-notice {
+        margin: 48px 0 32px;
+        padding: 16px;
+      }
+    }
+  }
+}

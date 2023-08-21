@@ -69,8 +69,8 @@ export default function HeaderMenu({ isMobile }: IProps) {
       key: 'governance',
       children: [
         {
-          label: <Link href="/proposals">Proposals</Link>,
-          key: '/proposals',
+          label: <Link href="/proposal/proposals">Proposal</Link>,
+          key: '/proposal/proposals',
         },
         {
           label: <Link href="/vote">Vote</Link>,

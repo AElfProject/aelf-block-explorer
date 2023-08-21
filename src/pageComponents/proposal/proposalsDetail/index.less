@@ -1,0 +1,36 @@
+.proposal-detail {
+  .ant-card-head {
+    background-color: #ededed;
+  }
+  .detail-flex {
+    display: flex;
+    flex-flow: row nowrap;
+    .sub-title {
+      white-space: nowrap;
+    }
+  }
+  .vote-data-button {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
+  }
+  &-header-divider {
+    margin-top: 0;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .proposal-detail {
+    .detail-flex {
+      display: block;
+      flex-flow: row nowrap;
+      span {
+        display: block;
+      }
+    }
+    .vote-data-button {
+      flex-flow: row;
+      justify-content: space-between;
+    }
+  }
+}
