@@ -39,8 +39,8 @@ export default function HeaderTop({ price, range, networkList, isMobile, isHideS
     }
   };
   return (
-    <div className={clsx(clsPrefix, `${clsPrefix}__main`, isMobile && `${clsPrefix}__mobile`)}>
-      <div className={clsx(`${clsPrefix}-content`)}>
+    <div className={clsx(clsPrefix, IsMain && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
+      <div className={clsx(`${clsPrefix}-content`)} onClick={clickIcon}>
         <Image
           className={clsx(`${clsPrefix}-icon`)}
           src={`${IsMain ? TopIconMain : TopIcoTest}`}

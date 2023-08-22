@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import './index.css';
 
 import IconFont from '@_components/IconFont';
-import { IOverviewSSR } from '@app/home/type';
+import { IOverviewSSR } from '@pageComponents/home/type';
 import { useEffect, useState } from 'react';
 const clsPrefix = 'home-info-section';
 interface IProps {
@@ -17,7 +17,7 @@ const InfoSection = ({ isMobile, overview }: IProps) => {
     setRange(overview.tokenPricePercent);
   }, [overview]);
   return (
-    <div className={clsx(`${clsPrefix}`, isMobile && `${clsPrefix}__mobile`)}>
+    <div className={clsx(`${clsPrefix}`, isMobile && `${clsPrefix}-mobile`)}>
       <div className={`${clsPrefix}-col-item`}>
         <div className={clsx(`${clsPrefix}-row-item`, `${clsPrefix}-price`)}>
           <IconFont type="elf-price"></IconFont>

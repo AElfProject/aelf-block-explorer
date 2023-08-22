@@ -19,7 +19,7 @@
     @apply w-10 h-10 flex items-center justify-center rounded border border-[#BFBFBF];
   }
 }
-.header-top-container__main {
+.header-top-container-main {
   @apply bg-main-blue h-14;
   .header-top-container-content {
     max-width: 1360px;

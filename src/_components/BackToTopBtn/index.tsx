@@ -1,3 +1,10 @@
+/*
+ * @author: Peterbjx
+ * @Date: 2023-08-16 16:00:17
+ * @LastEditors: Peterbjx
+ * @LastEditTime: 2023-08-16 16:00:58
+ * @Description:
+ */
 import IconFont from '@_components/IconFont';
 // import { Button } from 'antd';
 import clsx from 'clsx';
@@ -30,7 +37,7 @@ const BackToTopButton = ({ isDark }: IProps) => {
   };
 
   return (
-    <div onClick={scrollToTop} className={clsx('back-to-top-contrainer', isDark ? 'back-to-top__main' : '')}>
+    <div onClick={scrollToTop} className={clsx('back-to-top-contrainer', isDark ? 'back-to-top-main' : '')}>
       <IconFont type="Backtotop" />
       <span className="text">Back to Top</span>
     </div>

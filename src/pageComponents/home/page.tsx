@@ -12,16 +12,16 @@ import SearchComp from './_components/SearchWithClient';
 import clsx from 'clsx';
 import './index.css';
 import { useEffect, useState } from 'react';
-import { HubConnection, HubConnectionBuilder, HttpTransportType, LogLevel } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 import { IOverviewSSR } from './type';
-import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
+// import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
 import Latest from './_components/Latest';
 import TPSChart from './_components/TPSChart';
 import tpsData from './mock';
 const BannerPc = '/image/banner_pc.png';
 const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
-const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
+// const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
 const HOST = process.env.NEXT_PUBLIC_API_URL;
 
 interface IProps {
@@ -214,7 +214,7 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
       },
     ];
     return (
-      <div className={clsx('latest-all', isMobile && 'latest-all__mobile')}>
+      <div className={clsx('latest-all', isMobile && 'latest-all-mobile')}>
         <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
         <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest>
       </div>
@@ -240,7 +240,9 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
           <Image src={BannerPc} layout="fill" objectFit="contain" priority alt="Picture of the banner"></Image>
         )}
         <h2>AELF Explorer</h2>
-        <SearchComp />
+        <div className="search-section">
+          <SearchComp />
+        </div>
       </div>
       <OverView></OverView>
       <LatestAll></LatestAll>

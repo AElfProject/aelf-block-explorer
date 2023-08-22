@@ -48,7 +48,7 @@
     @apply absolute bottom-6 w-full text-center text-[#858585] text-[12px] font-[400];
   }
 }
-.footer-container__mobile {
+.footer-container-mobile {
   @apply h-[528px] w-full;
   .footer-container-bg {
     @apply h-full object-cover;
@@ -68,10 +68,8 @@
     }
   }
 }
-.footer-container__main {
+.footer-container-main {
   @apply bg-main-blue;
-  .footer-container-wrapper {
-  }
   .footer-container-content {
     @apply text-white border-[#3A4668];
     .left {
@@ -91,7 +89,5 @@
   }
   .copywrite {
     @apply text-white;
-  }
-  &..footer-container__mobile {
   }
 }
