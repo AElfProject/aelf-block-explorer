@@ -6,12 +6,13 @@
  * @Description: columns
  */
 import { ColumnsType } from 'antd/es/table';
-import { TableDataType } from './contractsList';
-import { formatDate, splitAddress, addressFormat, validateVersion } from '@_utils/formatter';
+import { ITableDataType } from './contractsList';
+import { formatDate, validateVersion } from '@_utils/formatter';
+import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
 import IconFont from '@_components/IconFont';
-export default function getColumns(): ColumnsType<TableDataType> {
+export default function getColumns(): ColumnsType<ITableDataType> {
   return [
     {
       title: 'Address',
@@ -22,9 +23,9 @@ export default function getColumns(): ColumnsType<TableDataType> {
         <div className="flex items-center">
           <IconFont className="mr-1 text-xs" type="Contract" />
           <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
-            {splitAddress(addressFormat(text, 'AELF', 'AELF'), 9, 9)}
+            {addressFormat(hiddenAddress(text, 4, 4))}
           </Link>
-          <Copy value={addressFormat(text, 'AELF', 'AELF')} />
+          <Copy value={addressFormat(text)} />
         </div>
       ),
     },

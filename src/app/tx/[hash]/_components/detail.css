@@ -1,0 +1,30 @@
+.tx-detail-container {
+  .header-title {
+    display: flex;
+    align-items: center !important;
+  }
+  .jump-link {
+    @apply ml-2;
+  }
+  .ant-tabs {
+    @apply bg-white rounded-lg shadow-table pb-4;
+    .ant-tabs-tab {
+      @apply py-[14px] px-4 shadow-row_tab m-0;
+    }
+    .ant-tabs-nav {
+      @apply shadow-title_bot;
+    }
+    .ant-tabs-nav::before {
+      border-bottom: 0;
+    }
+    .ant-tabs-tab-btn {
+      @apply font-medium text-xs leading-5 hover:text-link;
+    }
+    .ant-tabs-tab-active {
+      @apply shadow-row_tab_inset;
+      .ant-tabs-tab-btn {
+        @apply font-medium text-xs leading-5 text-link;
+      }
+    }
+  }
+}

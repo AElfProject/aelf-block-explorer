@@ -14,7 +14,7 @@ import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
 import fetchData from './mock';
 
-export interface TableDataType {
+export interface ITableDataType {
   blockHeight: number;
   timestamp: string;
   txns: number;
@@ -37,16 +37,14 @@ export default function BlockList({ isMobileSSR, SSRData }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const [data, setData] = useState<TableDataType[]>(SSRData.blocks);
-  const handleTimeChange = () => {
-    if (timeFormat === 'Age') {
-      setTimeFormat('Date Time (UTC)');
-    } else {
-      setTimeFormat('Age');
-    }
-  };
-  const columns = useMemo<ColumnsType<TableDataType>>(() => {
-    return getColumns({ timeFormat, handleTimeChange });
+  const [data, setData] = useState<ITableDataType[]>(SSRData.blocks);
+  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
+    return getColumns({
+      timeFormat,
+      handleTimeChange: () => {
+        setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
+      },
+    });
   }, [timeFormat]);
 
   const pageChange = async (page: number) => {

@@ -1,0 +1,8 @@
+.tx-block-code-like-content{
+  @apply rounded border-none bg-F7 px-4 py-2 w-full;
+  &:disabled {
+    @apply text-base-200 opacity-100;
+
+    -webkit-text-fill-color: #858585;
+  }
+}

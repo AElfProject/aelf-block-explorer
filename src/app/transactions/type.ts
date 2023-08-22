@@ -1,4 +1,4 @@
-export interface TableDataType {
+export interface ITableDataType {
   transactionHash: string;
   status: string;
   method: string;
