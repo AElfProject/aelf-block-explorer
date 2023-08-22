@@ -99,7 +99,9 @@ function App() {
   return (
     <Suspense fallback={null}>
       <div className="App">
-        <BrowserRouter>
+        <BrowserRouter
+          basename={window.__POWERED_BY_QIANKUN__ ? "/app-react" : "/"}
+        >
           <BrowserHeader />
           <HeaderBlank />
           <BrowserBreadcrumb />

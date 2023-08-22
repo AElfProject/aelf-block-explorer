@@ -4,7 +4,7 @@
  */
 
 /* eslint-env node */
-
+const packageName = require("../package.json").name;
 const path = require("path");
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -33,6 +33,9 @@ const baseConfig = {
   output: {
     path: OUTPUT_PATH,
     publicPath: PUBLIC_PATH,
+    library: `${packageName}-[name]`,
+    libraryTarget: "umd",
+    chunkLoadingGlobal: `webpackJsonp_${packageName}`,
   },
   resolve: {
     alias: {

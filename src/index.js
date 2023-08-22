@@ -4,6 +4,7 @@
  * @author huangzongzhe,longyue,zhouminghui
  */
 import React from "react";
+
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
@@ -25,7 +26,7 @@ import "./index.less";
 import "./portkey.less";
 
 import "./common/webLoginConfig";
-
+import "./public-path";
 import App from "./App";
 import { WALLET_IMG } from "./common/constants";
 import { isPhoneCheck } from "./common/utils";
@@ -35,6 +36,37 @@ if (process.env.NODE_ENV === "development") {
   // localStorage.clear();
 }
 
+function render(props) {
+  const { container } = props;
+  ReactDOM.render(
+    <App />,
+    container
+      ? container.querySelector("#root")
+      : document.querySelector("#root")
+  );
+}
+
+if (!window.__POWERED_BY_QIANKUN__) {
+  render({});
+}
+
+export async function bootstrap() {
+  console.log("[react16] react app bootstraped");
+}
+
+export async function mount(props) {
+  console.log("[react16] props from main framework", props);
+  render(props);
+}
+
+export async function unmount(props) {
+  const { container } = props;
+  ReactDOM.unmountComponentAtNode(
+    container
+      ? container.querySelector("#root")
+      : document.querySelector("#root")
+  );
+}
 async function getNodesInfo() {
   const nodesInfoProvider = "/nodes/info";
   const nodesInfo = await get(nodesInfoProvider);
