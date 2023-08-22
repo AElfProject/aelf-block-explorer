@@ -1,15 +1,14 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-07-31 14:37:10
- * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-16 16:03:16
+ * @LastEditors: aelf-lxy
+ * @LastEditTime: 2023-08-17 17:28:28
  * @Description: home page
  */
 'use client';
 import Image from 'next/image';
 import InfoSection from './_components/InfoSection';
-import Search from '@_components/Search';
-import { TSearchValidator } from '@_components/Search/type';
+import SearchComp from './_components/SearchWithClient';
 import clsx from 'clsx';
 import './index.css';
 import { useEffect, useState } from 'react';
@@ -24,28 +23,7 @@ const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
 // const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
 const HOST = process.env.NEXT_PUBLIC_API_URL;
-const searchValidator: TSearchValidator = [
-  {
-    label: 'All Filters',
-    key: 0,
-    limitNumber: 1,
-  },
-  {
-    label: 'token',
-    key: 1,
-    limitNumber: 1,
-  },
-  {
-    label: 'account',
-    key: 2,
-    limitNumber: 9,
-  },
-  {
-    label: 'contract',
-    key: 3,
-    limitNumber: 2,
-  },
-];
+
 interface IProps {
   isMobile: boolean;
   overviewSSR: IOverviewSSR;
@@ -262,7 +240,9 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
           <Image src={BannerPc} layout="fill" objectFit="contain" priority alt="Picture of the banner"></Image>
         )}
         <h2>AELF Explorer</h2>
-        <Search searchValidator={searchValidator} placeholder={'Search by Address / Txn Hash / Block'} />
+        <div className="search-section">
+          <SearchComp />
+        </div>
       </div>
       <OverView></OverView>
       <LatestAll></LatestAll>

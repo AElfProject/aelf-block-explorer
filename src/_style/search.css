@@ -1,8 +1,8 @@
 
 .searchbox-wrap {
-  @apply flex items-center bg-white rounded-md border w-[728px] z-[1] border-link border-solid p-1 pl-4;
+  @apply flex relative items-center text-base-100 bg-white rounded-lg border w-[728px] z-[1] border-link border-solid p-[3px] pl-4;
   .filter-wrap {
-    @apply w-[82px] h-[22px] text-base-100 text-sm font-normal mr-4 flex items-center justify-between cursor-pointer;
+    @apply w-[98px] h-[22px] text-sm font-normal pr-4 flex items-center justify-between cursor-pointer border-r border-[#E6E6E6];
     .right-arrow {
       svg {
         @apply w-4 h-4;
@@ -10,16 +10,46 @@
     }
   }
   .search-input-wrap{
-    @apply flex-1 relative;
+    @apply flex flex-1 items-center relative;
     .search-input{
-      @apply outline-0 border-0 pl-4 pr-6 border-l text-sm font-normal leading-[22px] text-base-100 border-[#E6E6E6] w-full bg-transparent overflow-hidden text-ellipsis whitespace-nowrap; 
+      @apply outline-0 border-0 pl-4 pr-10 text-sm font-normal leading-[22px] w-full bg-transparent overflow-hidden text-ellipsis whitespace-nowrap placeholder:text-base-200 ; 
     }
   }
   .search-button{
-    @apply bg-link w-10 h-10 rounded
+    @apply bg-link !w-10 !h-10 rounded
   }
   .search-result-panel{
-    @apply w-full flex-grow absolute z-[100] shadow bg-white top-[32px]
+    @apply w-full flex-grow absolute z-[100] rounded-lg shadow-search bg-white top-12 left-0 text-xs;
+    .search-result-panel-anchor{
+      @apply h-6 leading-6 cursor-pointer border border-D0 rounded-full px-2 py-[2px] flex items-center gap-1 hover:bg-32 hover:text-white hover:border-32 active:bg-button_active active:border-button_active;
+      &.selected{
+        @apply bg-link text-white border-link hover:bg-32  hover:border-32 active:bg-button_active active:border-button_active;
+      };
+      svg{
+        @apply hover:stroke-white stroke-1
+      }
+    }
+    .search-result-ul{
+      @apply overflow-auto  relative max-h-[420px];
+      .search-result-ul-wrap{
+        @apply pb-2 border-color-divider border-b mr-2 pl-4 last:border-b-0;
+      }
+      .search-result-ul-title{
+        @apply pt-4 pb-2 font-medium leading-20;
+      }
+      .search-result-ul-item{
+        @apply cursor-pointer p-2 leading-6 gap-1 flex items-center rounded
+      }
+    }
+    .search-result-bottom{
+      @apply p-4 flex justify-between border-t border-color-divider;
+      .search-result-bottom-button-wrap{
+        @apply flex items-center gap-1
+      }
+      .search-result-bottom-button{
+        @apply border-D0 border rounded w-6 h-6 flex items-center justify-center cursor-pointer
+      }
+    }
   }
 }
 

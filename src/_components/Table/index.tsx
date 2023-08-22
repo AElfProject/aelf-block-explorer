@@ -98,6 +98,7 @@ export default function TableApp({
             current={pageNum}
             total={total}
             pageSize={pageSize}
+            defaultValue={pageSize}
             defaultCurrent={defaultCurrent}
             showSizeChanger={false}
             pageChange={pageChange}
@@ -117,6 +118,7 @@ export default function TableApp({
       <EpPagination
         current={pageNum}
         isMobile={isMobile}
+        defaultValue={pageSize}
         total={total}
         pageSize={pageSize}
         defaultCurrent={defaultCurrent}

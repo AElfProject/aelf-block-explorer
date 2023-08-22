@@ -2,7 +2,7 @@
  * @Author: Peterbjx jianxiong.bai@aelf.io
  * @Date: 2023-08-14 18:13:54
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 13:55:34
+ * @LastEditTime: 2023-08-16 16:28:28
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
@@ -15,8 +15,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'Block',
       width: '96px',
-      dataIndex: 'block_height',
-      key: 'block_height',
+      dataIndex: 'blockHeight',
+      key: 'blockHeight',
       render: (text) => (
         <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
           {text}
@@ -33,8 +33,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
         </div>
       ),
       width: '208px',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'timestamp',
+      key: 'timestamp',
       render: (text) => {
         return <div className="text-xs leading-5">{formatDate(text, timeFormat)}</div>;
       },
@@ -42,8 +42,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'Txn',
       width: '208px',
-      key: 'Txn',
-      dataIndex: 'Txn',
+      key: 'txns',
+      dataIndex: 'txns',
       render: (text) => (
         <Link className="text-link text-xs block leading-5" href={`Transactions/${text}`}>
           {text}
@@ -72,14 +72,14 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'Reward',
       width: '208px',
-      key: 'Reward',
-      dataIndex: 'Reward',
+      key: 'reward',
+      dataIndex: 'reward',
     },
     {
       title: 'Burnt Fees',
       width: '208px',
-      key: 'Burnt Fees',
-      dataIndex: 'Burnt Fees',
+      key: 'burntFee',
+      dataIndex: 'burntFee',
     },
   ];
 }

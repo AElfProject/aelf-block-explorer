@@ -2,7 +2,7 @@
  * @Author: aelf-lxy
  * @Date: 2023-08-02 01:50:01
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 17:14:30
+ * @LastEditTime: 2023-08-18 11:18:49
  * @Description: tailwind config
  */
 /** @type {import('tailwindcss').Config} */
@@ -27,11 +27,21 @@ module.exports = {
         32: '#327DEC',
         F7: '#F7F8FA',
         'color-divider': '#E6E6E6',
+        confirm: '#05BD72',
+        'confirm-br': '#BCE1D8',
+        'confirm-bg': '#EAF5F3',
+        ECEEF2: '#ECEEF2',
+        button_active: '#155ABF',
       },
       boxShadow: {
         table: '0px 8px 16px 0px rgba(0, 0, 0, 0.04)',
+        search: '0px 6px 24px 0px rgba(0, 0, 0, 0.24)',
+        row_tab: '0px -2px 0px 0px #266CD3',
+        row_tab_inset: '0px -2px 0px 0px #266CD3 inset',
+        title_bot: '0px -1px 0px 0px #E6E6E6 inset',
       },
       lineHeight: {
+        20: '20px',
         22: '1.375rem',
       },
       backgroundImage: {

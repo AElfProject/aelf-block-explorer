@@ -1,0 +1,31 @@
+.token-detail-container {
+  .ant-tabs {
+    @apply bg-white rounded-lg shadow-table pb-4;
+    .ant-tabs-tab {
+      @apply py-[14px] px-4 shadow-row_tab m-0;
+    }
+    .ant-tabs-nav {
+      @apply shadow-title_bot;
+    }
+    .ant-tabs-nav::before {
+      border-bottom: 0;
+    }
+    .ant-tabs-tab-btn {
+      @apply font-medium text-xs leading-5 hover:text-link;
+    }
+    .ant-tabs-tab-active {
+      @apply shadow-row_tab_inset;
+      .ant-tabs-tab-btn {
+        @apply font-medium text-xs leading-5 text-link;
+      }
+    }
+  }
+  .tx-block-code-like-content{
+    @apply rounded border-none bg-F7 px-4 py-2 w-full;
+    &:disabled {
+      @apply text-base-200 opacity-100;
+
+      -webkit-text-fill-color: #858585;
+    }
+  }
+}
