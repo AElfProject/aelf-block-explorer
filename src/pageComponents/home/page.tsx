@@ -241,7 +241,7 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
         )}
         <h2>AELF Explorer</h2>
         <div className="search-section">
-          <SearchComp />
+          <SearchComp isMobile={isMobile} />
         </div>
       </div>
       <OverView></OverView>

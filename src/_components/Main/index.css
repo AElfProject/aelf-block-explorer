@@ -2,5 +2,5 @@
     margin-left: auto;
     margin-right: auto;
     max-width: 1360px;
-    @apply mb-10 ;
+    @apply mb-10 pt-4;
 }

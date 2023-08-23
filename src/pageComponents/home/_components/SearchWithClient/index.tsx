@@ -1,6 +1,7 @@
 'use client';
 import { TSearchValidator } from '@_components/Search/type';
 import Search from '@_components/Search';
+
 const searchValidator: TSearchValidator = [
   {
     label: 'All Filters',
@@ -24,16 +25,14 @@ const searchValidator: TSearchValidator = [
   },
 ];
 
-export default function SearchComp() {
+export default function SearchComp({ isMobile }: { isMobile: boolean }) {
   return (
     <Search
       searchIcon={false}
       searchButton={true}
-      deleteIcon={true}
-      searchValidator={searchValidator}
-      // searchWrapClassNames={'px-3 py-[9px] border-D0 bg-F7 w-[511px]'}
-      // searchInputClassNames={'!pl-0 placeholder:!text-base-200'}
+      searchValidator={isMobile ? undefined : searchValidator}
       placeholder={'Search by Address / Txn Hash / Block'}
+      isMobile={isMobile}
     />
   );
 }

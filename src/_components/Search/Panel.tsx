@@ -38,7 +38,6 @@ function Panel({ id, searchHandler }: TSearchPanelProps) {
 
       const y: number = panelRef.current.scrollTop;
       const scrollTopArr: number[] = anchorArr.current.map((item) => item.offsetTop);
-      console.log(scrollTopArr);
 
       let tmpActiveIdx = -1;
       if (
@@ -52,7 +51,6 @@ function Panel({ id, searchHandler }: TSearchPanelProps) {
           return y >= arr[idx] && y < arr[idx + 1];
         });
       }
-      console.log('tmpActiveIdx', tmpActiveIdx);
       setActiveTabIdx(tmpActiveIdx);
     },
     {
@@ -91,7 +89,14 @@ function Panel({ id, searchHandler }: TSearchPanelProps) {
   }
 
   if (allList.length === 0) {
-    return <div className="search-result-panel">no result</div>;
+    return (
+      <div className="search-result-panel">
+        <div className="search-result-empty">
+          <IconFont type="result-empty" className="w-3 h-3 mr-1" />
+          <span>Sorry, search not found.</span>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -104,7 +109,6 @@ function Panel({ id, searchHandler }: TSearchPanelProps) {
                 className={clsx('search-result-panel-anchor', activeTabIdx === idx && 'selected')}
                 key={searchType + idx}
                 onMouseDown={(e) => tabMouseDownHandler(e, idx)}>
-                <IconFont className="w-3 h-3" type="BacktotoptoTop" />
                 <span>{searchType}</span>
                 <span>{`(${idx})`}</span>
               </div>

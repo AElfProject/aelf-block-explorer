@@ -66,11 +66,14 @@ export type BasicActions<T = string> = {
 };
 
 export interface ISearchProps {
+  lightMode?: boolean;
+  isMobile?: boolean;
   searchValidator?: TSearchValidator;
   placeholder?: string;
   searchIcon?: boolean | React.ReactNode;
   onSearchButtonClickHandler?: (query: string) => void;
   searchButton?: boolean;
+  enterIcon?: boolean;
   deleteIcon?: boolean;
   searchWrapClassNames?: string;
   searchInputClassNames?: string;

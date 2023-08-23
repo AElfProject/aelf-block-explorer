@@ -21,8 +21,6 @@ const timeoutPromise = (delay: number) => {
 };
 
 async function service(url: string, options: RequestWithParams) {
-  console.log('url', url);
-  console.log('options', options);
   const { params = {} } = options;
   const paramsArr: Array<any> = [];
   if (Object.keys(params).length > 0) {
@@ -57,7 +55,6 @@ myServer.prototype.parseRouter = function (name: string, urlObj: any) {
 
 myServer.prototype.send = async function (url: string, options: RequestWithParams) {
   const rs = await Promise.race([service(url, options), timeoutPromise(DEFAULT_FETCH_TIMEOUT)]);
-  console.log('rs', rs);
   if (rs?.type === 'timeout') {
     // console.error('timeout');
     throw new Error('fetch timeout');

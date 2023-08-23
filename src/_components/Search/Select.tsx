@@ -37,7 +37,7 @@ function SearchSelect({ searchValidator }: { searchValidator?: TSearchValidator 
       )}>
       <div className="filter-wrap">
         <span>{filterType?.label}</span>
-        <IconFont className="right-arrow" type="menu-down" />
+        <IconFont className="right-arrow" type="Down" />
       </div>
     </Dropdown>
   );

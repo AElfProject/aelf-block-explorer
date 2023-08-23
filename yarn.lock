@@ -37,7 +37,7 @@
   resolved "https://registry.npmjs.org/@ant-design/icons-svg/-/icons-svg-4.3.0.tgz#cd8d3624bba50975e848591cea12cb6be132cd82"
   integrity sha512-WOgvdH/1Wl8Z7VXigRbCa5djO14zxrNTzvrAQzhWiBQtEKT0uTc8K1ltjKZ8U1gPn/wXhMA8/jE39SJl0WNxSg==
 
-"@ant-design/icons@^5.2.2", "@ant-design/icons@^5.2.5":
+"@ant-design/icons@^5.2.2":
   version "5.2.5"
   resolved "https://registry.npmjs.org/@ant-design/icons/-/icons-5.2.5.tgz#852474359e271a36e54a4ac115065fae7396277e"
   integrity sha512-9Jc59v5fl5dzmxqLWtRev3dJwU7Ya9ZheoI6XmZjZiQ7PRtk77rC+Rbt7GJzAPPg43RQ4YO53RE1u8n+Et97vQ==
@@ -2481,6 +2481,11 @@ human-signals@^4.3.0:
   version "4.3.1"
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-4.3.1.tgz#ab7f811e851fca97ffbd2c1fe9a958964de321b2"
   integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
+
+husky-check-email@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/husky-check-email/-/husky-check-email-0.0.7.tgz#c412a75ffe5bb4c204f5f344dc428c6d82e5e7f2"
+  integrity sha512-pjDmAWrgOhQC0KPOuT0RizdE0q2QlQMPirJ1/dYrQdOQd3Ht10V6yDuEm3JVGM5cGdcT0n2HgwUq5qDKvSjyFA==
 
 husky@^8.0.3:
   version "8.0.3"

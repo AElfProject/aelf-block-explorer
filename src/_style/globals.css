@@ -5,6 +5,7 @@
 
 @import url("tailwindcss/components");
 @import url("./search.css");
+@import url("./nft-details.css");
 
 @import url("tailwindcss/utilities");
 

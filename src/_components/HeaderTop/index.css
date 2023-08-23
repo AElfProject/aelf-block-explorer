@@ -16,7 +16,7 @@
     }
   }
   &-network-change {
-    @apply w-10 h-10 flex items-center justify-center rounded border border-[#BFBFBF];
+    @apply w-10 h-10 flex items-center justify-center rounded border border-[#BFBFBF] ml-2;
   }
 }
 .header-top-container-main {

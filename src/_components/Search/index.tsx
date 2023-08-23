@@ -13,7 +13,10 @@ const propDefaults = {
   placeholder: '',
   searchIcon: false,
   searchButton: true,
-  deleteIcon: false,
+  enterIcon: false,
+  deleteIcon: true,
+  isMobile: false,
+  lightMode: false,
 };
 export default function Search(props: ISearchProps) {
   const componentProps = { ...propDefaults, ...props };
