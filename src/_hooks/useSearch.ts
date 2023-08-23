@@ -21,7 +21,6 @@ export const useUpdateDataByQuery = () => {
       if (!query) {
         return;
       }
-      console.log('hooks', filterType);
       function tmp(arr) {
         return {
           tokens: {

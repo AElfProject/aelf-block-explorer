@@ -22,8 +22,5 @@
     .search-section {
       @apply px-3 w-full;
     }
-    .searchbox-wrap {
-      @apply w-full;
-    }
   }
 }

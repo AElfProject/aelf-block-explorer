@@ -28,7 +28,6 @@ function reducer(state: TSearchState, { type, payload }: { type: SearchActions; 
       return { ...state, ...newState };
     }
     case SearchActions.SET_HIGHLIGHTED: {
-      console.log('SET_HIGHLIGHTED', payload.activeItemIdx);
       newState = {
         highLight: {
           idx: payload.activeItemIdx,
@@ -40,7 +39,6 @@ function reducer(state: TSearchState, { type, payload }: { type: SearchActions; 
 
     case SearchActions.PREV_HIGHLIGHTED: {
       const prevIdx = state.highLight.idx === 0 ? state.queryResultData.allList.length - 1 : state.highLight.idx - 1;
-      console.log('prevIdx', prevIdx);
       newState = {
         highLight: {
           idx: prevIdx,
@@ -51,7 +49,6 @@ function reducer(state: TSearchState, { type, payload }: { type: SearchActions; 
     }
     case SearchActions.NEXT_HIGHLIGHTED: {
       const nextIdx = state.highLight.idx === state.queryResultData.allList.length - 1 ? 0 : state.highLight.idx + 1;
-      console.log('nextIdx', nextIdx);
       newState = {
         highLight: {
           idx: nextIdx,

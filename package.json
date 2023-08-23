@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.2",
-    "@ant-design/icons": "^5.2.5",
     "@microsoft/signalr": "^7.0.10",
     "@microsoft/signalr-protocol-msgpack": "^7.0.10",
     "@monaco-editor/react": "^4.5.1",
@@ -50,6 +49,7 @@
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
+    "husky-check-email": "^0.0.7",
     "lint-staged": "^13.2.3",
     "postcss": "^8.4.27",
     "postcss-import": "^15.1.0",

@@ -22,11 +22,14 @@ import { useRouter } from 'next/navigation';
 const randomId = () => `searchbox-${(0 | (Math.random() * 6.04e7)).toString(36)}`;
 
 const Search = ({
+  lightMode,
+  isMobile,
   searchValidator,
   placeholder,
   searchButton,
   onSearchButtonClickHandler,
   searchIcon,
+  enterIcon,
   deleteIcon,
   searchWrapClassNames,
   searchInputClassNames,
@@ -46,6 +49,7 @@ const Search = ({
   // Calculated states
   const isExpanded = hasFocus && canShowListBox;
   const hasClearButton = !!query && deleteIcon;
+  const hasEnterButton = !!query && enterIcon;
 
   useUpdateDataByQuery();
   useSelected(selectedItem, queryInput);
@@ -57,41 +61,44 @@ const Search = ({
     dispatch(setClear());
   }
 
-  const searchHandler = useCallback(() => {
-    router.push(`/chainId/search/${queryInput.current!.value}`);
-  }, [router]);
+  // const searchHandler = useCallback(() => {
+  //   router.push(`/chainId/search/${queryInput.current!.value}`);
+  // }, [router]);
+
+  const onSearchHandler = () => {
+    onSearchButtonClickHandler && onSearchButtonClickHandler(queryInput.current!.value);
+  };
 
   function renderButton() {
     if (!searchButton) {
       return null;
     }
     if (isValidElement(searchButton)) {
-      return (
-        <div
-          onClick={() => {
-            onSearchButtonClickHandler && onSearchButtonClickHandler(queryInput.current!.value);
-          }}>
-          {searchButton}
-        </div>
-      );
+      return <div onClick={onSearchHandler}>{searchButton}</div>;
     }
     return (
       <Button
         className="search-button"
         type="primary"
         icon={<IconFont className="w-4 h-4" type="search" />}
-        onClick={searchHandler}
+        onClick={onSearchHandler}
       />
     );
   }
 
   return (
-    <div className={clsx('searchbox-wrap', searchWrapClassNames)} aria-expanded={isExpanded}>
+    <div
+      className={clsx('searchbox-wrap', searchWrapClassNames, lightMode && 'searchbox-wrap-light')}
+      aria-expanded={isExpanded}>
       <SearchSelect searchValidator={searchValidator} />
       <div className="search-input-wrap">
-        {searchIcon && <IconFont className="w-4 h-4 mr-2" type="search" />}
+        {searchIcon && (
+          <div className="search-input-query-icon">
+            <IconFont type="search" />
+          </div>
+        )}
         <input
-          className={clsx('search-input', searchInputClassNames)}
+          className={clsx('search-input', searchInputClassNames, isMobile && 'search-input-mobile')}
           ref={queryInput}
           placeholder={placeholder}
           onFocus={() => {
@@ -105,11 +112,14 @@ const Search = ({
           }}
         />
         {hasClearButton && (
-          <IconFont
-            className="w-4 h-4 absolute right-4 cursor-pointer"
-            type="ClearDefault"
-            onMouseDown={cancelBtnHandler}
-          />
+          <div className="search-input-clear" onMouseDown={cancelBtnHandler}>
+            <IconFont type="clear" />
+          </div>
+        )}
+        {hasEnterButton && (
+          <div className="search-input-enter" onClick={onSearchHandler}>
+            <IconFont className="w-3 h-3" type="Union" />
+          </div>
         )}
       </div>
       {renderButton()}
@@ -117,7 +127,7 @@ const Search = ({
       {isExpanded && (
         <Panel
           id={randomId()}
-          searchHandler={searchHandler}
+          searchHandler={onSearchHandler}
           // key={!query ? randomId() : 1}
         />
       )}
