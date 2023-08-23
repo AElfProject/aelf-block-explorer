@@ -15,13 +15,13 @@ export const enum JumpTypes {
   Next = 'next',
 }
 
-export interface JumpProps {
+export interface IJumpProps {
   isFirst: boolean;
   isLast?: boolean;
   jump: any;
 }
 
-export default function JumpButton({ isFirst, isLast, jump }: JumpProps) {
+export default function JumpButton({ isFirst, isLast, jump }: IJumpProps) {
   return (
     <div className="jump-link flex items-center">
       <div

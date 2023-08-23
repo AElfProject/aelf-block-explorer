@@ -14,7 +14,7 @@ import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
 import fetchData from './mock';
 
-export interface TableDataType {
+export interface ITableDataType {
   rank: number;
   balance: string;
   txnCount: number;
@@ -31,7 +31,7 @@ export default function List({ isMobileSSR, SSRData }) {
   const [pageSize, setPageSize] = useState<number>(25);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<TableDataType[]>(SSRData.data);
+  const [data, setData] = useState<ITableDataType[]>(SSRData.data);
   const multiTitle = useMemo(() => {
     return `A total of ${total} accounts found (${total} ELF)`;
   }, [total]);
@@ -39,7 +39,7 @@ export default function List({ isMobileSSR, SSRData }) {
   const multiTitleDesc = useMemo(() => {
     return '(Showing the top 10,000 accounts only)';
   }, []);
-  const columns = useMemo<ColumnsType<TableDataType>>(() => {
+  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
     return getColumns();
   }, []);
 

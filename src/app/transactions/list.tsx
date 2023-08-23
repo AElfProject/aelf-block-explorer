@@ -5,7 +5,7 @@ import getColumns from './columnConfig';
 import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
-import { TableDataType } from './type';
+import { ITableDataType } from './type';
 import fetchData from './mock';
 
 export default function List({ isMobileSSR, SSRData }) {
@@ -17,17 +17,15 @@ export default function List({ isMobileSSR, SSRData }) {
   const [pageSize, setPageSize] = useState<number>(25);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<TableDataType[]>(SSRData.data);
+  const [data, setData] = useState<ITableDataType[]>(SSRData.data);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const columns = useMemo<ColumnsType<TableDataType>>(() => {
-    const handleTimeChange = () => {
-      if (timeFormat === 'Age') {
-        setTimeFormat('Date Time (UTC)');
-      } else {
-        setTimeFormat('Age');
-      }
-    };
-    return getColumns({ timeFormat, handleTimeChange });
+  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
+    return getColumns({
+      timeFormat,
+      handleTimeChange: () => {
+        setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
+      },
+    });
   }, [timeFormat]);
 
   const multiTitle = useMemo(() => {

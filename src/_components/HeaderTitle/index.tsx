@@ -8,7 +8,7 @@
 import React from 'react';
 export default function HeadTitle({ content, children }: { content: string; children?: React.ReactNode }) {
   return (
-    <div className="py-5 flex items-end bg-inherit">
+    <div className="py-5 header-title flex items-end bg-inherit">
       <div className="text-xl font-bold not-italic text-base-100">{content}</div>
       {children}
     </div>

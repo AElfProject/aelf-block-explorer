@@ -24,7 +24,7 @@ export type Options = {
   label: number;
 };
 
-export interface EpPaginationProps extends PaginationProps {
+export interface IEpPaginationProps extends PaginationProps {
   current?: number;
   pageSize?: number;
   isMobile?: boolean;
@@ -52,7 +52,7 @@ export default function EpPagination({
     { value: 50, label: 50 },
     { value: 100, label: 100 },
   ],
-}: EpPaginationProps) {
+}: IEpPaginationProps) {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSizeValue, setPageSizeValue] = useState<number>(defaultValue);
   useEffect(() => {

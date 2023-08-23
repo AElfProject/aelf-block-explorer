@@ -15,11 +15,11 @@ import dayjs from 'dayjs';
 import Copy from '@_components/Copy';
 import { useRouter } from 'next/navigation';
 import JumpButton, { JumpTypes } from '@_components/JumpButton';
+import SizeBytes from '@_components/SizeBytes';
+import DollarCurrencyRate from '@_components/DollarCurrencyRate';
 export default function BaseInfo({ data }) {
   const router = useRouter();
-  const disabled = useMemo(() => {
-    return data.blockHeight === 1;
-  }, [data.blockHeight]);
+  const disabled = data.blockHeight === 1;
   const jump = (type: JumpTypes) => {
     switch (type) {
       case JumpTypes.Prev:
@@ -98,16 +98,14 @@ export default function BaseInfo({ data }) {
         value: (
           <div className="flex items-center text-xs leading-5">
             <span className="mr-1">{data.reward}</span>
-            <div className="flex items-center ml-1 h-6 px-4 rounded bg-ECEEF2">
-              <span className="mr-1">$</span>21.13
-            </div>
+            <DollarCurrencyRate />
           </div>
         ),
       },
       {
         label: 'Size ',
         tip: 'Size ',
-        value: `${(data.blockSize || '0').toLocaleString()} Bytes`,
+        value: <SizeBytes size={data.blockSize} />,
       },
       {
         label: 'divider2',

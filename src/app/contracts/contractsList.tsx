@@ -14,7 +14,7 @@ import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
 import fetchData from './mock';
 
-export interface TableDataType {
+export interface ITableDataType {
   address: string;
   contractName: string;
   type: string;
@@ -33,8 +33,8 @@ export default function List({ isMobileSSR, SSRData }) {
   const [pageSize, setPageSize] = useState<number>(50);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<TableDataType[]>(SSRData.data);
-  const columns = useMemo<ColumnsType<TableDataType>>(() => {
+  const [data, setData] = useState<ITableDataType[]>(SSRData.data);
+  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
     return getColumns();
   }, []);
 

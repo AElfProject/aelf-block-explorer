@@ -5,6 +5,7 @@
  * @Description: formatter utils
  */
 import dayjs from 'dayjs';
+const SYMBOL = process.env.NEXT_PUBLIC_SYMBOL;
 
 export const formatDate = (date: string, type: string) => {
   if (date) {
@@ -24,24 +25,15 @@ export const formatDate = (date: string, type: string) => {
   return '';
 };
 
-export const splitAddress = (str, frontLen = 4, endLen = 4) => {
-  return `${str.substring(0, frontLen)}...${str.substring(str.length - endLen)}`;
-};
-
-export const addressFormat = (address, prefix, chainId): string => {
-  if (!address) return '';
-  return `${prefix}_${address}_${chainId}`;
-};
-
 export const validateVersion = (version): boolean => {
   const regex = new RegExp(/^\d+(.\d+){3}$/);
   return regex.test(version);
 };
 
-export const numberFormatter = (number: string): string => {
+export const numberFormatter = (number: string, symbol = SYMBOL): string => {
   const num = Number(number);
   if (Number.isNaN(num)) {
     return number;
   }
-  return num.toLocaleString(undefined, { maximumFractionDigits: 8 });
+  return `${num.toLocaleString(undefined, { maximumFractionDigits: 8 })} ${symbol}`;
 };
