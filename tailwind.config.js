@@ -34,6 +34,7 @@ module.exports = {
         button_active: '#155ABF',
         pink_stroke: '#FFD0D0',
         pink_fill: '#FFEDED',
+        scorpion: '#595959',
       },
       boxShadow: {
         table: '0px 8px 16px 0px rgba(0, 0, 0, 0.04)',

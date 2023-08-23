@@ -1,0 +1,19 @@
+.overview-container {
+  @apply shadow-table rounded-lg bg-white;
+  .title {
+    @apply px-4 py-5 text-base-100 leading-5 font-medium;
+  }
+  .overview-list {
+    @apply px-4;
+    .list-items {
+      @apply pb-4;
+      .item-label {
+        @apply leading-[18px] text-[10px] text-base-200;
+      }
+      .item-value {
+        @apply text-sm leading-[22px] text-base-100;
+      }
+    }
+    
+  }
+}

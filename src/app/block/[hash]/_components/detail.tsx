@@ -13,13 +13,13 @@ import './detail.css';
 import BaseInfo from './baseinfo';
 import ExtensionInfo from './ExtensionInfo';
 import { DetailData } from './type';
-import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import Table from '@_components/Table';
 import getColumns from '@app/transactions/columnConfig';
 import { ITableDataType } from '@app/transactions/type';
 import { ColumnsType } from 'antd/es/table';
 import MoreContainer from '@_components/MoreContainer';
+import EPTabs from '@_components/EPTabs';
 
 export default function Detail({ SSRData }) {
   const [detailData] = useState<DetailData>(SSRData);
@@ -57,7 +57,7 @@ export default function Detail({ SSRData }) {
   }, [showMore]);
   const items: TabsProps['items'] = [
     {
-      key: 'overview',
+      key: '',
       label: 'Overview',
       children: (
         <div className="overview-container">
@@ -68,7 +68,7 @@ export default function Detail({ SSRData }) {
       ),
     },
     {
-      key: 'transactions',
+      key: 'txns',
       label: 'Transactions',
       children: (
         <Table
@@ -88,18 +88,6 @@ export default function Detail({ SSRData }) {
     },
   ];
 
-  const [activeKey, setActiveKey] = useState<string>(
-    window && window.location.hash === '#txns' ? 'transactions' : 'overview',
-  );
-  const tabChange = (activeKey) => {
-    if (activeKey === 'overview') {
-      window.location.hash = '';
-    } else {
-      window.location.hash = 'txns';
-    }
-    setActiveKey(activeKey);
-  };
-
   return (
     <div className={clsx('token-detail-container')}>
       <HeadTitle content="Blocks">
@@ -107,7 +95,7 @@ export default function Detail({ SSRData }) {
       </HeadTitle>
 
       <div className="detail-table">
-        <Tabs defaultActiveKey={activeKey} activeKey={activeKey} items={items} onChange={tabChange} />
+        <EPTabs items={items} />
       </div>
     </div>
   );
