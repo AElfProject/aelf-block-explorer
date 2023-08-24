@@ -123,14 +123,7 @@ const Search = ({
         )}
       </div>
       {renderButton()}
-      {/* TODO: destroy Panel time? */}
-      {isExpanded && (
-        <Panel
-          id={randomId()}
-          searchHandler={onSearchHandler}
-          // key={!query ? randomId() : 1}
-        />
-      )}
+      {isExpanded && <Panel id={randomId()} searchHandler={onSearchHandler} />}
     </div>
   );
 };
