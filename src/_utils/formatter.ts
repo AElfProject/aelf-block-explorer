@@ -5,12 +5,13 @@
  * @Description: formatter utils
  */
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 const SYMBOL = process.env.NEXT_PUBLIC_SYMBOL;
-
-export const formatDate = (date: string, type: string) => {
+dayjs.extend(utc);
+export const formatDate = (date: string, type: string, format = 'YYYY-MM-DD HH:mm:ss') => {
   if (date) {
     if (type === 'Date Time (UTC)') {
-      return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+      return dayjs.utc(date).format(format);
     }
     const seconds = dayjs().diff(date, 'seconds');
     const minutes = dayjs().diff(date, 'minutes');

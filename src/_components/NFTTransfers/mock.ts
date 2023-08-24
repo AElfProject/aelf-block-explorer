@@ -1,10 +1,9 @@
 const data = Array.from(new Array(100).keys()).map((item) => {
   return {
-    status: 'Fail',
     transactionHash: item + 'cc764efe0d5b8f9a73fffa3aecc7e3a26d715a715a764af464dd80dd7f2ca03e',
-    blockHeight: 165018684,
+    status: 'Fail',
     method: 'DonateResourceToken',
-    timestamp: '2023-08-15T08:42:41.1123602Z',
+    timestamp: '2022-08-11T06:02:20.1855375Z',
     from: JSON.stringify({
       name: 'AELF',
       address: 'YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy',
@@ -13,8 +12,9 @@ const data = Array.from(new Array(100).keys()).map((item) => {
       name: 'AELF',
       address: 'AELF.Contract.Token',
     }),
-    txnValue: 0,
-    txnFee: 0,
+    transferStatus: item % 2 === 0 ? 'in' : 'out', //in/out
+    amount: '444444444',
+    item: '{}',
   };
 });
 export default async function fetchData({ page, pageSize }): Promise<any> {

@@ -30,3 +30,10 @@ body {
 
 
 
+@layer utilities {
+  .font10px {
+    font-size:12px;
+    zoom:0.83
+  }
+}
+

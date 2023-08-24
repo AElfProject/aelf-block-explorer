@@ -32,14 +32,8 @@ export type DetailData = {
       method: string;
       blockHeight: number;
       timestamp: number;
-      from: {
-        name: string;
-        address: string;
-      };
-      to: {
-        name: string;
-        address: string;
-      };
+      from: string;
+      to: string;
       txnValue: number;
       txnFee: number;
     },

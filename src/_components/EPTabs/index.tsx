@@ -1,13 +1,19 @@
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './index.css';
 import { useEffectOnce } from 'react-use';
-export default function EPTabs({ items }: { items: TabsProps['items'] }) {
+export default function EPTabs({ items, selectKey }: { selectKey?: string; items: TabsProps['items'] }) {
   const [activeKey, setActiveKey] = useState<string>('');
   useEffectOnce(() => {
     setActiveKey(window.location.hash.replace('#', ''));
   });
+
+  useEffect(() => {
+    if (!selectKey) return;
+    window.location.hash = selectKey as string;
+    setActiveKey(selectKey as string);
+  }, [selectKey]);
 
   const tabChange = (activeKey) => {
     if (activeKey === '') {

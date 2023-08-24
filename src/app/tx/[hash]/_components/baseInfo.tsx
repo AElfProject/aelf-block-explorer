@@ -81,13 +81,15 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
             <ContractToken address="AELF.Contract.Token" />
             <div className="flex items-center mt-2 leading-[18px]">
               <IconFont className="text-xs" type="Tab" />
-              <span className="mx-1 text-[10px] text-base-200">Transferred</span>
-              <span className="text-[10px]">{numberFormatter('2113.0231222')}</span>
-              <span className="mx-1 text-[10px] text-base-200">From</span>
-              <span className="text-link text-[10px]">{addressFormat(hiddenAddress(data.transactionHash))}</span>
+              <span className="mx-1 inline-block leading-[18px] font10px text-base-200">Transferred</span>
+              <span className="inline-block leading-[18px] font10px">{numberFormatter('2113.0231222')}</span>
+              <span className="mx-1 inline-block leading-[18px] font10px text-base-200">From</span>
+              <span className="text-link inline-block leading-[18px] font10px">
+                {addressFormat(hiddenAddress(data.transactionHash))}
+              </span>
               <Copy value={addressFormat(data.transactionHash)} />
-              <span className="mx-1 text-base-200 text-[10px]">To</span>
-              <span className="text-link text-[10px]">OKEX3</span>
+              <span className="mx-1 text-base-200 inline-block leading-[18px] font10px">To</span>
+              <span className="text-link inline-block leading-[18px] font10px">OKEX3</span>
               <Copy value="OKEX3" />
             </div>
           </div>

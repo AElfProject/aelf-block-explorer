@@ -28,14 +28,14 @@ export default async function fetchData({ blockHeight }: { blockHeight: number }
         method: 'DonateResourceToken',
         blockHeight: blockHeight,
         timestamp: '2023-08-15T08:42:41.1123602Z',
-        from: {
+        from: JSON.stringify({
           name: 'AELF',
           address: 'YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy',
-        },
-        to: {
+        }),
+        to: JSON.stringify({
           name: 'AELF',
           address: 'AELF.Contract.Token',
-        },
+        }),
         txnValue: 0,
         txnFee: 0,
       };

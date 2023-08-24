@@ -60,7 +60,7 @@ export default function Detail({ SSRData }) {
       key: '',
       label: 'Overview',
       children: (
-        <div className="overview-container">
+        <div className="overview-container pb-4">
           <BaseInfo data={detailData} />
           {showMore && <ExtensionInfo data={detailData} />}
           <MoreContainer showMore={showMore} onChange={moreChange} />

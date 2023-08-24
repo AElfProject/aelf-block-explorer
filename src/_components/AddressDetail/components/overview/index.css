@@ -8,7 +8,7 @@
     .list-items {
       @apply pb-4;
       .item-label {
-        @apply leading-[18px] text-[10px] text-base-200;
+        @apply leading-[18px] text-base-200;
       }
       .item-value {
         @apply text-sm leading-[22px] text-base-100;

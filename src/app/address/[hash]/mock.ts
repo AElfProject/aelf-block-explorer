@@ -1,5 +1,5 @@
 import { IAddressResponse } from '@_types/commenDetail';
-export default async function fetchData({ address }: { address: string }): Promise<any> {
+export default async function fetchData(): Promise<any> {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   const res: IAddressResponse = {
     symbol: 'ELF',
@@ -41,7 +41,7 @@ export default async function fetchData({ address }: { address: string }): Promi
     },
     transactions: {
       total: 100,
-      list: Array.from(new Array(100).keys()).map((item) => {
+      list: Array.from(new Array(25).keys()).map((item) => {
         return {
           status: 'Fail',
           transactionHash: item + 'cc764efe0d5b8f9a73fffa3aecc7e3a26d715a715a764af464dd80dd7f2ca03e',
@@ -54,7 +54,7 @@ export default async function fetchData({ address }: { address: string }): Promi
           }),
           to: JSON.stringify({
             name: 'AELF',
-            address: 'YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy',
+            address: 'AELF.Contract.Token',
           }),
           txnValue: 0,
           txnFee: 0,
@@ -63,7 +63,7 @@ export default async function fetchData({ address }: { address: string }): Promi
     },
     tokenTransfers: {
       total: 100,
-      list: Array.from(new Array(100).keys()).map((item) => {
+      list: Array.from(new Array(25).keys()).map((item) => {
         return {
           transactionHash: item + 'cc764efe0d5b8f9a73fffa3aecc7e3a26d715a715a764af464dd80dd7f2ca03e',
           status: 'Fail',
@@ -75,7 +75,7 @@ export default async function fetchData({ address }: { address: string }): Promi
           }),
           to: JSON.stringify({
             name: 'AELF',
-            address: 'YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy',
+            address: 'AELF.Contract.Token',
           }),
           transferStatus: item % 2 === 0 ? 'in' : 'out', //in/out
           amount: '444444444',

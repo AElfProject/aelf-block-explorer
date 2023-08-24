@@ -9,6 +9,13 @@ import Overview from './components/overview';
 import { numberFormatter } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import { TitleEnum } from '@_types/commenDetail';
+import EPTabs from '../EPTabs/index';
+import TransctionList from '@app/transactions/list';
+import TokenTransfers from '@_components/TokenTransfers';
+import NFTTransfers from '@_components/NFTTransfers';
+import History from './components/History';
+import { useState } from 'react';
+import Events from './components/Events';
 export default function AddressDetail({
   SSRData,
   title,
@@ -18,8 +25,17 @@ export default function AddressDetail({
   title: TitleEnum;
   hash: string;
 }) {
-  const { tokenBalance, author, tokenTotalPriceInUsd, tokenPriceInUsd, contractName, tokenHoldings, lastTxnSend } =
-    SSRData;
+  const {
+    tokenBalance,
+    transactions,
+    tokenTransfers,
+    author,
+    tokenTotalPriceInUsd,
+    tokenPriceInUsd,
+    contractName,
+    tokenHoldings,
+    lastTxnSend,
+  } = SSRData;
   const OverviewInfo = [
     {
       label: 'ELF BALANCE',
@@ -91,6 +107,61 @@ export default function AddressDetail({
       ),
     },
   ];
+
+  const [selectKey, setSelectKey] = useState<string>('');
+  const onTabClick = (key) => {
+    setSelectKey(key);
+  };
+  const items = [
+    {
+      key: '',
+      label: 'Tokens',
+      children: <div>Tokens</div>,
+    },
+    {
+      key: 'Txns',
+      label: 'Transactions',
+      children: (
+        <TransctionList
+          showHeader={false}
+          isMobileSSR={false}
+          SSRData={{ total: transactions.total, data: [...transactions.list] }}
+        />
+      ),
+    },
+    {
+      key: 'tokentxns',
+      label: 'Token Transfers',
+      children: (
+        <TokenTransfers
+          showHeader={false}
+          isMobileSSR={false}
+          SSRData={{ total: transactions.total, data: [...tokenTransfers.list] }}
+        />
+      ),
+    },
+    {
+      key: 'nfttransfers',
+      label: 'NFT Transfers',
+      children: (
+        <NFTTransfers
+          showHeader={false}
+          isMobileSSR={false}
+          SSRData={{ total: transactions.total, data: [...tokenTransfers.list] }}
+        />
+      ),
+    },
+    {
+      key: 'events',
+      label: 'Events',
+      children: <Events SSRData={{ total: 0, list: [] }} />,
+    },
+    {
+      key: 'history',
+      label: 'History',
+      children: <History SSRData={[]} onTabClick={onTabClick} />,
+    },
+  ];
   return (
     <div className="address-detail">
       <div className="address-header">
@@ -117,6 +188,9 @@ export default function AddressDetail({
           className="flex-1"
           items={title === TitleEnum.Address ? addressMoreInfo : contractInfo}
         />
+      </div>
+      <div className="address-main mt-4">
+        <EPTabs selectKey={selectKey} items={items} />
       </div>
     </div>
   );

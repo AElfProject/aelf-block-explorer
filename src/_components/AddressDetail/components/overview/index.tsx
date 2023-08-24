@@ -9,6 +9,7 @@ export interface IOverviewProps {
   title: string;
   className?: string;
 }
+
 export default function Overview({ items, className, title }: IOverviewProps) {
   return (
     <div className={clsx(className, 'overview-container')}>
@@ -17,7 +18,7 @@ export default function Overview({ items, className, title }: IOverviewProps) {
         {items.map((item) => {
           return (
             <div key={item.label} className="list-items">
-              <div className="item-label">{item.label}</div>
+              <div className="item-label font10px">{item.label}</div>
               <div className="item-value">{item.value}</div>
             </div>
           );

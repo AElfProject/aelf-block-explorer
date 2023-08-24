@@ -5,8 +5,9 @@ import getColumns from './columnConfig';
 import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
-import { ITableDataType } from './type';
+import { TokenTransfersItemType } from '@_types/commenDetail';
 import fetchData from './mock';
+import { numberFormatter } from '@_utils/formatter';
 
 export default function List({ isMobileSSR, SSRData, showHeader = true }) {
   const [isMobile, setIsMobile] = useState(isMobileSSR);
@@ -17,24 +18,21 @@ export default function List({ isMobileSSR, SSRData, showHeader = true }) {
   const [pageSize, setPageSize] = useState<number>(25);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<ITableDataType[]>(SSRData.data);
+  const [data, setData] = useState<TokenTransfersItemType[]>(SSRData.data);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
+  const columns = useMemo<ColumnsType<TokenTransfersItemType>>(() => {
     return getColumns({
       timeFormat,
+      columnType: 'Token',
       handleTimeChange: () => {
         setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
       },
     });
   }, [timeFormat]);
 
-  const multiTitle = useMemo(() => {
-    return `More than > ${total} transactions found`;
+  const singleTitle = useMemo(() => {
+    return `A total of ${numberFormatter(String(total))} token transfers found`;
   }, [total]);
-
-  const multiTitleDesc = useMemo(() => {
-    return `Showing the last 500k records`;
-  }, []);
 
   const pageChange = async (page: number) => {
     setLoading(true);
@@ -58,7 +56,7 @@ export default function List({ isMobileSSR, SSRData, showHeader = true }) {
     <div>
       {showHeader && <HeadTitle content="Transactions"></HeadTitle>}
       <Table
-        titleType="multi"
+        titleType="single"
         loading={loading}
         dataSource={data}
         columns={columns}
@@ -69,8 +67,7 @@ export default function List({ isMobileSSR, SSRData, showHeader = true }) {
         pageNum={currentPage}
         pageChange={pageChange}
         pageSizeChange={pageSizeChange}
-        multiTitle={multiTitle}
-        multiTitleDesc={multiTitleDesc}></Table>
+        singleTitle={singleTitle}></Table>
     </div>
   );
 }

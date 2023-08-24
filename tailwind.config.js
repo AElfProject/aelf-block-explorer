@@ -35,6 +35,10 @@ module.exports = {
         pink_stroke: '#FFD0D0',
         pink_fill: '#FFEDED',
         scorpion: '#595959',
+        positive: '#00A186',
+        'yellow-stroke': '#FADEAB',
+        warning: '#FAAD14',
+        'yellow-fill': '#FEF6E7',
       },
       boxShadow: {
         table: '0px 8px 16px 0px rgba(0, 0, 0, 0.04)',
