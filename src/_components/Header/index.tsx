@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation';
 import { isMobileDevices } from '@_utils/isMobile';
 import HeaderTop from '@_components/HeaderTop';
 import HeaderMenu from '@_components/HeaderMenu';
+import './index.css';
 
 const NETWORK_TYPE = process.env.NEXT_PUBLIC_NETWORK_TYPE;
 const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;

@@ -1,8 +1,0 @@
-micro-app[name='resource'] {
-  .header-fixed-container,
-  .header-blank,
-  .breadcrumb,
-  .footer {
-    @apply hidden;
-  }
-}

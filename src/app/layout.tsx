@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      <body className={clsx(inter.className, 'relative min-h-screen bg-global-grey')}>
+      <body className={clsx('next-app', inter.className, 'relative min-h-screen bg-global-grey')}>
         <StyledComponentsRegistry>
           <Header priceSSR={price} previousPriceSSR={previousPrice} isMobileSSR={isMobile} />
           <RootProvider>

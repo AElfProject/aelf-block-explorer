@@ -1,2 +1,2 @@
-import Proposal from '../proposals/page';
-export default Proposal;
+import Governance from '@pageComponents/governance';
+export default Governance;

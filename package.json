@@ -11,7 +11,7 @@
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.2",
     "@ant-design/icons": "^5.2.5",
-    "@micro-zoe/micro-app": "^0.8.11",
+    "@micro-zoe/micro-app": "^0.8.9",
     "@microsoft/signalr": "^7.0.10",
     "@microsoft/signalr-protocol-msgpack": "^7.0.10",
     "@monaco-editor/react": "^4.5.1",

@@ -383,7 +383,7 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@micro-zoe/micro-app@^0.8.11":
+"@micro-zoe/micro-app@^0.8.9":
   version "0.8.11"
   resolved "https://registry.npmjs.org/@micro-zoe/micro-app/-/micro-app-0.8.11.tgz#bef4b736a5e84c8579643b50bacb591df11b2819"
   integrity sha512-4NapVlAomUagOcpHQlcPgTHlVZgeb/OSSuS6lQWV9uOEhsKqbE6j3KBWb3RPN2olfvrbFXGaUKyA0pup92ja9g==
