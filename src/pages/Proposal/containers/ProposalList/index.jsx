@@ -21,16 +21,22 @@ import {
   Result,
   Modal,
 } from "antd";
-import { useEffectOnce } from 'react-use';
+import { useEffectOnce } from "react-use";
 import { useWebLogin } from "aelf-web-login";
 import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import Total from "../../../../components/Total";
-import constants, { LOADING_STATUS, LOG_STATUS } from "../../../../redux/common/constants";
+import constants, {
+  LOADING_STATUS,
+  LOG_STATUS,
+} from "../../../../redux/common/constants";
 import Proposal from "./Proposal";
 import { getProposals } from "../../../../redux/actions/proposalList";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import "./index.less";
-import { getContractAddress, sendTransactionWith } from "../../../../redux/common/utils";
+import {
+  getContractAddress,
+  sendTransactionWith,
+} from "../../../../redux/common/utils";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";
 
@@ -117,11 +123,30 @@ const ProposalList = () => {
   const handleTabChange = (key) => {
     if (key === proposalTypes.PARLIAMENT) {
       removeHash();
+      fetchList({
+        ...params,
+        pageNum: 1,
+        proposalType: key,
+        status: proposalStatus.ALL,
+        isContract: 0,
+        search: "",
+      });
       setActiveKey(proposalTypes.PARLIAMENT);
     } else {
       const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
       window.location.hash = Object.keys(keyFromHash)[index];
     }
+  };
+
+  const changeKey = () => {
+    const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || proposalTypes.PARLIAMENT);
+    return key || proposalTypes.PARLIAMENT;
+  };
+
+  useEffectOnce(() => {
+    const key = changeKey();
     fetchList({
       ...params,
       pageNum: 1,
@@ -130,20 +155,26 @@ const ProposalList = () => {
       isContract: 0,
       search: "",
     });
-  };
-  const changeKey = () => {
-    const { hash } = window.location;
-    const key = keyFromHash[hash];
-    setActiveKey(key || proposalTypes.PARLIAMENT);
-    return key || proposalTypes.PARLIAMENT;
-  };
-  window.addEventListener("hashchange", () => {
-    changeKey();
   });
-  useEffectOnce(() => {
-    const key = changeKey();
-    handleTabChange(key);
-  })
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const key = changeKey();
+      fetchList({
+        ...params,
+        pageNum: 1,
+        proposalType: key,
+        status: proposalStatus.ALL,
+        isContract: 0,
+        search: "",
+      });
+      console.log("hashchange");
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+    };
+  }, []);
 
   const send = async (id, action) => {
     if (params.proposalType === proposalTypes.REFERENDUM) {
@@ -161,7 +192,12 @@ const ProposalList = () => {
         return;
       }
 
-      sendTransactionWith(callContract, getContractAddress(params.proposalType), action, id);
+      sendTransactionWith(
+        callContract,
+        getContractAddress(params.proposalType),
+        action,
+        id
+      );
 
       // await sendTransaction(
       //   wallet,

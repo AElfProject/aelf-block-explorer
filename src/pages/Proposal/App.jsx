@@ -60,11 +60,11 @@ const App = () => {
   const isLogged = useMemo(() => logStatus === LOG_STATUS.LOGGED, [logStatus]);
   const { loginState } = useWebLogin();
 
-  useEffect(() => {
-    sendMessage({
-      href,
-    });
-  }, [href]);
+  // useEffect(() => {
+  //   sendMessage({
+  //     href,
+  //   });
+  // }, [href]);
 
   // useEffect(() => {
   //   walletInstance.isExist

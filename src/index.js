@@ -4,7 +4,7 @@
  * @author huangzongzhe,longyue,zhouminghui
  */
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM, { unmountComponentAtNode } from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
 import VConsole from "vconsole";
@@ -59,6 +59,10 @@ getNodesInfo();
 if (module.hot) {
   module.hot.accept();
 }
+window.addEventListener("unmount", () => {
+  const root = document.getElementById("app");
+  root && unmountComponentAtNode(root);
+});
 
 const continueDefaultBehaviour = () => {
   const downloadUrl = "https://portkey.finance/";
@@ -84,6 +88,7 @@ const continueDefaultBehaviour = () => {
 };
 const container = document.getElementById("app");
 const isMobile = isPhoneCheck();
+
 ReactDOM.render(
   <ConfigProvider locale={en_US}>
     <Provider store={store}>
