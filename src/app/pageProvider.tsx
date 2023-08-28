@@ -66,8 +66,12 @@ export default function RootProvider({ children }) {
   return (
     <ConfigProvider>
       <ReduxProvider store={store}>{children}</ReduxProvider>
-      {isGovernance && <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>}
-      {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
+      {isGovernance && (
+        <>
+          <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
+          {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
+        </>
+      )}
     </ConfigProvider>
   );
 }
