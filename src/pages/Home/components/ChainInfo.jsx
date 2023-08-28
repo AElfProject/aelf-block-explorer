@@ -31,9 +31,9 @@ export default function ChainInfo({
         value: (
           <p>
             <span>{(localTransactions / 1000000).toFixed(2)}M</span>
-            <span className="tps">
+            {/* <span className="tps">
               {tpsData ? `(${(tpsData / 60).toFixed(2)}TPS)` : ""}
-            </span>
+            </span> */}
           </p>
         ),
       },
