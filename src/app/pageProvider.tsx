@@ -14,62 +14,60 @@ import { ConfigProvider, Skeleton } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import microApp from '@micro-zoe/micro-app';
 import { usePathname, useRouter } from 'next/navigation';
+
 export default function RootProvider({ children }) {
   const router = useRouter();
   const pathname = usePathname();
-  const isGovernance = useMemo(
-    () => ['/proposal', '/vote', '/resource'].find((ele) => pathname.startsWith(ele)),
-    [pathname],
-  );
+  const isGovernance = useMemo(() => {
+    return ['/proposal', '/vote', '/resource'].find((ele) => pathname.startsWith(ele));
+  }, [pathname]);
   const [show, setShow] = useState(false);
   useEffect(() => {
-    if (isGovernance) {
-      setShow(true);
-    } else {
-      const app = document.querySelector('.next-app');
+    if (!isGovernance) {
+      // jump from governance to others maybe scroll
+      const app = document.querySelector('body');
       if (app) {
         app.scrollIntoView({ block: 'start', behavior: 'auto' });
       }
     }
   }, [pathname, isGovernance, router]);
   useEffect(() => {
-    microApp.start();
-    const onPopstate = () => {
-      const { href, origin } = window.location;
-      router.replace(href.replace(origin, ''));
-    };
+    microApp.start({
+      lifeCycles: {
+        mounted() {
+          setShow(true);
+        },
+      },
+    });
+    // const onPopstate = () => {
+    //   const { href, origin } = window.location;
+    //   router.replace(href.replace(origin, ''));
+    // };
     // window.addEventListener('popstate', onPopstate);
-    microApp.addDataListener('governance', ({ type, pathname: path }) => {
-      router.push(path);
-
+    microApp.addDataListener('governance', ({ pathname: path }) => {
       // jump at remote app
-      if (type === 'pushstate' || type === 'popstate') {
-        setTimeout(
-          () =>
-            window.scroll({
-              top: 0,
-              left: 0,
-              behavior: 'smooth',
-            }),
-          0,
-        );
-      }
+      setTimeout(
+        () =>
+          window.scroll({
+            top: 0,
+            left: 0,
+            behavior: 'smooth',
+          }),
+        0,
+      );
+      router.push(path);
     });
     return () => {
-      window.removeEventListener('popstate', onPopstate);
+      // window.removeEventListener('popstate', onPopstate);
       microApp.clearDataListener('governance');
     };
-  }, [pathname]);
+  }, [pathname, router]);
 
   return (
     <ConfigProvider>
       <ReduxProvider store={store}>{children}</ReduxProvider>
-      {isGovernance &&
-        (show ? (
-          <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
-        ) : (
-          <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />
-        ))}
+      {isGovernance && <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>}
+      {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
     </ConfigProvider>
   );
 }
