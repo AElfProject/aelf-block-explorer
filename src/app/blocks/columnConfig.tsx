@@ -2,21 +2,22 @@
  * @Author: Peterbjx jianxiong.bai@aelf.io
  * @Date: 2023-08-14 18:13:54
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 13:55:34
+ * @LastEditTime: 2023-08-16 16:28:28
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { TableDataType } from './blockList';
-import { formatDate, splitAddress, addressFormat } from '@_utils/formatter';
+import { ITableDataType } from './blockList';
+import { formatDate } from '@_utils/formatter';
+import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<TableDataType> {
+export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableDataType> {
   return [
     {
       title: 'Block',
       width: '96px',
-      dataIndex: 'block_height',
-      key: 'block_height',
+      dataIndex: 'blockHeight',
+      key: 'blockHeight',
       render: (text) => (
         <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
           {text}
@@ -33,8 +34,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
         </div>
       ),
       width: '208px',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'timestamp',
+      key: 'timestamp',
       render: (text) => {
         return <div className="text-xs leading-5">{formatDate(text, timeFormat)}</div>;
       },
@@ -42,8 +43,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'Txn',
       width: '208px',
-      key: 'Txn',
-      dataIndex: 'Txn',
+      key: 'txns',
+      dataIndex: 'txns',
       render: (text) => (
         <Link className="text-link text-xs block leading-5" href={`Transactions/${text}`}>
           {text}
@@ -55,31 +56,27 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       key: 'Producer',
       width: '320px',
       dataIndex: 'Producer',
-      render: ({ name, chain_id }) => (
+      render: ({ name }) => (
         <div className="flex items-center">
           <Link
             className="text-link text-xs block leading-5"
-            title={`${addressFormat(name, chain_id, chain_id)}`}
-            href={`/address/${addressFormat(name, chain_id, chain_id)}`}>{`${addressFormat(
-            splitAddress(name, 4, 4),
-            chain_id,
-            chain_id,
-          )}`}</Link>
-          <Copy value={addressFormat(name, chain_id, chain_id)} />
+            title={`${addressFormat(name)}`}
+            href={`/address/${addressFormat(name)}`}>{`${addressFormat(hiddenAddress(name, 4, 4))}`}</Link>
+          <Copy value={addressFormat(name)} />
         </div>
       ),
     },
     {
       title: 'Reward',
       width: '208px',
-      key: 'Reward',
-      dataIndex: 'Reward',
+      key: 'reward',
+      dataIndex: 'reward',
     },
     {
       title: 'Burnt Fees',
       width: '208px',
-      key: 'Burnt Fees',
-      dataIndex: 'Burnt Fees',
+      key: 'burntFee',
+      dataIndex: 'burntFee',
     },
   ];
 }

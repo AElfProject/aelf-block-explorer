@@ -5,14 +5,14 @@ import TableEmptySearch from 'public/image/table-empty-search.png';
 import Image from 'next/image';
 import clsx from 'clsx';
 
-interface CommonEmptyProps {
+interface ICommonEmptyProps {
   type?: 'nodata' | 'search' | 'internet';
   desc?: ReactNode;
   size?: 'large' | 'middle' | 'small';
   className?: string;
 }
 
-export default function CommonEmpty({ type, desc, className, size = 'large' }: CommonEmptyProps) {
+export default function CommonEmpty({ type, desc, className, size = 'large' }: ICommonEmptyProps) {
   const sizeStyle = useMemo(() => {
     if (size === 'large') {
       return 'size-large-120';
@@ -45,7 +45,7 @@ export default function CommonEmpty({ type, desc, className, size = 'large' }: C
       curType = typesMap[type];
     }
     return (
-      <div className={clsx('empty-placeholder', sizeStyle, className)}>
+      <div className={clsx('empty-placeholder flex items-center justify-center', sizeStyle, className)}>
         {curType.src && <Image alt="empty" src={curType.src} />}
         {curType.desc && <span>{desc || curType.desc}</span>}
       </div>

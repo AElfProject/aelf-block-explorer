@@ -2,16 +2,17 @@
  * @author: Peterbjx
  * @Date: 2023-08-15 14:59:06
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 17:46:03
+ * @LastEditTime: 2023-08-16 16:50:05
  * @Description: columns
  */
 import { ColumnsType } from 'antd/es/table';
-import { TableDataType } from './contractsList';
-import { formatDate, splitAddress, addressFormat, validateVersion } from '@_utils/formatter';
+import { ITableDataType } from './contractsList';
+import { formatDate, validateVersion } from '@_utils/formatter';
+import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
 import IconFont from '@_components/IconFont';
-export default function getColumns(): ColumnsType<TableDataType> {
+export default function getColumns(): ColumnsType<ITableDataType> {
   return [
     {
       title: 'Address',
@@ -22,9 +23,9 @@ export default function getColumns(): ColumnsType<TableDataType> {
         <div className="flex items-center">
           <IconFont className="mr-1 text-xs" type="Contract" />
           <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
-            {splitAddress(addressFormat(text, 'AELF', 'AELF'), 9, 9)}
+            {addressFormat(hiddenAddress(text, 4, 4))}
           </Link>
-          <Copy value={addressFormat(text, 'AELF', 'AELF')} />
+          <Copy value={addressFormat(text)} />
         </div>
       ),
     },
@@ -37,11 +38,8 @@ export default function getColumns(): ColumnsType<TableDataType> {
     {
       title: 'Type',
       width: 152,
-      dataIndex: 'contractName',
-      key: 'contractName',
-      render: (System) => {
-        return <span>{System ? 'System' : 'User'}</span>;
-      },
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: 'Version',
@@ -59,14 +57,14 @@ export default function getColumns(): ColumnsType<TableDataType> {
     {
       title: 'Txns',
       width: 96,
-      key: 'txn',
-      dataIndex: 'txn',
+      key: 'txns',
+      dataIndex: 'txns',
     },
     {
       title: <div className="time cursor-pointer">Last Updated At (+UTC)</div>,
       width: 208,
-      dataIndex: 'updateTime',
-      key: 'updateTime',
+      dataIndex: 'lastUpdateTime',
+      key: 'lastUpdateTime',
       render: (text) => {
         return <div className="text-xs leading-5">{`${formatDate(text, 'Date Time (UTC)')} PM`}</div>;
       },

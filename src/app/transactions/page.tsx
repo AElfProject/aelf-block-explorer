@@ -9,8 +9,10 @@
 import TransactionsList from './list';
 import { headers } from 'next/headers';
 import { isMobileOnServer } from '@_utils/isMobile';
-export default function BlocksPage() {
+import fetchData from './mock';
+export default async function BlocksPage() {
   const headersList = headers();
   const isMobile = isMobileOnServer(headersList);
-  return <TransactionsList isMobileSSR={isMobile} />;
+  const data = await fetchData({ page: 1, pageSize: 25 });
+  return <TransactionsList SSRData={data} isMobileSSR={isMobile} />;
 }

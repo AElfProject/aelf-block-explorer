@@ -1,8 +1,8 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-08-09 11:15:16
- * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-16 16:03:04
+ * @LastEditors: aelf-lxy
+ * @LastEditTime: 2023-08-17 14:51:01
  * @Description: type file for Search Component
  */
 export type TSingle = {
@@ -66,8 +66,17 @@ export type BasicActions<T = string> = {
 };
 
 export interface ISearchProps {
+  lightMode?: boolean;
+  isMobile?: boolean;
   searchValidator?: TSearchValidator;
   placeholder?: string;
+  searchIcon?: boolean | React.ReactNode;
+  onSearchButtonClickHandler?: (query: string) => void;
+  searchButton?: boolean;
+  enterIcon?: boolean;
+  deleteIcon?: boolean;
+  searchWrapClassNames?: string;
+  searchInputClassNames?: string;
 }
 
 export enum SearchActions {

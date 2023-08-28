@@ -2,22 +2,28 @@
  * @Author: Peterbjx jianxiong.bai@aelf.io
  * @Date: 2023-08-14 18:13:54
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 19:38:52
+ * @LastEditTime: 2023-08-18 16:22:36
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { TableDataType } from './list';
-import { formatDate, splitAddress, addressFormat } from '@_utils/formatter';
+import { ITableDataType } from './type';
+import { formatDate } from '@_utils/formatter';
+import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import Link from 'next/link';
 import IconFont from '@_components/IconFont';
 import { Tooltip } from 'antd';
-const chain_id = 'AELF';
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<TableDataType> {
+import Method from '@_components/Method';
+import ContractToken from '@_components/ContractToken';
+enum Status {
+  Success = 'Success',
+  fail = 'Fail',
+}
+export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableDataType> {
   return [
     {
       title: <IconFont className="text-xs" style={{ marginLeft: '6px' }} type="question-circle" />,
-      width: '56px',
+      width: 72,
       dataIndex: '',
       key: 'view',
       render: () => (
@@ -27,15 +33,15 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       ),
     },
     {
-      dataIndex: 'tx_id',
-      width: 152,
-      key: 'tx_id',
+      dataIndex: 'transactionHash',
+      width: 168,
+      key: 'transactionHash',
       title: 'Txn Hash',
-      render: (text) => {
+      render: (text, records) => {
         return (
           <div className="flex items-center">
-            <IconFont className="mr-1" type="question-circle-error" />
-            <Link className="text-link text-xs block w-[120px] truncate leading-5" href={`Transactions/${text}`}>
+            {records.status === Status.fail && <IconFont className="mr-1" type="question-circle-error" />}
+            <Link className="text-link text-xs block w-[120px] truncate leading-5" href={`tx/${text}`}>
               {text}
             </Link>
           </div>
@@ -49,22 +55,16 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
           <IconFont className="text-xs" style={{ marginLeft: '4px' }} type="question-circle" />
         </div>
       ),
-      width: '112px',
+      width: 128,
       dataIndex: 'method',
       key: 'method',
-      render: (text) => (
-        <Tooltip title={text} overlayClassName="table-item-tooltip__white">
-          <div className="border text-center box-border px-[15px] rounded border-D0 bg-F7 w-24 h-6 flex items-center justify-center method">
-            <div className="truncate">{text}</div>
-          </div>
-        </Tooltip>
-      ),
+      render: (text) => <Method text={text} tip={text} />,
     },
     {
       title: 'Block',
-      width: '96px',
-      dataIndex: 'block_height',
-      key: 'block_height',
+      width: 112,
+      dataIndex: 'blockHeight',
+      key: 'blockHeight',
       render: (text) => (
         <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
           {text}
@@ -80,26 +80,27 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
           {timeFormat}
         </div>
       ),
-      width: '128px',
-      dataIndex: 'time',
-      key: 'time',
+      width: 144,
+      dataIndex: 'timestamp',
+      key: 'timestamp',
       render: (text) => {
         return <div className="text-xs leading-5">{formatDate(text, timeFormat)}</div>;
       },
     },
     {
-      dataIndex: 'address_from',
+      dataIndex: 'from',
       title: 'From',
       width: 196,
       render: (text) => {
+        const { address } = text;
         return (
           <div className="address flex items-center">
-            <Tooltip title={addressFormat(text, chain_id, chain_id)} overlayClassName="table-item-tooltip__white">
-              <Link className="text-link" href={`/address/${addressFormat(text, chain_id, chain_id)}`}>
-                {addressFormat(splitAddress(text, 4, 4), chain_id, chain_id)}
+            <Tooltip title={addressFormat(address)} overlayClassName="table-item-tooltip-white">
+              <Link className="text-link" href={`/address/${addressFormat(address)}`}>
+                {addressFormat(hiddenAddress(address, 4, 4))}
               </Link>
             </Tooltip>
-            <Copy value={addressFormat(text, chain_id, chain_id)} />
+            <Copy value={addressFormat(address)} />
             <div className="flex items-center"></div>
           </div>
         );
@@ -107,40 +108,35 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     },
     {
       title: '',
-      width: '40px',
+      width: 40,
       dataIndex: '',
       key: 'from_to',
       render: () => <IconFont className="text-[24px]" type="fromto" />,
     },
     {
-      dataIndex: 'address_to',
+      dataIndex: 'to',
       title: 'To',
       width: 196,
       render: (text) => {
-        return (
-          <div className="address">
-            <IconFont className="mr-1 text-xs" type="Contract" />
-            <Tooltip title={text} overlayClassName="table-item-tooltip__white">
-              <Link href={`/address/${text}`}>{text}</Link>
-            </Tooltip>
-            <Copy value={text} />
-          </div>
-        );
+        return <ContractToken address={text.address} />;
       },
     },
     {
       title: 'Value',
-      width: '178px',
-      key: 'value',
-      dataIndex: 'value',
+      width: 178,
+      key: 'txnValue',
+      dataIndex: 'txnValue',
+      render: (text) => {
+        return <span className="text-base-100">{text + 'ELF'}</span>;
+      },
     },
     {
       title: 'Txn Fee',
-      width: '178px',
-      key: 'tx_fee',
-      dataIndex: 'tx_fee',
+      width: 178,
+      key: 'txnFee',
+      dataIndex: 'txnFee',
       render: (text) => {
-        return <span className="text-base-200">{text}</span>;
+        return <span className="text-base-200">{text + 'ELF'}</span>;
       },
     },
   ];

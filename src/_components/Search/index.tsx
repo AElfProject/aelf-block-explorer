@@ -11,8 +11,13 @@ import SearchBox from './SearchBox';
 
 const propDefaults = {
   placeholder: '',
+  searchIcon: false,
+  searchButton: true,
+  enterIcon: false,
+  deleteIcon: true,
+  isMobile: false,
+  lightMode: false,
 };
-
 export default function Search(props: ISearchProps) {
   const componentProps = { ...propDefaults, ...props };
   return (

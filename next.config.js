@@ -7,11 +7,12 @@
  */
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
+  async redirects() {
     return [
       {
-        source: '/xxx',
-        destination: '/address',
+        source: '/home',
+        destination: '/',
+        permanent:true
       },
       {
         source: '/api/:path*',

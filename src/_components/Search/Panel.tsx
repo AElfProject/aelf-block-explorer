@@ -1,23 +1,17 @@
-/*
- * @Author: aelf-lxy
- * @Date: 2023-08-07 13:50:45
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-16 14:18:58
- * @Description: the result panel of search
- */
 'use client';
 
-import { MouseEvent, memo, useContext, useEffect, useRef, useState } from 'react';
+import { MouseEvent, memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import animateScrollTo from 'animated-scroll-to';
-import { SearchContext } from './SearchProvider';
+import { useSearchContext } from './SearchProvider';
 import Item from './Item';
 import { TSearchPanelProps, TSingle } from './type';
 import { useKeyEvent } from '@_hooks/useSearch';
 import { useThrottleFn } from 'ahooks';
+import IconFont from '@_components/IconFont';
 function Panel({ id, searchHandler }: TSearchPanelProps) {
   // Global state from context
-  const { state } = useContext(SearchContext);
+  const { state } = useSearchContext();
   const { query, queryResultData } = state;
   const { allList = [], dataWithOrderIdx } = queryResultData;
   // Component state
@@ -53,11 +47,10 @@ function Panel({ id, searchHandler }: TSearchPanelProps) {
       ) {
         tmpActiveIdx = scrollTopArr.length - 1;
       } else {
-        tmpActiveIdx = scrollTopArr.findIndex((ele, idx, arr) => {
+        tmpActiveIdx = scrollTopArr.findIndex((_, idx, arr) => {
           return y >= arr[idx] && y < arr[idx + 1];
         });
       }
-      console.log('tmpActiveIdx', tmpActiveIdx);
       setActiveTabIdx(tmpActiveIdx);
     },
     {
@@ -96,34 +89,38 @@ function Panel({ id, searchHandler }: TSearchPanelProps) {
   }
 
   if (allList.length === 0) {
-    return <div className="search-result-panel">no result</div>;
+    return (
+      <div className="search-result-panel">
+        <div className="search-result-empty">
+          <IconFont type="result-empty" className="w-3 h-3 mr-1" />
+          <span>Sorry, search not found.</span>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div id={id} className="search-result-panel">
-      <div className="p-2">
-        {Object.entries(dataWithOrderIdx).map(([searchType], idx) => {
-          return (
-            <span
-              key={searchType + idx}
-              className={clsx(
-                'rounded-full',
-                'p-1',
-                'bg-red-400',
-                'cursor-pointer',
-                activeTabIdx === idx && 'bg-yellow-600',
-              )}
-              onMouseDown={(e) => tabMouseDownHandler(e, idx)}>
-              {searchType + idx}
-            </span>
-          );
-        })}
+      <div className="border-color-divider border-b">
+        <div className="p-4 flex gap-2">
+          {Object.entries(dataWithOrderIdx).map(([searchType], idx) => {
+            return (
+              <div
+                className={clsx('search-result-panel-anchor', activeTabIdx === idx && 'selected')}
+                key={searchType + idx}
+                onMouseDown={(e) => tabMouseDownHandler(e, idx)}>
+                <span>{searchType}</span>
+                <span>{`(${idx})`}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <ul className="px-4 overflow-auto relative max-h-[420px]" ref={panelRef}>
+      <ul className="search-result-ul" ref={panelRef}>
         {Object.entries(dataWithOrderIdx).map(([searchType, searchData]: [string, any], pIdx: number) => {
           return (
-            <div key={searchType + pIdx}>
-              <p className="border-t border-slate-100">{searchType}</p>
+            <div key={searchType + pIdx} className="search-result-ul-wrap">
+              <p className="search-result-ul-title">{searchType}</p>
               {searchData.list.map((item: Partial<TSingle>, index: number) => (
                 <Item key={`item${index}`} index={item.sortIdx as number} item={item} />
               ))}
@@ -131,13 +128,31 @@ function Panel({ id, searchHandler }: TSearchPanelProps) {
           );
         })}
       </ul>
-      <div className="px-4 py-2 flex justify-between border-t border-slate-100">
-        <div className="items-center">
-          <span>navigator</span>
-          <span>esc</span>
+      <div className="search-result-bottom">
+        <div className="flex gap-4">
+          <div className="search-result-bottom-button-wrap">
+            <div className="search-result-bottom-button">
+              <IconFont className="w-3 h-3" type="Down" />
+            </div>
+            <div className="search-result-bottom-button">
+              <IconFont className="w-3 h-3" type="Up" />
+            </div>
+            <span>Navigator</span>
+          </div>
+          <div className="search-result-bottom-button-wrap">
+            <div className="search-result-bottom-button !w-9">
+              <span>Esc</span>
+            </div>
+            <span>Close</span>
+          </div>
         </div>
-        <div className="items-center">
-          <span>enter</span>
+        <div>
+          <div className="search-result-bottom-button-wrap">
+            <div className="search-result-bottom-button !w-9">
+              <IconFont className="w-3 h-3" type="Union" />
+            </div>
+            <span>Enter</span>
+          </div>
         </div>
       </div>
     </div>

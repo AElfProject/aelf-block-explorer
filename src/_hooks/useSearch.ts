@@ -1,19 +1,19 @@
 /*
  * @Author: aelf-lxy
  * @Date: 2023-08-11 15:07:01
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-16 14:21:30
+ * @LastEditors: aelf-lxy xiyang.liu@aelf.io
+ * @LastEditTime: 2023-08-16 19:07:43
  * @Description: hooks for Search Component
  */
-import { SearchContext } from '@_components/Search/SearchProvider';
+import { useSearchContext } from '@_components/Search/SearchProvider';
 import { setQueryResult, highlightPrev, highlightNext, setClear } from '@_components/Search/action';
 import { TSingle, TSearchList } from '@_components/Search/type';
-import { RefObject, useContext, useEffect } from 'react';
+import { RefObject, useEffect } from 'react';
 import request from '@_api';
 import animateScrollTo from 'animated-scroll-to';
 import { useDebounce } from 'react-use';
 export const useUpdateDataByQuery = () => {
-  const { state, dispatch } = useContext(SearchContext);
+  const { state, dispatch } = useSearchContext();
   const { query, filterType } = state;
 
   useDebounce(
@@ -21,7 +21,6 @@ export const useUpdateDataByQuery = () => {
       if (!query) {
         return;
       }
-      console.log('hooks', filterType);
       function tmp(arr) {
         return {
           tokens: {
@@ -96,7 +95,7 @@ export const useKeyEvent = (
   setActiveTabIdx: (val: number) => void,
   searchHandler: () => void,
 ) => {
-  const { state, dispatch } = useContext(SearchContext);
+  const { state, dispatch } = useSearchContext();
   const { highLight, queryResultData } = state;
   const { idx: highLightIdx } = highLight;
   const { allList = [] } = queryResultData;

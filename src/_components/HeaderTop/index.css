@@ -16,7 +16,7 @@
     }
   }
   &-network-change {
-    @apply w-10 h-10 flex items-center justify-center rounded border border-[#BFBFBF];
+    @apply w-10 h-10 flex items-center justify-center rounded border border-[#BFBFBF] ml-2;
   }
 }
 .header-top-container-main {
@@ -38,6 +38,6 @@
     }
   }
   .header-top-container-network-change {
-    @apply w-10 h-10 flex items-center justify-center rounded border border-[#3A4668];
+    @apply w-10 h-10 flex items-center justify-center rounded border border-[#3A4668] ml-2;
   }
 }

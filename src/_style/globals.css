@@ -5,6 +5,7 @@
 
 @import url("tailwindcss/components");
 @import url("./search.css");
+@import url("./nft-details.css");
 
 @import url("tailwindcss/utilities");
 
@@ -21,6 +22,9 @@
       --background-start-rgb: 0, 0, 0;
       --background-end-rgb: 0, 0, 0;
     }
+}
+body {
+  @apply bg-F7;
 }
 
 @layer components {

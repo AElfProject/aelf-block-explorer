@@ -1,0 +1,64 @@
+.nft-wrap{
+  @apply text-base-100 text-xs leading-20;
+  .ntf-overview-wrap{
+    @apply flex
+  }
+  .nft-image-wrap{
+    @apply p-4 rounded-lg bg-white inline-flex justify-center items-center shadow-table mr-4 w-[557px] h-[557px];
+    .nft-image{
+      @apply rounded object-fill
+    }
+  }
+  .nft-detail-wrap{
+    @apply flex-1;
+    .nft-title-wrap{
+      @apply pb-4;
+    }
+    .nft-title{
+      @apply font-medium text-xl mb-1
+    }
+    .nft-thumb-image-wrap{
+      @apply w-6 h-6 flex justify-center items-center relative;
+    }
+    .nft-thumb{
+      @apply flex items-center gap-1
+    }
+    .nft-detail{
+      @apply shadow-table bg-white;
+      .nft-detail-property{
+        @apply border-b border-color-divider last:border-b-0
+      }
+      .nft-detail-label{
+        @apply text-sm leading-[22px] p-4 font-medium;
+      }
+      .nft-detail-ul{
+        @apply py-4 mx-4 border-t border-color-divider;
+      }
+      .nft-detail-item{
+        @apply py-2 flex gap-4;
+      }
+      .nft-detail-item-left{
+        @apply w-[312px] gap-1 text-base-200;
+      }
+      .nft-detail-block-wrap{
+        @apply gap-4 flex flex-wrap
+      }
+      .nft-detail-block{
+        @apply rounded-lg bg-ECEEF2 w-[138px] h-[58px] flex justify-center items-center flex-col;
+        h1{
+          @apply text-sm leading-[22px] font-medium text-link
+        }
+
+      }
+      .nft-detail-txt-checkbox{
+        @apply hidden;
+      }
+      .nft-detail-txt{
+        @apply line-clamp-5 break-all before:content-[''] before:float-right before:-mb-5 before:h-full ;
+        .nft-detail-txt-more{
+          @apply float-right clear-both text-link cursor-pointer
+        }
+      }
+    }
+  }
+}

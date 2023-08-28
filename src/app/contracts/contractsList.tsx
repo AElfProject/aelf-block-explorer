@@ -2,7 +2,7 @@
  * @author: Peterbjx
  * @Date: 2023-08-15 14:57:42
  * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-15 19:49:10
+ * @LastEditTime: 2023-08-16 17:02:19
  * @Description: contract list
  */
 'use client';
@@ -12,87 +12,71 @@ import getColumns from './columnConfig';
 import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
+import fetchData from './mock';
 
-export interface TableDataType {
-  key: string | number;
+export interface ITableDataType {
   address: string;
   contractName: string;
-  isSystemContract: boolean;
+  type: string;
   version: string;
   balance: string;
-  txn: number;
-  updateTime: string;
+  txns: number;
+  lastUpdateTime: string;
 }
 
-const data: TableDataType[] = [
-  {
-    key: '1',
-    address: 'KNdM6U6PyPsgyena8rPHTbCoMrkrALhxAy1b8Qx2cgi4169xr',
-    contractName: 'AElf.ContractNames.Treasury',
-    isSystemContract: true,
-    version: '1.5.0.0',
-    balance: '1,000,000,000.00112726 ELF',
-    txn: 2449,
-    updateTime: '2023/07/26 11:54:52+00:00',
-  },
-  {
-    key: '2',
-    address: 'KNdM6U6PyPsgyena8rPHTbCoMrkrALhxAy1b8Qx2cgi4169xr',
-    contractName: 'EBridge.Contracts.Report',
-    isSystemContract: true,
-    version: '1.5.0.0',
-    balance: '1,000,000,000.00112726 ELF',
-    txn: 2449,
-    updateTime: '2023/07/26 11:54:52+00:00',
-  },
-  {
-    key: '3',
-    address: 'KNdM6U6PyPsgyena8rPHTbCoMrkrALhxAy1b8Qx2cgi4169xr',
-    contractName: 'AElf.ContractNames.Treasury',
-    isSystemContract: true,
-    version: '1.5.0.0',
-    balance: '1,000,000,000.00112726 ELF',
-    txn: 2449,
-    updateTime: '2023/07/26 11:54:52+00:00',
-  },
-];
-
-export default function List({ isMobileSSR }) {
+export default function List({ isMobileSSR, SSRData }) {
   const [isMobile, setIsMobile] = useState(isMobileSSR);
   useEffect(() => {
     setIsMobile(isMobileDevices());
   }, []);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(50);
-  const [total, setTotal] = useState<number>(101);
-  const columns = useMemo<ColumnsType<TableDataType>>(() => {
+  const [total, setTotal] = useState<number>(SSRData.total);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<ITableDataType[]>(SSRData.data);
+  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
     return getColumns();
   }, []);
 
-  const pageChange = (page: number, pageSize?: number) => {
-    console.log(page, pageSize, 'blocks');
+  const multiTitle = useMemo(() => {
+    return `A total of ${total} contracts found`;
+  }, [total]);
+
+  const pageChange = async (page: number) => {
+    setLoading(true);
     setCurrentPage(page);
+    const data = await fetchData({ page, pageSize: pageSize });
+    setData(data.data);
+    setTotal(data.total);
+    setLoading(false);
   };
 
-  const pageSizeChange = (size) => {
-    console.log(size, 'size blocks');
+  const pageSizeChange = async (size) => {
+    setLoading(true);
     setPageSize(size);
+    setCurrentPage(1);
+    const data = await fetchData({ page: 1, pageSize: size });
+    setData(data.data);
+    setTotal(data.total);
+    setLoading(false);
   };
+
   return (
     <div>
       <HeadTitle content="Contracts"></HeadTitle>
       <Table
         titleType="multi"
+        loading={loading}
         dataSource={data}
         columns={columns}
         isMobile={isMobile}
-        rowKey="key"
+        rowKey="address"
         total={total}
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}
         pageSizeChange={pageSizeChange}
-        multiTitle="A total of 31 contracts found"
+        multiTitle={multiTitle}
         multiTitleDesc="(Showing the last 1,000 contracts only)"></Table>
     </div>
   );

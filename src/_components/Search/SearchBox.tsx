@@ -2,18 +2,18 @@
  * @Author: aelf-lxy
  * @Date: 2023-08-03 14:20:36
  * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-16 14:50:12
+ * @LastEditTime: 2023-08-17 15:12:38
  * @Description: Search component
  */
 'use client';
 // import request from '@_api';
-import { useState, useRef, MouseEvent, useContext, memo, useCallback } from 'react';
-
+import { useState, useRef, MouseEvent, memo, useCallback, isValidElement } from 'react';
+import clsx from 'clsx';
 import Panel from './Panel';
 import SearchSelect from './Select';
 import { useUpdateDataByQuery, useSelected, useHighlight } from '@_hooks/useSearch';
 import { ISearchProps } from './type';
-import { SearchContext } from './SearchProvider';
+import { useSearchContext } from './SearchProvider';
 import { setQuery, setClear } from './action';
 import { Button } from 'antd';
 import IconFont from '@_components/IconFont';
@@ -21,13 +21,24 @@ import { useRouter } from 'next/navigation';
 
 const randomId = () => `searchbox-${(0 | (Math.random() * 6.04e7)).toString(36)}`;
 
-const Search = ({ searchValidator, placeholder }: ISearchProps) => {
+const Search = ({
+  lightMode,
+  isMobile,
+  searchValidator,
+  placeholder,
+  searchButton,
+  onSearchButtonClickHandler,
+  searchIcon,
+  enterIcon,
+  deleteIcon,
+  searchWrapClassNames,
+  searchInputClassNames,
+}: ISearchProps) => {
   const router = useRouter();
 
   // Global state from context
-  const { state, dispatch } = useContext(SearchContext);
+  const { state, dispatch } = useSearchContext();
   const { query, selectedItem, highLight, canShowListBox } = state;
-  console.log('selectedItem', selectedItem);
 
   // Component state
   const [hasFocus, setHasFocus] = useState<boolean>(false);
@@ -37,7 +48,8 @@ const Search = ({ searchValidator, placeholder }: ISearchProps) => {
 
   // Calculated states
   const isExpanded = hasFocus && canShowListBox;
-  const hasClearButton = !!query;
+  const hasClearButton = !!query && deleteIcon;
+  const hasEnterButton = !!query && enterIcon;
 
   useUpdateDataByQuery();
   useSelected(selectedItem, queryInput);
@@ -49,16 +61,44 @@ const Search = ({ searchValidator, placeholder }: ISearchProps) => {
     dispatch(setClear());
   }
 
-  const searchHandler = useCallback(() => {
-    router.push(`/111111/search/${queryInput.current!.value}`);
-  }, [router]);
+  // const searchHandler = useCallback(() => {
+  //   router.push(`/chainId/search/${queryInput.current!.value}`);
+  // }, [router]);
+
+  const onSearchHandler = () => {
+    onSearchButtonClickHandler && onSearchButtonClickHandler(queryInput.current!.value);
+  };
+
+  function renderButton() {
+    if (!searchButton) {
+      return null;
+    }
+    if (isValidElement(searchButton)) {
+      return <div onClick={onSearchHandler}>{searchButton}</div>;
+    }
+    return (
+      <Button
+        className="search-button"
+        type="primary"
+        icon={<IconFont className="w-4 h-4" type="search" />}
+        onClick={onSearchHandler}
+      />
+    );
+  }
 
   return (
-    <div className="searchbox-wrap" aria-expanded={isExpanded}>
+    <div
+      className={clsx('searchbox-wrap', searchWrapClassNames, lightMode && 'searchbox-wrap-light')}
+      aria-expanded={isExpanded}>
       <SearchSelect searchValidator={searchValidator} />
       <div className="search-input-wrap">
+        {searchIcon && (
+          <div className="search-input-query-icon">
+            <IconFont type="search" />
+          </div>
+        )}
         <input
-          className="search-input"
+          className={clsx('search-input', searchInputClassNames, isMobile && 'search-input-mobile')}
           ref={queryInput}
           placeholder={placeholder}
           onFocus={() => {
@@ -72,25 +112,25 @@ const Search = ({ searchValidator, placeholder }: ISearchProps) => {
           }}
         />
         {hasClearButton && (
-          <button className="absolute right-0" onMouseDown={cancelBtnHandler}>
-            X
-          </button>
+          <div className="search-input-clear" onMouseDown={cancelBtnHandler}>
+            <IconFont type="clear" />
+          </div>
         )}
-        {/* TODO: destroy Panel time? */}
-        {isExpanded && (
-          <Panel
-            id={randomId()}
-            searchHandler={searchHandler}
-            // key={!query ? randomId() : 1}
-          />
+        {hasEnterButton && (
+          <div className="search-input-enter" onClick={onSearchHandler}>
+            <IconFont className="w-3 h-3" type="Union" />
+          </div>
         )}
       </div>
-      <Button
-        className="search-button"
-        type="primary"
-        icon={<IconFont className="w-4 h-4" type="search" />}
-        onClick={searchHandler}
-      />
+      {renderButton()}
+      {/* TODO: destroy Panel time? */}
+      {isExpanded && (
+        <Panel
+          id={randomId()}
+          searchHandler={onSearchHandler}
+          // key={!query ? randomId() : 1}
+        />
+      )}
     </div>
   );
 };

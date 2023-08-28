@@ -18,4 +18,9 @@
       }
     }
   }
+  &-mobile {
+    .search-section {
+      @apply px-3 w-full;
+    }
+  }
 }

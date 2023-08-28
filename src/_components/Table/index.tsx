@@ -10,7 +10,7 @@ import clsx from 'clsx';
 
 type HeaderTitleType = 'single' | 'multi';
 
-export interface CommonTableProps<T> extends TableProps<T> {
+export interface ICommonTableProps<T> extends TableProps<T> {
   total: number;
   pageNum?: number;
   pageSize?: number;
@@ -81,7 +81,7 @@ export default function TableApp({
   titleType,
   emptyText,
   ...params
-}: CommonTableProps<any>) {
+}: ICommonTableProps<any>) {
   return (
     <div className="ep-table bg-white rounded-lg shadow-table">
       <div className={clsx('ep-table-header p-4', `ep-table-header-${isMobile ? 'mobile' : 'pc'}`)}>
@@ -98,6 +98,7 @@ export default function TableApp({
             current={pageNum}
             total={total}
             pageSize={pageSize}
+            defaultValue={pageSize}
             defaultCurrent={defaultCurrent}
             showSizeChanger={false}
             pageChange={pageChange}
@@ -117,6 +118,7 @@ export default function TableApp({
       <EpPagination
         current={pageNum}
         isMobile={isMobile}
+        defaultValue={pageSize}
         total={total}
         pageSize={pageSize}
         defaultCurrent={defaultCurrent}

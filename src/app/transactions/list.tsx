@@ -5,73 +5,27 @@ import getColumns from './columnConfig';
 import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
+import { ITableDataType } from './type';
+import fetchData from './mock';
 
-export interface TableDataType {
-  key: string | number;
-  tx_id: string;
-  method: string;
-  time: string;
-  block_height: number;
-  address_from: string;
-  address_to: string;
-  value: string;
-  tx_fee: string;
-}
-
-const data: TableDataType[] = [
-  {
-    key: '1',
-    tx_id: 'cc764efe0d5b8f9a73fffa3aecc7e3a26d715a715a764af464dd80dd7f2ca03e',
-    block_height: 165018684,
-    method: 'DonateResourceToken',
-    time: '2023-08-15T08:42:41.1123602Z',
-    address_from: 'AELF_YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy_AELF',
-    address_to: 'AELF.Contract.Token',
-    value: '0 ELF',
-    tx_fee: '0 ELF',
-  },
-  {
-    key: '2',
-    tx_id: 'cc764efe0d5b8f9a73fffa3aecc7e3a26d715a715a764af464dd80dd7f2ca03e',
-    block_height: 165018684,
-    method: 'DonateResourceToken',
-    time: '2023-08-15T08:42:41.1123602Z',
-    address_from: 'AELF_YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy_AELF',
-    address_to: 'AELF.Contract.Token',
-    value: '0 ELF',
-    tx_fee: '0 ELF',
-  },
-  {
-    key: '3',
-    tx_id: 'cc764efe0d5b8f9a73fffa3aecc7e3a26d715a715a764af464dd80dd7f2ca03e',
-    block_height: 165018684,
-    method: 'DonateResourceToken',
-    time: '2023-08-15T08:42:41.1123602Z',
-    address_from: 'AELF_YgRDkJECvrJsfcrM3KbjMjNSPfZPhmbrPjTpssWiWZmGxGiWy_AELF',
-    address_to: 'AELF.Contract.Token',
-    value: '0 ELF',
-    tx_fee: '0 ELF',
-  },
-];
-
-export default function List({ isMobileSSR }) {
+export default function List({ isMobileSSR, SSRData }) {
   const [isMobile, setIsMobile] = useState(isMobileSSR);
   useEffect(() => {
     setIsMobile(isMobileDevices());
   }, []);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
-  const [total, setTotal] = useState<number>(101);
+  const [pageSize, setPageSize] = useState<number>(25);
+  const [total, setTotal] = useState<number>(SSRData.total);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<ITableDataType[]>(SSRData.data);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const handleTimeChange = () => {
-    if (timeFormat === 'Age') {
-      setTimeFormat('Date Time (UTC)');
-    } else {
-      setTimeFormat('Age');
-    }
-  };
-  const columns = useMemo<ColumnsType<TableDataType>>(() => {
-    return getColumns({ timeFormat, handleTimeChange });
+  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
+    return getColumns({
+      timeFormat,
+      handleTimeChange: () => {
+        setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
+      },
+    });
   }, [timeFormat]);
 
   const multiTitle = useMemo(() => {
@@ -82,24 +36,34 @@ export default function List({ isMobileSSR }) {
     return `Showing the last 500k records`;
   }, []);
 
-  const pageChange = (page: number, pageSize?: number) => {
-    console.log(page, pageSize, 'blocks');
+  const pageChange = async (page: number) => {
+    setLoading(true);
     setCurrentPage(page);
+    const data = await fetchData({ page, pageSize: pageSize });
+    setData(data.data);
+    setTotal(data.total);
+    setLoading(false);
   };
 
-  const pageSizeChange = (size) => {
-    console.log(size, 'size blocks');
+  const pageSizeChange = async (size) => {
+    setLoading(true);
     setPageSize(size);
+    setCurrentPage(1);
+    const data = await fetchData({ page: 1, pageSize: size });
+    setData(data.data);
+    setTotal(data.total);
+    setLoading(false);
   };
   return (
     <div>
       <HeadTitle content="Transactions"></HeadTitle>
       <Table
         titleType="multi"
+        loading={loading}
         dataSource={data}
         columns={columns}
         isMobile={isMobile}
-        rowKey="key"
+        rowKey="transactionHash"
         total={total}
         pageSize={pageSize}
         pageNum={currentPage}

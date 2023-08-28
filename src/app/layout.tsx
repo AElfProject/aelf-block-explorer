@@ -17,6 +17,7 @@ import { headers } from 'next/headers';
 import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
 import clsx from 'clsx';
+import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -43,11 +44,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body className={clsx('next-app', inter.className, 'relative min-h-screen bg-global-grey')}>
         <StyledComponentsRegistry>
-          <Header priceSSR={price} previousPriceSSR={previousPrice} isMobileSSR={isMobile} />
+          <Suspense>
+            <Header priceSSR={price} previousPriceSSR={previousPrice} isMobileSSR={isMobile} />
+          </Suspense>
           <RootProvider>
-            <MainContainer>{children}</MainContainer>
+            <Suspense>
+              <MainContainer>{children}</MainContainer>
+            </Suspense>
           </RootProvider>
-          <Footer isMobileSSR={isMobile} />
+          <Suspense>
+            <Footer isMobileSSR={isMobile} />
+          </Suspense>
         </StyledComponentsRegistry>
       </body>
     </html>

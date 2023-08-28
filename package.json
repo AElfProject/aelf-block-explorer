@@ -51,6 +51,7 @@
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
+    "husky-check-email": "^0.0.7",
     "lint-staged": "^13.2.3",
     "postcss": "^8.4.27",
     "postcss-import": "^15.1.0",
