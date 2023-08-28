@@ -9,7 +9,7 @@ import IconFont from '@_components/IconFont';
 import clsx from 'clsx';
 import { memo } from 'react';
 import { StatusEnum } from '@_types/status';
-function Status({ status }: { status: StatusEnum }) {
+function Status({ status }) {
   return (
     <div
       className={clsx(

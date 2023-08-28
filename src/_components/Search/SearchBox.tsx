@@ -7,7 +7,7 @@
  */
 'use client';
 // import request from '@_api';
-import { useState, useRef, MouseEvent, memo, useCallback, isValidElement } from 'react';
+import { useState, useRef, MouseEvent, memo, isValidElement } from 'react';
 import clsx from 'clsx';
 import Panel from './Panel';
 import SearchSelect from './Select';
@@ -17,7 +17,7 @@ import { useSearchContext } from './SearchProvider';
 import { setQuery, setClear } from './action';
 import { Button } from 'antd';
 import IconFont from '@_components/IconFont';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 const randomId = () => `searchbox-${(0 | (Math.random() * 6.04e7)).toString(36)}`;
 
@@ -34,7 +34,7 @@ const Search = ({
   searchWrapClassNames,
   searchInputClassNames,
 }: ISearchProps) => {
-  const router = useRouter();
+  // const router = useRouter();
 
   // Global state from context
   const { state, dispatch } = useSearchContext();
