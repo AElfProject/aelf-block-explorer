@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation';
 import { isMobileDevices } from '@_utils/isMobile';
 import HeaderTop from '@_components/HeaderTop';
 import HeaderMenu from '@_components/HeaderMenu';
+import './index.css';
 import Search from '@_components/Search';
 import { IsMain } from '@_utils/isMainNet';
 import clsx from 'clsx';

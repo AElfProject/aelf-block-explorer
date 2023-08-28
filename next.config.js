@@ -12,7 +12,27 @@ const nextConfig = {
       {
         source: '/home',
         destination: '/',
-        permanent:true
+        permanent: true,
+      },
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3001/api/:path*',
+        permanent: true,
+      },
+      {
+        source: '/chain/:path*',
+        destination: 'http://localhost:3001/chain/:path*',
+        permanent: true,
+      },
+      {
+        source: '/cms/:path*',
+        destination: 'http://localhost:3001/cms/:path*',
+        permanent: true,
+      },
+      {
+        source: '/new-socket/:path*',
+        destination: 'http://localhost:3001/new-socket/:path*',
+        permanent: true,
       },
     ];
   },

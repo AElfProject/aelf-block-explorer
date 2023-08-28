@@ -6,15 +6,23 @@ const clsPrefix = 'header-menu-container';
 import './index.css';
 import IconFont from '@_components/IconFont';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import microApp from '@micro-zoe/micro-app';
 
 interface IProps {
   isMobile: boolean;
 }
 export default function HeaderMenu({ isMobile }: IProps) {
+  const router = useRouter();
+  const jump = (url) => {
+    // microApp.setData('governance', { path: url });
+    window.history.pushState(null, '', url);
+    window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
+    router.replace(url);
+  };
   const items: MenuProps['items'] = [
     {
-      label: <Link href="/">Home</Link>,
+      label: <a onClick={() => jump('/')}>Home</a>,
       key: '/',
     },
     {
@@ -69,15 +77,15 @@ export default function HeaderMenu({ isMobile }: IProps) {
       key: 'governance',
       children: [
         {
-          label: <Link href="/proposals">Proposals</Link>,
-          key: '/proposals',
+          label: <a onClick={() => jump('/proposal/proposals')}>Proposal</a>,
+          key: '/proposal/proposals',
         },
         {
-          label: <Link href="/vote">Vote</Link>,
-          key: '/vote',
+          label: <a onClick={() => jump('/vote/election')}>Vote</a>,
+          key: '/vote/election',
         },
         {
-          label: <Link href="/resource">Resource</Link>,
+          label: <a onClick={() => jump('/resource')}>Resource</a>,
           key: '/resource',
         },
       ],
@@ -85,7 +93,6 @@ export default function HeaderMenu({ isMobile }: IProps) {
   ];
   const pathname = usePathname();
   const [current, setCurrent] = useState(pathname);
-  console.log(current, 'current');
   const onClick: MenuProps['onClick'] = (e) => {
     console.log('click ', e.key);
     setCurrent(e.key);
