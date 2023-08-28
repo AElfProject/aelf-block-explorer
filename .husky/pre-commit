@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 npx lint-staged
-npx husky-check-email @aelf.io
+npx husky-check-email @aelf.io,@ienyan.com
