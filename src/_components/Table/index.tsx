@@ -19,6 +19,7 @@ export interface ICommonTableProps<T> extends TableProps<T> {
   className?: string;
   titleType: HeaderTitleType;
   singleTitle?: string;
+  options?: any[];
   multiTitle?: string;
   multiTitleDesc?: string;
   order?: SortOrder | undefined | null;
@@ -78,6 +79,7 @@ export default function TableApp({
   pageChange,
   emptyType,
   pageSizeChange,
+  options,
   titleType,
   emptyText,
   ...params
@@ -97,6 +99,7 @@ export default function TableApp({
           <EpPagination
             current={pageNum}
             total={total}
+            options={options}
             pageSize={pageSize}
             defaultValue={pageSize}
             defaultCurrent={defaultCurrent}
@@ -118,6 +121,7 @@ export default function TableApp({
       <EpPagination
         current={pageNum}
         isMobile={isMobile}
+        options={options}
         defaultValue={pageSize}
         total={total}
         pageSize={pageSize}

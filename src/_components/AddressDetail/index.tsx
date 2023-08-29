@@ -1,5 +1,5 @@
 'use client';
-import { IAddressResponse } from '@_types/commenDetail';
+import { IAddressResponse } from '@_types/commonDetail';
 import HeadTitle from '@_components/HeaderTitle';
 import Copy from '@_components/Copy';
 import IconFont from '../IconFont/index';
@@ -8,7 +8,7 @@ import QrCode from '@_components/QrCode';
 import Overview from './components/overview';
 import { numberFormatter } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
-import { TitleEnum } from '@_types/commenDetail';
+import { TitleEnum } from '@_types/commonDetail';
 import EPTabs from '../EPTabs/index';
 import TransctionList from '@app/transactions/list';
 import TokenTransfers from '@_components/TokenTransfers';
@@ -16,6 +16,8 @@ import NFTTransfers from '@_components/NFTTransfers';
 import History from './components/History';
 import { useState } from 'react';
 import Events from './components/Events';
+import Contract from './components/Contract';
+import Tokens from './components/Tokens';
 export default function AddressDetail({
   SSRData,
   title,
@@ -116,7 +118,7 @@ export default function AddressDetail({
     {
       key: '',
       label: 'Tokens',
-      children: <div>Tokens</div>,
+      children: <Tokens />,
     },
     {
       key: 'Txns',
@@ -150,6 +152,11 @@ export default function AddressDetail({
           SSRData={{ total: transactions.total, data: [...tokenTransfers.list] }}
         />
       ),
+    },
+    {
+      key: 'contract',
+      label: 'Contract',
+      children: <Contract />,
     },
     {
       key: 'events',

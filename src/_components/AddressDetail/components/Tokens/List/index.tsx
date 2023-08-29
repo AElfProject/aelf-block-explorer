@@ -1,19 +1,17 @@
+import EPSearch from '@_components/EPSearch';
 import Table from '@_components/Table';
-import { useMemo, useState } from 'react';
-import { IEvents } from './type';
-import { ColumnsType } from 'antd/es/table';
+import { useState } from 'react';
 import fetchData from './mock';
 import getColumns from './columnConfig';
 import './index.css';
+import { TokensListItemType } from '@_types/commonDetail';
 import { useDebounce, useEffectOnce } from 'react-use';
-import EPSearch from '@_components/EPSearch';
-export default function Events({ SSRData = { total: 0, list: [] } }) {
+export default function TokensList({ SSRData = { total: 0, list: [] } }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(25);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<IEvents[]>(SSRData.list);
-  const [timeFormat, setTimeFormat] = useState<string>('Date Time (UTC)');
+  const [data, setData] = useState<TokensListItemType[]>(SSRData.list);
   const [searchText, setSearchText] = useState<string>('');
   useEffectOnce(() => {
     async function getData() {
@@ -25,14 +23,7 @@ export default function Events({ SSRData = { total: 0, list: [] } }) {
     }
     getData();
   });
-  const columns = useMemo<ColumnsType<IEvents>>(() => {
-    return getColumns({
-      timeFormat,
-      handleTimeChange: () => {
-        setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
-      },
-    });
-  }, [timeFormat]);
+  const columns = getColumns();
 
   const pageChange = async (page: number) => {
     setLoading(true);
@@ -67,17 +58,14 @@ export default function Events({ SSRData = { total: 0, list: [] } }) {
     300,
     [searchText],
   );
-
   return (
-    <div className="event-container">
-      <div className="event-header">
-        <div className="tips">
-          Tips：Contract events are developer-defined mechanisms that allow users to observe and understand specific
-          operations within a contract. These operations can include changes in state, user interactions, and important
-          notifications. By examining events, users can gain valuable insights into the contract&apos;s internal
-          workings, including event names, parameters, transaction hashes, block numbers, and other pertinent data.
+    <div className="token-list px-4">
+      <div className="header-container flex items-center justify-between py-4">
+        <div className="title-container">
+          <div className="total text-base-100 text-sm leading-[22px]">Tokens (7)</div>
+          <div className="info text-xs text-base-200 leading-5">Total Value : $78,330.38</div>
         </div>
-        <div className="search-box">
+        <div className="tool-container">
           <EPSearch
             value={searchText}
             onChange={({ currentTarget }) => {
@@ -86,18 +74,30 @@ export default function Events({ SSRData = { total: 0, list: [] } }) {
           />
         </div>
       </div>
-      <Table
-        titleType="multi"
-        loading={loading}
-        dataSource={data}
-        columns={columns}
-        isMobile={false}
-        rowKey="id"
-        total={total}
-        pageSize={pageSize}
-        pageNum={currentPage}
-        pageChange={pageChange}
-        pageSizeChange={pageSizeChange}></Table>
+      <div className="table-container">
+        <Table
+          titleType="multi"
+          loading={loading}
+          options={[
+            {
+              label: 10,
+              value: 10,
+            },
+            {
+              label: 20,
+              value: 20,
+            },
+          ]}
+          dataSource={data}
+          columns={columns}
+          isMobile={false}
+          rowKey="asset"
+          total={total}
+          pageSize={pageSize}
+          pageNum={currentPage}
+          pageChange={pageChange}
+          pageSizeChange={pageSizeChange}></Table>
+      </div>
     </div>
   );
 }

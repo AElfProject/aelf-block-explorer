@@ -5,7 +5,7 @@ import getColumns from '@_components/TokenTransfers/columnConfig';
 import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
-import { TokenTransfersItemType } from '@_types/commenDetail';
+import { TokenTransfersItemType } from '@_types/commonDetail';
 import fetchData from './mock';
 import { numberFormatter } from '@_utils/formatter';
 

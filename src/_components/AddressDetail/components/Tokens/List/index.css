@@ -1,0 +1,8 @@
+.token-list {
+  .shadow-table  {
+    @apply shadow-none;
+  }
+  .ep-table-header {
+    @apply !hidden;
+  }
+}

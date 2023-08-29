@@ -19,13 +19,14 @@ const languageDetector = [
 function getLanguage(name) {
   return languageDetector.filter((v) => v.test.test(name))[0].language;
 }
-const CodeViewer = ({ data, name }) => {
+const CodeViewer = ({ data, height = '350px', name }) => {
   const editorRef = useRef(null);
   const [language, setLanguage] = useState('csharp');
   function handleEditorDidMount(editor: any, _: Monaco) {
     // here is the editor instance
     // you can store it in `useRef` for further usage
     editorRef.current = editor;
+    console.log(editorRef.current);
   }
   useEffect(() => {
     const lang = getLanguage(name);
@@ -34,7 +35,7 @@ const CodeViewer = ({ data, name }) => {
 
   return (
     <div>
-      <Editor height="350px" language={language} value={data} onMount={handleEditorDidMount} />
+      <Editor height={height} language={language} value={data} onMount={handleEditorDidMount} />
     </div>
   );
 };

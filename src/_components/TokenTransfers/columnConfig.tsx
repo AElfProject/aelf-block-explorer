@@ -6,7 +6,7 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { TokenTransfersItemType } from '@_types/commenDetail';
+import { TokenTransfersItemType } from '@_types/commonDetail';
 import { formatDate } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Copy from '@_components/Copy';

@@ -1,4 +1,4 @@
-import { IAddressResponse } from '@_types/commenDetail';
+import { IAddressResponse } from '@_types/commonDetail';
 export default async function fetchData(): Promise<any> {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   const res: IAddressResponse = {

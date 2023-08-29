@@ -10,5 +10,5 @@ import React from 'react';
 
 import './index.css';
 export default function MainContainer({ children }) {
-  return <div className="main-container">{children}</div>;
+  return <div className="main-container md:px-3 xl:px-3">{children}</div>;
 }

@@ -1,5 +1,5 @@
 import Detail from '@_components/AddressDetail';
-import { TitleEnum } from '@_types/commenDetail';
+import { TitleEnum } from '@_types/commonDetail';
 import fetchData from './mock';
 export default async function AddressDetails({ params }: { params: HashParams }) {
   const data = await fetchData({ address: params.hash });
