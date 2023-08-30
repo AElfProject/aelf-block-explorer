@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { isMobileDevices } from '@_utils/isMobile';
 import fetchData from './mock';
+import { useMobileContext } from '@app/pageProvider';
 
 export interface ITableDataType {
   blockHeight: number;
@@ -27,7 +28,10 @@ export interface ITableDataType {
   burntFee: string;
 }
 
-export default function BlockList({ isMobileSSR, SSRData }) {
+export default function BlockList({ SSRData }) {
+  const { isMobileSSR } = useMobileContext();
+
+  console.log('isMobileSSR', isMobileSSR);
   const [isMobile, setIsMobile] = useState(isMobileSSR);
   useEffect(() => {
     setIsMobile(isMobileDevices());

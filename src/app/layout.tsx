@@ -41,21 +41,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const isMobile = isMobileOnServer(headersList);
 
   return (
-    <html lang="en">
-      <body className={clsx('next-app', inter.className, 'relative min-h-screen bg-global-grey')}>
-        <StyledComponentsRegistry>
-          <Suspense>
-            <Header priceSSR={price} previousPriceSSR={previousPrice} isMobileSSR={isMobile} />
-          </Suspense>
-          <RootProvider>
+    <html lang="en" className="h-full w-full">
+      <body>
+        <div className="flex flex-col h-full">
+          <StyledComponentsRegistry>
             <Suspense>
-              <MainContainer>{children}</MainContainer>
+              <Header priceSSR={price} previousPriceSSR={previousPrice} isMobileSSR={isMobile} />
             </Suspense>
-          </RootProvider>
-          <Suspense>
-            <Footer isMobileSSR={isMobile} />
-          </Suspense>
-        </StyledComponentsRegistry>
+            <div className="flex-1 overflow-y-scroll" id="scroll-content">
+              <RootProvider isMobileSSR={isMobile}>
+                <Suspense>
+                  <MainContainer>{children}</MainContainer>
+                </Suspense>
+              </RootProvider>
+              <Suspense>
+                <Footer isMobileSSR={isMobile} />
+              </Suspense>
+            </div>
+          </StyledComponentsRegistry>
+        </div>
       </body>
     </html>
   );
