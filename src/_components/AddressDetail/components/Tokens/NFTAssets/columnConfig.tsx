@@ -1,4 +1,3 @@
-import IconFont from '@_components/IconFont';
 import { formatDate, thousandsNumber } from '@_utils/formatter';
 import { NftsItemType } from '@_types/commonDetail';
 import { ColumnsType } from 'antd/es/table';
@@ -28,7 +27,7 @@ export default function getColumns(): ColumnsType<NftsItemType> {
       width: 421,
       dataIndex: 'collection',
       key: 'collection',
-      render: (text) => (
+      render: () => (
         <div className="flex items-center">
           <span className="inline-block leading-5 max-w-[194px] text-link truncate mx-1">
             The Source by Camille Roux x MattThe Source by Camille Roux x Mat

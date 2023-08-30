@@ -16,7 +16,8 @@
     }
   }
   .history-description {
-    box-shadow: 1px 0 0 0 #E6E6E6 inset;
+    box-sizing: border-box;
+    border-left: 1px solid #E6E6E6;
     @apply ml-1;
     .description-item {
       @apply px-4 py-2 flex;
@@ -30,6 +31,6 @@
     }
   }
   .history-description-last {
-    box-shadow: none;
+    border-left: none;
   }
 }

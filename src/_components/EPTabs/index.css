@@ -3,7 +3,7 @@
   .ant-tabs {
     @apply bg-white rounded-lg shadow-table;
     .ant-tabs-tab {
-      @apply py-[14px] px-4 shadow-row_tab !m-0;
+      @apply py-[14px] px-4 !m-0;
     }
     .ant-tabs-nav {
       @apply shadow-title_bot;
@@ -15,7 +15,6 @@
       @apply font-medium text-xs leading-5 hover:text-link;
     }
     .ant-tabs-tab-active {
-      @apply shadow-row_tab_inset;
       .ant-tabs-tab-btn {
         @apply font-medium text-xs leading-5 text-link;
       }
