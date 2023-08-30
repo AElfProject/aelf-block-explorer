@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from 'public/next.svg';
@@ -7,7 +8,7 @@ export default function NFTDetails() {
     <div className="nft-wrap">
       <div className="ntf-overview-wrap">
         <div className="nft-image-wrap">
-          <Image width={525} height={525} src={Logo} alt="" className="nft-image" />
+          <Image src={Logo} alt="" className="nft-image" />
         </div>
         <div className="nft-detail-wrap">
           <div className="nft-title-wrap">
@@ -24,35 +25,54 @@ export default function NFTDetails() {
           <div className="nft-detail">
             <div className="nft-detail-property">
               <div className="nft-detail-label">
-                {/* <IconFont type="document" className="w-3 h-3" /> */}
-                <span>Details</span>
+                <div className="nft-detail-label-left">
+                  <IconFont type="document" className="w-3 h-3" />
+                  <span>Details</span>
+                </div>
+                <div className="nft-detail-label-right">
+                  <IconFont type="Down" />
+                </div>
               </div>
               <ul className="nft-detail-ul">
                 <li className="nft-detail-item">
                   <div className="nft-detail-item-left">
+                    <IconFont type="question-circle" />
                     <span>Holders:</span>
                   </div>
-                  <div>2232</div>
+                  <div className="nft-detail-item-right">2232</div>
                 </li>
                 <li className="nft-detail-item">
                   <div className="nft-detail-item-left">
-                    <span>Holders:</span>
+                    <IconFont type="question-circle" />
+                    <span>Owners:</span>
                   </div>
-                  <div>2232</div>
+                  <div className="nft-detail-item-right">
+                    <span>5 Owners</span>
+                    <IconFont type="Down" />
+                  </div>
                 </li>
                 <li className="nft-detail-item">
                   <div className="nft-detail-item-left">
-                    <span>Holders:</span>
+                    <IconFont type="question-circle" />
+                    <span>Issuer:</span>
                   </div>
-                  <div>2232</div>
+                  <div className="nft-detail-item-right">
+                    <Image src={Logo} width={20} height={20} alt="" />
+                    <span className="font-medium">forest</span>
+                  </div>
                 </li>
               </ul>
             </div>
 
             <div className="nft-detail-property">
               <div className="nft-detail-label">
-                {/* <IconFont type="box" className="w-3 h-3" /> */}
-                <span>Details</span>
+                <div className="nft-detail-label-left">
+                  <IconFont type="document" className="w-3 h-3" />
+                  <span>Details</span>
+                </div>
+                <div className="nft-detail-label-right">
+                  <IconFont type="Down" />
+                </div>
               </div>
               <ul className="nft-detail-ul nft-detail-block-wrap">
                 <li className="nft-detail-block">
@@ -76,8 +96,13 @@ export default function NFTDetails() {
 
             <div className="nft-detail-property">
               <div className="nft-detail-label">
-                {/* <IconFont type="page" className="w-3 h-3" /> */}
-                <span>Details</span>
+                <div className="nft-detail-label-left">
+                  <IconFont type="document" className="w-3 h-3" />
+                  <span>Details</span>
+                </div>
+                <div className="nft-detail-label-right">
+                  <IconFont type="Down" />
+                </div>
               </div>
               <div className="nft-detail-ul flex">
                 <input type="checkbox" id="exp" className="nft-detail-txt-checkbox peer" />

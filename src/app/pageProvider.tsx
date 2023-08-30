@@ -10,12 +10,19 @@
 
 import { Provider as ReduxProvider } from 'react-redux';
 import store from '@_store';
-import { ConfigProvider, Skeleton } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { Skeleton } from 'antd';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import microApp from '@micro-zoe/micro-app';
 import { usePathname, useRouter } from 'next/navigation';
 
-export default function RootProvider({ children }) {
+const MobileContext = createContext<any>({});
+
+const useMobileContext = () => {
+  return useContext(MobileContext);
+};
+export { useMobileContext };
+
+export default function RootProvider({ children, isMobileSSR }) {
   const router = useRouter();
   const pathname = usePathname();
   const isGovernance = useMemo(() => {
@@ -64,7 +71,7 @@ export default function RootProvider({ children }) {
   }, [pathname, router]);
 
   return (
-    <ConfigProvider>
+    <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
       <ReduxProvider store={store}>{children}</ReduxProvider>
       {isGovernance && (
         <>
@@ -72,6 +79,6 @@ export default function RootProvider({ children }) {
           {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
         </>
       )}
-    </ConfigProvider>
+    </MobileContext.Provider>
   );
 }

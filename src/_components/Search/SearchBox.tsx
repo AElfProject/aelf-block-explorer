@@ -7,7 +7,7 @@
  */
 'use client';
 // import request from '@_api';
-import { useState, useRef, MouseEvent, memo, useCallback, isValidElement } from 'react';
+import { useState, useRef, MouseEvent, memo, isValidElement } from 'react';
 import clsx from 'clsx';
 import Panel from './Panel';
 import SearchSelect from './Select';
@@ -17,7 +17,6 @@ import { useSearchContext } from './SearchProvider';
 import { setQuery, setClear } from './action';
 import { Button } from 'antd';
 import IconFont from '@_components/IconFont';
-import { useRouter } from 'next/navigation';
 
 const randomId = () => `searchbox-${(0 | (Math.random() * 6.04e7)).toString(36)}`;
 
@@ -34,8 +33,6 @@ const Search = ({
   searchWrapClassNames,
   searchInputClassNames,
 }: ISearchProps) => {
-  const router = useRouter();
-
   // Global state from context
   const { state, dispatch } = useSearchContext();
   const { query, selectedItem, highLight, canShowListBox } = state;
@@ -60,10 +57,6 @@ const Search = ({
     queryInput.current!.value = '';
     dispatch(setClear());
   }
-
-  // const searchHandler = useCallback(() => {
-  //   router.push(`/chainId/search/${queryInput.current!.value}`);
-  // }, [router]);
 
   const onSearchHandler = () => {
     onSearchButtonClickHandler && onSearchButtonClickHandler(queryInput.current!.value);
@@ -123,14 +116,7 @@ const Search = ({
         )}
       </div>
       {renderButton()}
-      {/* TODO: destroy Panel time? */}
-      {isExpanded && (
-        <Panel
-          id={randomId()}
-          searchHandler={onSearchHandler}
-          // key={!query ? randomId() : 1}
-        />
-      )}
+      {isExpanded && <Panel id={randomId()} searchHandler={onSearchHandler} />}
     </div>
   );
 };

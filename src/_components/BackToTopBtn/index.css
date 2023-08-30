@@ -1,4 +1,4 @@
-.back-to-top-contrainer {
+.back-to-top-container {
   @apply absolute right-[20px] left-auto hover:cursor-pointer flex;
   .anticon {
     svg {

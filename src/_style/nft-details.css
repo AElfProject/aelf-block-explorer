@@ -1,12 +1,12 @@
 .nft-wrap{
   @apply text-base-100 text-xs leading-20;
   .ntf-overview-wrap{
-    @apply flex
+    @apply flex flex-col lg:flex-row;
   }
   .nft-image-wrap{
-    @apply p-4 rounded-lg bg-white inline-flex justify-center items-center shadow-table mr-4 w-[557px] h-[557px];
+    @apply relative p-4 rounded-lg bg-white inline-flex justify-center items-center shadow-table w-full  h-max lg:w-[557px] lg:h-[557px];
     .nft-image{
-      @apply rounded object-fill
+      @apply rounded object-fill lg:w-[525px] lg:h-[525px];
     }
   }
   .nft-detail-wrap{
@@ -24,21 +24,33 @@
       @apply flex items-center gap-1
     }
     .nft-detail{
-      @apply shadow-table bg-white;
+      @apply shadow-table bg-white rounded-lg;
       .nft-detail-property{
         @apply border-b border-color-divider last:border-b-0
       }
       .nft-detail-label{
-        @apply text-sm leading-[22px] p-4 font-medium;
+        @apply text-sm leading-[22px] p-4 font-medium flex items-center justify-between;
+        .nft-detail-label-left{
+          @apply flex items-center gap-2
+        }
       }
       .nft-detail-ul{
         @apply py-4 mx-4 border-t border-color-divider;
       }
       .nft-detail-item{
-        @apply py-2 flex gap-4;
+        @apply py-2 flex justify-between;
       }
       .nft-detail-item-left{
-        @apply w-[312px] gap-1 text-base-200;
+        @apply flex w-[154px] lg:w-[312px] gap-1 text-base-200;
+        svg{
+          @apply w-3 h-3;
+        }
+      }
+      .nft-detail-item-right{
+        @apply lg:flex-1 flex gap-1;
+        svg{
+          @apply w-3 h-3;
+        }
       }
       .nft-detail-block-wrap{
         @apply gap-4 flex flex-wrap
