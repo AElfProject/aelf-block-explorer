@@ -1,0 +1,72 @@
+.header-navbar-mobile-more {
+  @apply w-8 h-8;
+  .anticon {
+    @apply w-8 h-8 leading-8;
+    svg {
+      @apply w-8 h-8 leading-8;
+    }
+  }
+}
+.header-drawer-menu-root-wrapper {
+  .ant-drawer-content-wrapper {
+    @apply !h-auto;
+  }
+  .header-drawer-menu-wrapper {
+    @apply shadow-[0_6px_24px_0_rgba(0,0,0,0.24)] rounded-[0px_0px_8px_8px];
+    .ant-drawer-header {
+      @apply h-[112px] flex-auto;
+    }
+    .ant-drawer-body {
+      @apply mx-2 my-4 p-0 !h-full;
+      .ant-menu {
+        @apply !w-full border-0;
+        .ant-menu-item,
+        .ant-menu-submenu > .ant-menu-submenu-title {
+          @apply border-r-0 !pl-2 !pr-2 m-0 bg-transparent w-full h-[38px] leading-[38px] mb-1 justify-center;
+          &:hover {
+            @apply text-link;
+          }
+        }
+        .ant-menu-submenu {
+          .ant-menu-sub {
+            @apply !w-auto mx-2 bg-transparent rounded-[8px] border-solid border-[1px]  border-[var(--color-divider,#E6E6E6)] p-2;
+          }
+          .ant-menu-item {
+            @apply h-9;
+            .ant-menu-title-content {
+              @apply h-9;
+            }
+          }
+        }
+        .submenu-right-arrow {
+          @apply w-4 h-4 right-2;
+          svg {
+            @apply w-4 h-4;
+          }
+        }
+        .ant-menu-submenu-open > .ant-menu-submenu-title {
+          .submenu-right-arrow {
+            @apply rotate-180 top-auto;
+          }
+        }
+        .ant-menu-item-selected {
+          @apply bg-transparent text-link;
+        }
+        .ant-menu-submenu-arrow {
+          &::before,
+          &::after {
+            @apply w-4 h-4;
+          }
+        }
+        .ant-menu-item-divider {
+          @apply mt-1 mb-2;
+        }
+      }
+    }
+  }
+  .home-header-drawer-menu-wrapper {
+    .ant-drawer-header {
+      @apply h-[56px];
+    }
+  }
+}

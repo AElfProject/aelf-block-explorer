@@ -3,4 +3,7 @@
   margin-right: auto;
   max-width: 1360px;
   @apply mb-10 pt-[104px];
+  &-mobile {
+    @apply pt-[56px];
+  }
 }

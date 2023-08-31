@@ -7,12 +7,13 @@ import './index.css';
 import IconFont from '@_components/IconFont';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import microApp from '@micro-zoe/micro-app';
-
+import ChainSelect from '@_components/ChainSelect';
+import { INetworkItem } from '@_types';
 interface IProps {
   isMobile: boolean;
+  networkList: INetworkItem[];
 }
-export default function HeaderMenu({ isMobile }: IProps) {
+export default function HeaderMenu({ isMobile, networkList }: IProps) {
   const router = useRouter();
   const jump = (url) => {
     // microApp.setData('governance', { path: url });
@@ -33,6 +34,7 @@ export default function HeaderMenu({ isMobile }: IProps) {
         </div>
       ),
       key: 'blockChain',
+      popupClassName: `${clsPrefix}-popup`,
       children: [
         {
           label: <Link href="/blocks">Blocks</Link>,
@@ -43,18 +45,12 @@ export default function HeaderMenu({ isMobile }: IProps) {
           key: '/transactions',
         },
         {
-          type: 'group',
-          label: 'Address',
-          children: [
-            {
-              label: <Link href="/accounts">Top Accounts</Link>,
-              key: '/accounts',
-            },
-            {
-              label: <Link href="/contracts">Contracts</Link>,
-              key: '/contracts',
-            },
-          ],
+          label: <Link href="/accounts">Top Accounts</Link>,
+          key: '/accounts',
+        },
+        {
+          label: <Link href="/contracts">Contracts</Link>,
+          key: '/contracts',
         },
       ],
     },
@@ -75,14 +71,15 @@ export default function HeaderMenu({ isMobile }: IProps) {
         </div>
       ),
       key: 'governance',
+      popupClassName: `${clsPrefix}-popup`,
       children: [
         {
           label: <a onClick={() => jump('/proposal/proposals')}>Proposal</a>,
-          key: '/proposal/proposals',
+          key: '/proposal',
         },
         {
           label: <a onClick={() => jump('/vote/election')}>Vote</a>,
-          key: '/vote/election',
+          key: '/vote',
         },
         {
           label: <a onClick={() => jump('/resource')}>Resource</a>,
@@ -102,6 +99,7 @@ export default function HeaderMenu({ isMobile }: IProps) {
     <div className={clsx(`${clsPrefix}`)}>
       <div className={`${clsPrefix}-content`}>
         <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items}></Menu>
+        {!isMobile && <ChainSelect networkList={networkList}></ChainSelect>}
       </div>
     </div>
   );

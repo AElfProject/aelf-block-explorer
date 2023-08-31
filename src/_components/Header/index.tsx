@@ -18,20 +18,9 @@ import clsx from 'clsx';
 
 const NETWORK_TYPE = process.env.NEXT_PUBLIC_NETWORK_TYPE;
 const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
-const NETWORK_LIST = [
-  {
-    title: 'AELF Mainnet',
-    url: 'https://explorer.aelf.io',
-    netWorkType: 'MAIN',
-  },
-  {
-    title: 'AELF Testnet',
-    url: 'https://explorer-test.aelf.io',
-    netWorkType: 'TESTNET',
-  },
-];
+const clsPrefix = 'header-container';
 let jumpFlag = false;
-export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
+export default function Header({ priceSSR, previousPriceSSR, explorerList, networkList, isMobileSSR }) {
   const [showSearch, setShowSearch] = useState(true);
   const onlyMenu = useMemo(() => {
     return showSearch ? '' : 'only-menu ';
@@ -99,8 +88,8 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
   }, []);
 
   return (
-    <div className={`header-container ${onlyMenu}${isMainNet}`}>
-      <div>
+    <div className={clsx(clsPrefix, `${onlyMenu}${isMainNet}`, isMobile && `${clsPrefix}-mobile`)}>
+      <>
         {isMobile && !isHideSearch && (
           <div className={clsx('px-3', 'py-2', IsMain && 'bg-main-blue')}>
             <Search
@@ -124,12 +113,13 @@ export default function Header({ priceSSR, previousPriceSSR, isMobileSSR }) {
           <HeaderTop
             price={price.USD}
             range={range}
-            networkList={NETWORK_LIST}
+            explorerList={explorerList}
             isMobile={isMobile}
+            networkList={networkList}
             isHideSearch={isHideSearch}></HeaderTop>
         }
-        {!isMobile && <HeaderMenu isMobile={isMobile}></HeaderMenu>}
-      </div>
+        {!isMobile && <HeaderMenu isMobile={isMobile} networkList={networkList}></HeaderMenu>}
+      </>
     </div>
   );
 }

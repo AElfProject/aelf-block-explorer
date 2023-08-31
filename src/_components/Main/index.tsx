@@ -6,9 +6,11 @@
  * @Description: main container
  */
 
+import clsx from 'clsx';
 import React from 'react';
 
 import './index.css';
-export default function MainContainer({ children }) {
-  return <div className="main-container">{children}</div>;
+const prefix = 'main-container';
+export default function MainContainer({ children, isMobile }) {
+  return <div className={clsx(prefix, isMobile && `${prefix}-mobile`)}>{children}</div>;
 }

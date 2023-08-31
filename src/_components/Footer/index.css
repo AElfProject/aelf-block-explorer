@@ -7,7 +7,7 @@
     @apply max-w-[1400px] flex py-6 px-5 m-auto relative;
   }
   &-content {
-    @apply flex mt-[44px] gap-4 justify-between w-full border-y-[1px] py-6;
+    @apply flex mt-[48px] gap-4 justify-between w-full border-y-[1px] py-6;
     .left {
       @apply w-full;
       .title {
@@ -23,7 +23,7 @@
         }
       }
       .description {
-        @apply mt-4 leading-5 font-[400px] text-[12px] w-[443px] text-[#858585];
+        @apply mt-4 leading-5 font-[400] text-[12px] w-[443px] text-[#858585] w-full;
       }
     }
     .right {
@@ -47,14 +47,22 @@
   .copywrite {
     @apply absolute bottom-6 w-full text-center text-[#858585] text-[12px] font-[400];
   }
+  .footer-container-link {
+    @apply absolute left-5 top-6 cursor-pointer;
+    .anticon {
+      svg {
+        @apply w-8 h-8 mr-2;
+      }
+    }
+  }
 }
 .footer-container-mobile {
-  @apply h-[528px] w-full;
+  @apply h-[540px] w-full;
   .footer-container-bg {
     @apply h-full object-cover;
   }
   .footer-container-wrapper {
-    @apply w-full;
+    @apply w-full px-3;
   }
   .footer-container-content {
     @apply flex-wrap;
@@ -63,7 +71,7 @@
       .ecosystem,
       .community,
       .developer {
-        @apply w-[175.5px] flex-none;
+        @apply w-[169.5px] flex-none;
       }
     }
   }

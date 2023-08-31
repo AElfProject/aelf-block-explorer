@@ -39,7 +39,7 @@ export default function Footer({ isMobileSSR }: IProps) {
             </div>
             <div className="description">
               AELF Explorer is a Block Explorer and Analytics Platform for AELF, a decentralized cloud computing
-              blockchain network.
+              blockchain explorer.
             </div>
           </div>
           <div className="right">
@@ -64,6 +64,19 @@ export default function Footer({ isMobileSSR }: IProps) {
           </div>
         </div>
         <BackToTopButton isDark={IsMain}></BackToTopButton>
+        <div className={`${clsPrefix}-link`}>
+          <IconFont type="telegram" onClick={() => (window.location.href = 'https://t.me/aelfblockchain')}></IconFont>
+          <IconFont
+            type="medium"
+            onClick={() => (window.location.href = 'https://medium.com/aelfblockchain')}></IconFont>
+          <IconFont
+            type="twitter"
+            onClick={() => (window.location.href = 'https://twitter.com/aelfblockchain')}></IconFont>
+          <IconFont
+            type="youtube"
+            onClick={() => (window.location.href = 'http://www.youtube.com/c/aelfblockchain')}></IconFont>
+          <IconFont type="discord" onClick={() => (window.location.href = 'https://discord.gg/bgysa9xjvD')}></IconFont>
+        </div>
       </div>
       <div className="copywrite">AELF © {new Date().getFullYear()}</div>
     </div>
