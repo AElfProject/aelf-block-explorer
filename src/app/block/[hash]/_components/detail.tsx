@@ -20,8 +20,10 @@ import { ITableDataType } from '@app/transactions/type';
 import { ColumnsType } from 'antd/es/table';
 import MoreContainer from '@_components/MoreContainer';
 import EPTabs from '@_components/EPTabs';
+import { useMobileContext } from '@app/pageProvider';
 
 export default function Detail({ SSRData }) {
+  const { isMobileSSR: isMobile } = useMobileContext();
   const [detailData] = useState<DetailData>(SSRData);
   const [showMore, setShowMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -75,7 +77,7 @@ export default function Detail({ SSRData }) {
           titleType="multi"
           dataSource={tableData}
           columns={columns}
-          isMobile={false}
+          isMobile={isMobile}
           rowKey="transactionHash"
           total={total}
           pageSize={pageSize}

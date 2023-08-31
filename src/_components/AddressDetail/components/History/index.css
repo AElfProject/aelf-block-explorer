@@ -33,4 +33,16 @@
   .history-description-last {
     border-left: none;
   }
+  .history-description-mobile {
+    .description-item {
+      @apply flex-col;
+      .label {
+        @apply mb-2;
+      }
+      .value {
+        @apply break-words;
+      }
+
+    }
+  }
 }

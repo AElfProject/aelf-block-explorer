@@ -2,18 +2,15 @@
 import HeadTitle from '@_components/HeaderTitle';
 import Table from '@_components/Table';
 import getColumns from '@_components/TokenTransfers/columnConfig';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
-import { isMobileDevices } from '@_utils/isMobile';
 import { TokenTransfersItemType } from '@_types/commonDetail';
 import fetchData from './mock';
 import { numberFormatter } from '@_utils/formatter';
+import { useMobileContext } from '@app/pageProvider';
 
-export default function List({ isMobileSSR, SSRData, showHeader = true }) {
-  const [isMobile, setIsMobile] = useState(isMobileSSR);
-  useEffect(() => {
-    setIsMobile(isMobileDevices());
-  }, []);
+export default function List({ SSRData, showHeader = true }) {
+  const { isMobileSSR: isMobile } = useMobileContext();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);
   const [total, setTotal] = useState<number>(SSRData.total);

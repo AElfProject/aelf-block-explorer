@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Table } from 'antd';
+import { SpinProps, Table } from 'antd';
 import type { TableProps } from 'antd/es/table';
 import './index.css';
 import { SortOrder } from 'antd/es/table/interface';
@@ -24,7 +24,7 @@ export interface ICommonTableProps<T> extends TableProps<T> {
   multiTitleDesc?: string;
   order?: SortOrder | undefined | null;
   field?: string | null;
-  loading?: boolean;
+  loading?: boolean | SpinProps;
   emptyType?: 'nodata' | 'search' | 'internet' | ReactNode | (() => ReactNode) | null;
   emptyText?: string;
   pageChange?: (page: number, pageSize?: number) => void;
@@ -67,7 +67,7 @@ function HeaderTitle({ titleType, singleTitle, multiTitle, multiTitleDesc }): Re
 }
 
 export default function TableApp({
-  loading,
+  loading = false,
   pageNum,
   isMobile,
   pageSize,

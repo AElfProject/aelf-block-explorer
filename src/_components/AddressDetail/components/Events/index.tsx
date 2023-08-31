@@ -7,6 +7,9 @@ import getColumns from './columnConfig';
 import './index.css';
 import { useDebounce, useEffectOnce } from 'react-use';
 import EPSearch from '@_components/EPSearch';
+import { useMobileContext } from '@app/pageProvider';
+import clsx from 'clsx';
+
 export default function Events({ SSRData = { total: 0, list: [] } }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);
@@ -68,16 +71,18 @@ export default function Events({ SSRData = { total: 0, list: [] } }) {
     [searchText],
   );
 
+  const { isMobileSSR: isMobile } = useMobileContext();
+
   return (
     <div className="event-container">
-      <div className="event-header">
+      <div className={clsx('event-header', isMobile && 'flex-col !items-start')}>
         <div className="tips">
           Tips：Contract events are developer-defined mechanisms that allow users to observe and understand specific
           operations within a contract. These operations can include changes in state, user interactions, and important
           notifications. By examining events, users can gain valuable insights into the contract&apos;s internal
           workings, including event names, parameters, transaction hashes, block numbers, and other pertinent data.
         </div>
-        <div className="search-box">
+        <div className={clsx('search-box', isMobile && 'mt-2')}>
           <EPSearch
             value={searchText}
             onChange={({ currentTarget }) => {
@@ -91,7 +96,7 @@ export default function Events({ SSRData = { total: 0, list: [] } }) {
         loading={loading}
         dataSource={data}
         columns={columns}
-        isMobile={false}
+        isMobile={isMobile}
         rowKey="id"
         total={total}
         pageSize={pageSize}

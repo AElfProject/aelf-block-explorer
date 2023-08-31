@@ -6,6 +6,8 @@ import getColumns from './columnConfig';
 import './index.css';
 import { NftsItemType } from '@_types/commonDetail';
 import { useDebounce, useEffectOnce } from 'react-use';
+import clsx from 'clsx';
+import { useMobileContext } from '@app/pageProvider';
 export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -58,12 +60,16 @@ export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
     300,
     [searchText],
   );
+  const { isMobileSSR: isMobile } = useMobileContext();
   return (
     <div className="asset-list px-4">
-      <div className="header-container flex items-center justify-between py-4">
-        <div className="title-container">
-          <div className="total text-base-100 text-sm leading-[22px]">Tokens (7)</div>
-          <div className="info text-xs text-base-200 leading-5">Total Value : $78,330.38</div>
+      <div
+        className={clsx(
+          'header-container flex items-center justify-between py-4',
+          isMobile && 'flex-col !items-start',
+        )}>
+        <div className={clsx('title-container', isMobile && 'mb-3')}>
+          <div className="total text-base-100 text-sm leading-[22px]">NFT Assets (7)</div>
         </div>
         <div className="tool-container">
           <EPSearch
@@ -90,7 +96,7 @@ export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
           ]}
           dataSource={data}
           columns={columns}
-          isMobile={false}
+          isMobile={isMobile}
           rowKey="item"
           total={total}
           pageSize={pageSize}

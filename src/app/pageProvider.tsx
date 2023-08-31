@@ -10,7 +10,7 @@
 
 import { Provider as ReduxProvider } from 'react-redux';
 import store from '@_store';
-import { Skeleton } from 'antd';
+import { ConfigProvider, Skeleton } from 'antd';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import microApp from '@micro-zoe/micro-app';
 import { usePathname, useRouter } from 'next/navigation';
@@ -71,14 +71,16 @@ export default function RootProvider({ children, isMobileSSR }) {
   }, [pathname, router]);
 
   return (
-    <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
-      <ReduxProvider store={store}>{children}</ReduxProvider>
-      {isGovernance && (
-        <>
-          <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
-          {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
-        </>
-      )}
-    </MobileContext.Provider>
+    <ConfigProvider>
+      <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
+        <ReduxProvider store={store}>{children}</ReduxProvider>
+        {isGovernance && (
+          <>
+            <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
+            {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
+          </>
+        )}
+      </MobileContext.Provider>
+    </ConfigProvider>
   );
 }

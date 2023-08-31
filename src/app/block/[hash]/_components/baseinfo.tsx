@@ -7,7 +7,7 @@
  */
 
 import DetailContainer from '@_components/DetailContainer';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import ConfirmStatus from '@_components/ConfirmedStatus';
 import IconFont from '@_components/IconFont';
 import { formatDate } from '@_utils/formatter';
@@ -20,15 +20,18 @@ import DollarCurrencyRate from '@_components/DollarCurrencyRate';
 export default function BaseInfo({ data }) {
   const router = useRouter();
   const disabled = data.blockHeight === 1;
-  const jump = (type: JumpTypes) => {
-    switch (type) {
-      case JumpTypes.Prev:
-        router.push(`/block/${data.blockHeight - 1}`);
-        break;
-      case JumpTypes.Next:
-        router.push(`/block/${data.blockHeight + 1}`);
-    }
-  };
+  const jump = useCallback(
+    (type: JumpTypes) => {
+      switch (type) {
+        case JumpTypes.Prev:
+          router.push(`/block/${data.blockHeight - 1}`);
+          break;
+        case JumpTypes.Next:
+          router.push(`/block/${data.blockHeight + 1}`);
+      }
+    },
+    [data, router],
+  );
   const renderInfo = useMemo(() => {
     return [
       {
@@ -55,7 +58,7 @@ export default function BaseInfo({ data }) {
         tip: 'Timestamp ',
         value: (
           <div className="value-timestamp">
-            <IconFont className="mr-1" type="Time" />
+            <IconFont className="mr-1 !text-xs !leading-5" type="Time" />
             <span>
               {formatDate(data.timestamp, 'age')}({dayjs(data.timestamp).format('MMM-DD-YYYY hh:mm:ss A [+UTC]')})
             </span>
@@ -128,6 +131,6 @@ export default function BaseInfo({ data }) {
         value: 'divider',
       },
     ];
-  }, [data]);
+  }, [data, disabled, jump]);
   return <DetailContainer infoList={renderInfo} />;
 }

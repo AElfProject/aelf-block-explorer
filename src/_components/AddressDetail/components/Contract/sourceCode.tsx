@@ -5,8 +5,11 @@ import { handelCopy } from '@_utils/copy';
 import Download from '@_components/Download';
 import copy from 'copy-to-clipboard';
 import { useState } from 'react';
+import { useMobileContext } from '@app/pageProvider';
+import clsx from 'clsx';
 
 export default function SourceCode() {
+  const { isMobileSSR: isMobile } = useMobileContext();
   const files = [
     {
       name: 'AllCalculateFeeCoefficients.cs',
@@ -37,12 +40,13 @@ export default function SourceCode() {
   };
   return (
     <div className="contract-source-code px-4">
-      <div className="source-header flex items-center justify-between py-4">
+      <div
+        className={clsx(isMobile && 'flex-col !items-start', 'source-header flex items-center justify-between py-4')}>
         <div>
           <IconFont className="text-xs mr-1" type="contract-aa3pc9ha" />
           <span className="inline-block text-sm leading-[22px] text-base-100">Contract Source Code</span>
         </div>
-        <div className="view flex items-center">
+        <div className={clsx(isMobile && 'mt-2', 'view flex items-center')}>
           <Download files={files} fileName={'contract'} />
           <Button
             className="view-button mx-2"

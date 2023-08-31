@@ -3,6 +3,8 @@ import IconFont from '@_components/IconFont';
 import { handelCopy } from '@_utils/copy';
 import { Button } from 'antd';
 import { useState } from 'react';
+import { useMobileContext } from '@app/pageProvider';
+import clsx from 'clsx';
 
 export default function Protocol({
   value = JSON.stringify({
@@ -18,6 +20,7 @@ export default function Protocol({
   }),
 }) {
   const [full, setFull] = useState(false);
+  const { isMobileSSR: isMobile } = useMobileContext();
   const fullCode = () => {
     setFull(!full);
   };
@@ -26,15 +29,16 @@ export default function Protocol({
   };
   return (
     <div className="contract-protocol-code px-4">
-      <div className="source-header flex items-center justify-between py-4">
+      <div
+        className={clsx(isMobile && 'flex-col !items-start', 'source-header flex items-center justify-between py-4')}>
         <div className="flex items-center">
           <IconFont className="text-xs mr-1" type="protocol" />
           <span className="inline-block text-sm text-base-100 leading-[22px]">Contract Protocol Buffers </span>
           <IconFont className="text-xs ml-1" type="question-circle" />
         </div>
-        <div className="view flex items-center">
+        <div className={clsx('view flex items-center', isMobile && 'mt-2')}>
           <Button
-            className="view-button mx-2"
+            className={clsx('view-button mx-2', isMobile && 'ml-0')}
             icon={<IconFont className="!text-xs" type="view-copy" />}
             onClick={copy}
           />

@@ -18,6 +18,9 @@ import { useState } from 'react';
 import Events from './components/Events';
 import Contract from './components/Contract';
 import Tokens from './components/Tokens';
+import clsx from 'clsx';
+import { useMobileContext } from '@app/pageProvider';
+import './index.css';
 export default function AddressDetail({
   SSRData,
   title,
@@ -124,33 +127,19 @@ export default function AddressDetail({
       key: 'Txns',
       label: 'Transactions',
       children: (
-        <TransctionList
-          showHeader={false}
-          isMobileSSR={false}
-          SSRData={{ total: transactions.total, data: [...transactions.list] }}
-        />
+        <TransctionList showHeader={false} SSRData={{ total: transactions.total, data: [...transactions.list] }} />
       ),
     },
     {
       key: 'tokentxns',
       label: 'Token Transfers',
-      children: (
-        <TokenTransfers
-          showHeader={false}
-          isMobileSSR={false}
-          SSRData={{ total: transactions.total, data: [...tokenTransfers.list] }}
-        />
-      ),
+      children: <TokenTransfers SSRData={{ total: transactions.total, data: [...tokenTransfers.list] }} />,
     },
     {
       key: 'nfttransfers',
       label: 'NFT Transfers',
       children: (
-        <NFTTransfers
-          showHeader={false}
-          isMobileSSR={false}
-          SSRData={{ total: transactions.total, data: [...tokenTransfers.list] }}
-        />
+        <NFTTransfers showHeader={false} SSRData={{ total: transactions.total, data: [...tokenTransfers.list] }} />
       ),
     },
     {
@@ -169,27 +158,30 @@ export default function AddressDetail({
       children: <History SSRData={[]} onTabClick={onTabClick} />,
     },
   ];
+
+  const { isMobileSSR: isMobile } = useMobileContext();
   return (
     <div className="address-detail">
       <div className="address-header">
-        <HeadTitle content={title}>
-          <div className="code-box">
-            <span className="text-sm leading-[22px] mr-4 ml-2">{hash}</span>
-            <Copy value={hash} />
-            <Tooltip
-              placement="bottom"
-              color="white"
-              getPopupContainer={(node) => node}
-              trigger="click"
-              title={<QrCode value={hash} />}>
-              <IconFont className="text-xs cursor-pointer ml-4" type="QR-Code" />
-            </Tooltip>
+        <HeadTitle className={isMobile && 'flex-col !items-start'} content={title}>
+          <div className={clsx('code-box ml-2', isMobile && '!ml-0 flex items-center flex-wrap')}>
+            <span className="text-sm leading-[22px] break-all ">
+              {hash}
+              <Copy className="!ml-4" value={hash} />
+              <Tooltip
+                placement="bottom"
+                color="white"
+                getPopupContainer={(node) => node}
+                trigger="click"
+                title={<QrCode value={hash} />}>
+                <IconFont className="text-xs cursor-pointer ml-4" type="QR-Code" />
+              </Tooltip>
+            </span>
           </div>
         </HeadTitle>
       </div>
-      <div className="address-overview flex">
-        <Overview title="Overview" className="flex-1 mr-4" items={OverviewInfo} />
-
+      <div className={clsx(isMobile && 'flex-col', 'address-overview flex')}>
+        <Overview title="Overview" className={clsx(isMobile && '!mr-0 mb-4', 'flex-1 mr-4')} items={OverviewInfo} />
         <Overview
           title="MoreInfo"
           className="flex-1"

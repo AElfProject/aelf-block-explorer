@@ -11,6 +11,9 @@
     .ant-tabs-nav::before {
       border-bottom: 0;
     }
+    .ant-tabs-tab:active {
+      @apply bg-white;
+    }
     .ant-tabs-tab-btn {
       @apply font-medium text-xs leading-5 hover:text-link;
     }
@@ -18,6 +21,12 @@
       .ant-tabs-tab-btn {
         @apply font-medium text-xs leading-5 text-link;
       }
+    }
+    .ant-tabs-nav .ant-tabs-nav-wrap::after {
+      box-shadow: none;
+    }
+    .ant-tabs-nav .ant-tabs-nav-wrap::before {
+      box-shadow: none;
     }
   }
 }
