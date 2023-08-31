@@ -6,7 +6,7 @@
   .nft-image-wrap{
     @apply relative p-4 rounded-lg bg-white inline-flex justify-center items-center shadow-table w-full  h-max lg:w-[557px] lg:h-[557px];
     .nft-image{
-      @apply rounded object-fill lg:w-[525px] lg:h-[525px];
+      @apply rounded object-fill lg:w-[525px] lg:h-[525px] cursor-not-allowed;
     }
   }
   .nft-detail-wrap{

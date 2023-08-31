@@ -1,44 +1,66 @@
 import EPSearch from '@_components/EPSearch';
 import Table from '@_components/Table';
+import { useState } from 'react';
 import fetchData from './mock';
 import getColumns from './columnConfig';
 import './index.css';
 import { TokensListItemType } from '@_types/commonDetail';
+import { useDebounce, useEffectOnce } from 'react-use';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
-import useTableData from '@_hooks/useTable';
-interface ITransactionsData {
-  total: number;
-  list: TokensListItemType[];
-}
-export default function TokensList({
-  SSRData = {
-    total: 100,
-    list: [],
-  },
-}) {
+export default function TokensList({ SSRData = { total: 0, list: [] } }) {
   const { isMobileSSR: isMobile } = useMobileContext();
-
-  const {
-    loading,
-    total,
-    searchText,
-    searchChange,
-    data,
-    currentPage,
-    pageSize,
-    sortedInfo,
-    pageChange,
-    pageSizeChange,
-    handleChange,
-  } = useTableData<TokensListItemType, ITransactionsData>({
-    SSRData: SSRData,
-    fetchData: fetchData,
-    defaultPageSize: 10,
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [total, setTotal] = useState<number>(SSRData.total);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<TokensListItemType[]>(SSRData.list);
+  const [searchText, setSearchText] = useState<string>('');
+  useEffectOnce(() => {
+    async function getData() {
+      setLoading(true);
+      const data = await fetchData({ page: currentPage, pageSize: pageSize });
+      setData(data.list);
+      setTotal(data.total);
+      setLoading(false);
+    }
+    getData();
   });
+  const columns = getColumns();
 
-  const columns = getColumns(sortedInfo);
+  const pageChange = async (page: number) => {
+    setLoading(true);
+    setCurrentPage(page);
+    const data = await fetchData({ page, pageSize: pageSize });
+    setData(data.list);
+    setTotal(data.total);
+    setLoading(false);
+  };
 
+  const pageSizeChange = async (size) => {
+    setLoading(true);
+    setPageSize(size);
+    setCurrentPage(1);
+    const data = await fetchData({ page: 1, pageSize: size });
+    setData(data.list);
+    setTotal(data.total);
+    setLoading(false);
+  };
+  const searchChange = async () => {
+    setLoading(true);
+    setCurrentPage(1);
+    const data = await fetchData({ page: 1, pageSize: pageSize });
+    setData(data.list);
+    setTotal(data.total);
+    setLoading(false);
+  };
+  useDebounce(
+    () => {
+      searchChange();
+    },
+    300,
+    [searchText],
+  );
   return (
     <div className="token-list px-4">
       <div
@@ -54,7 +76,7 @@ export default function TokensList({
           <EPSearch
             value={searchText}
             onChange={({ currentTarget }) => {
-              searchChange(currentTarget.value);
+              setSearchText(currentTarget.value);
             }}
           />
         </div>
@@ -74,12 +96,10 @@ export default function TokensList({
             },
           ]}
           dataSource={data}
-          showSorterTooltip={false}
           columns={columns}
           isMobile={isMobile}
           rowKey="asset"
           total={total}
-          onChange={handleChange}
           pageSize={pageSize}
           pageNum={currentPage}
           pageChange={pageChange}
