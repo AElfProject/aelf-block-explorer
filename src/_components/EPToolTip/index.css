@@ -1,0 +1,10 @@
+.tooltip-dark,.tooltip-light {
+  .ant-tooltip-inner {
+    @apply text-white text-xs px-2 py-1 leading-5 min-h-[28px] rounded-lg !important;
+  }
+}
+.tooltip-light {
+  .ant-tooltip-inner {
+    @apply !text-base-100;
+  }
+}

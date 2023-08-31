@@ -6,12 +6,12 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { ITableDataType } from './blockList';
+import { ITableData } from './blockList';
 import { formatDate } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableDataType> {
+export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableData> {
   return [
     {
       title: 'Block',

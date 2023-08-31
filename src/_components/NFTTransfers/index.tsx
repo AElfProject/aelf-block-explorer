@@ -8,14 +8,27 @@ import { TokenTransfersItemType } from '@_types/commonDetail';
 import fetchData from './mock';
 import { numberFormatter } from '@_utils/formatter';
 import { useMobileContext } from '@app/pageProvider';
-
+import useTableData from '@_hooks/useTable';
+export interface IResponseData {
+  total: number;
+  data: TokenTransfersItemType[];
+}
 export default function List({ SSRData, showHeader = true }) {
   const { isMobileSSR: isMobile } = useMobileContext();
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(25);
-  const [total, setTotal] = useState<number>(SSRData.total);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<TokenTransfersItemType[]>(SSRData.data);
+  const disposeData = (data) => {
+    return {
+      total: data.total,
+      list: [...data.data],
+    };
+  };
+  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
+    TokenTransfersItemType,
+    IResponseData
+  >({
+    SSRData: disposeData(SSRData),
+    fetchData: fetchData,
+    disposeData: disposeData,
+  });
   const [timeFormat, setTimeFormat] = useState<string>('Age');
   const columns = useMemo<ColumnsType<TokenTransfersItemType>>(() => {
     return getColumns({
@@ -31,24 +44,6 @@ export default function List({ SSRData, showHeader = true }) {
     return `A total of ${numberFormatter(String(total))} NFT transfers found`;
   }, [total]);
 
-  const pageChange = async (page: number) => {
-    setLoading(true);
-    setCurrentPage(page);
-    const data = await fetchData({ page, pageSize: pageSize });
-    setData(data.data);
-    setTotal(data.total);
-    setLoading(false);
-  };
-
-  const pageSizeChange = async (size) => {
-    setLoading(true);
-    setPageSize(size);
-    setCurrentPage(1);
-    const data = await fetchData({ page: 1, pageSize: size });
-    setData(data.data);
-    setTotal(data.total);
-    setLoading(false);
-  };
   return (
     <div>
       {showHeader && <HeadTitle content="Transactions"></HeadTitle>}

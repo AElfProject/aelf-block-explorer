@@ -3,7 +3,6 @@ import { IAddressResponse } from '@_types/commonDetail';
 import HeadTitle from '@_components/HeaderTitle';
 import Copy from '@_components/Copy';
 import IconFont from '../IconFont/index';
-import { Tooltip } from 'antd';
 import QrCode from '@_components/QrCode';
 import Overview from './components/overview';
 import { numberFormatter } from '@_utils/formatter';
@@ -21,6 +20,7 @@ import Tokens from './components/Tokens';
 import clsx from 'clsx';
 import { useMobileContext } from '@app/pageProvider';
 import './index.css';
+import EPTooltip from '@_components/EPToolTip';
 export default function AddressDetail({
   SSRData,
   title,
@@ -168,14 +168,14 @@ export default function AddressDetail({
             <span className="text-sm leading-[22px] break-all ">
               {hash}
               <Copy className="!ml-4" value={hash} />
-              <Tooltip
+              <EPTooltip
                 placement="bottom"
-                color="white"
+                mode="light"
                 getPopupContainer={(node) => node}
                 trigger="click"
                 title={<QrCode value={hash} />}>
                 <IconFont className="text-xs cursor-pointer ml-4" type="QR-Code" />
-              </Tooltip>
+              </EPTooltip>
             </span>
           </div>
         </HeadTitle>
