@@ -9,6 +9,7 @@
 import React from 'react';
 
 import './index.css';
-export default function MainContainer({ children }) {
-  return <div className="main-container">{children}</div>;
+import clsx from 'clsx';
+export default function MainContainer({ children, isMobileSSR }) {
+  return <div className={clsx(isMobileSSR && 'main-container-mobile', 'main-container')}>{children}</div>;
 }

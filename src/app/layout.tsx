@@ -8,7 +8,6 @@
 
 import '@_style/globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import RootProvider from './pageProvider';
 import Header from '@_components/Header';
 import Footer from '@_components/Footer';
@@ -16,10 +15,7 @@ import MainContainer from '@_components/Main';
 import { headers } from 'next/headers';
 import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
-import clsx from 'clsx';
 import { Suspense } from 'react';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -51,7 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="flex-1 overflow-y-scroll" id="scroll-content">
               <RootProvider isMobileSSR={isMobile}>
                 <Suspense>
-                  <MainContainer>{children}</MainContainer>
+                  <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>
                 </Suspense>
               </RootProvider>
               <Suspense>

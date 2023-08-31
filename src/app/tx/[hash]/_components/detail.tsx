@@ -4,12 +4,13 @@ import JumpButton, { JumpTypes } from '@_components/JumpButton';
 import { useRouter } from 'next/navigation';
 import './detail.css';
 import { useCallback, useState } from 'react';
-import { Tabs, TabsProps } from 'antd';
+import { TabsProps } from 'antd';
 import BaseInfo from './baseInfo';
 import MoreContainer from '@_components/MoreContainer';
 import ExtensionInfo from './ExtensionInfo';
 import LogsContainer from '@_components/LogsContainer';
 import { TxnSData } from '../type';
+import EPTabs from '@_components/EPTabs';
 export default function Detail({ SSRData }: { SSRData: TxnSData }) {
   const router = useRouter();
   const [detailData] = useState(SSRData);
@@ -30,7 +31,7 @@ export default function Detail({ SSRData }: { SSRData: TxnSData }) {
   }, [showMore]);
   const items: TabsProps['items'] = [
     {
-      key: 'overview',
+      key: '',
       label: 'Overview',
       children: (
         <div className="overview-container">
@@ -50,16 +51,6 @@ export default function Detail({ SSRData }: { SSRData: TxnSData }) {
       children: <LogsContainer Logs={detailData.logs} />,
     },
   ];
-  const [activeKey, setActiveKey] = useState<string>(window && window.location.hash === '#logs' ? 'logs' : 'overview');
-
-  const tabChange = (activeKey) => {
-    if (activeKey === 'overview') {
-      window.location.hash = '';
-    } else {
-      window.location.hash = 'logs';
-    }
-    setActiveKey(activeKey);
-  };
 
   return (
     <div className="tx-detail-container">
@@ -67,7 +58,7 @@ export default function Detail({ SSRData }: { SSRData: TxnSData }) {
         <JumpButton isFirst={isFirst} isLast={isLast} jump={jump} />
       </HeadTitle>
       <div className="detail-table">
-        <Tabs defaultActiveKey={activeKey} activeKey={activeKey} items={items} onChange={tabChange} />
+        <EPTabs items={items} />
       </div>
     </div>
   );

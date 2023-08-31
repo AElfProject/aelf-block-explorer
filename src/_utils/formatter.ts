@@ -5,12 +5,13 @@
  * @Description: formatter utils
  */
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 const SYMBOL = process.env.NEXT_PUBLIC_SYMBOL;
-
-export const formatDate = (date: string, type: string) => {
+dayjs.extend(utc);
+export const formatDate = (date: string, type: string, format = 'YYYY-MM-DD HH:mm:ss') => {
   if (date) {
     if (type === 'Date Time (UTC)') {
-      return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+      return dayjs.utc(date).format(format);
     }
     const seconds = dayjs().diff(date, 'seconds');
     const minutes = dayjs().diff(date, 'minutes');
@@ -36,4 +37,10 @@ export const numberFormatter = (number: string, symbol = SYMBOL): string => {
     return number;
   }
   return `${num.toLocaleString(undefined, { maximumFractionDigits: 8 })} ${symbol}`;
+};
+
+export const thousandsNumber = (number: string | number): string => {
+  const num = Number(number);
+  if (number === '' || Number.isNaN(num)) return '-';
+  return `${num.toLocaleString(undefined, { maximumFractionDigits: 8 })}`;
 };

@@ -7,8 +7,9 @@
  */
 import React from 'react';
 import './index.css';
+import TextArea from 'antd/es/input/TextArea';
 
-export default function CodeBlock({ value, rows = 8 }) {
+export default function CodeBlock({ value, rows = 8, ...params }) {
   let jsonFormatted = value;
   try {
     jsonFormatted = JSON.stringify(JSON.parse(value), null, 4);
@@ -16,5 +17,5 @@ export default function CodeBlock({ value, rows = 8 }) {
     /* empty */
   }
 
-  return <textarea rows={rows} value={jsonFormatted} className="tx-block-code-like-content" disabled />;
+  return <TextArea rows={rows} value={jsonFormatted} className="tx-block-code-like-content" readOnly {...params} />;
 }

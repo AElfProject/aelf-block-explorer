@@ -1,0 +1,26 @@
+.event-container {
+  .ep-table-header {
+    display: none !important;
+  }
+  .event-header {
+    @apply flex px-4 pb-4;
+    .tips {
+      @apply flex-1 text-xs left-5 mr-4;
+    }
+    .search-box {
+      @apply text-right flex-1;
+      .ant-input-prefix {
+        margin-inline-end: 8px;
+      }
+      .ant-input-affix-wrapper {
+        @apply p-2 box-border border-D0 w-[312px] h-[38px] rounded;
+        svg {
+          @apply text-base-200;
+        }
+      }
+      .ant-input {
+        @apply text-xs leading-5;
+      }
+    }
+  }
+}

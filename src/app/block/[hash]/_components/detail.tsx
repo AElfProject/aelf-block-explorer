@@ -13,15 +13,17 @@ import './detail.css';
 import BaseInfo from './baseinfo';
 import ExtensionInfo from './ExtensionInfo';
 import { DetailData } from './type';
-import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import Table from '@_components/Table';
 import getColumns from '@app/transactions/columnConfig';
 import { ITableDataType } from '@app/transactions/type';
 import { ColumnsType } from 'antd/es/table';
 import MoreContainer from '@_components/MoreContainer';
+import EPTabs from '@_components/EPTabs';
+import { useMobileContext } from '@app/pageProvider';
 
 export default function Detail({ SSRData }) {
+  const { isMobileSSR: isMobile } = useMobileContext();
   const [detailData] = useState<DetailData>(SSRData);
   const [showMore, setShowMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -57,10 +59,10 @@ export default function Detail({ SSRData }) {
   }, [showMore]);
   const items: TabsProps['items'] = [
     {
-      key: 'overview',
+      key: '',
       label: 'Overview',
       children: (
-        <div className="overview-container">
+        <div className="overview-container pb-4">
           <BaseInfo data={detailData} />
           {showMore && <ExtensionInfo data={detailData} />}
           <MoreContainer showMore={showMore} onChange={moreChange} />
@@ -68,14 +70,14 @@ export default function Detail({ SSRData }) {
       ),
     },
     {
-      key: 'transactions',
+      key: 'txns',
       label: 'Transactions',
       children: (
         <Table
           titleType="multi"
           dataSource={tableData}
           columns={columns}
-          isMobile={false}
+          isMobile={isMobile}
           rowKey="transactionHash"
           total={total}
           pageSize={pageSize}
@@ -88,18 +90,6 @@ export default function Detail({ SSRData }) {
     },
   ];
 
-  const [activeKey, setActiveKey] = useState<string>(
-    window && window.location.hash === '#txns' ? 'transactions' : 'overview',
-  );
-  const tabChange = (activeKey) => {
-    if (activeKey === 'overview') {
-      window.location.hash = '';
-    } else {
-      window.location.hash = 'txns';
-    }
-    setActiveKey(activeKey);
-  };
-
   return (
     <div className={clsx('token-detail-container')}>
       <HeadTitle content="Blocks">
@@ -107,7 +97,7 @@ export default function Detail({ SSRData }) {
       </HeadTitle>
 
       <div className="detail-table">
-        <Tabs defaultActiveKey={activeKey} activeKey={activeKey} items={items} onChange={tabChange} />
+        <EPTabs items={items} />
       </div>
     </div>
   );

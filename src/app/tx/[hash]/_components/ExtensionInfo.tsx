@@ -6,8 +6,11 @@ import DollarCurrencyRate from '@_components/DollarCurrencyRate';
 import Link from 'next/link';
 import CodeBlock from '@_components/CodeBlock';
 import SizeBytes from '@_components/SizeBytes';
+import { useMobileContext } from '@app/pageProvider';
+import clsx from 'clsx';
 
 export default function ExtensionInfo({ data }: { data: TxnSData }) {
+  const { isMobileSSR: isMobile } = useMobileContext();
   const renderInfo = useMemo(() => {
     return [
       {
@@ -33,12 +36,12 @@ export default function ExtensionInfo({ data }: { data: TxnSData }) {
         label: 'Burnt Fee ',
         tip: 'Burnt Fee ',
         value: (
-          <div className="flex items-center">
-            <div className="flex items-center">
+          <div className={clsx(isMobile && 'flex-col !items-start', 'flex items-center')}>
+            <div className={clsx(isMobile && 'mb-2', 'flex items-center')}>
               {numberFormatter(data.burntFee)}
               <DollarCurrencyRate />
             </div>
-            <div className="h-6 w-[1px] mx-2 bg-color-divider"></div>
+            {!isMobile && <div className="h-6 w-[1px] mx-2 bg-color-divider"></div>}
             <div className="flex items-center">
               {numberFormatter(data.burntFee, 'USDT')} <DollarCurrencyRate />
             </div>
@@ -84,6 +87,6 @@ export default function ExtensionInfo({ data }: { data: TxnSData }) {
         value: <SizeBytes size={Number(data.transactionSize)} />,
       },
     ];
-  }, [data]);
+  }, [data, isMobile]);
   return <DetailContainer infoList={renderInfo} />;
 }

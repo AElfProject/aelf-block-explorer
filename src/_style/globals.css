@@ -30,3 +30,25 @@ body {
 
 
 
+@layer utilities {
+  .font10px {
+    font-size:12px;
+    zoom:0.83
+  }
+  .view-button {
+    @apply !w-8 !h-8 !box-border !rounded !border-D0 !bg-white;
+  }
+  .view-button:hover {
+    @apply !bg-32 !border-32;
+    svg {
+      @apply !text-white;
+    }
+  }
+  .view-button:active {
+    @apply !bg-button_active  !border-button_active;
+    svg {
+      @apply !text-white;
+    }
+  }
+}
+

@@ -1,3 +1,7 @@
 .main-container {
-  @apply px-3 py-4 max-w-[1360px] lg:pt-6;
+  @apply min-w-[768px] ml-auto mr-auto px-3 pb-10 max-w-[1360px] lg:px-0;
+}
+
+.main-container-mobile {
+  @apply min-w-[200px];
 }

@@ -8,7 +8,8 @@
 import IconFont from '@_components/IconFont';
 import copy from 'copy-to-clipboard';
 import { message } from 'antd';
-export default function Copy({ value }: { value: string }) {
+import clsx from 'clsx';
+export default function Copy({ value, className }: { value: string; className?: string }) {
   const handleCopy = () => {
     try {
       copy(value);
@@ -17,5 +18,5 @@ export default function Copy({ value }: { value: string }) {
       message.error('Copy failed, please copy by yourself.');
     }
   };
-  return <IconFont className=" text-xs copy-btn w-3 h-3 ml-1" type="Copy" onClick={handleCopy} />;
+  return <IconFont className={clsx(className, 'text-xs copy-btn w-3 h-3 ml-1')} type="Copy" onClick={handleCopy} />;
 }

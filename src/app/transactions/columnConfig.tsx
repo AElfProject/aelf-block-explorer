@@ -92,7 +92,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: 'From',
       width: 196,
       render: (text) => {
-        const { address } = text;
+        const { address } = JSON.parse(text);
         return (
           <div className="address flex items-center">
             <Tooltip title={addressFormat(address)} overlayClassName="table-item-tooltip-white">
@@ -118,7 +118,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: 'To',
       width: 196,
       render: (text) => {
-        return <ContractToken address={text.address} />;
+        const { address } = JSON.parse(text);
+        return <ContractToken address={address} />;
       },
     },
     {

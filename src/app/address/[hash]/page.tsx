@@ -1,10 +1,9 @@
-/*
- * @Author: aelf-lxy
- * @Date: 2023-07-31 15:39:54
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-01 17:11:12
- * @Description: TopAccount or Contract
- */
-export default function TopAccount({ params }: { params: HashParams }) {
-  return <div>TopAccount or Contracts, my hash is {params.hash}</div>;
+import Detail from '@_components/AddressDetail';
+import { TitleEnum } from '@_types/commonDetail';
+import fetchData from './mock';
+export default async function AddressDetails({ params }: { params: HashParams }) {
+  const data = await fetchData({ address: params.hash });
+  return (
+    <Detail SSRData={data} title={data.contractName ? TitleEnum.Contract : TitleEnum.Address} hash={params.hash} />
+  );
 }
