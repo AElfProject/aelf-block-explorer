@@ -24,8 +24,22 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+html{
+  @apply h-full w-full;
+}
 body {
-  @apply bg-F7 select-none relative h-full w-full overflow-x-hidden overflow-y-auto;
+  @apply lg:min-w-[768px] bg-F7 select-none relative h-full w-full overflow-x-hidden overflow-y-auto;
+  .ant-dropdown-menu{
+    .ant-dropdown-menu-item{
+      @apply !text-xs !leading-20 !text-base-100 !px-2 !py-[6px];
+      &:hover{
+        @apply !bg-[#D8DDE5]
+      }
+    }
+    .ant-dropdown-menu-item-selected{
+      @apply !text-link;
+    }
+  }
 }
 
 

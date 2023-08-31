@@ -1,7 +1,7 @@
 
 .searchbox-wrap {
 
-  @apply flex relative items-center text-base-100 bg-white rounded-lg border md:w-[728px] z-[1] border-link border-solid p-[3px] pl-4 w-full;
+  @apply flex relative items-center text-base-100 bg-white rounded-lg border z-[1] border-link border-solid p-[3px] pl-4 w-full  md:w-[728px];
   .filter-wrap {
     @apply w-[98px] h-[22px] text-sm font-normal pr-4 flex items-center justify-between cursor-pointer border-r border-[#E6E6E6] hover:text-32 active:text-button_active max-[500px]:hidden;
     .right-arrow {
@@ -93,7 +93,7 @@
     }
   }
   .search-button{
-    @apply bg-link !w-10 !h-10 rounded
+    @apply bg-link !w-10 !h-10 rounded flex justify-center items-center;
   }
   .search-result-panel{
     .search-result-empty{

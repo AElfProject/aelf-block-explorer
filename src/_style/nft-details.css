@@ -1,12 +1,12 @@
 .nft-wrap{
-  @apply text-base-100 text-xs leading-20;
+  @apply text-base-100 text-xs leading-20 pt-6;
   .ntf-overview-wrap{
-    @apply flex flex-col lg:flex-row;
+    @apply flex flex-col gap-4 lg:flex-row;
   }
   .nft-image-wrap{
     @apply relative p-4 rounded-lg bg-white inline-flex justify-center items-center shadow-table w-full  h-max lg:w-[557px] lg:h-[557px];
     .nft-image{
-      @apply rounded object-fill lg:w-[525px] lg:h-[525px];
+      @apply rounded object-fill lg:w-[525px] lg:h-[525px] cursor-not-allowed;
     }
   }
   .nft-detail-wrap{
@@ -25,9 +25,7 @@
     }
     .nft-detail{
       @apply shadow-table bg-white rounded-lg;
-      .nft-detail-property{
-        @apply border-b border-color-divider last:border-b-0
-      }
+
       .nft-detail-label{
         @apply text-sm leading-[22px] p-4 font-medium flex items-center justify-between;
         .nft-detail-label-left{
@@ -70,6 +68,19 @@
         .nft-detail-txt-more{
           @apply float-right clear-both text-link cursor-pointer
         }
+      }
+    }
+    .ant-collapse-ghost{
+
+      .ant-collapse-item{
+        border-bottom:1px solid ;
+        @apply !text-xs !leading-20 !border-0 !border-b !border-color-divider last:!border-b-0;
+      }
+      .ant-collapse-header{
+        @apply !p-0;
+      }
+      .ant-collapse-content-box{
+        @apply !p-0;
       }
     }
   }

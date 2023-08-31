@@ -32,7 +32,9 @@ function SearchSelect({ searchValidator }: { searchValidator?: TSearchValidator 
       menu={{ items, onClick: filterClickHandler, selectable: true, defaultSelectedKeys: ['0'] }}
       dropdownRender={(menu) => (
         <div>
-          {cloneElement(menu as ReactElement, { className: '!shadow-search !w-[114px] !p-2 !-ml-4 !mt-[9px]' })}
+          {cloneElement(menu as ReactElement, {
+            className: '!flex !gap-1 !flex-col !shadow-search !w-[114px] !p-2 !-ml-4 !mt-[9px]',
+          })}
         </div>
       )}>
       <div className="filter-wrap">
