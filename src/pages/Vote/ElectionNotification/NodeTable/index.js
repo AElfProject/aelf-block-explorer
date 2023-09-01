@@ -100,7 +100,6 @@ class NodeTable extends PureComponent {
       this.setState({
         producedBlocks: data,
       });
-
       const { nodeList } = this.state;
       if (!nodeList || !nodeList.length) {
         return;
@@ -354,6 +353,12 @@ class NodeTable extends PureComponent {
     return result;
   }
 
+  async fetchCurrentRoundInformation() {
+    const { consensusContract } = this.props;
+    const res = await consensusContract.GetCurrentRoundInformation.call();
+    return res;
+  }
+
   async fetchElectorVote(currentWallet, electionContract) {
     const { publicKey, address } = currentWallet;
     if (!publicKey && !address) {
@@ -382,6 +387,7 @@ class NodeTable extends PureComponent {
     const { electionContract, consensusContract, currentWallet } = this.props;
     Promise.all([
       this.fetchAllCandidateInfo(),
+      this.fetchCurrentRoundInformation(),
       getAllTeamDesc(),
       this.fetchElectorVote(currentWallet, electionContract),
       fetchCurrentMinerPubkeyList(consensusContract),
@@ -412,15 +418,23 @@ class NodeTable extends PureComponent {
   processNodesData(resArr) {
     console.log(resArr, "resArr");
     const { producedBlocks } = this.state;
-
     let totalActiveVotesAmount = 0;
     const nodeInfos = resArr[0] || [];
-    const { activeVotingRecords } = resArr[2] || {};
+    // need to count history and current
+    const { realTimeMinersInformation } = resArr[1] || [];
+    nodeInfos.forEach((ele) => {
+      const history = +ele.candidateInformation.producedBlocks;
+      const current =
+        +realTimeMinersInformation[ele.candidateInformation.pubkey]
+          ?.producedBlocks || 0;
+      ele.candidateInformation.producedBlocks = history + current;
+    });
+    const { activeVotingRecords } = resArr[3] || {};
     let teamInfos = null;
-    if (resArr[1].code === 0) {
-      teamInfos = resArr[1].data;
+    if (resArr[2].code === 0) {
+      teamInfos = resArr[2].data;
     }
-    const BPNodes = resArr[3].pubkeys;
+    const BPNodes = resArr[4].pubkeys;
     // add node name, add my vote amount
     nodeInfos.forEach((item) => {
       // compute totalActiveVotesAmount
@@ -451,7 +465,6 @@ class NodeTable extends PureComponent {
       } else {
         item.candidateInformation.nodeType = "Candidate";
       }
-
       // add my vote amount
       if (!activeVotingRecords) {
         item.candidateInformation.myTotalVoteAmount = "-";
@@ -475,7 +488,6 @@ class NodeTable extends PureComponent {
       item.candidateInformation.myTotalVoteAmount = myTotalVoteAmount || "-";
       item.candidateInformation.myRedeemableVoteAmountForOneCandidate =
         myRedeemableVoteAmountForOneCandidate || "-";
-
       if (producedBlocks) {
         item.candidateInformation.producedBlocks =
           producedBlocks[item.candidateInformation.pubkey];
@@ -531,7 +543,6 @@ class NodeTable extends PureComponent {
   render() {
     const { nodeList, isLoading, pagination } = this.state;
     const nodeListCols = this.getCols();
-
     return (
       <section className={`${clsPrefix}`}>
         <h2 className={`${clsPrefix}-header table-card-header`}>
@@ -563,7 +574,8 @@ class NodeTable extends PureComponent {
             // onChange={handleTableChange}
             loading={isLoading}
             pagination={pagination}
-            rowKey={(record) => record.pubkey}
+            // cannot use publicKey, because publicKey will not change when updating producedBlocks
+            rowKey={(record) => record.producedBlocks}
             scroll={{ x: 1024 }}
             // size='middle'
           />
