@@ -60,7 +60,7 @@ export default function NFTDetails({ SSRData }) {
       label: (
         <div className="nft-detail-label">
           <div className="nft-detail-label-left">
-            <IconFont type="box" className="w-3 h-3" />
+            <IconFont type="box" />
             <span>Details</span>
           </div>
           <div className="nft-detail-label-right">
