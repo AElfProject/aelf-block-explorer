@@ -11,8 +11,8 @@ import { numberFormatter } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
-import { Tooltip } from 'antd';
 import IconFont from '@_components/IconFont';
+import EPTooltip from '@_components/EPToolTip';
 export default function getColumns(): ColumnsType<ITableDataType> {
   return [
     {
@@ -27,11 +27,11 @@ export default function getColumns(): ColumnsType<ITableDataType> {
       render: (text) => (
         <div className="address">
           <IconFont className="mr-1 text-xs" type="Contract" />
-          <Tooltip title={addressFormat(text)} overlayClassName="table-item-tooltip-white">
+          <EPTooltip title={addressFormat(text)} mode="dark" pointAtCenter={false}>
             <Link className="text-link" href={`/address/${addressFormat(text)}`}>
               {addressFormat(hiddenAddress(text, 4, 4))}
             </Link>
-          </Tooltip>
+          </EPTooltip>
           <Copy value={addressFormat(text)} />
         </div>
       ),
@@ -48,9 +48,9 @@ export default function getColumns(): ColumnsType<ITableDataType> {
       title: (
         <div>
           <span>Percentage</span>
-          <Tooltip title="Percentage" overlayClassName="table-item-tooltip-white">
-            <IconFont className="text-xs" style={{ marginLeft: '6px' }} type="question-circle" />
-          </Tooltip>
+          <EPTooltip title="Percentage" mode="light">
+            <IconFont className="text-xs ml-[6px]" type="question-circle" />
+          </EPTooltip>
         </div>
       ),
       dataIndex: 'percentage',
@@ -60,9 +60,9 @@ export default function getColumns(): ColumnsType<ITableDataType> {
       title: (
         <div>
           <span>Transfers</span>
-          <Tooltip title="Transfers" overlayClassName="table-item-tooltip-white">
-            <IconFont className="text-xs" style={{ marginLeft: '6px' }} type="question-circle" />
-          </Tooltip>
+          <EPTooltip title="Transfers" mode="light">
+            <IconFont className="text-xs ml-[6px]" type="question-circle" />
+          </EPTooltip>
         </div>
       ),
       dataIndex: 'txnCount',

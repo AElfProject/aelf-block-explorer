@@ -12,11 +12,11 @@ import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import Link from 'next/link';
 import IconFont from '@_components/IconFont';
-import { Tooltip } from 'antd';
 import Method from '@_components/Method';
 import ContractToken from '@_components/ContractToken';
 import { numberFormatter } from '../../_utils/formatter';
 import './index.css';
+import EPTooltip from '@_components/EPToolTip';
 enum Status {
   Success = 'Success',
   fail = 'Fail',
@@ -24,7 +24,7 @@ enum Status {
 export default function getColumns({ timeFormat, columnType, handleTimeChange }): ColumnsType<TokenTransfersItemType> {
   return [
     {
-      title: <IconFont className="text-xs" style={{ marginLeft: '6px' }} type="question-circle" />,
+      title: <IconFont className="text-xs ml-[6px]" type="question-circle" />,
       width: 72,
       dataIndex: '',
       key: 'view',
@@ -54,7 +54,7 @@ export default function getColumns({ timeFormat, columnType, handleTimeChange })
       title: (
         <div className="cursor-pointer font-medium">
           <span>Method</span>
-          <IconFont className="text-xs" style={{ marginLeft: '4px' }} type="question-circle" />
+          <IconFont className="text-xs ml-1" type="question-circle" />
         </div>
       ),
       width: 128,
@@ -86,11 +86,11 @@ export default function getColumns({ timeFormat, columnType, handleTimeChange })
         const { address } = JSON.parse(text);
         return (
           <div className="address flex items-center">
-            <Tooltip title={addressFormat(address)} overlayClassName="table-item-tooltip-white">
+            <EPTooltip title={addressFormat(address)} mode="dark" pointAtCenter={false}>
               <Link className="text-link" href={`/address/${addressFormat(address)}`}>
                 {addressFormat(hiddenAddress(address, 4, 4))}
               </Link>
-            </Tooltip>
+            </EPTooltip>
             <Copy value={addressFormat(address)} />
             <div className="flex items-center"></div>
           </div>

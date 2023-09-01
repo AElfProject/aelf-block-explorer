@@ -1,8 +1,9 @@
 .ep-table {
   .ant-table {
     .ant-table-cell {
-      @apply py-3 pr-4 pl-0 bg-white border-none !important;
-      box-shadow: 0px -1px 0px 0px #E6E6E6 inset;
+      @apply py-3 pr-4 pl-0 bg-white border-none;
+
+      box-shadow: 0 -1px 0 0 #E6E6E6 inset;
     }
     .ant-table-cell:first-child {
       @apply pl-4 !important;

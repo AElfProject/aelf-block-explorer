@@ -13,9 +13,9 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: 208,
       key: 'txnHash',
       title: (
-        <div className="font-medium">
+        <div className="flex items-center font-medium">
           <span>Txn Hash</span>
-          <IconFont className="text-xs" style={{ marginLeft: '4px' }} type="question-circle" />
+          <IconFont className="text-xs ml-1" type="question-circle" />
         </div>
       ),
       render: (text) => {
