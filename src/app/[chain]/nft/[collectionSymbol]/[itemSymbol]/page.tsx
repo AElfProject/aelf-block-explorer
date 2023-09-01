@@ -6,16 +6,17 @@
  * @Description: collection item
  */
 import { notFound } from 'next/navigation';
-import request from '@_api';
+// import request from '@_api';
 import NFTDetails from './NFTDetails';
+import { fetchData } from './_itemActivity/mock';
 export default async function NFTDetailsPage({ params }: { params: ChainId & CollectionSymbol & ItemSymbol }) {
   if (!params.collectionSymbol) {
     return notFound();
   }
-  const { products } = await request.block.query({ params: { q: params.collectionSymbol } });
-  if (!products) {
+  const data = await fetchData({ page: 1, pageSize: 25 });
+  if (!data) {
     return notFound();
   }
 
-  return <NFTDetails />;
+  return <NFTDetails SSRData={data} />;
 }

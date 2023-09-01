@@ -3,17 +3,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Logo from 'public/next.svg';
 import IconFont from '@_components/IconFont';
-import { Collapse, CollapseProps } from 'antd';
-import clsx from 'clsx';
-export default function NFTDetails() {
-  const items: CollapseProps['items'] = [
+import { Collapse, CollapseProps, TabsProps } from 'antd';
+import EPTabs from '@_components/EPTabs';
+import ItemActivityTable from './_itemActivity/ItemActivityTable';
+export default function NFTDetails({ SSRData }) {
+  const collapseItems: CollapseProps['items'] = [
     {
       key: '1',
       showArrow: false,
       label: (
         <div className="nft-detail-label">
           <div className="nft-detail-label-left">
-            <IconFont type="document" className="w-3 h-3" />
+            <IconFont type="document" />
             <span>Details</span>
           </div>
           <div className="nft-detail-label-right">
@@ -59,7 +60,7 @@ export default function NFTDetails() {
       label: (
         <div className="nft-detail-label">
           <div className="nft-detail-label-left">
-            <IconFont type="box" className="w-3 h-3" />
+            <IconFont type="box" />
             <span>Details</span>
           </div>
           <div className="nft-detail-label-right">
@@ -85,6 +86,10 @@ export default function NFTDetails() {
             <h1>Background</h1>
             <h2>Yellow</h2>
           </li>
+          <li className="nft-detail-block">
+            <h1>Background</h1>
+            <h2>Yellow</h2>
+          </li>
         </ul>
       ),
     },
@@ -94,7 +99,7 @@ export default function NFTDetails() {
       label: (
         <div className="nft-detail-label">
           <div className="nft-detail-label-left">
-            <IconFont type="page" className="w-3 h-3" />
+            <IconFont type="page" />
             <span>Details</span>
           </div>
           <div className="nft-detail-label-right">
@@ -122,6 +127,19 @@ export default function NFTDetails() {
     },
   ];
 
+  const tabItems: TabsProps['items'] = [
+    {
+      key: '',
+      label: 'Item Activity',
+      children: <ItemActivityTable SSRData={SSRData} />,
+    },
+    {
+      key: 'Holders',
+      label: 'Holders',
+      children: <div className="a">222</div>,
+    },
+  ];
+
   return (
     <div className="nft-wrap">
       <div className="ntf-overview-wrap">
@@ -141,14 +159,12 @@ export default function NFTDetails() {
             </div>
           </div>
           <div className="nft-detail">
-            <Collapse items={items} ghost />
-            {/* <div className="nft-detail-property"></div>
-
-            <div className="nft-detail-property"></div>
-
-            <div className="nft-detail-property"></div> */}
+            <Collapse items={collapseItems} ghost />
           </div>
         </div>
+      </div>
+      <div className="ntf-list-wrap">
+        <EPTabs items={tabItems} />
       </div>
     </div>
   );

@@ -3119,7 +3119,11 @@ file-saver@^2.0.5:
 
 file-uri-to-path@1.0.0:
   version "1.0.0"
+<<<<<<< HEAD
   resolved "https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz#553a7b8446ff6f684359c445f1e37a05dacc33dd"
+=======
+  resolved "https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz#553a7b8446ff6f684359c445f1e37a05dacc33dd"
+>>>>>>> d2f54e2f (feat: nft table)
   integrity sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==
 
 fill-range@^7.0.1:
@@ -5198,15 +5202,22 @@ p-try@^2.0.0:
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
 
 pac-proxy-agent@^7.0.0:
+<<<<<<< HEAD
   version "7.0.1"
   resolved "https://registry.npmjs.org/pac-proxy-agent/-/pac-proxy-agent-7.0.1.tgz#6b9ddc002ec3ff0ba5fdf4a8a21d363bcc612d75"
   integrity sha512-ASV8yU4LLKBAjqIPMbrgtaKIvxQri/yh2OpI+S6hVa9JRkUI3Y3NPFbfngDtY7oFtSMD3w31Xns89mDa3Feo5A==
+=======
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pac-proxy-agent/-/pac-proxy-agent-7.0.0.tgz#db42120c64292685dafaf2bd921e223c56bfb13b"
+  integrity sha512-t4tRAMx0uphnZrio0S0Jw9zg3oDbz1zVhQ/Vy18FjLfP1XOLNUEjaVxYCYRI6NS+BsMBXKIzV6cTLOkO9AtywA==
+>>>>>>> d2f54e2f (feat: nft table)
   dependencies:
     "@tootallnate/quickjs-emscripten" "^0.23.0"
     agent-base "^7.0.2"
     debug "^4.3.4"
     get-uri "^6.0.1"
     http-proxy-agent "^7.0.0"
+<<<<<<< HEAD
     https-proxy-agent "^7.0.2"
     pac-resolver "^7.0.0"
     socks-proxy-agent "^8.0.2"
@@ -5214,6 +5225,15 @@ pac-proxy-agent@^7.0.0:
 pac-resolver@^7.0.0:
   version "7.0.0"
   resolved "https://registry.npmjs.org/pac-resolver/-/pac-resolver-7.0.0.tgz#79376f1ca26baf245b96b34c339d79bff25e900c"
+=======
+    https-proxy-agent "^7.0.0"
+    pac-resolver "^7.0.0"
+    socks-proxy-agent "^8.0.1"
+
+pac-resolver@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pac-resolver/-/pac-resolver-7.0.0.tgz#79376f1ca26baf245b96b34c339d79bff25e900c"
+>>>>>>> d2f54e2f (feat: nft table)
   integrity sha512-Fd9lT9vJbHYRACT8OhCbZBbxr6KRSawSovFpy8nDGshaK99S/EBhVIHp9+crhxrsZOuvLpgL1n23iyPg6Rl2hg==
   dependencies:
     degenerator "^5.0.0"
@@ -5222,7 +5242,11 @@ pac-resolver@^7.0.0:
 
 package-json@^8.1.0:
   version "8.1.1"
+<<<<<<< HEAD
   resolved "https://registry.npmjs.org/package-json/-/package-json-8.1.1.tgz#3e9948e43df40d1e8e78a85485f1070bf8f03dc8"
+=======
+  resolved "https://registry.yarnpkg.com/package-json/-/package-json-8.1.1.tgz#3e9948e43df40d1e8e78a85485f1070bf8f03dc8"
+>>>>>>> d2f54e2f (feat: nft table)
   integrity sha512-cbH9IAIJHNj9uXi196JVsRlt7cHKak6u/e6AkL/bkRelZ7rlL3X1YKxsZwa36xipOEKAsdtmaG6aAJoM1fx2zA==
   dependencies:
     got "^12.1.0"
@@ -5442,7 +5466,11 @@ process-nextick-args@~2.0.0:
 
 promise.allsettled@1.0.6:
   version "1.0.6"
+<<<<<<< HEAD
   resolved "https://registry.npmjs.org/promise.allsettled/-/promise.allsettled-1.0.6.tgz#8dc8ba8edf429feb60f8e81335b920e109c94b6e"
+=======
+  resolved "https://registry.yarnpkg.com/promise.allsettled/-/promise.allsettled-1.0.6.tgz#8dc8ba8edf429feb60f8e81335b920e109c94b6e"
+>>>>>>> d2f54e2f (feat: nft table)
   integrity sha512-22wJUOD3zswWFqgwjNHa1965LvqTX87WPu/lreY2KSd7SVcERfuZ4GfUaOnJNnvtoIv2yXT/W00YIGMetXtFXg==
   dependencies:
     array.prototype.map "^1.0.5"
@@ -5921,7 +5949,11 @@ rc-virtual-list@^3.5.1, rc-virtual-list@^3.5.2:
 
 rc@1.2.8:
   version "1.2.8"
+<<<<<<< HEAD
   resolved "https://registry.npmjs.org/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"
+=======
+  resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"
+>>>>>>> d2f54e2f (feat: nft table)
   integrity sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==
   dependencies:
     deep-extend "^0.6.0"

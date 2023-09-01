@@ -20,8 +20,8 @@ export interface ICommonTableProps<T> extends TableProps<T> {
   titleType: HeaderTitleType;
   singleTitle?: string;
   options?: any[];
-  multiTitle?: string;
-  multiTitleDesc?: string;
+  multiTitle?: string | boolean;
+  multiTitleDesc?: string | boolean;
   order?: SortOrder | undefined | null;
   field?: string | null;
   loading?: boolean | SpinProps;
