@@ -36,8 +36,8 @@ const EventItem = (props) => {
           setLoading(false);
           setHasDecoded(true);
         })
-        .catch((e) => {
-          message.error("Decode failed", e);
+        .catch(() => {
+          message.error("Decode failed");
           setLoading(false);
         });
     }
