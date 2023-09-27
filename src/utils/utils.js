@@ -3,6 +3,7 @@ import AElf from "aelf-sdk";
 import Decimal from "decimal.js";
 import { aelf } from "../utils";
 import config from "../../config/config";
+import Root from '../protobuf/virtual_transaction.proto';
 
 const resourceDecimals = config.resourceTokens.reduce(
   (acc, v) => ({
@@ -131,7 +132,7 @@ export async function deserializeLog(log) {
   if (NonIndexed) {
     serializedData.push(NonIndexed);
   }
-  const dataType = proto.lookupType(Name);
+  const dataType = Name === 'VirtualTransactionCreated' ? Root.VirtualTransactionCreated : proto.lookupType(Name);
   let deserializeLogResult = serializedData.reduce((acc, v) => {
     let deserialize = dataType.decode(decodeBase64(v));
     deserialize = dataType.toObject(deserialize, {
@@ -147,7 +148,7 @@ export async function deserializeLog(log) {
       ...acc,
       ...deserialize,
     };
-  }, {});
+  },{});
   // eslint-disable-next-line max-len
   deserializeLogResult = AElf.utils.transform.transform(
     dataType,
