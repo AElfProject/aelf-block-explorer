@@ -8,6 +8,7 @@ import { Tooltip } from 'antd';
 import { IBlockItem, ITransactionItem } from '@pageComponents/home/type';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import clsx from 'clsx';
+import EPTooltip from '@_components/EPToolTip';
 
 interface IProps {
   isBlocks: boolean;
@@ -49,9 +50,9 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
                   <>
                     <span className="producer">
                       Producer
-                      <Tooltip title={ele.producer?.name}>
+                      <EPTooltip title={ele.producer?.name} mode="dark" pointAtCenter={false}>
                         <Link href={`${ele.producer?.address}`}>{ele.producer?.name}</Link>
-                      </Tooltip>
+                      </EPTooltip>
                     </span>
                     <span className="txns">
                       <Link href={`/block/${ele.blockHeight}#txns`}>{ele.txns} txns</Link>
@@ -63,15 +64,15 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
                   <>
                     <span className="from">
                       From
-                      <Tooltip title={ele.from}>
+                      <EPTooltip title={ele.from} mode="dark" pointAtCenter={false}>
                         <Link href={`${ele.from}`}>{addressFormat(hiddenAddress(ele.from))}</Link>
-                      </Tooltip>
+                      </EPTooltip>
                     </span>
                     <span className="to">
                       To
-                      <Tooltip title={ele.to}>
+                      <EPTooltip title={ele.to} mode="dark" pointAtCenter={false}>
                         <Link href={`${ele.to}`}>{addressFormat(hiddenAddress(ele.to))}</Link>
-                      </Tooltip>
+                      </EPTooltip>
                       {isMobile && RewrdInfo(ele)}
                     </span>
                   </>

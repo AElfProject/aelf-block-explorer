@@ -9,11 +9,11 @@
 import HeadTitle from '@_components/HeaderTitle';
 import Table from '@_components/Table';
 import getColumns from './columnConfig';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ColumnsType } from 'antd/es/table';
-import { isMobileDevices } from '@_utils/isMobile';
 import fetchData from './mock';
-
+import { useMobileContext } from '@app/pageProvider';
+import useTableData from '@_hooks/useTable';
 export interface ITableDataType {
   address: string;
   contractName: string;
@@ -24,42 +24,37 @@ export interface ITableDataType {
   lastUpdateTime: string;
 }
 
-export default function List({ isMobileSSR, SSRData }) {
-  const [isMobile, setIsMobile] = useState(isMobileSSR);
-  useEffect(() => {
-    setIsMobile(isMobileDevices());
-  }, []);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(50);
-  const [total, setTotal] = useState<number>(SSRData.total);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<ITableDataType[]>(SSRData.data);
+export interface IResponseData {
+  total: number;
+  data: ITableDataType[];
+}
+
+export default function List({ SSRData }) {
+  const { isMobileSSR: isMobile } = useMobileContext();
+
   const columns = useMemo<ColumnsType<ITableDataType>>(() => {
     return getColumns();
   }, []);
 
+  const disposeData = (data) => {
+    return {
+      total: data.total,
+      list: [...data.data],
+    };
+  };
+
+  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
+    ITableDataType,
+    IResponseData
+  >({
+    SSRData: disposeData(SSRData),
+    fetchData: fetchData,
+    disposeData: disposeData,
+  });
+
   const multiTitle = useMemo(() => {
     return `A total of ${total} contracts found`;
   }, [total]);
-
-  const pageChange = async (page: number) => {
-    setLoading(true);
-    setCurrentPage(page);
-    const data = await fetchData({ page, pageSize: pageSize });
-    setData(data.data);
-    setTotal(data.total);
-    setLoading(false);
-  };
-
-  const pageSizeChange = async (size) => {
-    setLoading(true);
-    setPageSize(size);
-    setCurrentPage(1);
-    const data = await fetchData({ page: 1, pageSize: size });
-    setData(data.data);
-    setTotal(data.total);
-    setLoading(false);
-  };
 
   return (
     <div>

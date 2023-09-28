@@ -1,6 +1,7 @@
 'use client';
 import { TSearchValidator } from '@_components/Search/type';
 import Search from '@_components/Search';
+import { useRouter } from 'next/navigation';
 
 const searchValidator: TSearchValidator = [
   {
@@ -26,6 +27,10 @@ const searchValidator: TSearchValidator = [
 ];
 
 export default function SearchComp({ isMobile }: { isMobile: boolean }) {
+  const router = useRouter();
+  function onSearchButtonClickHandler(queryTxt) {
+    router.push(`/search/${queryTxt}`);
+  }
   return (
     <Search
       searchIcon={false}
@@ -33,6 +38,7 @@ export default function SearchComp({ isMobile }: { isMobile: boolean }) {
       searchValidator={isMobile ? undefined : searchValidator}
       placeholder={'Search by Address / Txn Hash / Block'}
       isMobile={isMobile}
+      onSearchButtonClickHandler={onSearchButtonClickHandler}
     />
   );
 }

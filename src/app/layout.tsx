@@ -8,7 +8,6 @@
 
 import '@_style/globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import RootProvider from './pageProvider';
 import Header from '@_components/Header';
 import Footer from '@_components/Footer';
@@ -16,11 +15,8 @@ import MainContainer from '@_components/Main';
 import { headers } from 'next/headers';
 import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
-import clsx from 'clsx';
 import { Suspense } from 'react';
 import { IExplorerItem, INetworkItem } from '@_types';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -79,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body>
-        <div className={clsx('next-app', inter.className, 'relative min-h-screen bg-global-grey box-border')}>
+        <div className="box-border relative min-h-screen bg-global-grey">
           <StyledComponentsRegistry>
             <Suspense>
               <Header
@@ -90,9 +86,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 networkList={networkList}
               />
             </Suspense>
-            <RootProvider>
+            <RootProvider isMobileSSR={isMobile}>
               <Suspense>
-                <MainContainer isMobile={isMobile}>{children}</MainContainer>
+                <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>
               </Suspense>
             </RootProvider>
             <Suspense>

@@ -22,7 +22,7 @@ export default function getColumns(): ColumnsType<ITableDataType> {
       render: (text) => (
         <div className="flex items-center">
           <IconFont className="mr-1 text-xs" type="Contract" />
-          <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
+          <Link className="text-link text-xs block leading-5" href={`address/${text}`}>
             {addressFormat(hiddenAddress(text, 4, 4))}
           </Link>
           <Copy value={addressFormat(text)} />

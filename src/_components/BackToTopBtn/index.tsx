@@ -1,15 +1,10 @@
-/*
- * @author: Peterbjx
- * @Date: 2023-08-16 16:00:17
- * @LastEditors: Peterbjx
- * @LastEditTime: 2023-08-16 16:00:58
- * @Description:
- */
+'use client';
 import IconFont from '@_components/IconFont';
-// import { Button } from 'antd';
+import animateScrollTo from 'animated-scroll-to';
 import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 import './index.css';
+import { useThrottleFn } from 'ahooks';
 const BACK_TO_TOP_HEIGHT = 40;
 interface IProps {
   isDark: boolean;
@@ -17,27 +12,48 @@ interface IProps {
 const BackToTopButton = ({ isDark }: IProps) => {
   const [showButton, setShowButton] = useState(false);
 
-  useEffect(() => {
-    const checkScrollHeight = () => {
-      if (!showButton && window.pageYOffset > BACK_TO_TOP_HEIGHT) {
+  const { run: checkScrollHeight } = useThrottleFn(
+    () => {
+      const node = document?.querySelector('#scroll-content') as Element;
+      if (!node) {
+        return;
+      }
+
+      if (node.scrollTop > BACK_TO_TOP_HEIGHT) {
         setShowButton(true);
-      } else if (showButton && window.pageYOffset <= BACK_TO_TOP_HEIGHT) {
+      } else {
         setShowButton(false);
       }
-    };
-
-    window.addEventListener('scroll', checkScrollHeight);
+    },
+    {
+      leading: true,
+      trailing: true,
+      wait: 100,
+    },
+  );
+  useEffect(() => {
+    const node = document?.querySelector('#scroll-content') as Element;
+    node?.addEventListener('scroll', checkScrollHeight);
     return () => {
-      window.removeEventListener('scroll', checkScrollHeight);
+      node?.removeEventListener('scroll', checkScrollHeight);
     };
-  }, [showButton]);
+  }, [checkScrollHeight]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      const node = document?.querySelector('#scroll-content') as Element;
+      animateScrollTo(0, { speed: 100, elementToScroll: node });
+    } catch (e) {
+      throw new Error('dom not found');
+    }
   };
 
+  if (!showButton) {
+    return null;
+  }
+
   return (
-    <div onClick={scrollToTop} className={clsx('back-to-top-contrainer', isDark ? 'back-to-top-main' : '')}>
+    <div onClick={scrollToTop} className={clsx('back-to-top-container', isDark && 'back-to-top-main')}>
       <IconFont type="Backtotop" />
       <span className="text">Back to Top</span>
     </div>

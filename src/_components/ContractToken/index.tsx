@@ -1,15 +1,15 @@
 import Copy from '@_components/Copy';
+import EPTooltip from '@_components/EPToolTip';
 import IconFont from '@_components/IconFont';
-import { Tooltip } from 'antd';
 import Link from 'next/link';
 
 export default function ContractToken({ address }: { address: string }) {
   return (
     <div className="address">
       <IconFont className="mr-1 text-xs" type="Contract" />
-      <Tooltip title={address} overlayClassName="table-item-tooltip-white">
+      <EPTooltip title={address} mode="dark" pointAtCenter={false}>
         <Link href={`/address/${address}`}>{address}</Link>
-      </Tooltip>
+      </EPTooltip>
       <Copy value={address} />
     </div>
   );

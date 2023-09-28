@@ -10,7 +10,11 @@ import { TxnSData } from '../type';
 import Link from 'next/link';
 import Method from '@_components/Method';
 import ContractToken from '@_components/ContractToken';
+import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
+import { useMobileContext } from '@app/pageProvider';
+import clsx from 'clsx';
 export default function BaseInfo({ data }: { data: TxnSData }) {
+  const { isMobileSSR: isMobile } = useMobileContext();
   const renderInfo = useMemo(() => {
     return [
       {
@@ -75,7 +79,28 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
       {
         label: 'Interacted With(To) ',
         tip: 'Interacted With(To) ',
-        value: <ContractToken address="AELF.Contract.Token" />,
+        value: (
+          <div>
+            <ContractToken address="AELF.Contract.Token" />
+            <div className={clsx('flex items-center mt-2 leading-[18px]', isMobile && 'flex-col !items-start')}>
+              <div>
+                <IconFont className="text-xs" type="Tab" />
+                <span className="mx-1 inline-block leading-[18px] font10px text-base-200">Transferred</span>
+                <span className="inline-block leading-[18px] font10px">{numberFormatter('2113.0231222')}</span>
+              </div>
+              <div>
+                <span className="mx-1 inline-block leading-[18px] font10px text-base-200">From</span>
+                <span className="text-link inline-block leading-[18px] font10px">
+                  {addressFormat(hiddenAddress(data.transactionHash))}
+                </span>
+                <Copy value={addressFormat(data.transactionHash)} />
+                <span className="mx-1 text-base-200 inline-block leading-[18px] font10px">To</span>
+                <span className="text-link inline-block leading-[18px] font10px">OKEX3</span>
+                <Copy value="OKEX3" />
+              </div>
+            </div>
+          </div>
+        ),
       },
       {
         label: 'divider2',
@@ -84,7 +109,33 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
       {
         label: 'Tokens Transferred ',
         tip: 'Tokens Transferred ',
-        value: <span>todo</span>,
+        value: (
+          <div>
+            <div className={clsx(isMobile && 'flex-col !items-start', 'flex items-center token-transferred')}>
+              <div>
+                <IconFont type="arrow" />
+                <span className="mx-1 text-base-200">From</span>
+                <span className="text-link">{addressFormat(hiddenAddress(data.transactionHash))}</span>
+                <Copy value={addressFormat(data.transactionHash)} />
+              </div>
+              <div>
+                <span className="mx-1 text-base-200">To</span>
+                <span className="text-link">OKEX3</span>
+                <Copy value="OKEX3" />
+              </div>
+              <div className="flex items-center">
+                <span className="mx-1 text-base-200">For</span>
+                <span>{numberFormatter('2113.0231222', '')}</span>
+                <DollarCurrencyRate />
+              </div>
+              <div>
+                <IconFont className="text-base mx-1" type="Aelf-transfer" />
+                <span className="text-link">ELF</span>
+                <span>(ELF)</span>
+              </div>
+            </div>
+          </div>
+        ),
       },
       {
         label: 'divider3',
@@ -93,7 +144,28 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
       {
         label: 'NFTs Transferred ',
         tip: 'NFTs Transferred ',
-        value: <span>todo</span>,
+        value: (
+          <div>
+            <div className={clsx(isMobile && 'flex-col !items-start', 'nft-transferred flex items-center')}>
+              <div className={clsx(isMobile && 'mb-2', 'nft-img w-10 h-10 rounded-lg bg-slate-200')}></div>
+              <div className="nft-info ml-1">
+                <div className="text-xs leading-5">
+                  <span className="inline-block text-base-200">For</span>
+                  <span className="mx-1 inline-block">1 Of NFT</span>
+                  <span className="text-link inline-block">wordwar2 series(CARD-001)</span>
+                </div>
+                <div>
+                  <span className="inline-block">From</span>
+                  <span className="inline-block text-link ml-1">OKEX3</span>
+                  <Copy value="OKEX3" />
+                  <span className="inline-block mx-1 text-base-200">To</span>
+                  <span className="inline-block text-link">{addressFormat(hiddenAddress(data.transactionHash))}</span>
+                  <Copy value={addressFormat(data.transactionHash)} />
+                </div>
+              </div>
+            </div>
+          </div>
+        ),
       },
       {
         label: 'divider4',
@@ -110,6 +182,6 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
         ),
       },
     ];
-  }, [data]);
+  }, [data, isMobile]);
   return <DetailContainer infoList={renderInfo} />;
 }

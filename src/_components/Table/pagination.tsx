@@ -56,14 +56,12 @@ export default function EpPagination({
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSizeValue, setPageSizeValue] = useState<number>(defaultValue);
   useEffect(() => {
-    setPageNum(pageNum);
+    setPageNum(defaultCurrent);
   }, [defaultCurrent]);
   useEffect(() => {
-    if (pageNum === current) return;
     setPageNum(current as number);
   }, [current]);
   useEffect(() => {
-    if (pageSizeValue === pageSize) return;
     setPageSizeValue(pageSize);
   }, [pageSize]);
 
@@ -89,7 +87,6 @@ export default function EpPagination({
   }, [pageNum, totalPage]);
 
   const prevChange = () => {
-    console.log(pageNum, pageSize);
     if (pageNum === 1) {
       pageNumRef.current = 1;
     } else {
@@ -152,7 +149,7 @@ export default function EpPagination({
             disabled={isFirstPage}
             type="primary"
             ghost
-            className="px-2 text-xs leading-5 mr-2 first-button"
+            className="!px-2 !text-xs !leading-5 mr-2 first-button"
             onClick={jumpFirst}>
             First
           </Button>
@@ -171,7 +168,7 @@ export default function EpPagination({
             disabled={isLastPage}
             type="primary"
             ghost
-            className="px-2 ml-2 text-xs leading-5 last-button"
+            className="!px-2 ml-2 !text-xs !leading-5 last-button"
             onClick={jumpLast}>
             Last
           </Button>

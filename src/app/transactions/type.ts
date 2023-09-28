@@ -4,14 +4,8 @@ export interface ITableDataType {
   method: string;
   timestamp: string;
   blockHeight: number;
-  from: {
-    name: string;
-    address: string;
-  };
-  to: {
-    name: string;
-    address: string;
-  };
+  from: string;
+  to: string;
   txnValue: number;
   txnFee: number;
 }

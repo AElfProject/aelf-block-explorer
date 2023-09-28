@@ -23,7 +23,7 @@
         }
       }
       .description {
-        @apply mt-4 leading-5 font-[400] text-[12px] w-[443px] text-[#858585] w-full;
+        @apply mt-4 leading-5 text-[12px] lg:w-[443px] text-[#858585];
       }
     }
     .right {

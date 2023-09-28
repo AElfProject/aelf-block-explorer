@@ -41,7 +41,6 @@ const SearchContextProvider = ({
     },
     filterType: validator && validator.length > 0 ? validator[0] : undefined,
   };
-  console.log('SearchContextProvider');
   const [state, dispatch]: [TSearchState, BasicActions<SearchActions>['dispatch']] = useReducer(reducer, INITIAL_STATE);
   return (
     <SearchContext.Provider

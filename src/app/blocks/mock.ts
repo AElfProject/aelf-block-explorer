@@ -1,3 +1,4 @@
+import { IBlocksData } from './blockList';
 const blocks = Array.from(new Array(100).keys()).map((item) => {
   return {
     blockHeight: 165018684 + item,
@@ -11,7 +12,7 @@ const blocks = Array.from(new Array(100).keys()).map((item) => {
     burntFee: '1,550.00011273 ELF',
   };
 });
-export default async function fetchData({ page, pageSize }): Promise<any> {
+export default async function fetchData({ page, pageSize }): Promise<IBlocksData> {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return {
     total: 100,

@@ -6,6 +6,7 @@
 @import url("tailwindcss/components");
 @import url("./search.css");
 @import url("./nft-details.css");
+@import url("./not-found.css");
 
 @import url("tailwindcss/utilities");
 
@@ -16,20 +17,38 @@
     --background-end-rgb: 255, 255, 255;
 }
   
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --foreground-rgb: 255, 255, 255;
-      --background-start-rgb: 0, 0, 0;
-      --background-end-rgb: 0, 0, 0;
-    }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
 }
 body {
-  @apply bg-F7;
+  @apply bg-F7 select-none relative h-full w-full overflow-x-hidden overflow-y-auto;
 }
 
-@layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
+
+
+@layer utilities {
+  .font10px {
+    font-size:12px;
+    zoom:0.83
+  }
+  .view-button {
+    @apply !w-8 !h-8 !box-border !rounded !border-D0 !bg-white;
+  }
+  .view-button:hover {
+    @apply !bg-32 !border-32;
+    svg {
+      @apply !text-white;
+    }
+  }
+  .view-button:active {
+    @apply !bg-button_active  !border-button_active;
+    svg {
+      @apply !text-white;
+    }
   }
 }
 

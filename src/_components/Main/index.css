@@ -1,9 +1,10 @@
 .main-container {
+  @apply min-w-[768px] ml-auto mr-auto px-3 pb-10 max-w-[1360px] lg:px-0 mb-10 pt-[104px];
+
   margin-left: auto;
   margin-right: auto;
   max-width: 1360px;
-  @apply mb-10 pt-[104px];
   &-mobile {
-    @apply pt-[56px];
+    @apply pt-[56px] min-w-[200px];
   }
 }
