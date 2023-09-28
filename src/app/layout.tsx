@@ -63,7 +63,7 @@ async function fetchNetworkList() {
     {
       id: 5,
       chainId: 'tDVW',
-      chainsLinkName: 'SideChain tDVW ',
+      chainsLinkName: 'SideChain tDVW',
       chainsLink: 'https://explorer-test-side02.aelf.io/',
     },
   ];
