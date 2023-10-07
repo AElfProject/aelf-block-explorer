@@ -1,21 +1,22 @@
 import { MenuOutlined } from '@ant-design/icons';
 import IconFont from '@_components/IconFont';
-import { IExplorerItem, INetworkItem } from '@_types';
+import { IExplorerItem, IMenuItem, INetworkItem } from '@_types';
 import { Drawer, Menu, MenuProps } from 'antd';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './index.css';
 interface IProps {
   explorerList: IExplorerItem[];
   networkList: INetworkItem[];
+  menuList: IMenuItem[];
 }
 const NETWORK_TYPE = process.env.NEXT_PUBLIC_NETWORK_TYPE;
 const IsMain = !!(NETWORK_TYPE === 'MAIN');
 const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
 type MenuItem = Required<MenuProps>['items'][number];
 
-export default function MobileHeaderMenu({ explorerList, networkList }: IProps) {
+export default function MobileHeaderMenu({ explorerList, networkList, menuList }: IProps) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const toggleMenu = () => {
     setShowMobileMenu(!showMobileMenu);
@@ -55,22 +56,16 @@ export default function MobileHeaderMenu({ explorerList, networkList }: IProps) 
     window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
     router.replace(url);
   };
+  const convertMenuItems = (list) => {
+    return list?.map((ele) => {
+      if (!ele.children?.length) {
+        return getItem(<a onClick={() => jump(ele.link)}>{ele.label}</a>, ele.link);
+      }
+      return getItem(ele.label, ele.link, convertMenuItems(ele.children));
+    });
+  };
   const items: MenuProps['items'] = [
-    getItem(<Link href="/">Home</Link>, '/'),
-    getItem('Blockchain', 'blockChain', [
-      getItem(<Link href="/blocks">Blocks</Link>, '/blocks'),
-      getItem(<Link href="/transactions">Transactions</Link>, '/transactions'),
-      getItem(<Link href="/accounts">Top Accounts</Link>, '/accounts'),
-      getItem(<Link href="/contracts">Contracts</Link>, '/contracts'),
-    ]),
-    getItem(<Link href="/token">Token</Link>, '/token'),
-    getItem(<Link href="/nfts">NFTs</Link>, '/nfts'),
-
-    getItem('Governance', 'governance', [
-      getItem(<a onClick={() => jump('/proposal/proposals')}>Proposal</a>, '/proposal'),
-      getItem(<a onClick={() => jump('/vote/election')}>Vote</a>, '/vote'),
-      getItem(<a onClick={() => jump('/resource')}>Resource</a>, '/resource'),
-    ]),
+    ...convertMenuItems(menuList),
     { type: 'divider' },
     getItem(
       'Explorers',

@@ -12,3 +12,9 @@ export interface INetworkItem {
   chainsLinkName: string;
   chainsLink: string;
 }
+export interface IMenuItem {
+  id: number;
+  label: string;
+  link: string;
+  children: IMenuItem[];
+}

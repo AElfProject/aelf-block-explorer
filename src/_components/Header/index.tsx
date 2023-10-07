@@ -20,7 +20,7 @@ const NETWORK_TYPE = process.env.NEXT_PUBLIC_NETWORK_TYPE;
 const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
 const clsPrefix = 'header-container';
 let jumpFlag = false;
-export default function Header({ priceSSR, previousPriceSSR, explorerList, networkList, isMobileSSR }) {
+export default function Header({ priceSSR, previousPriceSSR, explorerList, networkList, isMobileSSR, menuList }) {
   const [showSearch, setShowSearch] = useState(true);
   const onlyMenu = useMemo(() => {
     return showSearch ? '' : 'only-menu ';
@@ -116,9 +116,10 @@ export default function Header({ priceSSR, previousPriceSSR, explorerList, netwo
             explorerList={explorerList}
             isMobile={isMobile}
             networkList={networkList}
-            isHideSearch={isHideSearch}></HeaderTop>
+            isHideSearch={isHideSearch}
+            menuList={menuList}></HeaderTop>
         }
-        {!isMobile && <HeaderMenu isMobile={isMobile} networkList={networkList}></HeaderMenu>}
+        {!isMobile && <HeaderMenu isMobile={isMobile} networkList={networkList} menuList={menuList}></HeaderMenu>}
       </>
     </div>
   );

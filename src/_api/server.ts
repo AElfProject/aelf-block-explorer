@@ -21,7 +21,7 @@ const timeoutPromise = (delay: number) => {
 };
 
 async function service(url: string, options: RequestWithParams) {
-  const { params = {} } = options;
+  const { params = {} } = options || {};
   const paramsArr: Array<any> = [];
   if (Object.keys(params).length > 0) {
     for (const item in params) {

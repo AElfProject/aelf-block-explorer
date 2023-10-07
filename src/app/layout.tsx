@@ -17,6 +17,7 @@ import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
 import { Suspense } from 'react';
 import { IExplorerItem, INetworkItem } from '@_types';
+import request from '@_api';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -34,36 +35,16 @@ async function fetchData() {
   return res;
 }
 async function fetchExplorerList() {
-  const EXPLORER_LIST = [
-    {
-      title: 'AELF Mainnet',
-      url: 'https://explorer.aelf.io',
-      netWorkType: 'MAIN',
-    },
-    {
-      title: 'AELF Testnet',
-      url: 'https://explorer-test.aelf.io',
-      netWorkType: 'TESTNET',
-    },
-  ];
-  return EXPLORER_LIST;
+  const result = await request.cms.explorerList();
+  return result.data;
 }
 async function fetchNetworkList() {
-  const NETWORK_LIST = [
-    {
-      id: 3,
-      chainId: 'AELF',
-      chainsLinkName: 'MainChain AELF',
-      chainsLink: 'https://explorer-test.aelf.io',
-    },
-    {
-      id: 5,
-      chainId: 'tDVW',
-      chainsLinkName: 'SideChain tDVW',
-      chainsLink: 'https://explorer-test-side02.aelf.io/',
-    },
-  ];
-  return NETWORK_LIST;
+  const result = await request.cms.networkList();
+  return result.data;
+}
+async function fetchMenuList() {
+  const result = await request.cms.menulist();
+  return result.data;
 }
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const data = await fetchData();
@@ -72,6 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const isMobile = isMobileOnServer(headersList);
   const explorerList: IExplorerItem[] = await fetchExplorerList();
   const networkList: INetworkItem[] = await fetchNetworkList();
+  const menuList = await fetchMenuList();
   return (
     <html lang="en">
       <body>
@@ -84,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 isMobileSSR={isMobile}
                 explorerList={explorerList}
                 networkList={networkList}
+                menuList={menuList}
               />
             </Suspense>
             <RootProvider isMobileSSR={isMobile}>

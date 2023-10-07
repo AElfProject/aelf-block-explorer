@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import clsx from 'clsx';
 import './index.css';
-import { IExplorerItem, INetworkItem } from '@_types';
+import { IExplorerItem, IMenuItem, INetworkItem } from '@_types';
 import Search from '@_components/Search';
 import { IsMain } from '@_utils/isMainNet';
 import { useEffect, useState } from 'react';
@@ -24,8 +24,17 @@ interface IProps {
   networkList: INetworkItem[];
   isMobile: boolean;
   isHideSearch: boolean;
+  menuList: IMenuItem[];
 }
-export default function HeaderTop({ price, range, explorerList, isMobile, isHideSearch, networkList }: IProps) {
+export default function HeaderTop({
+  price,
+  range,
+  explorerList,
+  isMobile,
+  isHideSearch,
+  networkList,
+  menuList,
+}: IProps) {
   const [showNetwork, setShowNetwork] = useState(false);
   const jumpLink = explorerList?.find((ele) => {
     return ele.netWorkType === NetworkType;
@@ -117,7 +126,12 @@ export default function HeaderTop({ price, range, explorerList, isMobile, isHide
             </div>
           </>
         )}
-        {isMobile && <MobileHeaderMenu networkList={networkList} explorerList={explorerList}></MobileHeaderMenu>}
+        {isMobile && (
+          <MobileHeaderMenu
+            networkList={networkList}
+            explorerList={explorerList}
+            menuList={menuList}></MobileHeaderMenu>
+        )}
       </div>
     </div>
   );
