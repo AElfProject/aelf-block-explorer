@@ -36,15 +36,15 @@ async function fetchData() {
 }
 async function fetchExplorerList() {
   const result = await request.cms.explorerList();
-  return result.data;
+  return result?.data;
 }
 async function fetchNetworkList() {
   const result = await request.cms.networkList();
-  return result.data;
+  return result?.data;
 }
 async function fetchMenuList() {
-  const result = await request.cms.menulist();
-  return result.data;
+  const result = await request.cms.menuList();
+  return result?.data;
 }
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const data = await fetchData();

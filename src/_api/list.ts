@@ -21,7 +21,7 @@ const Common_API_List = {
 };
 
 const CMS_API_List = {
-  menulist: 'http://localhost:8058/items/menulist?fields=*,children.*',
+  menuList: 'http://localhost:8058/items/menuList?fields=*,children.*',
   networkList: 'http://localhost:8058/items/networkList',
   explorerList: 'http://localhost:8058/items/explorerList',
 };
