@@ -77,7 +77,7 @@ export default function MobileHeaderMenu({ explorerList, networkList, menuList }
     getItem(
       'Networks',
       'networks',
-      networkList.map((ele) => {
+      networkList?.map((ele) => {
         return getItem(<Link href={ele.chainsLink}>{ele.chainsLinkName}</Link>, ele.chainId);
       }),
     ),

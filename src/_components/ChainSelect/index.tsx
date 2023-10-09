@@ -19,7 +19,7 @@ export default function ChainSelect({ networkList }: IProps) {
         defaultValue={CHAIN_ID}
         getPopupContainer={() => document.querySelector('.header-container')!}
         onChange={(v) => changeChain(v)}>
-        {networkList.map((item) => {
+        {networkList?.map((item) => {
           return (
             <Option
               className="common-select-option-wrapper chain-select-option"
