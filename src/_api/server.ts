@@ -21,7 +21,7 @@ const timeoutPromise = (delay: number) => {
 };
 
 async function service(url: string, options: RequestWithParams) {
-  const { params = {} } = options;
+  const { params = {} } = options || {};
   const paramsArr: Array<any> = [];
   if (Object.keys(params).length > 0) {
     for (const item in params) {
@@ -42,7 +42,8 @@ async function service(url: string, options: RequestWithParams) {
       console.log(response.status);
     }
   } catch (error) {
-    return Promise.reject(error);
+    // TODO: need to recover
+    // return Promise.reject(error);
   }
 }
 

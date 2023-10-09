@@ -19,6 +19,12 @@ const Transaction_API_List = {
 const Common_API_List = {
   getPrice: '',
 };
+
+const CMS_API_List = {
+  menuList: 'http://localhost:8058/items/menuList?fields=*,children.*',
+  networkList: 'http://localhost:8058/items/networkList',
+  explorerList: 'http://localhost:8058/items/explorerList',
+};
 export const Socket_API_List = {
   overview: '/signalr-hubs/overview',
 };
@@ -27,6 +33,7 @@ export const API_List = {
   block: Block_API_List,
   tx: Transaction_API_List,
   common: Common_API_List,
+  cms: CMS_API_List,
 };
 
 type REQUEST_FUNCTION = (opt?: RequestWithParams) => Promise<any>;

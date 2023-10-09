@@ -1,3 +1,6 @@
 .header-container {
-  @apply z-50;
+  @apply fixed top-0 left-0 right-0 z-[1000] shadow-[0px_3px_6px_0px_rgba(0,0,0,0.04)];
+  &-mobile {
+    @apply w-full;
+  }
 }
