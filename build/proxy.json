@@ -71,7 +71,7 @@
   },
   {
     "description": "portkey indexer",
-    "target": "http://192.168.67.172:8083/AElfIndexer_DApp/PortKeyIndexerCASchema/graphql",
+    "target": "https://dapp-portkey-test.portkey.finance",
     "context": ["/Portkey_DID"],
     "headers": {
       "Host": "dapp-portkey-test.portkey.finance"
@@ -81,7 +81,7 @@
   },
   {
     "description": "portkey services",
-    "target": "https://localtest-applesign.portkey.finance",
+    "target": "https://did-portkey-test.portkey.finance",
     "context": ["/portkey"],
     "headers": {
       "Host": "did-portkey-test.portkey.finance"
@@ -91,15 +91,5 @@
     "pathRewrite": {
       "^/portkey/api": "/api"
     }
-  },
-  {
-    "description": "portkey connect",
-    "target": "http://192.168.66.240:8080",
-    "context": ["/connect"],
-    "headers": {
-      "Host": "did-portkey-test.portkey.finance"
-    },
-    "changeOrigin": true,
-    "secure": false
   }
 ]
