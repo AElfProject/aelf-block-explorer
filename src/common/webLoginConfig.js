@@ -9,33 +9,19 @@ import {
 } from "@config/config";
 import isWebview from "../utils/isWebView";
 
-// const graphQLServer =
-//   NETWORK_TYPE === "TESTNET"
-//     ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"
-//     : "https://dapp-portkey.portkey.finance/Portkey_DID";
-// const portkeyApiServer =
-//   NETWORK_TYPE === "TESTNET"
-//     ? "https://did-portkey-test.portkey.finance"
-//     : "https://did-portkey.portkey.finance";
-// export const connectUrl =
-//   NETWORK_TYPE === "TESTNET"
-//     ? "https://auth-portkey-test.portkey.finance"
-//     : "https://auth-portkey.portkey.finance";
-
 const graphQLServer =
-  "http://192.168.67.172:8083/AElfIndexer_DApp/PortKeyIndexerCASchema/graphql";
-// !IS_MAINNET
-//   ? 'https://dapp-portkey-test.portkey.finance'
-//   : 'https://dapp-portkey.portkey.finance';
+  NETWORK_TYPE === "TESTNET"
+    ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"
+    : "https://dapp-portkey.portkey.finance/Portkey_DID";
+const portkeyApiServer =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://did-portkey-test.portkey.finance"
+    : "https://did-portkey.portkey.finance";
+export const connectUrl =
+  NETWORK_TYPE === "TESTNET"
+    ? "https://auth-portkey-test.portkey.finance"
+    : "https://auth-portkey.portkey.finance";
 
-const portkeyApiServer = "https://localtest-applesign.portkey.finance";
-// !IS_MAINNET
-// ? 'https://did-portkey-test.portkey.finance'
-// : 'https://did-portkey.portkey.finance';
-
-export const connectUrl = "http://192.168.66.240:8080";
-const RPC_SERVER =
-  "https://localtest-applesign.portkey.finance/api/app/search/chainsinfoindex";
 setGlobalConfig({
   appName: APPNAME,
   chainId: CHAIN_ID,
@@ -43,7 +29,7 @@ setGlobalConfig({
   portkey: {
     useLocalStorage: true,
     graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
-    // connectUrl,
+    connectUrl,
     socialLogin: {
       Portkey: isWebview()
         ? undefined
@@ -76,15 +62,15 @@ setGlobalConfig({
     nodes: {
       AELF: {
         chainId: "AELF",
-        rpcUrl: RPC_SERVER,
+        rpcUrl: DEFAUTRPCSERVER,
       },
       tDVW: {
         chainId: "tDVW",
-        rpcUrl: RPC_SERVER,
+        rpcUrl: DEFAUTRPCSERVER,
       },
       tDVV: {
         chainId: "tDVV",
-        rpcUrl: RPC_SERVER,
+        rpcUrl: DEFAUTRPCSERVER,
       },
     },
   },
