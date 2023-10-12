@@ -1,14 +1,6 @@
-/*
- * @Author: aelf-lxy
- * @Date: 2023-07-31 16:13:52
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-01 17:13:09
- * @Description: TokenSysbol
- */
-export default function TokenSysbol({ params }: { params: ChainId & TokenSymbol }) {
-  return (
-    <div>
-      Tokens, my chainId is {params.chain}, my tokenSysbol is {params.tokenSymbol}
-    </div>
-  );
+import fetchData from '@pageComponents/token/mock';
+import TokenItem from '@pageComponents/token/page';
+export default async function TokenSysbol({ params }: { params: ChainId & TokenSymbol }) {
+  const data = await fetchData({ page: 1, pageSize: 25 });
+  return <TokenItem SSRData={data}></TokenItem>;
 }

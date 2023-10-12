@@ -9,11 +9,10 @@ export function middleware(request: NextRequest) {
     if (queryTxt === 'about') {
       return NextResponse.rewrite(new URL('/blocks', request.url));
     } else if (pathname.includes('token') || pathname.includes('nft')) {
-      const chainId = pathname.split('/')[1];
-      console.log(pathname, chainId, CHAIN_ID);
-      if (chainId !== CHAIN_ID) {
-        return NextResponse.redirect(new URL(`/${CHAIN_ID}/search-failed`, request.url));
-      }
+      // const chainId = pathname.split('/')[1];
+      // if (chainId !== CHAIN_ID) {
+      //   return NextResponse.rewrite(new URL(`/${CHAIN_ID}/search-failed`, request.url));
+      // }
     }
   } catch (e) {
     throw new Error('middleware execute fail');

@@ -1,0 +1,34 @@
+.overview-two-columns-container {
+  @apply shadow-table rounded-lg bg-white px-4;
+  .title {
+    @apply py-5 text-base-100 leading-5 font-medium;
+  }
+  .content {
+    @apply flex;
+  }
+  .overview-left,
+  .overview-right {
+    @apply grow w-[664px];
+    .list-items {
+      @apply pb-4;
+      .item-label {
+        @apply leading-[18px] text-base-200;
+      }
+      .item-value {
+        @apply text-sm leading-[22px] text-base-100;
+      }
+    }
+  }
+  .middle {
+    @apply border-[1px] mx-4 mb-4;
+  }
+  &-mobile {
+    .content {
+      @apply block;
+    }
+    .overview-left,
+    .overview-right {
+      @apply w-full;
+    }
+  }
+}

@@ -1,10 +1,7 @@
-/*
- * @Author: abigail.deng
- * @Date: 2023-07-31 16:04:07
- * @LastEditors: abigail.deng
- * @LastEditTime: 2023-08-01 17:13:27
- * @Description: Tokens
- */
-export default function Tokens({ params }: { params: ChainId }) {
-  return <div>Tokens, my chainId is {params.chain}</div>;
+import fetchData from '@pageComponents/tokens/mock';
+import TokenList from '@pageComponents/tokens/page';
+
+export default async function Tokens({ params }: { params: ChainId }) {
+  const data = await fetchData({ page: 1, pageSize: 25 });
+  return <TokenList SSRData={data}></TokenList>;
 }

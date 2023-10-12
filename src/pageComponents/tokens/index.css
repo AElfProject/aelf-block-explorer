@@ -1,0 +1,21 @@
+.tokens-page-container {
+  .ant-table {
+    .token-name {
+      @apply flex items-center;
+    }
+    .logo-img {
+      @apply w-6 h-6 inline-block mr-1;
+    }
+    .name {
+      @apply text-[500] text-black mr-1 max-w-[150px] text-ellipsis overflow-hidden whitespace-nowrap;
+    }
+    .symbol {
+      @apply text-base-200 max-w-[170px] text-ellipsis overflow-hidden whitespace-nowrap;
+    }
+    .holder {
+      p {
+        @apply h-5 flex items-center;
+      }
+    }
+  }
+}

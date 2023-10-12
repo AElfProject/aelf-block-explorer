@@ -12,13 +12,13 @@ export default function HeadTitle({
   children,
   className,
 }: {
-  content: string;
+  content: string | JSX.Element;
   children?: React.ReactNode;
   className?: string;
 }) {
   return (
     <div className={clsx(className, 'py-5 header-title flex items-end bg-inherit')}>
-      <div className="text-xl font-bold not-italic text-base-100">{content}</div>
+      <div className="text-xl not-italic font-bold text-base-100">{content}</div>
       {children}
     </div>
   );
