@@ -156,6 +156,7 @@ const ApproveTokenModal = (props) => {
     spender: "",
   });
   const [inputAmount, setInputAmount] = useState(0);
+  const [inputToken, setInputToken] = useState(0);
   const [loadings, setLoadings] = useState({
     tokenLoading: true,
     actionLoading: true,
@@ -267,7 +268,7 @@ const ApproveTokenModal = (props) => {
   }
 
   function handleValueChange({ amount }) {
-    setInputAmount(amount - allowanceInfo.allowance);
+    setInputToken(amount);
   }
 
   return (
@@ -302,7 +303,10 @@ const ApproveTokenModal = (props) => {
           <Button
             type="primary"
             loading={loadings.tokenLoading}
-            disabled={allowanceInfo.balance === 0 || inputAmount === 0}
+            disabled={
+              allowanceInfo.balance === 0 ||
+              inputToken - allowanceInfo.allowance === 0
+            }
             onClick={handleStake}
           >
             Stake
