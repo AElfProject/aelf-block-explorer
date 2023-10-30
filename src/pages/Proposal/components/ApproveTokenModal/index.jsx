@@ -185,6 +185,7 @@ const ApproveTokenModal = (props) => {
           form.setFieldsValue({
             amount: res.allowance,
           });
+          setInputToken(res.allowance);
         })
         .catch((err) => {
           setLoadings({
@@ -305,7 +306,7 @@ const ApproveTokenModal = (props) => {
             loading={loadings.tokenLoading}
             disabled={
               allowanceInfo.balance === 0 ||
-              inputToken - allowanceInfo.allowance === 0
+              inputToken - allowanceInfo.allowance <= 0
             }
             onClick={handleStake}
           >
