@@ -241,6 +241,10 @@ const ApproveTokenModal = (props) => {
       );
       if (!result) {
         // user cancel
+        setLoadings({
+          actionLoading: false,
+          tokenLoading: false,
+        });
         return;
       }
       const txId = result.TransactionId || result.result.TransactionId;
@@ -274,6 +278,10 @@ const ApproveTokenModal = (props) => {
 
   function handleValueChange({ amount }) {
     setInputAmount(amount - allowanceInfo.allowance);
+    console.log(
+      amount - allowanceInfo.allowance,
+      "amount - allowanceInfo.allowance"
+    );
     setInputToken(amount);
   }
 
