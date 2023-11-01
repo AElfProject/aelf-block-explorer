@@ -125,13 +125,13 @@ function getFormDesc(allowance) {
   };
 }
 
-function getOkProps(loadings, allowanceInfo, inputAmount) {
+function getOkProps(loadings, allowanceInfo, inputToken) {
   return {
     loading: loadings.actionLoading || loadings.tokenLoading,
     disabled:
       loadings.tokenLoading ||
       +allowanceInfo.allowance === 0 ||
-      inputAmount !== 0,
+      inputToken - allowanceInfo.allowance !== 0,
   };
 }
 
@@ -167,8 +167,8 @@ const ApproveTokenModal = (props) => {
   );
 
   const okProps = useMemo(
-    () => getOkProps(loadings, allowanceInfo, inputAmount),
-    [loadings, allowanceInfo, inputAmount]
+    () => getOkProps(loadings, allowanceInfo, inputToken),
+    [loadings, allowanceInfo, inputToken]
   );
 
   const { wallet: webLoginWallet, callContract } = useWebLogin();
@@ -278,10 +278,6 @@ const ApproveTokenModal = (props) => {
 
   function handleValueChange({ amount }) {
     setInputAmount(amount - allowanceInfo.allowance);
-    console.log(
-      amount - allowanceInfo.allowance,
-      "amount - allowanceInfo.allowance"
-    );
     setInputToken(amount);
   }
 
