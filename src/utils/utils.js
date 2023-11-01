@@ -3,6 +3,7 @@ import AElf from "aelf-sdk";
 import Decimal from "decimal.js";
 import { aelf } from "../utils";
 import config from "../../config/config";
+import Root from '../protobuf/virtual_transaction.proto';
 
 const resourceDecimals = config.resourceTokens.reduce(
   (acc, v) => ({
@@ -121,17 +122,7 @@ function decodeBase64(str) {
   return buffer;
 }
 
-export async function deserializeLog(log) {
-  const { Indexed = [], NonIndexed, Name, Address } = log;
-  const proto = await getProto(Address);
-  if (!proto) {
-    return {};
-  }
-  const serializedData = [...(Indexed || [])];
-  if (NonIndexed) {
-    serializedData.push(NonIndexed);
-  }
-  const dataType = proto.lookupType(Name);
+function getDeserializeLogResult(serializedData,dataType) {
   let deserializeLogResult = serializedData.reduce((acc, v) => {
     let deserialize = dataType.decode(decodeBase64(v));
     deserialize = dataType.toObject(deserialize, {
@@ -147,7 +138,7 @@ export async function deserializeLog(log) {
       ...acc,
       ...deserialize,
     };
-  }, {});
+  },{});
   // eslint-disable-next-line max-len
   deserializeLogResult = AElf.utils.transform.transform(
     dataType,
@@ -159,6 +150,34 @@ export async function deserializeLog(log) {
     deserializeLogResult
   );
   return deserializeLogResult;
+}
+
+export async function deserializeLog(log) {
+  const { Indexed = [], NonIndexed, Name, Address } = log;
+  const proto = await getProto(Address);
+  if (!proto) {
+    return {};
+  }
+  const serializedData = [...(Indexed || [])];
+  if (NonIndexed) {
+    serializedData.push(NonIndexed);
+  }
+  
+  if (Name === 'VirtualTransactionCreated') {
+    // VirtualTransactionCreated is system-default
+    try {
+      const dataType = Root.VirtualTransactionCreated;
+      return getDeserializeLogResult(serializedData,dataType);
+    } catch (e) {
+      // if normal contract has a method called VirtualTransactionCreated
+      const dataType = proto.lookupType(Name);
+      return getDeserializeLogResult(serializedData,dataType);
+    }
+  } else {
+    // other method
+    const dataType = proto.lookupType(Name);
+    return getDeserializeLogResult(serializedData,dataType);
+  }
 }
 
 export function deserializeLogs(logs) {
