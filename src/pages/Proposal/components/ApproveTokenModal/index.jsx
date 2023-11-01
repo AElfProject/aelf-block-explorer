@@ -239,7 +239,10 @@ const ApproveTokenModal = (props) => {
           symbol: tokenSymbol,
         }
       );
-      console.log(result);
+      if (!result) {
+        // user cancel
+        return;
+      }
       const txId = result.TransactionId || result.result.TransactionId;
       const txResult = await getTxResult(aelf, txId, 0, 6000);
       message.info(`Transactions ${txId} is ${txResult.Status}`);
@@ -254,6 +257,7 @@ const ApproveTokenModal = (props) => {
           form.setFieldsValue({
             amount: res.allowance,
           });
+          setInputToken(res.allowance);
         })
         .catch((err) => {
           message.error(err.message || "Network Error");
