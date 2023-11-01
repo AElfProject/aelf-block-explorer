@@ -269,6 +269,7 @@ const ApproveTokenModal = (props) => {
   }
 
   function handleValueChange({ amount }) {
+    setInputAmount(amount - allowanceInfo.allowance);
     setInputToken(amount);
   }
 
