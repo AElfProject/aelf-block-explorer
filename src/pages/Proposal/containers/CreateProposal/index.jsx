@@ -15,8 +15,7 @@ import {
   showTransactionResult,
   uint8ToBase64,
 } from "@redux/common/utils";
-import { getConfig, useWebLogin } from "aelf-web-login";
-import { did } from "@portkey/did-ui-react";
+import { getConfig, useWebLogin, did } from "aelf-web-login";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
