@@ -1,17 +1,18 @@
-import React, { Fragment, useMemo } from 'react';
-import { If, Then, Else } from 'react-if';
-import {
-  Spin, Row, Col, Modal, Button,
-} from 'antd';
-import Dividends from '../../../components/Dividends';
+import React, { Fragment, useMemo } from "react";
+import { If, Then, Else } from "react-if";
+import { Spin, Row, Col, Modal, Button } from "antd";
+import Dividends from "../../../components/Dividends";
 
-import './index.less';
+import "./index.less";
 
 function getTokenCounts(dividend) {
-  const {
-    amounts = [],
-  } = dividend;
-  return (amounts || []).map((item) => Object.keys(item.amounts || {}).reduce((acc, key) => acc + item.amounts[key], 0));
+  const { amounts = [] } = dividend;
+  return (amounts || []).map((item) =>
+    Object.keys(item.amounts || {}).reduce(
+      (acc, key) => acc + item.amounts[key],
+      0
+    )
+  );
 }
 
 const DividendModal = (props) => {
@@ -28,16 +29,16 @@ const DividendModal = (props) => {
   return (
     <Modal
       className="dividend-modal"
-      title="Get Dividend"
+      title="Governance Rewards"
       visible={dividendModalVisible}
       onOk={() => {
-        changeModalVisible('dividendModalVisible', false);
+        changeModalVisible("dividendModalVisible", false);
       }}
       onCancel={() => {
-        changeModalVisible('dividendModalVisible', false);
+        changeModalVisible("dividendModalVisible", false);
       }}
       okText="Get!"
-      width={860}
+      width={543}
       centered
       maskClosable
       keyboard
@@ -50,20 +51,22 @@ const DividendModal = (props) => {
         <Else>
           <>
             {dividends.amounts.map((item, index) => (
-              <Row key={item.type} className="claim-profit-item">
-                <Col span={12} className="text-left">
-                  <span className="profit-item-key">
-                    {item.type}
-                    :
-                    {' '}
-                  </span>
-                  <Dividends className="profit-item-value" dividends={item.amounts} />
+              <Row
+                key={item.type}
+                className="claim-profit-item"
+                justify="space-between"
+              >
+                <Col span={10} className="text-left">
+                  <span className="profit-item-key">{item.type}: </span>
                 </Col>
-                <Col span={12} className="text-right">
+                <Dividends
+                  className="profit-item-value"
+                  dividends={item.amounts}
+                />
+                <Col span={8} className="text-right">
                   <Button
                     disabled={tokenCounts[index] === 0}
                     type="primary"
-                    shape="round"
                     loading={claimLoading}
                     onClick={() => {
                       setClaimLoading(true);

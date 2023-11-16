@@ -17,23 +17,23 @@
   },
   "schemeIds": [
     {
-      "type": "Citizen Welfare",
+      "type": "Voter Basic Rewards",
       "schemeId": "32effe6aad9d6e529e884fc7cbca47bfb90c6236dab6e6c2e942e7483090d41b"
     },
     {
-      "type": "Backup Subsidy",
+      "type": "Candidate Node Rewards",
       "schemeId": "97c31794f133f3ca7e9c3b08e797398a245c220f7d00878c3ab1e3ef91af965c"
     },
     {
-      "type": "Welcome Reward",
-      "schemeId": "976eafd3bbd8dddbaefb3513ace018a1adb5dc3a84fa82022787823c26887383"
-    },
-    {
-      "type": "Miner Basic Reward",
+      "type": "BP Basic Rewards",
       "schemeId": "6da0ba4043fdf0dd966e2fa35402f58c1eb04f7cd718152e93f4559f230f1554"
     },
     {
-      "type": "Flexible Reward",
+      "type": "New BP Rewards",
+      "schemeId": "976eafd3bbd8dddbaefb3513ace018a1adb5dc3a84fa82022787823c26887383"
+    },
+    {
+      "type": "Voter Flexible Rewards",
       "schemeId": "f0d6ae7bd14592ef88c2448f8e80441f9dba1382614a27a3a186d165531ef510"
     }
   ],
