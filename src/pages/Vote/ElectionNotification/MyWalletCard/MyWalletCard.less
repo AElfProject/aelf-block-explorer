@@ -10,20 +10,23 @@
 
 // todo: Unify the way write css selector
 .my-wallet-card {
-  margin-bottom: 20px;
-  // padding: 20px 30px;
+  padding: 16px;
   background: @bgBlankWhite;
   overflow: hidden;
 
   &-header {
     background: @bgBlankWhite;
-    padding: 30px 57px 20px;
     overflow: hidden;
-    border-bottom: 1px solid @borderColor;
+    padding: 8px 0;
     &-title {
       display: inline-block;
       vertical-align: middle;
       color: @textContext;
+      .wallet-icon {
+        width: 12px;
+        height: 12px;
+        color: #252525;
+      }
     }
     &-sync-btn {
       display: flex;
@@ -38,14 +41,11 @@
   &-body {
     display: flex;
     &-wallet-title {
-      display: flex;
-      flex: 1;
-      align-items: center;
-      padding: 18px 0px;
-      margin: 0 57px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       font-size: 14px;
-      line-height: 14px;
-      border-bottom: 1px solid @borderColor;
+      height: 40px;
+      padding: 8px 0;
       &-name {
         color: @textContext;
         margin-right: 20px;
@@ -53,30 +53,110 @@
       &-key {
         font-weight: 500;
         margin-right: 8px;
-      }
-      &-blank {
-        margin: 0 12px;
+        color: #858585;
       }
       &-value {
+        margin-left: 8px;
+        color: #252525;
       }
     }
     &-wallet-content {
       flex: 4;
-      padding: 10px 10px 0px 57px;
       color: @textContext;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas:
+        "myWalletAssets myWalletBalance myWalletProfit"
+        "myWalletActiveVotes myWalletRedeemedVotes myWalletTime";
+      grid-column-gap: 16px;
       > li {
-        display: inline-block;
-        width: 33%;
-        margin: 5px 0;
+        margin: 8px 0;
+        height: 24px;
+        .item-type {
+          color: #858585;
+        }
         .item-value {
-          margin-left: 3px;
-          color: @bgMain;
+          margin-left: 8px;
+          color: #252525;
         }
       }
       &-withdraw-btn.ant-btn.ant-btn-sm {
-        margin-left: 10px;
-        background-color: @buyColor;
+        margin-left: 8px;
+        border-radius: 4px;
+        height: 24px;
+        padding: 0px 12px;
+        font-size: 12px;
+        border: 1px solid #266cd3;
+        background-color: #266cd3 !important;
+        color: #fff;
+        &.ant-btn-primary:active {
+          color: #fff;
+          background: var(--color-brand-pressed, #155abf) !important;
+        }
+        &.ant-btn-primary:hover {
+          color: #fff;
+          background: var(--color-brand-hover, #327dec) !important;
+        }
       }
+      .assets {
+        grid-area: myWalletAssets;
+      }
+      .balance {
+        grid-area: myWalletBalance;
+      }
+      .profit {
+        grid-area: myWalletProfit;
+      }
+      .active-votes {
+        grid-area: myWalletActiveVotes;
+      }
+      .redeemed-votes {
+        grid-area: myWalletRedeemedVotes;
+      }
+      .time {
+        grid-area: myWalletTime;
+      }
+    }
+  }
+  .refresh-btn {
+    border-radius: 4px;
+    display: flex;
+    height: 32px;
+    padding: 0px 16px;
+    border: 1px solid var(--color-brand-default, #266cd3);
+    background: var(--color-white, #fff);
+    color: var(--color-brand-default, #266cd3);
+    &.ant-btn-text:active {
+      border: 1px solid var(--color-brand-pressed, #155abf);
+      background: var(--color-white, #fff);
+    }
+    &.ant-btn-text:hover {
+      border: 1px solid var(--color-brand-hover, #327dec);
+      background: var(--color-white, #fff);
+    }
+    &.ant-btn-text[disabled] {
+      border: 1px solid var(--color-border, #d0d0d0);
+      background: var(--color-hover, #f7f8fa) !important;
+    }
+  }
+
+  .login-btn,
+  .logout-btn {
+    margin-left: 8px;
+    border-radius: 4px;
+    display: flex;
+    height: 32px;
+    padding: 0px 16px;
+    border: 1px solid #266cd3;
+    background-color: #266cd3 !important;
+    color: #fff;
+    &.ant-btn-text:active {
+      color: #fff;
+      background: var(--color-brand-pressed, #155abf) !important;
+    }
+    &.ant-btn-text:hover {
+      color: #fff;
+      background: var(--color-brand-hover, #327dec) !important;
     }
   }
 }
@@ -94,11 +174,10 @@
       &-wallet-title {
         padding-bottom: 10px;
         border-right: 0;
-        border-bottom: @cardSplit;
         margin: 0 8px;
         word-break: break-word;
-        display: block;
-
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         div {
           margin: 8px 0;
         }
@@ -116,12 +195,8 @@
             min-height: 45px;
           }
           .item-value {
-            //display: block;
             min-height: 45px;
           }
-          //.item-extra {
-          //  display: none;
-          //}
         }
       }
     }

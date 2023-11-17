@@ -258,6 +258,7 @@ class NodeTable extends PureComponent {
         title: "Operations",
         key: "operations",
         width: 210,
+        fixed: "right",
         render: (text, record) => (
           <div className={`${clsPrefix}-btn-group`}>
             <Button

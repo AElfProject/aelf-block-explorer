@@ -9,45 +9,78 @@
 .apply-node-modal.ant-modal {
   text-align: center;
   overflow: hidden;
-  .ant-modal-footer {
-    padding-bottom: 32px;
+  .ant-modal-close-x {
+    color: rgba(16, 16, 16, 1);
   }
+  .ant-modal-footer {
+    padding-bottom: 53px;
+    .ant-btn {
+      width: 182px;
+      height: 37px;
+      border-radius: 4px;
+      background-color: rgba(120, 102, 222, 1);
+    }
+  }
+  .ant-modal-content {
+    .ant-modal-header {
+      .ant-modal-title {
+        line-height: 23px;
+        border: none;
+        padding-top: 30px;
+      }
+    }
+    .ant-modal-body {
+      padding: 16px 60px 24px 31px;
+    }
+  }
+
   .ant-form {
-    width: 70%;
+    width: 100%;
     .ant-form-item {
       border: none;
       .ant-form-item-label {
         label {
-          color: @cusBlack;
-          font-weight: bold;
+          color: rgba(187, 187, 187, 1);
         }
       }
       .ant-form-item-control {
-        line-height: @modalFormItemHeight;
+        line-height: 20px;
+        margin-left: 20px;
         .list-item-value {
-          color: @primary-color;
+          color: rgba(16, 16, 16, 1);
         }
       }
-      // &-with-help {
-      //   margin-bottom: 45px;
-      // }
     }
     .candidate-admin {
+      .ant-form-item-label {
+        label {
+          color: rgba(16, 16, 16, 1);
+        }
+      }
       .ant-form-item-control {
         display: flex;
-        // align-items: center;
         .ant-form-item-control-input-content {
           display: flex;
-          align-items: center;
+          input {
+            text-align: left;
+          }
         }
-        // .ant-form-item-explain {
-        //   min-height: 22px;
-        //   margin-top: -2px;
-        // }
       }
       &-tip {
         margin-left: 8px;
+        line-height: 32px;
       }
+    }
+  }
+
+  .tip-color {
+    text-align: left;
+    margin-left: 20px;
+    strong {
+      color: black;
+    }
+    .main-tip {
+      text-align: center;
     }
   }
 }

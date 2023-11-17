@@ -10,7 +10,7 @@ export const onlyOkModal = ({ message }: IOnlyOkModal) => {
   const isMobile = isPhoneCheck();
   Modal.confirm({
     className: `only-ok-modal${isMobile ? "-mobile" : ""}`,
-    width: "720",
+    width: "680",
     title: <div style={{ textAlign: "left" }}>{message}</div>,
     icon: null,
     cancelButtonProps: { style: { display: "none" } },
@@ -19,6 +19,6 @@ export const onlyOkModal = ({ message }: IOnlyOkModal) => {
 
 export const showAccountInfoSyncingModal = () => {
   onlyOkModal({
-    message: "Synchronizing on-chain account information..."
-  })
-}
+    message: "Synchronizing on-chain account information...",
+  });
+};

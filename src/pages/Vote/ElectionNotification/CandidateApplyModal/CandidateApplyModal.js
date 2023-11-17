@@ -10,11 +10,13 @@ import React, { PureComponent, forwardRef } from "react";
 import AElf from "aelf-sdk";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Form, Input, Modal, Tooltip } from "antd";
-import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from "@src/constants";
+import { RUN_INDIVIDUAL_NODES_TIP, SYMBOL } from "@src/constants";
 import {
   ELECTION_MORTGAGE_NUM_STR,
+  MINIMUN_HARDWARE_ADVICE,
   HARDWARE_ADVICE,
 } from "@pages/Vote/constants";
+import { NETWORK_TYPE } from "@config/config";
 import { connect } from "react-redux";
 import "./CandidateApplyModal.style.less";
 import addressFormat from "../../../../utils/addressFormat";
@@ -22,19 +24,32 @@ import addressFormat from "../../../../utils/addressFormat";
 const modalFormItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 12 },
+    sm: { span: 8 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 12 },
+    sm: { span: 15 },
   },
+};
+
+const handleStrToArr = (str) => {
+  const arr = str.split(",");
+  return arr;
 };
 
 function generateCandidateApplyForm(currentWallet) {
   return {
     formItems: [
       {
-        label: "Mortgage Add",
+        label: "Wallet",
+        render: (
+          <span className="list-item-value">
+            {currentWallet?.name || currentWallet?.address}
+          </span>
+        ),
+      },
+      {
+        label: "Address",
         render: (
           <span className="list-item-value">
             {addressFormat(currentWallet?.address)}
@@ -42,10 +57,10 @@ function generateCandidateApplyForm(currentWallet) {
         ),
       },
       {
-        label: "Mortgage Amount",
+        label: "Required Staking",
         render: (
           <span className="list-item-value">
-            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL} &nbsp;&nbsp;&nbsp;
+            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL} &nbsp;
             <Tooltip
               title={`The ${SYMBOL} cannot be redeemed during the time being a BP
               node`}
@@ -56,18 +71,23 @@ function generateCandidateApplyForm(currentWallet) {
         ),
       },
       {
-        label: "Wallet",
+        label: "Minimum Configuration",
         render: (
-          <span className="list-item-value">
-            {currentWallet?.name || currentWallet?.address}
-          </span>
+          <>
+            {handleStrToArr(MINIMUN_HARDWARE_ADVICE).map((ele) => {
+              return <div className="list-item-value">- {ele}</div>;
+            })}
+          </>
         ),
       },
       {
-        label: "Hardware Advice",
+        label: "Recommended Configuration",
         render: (
-          // <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-          <span className="list-item-value">{HARDWARE_ADVICE}</span>
+          <>
+            {handleStrToArr(HARDWARE_ADVICE).map((ele) => {
+              return <div className="list-item-value">- {ele}</div>;
+            })}
+          </>
         ),
       },
     ],
@@ -121,7 +141,7 @@ class CandidateApplyModal extends PureComponent {
           <Input
             ref={ref}
             {...props}
-            placeholder="Please input admin address"
+            placeholder="Please enter admin address"
           />
           <Tooltip
             className="candidate-admin-tip"
@@ -136,7 +156,9 @@ class CandidateApplyModal extends PureComponent {
       <Modal
         className="apply-node-modal"
         destroyOnClose
-        title="Apply Node"
+        title={`Apply to Become a Block Porducer (BP) ${
+          NETWORK_TYPE === "MAIN" ? " " : "on the Testnet"
+        } `}
         visible={visible}
         okText="Apply Now"
         onOk={this.handleOk}
@@ -144,7 +166,7 @@ class CandidateApplyModal extends PureComponent {
         centered
         maskClosable
         keyboard
-        width={800}
+        width={725}
       >
         <Form {...modalFormItemLayout} ref={this.formRef}>
           {candidateApplyForm.formItems &&
@@ -156,7 +178,7 @@ class CandidateApplyModal extends PureComponent {
               );
             })}
           <Form.Item
-            label="Candidate Admin:"
+            label="Admin account:"
             className="candidate-admin"
             name="admin"
             rules={rules}
@@ -164,7 +186,29 @@ class CandidateApplyModal extends PureComponent {
             <TooltipInput />
           </Form.Item>
         </Form>
-        <p className="tip-color">{NEED_PLUGIN_AUTHORIZE_TIP}</p>
+        <p className="tip-color">
+          {NETWORK_TYPE === "MAIN" ? (
+            <>
+              <strong>Important Notice:</strong> {RUN_INDIVIDUAL_NODES_TIP}
+            </>
+          ) : null}
+
+          <div className={NETWORK_TYPE === "MAIN" && "main-tip"}>
+            Please read the{" "}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={
+                NETWORK_TYPE === "MAIN"
+                  ? "https://docs.aelf.io/en/latest/tutorials/mainnet.html"
+                  : "https://docs.aelf.io/en/latest/tutorials/testnet.html"
+              }
+            >
+              dev docs
+            </a>{" "}
+            for instructions on node deployment.
+          </div>
+        </p>
       </Modal>
     );
   }

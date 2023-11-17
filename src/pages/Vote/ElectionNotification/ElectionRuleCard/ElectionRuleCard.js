@@ -24,7 +24,7 @@ function ElectionRuleCard(props) {
   const onClick = () => {
     if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
       onlyOkModal({
-        message: `Becoming candidate nodes with smart contract wallet addresses are currently not supported.`,
+        message: `Becoming a candidate node with smart contracnt wallet address is not supported.`,
       });
       return;
     }
