@@ -362,7 +362,7 @@ class MyWalletCard extends PureComponent {
                 <span className="my-wallet-card-body-wallet-title-key">
                   Name:
                 </span>
-                <span className="my-wallet-card-body-wallet-value">
+                <span className="my-wallet-card-body-wallet-title-value">
                   {currentWallet?.name || "-"}
                 </span>
               </div>
@@ -370,7 +370,7 @@ class MyWalletCard extends PureComponent {
                 <span className="my-wallet-card-body-wallet-title-key">
                   Address:
                 </span>
-                <span className="my-wallet-card-body-wallet-value">
+                <span className="my-wallet-card-body-wallet-title-value">
                   {formattedAddress || "-"}
                 </span>
               </div>
@@ -381,8 +381,12 @@ class MyWalletCard extends PureComponent {
               {walletItems.map((item) => (
                 <li key={item.type} className={item.class}>
                   <span className="item-type">{item.type}:</span>
-                  <span className="item-value">{item.value}</span>
-                  <span className="item-extra">{item.extra}</span>
+                  <span>
+                    <span className="item-value">{item.value}</span>
+                    {item.extra && (
+                      <span className="item-extra">{item.extra}</span>
+                    )}
+                  </span>
                 </li>
               ))}
             </ul>
