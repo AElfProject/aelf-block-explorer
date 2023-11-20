@@ -399,7 +399,6 @@ button {
   white-space: pre-line;
 }
 
-// todo: Consider to using a more proper name to instead table-btn
 .table-btn {
   line-height: 1;
   border: none;
@@ -418,6 +417,62 @@ button {
   }
   &.redeem-btn {
     background-color: @buyColor;
+  }
+}
+
+.node-table-wrapper {
+  td.ant-table-cell-fix-right {
+    .node-table-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 8px;
+      .table-btn {
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        display: flex;
+        height: 24px;
+        padding: 0px;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        &.ant-btn-default[disabled] {
+          border: 1px solid var(--color-border, #d0d0d0);
+          background: var(--color-hover, #f7f8fa);
+          color: var(--color-border, #d0d0d0);
+        }
+        &.vote-btn {
+          background: var(--color-brand-default, #266cd3);
+          &:hover {
+            background: var(--color-brand-hover, #327dec);
+          }
+        }
+        &.redeem-btn {
+          background-color: @buyColor;
+        }
+      }
+    }
+  }
+  @media (max-width: @lgScreenWidth) {
+    td.ant-table-cell-fix-right {
+      padding-right: 0 !important;
+      .node-table-btn-group {
+        button:first-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  @media (max-width: @smallScreenWidth) {
+    td.ant-table-cell-fix-right {
+      padding-right: 0 !important;
+      .node-table-btn-group {
+        .table-btn {
+          font-size: 10px;
+        }
+      }
+    }
   }
 }
 

@@ -45,7 +45,7 @@ export default class StatisticalData extends PureComponent {
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { data } = this.props;
 
     if (prevProps.data !== data) {
@@ -65,26 +65,45 @@ export default class StatisticalData extends PureComponent {
   }
 
   renderList(arr) {
-    return arr.map((item, index) => {
+    return arr.map((item) => {
       const number = item.num;
+      const { tooltip } = item;
       if (item.isRender) {
         return item.num;
       }
       return item.isCountdown ? (
         <Countdown
-          key={index}
-          title={item.title}
+          key={item.title}
+          title={
+            <>
+              <span>{item.title}</span>
+              {tooltip ? (
+                <Tooltip title={tooltip}>
+                  <ExclamationCircleOutlined style={{ fontSize: 20 }} />
+                </Tooltip>
+              ) : null}
+            </>
+          }
           value={item.num || 0}
-          format='D day HH : mm : ss '
+          format="D day HH : mm : ss "
           onFinish={() => {
             this.handleFinish(item.id);
           }}
         />
       ) : (
         <Statistic
-          key={index}
-          title={item.title}
-          value={isNaN(parseInt(number, 10)) ? 0 : number}
+          key={item.title}
+          title={
+            <>
+              <span>{item.title}</span>
+              {tooltip ? (
+                <Tooltip title={tooltip}>
+                  <ExclamationCircleOutlined style={{ fontSize: 20 }} />
+                </Tooltip>
+              ) : null}
+            </>
+          }
+          value={Number.isNaN(parseInt(number, 10)) ? 0 : number}
         />
       );
     });

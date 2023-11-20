@@ -38,6 +38,7 @@ const electionNotifiStatisData = {
     title: "Current Term's Countdown (-th term)",
     isCountdown: true,
     resetTime: 1000 * 60 * 60 * 24 * 7,
+    tooltip: ELECTION_NOTIFI_DATA_TIP,
   },
   currentNodesAmount: {
     id: 1,
@@ -446,12 +447,7 @@ class ElectionNotification extends PureComponent {
 
     return (
       <section>
-        <StatisticalData
-          data={statisData}
-          spinning={statisDataLoading}
-          style={{ marginBottom: 20 }}
-          tooltip={ELECTION_NOTIFI_DATA_TIP}
-        />
+        <StatisticalData data={statisData} spinning={statisDataLoading} />
         <div className="election-blank" />
         <ElectionRuleCard
           isCandidate={isCandidate}

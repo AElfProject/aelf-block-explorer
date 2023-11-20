@@ -172,6 +172,18 @@ class NodeTable extends PureComponent {
     // )
   });
 
+  getWidth() {
+    const width = document.body.offsetWidth;
+    switch (width) {
+      case 768:
+        return 106;
+      case 1024:
+        return 166;
+      default:
+        return 203;
+    }
+  }
+
   getCols() {
     const nodeListCols = [
       {
@@ -257,15 +269,13 @@ class NodeTable extends PureComponent {
       {
         title: "Operations",
         key: "operations",
-        width: 210,
+        width: this.getWidth(),
         fixed: "right",
         render: (text, record) => (
           <div className={`${clsPrefix}-btn-group`}>
             <Button
               className="table-btn vote-btn"
               key={record.pubkey}
-              type="primary"
-              style={{ marginRight: 14 }}
               disabled={isActivityBrowser()}
               data-nodeaddress={record.formattedAddress}
               data-targetpublickey={record.pubkey}
@@ -279,7 +289,6 @@ class NodeTable extends PureComponent {
             <Button
               className="table-btn redeem-btn"
               key={record.pubkey + 1}
-              type="primary"
               data-role="redeem"
               data-shoulddetectlock
               data-nodeaddress={record.formattedAddress}
