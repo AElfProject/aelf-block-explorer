@@ -10,10 +10,14 @@
 
 // todo: Unify the way write css selector
 .my-wallet-card {
-  padding: 16px;
+  padding: 16px 16px 0;
   background: @bgBlankWhite;
   overflow: hidden;
   font-size: 12px;
+  .my-wallet-content {
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 16px;
+  }
 
   &-header {
     background: @bgBlankWhite;
@@ -27,9 +31,12 @@
       line-height: 22px;
       font-size: 14px;
       .wallet-icon {
-        width: 12px;
-        height: 12px;
-        color: #252525;
+        margin-right: 4px;
+        svg {
+          width: 12px;
+          height: 12px;
+          color: #252525;
+        }
       }
     }
     &-sync-btn {
@@ -121,6 +128,7 @@
     }
   }
   .refresh-btn {
+    width: 94px;
     font-size: 12px;
     border-radius: 4px;
     display: flex;
@@ -146,6 +154,7 @@
 
   .login-btn,
   .logout-btn {
+    width: 94px;
     font-size: 12px;
     margin-left: 8px;
     border-radius: 4px;

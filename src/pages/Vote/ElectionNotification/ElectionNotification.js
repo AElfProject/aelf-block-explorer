@@ -446,15 +446,15 @@ class ElectionNotification extends PureComponent {
     const { electionContract } = this.props;
 
     return (
-      <section>
-        <StatisticalData data={statisData} spinning={statisDataLoading} />
-        <div className="election-blank" />
+      <section className="election-notification">
+        <div className="statistical-data-content">
+          <StatisticalData data={statisData} spinning={statisDataLoading} />
+        </div>
         <ElectionRuleCard
           isCandidate={isCandidate}
           quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
-        <div className="election-blank" />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -467,7 +467,6 @@ class ElectionNotification extends PureComponent {
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
         />
-        <div className="election-blank" />
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}

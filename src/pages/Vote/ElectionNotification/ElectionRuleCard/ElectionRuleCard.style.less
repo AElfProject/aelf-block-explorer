@@ -7,18 +7,23 @@
  * @Description: file content
  */
 .election-rule-card {
-  //margin-bottom: 20px;
-  //padding: 40px 100px;
-  //padding: 20px 57px;
   background: @bgBlankWhite;
+  padding: 16px 16px 0;
+
+  .election-rule-content {
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 16px;
+  }
   .election-intro {
-    //text-indent: 40px;
-    color: @textContext;
+    color: var(--color-font-title, #252525);
     font-size: 14px;
-    //margin-bottom: 60px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px;
+    padding-bottom: 8px;
   }
   .election-container {
-    padding: 20px 57px;
+    padding: 8px 0 0;
     .view-plan-link {
       text-decoration: underline;
       margin-left: 30px;
@@ -26,15 +31,26 @@
   }
   .election-header-title {
     background: @bgBlankWhite;
-    padding: 30px 57px 20px;
+    padding: 8px 0 0;
     overflow: hidden;
-    border-bottom: 1px solid @borderColor;
+    font-size: 14px;
+    font-weight: 500;
+    .anticon {
+      svg {
+        display: flex;
+        width: 12px;
+        height: 12px;
+        justify-content: center;
+        align-items: center;
+        margin-right: 4px;
+      }
+    }
   }
   .btn-group {
     position: relative;
     overflow: hidden;
     text-align: center;
-    margin: 10px 0;
+    margin: 8px 0;
     .view-node-election-plan-btn {
       a {
         color: @textContext;
@@ -43,11 +59,11 @@
     }
     .apply-to-be-a-node-btn {
       height: 32px;
-      width: 320px;
       background: @bgMain;
       border: none;
-      border-radius: 5px;
-      margin-top: 16px;
+      border-radius: 4px;
+      height: 40px;
+      padding: 0px 20px;
       &:hover {
         background: @bgMainHover;
       }
@@ -73,27 +89,8 @@
   }
 }
 
-@media (max-width: @smallScreenWidth) {
-  .ant-modal .ant-form {
+@media (max-width: @xsScreenWidth) {
+  .apply-to-be-a-node-btn {
     width: 100%;
-  }
-  .election-rule-card {
-    padding: 20px 16px;
-    .election-header-title {
-      padding: 20px;
-    }
-    .election-container {
-      padding: 20px;
-      .view-plan-link {
-        display: block;
-        margin-left: 0;
-        text-align: center;
-        margin-top: 20px;
-      }
-    }
-    .election-intro {
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
   }
 }

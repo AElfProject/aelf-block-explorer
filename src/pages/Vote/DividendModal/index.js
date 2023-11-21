@@ -51,19 +51,21 @@ const DividendModal = (props) => {
         <Else>
           <>
             {dividends.amounts.map((item, index) => (
-              <Row
+              <div
                 key={item.type}
                 className="claim-profit-item"
                 justify="space-between"
               >
-                <Col span={10} className="text-left">
+                <div className="text-left">
                   <span className="profit-item-key">{item.type}: </span>
-                </Col>
-                <Dividends
-                  className="profit-item-value"
-                  dividends={item.amounts}
-                />
-                <Col span={8} className="text-right">
+                </div>
+                <div className="text-center">
+                  <Dividends
+                    className="profit-item-value"
+                    dividends={item.amounts}
+                  />
+                </div>
+                <div className="text-right">
                   <Button
                     disabled={tokenCounts[index] === 0}
                     type="primary"
@@ -75,8 +77,8 @@ const DividendModal = (props) => {
                   >
                     Claim Profit
                   </Button>
-                </Col>
-              </Row>
+                </div>
+              </div>
             ))}
           </>
         </Else>

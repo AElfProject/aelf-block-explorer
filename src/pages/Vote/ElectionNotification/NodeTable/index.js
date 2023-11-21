@@ -174,10 +174,10 @@ class NodeTable extends PureComponent {
 
   getWidth() {
     const width = document.body.offsetWidth;
-    switch (width) {
-      case 768:
+    switch (true) {
+      case width <= 768:
         return 106;
-      case 1024:
+      case width < 1024 && width > 768:
         return 166;
       default:
         return 203;

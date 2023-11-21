@@ -125,11 +125,11 @@ export default class StatisticalData extends PureComponent {
               inline ? "inline-style" : ""
             }`}
           >
-            {tooltip ? (
+            {/* {tooltip ? (
               <Tooltip title={tooltip}>
                 <ExclamationCircleOutlined style={{ fontSize: 20 }} />
               </Tooltip>
-            ) : null}
+            ) : null} */}
             {listHTML}
           </section>
         </Spin>

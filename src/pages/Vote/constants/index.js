@@ -8,7 +8,7 @@
  */
 import { thousandsComma } from "@utils/formater";
 // todo: handle the code as follow
-import { ELF_DECIMAL } from "@src/constants";
+import { ELF_DECIMAL, MY_VOTE_DATA_TIP } from "@src/constants";
 
 //  The contracts need to load in page ElectionNotification
 const contractsNeedToLoad = [
@@ -52,6 +52,7 @@ const contractsNeedToLoadFromExt = [
 const myVoteStatistData = {
   myTotalVotesAmount: {
     title: "Total Votes",
+    tooltip: MY_VOTE_DATA_TIP,
   },
   // myVoteProfit: {
   //   title: `投票收益(${LOWER_SYMBOL})`

@@ -9,38 +9,51 @@
 
 .profit-item-value {
   color: @primary-color;
-  font-size: 16px;
+  font-size: 12px;
   display: inline-block;
 }
 
 .dividend-modal.ant-modal {
-  width: 543px;
-  border-radius: 4px;
+  width: 672px;
+  border-radius: 8px;
+  .ant-modal-close-icon {
+    position: absolute;
+    top: 17px;
+    right: 16px;
+  }
   .ant-modal-content {
     .ant-modal-header {
+      border-bottom: 1px solid #e6e6e6;
       .ant-modal-title {
-        padding-top: 30px;
-        padding-bottom: 26px;
-        border: none;
+        padding: 17px 16px;
+        border: 0;
       }
     }
     .ant-modal-body {
-      padding: 0 40px 27.5px;
+      padding: 24px 16px;
+      display: grid;
+      grid-gap: 16px;
+      font-size: 12px;
       .profit-item-key {
-        color: rgba(16, 16, 16, 1);
-        font-size: 14px;
+        color: var(--color-font-caption, #858585);
       }
       .claim-profit-item {
-        margin: 16px auto;
         width: 100%;
+        color: var(--color-font-title, #252525);
+        display: grid;
+        grid-template-columns: 140px 1fr 96px;
+        grid-gap: 8px;
+        .text-center {
+          text-align: left;
+        }
         .ant-btn {
-          width: 119px;
-          height: 23px;
-          line-height: 17px;
+          width: 96px;
+          height: 24px;
           border-radius: 4px;
-          background-color: rgba(187, 187, 187, 1);
-          color: rgba(255, 255, 255, 1);
           font-size: 12px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       }
     }

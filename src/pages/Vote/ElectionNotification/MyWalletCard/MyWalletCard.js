@@ -312,86 +312,89 @@ class MyWalletCard extends PureComponent {
 
     return (
       <section className="my-wallet-card">
-        <Spin spinning={loading}>
-          <div className="my-wallet-card-header">
-            <h2 className="my-wallet-card-header-title">
-              <IconFont
-                type="vote-group"
-                className="card-header-icon wallet-icon"
-              />
-              My Wallet
-            </h2>
-            {!isActivityBrowser() &&
-              (loginState === WebLoginState.initial ||
-                loginState === WebLoginState.lock ||
-                loginState === WebLoginState.logining) && (
+        <div className="my-wallet-content">
+          <Spin spinning={loading}>
+            <div className="my-wallet-card-header">
+              <h2 className="my-wallet-card-header-title">
+                <IconFont
+                  type="vote-group"
+                  className="card-header-icon wallet-icon"
+                />
+                My Wallet
+              </h2>
+              {!isActivityBrowser() &&
+                (loginState === WebLoginState.initial ||
+                  loginState === WebLoginState.lock ||
+                  loginState === WebLoginState.logining) && (
+                  <Button
+                    type="text"
+                    className="my-wallet-card-header-sync-btn login-btn"
+                    onClick={this.loginOrUnlock}
+                  >
+                    <IconFont type="vote-login" />
+                    Log In
+                  </Button>
+                )}
+
+              {!this.isPhone && currentWallet?.address && (
                 <Button
                   type="text"
-                  className="my-wallet-card-header-sync-btn login-btn"
-                  onClick={this.loginOrUnlock}
+                  className="my-wallet-card-header-sync-btn logout-btn"
+                  disabled={!currentWallet?.address}
+                  onClick={this.extensionLogout}
                 >
-                  Login
+                  <LogoutOutlined />
+                  Log Out
                 </Button>
               )}
 
-            {!this.isPhone && currentWallet?.address && (
               <Button
                 type="text"
-                className="my-wallet-card-header-sync-btn logout-btn"
+                className="my-wallet-card-header-sync-btn refresh-btn "
                 disabled={!currentWallet?.address}
-                onClick={this.extensionLogout}
+                onClick={this.handleUpdateWalletClick}
               >
-                <LogoutOutlined />
-                Log Out
+                <SyncOutlined spin={loading} />
+                Refresh
               </Button>
-            )}
-
-            <Button
-              type="text"
-              className="my-wallet-card-header-sync-btn refresh-btn "
-              disabled={!currentWallet?.address}
-              onClick={this.handleUpdateWalletClick}
-            >
-              <SyncOutlined spin={loading} />
-              Refresh
-            </Button>
-          </div>
-          <div className="my-wallet-card-body-wallet-title">
-            <>
-              <div className="name">
-                <span className="my-wallet-card-body-wallet-title-key">
-                  Name:
-                </span>
-                <span className="my-wallet-card-body-wallet-title-value">
-                  {currentWallet?.name || "-"}
-                </span>
-              </div>
-              <div className="address">
-                <span className="my-wallet-card-body-wallet-title-key">
-                  Address:
-                </span>
-                <span className="my-wallet-card-body-wallet-title-value">
-                  {formattedAddress || "-"}
-                </span>
-              </div>
-            </>
-          </div>
-          <div className="my-wallet-card-body">
-            <ul className="my-wallet-card-body-wallet-content">
-              {walletItems.map((item) => (
-                <li key={item.type} className={item.class}>
-                  <span className="item-type">{item.type}:</span>
-                  <span>
-                    <span className="item-value">{item.value}</span>
-                    {item.extra && (
-                      <span className="item-extra">{item.extra}</span>
-                    )}
+            </div>
+            <div className="my-wallet-card-body-wallet-title">
+              <>
+                <div className="name">
+                  <span className="my-wallet-card-body-wallet-title-key">
+                    Name:
                   </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Spin>
+                  <span className="my-wallet-card-body-wallet-title-value">
+                    {currentWallet?.name || "-"}
+                  </span>
+                </div>
+                <div className="address">
+                  <span className="my-wallet-card-body-wallet-title-key">
+                    Address:
+                  </span>
+                  <span className="my-wallet-card-body-wallet-title-value">
+                    {formattedAddress || "-"}
+                  </span>
+                </div>
+              </>
+            </div>
+            <div className="my-wallet-card-body">
+              <ul className="my-wallet-card-body-wallet-content">
+                {walletItems.map((item) => (
+                  <li key={item.type} className={item.class}>
+                    <span className="item-type">{item.type}:</span>
+                    <span>
+                      <span className="item-value">{item.value}</span>
+                      {item.extra && (
+                        <span className="item-extra">{item.extra}</span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Spin>
+        </div>
       </section>
     );
   }

@@ -69,9 +69,34 @@ button {
   .ellipsis;
 }
 
+.vote-wrapper {
+  header {
+    max-width: 1200px;
+    margin: auto;
+    padding: 24px 0 0;
+    color: var(--color-font-title, #252525);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+  }
+}
+@media (max-width: @lgScreenWidth) {
+  .vote-wrapper {
+    padding: 0 20px;
+  }
+}
+
 // specific for current page
 .vote-container {
   padding: 20px 0;
+  &.vote-menu {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-bottom: 0 !important;
+  }
+  &.vote-content {
+    margin-top: 0 !important;
+  }
   .ant-tabs-tab {
     &:hover > a {
       color: #40a9ff !important;
@@ -83,7 +108,8 @@ button {
     }
   }
   .ant-menu {
-    background: @bgBlankGrey;
+    background: #fff;
+    padding-left: 16px;
     .ant-menu-item {
       font-size: 14px;
       font-weight: 500;
@@ -467,6 +493,7 @@ button {
   @media (max-width: @smallScreenWidth) {
     td.ant-table-cell-fix-right {
       padding-right: 0 !important;
+      padding-left: 8px !important;
       .node-table-btn-group {
         .table-btn {
           font-size: 10px;

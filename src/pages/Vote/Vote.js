@@ -1104,7 +1104,7 @@ class VoteContainer extends Component {
 
   renderSecondaryLevelNav() {
     return (
-      <section className="vote-container vote-container-simple basic-container basic-container-white">
+      <section className="vote-container vote-container-simple basic-container basic-container-white vote-menu">
         <Menu selectedKeys={[window.location.pathname]} mode="horizontal">
           <Menu.Item
             key={routePaths.electionNotifi}
@@ -1225,10 +1225,11 @@ class VoteContainer extends Component {
 
     const secondaryLevelNav = this.renderSecondaryLevelNav();
     return (
-      <div>
+      <div className="vote-wrapper">
+        <header>Vote</header>
         {secondaryLevelNav}
         <section
-          className="vote-container vote-container-simple basic-container basic-container-white"
+          className="vote-container vote-container-simple basic-container basic-container-white vote-content"
           onClick={this.handleClick}
         >
           <Routes>

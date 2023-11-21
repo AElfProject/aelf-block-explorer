@@ -8,7 +8,7 @@
  */
 import React, { PureComponent, forwardRef } from "react";
 import AElf from "aelf-sdk";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Form, Input, Modal, Tooltip } from "antd";
 import { RUN_INDIVIDUAL_NODES_TIP, SYMBOL } from "@src/constants";
 import {
@@ -20,17 +20,7 @@ import { NETWORK_TYPE } from "@config/config";
 import { connect } from "react-redux";
 import "./CandidateApplyModal.style.less";
 import addressFormat from "../../../../utils/addressFormat";
-
-const modalFormItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 15 },
-  },
-};
+import IconFont from "../../../../components/IconFont";
 
 const handleStrToArr = (str) => {
   const arr = str.split(",");
@@ -65,7 +55,7 @@ function generateCandidateApplyForm(currentWallet) {
               title={`The ${SYMBOL} cannot be redeemed during the time being a BP
               node`}
             >
-              <ExclamationCircleOutlined />
+              <QuestionCircleOutlined />
             </Tooltip>
           </span>
         ),
@@ -147,7 +137,7 @@ class CandidateApplyModal extends PureComponent {
             className="candidate-admin-tip"
             title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
           >
-            <ExclamationCircleOutlined />
+            <QuestionCircleOutlined />
           </Tooltip>
         </>
       );
@@ -168,7 +158,7 @@ class CandidateApplyModal extends PureComponent {
         keyboard
         width={725}
       >
-        <Form {...modalFormItemLayout} ref={this.formRef}>
+        <Form ref={this.formRef}>
           {candidateApplyForm.formItems &&
             candidateApplyForm.formItems.map((item) => {
               return (
@@ -187,27 +177,31 @@ class CandidateApplyModal extends PureComponent {
           </Form.Item>
         </Form>
         <p className="tip-color">
-          {NETWORK_TYPE === "MAIN" ? (
+          <IconFont type="circle-warning" />
+          <strong>Important Notice:</strong>
+          <span className="notice-text">
+            <div>{RUN_INDIVIDUAL_NODES_TIP}</div>
+            {/* {NETWORK_TYPE === "MAIN" ? (
             <>
-              <strong>Important Notice:</strong> {RUN_INDIVIDUAL_NODES_TIP}
+              <strong>Important Notice:</strong> <div>{RUN_INDIVIDUAL_NODES_TIP}</div>
             </>
-          ) : null}
-
-          <div className={NETWORK_TYPE === "MAIN" && "main-tip"}>
-            Please read the{" "}
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href={
-                NETWORK_TYPE === "MAIN"
-                  ? "https://docs.aelf.io/en/latest/tutorials/mainnet.html"
-                  : "https://docs.aelf.io/en/latest/tutorials/testnet.html"
-              }
-            >
-              dev docs
-            </a>{" "}
-            for instructions on node deployment.
-          </div>
+          ) : null} */}
+            <div>
+              Please read the{" "}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={
+                  NETWORK_TYPE === "MAIN"
+                    ? "https://docs.aelf.io/en/latest/tutorials/mainnet.html"
+                    : "https://docs.aelf.io/en/latest/tutorials/testnet.html"
+                }
+              >
+                dev docs
+              </a>{" "}
+              for instructions on node deployment.
+            </div>
+          </span>
         </p>
       </Modal>
     );
