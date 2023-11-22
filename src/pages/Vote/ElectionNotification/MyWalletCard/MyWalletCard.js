@@ -7,13 +7,15 @@
  * @Description: file content
  */
 import React, { PureComponent } from "react";
+import { Link } from "react-router-dom";
 import { Button, message, Spin } from "antd";
 import moment from "moment";
-import { SyncOutlined, WalletFilled, LogoutOutlined } from "@ant-design/icons";
+import { SyncOutlined, LogoutOutlined } from "@ant-design/icons";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { ELF_DECIMAL, SYMBOL } from "@src/constants";
 import { WebLoginState } from "aelf-web-login";
 import { connect } from "react-redux";
+import CopyButton from "../../../../components/CopyButton/CopyButton";
 import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
@@ -373,7 +375,20 @@ class MyWalletCard extends PureComponent {
                     Address:
                   </span>
                   <span className="my-wallet-card-body-wallet-title-value">
-                    {formattedAddress || "-"}
+                    {formattedAddress ? (
+                      <>
+                        <Link
+                          className="info"
+                          to={`/address/${formattedAddress}`}
+                          title={formattedAddress}
+                        >
+                          {formattedAddress}
+                        </Link>
+                        <CopyButton value={formattedAddress} />
+                      </>
+                    ) : (
+                      "-"
+                    )}
                   </span>
                 </div>
               </>
