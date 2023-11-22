@@ -362,7 +362,7 @@ class ElectionNotification extends PureComponent {
         !currentWallet.nightElfInfo
       ) {
         onlyOkModal({
-          message: `Becoming a candidate node with smart contracnt wallet address is not supported.`,
+          message: `Becoming a candidate node with smart contract wallet address is not supported.`,
         });
         this.setState({
           applyModalVisible: false,

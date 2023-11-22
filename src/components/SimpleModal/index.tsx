@@ -9,7 +9,7 @@ interface IOnlyOkModal {
 export const onlyOkModal = ({ message }: IOnlyOkModal) => {
   const isMobile = isPhoneCheck();
   Modal.confirm({
-    className: `only-ok-modal${isMobile ? "-mobile" : ""}`,
+    className: `only-ok-modal ${isMobile ? "only-ok-modal-mobile" : ""}`,
     width: "680",
     title: <div style={{ textAlign: "left" }}>{message}</div>,
     icon: null,

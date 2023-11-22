@@ -8,13 +8,13 @@
  */
 
 .profit-item-value {
-  color: @primary-color;
+  color: #252525;
   font-size: 12px;
   display: inline-block;
 }
 
 .dividend-modal.ant-modal {
-  width: 672px;
+  width: 672px !important;
   border-radius: 8px;
   .ant-modal-close-icon {
     position: absolute;
@@ -60,5 +60,43 @@
   }
   .ant-modal-close-icon {
     color: rgba(16, 16, 16, 1);
+  }
+}
+
+@media (max-width: @lgScreenWidth) {
+  .dividend-modal.ant-modal {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    .ant-modal-content {
+      height: 100vh;
+    }
+  }
+}
+@media (max-width: @xsScreenWidth) {
+  .dividend-modal.ant-modal {
+    .text-left {
+      grid-area: left;
+    }
+    .text-center {
+      grid-area: center;
+    }
+    .text-right {
+      grid-area: right;
+      display: grid;
+      justify-content: end;
+    }
+    .ant-modal-content {
+      .ant-modal-body {
+        .claim-profit-item {
+          grid-template-areas:
+            "left ."
+            "center right";
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    }
   }
 }
