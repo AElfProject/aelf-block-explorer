@@ -8,9 +8,9 @@
  */
 import React, { PureComponent } from "react";
 import { Tooltip, Statistic, Spin } from "antd";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 import "./index.less";
+import IconFont from "../IconFont";
 
 const { Countdown } = Statistic;
 const clsPrefix = "statistical-data";
@@ -79,7 +79,7 @@ export default class StatisticalData extends PureComponent {
               <span>{item.title}</span>
               {tooltip ? (
                 <Tooltip title={tooltip}>
-                  <ExclamationCircleOutlined style={{ fontSize: 20 }} />
+                  <IconFont type="question-circle" style={{ fontSize: 20 }} />
                 </Tooltip>
               ) : null}
             </>
@@ -98,7 +98,7 @@ export default class StatisticalData extends PureComponent {
               <span>{item.title}</span>
               {tooltip ? (
                 <Tooltip title={tooltip}>
-                  <ExclamationCircleOutlined style={{ fontSize: 20 }} />
+                  <IconFont type="question-circle" style={{ fontSize: 20 }} />
                 </Tooltip>
               ) : null}
             </>
@@ -125,11 +125,6 @@ export default class StatisticalData extends PureComponent {
               inline ? "inline-style" : ""
             }`}
           >
-            {/* {tooltip ? (
-              <Tooltip title={tooltip}>
-                <ExclamationCircleOutlined style={{ fontSize: 20 }} />
-              </Tooltip>
-            ) : null} */}
             {listHTML}
           </section>
         </Spin>

@@ -52,8 +52,7 @@ function generateCandidateApplyForm(currentWallet) {
           <span className="list-item-value">
             {ELECTION_MORTGAGE_NUM_STR} {SYMBOL} &nbsp;
             <Tooltip
-              title={`The ${SYMBOL} cannot be redeemed during the time being a BP
-              node`}
+              title={`You cannot redeem the staked ${SYMBOL} until you quit the election and your last term ends.`}
             >
               <QuestionCircleOutlined />
             </Tooltip>
@@ -135,7 +134,7 @@ class CandidateApplyModal extends PureComponent {
           />
           <Tooltip
             className="candidate-admin-tip"
-            title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
+            title="Admin account has the right to replace candidate node's public key, set/change the reward receiving address, and quit the node election. If you are running a node yourself, you can set your own node address as the admin. If you are operating a node on other's behalf, please decide whether you need to assign this role to some other addresses."
           >
             <QuestionCircleOutlined />
           </Tooltip>

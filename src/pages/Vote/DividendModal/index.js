@@ -26,6 +26,7 @@ const DividendModal = (props) => {
     setClaimLoading,
   } = props;
   const tokenCounts = useMemo(() => getTokenCounts(dividends), [dividends]);
+  console.log(dividends.amounts, "dividends.amounts");
   return (
     <Modal
       className="dividend-modal"
@@ -57,7 +58,7 @@ const DividendModal = (props) => {
                 justify="space-between"
               >
                 <div className="text-left">
-                  <span className="profit-item-key">{item.type}: </span>
+                  <span className="profit-item-key">{item.title}: </span>
                 </div>
                 <div className="text-center">
                   <Dividends

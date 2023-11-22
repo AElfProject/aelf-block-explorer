@@ -13,7 +13,7 @@ import moment from "moment";
 import { isPhoneCheck } from "@utils/deviceCheck";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import getContractAddress from "@utils/getContractAddress";
-import config, { schemeIds } from "@config/config";
+import config, { schemeIds as originSchemeIds } from "@config/config";
 import { connect } from "react-redux";
 import { setContractWithName } from "@actions/voteContracts.ts";
 import Decimal from "decimal.js";
@@ -58,6 +58,22 @@ const voteConfirmFormItemLayout = {
   },
 };
 
+const handleschemeIds = (arr) => {
+  const map = {
+    "Citizen Welfare": "Voter Basic Rewards",
+    "Backup Subsidy": "Candidate Node Rewards",
+    "Miner Basic Reward": "BP Basic Rewards",
+    "Welcome Reward": "New BP Rewards",
+    "Flexible Reward": "Voter Flexible Rewards",
+  };
+  const result = arr.map((ele) => {
+    ele.title = map[ele.type];
+    return ele;
+  });
+  [result[2], result[3]] = [result[3], result[2]];
+  return result;
+};
+const schemeIds = handleschemeIds(originSchemeIds);
 class VoteContainer extends Component {
   constructor(props) {
     super(props);
@@ -1014,6 +1030,7 @@ class VoteContainer extends Component {
             type: item.type,
             amounts: value,
             schemeId: item.schemeId,
+            title: item.title,
           };
         });
         const dividends = {

@@ -356,7 +356,7 @@ class MyWalletCard extends PureComponent {
                 disabled={!currentWallet?.address}
                 onClick={this.handleUpdateWalletClick}
               >
-                <SyncOutlined spin={loading} />
+                <IconFont type="reload" />
                 Refresh
               </Button>
             </div>
