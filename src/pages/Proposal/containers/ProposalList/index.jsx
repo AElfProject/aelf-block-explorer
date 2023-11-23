@@ -21,16 +21,22 @@ import {
   Result,
   Modal,
 } from "antd";
-import { useEffectOnce } from 'react-use';
+import { useEffectOnce } from "react-use";
 import { useWebLogin } from "aelf-web-login";
 import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import Total from "../../../../components/Total";
-import constants, { LOADING_STATUS, LOG_STATUS } from "../../../../redux/common/constants";
+import constants, {
+  LOADING_STATUS,
+  LOG_STATUS,
+} from "../../../../redux/common/constants";
 import Proposal from "./Proposal";
 import { getProposals } from "../../../../redux/actions/proposalList";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import "./index.less";
-import { getContractAddress, sendTransactionWith } from "../../../../redux/common/utils";
+import {
+  getContractAddress,
+  sendTransactionWith,
+} from "../../../../redux/common/utils";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";
 
@@ -122,15 +128,17 @@ const ProposalList = () => {
       const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
       window.location.hash = Object.keys(keyFromHash)[index];
     }
+  };
+  useEffect(() => {
     fetchList({
       ...params,
       pageNum: 1,
-      proposalType: key,
+      proposalType: activeKey,
       status: proposalStatus.ALL,
       isContract: 0,
       search: "",
     });
-  };
+  }, [activeKey]);
   const changeKey = () => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
@@ -143,7 +151,7 @@ const ProposalList = () => {
   useEffectOnce(() => {
     const key = changeKey();
     handleTabChange(key);
-  })
+  });
 
   const send = async (id, action) => {
     if (params.proposalType === proposalTypes.REFERENDUM) {
@@ -161,7 +169,12 @@ const ProposalList = () => {
         return;
       }
 
-      sendTransactionWith(callContract, getContractAddress(params.proposalType), action, id);
+      sendTransactionWith(
+        callContract,
+        getContractAddress(params.proposalType),
+        action,
+        id
+      );
 
       // await sendTransaction(
       //   wallet,
