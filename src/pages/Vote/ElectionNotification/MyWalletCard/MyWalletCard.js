@@ -324,41 +324,43 @@ class MyWalletCard extends PureComponent {
                 />
                 My Wallet
               </h2>
-              {!isActivityBrowser() &&
-                (loginState === WebLoginState.initial ||
-                  loginState === WebLoginState.lock ||
-                  loginState === WebLoginState.logining) && (
+              <div>
+                {!isActivityBrowser() &&
+                  (loginState === WebLoginState.initial ||
+                    loginState === WebLoginState.lock ||
+                    loginState === WebLoginState.logining) && (
+                    <Button
+                      type="text"
+                      className="my-wallet-card-header-sync-btn login-btn"
+                      onClick={this.loginOrUnlock}
+                    >
+                      <IconFont type="vote-login" />
+                      Log In
+                    </Button>
+                  )}
+
+                {!this.isPhone && currentWallet?.address && (
                   <Button
                     type="text"
-                    className="my-wallet-card-header-sync-btn login-btn"
-                    onClick={this.loginOrUnlock}
+                    className="my-wallet-card-header-sync-btn logout-btn"
+                    disabled={!currentWallet?.address}
+                    onClick={this.extensionLogout}
                   >
-                    <IconFont type="vote-login" />
-                    Log In
+                    <LogoutOutlined />
+                    Log Out
                   </Button>
                 )}
 
-              {!this.isPhone && currentWallet?.address && (
                 <Button
                   type="text"
-                  className="my-wallet-card-header-sync-btn logout-btn"
+                  className="my-wallet-card-header-sync-btn refresh-btn "
                   disabled={!currentWallet?.address}
-                  onClick={this.extensionLogout}
+                  onClick={this.handleUpdateWalletClick}
                 >
-                  <LogoutOutlined />
-                  Log Out
+                  <IconFont type="reload" />
+                  Refresh
                 </Button>
-              )}
-
-              <Button
-                type="text"
-                className="my-wallet-card-header-sync-btn refresh-btn "
-                disabled={!currentWallet?.address}
-                onClick={this.handleUpdateWalletClick}
-              >
-                <IconFont type="reload" />
-                Refresh
-              </Button>
+              </div>
             </div>
             <div className="my-wallet-card-body-wallet-title">
               <>
