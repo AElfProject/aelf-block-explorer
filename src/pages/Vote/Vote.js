@@ -46,7 +46,6 @@ import addressFormat from "../../utils/addressFormat";
 import { withRouter } from "../../routes/utils";
 import { WebLoginInstance } from "../../utils/webLogin";
 import { fakeWallet } from "../../common/utils";
-import { onlyOkModal } from "../../components/SimpleModal/index.tsx";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -96,6 +95,7 @@ class VoteContainer extends Component {
       switchVoteAmount: 0,
       voteFromExpiredVoteAmount: null,
       voteType: FROM_WALLET,
+      voteLoading: false,
       switchVoteSelectedRowKeys: [],
       voteFromExpiredSelectedRowKeys: [],
       dividendModalVisible: false,
@@ -489,7 +489,11 @@ class VoteContainer extends Component {
     };
 
     const { [role]: fun } = role2Fun;
-
+    if (voteType === FROM_WALLET && this.props.currentWallet?.address) {
+      this.setState({
+        voteLoading: true,
+      });
+    }
     if (shouldDetectLock && fun) {
       // const { currentWallet } = this.props;
       // To make sure that all the operation use wallet take effects on the correct wallet
@@ -612,8 +616,8 @@ class VoteContainer extends Component {
       targetpublickey: targetPublicKey,
       nodename: nodeName = "",
     } = ele.dataset;
-    this.getWalletBalance()
-      .then((res) => {
+    this.getWalletBalance().then(
+      (res) => {
         // todo: unify balance formater: InputNumber's and thousandsCommaWithDecimal's
         const balance = +res.balance / ELF_DECIMAL;
         const formattedBalance = thousandsCommaWithDecimal(balance);
@@ -626,11 +630,17 @@ class VoteContainer extends Component {
           formattedBalance,
           nodeName,
         });
+        this.setState({
+          voteLoading: false,
+        });
         this.changeModalVisible("voteModalVisible", true);
-      })
-      .then(() => {
-        this.changeModalVisible("voteModalVisible", true);
-      });
+      },
+      () => {
+        this.setState({
+          voteLoading: false,
+        });
+      }
+    );
   }
 
   handleRedeemClick(ele) {
@@ -1161,6 +1171,7 @@ class VoteContainer extends Component {
       voteConfirmLoading,
       redeemConfirmLoading,
       claimLoading,
+      voteLoading,
     } = this.state;
 
     const path2Component = [
@@ -1319,6 +1330,16 @@ class VoteContainer extends Component {
             setClaimLoading={this.setClaimLoading}
             claimLoading={claimLoading}
           />
+
+          <Modal
+            open={voteLoading}
+            centered
+            footer={null}
+            className="vote-btn-loading"
+            width={252}
+          >
+            Loading...
+          </Modal>
         </section>
       </div>
     );
