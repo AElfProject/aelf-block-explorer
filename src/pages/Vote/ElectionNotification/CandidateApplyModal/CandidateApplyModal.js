@@ -15,6 +15,8 @@ import {
   ELECTION_MORTGAGE_NUM_STR,
   MINIMUN_HARDWARE_ADVICE,
   HARDWARE_ADVICE,
+  MINIMUN_HARDWARE_ADVICE_TEST,
+  HARDWARE_ADVICE_TEST,
 } from "@pages/Vote/constants";
 import { NETWORK_TYPE } from "@config/config";
 import { connect } from "react-redux";
@@ -63,7 +65,11 @@ function generateCandidateApplyForm(currentWallet) {
         label: "Minimum Configuration",
         render: (
           <>
-            {handleStrToArr(MINIMUN_HARDWARE_ADVICE).map((ele) => {
+            {handleStrToArr(
+              NETWORK_TYPE === "MAIN"
+                ? MINIMUN_HARDWARE_ADVICE
+                : MINIMUN_HARDWARE_ADVICE_TEST
+            ).map((ele) => {
               return <div className="list-item-value">- {ele}</div>;
             })}
           </>
@@ -73,7 +79,9 @@ function generateCandidateApplyForm(currentWallet) {
         label: "Recommended Configuration",
         render: (
           <>
-            {handleStrToArr(HARDWARE_ADVICE).map((ele) => {
+            {handleStrToArr(
+              NETWORK_TYPE === "MAIN" ? HARDWARE_ADVICE : HARDWARE_ADVICE_TEST
+            ).map((ele) => {
               return <div className="list-item-value">- {ele}</div>;
             })}
           </>
