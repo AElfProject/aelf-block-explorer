@@ -22,7 +22,10 @@ function ElectionRuleCard(props) {
   const { isCandidate, displayApplyModal, currentWallet, quitElection } = props;
 
   const onClick = () => {
-    if (currentWallet.portkeyInfo && !currentWallet.nightElfInfo) {
+    if (
+      (currentWallet.discoverInfo || currentWallet.portkeyInfo) &&
+      !currentWallet.nightElfInfo
+    ) {
       onlyOkModal({
         message: `Becoming a candidate node with smart contract wallet address is not supported.`,
       });

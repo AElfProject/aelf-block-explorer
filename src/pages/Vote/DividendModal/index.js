@@ -76,7 +76,7 @@ const DividendModal = (props) => {
                       handleClaimDividendClick(item.schemeId);
                     }}
                   >
-                    Claim Profit
+                    Claim Rewards
                   </Button>
                 </div>
               </div>
