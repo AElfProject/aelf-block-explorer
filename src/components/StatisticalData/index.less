@@ -28,7 +28,7 @@
         border-right: 0;
       }
       .ant-statistic-title {
-        color: var(--color-font-caption, #858585);
+        color: @gray;
         font-size: 14px;
         line-height: 22px;
         display: flex;
@@ -37,7 +37,7 @@
       }
       .ant-statistic-content {
         font-size: 20px;
-        color: var(--color-font-title, #252525);
+        color: @mine-shaft;
         font-weight: 500;
         .ant-statistic-content-value-decimal {
           font-size: 16px;
@@ -109,37 +109,3 @@
     }
   }
 }
-// @media (max-width: @smallScreenWidth) {
-//   .statistical-data-container {
-//     flex-direction: column;
-//     padding: 20px;
-//     flex-wrap: wrap;
-//     .ant-statistic {
-//       overflow: hidden;
-//       margin-bottom: 15px;
-//       &:last-child {
-//         margin-bottom: 0;
-//       }
-//       .ant-statistic-title {
-//         margin-bottom: 10px;
-//       }
-//     }
-
-//     // todo: Use a more compatible to handle the case in mobile device
-//     &.inline-style {
-//       flex-direction: row;
-//       .ant-statistic {
-//         min-width: 33.33%; // Use min-width to handle the case numebr is too big
-//         height: auto;
-//         line-height: inherit;
-//         .ant-statistic-title {
-//           display: block;
-//           white-space: nowrap;
-//         }
-//         .ant-statistic-content {
-//           display: block;
-//         }
-//       }
-//     }
-//   }
-// }
