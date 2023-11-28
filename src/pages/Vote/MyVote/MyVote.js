@@ -9,7 +9,6 @@ import {
   ELF_DECIMAL,
   myVoteStatistData,
 } from "@src/pages/Vote/constants";
-import { MY_VOTE_DATA_TIP } from "@src/constants";
 import { Button, Spin } from "antd";
 import { connect } from "react-redux";
 import { WebLoginState } from "aelf-web-login";
@@ -285,7 +284,7 @@ class MyVote extends Component {
       <section>
         {currentWallet?.address ? (
           <Spin spinning={spinningLoading}>
-            <StatisticalData data={statistData} tooltip={MY_VOTE_DATA_TIP} />
+            <StatisticalData data={statistData} />
             <MyVoteRecord data={tableData} />
           </Spin>
         ) : (

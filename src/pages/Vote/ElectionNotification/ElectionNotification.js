@@ -38,6 +38,7 @@ const electionNotifiStatisData = {
     title: "Current Term's Countdown (-th term)",
     isCountdown: true,
     resetTime: 1000 * 60 * 60 * 24 * 7,
+    tooltip: ELECTION_NOTIFI_DATA_TIP,
   },
   currentNodesAmount: {
     id: 1,
@@ -361,7 +362,7 @@ class ElectionNotification extends PureComponent {
         !currentWallet.nightElfInfo
       ) {
         onlyOkModal({
-          message: `Becoming candidate nodes with smart contract wallet addresses are currently not supported.`,
+          message: `Becoming a candidate node with smart contract wallet address is not supported.`,
         });
         this.setState({
           applyModalVisible: false,
@@ -445,20 +446,15 @@ class ElectionNotification extends PureComponent {
     const { electionContract } = this.props;
 
     return (
-      <section>
-        <StatisticalData
-          data={statisData}
-          spinning={statisDataLoading}
-          style={{ marginBottom: 20 }}
-          tooltip={ELECTION_NOTIFI_DATA_TIP}
-        />
-        <div className="election-blank" />
+      <section className="election-notification">
+        <div className="statistical-data-content">
+          <StatisticalData data={statisData} spinning={statisDataLoading} />
+        </div>
         <ElectionRuleCard
           isCandidate={isCandidate}
           quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
-        <div className="election-blank" />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -471,7 +467,6 @@ class ElectionNotification extends PureComponent {
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
         />
-        <div className="election-blank" />
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}
