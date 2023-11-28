@@ -8,53 +8,30 @@
  */
 import React, { PureComponent, forwardRef } from "react";
 import AElf from "aelf-sdk";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Form, Input, Modal, Tooltip } from "antd";
-import { NEED_PLUGIN_AUTHORIZE_TIP, SYMBOL } from "@src/constants";
+import { RUN_INDIVIDUAL_NODES_TIP, SYMBOL } from "@src/constants";
 import {
   ELECTION_MORTGAGE_NUM_STR,
+  MINIMUN_HARDWARE_ADVICE,
   HARDWARE_ADVICE,
+  MINIMUN_HARDWARE_ADVICE_TEST,
+  HARDWARE_ADVICE_TEST,
 } from "@pages/Vote/constants";
+import { NETWORK_TYPE } from "@config/config";
 import { connect } from "react-redux";
 import "./CandidateApplyModal.style.less";
 import addressFormat from "../../../../utils/addressFormat";
+import IconFont from "../../../../components/IconFont";
 
-const modalFormItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 12 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 12 },
-  },
+const handleStrToArr = (str) => {
+  const arr = str.split(",");
+  return arr;
 };
 
 function generateCandidateApplyForm(currentWallet) {
   return {
     formItems: [
-      {
-        label: "Mortgage Add",
-        render: (
-          <span className="list-item-value">
-            {addressFormat(currentWallet?.address)}
-          </span>
-        ),
-      },
-      {
-        label: "Mortgage Amount",
-        render: (
-          <span className="list-item-value">
-            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL} &nbsp;&nbsp;&nbsp;
-            <Tooltip
-              title={`The ${SYMBOL} cannot be redeemed during the time being a BP
-              node`}
-            >
-              <ExclamationCircleOutlined />
-            </Tooltip>
-          </span>
-        ),
-      },
       {
         label: "Wallet",
         render: (
@@ -64,10 +41,50 @@ function generateCandidateApplyForm(currentWallet) {
         ),
       },
       {
-        label: "Hardware Advice",
+        label: "Address",
         render: (
-          // <span style={{ color: '#fff', width: 600, display: 'inline-block' }}>
-          <span className="list-item-value">{HARDWARE_ADVICE}</span>
+          <span className="list-item-value">
+            {addressFormat(currentWallet?.address)}
+          </span>
+        ),
+      },
+      {
+        label: "Required Staking",
+        render: (
+          <span className="list-item-value">
+            {ELECTION_MORTGAGE_NUM_STR} {SYMBOL} &nbsp;
+            <Tooltip
+              title={`You cannot redeem the staked ${SYMBOL} until you quit the election and your last term ends.`}
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </span>
+        ),
+      },
+      {
+        label: "Minimum Configuration",
+        render: (
+          <>
+            {handleStrToArr(
+              NETWORK_TYPE === "MAIN"
+                ? MINIMUN_HARDWARE_ADVICE
+                : MINIMUN_HARDWARE_ADVICE_TEST
+            ).map((ele) => {
+              return <div className="list-item-value">- {ele}</div>;
+            })}
+          </>
+        ),
+      },
+      {
+        label: "Recommended Configuration",
+        render: (
+          <>
+            {handleStrToArr(
+              NETWORK_TYPE === "MAIN" ? HARDWARE_ADVICE : HARDWARE_ADVICE_TEST
+            ).map((ele) => {
+              return <div className="list-item-value">- {ele}</div>;
+            })}
+          </>
         ),
       },
     ],
@@ -121,13 +138,13 @@ class CandidateApplyModal extends PureComponent {
           <Input
             ref={ref}
             {...props}
-            placeholder="Please input admin address"
+            placeholder="Please enter admin address"
           />
           <Tooltip
             className="candidate-admin-tip"
-            title="Admin has the right to replace the candidate's Pubkey and pull the candidate out of the election. Better be the address of an organization which created in Association Contract."
+            title="Admin account has the right to replace candidate node's public key, set/change the reward receiving address, and quit the node election. If you are running a node yourself, you can set your own node address as the admin. If you are operating a node on other's behalf, please decide whether you need to assign this role to some other addresses."
           >
-            <ExclamationCircleOutlined />
+            <QuestionCircleOutlined />
           </Tooltip>
         </>
       );
@@ -136,7 +153,9 @@ class CandidateApplyModal extends PureComponent {
       <Modal
         className="apply-node-modal"
         destroyOnClose
-        title="Apply Node"
+        title={`Apply to Become a Block Porducer (BP) ${
+          NETWORK_TYPE === "MAIN" ? " " : "on the Testnet"
+        } `}
         visible={visible}
         okText="Apply Now"
         onOk={this.handleOk}
@@ -144,9 +163,9 @@ class CandidateApplyModal extends PureComponent {
         centered
         maskClosable
         keyboard
-        width={800}
+        width={725}
       >
-        <Form {...modalFormItemLayout} ref={this.formRef}>
+        <Form ref={this.formRef}>
           {candidateApplyForm.formItems &&
             candidateApplyForm.formItems.map((item) => {
               return (
@@ -156,7 +175,7 @@ class CandidateApplyModal extends PureComponent {
               );
             })}
           <Form.Item
-            label="Candidate Admin:"
+            label="Admin account:"
             className="candidate-admin"
             name="admin"
             rules={rules}
@@ -164,7 +183,33 @@ class CandidateApplyModal extends PureComponent {
             <TooltipInput />
           </Form.Item>
         </Form>
-        <p className="tip-color">{NEED_PLUGIN_AUTHORIZE_TIP}</p>
+        <p className="tip-color">
+          <IconFont type="circle-warning" />
+          <strong>Important Notice:</strong>
+          <span className="notice-text">
+            <div>{RUN_INDIVIDUAL_NODES_TIP}</div>
+            {/* {NETWORK_TYPE === "MAIN" ? (
+            <>
+              <strong>Important Notice:</strong> <div>{RUN_INDIVIDUAL_NODES_TIP}</div>
+            </>
+          ) : null} */}
+            <div>
+              Please read the{" "}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={
+                  NETWORK_TYPE === "MAIN"
+                    ? "https://docs.aelf.io/en/latest/tutorials/mainnet.html"
+                    : "https://docs.aelf.io/en/latest/tutorials/testnet.html"
+                }
+              >
+                dev docs
+              </a>{" "}
+              for instructions on node deployment.
+            </div>
+          </span>
+        </p>
       </Modal>
     );
   }

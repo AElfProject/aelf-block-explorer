@@ -39,7 +39,7 @@ export default function ChainInfo({
       },
       {
         icon: "rewardDollar",
-        label: "Reward",
+        label: "Governance Rewards",
         value: <p>{reward && (reward.ELF || 0).toLocaleString()} ELF</p>,
       },
       {
@@ -54,7 +54,7 @@ export default function ChainInfo({
       },
       {
         icon: "citizenwelfare",
-        label: "Citizen Welfare",
+        label: "Voter Basic Rewards",
         value: (
           <p>{reward && ((reward.ELF || 0) * 0.75).toLocaleString()} ELF</p>
         ),

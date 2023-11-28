@@ -6,38 +6,102 @@
  * @LastEditTime: 2019-12-07 21:23:53
  * @Description: file content
  */
-.ant-checkbox-wrapper {
-  span {
-    // color: #fff;
+
+.profit-item-value {
+  color: @mine-shaft;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.dividend-modal.ant-modal {
+  width: 672px !important;
+  border-radius: 8px;
+  .ant-modal-close-icon {
+    position: absolute;
+    top: 17px;
+    right: 16px;
+  }
+  .ant-modal-content {
+    .ant-modal-header {
+      border-bottom: 1px solid #e6e6e6;
+      .ant-modal-title {
+        padding: 17px 16px;
+        border: 0;
+      }
+    }
+    .ant-modal-body {
+      padding: 24px 16px;
+      display: grid;
+      grid-gap: 16px;
+      font-size: 12px;
+      .profit-item-key {
+        color: @gray;
+      }
+      .claim-profit-item {
+        width: 100%;
+        color: @mine-shaft;
+        display: grid;
+        grid-template-columns: 140px 1fr 96px;
+        grid-gap: 8px;
+        .text-center {
+          text-align: left;
+        }
+        .ant-btn {
+          width: 96px;
+          height: 24px;
+          border-radius: 4px;
+          font-size: 12px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
+  .ant-modal-close-icon {
+    color: rgba(16, 16, 16, 1);
   }
 }
 
-// .ant-checkbox-group {
-//   display: flex;
-//   justify-content: le;
-//   flex-wrap: wrap;
-//   width: 60%;
-//   margin: 0 auto;
-//   text-align: left;
-//   .ant-checkbox-group-item {
-//     width: 50%;
-//     margin: 0 0 10px;
-//     overflow: hidden;
-//   }
-// }
+@media (max-width: @lgScreenWidth) {
+  .dividend-modal.ant-modal {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100%;
+    height: 100vh;
+    border-radius: 0;
 
-.claim-profit-item {
-  width: 80%;
-  margin: 16px auto;
+    .ant-modal-content {
+      height: 100vh;
+      .ant-modal-header {
+        text-align: left;
+        padding: 0;
+      }
+    }
+  }
 }
-
-.profit-item-key {
-  color: #000;
-  font-weight: bold;
-  font-size: 16px;
-}
-.profit-item-value {
-  color: @primary-color;
-  font-size: 16px;
-  display: inline-block;
+@media (max-width: @xsScreenWidth) {
+  .dividend-modal.ant-modal {
+    .text-left {
+      grid-area: left;
+    }
+    .text-center {
+      grid-area: center;
+    }
+    .text-right {
+      grid-area: right;
+      display: grid;
+      justify-content: end;
+    }
+    .ant-modal-content {
+      .ant-modal-body {
+        .claim-profit-item {
+          grid-template-areas:
+            "left ."
+            "center right";
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    }
+  }
 }
