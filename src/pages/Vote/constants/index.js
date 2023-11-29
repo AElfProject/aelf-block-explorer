@@ -62,13 +62,13 @@ const myVoteStatistData = {
   },
 };
 const MINIMUN_HARDWARE_ADVICE =
-  "c5.xlarge instance with 4 vCPU, 8GiB RAM, 1TB hard drive, and 5 Mbps bandwidth";
+  "c5.xlarge instance with 4 vCPU, 8GiB RAM, 1TB hard drive, 5 Mbps bandwidth";
 const HARDWARE_ADVICE =
-  "c5.2xlarge instance with 8 vCPU, 16GiB RAM, 1TB hard drive, and 100 Mbps bandwidth";
+  "c5.2xlarge instance with 8 vCPU, 16GiB RAM, 1TB hard drive, 100 Mbps bandwidth";
 const MINIMUN_HARDWARE_ADVICE_TEST =
-  "c5.large instance with 2 vCPU, 4GiB RAM, 800GiB hard drive, and 5 Mbps bandwidth";
+  "c5.large instance with 2 vCPU, 4GiB RAM, 800GiB hard drive, 5 Mbps bandwidth";
 const HARDWARE_ADVICE_TEST =
-  "c5.xlarge instance with 4 vCPU, 8GiB RAM, 800GiB hard drive, and 100 Mbps bandwidth";
+  "c5.xlarge instance with 4 vCPU, 8GiB RAM, 800GiB hard drive, 100 Mbps bandwidth";
 
 const ELECTION_MORTGAGE_NUM = 100000;
 const ELECTION_MORTGAGE_NUM_STR = thousandsComma(ELECTION_MORTGAGE_NUM);
