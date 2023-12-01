@@ -9,18 +9,36 @@
 .statistical-data {
   &-container {
     position: relative;
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 0;
-    padding: 40px 30px;
+    display: grid;
+    padding: 24px 16px 8px;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    margin-bottom: 8px;
+    &:first-child {
+      padding-left: 0;
+    }
+    &:last-child {
+      padding-right: 0;
+      border-right: 0;
+    }
     .ant-statistic {
       text-align: center;
+      border-right: 1px solid #e6e6e6;
+      padding: 0 16px;
+      &:last-child {
+        border-right: 0;
+      }
       .ant-statistic-title {
-        color: @textContextLight;
-        margin-bottom: 40px;
+        color: @gray;
+        font-size: 14px;
+        line-height: 22px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       .ant-statistic-content {
-        color: @textContext;
+        font-size: 20px;
+        color: @mine-shaft;
+        font-weight: 500;
         .ant-statistic-content-value-decimal {
           font-size: 16px;
         }
@@ -33,10 +51,16 @@
     }
 
     .anticon {
-      position: absolute;
-      right: 2%;
-      top: 20%;
-      color: #ccc;
+      margin-left: 4px;
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      // position: absolute;
+      // right: 2%;
+      // top: 20%;
+      // color: #ccc;
     }
     &.inline-style {
       .ant-statistic {
@@ -63,37 +87,24 @@
   //   font-size: 35px;
   // }
 }
-
-@media (max-width: @smallScreenWidth) {
+@media (max-width: @lgScreenWidth) {
   .statistical-data-container {
-    flex-direction: column;
-    padding: 20px;
-    flex-wrap: wrap;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
     .ant-statistic {
-      overflow: hidden;
-      margin-bottom: 15px;
-      &:last-child {
-        margin-bottom: 0;
-      }
-      .ant-statistic-title {
-        margin-bottom: 10px;
-      }
+      border: 0;
     }
-
-    // todo: Use a more compatible to handle the case in mobile device
-    &.inline-style {
-      flex-direction: row;
-      .ant-statistic {
-        min-width: 33.33%; // Use min-width to handle the case numebr is too big
-        height: auto;
-        line-height: inherit;
-        .ant-statistic-title {
-          display: block;
-          white-space: nowrap;
-        }
-        .ant-statistic-content {
-          display: block;
-        }
+  }
+}
+@media (max-width: @xsScreenWidth) {
+  .statistical-data-container {
+    grid-template-columns: 1fr;
+    grid-gap: 16px;
+    .ant-statistic {
+      border: 0;
+      text-align: left;
+      .ant-statistic-title {
+        justify-content: flex-start;
       }
     }
   }

@@ -4496,10 +4496,32 @@ aelf-sdk@^3.3.0:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@1.1.5-alpha.4:
-  version "1.1.5-alpha.4"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-1.1.5-alpha.4.tgz#9bda5efa0d9715c74beab060a7005ff7f08089a6"
-  integrity sha512-wG1Qx0okXgku6FyzHbBljQ6h5DqXhWSxw4Zk67PjGoGLRzmu8yFNTdYNsjHH/hGdBDxUfuyhbP+0sHQ1ogLhGw==
+aelf-sdk@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.npmjs.org/aelf-sdk/-/aelf-sdk-3.4.1.tgz#498afcf3fba256e624d2e00679a5ea6fa3937cad"
+  integrity sha512-ab3wH8Xilw97hM2her4TgcPaa/Ftpr5TLa2h1UpSzbi9uBydJfQUlnKZL+BRIezwOaZmC1VdJJ847YhI+jvdMA==
+  dependencies:
+    "@aelfqueen/protobufjs" "^6.8.9"
+    "@aws-crypto/sha256-js" "^5.0.0"
+    "@babel/runtime" "^7.4.5"
+    assert "^2.0.0"
+    bignumber.js "^9.0.0"
+    bip39 "^3.0.2"
+    browserify-cipher "^1.0.1"
+    bs58 "^4.0.1"
+    buffer "^5.2.1"
+    crypto-js "^3.1.9-1"
+    elliptic "^6.4.1"
+    hdkey "^1.1.1"
+    query-string "5.1.1"
+    randombytes "^2.1.0"
+    scryptsy "^2.1.0"
+    xmlhttprequest "^1.8.0"
+
+aelf-web-login@^1.1.7-alpha:
+  version "1.1.7-alpha"
+  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-1.1.7-alpha.tgz#85a0c1b2f6b93e990dd44f03f25a40e1af9bf2ff"
+  integrity sha512-Rtf8BWfwxwD4RdEEKWfLTNWUIU+EGDBgCNHSnEiF+qWISPtRBFmqidDDxbItJZNXMEPzGD715yCbaonSlNmluw==
   dependencies:
     "@aelf-react/core" "^0.1.19"
     "@portkey/contracts" "1.5.1"
