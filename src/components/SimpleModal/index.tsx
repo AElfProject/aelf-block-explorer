@@ -14,6 +14,7 @@ export const onlyOkModal = ({ message }: IOnlyOkModal) => {
     title: <div style={{ textAlign: "left" }}>{message}</div>,
     icon: null,
     cancelButtonProps: { style: { display: "none" } },
+    transitionName: "ant-fade",
   });
 };
 
