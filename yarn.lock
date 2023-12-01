@@ -4496,10 +4496,10 @@ aelf-sdk@^3.3.0:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-sdk@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.npmjs.org/aelf-sdk/-/aelf-sdk-3.4.1.tgz#498afcf3fba256e624d2e00679a5ea6fa3937cad"
-  integrity sha512-ab3wH8Xilw97hM2her4TgcPaa/Ftpr5TLa2h1UpSzbi9uBydJfQUlnKZL+BRIezwOaZmC1VdJJ847YhI+jvdMA==
+aelf-sdk@^3.4.2-alpha:
+  version "3.4.2-alpha"
+  resolved "https://registry.npmjs.org/aelf-sdk/-/aelf-sdk-3.4.2-alpha.tgz#f8136bb0b647d2c53044b7cbf549aab295b20175"
+  integrity sha512-/RFQxm1sMIjfDSIQlabc4ap8QFwrMGIrlNTZ9v1rZYVum/9c9+udSYWB0IKEH+WBtL4+fsMZ8U3t0ynL8sp+3g==
   dependencies:
     "@aelfqueen/protobufjs" "^6.8.9"
     "@aws-crypto/sha256-js" "^5.0.0"
