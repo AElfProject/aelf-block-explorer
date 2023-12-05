@@ -154,7 +154,7 @@ class CandidateApplyModal extends PureComponent {
         className="apply-node-modal"
         destroyOnClose
         getContainer={document.querySelector("#portkey-ui-root")}
-        title={`Apply to Become a Block Producer (BP) ${
+        title={`Apply to Become a Candidate Node ${
           NETWORK_TYPE === "MAIN" ? " " : "on the Testnet"
         } `}
         visible={visible}
