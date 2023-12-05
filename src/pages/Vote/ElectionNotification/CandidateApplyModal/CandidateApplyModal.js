@@ -155,7 +155,7 @@ class CandidateApplyModal extends PureComponent {
         destroyOnClose
         getContainer={document.querySelector("#portkey-ui-root")}
         title={`Apply to Become a Candidate Node ${
-          NETWORK_TYPE === "MAIN" ? " " : "on the Testnet"
+          NETWORK_TYPE === "MAIN" ? "" : "on the Testnet"
         } `}
         visible={visible}
         okText="Apply Now"
