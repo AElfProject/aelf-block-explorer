@@ -33,12 +33,22 @@ export function getFormattedDate(date, type) {
   return "";
 }
 
-export const interval = (func, delay) => {
-  interval.timer = setTimeout(() => {
-    func.call(null);
-    interval(func, delay);
-  }, delay);
+export function interval(func, delay) {
+  let shouldContinue = true;
+  let timerId;
+  function run() {
+    if (shouldContinue) {
+      func();
+      timerId = setTimeout(run, delay);
+    }
+  }
+  timerId = setTimeout(run, delay);
   interval.clear = () => {
-    clearTimeout(interval.timer);
+    clearTimeout(timerId);
   };
-};
+  return {
+    clear() {
+      shouldContinue = false;
+    },
+  };
+}

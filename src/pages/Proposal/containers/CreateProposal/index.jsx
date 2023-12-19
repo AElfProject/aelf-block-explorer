@@ -15,6 +15,7 @@ import {
   showTransactionResult,
   uint8ToBase64,
 } from "@redux/common/utils";
+import debounce from "lodash.debounce";
 import { getConfig, useWebLogin, did } from "aelf-web-login";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
@@ -154,7 +155,7 @@ const CreateProposal = () => {
     // get proposal info
     return new Promise((resolve) => {
       try {
-        interval(async () => {
+        const intervalInstance = interval(async () => {
           const endTIme = new Date().getTime();
           const proposalInfo = await callGetMethodSend(
             "Parliament",
@@ -163,8 +164,9 @@ const CreateProposal = () => {
               value: hexStringToByteArray(proposalId),
             }
           );
+
           if (proposalInfo === null || !!proposalInfo.toBeRelease) {
-            interval.clear();
+            intervalInstance.clear();
             resolve(true);
           }
           if (
@@ -172,10 +174,10 @@ const CreateProposal = () => {
             endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT
           ) {
             if (+proposalInfo?.approvalCount <= 0) {
-              interval.clear();
+              intervalInstance.clear();
               resolve("acs12 etc fail");
             } else {
-              interval.clear();
+              intervalInstance.clear();
               resolve(true);
             }
           }
@@ -252,11 +254,11 @@ const CreateProposal = () => {
       const startTime = new Date().getTime();
       return new Promise((resolve) => {
         try {
-          interval(async () => {
+          const intervalInstance = interval(async () => {
             const endTIme = new Date().getTime();
             // timeout
             if (endTIme - startTime > GET_CONTRACT_VERSION_TIMEOUT) {
-              interval.clear();
+              intervalInstance.clear();
               resolve({
                 status: "fail",
               });
@@ -280,7 +282,7 @@ const CreateProposal = () => {
                   } = await get(VIEWER_GET_CONTRACT_NAME, {
                     address: contractAddress,
                   });
-                  interval.clear();
+                  intervalInstance.clear();
                   resolve({
                     status: "success",
                     contractAddress,
@@ -289,7 +291,7 @@ const CreateProposal = () => {
                   });
                 }
               } catch (e) {
-                interval.clear();
+                intervalInstance.clear();
                 message.error(e.message);
               }
             }
@@ -604,7 +606,7 @@ const CreateProposal = () => {
         </div>
       ),
       icon: null,
-      onOk: () => submitContract(results),
+      onOk: debounce(() => submitContract(results), 500),
       onCancel: () => {
         setContractResult((v) => ({ ...v, confirming: false }));
         handleCancel();
