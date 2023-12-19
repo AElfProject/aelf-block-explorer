@@ -61,7 +61,7 @@ const ProposalList = () => {
   const { aelf, logStatus, isALLSettle, wallet, currentWallet } = common;
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(params.search);
-  const [activeKey, setActiveKey] = useState(params.proposalType);
+  const [activeKey, setActiveKey] = useState();
 
   const { wallet: webLoginWallet, callContract } = useWebLogin();
 
@@ -130,6 +130,7 @@ const ProposalList = () => {
     }
   };
   useEffect(() => {
+    if (!activeKey) return;
     fetchList({
       ...params,
       pageNum: 1,
@@ -149,8 +150,7 @@ const ProposalList = () => {
     changeKey();
   });
   useEffectOnce(() => {
-    const key = changeKey();
-    handleTabChange(key);
+    changeKey();
   });
 
   const send = async (id, action) => {
