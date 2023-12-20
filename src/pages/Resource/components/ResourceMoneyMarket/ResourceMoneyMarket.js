@@ -119,7 +119,7 @@ export default class ResourceMoneyMarket extends PureComponent {
             />
             <Row className="resource-sub-container">
               {walletInstance && (
-                <Col xxl={14} xl={24} lg={24}>
+                <Col xxl={14} xl={24} lg={24} md={24} sm={24} xs={24}>
                   <ResourceTrading
                     loginAndInsertKeypairs={loginAndInsertKeypairs}
                     currentResourceType={currentResourceSymbol}
@@ -135,7 +135,14 @@ export default class ResourceMoneyMarket extends PureComponent {
                   />
                 </Col>
               )}
-              <Col xxl={{ span: 9, offset: 1 }} xl={24} lg={24}>
+              <Col
+                xxl={{ span: 9, offset: 1 }}
+                xl={24}
+                lg={24}
+                md={24}
+                sm={24}
+                xs={24}
+              >
                 <RealTimeTransactions
                   type={currentResourceSymbol}
                   getRealTimeTransactionLoading={
