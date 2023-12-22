@@ -12,7 +12,6 @@ import { scheme } from "@portkey/utils";
 // 为组件内建文案提供统一的国际化支持。
 import { ConfigProvider } from "antd";
 import { WebLoginProvider, PortkeyProvider } from "aelf-web-login";
-
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from "antd/lib/locale-provider/en_US";
 import "@portkey/did-ui-react/dist/assets/index.css";
@@ -87,7 +86,7 @@ const isMobile = isPhoneCheck();
 ReactDOM.render(
   <ConfigProvider locale={en_US}>
     <Provider store={store}>
-      <PortkeyProvider>
+      <PortkeyProvider networkType={config.NETWORK_TYPE}>
         <WebLoginProvider
           commonConfig={{
             showClose: true,
