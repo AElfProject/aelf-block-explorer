@@ -19,7 +19,6 @@ import {
   ELF_DECIMAL,
 } from "@src/constants";
 import { aelf } from "@src/utils";
-import { fetchPageableCandidateInformation, fetchCount } from "@api/vote";
 import getStateJudgment from "@utils/getStateJudgment";
 import { connect } from "react-redux";
 import { withRouter } from "../../../routes/utils";
@@ -32,8 +31,8 @@ import CandidateApplyModal from "./CandidateApplyModal/CandidateApplyModal";
 import { getTokenDecimal } from "../../../utils/utils";
 import { WebLoginInstance } from "../../../utils/webLogin";
 import { onlyOkModal } from "../../../components/SimpleModal/index.tsx";
+import { fetchAllCandidateInfo } from "../utils";
 
-const TableItemCount = 20;
 const electionNotifiStatisData = {
   termEndTime: {
     id: 0,
@@ -199,29 +198,6 @@ class ElectionNotification extends PureComponent {
     }
   }
 
-  async fetchTotal() {
-    const res = await fetchCount(this.props.electionContract, "");
-    const total = res.value?.length || 0;
-    return total;
-  }
-
-  async fetchAllCandidateInfo() {
-    const { electionContract } = this.props;
-    const total = await this.fetchTotal();
-    let start = 0;
-    let result = [];
-    while (start <= total) {
-      // eslint-disable-next-line no-await-in-loop
-      const res = await fetchPageableCandidateInformation(electionContract, {
-        start,
-        length: TableItemCount,
-      });
-      result = result.concat(res ? res.value : []);
-      start += 20;
-    }
-    return result;
-  }
-
   async fetchStatisData() {
     const { statisDataLoading, statisData } = this.state;
     if (statisDataLoading) {
@@ -266,12 +242,11 @@ class ElectionNotification extends PureComponent {
 
     const list = await Promise.all(
       dataSource.map(async (item) => {
-        const { contract, dataKey, method, processor, statisDataKey, params } =
-          item;
+        const { contract, dataKey, method, processor, statisDataKey } = item;
         try {
           let r;
           if (method === "GetPageableCandidateInformation") {
-            r = await this.fetchAllCandidateInfo();
+            r = await fetchAllCandidateInfo(contract);
             return {
               statisDataKey,
               [dataKey]: processor(r),
