@@ -1,48 +1,54 @@
-@import "../../assets/less/_variables.less";
+@import '../../assets/less/_variables.less';
 
 .DownloadPlugins {
-    margin: 0 160px;
-    padding: 36px 0 69px 0;
-    .Tips {
-        padding: 16px 35px 16px 82px;
-        background: url(../../assets/images/exclamation_mark.png) no-repeat 35px center #976271;
-        background-size: 28px 25px;
-        border: 1px solid #a77c4d;
-        font-size: 16px;
-        color: #fff;
-    }
+  background: @bgBlankWhite;
+  .Tips {
+    padding: 16px 35px 16px 82px;
+    font-size: 16px;
+    color: @bgMain;
+  }
 }
 
 .Step-con {
-    height: 152px;
-    display: flex;
-    color: #dc9534;
-    font-size: 20px;
-    border-right: 1px solid #73399b;
-    background: #5b1189;
-    align-items: center;
-    justify-content: center;
+  height: 100px;
+  display: flex;
+  color: @textContext;
+  font-size: 20px;
+  background: @bgBlankWhite;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-button {
+  width: 118px;
+  height: 32px;
+  background: @bgMain;
+  color: @textContextWhite;
+  text-align: center;
+  border-radius: 30px;
+  font-size: 18px;
+  line-height: 32px;
+  margin-left: 16px;
+  &:hover {
+    background: @bgMainHover;
+    color: @textContextWhite !important;
+  }
 }
 
 @media screen and (max-width: 1200px) {
-    .Step-con {
-        font-size: 16px;
-        height: 52px;
+  .Step-con {
+    font-size: 16px;
+    height: 52px;
+  }
+  .DownloadPlugins {
+    .Tips {
+      font-size: 12px;
     }
-    .DownloadPlugins {
-        .Tips {
-            font-size: 12px;
-        }
-    }
+  }
 }
 
-@media screen and (max-width: 992px) {
-    .Step-con {
-        border-right: none;
-        border-bottom:  1px solid #73399b;
-    }
-
-    .DownloadPlugins { 
-        margin: 0 20px;
-    }
+@media (max-width: @smallScreenWidth) {
+  .DownloadPlugins {
+    display: none;
+  }
 }

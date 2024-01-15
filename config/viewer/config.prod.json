@@ -1,0 +1,35 @@
+{
+  "sql": {
+    "host": "127.0.0.1",
+    "port": "3306",
+    "user": "root",
+    "password": "password",
+    "database": "aelf_viewer",
+    "connectionLimit": 25
+  },
+  "scanSql": {
+    "host": "127.0.0.1",
+    "port": "3306",
+    "user": "root",
+    "password": "password",
+    "database": "aelf_main_chain",
+    "connectionLimit": 25
+  },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "db": 1
+  },
+  "scan": {
+    "interval": 20000,
+    "proposalInterval": 4000,
+    "concurrentQueryLimit": 5,
+    "host": "http://192.168.197.51:8000",
+    "buffer": 100,
+    "maxInsert": 20
+  },
+  "decompiler": {
+    "interval": 300000,
+    "remoteApi": "http://192.168.197.35:5566/getfiles"
+  }
+}

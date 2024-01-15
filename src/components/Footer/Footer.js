@@ -1,91 +1,65 @@
-import React from "react";
-import { Layout, Icon, Button } from "antd";
-import { BitcoinIcon, RedditIcon, SendIcon } from "../custom.icons";
+import React, { useEffect, useMemo, useState } from 'react';
+import { connect } from 'react-redux';
+import { useLocation } from 'react-router';
+import { NETWORK_TYPE } from '../../../config/config';
 
-import "./footer.styles.less";
+import './footer.styles.less';
 
-const { Footer } = Layout;
+const BrowserFooter = () => {
+  const { pathname } = useLocation()
+  const [isNoFooter, setIsNoFooter] = useState(false)
+  const NO_FOOTER_LIST = useMemo(() => ['search-invalid', 'search-failed'], [])
+  useEffect(() => {
+    const firstPathName = pathname.split('/')[1]
+    setIsNoFooter(NO_FOOTER_LIST.includes(firstPathName))
 
-const iconListHTML = (() => {
-    const listInfo = [{
-        href: 'mailto:contact@aelf.io',
-        type: 'mail',
-    }, {
-        href: 'https://www.facebook.com/aelfofficial/',
-        target: '_blank',
-        type: 'facebook'
-    }, {
-        href: 'https://twitter.com/aelfblockchain',
-        target: '_blank',
-        type: 'twitter'
-    }, {
-        href: 'https://t.me/aelfblockchain',
-        target: '_blank',
-        component: SendIcon
-    }, {
-        href: 'https://www.reddit.com/r/aelfofficial/',
-        target: '_blank',
-        component: RedditIcon
-    }, {
-        href: 'https://medium.com/aelfblockchain',
-        target: '_blank',
-        type: 'medium'
-    }, {
-        href: 'https://github.com/aelfProject',
-        target: '_blank',
-        type: 'github'
-    }, {
-        href: 'http://slack.aelf.io/',
-        target: '_blank',
-        type: 'slack'
-    }, {
-        href: 'https://www.linkedin.com/company/aelfblockchain/',
-        target: '_blank',
-        type: 'linkedin'
-    }, {
-        href: 'http://www.youtube.com/c/aelfblockchain',
-        target: '_blank',
-        type: 'youtube'
-    }, {
-        href: 'https://0.plus/aelf_chs',
-        target: '_blank',
-        component: BitcoinIcon
-    }];
+  }, [pathname])
 
-    const html = listInfo.map(item => {
-        return (
-            <Button
-                key={item.href}
-                href={item.href}
-                rel="noopener noreferrer"
-                target={item.target || ''}
-                shape="circle">
-                <Icon
-                    style={{
-                        color: '#000'
-                    }}
-                    type={item.type || null}
-                    component={item.component || ''}
-                />
-            </Button>
-        );
-    });
-    return html;
-})();
-
-const BrowserFooter = props => (
-    <Footer {...props} className="footer">
-        <div className='footer-container'>
-            <div className="footer-logo">
-                <img alt="aelf" src="https://aelf.io/assets/images/logo.jpg" />
-                <p>Contribute to communism around the world.</p>
+  return (
+    isNoFooter
+      ? <></>
+      : <section className={`footer ${  NETWORK_TYPE === 'MAIN' ? 'main' : 'test'}`}>
+        <div className='footer-container' >
+          <div className='left'>
+            <div className='top'>
+              <h4>AELF Explorer</h4>
+              <p className='description'>Decentralized Cloud Computing Blockchain Network</p>
             </div>
-            <div className="footer-links-container">
-                {iconListHTML}
+            <div className='bottom'>
+              <div className='powered-by'>
+                Powered by AELF
+              </div>
+              <a target='_blank' href='https://aelf.com' rel="noreferrer">
+                aelf.com
+              </a>
             </div>
+          </div>
+          <div className='footer-links-container'>
+            <div className='link-list community'>
+              <p>Community</p>
+              <div className='list'>
+                <a target='_blank' href='https://t.me/aelfblockchain' rel="noreferrer">Telegram</a>
+                <a target='_blank' href='https://medium.com/aelfblockchain' rel="noreferrer">Medium</a>
+                <a target='_blank' href='https://twitter.com/aelfblockchain' rel="noreferrer">Twitter</a>
+                <a target='_blank' href='http://www.youtube.com/c/aelfblockchain' rel="noreferrer">Youtube</a>
+                <a target='_blank' href='https://discord.gg/bgysa9xjvD' rel="noreferrer">Discord</a>
+              </div>
+            </div>
+            <div className='link-list technology'>
+              <p>Technology</p>
+              <div className='list'>
+                <a target='_blank' href='https://docs.aelf.io/en/latest/introduction/introduction.html' rel="noreferrer">Dev Docs</a>
+                <a target='_blank' href='https://github.com/aelfProject' rel="noreferrer">Github</a>
+                <a target='_blank' href='https://chrome.google.com/webstore/detail/aelf-explorer-extension/mlmlhipeonlflbcclinpbmcjdnpnmkpf?hl=zh-CN' rel="noreferrer">Wallet</a>
+              </div>
+            </div>
+          </div>
         </div>
-        <p>Copyright © 2018 ælf</p>
-    </Footer>
-);
+        <p className='copyright-container'>
+          AELF © {new Date().getFullYear()}
+        </p>
+      </section>
+  );
+};
 
 export default BrowserFooter;

@@ -3,62 +3,105 @@
  * @author huangzongzhe, longyue
  */
 import {
-    notification
+  notification,
 } from 'antd';
 import {
-    create
+  create,
 } from 'apisauce';
-import * as Aelf from 'aelf-sdk';
+import AElf from 'aelf-sdk';
 import dayjs from 'dayjs';
-import {
-    RPCSERVER
-} from './constants';
+import Cookies from 'js-cookie';
 
-import {commonPrivateKey} from '../config/config';
+import {
+  RPCSERVER,
+} from './constants';
 
 // import apisauce from './utils/apisauce';
 
 const api = create({
-    baseURL: '/api'
+  baseURL: '/api',
 });
 
 const httpErrorHandler = (message, des) => notification.open({
-    message,
-    description: des
+  message,
+  description: des,
 });
 
-const aelf = new Aelf(new Aelf.providers.HttpProvider(RPCSERVER));
-aelf.chain.connectChain(function (e) {
-    // if (isEmpty(e.message)) {
-    //     return;
-    // }
-    // httpErrorHandler('Connect Error', e.message);
-    // console.error(e.message);
+api.addResponseTransform((res) => {
+  if (res.ok) {
+    if (res.data.code === /^2\d{2}$/) return res.data;
+    // httpErrorHandler(res.problem, res.problem);
+  }
 });
+
+const timeout = null;
+const user = null;
+const password = null;
+const header = [{
+  name: 'Accept',
+  value: 'text/plain;v=1.0',
+}];
+const aelf = new AElf(new AElf.providers.HttpProvider(
+  RPCSERVER,
+  60000,
+  // user,
+  // password,
+  // header
+));
 
 const get = async (url, params, config) => {
-    const res = await api.get(url, params, config);
-    if (res.ok) {
-        return res.data;
-    }
+  const res = await api.get(url, params, config);
+  if (res.ok) {
+    return res.data;
+  }
 
-    httpErrorHandler(res.problem, res.problem);
+  httpErrorHandler(res.problem, res.problem);
+};
+
+let CONTRACT_NAMES = {};
+const getContractNames = async () => {
+  if (Object.keys(CONTRACT_NAMES).length > 0) {
+    return CONTRACT_NAMES;
+  }
+  let res = {};
+  try {
+    res = await get('/viewer/allContracts');
+  } catch (e) {
+    return CONTRACT_NAMES;
+  }
+  const {
+    code,
+    data = {},
+  } = res || {};
+  if (+code === 0) {
+    const {
+      list = [],
+    } = data;
+    CONTRACT_NAMES = (list || []).reduce((acc, v) => ({
+      ...acc,
+      [v.address]: v,
+    }), {});
+  }
+  return CONTRACT_NAMES;
 };
 
 const post = async (url, data, config) => {
-    const res = await api.post(url, data, config);
-    if (res.ok) {
-        return res.data;
-    }
+  // todo: handle the other case
+  if (!config) { config = { headers: {} }; }
 
-    httpErrorHandler(res.problem, res.problem);
+  const csrf = Cookies.get('csrfToken');
+  config.headers['x-csrf-token'] = csrf;
+  const res = await api.post(url, data, config);
+  if (res.ok) {
+    return res.data;
+  }
+
+  httpErrorHandler(res.problem, res.problem);
 };
 
-const format = (time, fmtStr = "YYYY-MM-DD HH:mm:ss Z") => dayjs(time).format(fmtStr);
+const format = (time, fmtStr = 'YYYY-MM-DD HH:mm:ss Z') => dayjs(time).format(fmtStr);
 
-const firstUpperCase = (inputString) => {
-    return inputString.replace(inputString[0] ,inputString[0].toUpperCase());
-};
+const firstUpperCase = (inputString) => inputString.replace(inputString[0], inputString[0].toUpperCase());
 
 /**
  * the style of the key of the result from the API are different
@@ -68,38 +111,50 @@ const firstUpperCase = (inputString) => {
  * return {string}
  */
 const formatKey = (inputString) => {
-    const pieces = inputString.split('_');
-    const piecesFormatted = pieces.map(item => {
-        return firstUpperCase(item);
-    });
-    return piecesFormatted.join('');
+  const pieces = inputString.split('_');
+  const piecesFormatted = pieces.map((item) => firstUpperCase(item));
+  return piecesFormatted.join('').replace(/([A-Z])/g, ' $1').trim();
 };
 
 function transactionFormat(result) {
-    let newTxs = {
-        address_from: result.tx_info.From,
-        address_to: result.tx_info.To,
-        block_hash: result.block_hash,
-        block_height: result.block_number,
-        increment_id: result.tx_info.IncrementId,
-        method: result.tx_info.Method,
-        params: result.tx_info.params,
-        tx_id: result.tx_info.TxId,
-        tx_status: result.tx_status
-    };
-    return newTxs;
+  const newTxs = {
+    address_from: result.Transaction.From,
+    address_to: result.Transaction.To,
+    block_hash: result.BlockHash,
+    block_height: result.BlockNumber,
+    increment_id: result.Transaction.IncrementId || '',
+    method: result.Transaction.MethodName,
+    params: result.Transaction.Params,
+    tx_id: result.TransactionId,
+    tx_status: result.Status,
+    tx_fee: result.fee,
+    time: result.time,
+  };
+  return newTxs;
 }
 
-const transactionInfo = (hash) => {
-    return aelf.chain.getTxResult(hash);
+const transactionInfo = (hash) => aelf.chain.getTxResult(hash, { sync: true });
+
+function isAElfAddress(address) {
+  if (!address) {
+    return false;
+  }
+  try {
+    AElf.utils.decodeAddressRep(address);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 export {
-    get,
-    post,
-    aelf,
-    format,
-    formatKey,
-    transactionFormat,
-    transactionInfo
-}
+  get,
+  post,
+  aelf,
+  format,
+  formatKey,
+  transactionFormat,
+  transactionInfo,
+  getContractNames,
+  isAElfAddress,
+};

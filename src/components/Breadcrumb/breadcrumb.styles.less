@@ -2,41 +2,50 @@
 
 .breadcrumb {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   max-width: @maxWidth;
-  margin: 0 auto;
+  margin: 20px auto 0 auto;
   line-height: 62px;
-  padding-left: 72px;
-  padding-right: 72px;
+  padding: 0 20px 0 20px;
+  background: @bgBlankWhite;
+  border-bottom: 1px solid @borderColor;
 
   .breadcrumb-title {
     margin: 0;
-    color: #FFF;
+    color: @textContext;
+  }
+  .breadcrumb-small-title {
+    font-size: 28px;
   }
 
   .breadcrumb-sub-title {
-    //color: #999;
-    color: #FFF;
+    color: @subTitle;
     font-size: 16px;
     font-weight: 200;
     margin-left: 8px;
   }
 
   .ant-breadcrumb a{
-    color: #FFF !important;
+    color: @textContext !important;
   }
   .ant-breadcrumb a:hover {
     color: @hoverColor !important;
   }
   .ant-breadcrumb-separator {
-    color: #FFF !important;
+    color: @textContext !important;
+  }
+
+  .current-title {
+    color: @primary-blue;
   }
 }
 
 @media screen and (max-width: 768px){
   .breadcrumb {
     padding: 0px 16px 16px 16px;
+    //margin: 0 8px;
   }
   .breadcrumb-title {
     display: none;

@@ -1,0 +1,55 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-07 17:42:20
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-07 18:50:20
+ * @Description: file content
+ */
+@clsPrefix: node-table;
+
+.ant-table-pagination {
+  text-align: right !important;
+}
+
+.@{clsPrefix} {
+  padding: 0 16px;
+  &-header {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    padding: 16px 0;
+  }
+
+  .ant-progress-text {
+    color: #fff;
+  }
+  .ant-progress-inner {
+    background: none;
+    border: 1px solid #fff;
+  }
+  .node-table-wrapper {
+    margin: 0;
+    padding: 0;
+    .table-layer-block {
+      display: none;
+    }
+  }
+  &-btn-group {
+    // display: flex;
+    // justify-content: space-around;
+    // // flex-wrap: wrap;
+    // // todo: Write in a more compatible way
+    // min-width: 300px;
+    > button {
+      display: inline-block;
+    }
+    > button:first-child {
+      margin-right: 20px;
+    }
+  }
+  .ant-table-tbody > tr.ant-table-row:hover > td,
+  .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+    background: @bgBlankGrey !important;
+  }
+}

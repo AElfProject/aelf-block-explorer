@@ -1,0 +1,51 @@
+@import "../../assets/less/_variables.less";
+.net-select-container.ant-select {
+  width: 100%;
+  margin-bottom: 24px;
+
+  .ant-select-arrow {
+    color: @textContext3;
+    right: 45px;
+  }
+  .ant-select-selector {
+    height: 36px;
+    margin-right: 8px;
+    justify-content: center;
+    align-items: center;
+    border-color: @border-color1;
+  }
+  .ant-select-selection-item {
+    text-align: center;
+  }
+
+  .ant-select-selector-selected-value {
+    color: @textContext3;
+  }
+  .ant-select-selector__rendered {
+    line-height: 36px;
+    text-align: center;
+  }
+  .ant-select-selector:hover {
+    border-color: @border-color1;
+  }
+  .ant-select-selector-selected-value {
+    width: 100%;
+    font-size: 14px;
+  }
+  &.ant-select-open,
+  &.ant-select-focused {
+    .ant-select-selector {
+      border-color: @border-color1;
+      box-shadow: none;
+      &:focus {
+        border-color: @border-color1;
+      }
+    }
+  }
+}
+
+.net-select-option {
+  line-height: 22px;
+  padding: 11px;
+  text-align: center;
+}

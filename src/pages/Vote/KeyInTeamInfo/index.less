@@ -1,0 +1,76 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-09-16 19:11:55
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-09 19:17:52
+ * @Description: file content
+ */
+@clsPrefix: candidate-apply-team-info-key-in;
+
+.@{clsPrefix}-container {
+  padding: 0 10px 50px;
+  .@{clsPrefix}-no-auth {
+    text-align: center;
+    padding-top: 50px;
+    color: #fff;
+    font-size: 18px;
+  }
+  .@{clsPrefix}-title {
+    margin: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid @borderColor;
+    font-size: 18px;
+    color: @primary-color;
+  }
+  .@{clsPrefix}-form {
+    width: 50%;
+    margin: 0 auto;
+    .ant-form-item {
+      .ant-form-item-label label {
+        // color: #fff;
+      }
+    }
+  }
+  .@{clsPrefix}-footer {
+    margin-top: 100px;
+    text-align: center;
+    .ant-btn + .ant-btn {
+      margin-left: 100px;
+    }
+  }
+
+  .ant-input,
+  .ant-select-selection,
+  .ant-btn {
+    border-radius: 16px;
+  }
+  .ant-input-group-addon:first-child {
+    // todo: Easier write way?
+    border-bottom-left-radius: 16px;
+    border-top-left-radius: 16px;
+  }
+}
+
+.loading-container {
+  .ant-spin {
+    display: block;
+    padding: 60px;
+    margin: @moduleMargin;
+    // background: rgba(57, 0, 57, 0.3);
+  }
+}
+
+.vote-container {
+  .ant-result-title {
+    color: @cusBlack;
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .@{clsPrefix}-container {
+    .@{clsPrefix}-form {
+      width: 80%;
+    }
+  }
+}

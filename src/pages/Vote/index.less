@@ -1,0 +1,650 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-10-23 15:20:28
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-10 00:17:33
+ * @Description: file content
+ */
+// remove default style
+p {
+  margin-bottom: 0;
+}
+
+h2,
+h3 {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style: none;
+  margin-bottom: 0;
+}
+
+button {
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+// common style selector
+.card-container {
+  margin-bottom: 20px;
+  padding: 20px 30px;
+  //background: rgba(57, 0, 57, 0.3);
+  background: @bgBlankWhite;
+  overflow: hidden;
+}
+
+.remove-antd-tabs-default-style {
+  .ant-tabs-bar {
+    border-bottom: 0 !important;
+    margin: @moduleMargin;
+    .ant-tabs-nav-wrap {
+      .ant-tabs-tab-active {
+        color: #fff;
+      }
+      .ant-tabs-ink-bar {
+        display: none !important;
+      }
+    }
+  }
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.form-item-value {
+  // color: #fff;
+  width: 600px;
+  display: inline-block;
+}
+
+.node-name-in-table {
+  display: inline-block;
+  .ellipsis;
+}
+
+.vote-wrapper {
+  header {
+    max-width: 1200px;
+    margin: auto;
+    padding: 24px 0 0;
+    color: @mine-shaft;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+  }
+}
+@media (max-width: @lgScreenWidth) {
+  .vote-wrapper {
+    padding: 0 20px;
+  }
+}
+
+// specific for current page
+.vote-container {
+  padding: 20px 0;
+  &.vote-menu {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-bottom: 0 !important;
+  }
+  &.vote-content {
+    margin-top: 0 !important;
+  }
+  .ant-tabs-tab {
+    &:hover > a {
+      color: #40a9ff !important;
+    }
+    color: #fff;
+    &.ant-tabs-tab-active,
+    &.ant-tabs-tab-active > a {
+      color: #40a9ff !important;
+    }
+  }
+  .ant-menu {
+    background: #fff;
+    padding-left: 16px;
+    .ant-menu-item {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 22px;
+      padding: 12px 0;
+      margin-right: 32px;
+      &-selected:after {
+        left: 0;
+        right: 0;
+        border-bottom: 2px solid #266cd3 !important; // need underline
+        transition: 0.3s;
+      }
+      &-active:after,
+      &-open:after,
+      &:hover:after {
+        border-bottom: 2px solid transparent;
+        transition: 0.3s;
+      }
+    }
+  }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    white-space: nowrap;
+  }
+}
+
+.vote-container-simple {
+  padding: 0 !important;
+  margin: 25px auto 25px auto !important;
+}
+
+.secondary-level-nav {
+  margin: @moduleMargin;
+  .remove-antd-tabs-default-style;
+  .ant-radio-wrapper {
+    color: @textContext;
+  }
+  .ant-tabs-bar {
+    .card-container;
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .secondary-level-nav {
+    margin: 0 5px 16px;
+  }
+}
+
+.node-list,
+.my-vote-records {
+  &-header {
+    padding: 10px;
+    font-size: 20px;
+    color: #fff;
+    overflow: hidden;
+    .ant-input-search {
+      width: 200px;
+      float: right;
+    }
+    .node-color-intro-item {
+      margin-left: 20px;
+      font-size: 15px;
+      color: lightgray;
+      &:before {
+        display: inline-block;
+        margin-right: 5px;
+        border-radius: 50%;
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: lightgreen;
+      }
+      &:first-child:before {
+        background: lightcoral;
+      }
+    }
+  }
+}
+
+.vote-confirm-modal {
+  text-align: center;
+  overflow: hidden;
+  .ant-modal-body {
+    padding: 30px 30px 10px;
+    .form-item-label {
+      text-align: right;
+    }
+    // todo: Is the code about form-item-xxx useless now?
+    .form-item-value {
+      text-align: left;
+      text-indent: 10px;
+    }
+  }
+  .ant-modal-footer button + button {
+    margin-left: 50px;
+  }
+  .ant-form-item {
+    text-align: left;
+    .ant-form-item-label label {
+      color: #fff;
+    }
+    .ant-input-affix-wrapper {
+      width: auto;
+    }
+    .ant-input {
+      width: auto;
+    }
+  }
+
+  .ant-slider-mark-text {
+    color: #fff;
+  }
+  span.ant-radio + * {
+    color: #fff;
+  }
+  .ant-modal-content {
+    text-align: center;
+    .ant-modal-header {
+      padding: 10px;
+      height: auto;
+    }
+    .ant-modal-footer {
+      text-align: center;
+      padding-bottom: 32px;
+    }
+  }
+
+  .ant-tabs {
+    label {
+      &:hover {
+        color: @hoverColor;
+        cursor: pointer;
+      }
+    }
+    .ant-tabs-tab-active {
+      label {
+        color: @primary-color;
+      }
+    }
+  }
+}
+.plugin-lock-modal {
+  text-align: center;
+  overflow: hidden;
+  .ant-modal-body {
+    padding: 50px;
+  }
+  .ant-form-item {
+    text-align: left;
+    .ant-form-item-label label {
+      color: #fff;
+    }
+    .ant-input-affix-wrapper {
+      width: auto;
+    }
+    .ant-input {
+      width: auto;
+    }
+  }
+
+  .ant-slider-mark-text {
+    color: #fff;
+  }
+  span.ant-radio + * {
+    color: #fff;
+  }
+  .ant-modal-content {
+    text-align: center;
+    .ant-modal-header {
+      padding: 10px;
+      height: auto;
+    }
+    .ant-modal-footer {
+      text-align: center;
+      padding-bottom: 32px;
+      border: none;
+      .ant-btn {
+        width: 320px;
+        &:first-child {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .ant-tabs {
+    label {
+      &:hover {
+        color: @hoverColor;
+        cursor: pointer;
+      }
+    }
+    .ant-tabs-tab-active {
+      label {
+        color: @primary-color;
+      }
+    }
+  }
+
+  .ant-form {
+    width: 70%;
+    margin: 0 auto;
+    .ant-form-item {
+      text-align: left;
+      margin-bottom: 24px;
+      color: #000;
+      // overflow: hidden;
+      &.form-item-with-extra {
+        position: relative;
+        .form-item-extra {
+          position: absolute;
+          right: 0;
+          top: -18px;
+          color: #ccc;
+          font-size: 13px;
+        }
+      }
+      .ant-form-item-label,
+      .form-item-value {
+        font-size: 14px;
+        text-align: left !important;
+        line-height: @modalFormItemHeight;
+        // border: 1px solid @tipColor;
+      }
+      .ant-form-item-label {
+        // border-top-left-radius: 16px;
+        // border-bottom-left-radius: 16px;
+        label {
+          // color: @cusBlack;
+          color: @tipColor;
+          margin-left: 20px;
+        }
+      }
+      .form-item-value,
+      .ant-input {
+        width: 100%;
+        // height: @modalFormItemHeight;
+        // border: none;
+        text-align: center;
+      }
+      .ant-form-item-control {
+        // line-height: @modalFormItemHeight;
+        line-height: inherit;
+        .right-icon {
+          position: absolute;
+          right: -30px;
+          top: 0;
+          color: @tipColor;
+        }
+      }
+      .ant-calendar-picker {
+        width: 100%;
+        > div {
+          height: @modalFormItemHeight;
+        }
+      }
+    }
+  }
+}
+
+.ant-modal {
+  // text-align: center;
+  // overflow: hidden;
+
+  // .ant-form-item {
+  //   text-align: left;
+  //   .ant-form-item-label label {
+  //     color: #fff;
+  //   }
+  //   .ant-input-affix-wrapper {
+  //     width: auto;
+  //   }
+  //   .ant-input {
+  //     width: auto;
+  //   }
+  // }
+
+  // .ant-slider-mark-text {
+  //   color: #fff;
+  // }
+  // span.ant-radio + * {
+  //   color: #fff;
+  // }
+  // .ant-modal-content {
+  //   text-align: center;
+  //   .ant-modal-header {
+  //     padding: 10px;
+  //     height: auto;
+  //   }
+  //   .ant-modal-footer {
+  //     text-align: center;
+  //     padding-bottom: 32px;
+  //   }
+  // }
+
+  // .ant-tabs {
+  //   label {
+  //     &:hover {
+  //       color: @hoverColor;
+  //       cursor: pointer;
+  //     }
+  //   }
+  //   .ant-tabs-tab-active {
+  //     label {
+  //       color: @primary-color;
+  //     }
+  //   }
+  // }
+}
+
+.text-wrap-container {
+  text-align: left;
+  white-space: pre-line;
+}
+
+.table-btn {
+  line-height: 1;
+  border: none;
+  width: 78px;
+  height: 26px;
+  border-radius: 13px;
+  &.ant-btn-primary[disabled] {
+    background-color: #f5f5f5 !important;
+  }
+  &.vote-btn {
+    //background-color: @buyColor;
+    background-color: @bgMain;
+    &:hover {
+      background: @bgMainHover;
+    }
+  }
+  &.redeem-btn {
+    background-color: @buyColor;
+  }
+}
+
+.node-table-wrapper {
+  td.ant-table-cell-fix-right {
+    .node-table-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 8px;
+      .table-btn {
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        display: flex;
+        height: 24px;
+        padding: 0px;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        &.ant-btn-default[disabled] {
+          border: 1px solid var(--color-border, #d0d0d0);
+          background: var(--color-hover, #f7f8fa);
+          color: var(--color-border, #d0d0d0);
+        }
+        &.vote-btn {
+          background: var(--color-brand-default, #266cd3);
+          &:hover {
+            background: var(--color-brand-hover, #327dec);
+          }
+        }
+        &.redeem-btn {
+          background-color: @buyColor;
+        }
+      }
+    }
+  }
+  @media (max-width: 1182px) {
+    td.ant-table-cell-fix-right {
+      padding-right: 0 !important;
+      padding-left: 8px !important;
+      .node-table-btn-group {
+        button:first-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  @media (max-width: @lgScreenWidth) {
+    td.ant-table-cell-fix-right {
+      padding-right: 0 !important;
+      padding-left: 8px !important;
+      .node-table-btn-group {
+        .table-btn {
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}
+
+// todo: Consider to write the code myself rather than modify antd's component
+// todo: Move the code to asset/less/common.less
+.vote-modal,
+.vote-redeem-modal,
+.apply-node-modal,
+.dividend-modal,
+.vote-confirm-modal,
+.plugin-lock-modal {
+  // .ant-modal {
+  text-align: center;
+  overflow: hidden;
+  .ant-form {
+    width: 70%;
+    margin: 0 auto;
+    .ant-form-item {
+      text-align: left;
+      margin-bottom: 24px;
+      color: #000;
+      // overflow: hidden;
+      &.form-item-with-extra {
+        position: relative;
+        .form-item-extra {
+          position: absolute;
+          right: 0;
+          top: -18px;
+          color: #ccc;
+          font-size: 13px;
+        }
+      }
+      .ant-form-item-label,
+      .form-item-value {
+        font-size: 14px;
+        text-align: left !important;
+        line-height: @modalFormItemHeight;
+        // border: 1px solid @tipColor;
+      }
+      .ant-form-item-label {
+        // border-top-left-radius: 16px;
+        // border-bottom-left-radius: 16px;
+        label {
+          // color: @cusBlack;
+          color: @tipColor;
+          margin-left: 20px;
+        }
+      }
+      .form-item-value,
+      .ant-input {
+        width: 100%;
+        // height: @modalFormItemHeight;
+        // border: none;
+        text-align: center;
+      }
+      .ant-form-item-control {
+        // line-height: @modalFormItemHeight;
+        line-height: inherit;
+        .right-icon {
+          position: absolute;
+          right: -30px;
+          top: 0;
+          color: @tipColor;
+        }
+      }
+      .ant-calendar-picker {
+        width: 100%;
+        > div {
+          height: @modalFormItemHeight;
+        }
+      }
+    }
+  }
+  .ant-modal-content {
+    text-align: center;
+  }
+  .ant-modal-footer {
+    border: none;
+    padding-bottom: 32px;
+    .ant-btn {
+      width: 320px;
+      &:first-child {
+        display: none;
+      }
+    }
+  }
+}
+
+// todo: Limit the work range to certain item such as the Calendar inner Modal
+.ant-picker-dropdown {
+  .ant-picker-date-panel {
+    width: 450px;
+    .ant-picker-header,
+    .ant-picker-content {
+      width: 100%;
+    }
+
+    .ant-calendar-disabled-cell {
+      &.ant-calendar-selected-day,
+      &.ant-calendar-today {
+        .ant-calendar-date::before {
+          left: 18px;
+        }
+      }
+    }
+  }
+}
+
+.vote-btn-loading.ant-modal {
+  height: 54px;
+
+  .ant-modal-content {
+    border-radius: 8px;
+  }
+  .ant-modal-body {
+    padding: 16px;
+    text-align: center;
+  }
+  .ant-modal-close-x {
+    display: none;
+  }
+}
+
+// todo: Centralized manage the page body's margins
+@media (max-width: @smallScreenWidth) {
+  .card-container {
+    padding: 20px;
+  }
+
+  .ant-calendar-picker-container {
+    .ant-calendar {
+      width: 300px;
+    }
+  }
+}
+
+.table-card-header {
+  padding: 46px 30px 30px;
+}
+
+.statistical-data-container {
+  .vote-statistic {
+    .anticon {
+      position: static;
+    }
+  }
+}

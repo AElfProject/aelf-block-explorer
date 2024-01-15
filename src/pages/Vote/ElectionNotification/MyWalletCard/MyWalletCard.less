@@ -1,0 +1,286 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-09-28 18:14:15
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-09 17:21:56
+ * @Description: file content
+ */
+@cardSplit: 1px solid rgba(57, 0, 57, 0.3);
+
+// todo: Unify the way write css selector
+.my-wallet-card {
+  padding: 16px 16px 0;
+  background: @bgBlankWhite;
+  overflow: hidden;
+  font-size: 12px;
+  .my-wallet-content {
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 16px;
+  }
+
+  &-header {
+    background: @bgBlankWhite;
+    overflow: hidden;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &-title {
+      display: inline-block;
+      vertical-align: middle;
+      color: @textContext;
+      height: 22px;
+      line-height: 22px;
+      font-size: 14px;
+      .wallet-icon {
+        margin-right: 4px;
+        svg {
+          width: 12px;
+          height: 12px;
+          color: @mine-shaft;
+        }
+      }
+    }
+    &-sync-btn {
+      display: flex;
+      align-items: center;
+      float: right;
+      .anticon.anticon-sync {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  &-body {
+    display: flex;
+    &-wallet-title {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      grid-column-gap: 8px;
+      padding: 8px 0;
+      &-name {
+        color: @textContext;
+        margin-right: 20px;
+      }
+      &-key {
+        font-weight: 500;
+        color: @gray;
+        line-height: 20px;
+        display: inline-block;
+      }
+      &-value {
+        margin-left: 8px;
+        color: @mine-shaft;
+        line-height: 20px;
+        display: inline-block;
+        a {
+          line-height: 20px;
+        }
+        .copy-btn {
+          color: @gray !important;
+          margin-left: 4px;
+          line-height: 20px;
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+        }
+      }
+    }
+    &-wallet-content {
+      flex: 4;
+      color: @textContext;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas:
+        "myWalletAssets myWalletBalance myWalletProfit"
+        "myWalletActiveVotes myWalletRedeemedVotes myWalletTime";
+      grid-column-gap: 16px;
+
+      > li {
+        margin: 8px 0;
+        line-height: 24px;
+        .item-type {
+          color: @gray;
+        }
+        .item-value {
+          margin-left: 8px;
+          color: @mine-shaft;
+        }
+      }
+      &-withdraw-btn.ant-btn.ant-btn-sm {
+        margin-left: 8px;
+        border-radius: 4px;
+        height: 24px;
+        padding: 0px 12px;
+        font-size: 12px;
+        border: 1px solid #266cd3;
+        background-color: #266cd3 !important;
+        color: #fff;
+        &.ant-btn-primary:active {
+          color: #fff;
+          background: var(--color-brand-pressed, #155abf) !important;
+        }
+        &.ant-btn-primary:hover {
+          color: #fff;
+          background: var(--color-brand-hover, #327dec) !important;
+        }
+      }
+      .assets {
+        grid-area: myWalletAssets;
+      }
+      .balance {
+        grid-area: myWalletBalance;
+      }
+      .profit {
+        grid-area: myWalletProfit;
+      }
+      .active-votes {
+        grid-area: myWalletActiveVotes;
+      }
+      .redeemed-votes {
+        grid-area: myWalletRedeemedVotes;
+      }
+      .time {
+        grid-area: myWalletTime;
+      }
+    }
+  }
+  .refresh-btn {
+    width: 94px;
+    font-size: 12px;
+    border-radius: 4px;
+    display: flex;
+    height: 32px;
+    line-height: 32px;
+    padding: 0px 16px;
+    border: 1px solid var(--color-brand-default, #266cd3);
+    background: var(--color-white, #fff);
+    color: var(--color-brand-default, #266cd3);
+    &.ant-btn-text:active {
+      border: 1px solid var(--color-brand-pressed, #155abf);
+      background: var(--color-white, #fff);
+    }
+    &.ant-btn-text:hover {
+      border: 1px solid var(--color-brand-hover, #327dec);
+      background: var(--color-white, #fff);
+    }
+    &.ant-btn-text[disabled] {
+      border: 1px solid var(--color-border, #d0d0d0);
+      background: var(--color-hover, #f7f8fa) !important;
+    }
+  }
+
+  .login-btn,
+  .logout-btn {
+    width: 94px;
+    font-size: 12px;
+    margin-left: 8px;
+    border-radius: 4px;
+    display: flex;
+    height: 32px;
+    line-height: 32px;
+    padding: 0px 16px;
+    border: 1px solid #266cd3;
+    background-color: #266cd3 !important;
+    color: #fff;
+    &.ant-btn-text:active {
+      color: #fff;
+      background: var(--color-brand-pressed, #155abf) !important;
+    }
+    &.ant-btn-text:hover {
+      color: #fff;
+      background: var(--color-brand-hover, #327dec) !important;
+    }
+  }
+}
+
+.ant-modal-confirm-body .ant-modal-confirm-title {
+  color: @textContext;
+}
+
+// todo: Use rem instead
+@media (max-width: @smallScreenWidth) {
+  .my-wallet-card {
+    &-body {
+      display: block;
+      &-wallet-title {
+        border-right: 0;
+        word-break: break-word;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 16px;
+        line-height: 20px;
+        .address {
+          display: grid;
+          grid-template-columns: 50px auto;
+        }
+      }
+      &-wallet-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "myWalletAssets myWalletBalance "
+          "myWalletProfit myWalletActiveVotes"
+          " myWalletRedeemedVotes myWalletTime";
+      }
+    }
+  }
+}
+
+@media (max-width: @xsScreenWidth) {
+  .my-wallet-card {
+    &-body {
+      &-wallet-title {
+        padding: 0;
+        border-right: 0;
+        word-break: break-word;
+        line-height: 20px;
+        display: block;
+        div {
+          display: grid;
+          grid-gap: 8px;
+          margin-bottom: 16px;
+        }
+        &-key,
+        &-value {
+          display: block;
+        }
+        &-value {
+          margin-left: 0;
+        }
+        .address {
+          grid-template-columns: 1fr;
+        }
+      }
+      &-wallet-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 16px;
+        grid-template-areas:
+          "myWalletAssets"
+          "myWalletBalance"
+          "myWalletProfit"
+          "myWalletActiveVotes"
+          "myWalletRedeemedVotes"
+          "myWalletTime";
+        > li {
+          margin: 0;
+          display: grid;
+          grid-gap: 8px;
+          .item-value {
+            margin-left: 0;
+          }
+          .item-extra {
+            float: right;
+          }
+        }
+      }
+    }
+  }
+}
+
+.wallet-dividends {
+  display: inline-block;
+}

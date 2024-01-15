@@ -1,0 +1,55 @@
+.trading-sell {
+
+  .ant-slider-track {
+    background: @sellColor;
+  }
+
+  .ant-slider-dot-active {
+    border-color: @sellColor;
+    background: @sellColor;
+  }
+
+  .ant-slider-handle {
+    border-color: @sellColor;
+    background: @sellColor;
+    border: solid 2px @sellColor;
+    transform: none !important; // Fix a style bug
+  }
+
+  .ant-slider-handle:focus {
+    box-shadow: none;
+  }
+
+  .ant-slider-track:focus {
+    background: @sellColor;
+  }
+
+  .ant-slider:hover .ant-slider-track {
+    background: @sellColor;
+  }
+
+  .ant-slider:hover .ant-slider-handle {
+    border: none;
+  }
+
+  // todo: make it align center naturally, now using ugly css code
+  .ELF-value {
+    .ant-spin-nested-loading {
+      position: relative;
+      display: inline-block;
+      min-height: 30px;
+    }
+  }
+
+  .ant-spin-container {
+    padding: 3px;
+  }
+
+  .ant-form-item {
+    margin-bottom: 0;
+    .ant-form-explain {
+      position: absolute;
+      top: -50%;
+    }
+  }
+}

@@ -1,9 +1,13 @@
 .header-blank {
-  height: 80px;
+  height: 108px;
 }
 
 @media screen and (max-width: 768px) {
   .header-blank {
-    height: 144px;
+    &.only-menu {
+      height: 56px;
+    }
+    background-color: @athens-gray;
+    height: 128px;
   }
 }

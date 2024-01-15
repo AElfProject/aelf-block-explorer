@@ -1,0 +1,44 @@
+.only-ok-modal {
+  width: 442px;
+  .ant-modal-content {
+    border-radius: 8px;
+    line-height: 20px;
+    .ant-modal-body {
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+      .ant-modal-confirm-title {
+        margin: auto;
+        font-size: 14px;
+      }
+      .ant-modal-confirm-content {
+        margin-top: 0;
+      }
+      .ant-modal-confirm-btns {
+        display: flex;
+        justify-content: center;
+        .ant-btn {
+          width: 214px;
+          height: 40px;
+          border-radius: 4px;
+          margin-left: 0;
+          background: var(--color-brand-default, #266cd3);
+        }
+      }
+    }
+  }
+}
+.only-ok-modal-mobile {
+  width: calc(100vw - 24px);
+  border-radius: 8px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  .ant-modal-content .ant-modal-body {
+    display: block;
+    .ant-modal-confirm-btns .ant-btn {
+      width: 100%;
+    }
+  }
+}

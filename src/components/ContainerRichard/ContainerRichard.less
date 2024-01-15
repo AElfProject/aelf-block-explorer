@@ -1,6 +1,8 @@
+@import "../../assets/less/_variables";
 @borderWhite: #FFF;
 .conri-container {
     //border: 5px solid red;
+    padding: 0 16px 0 16px;
 }
 
 .conri-top-border,
@@ -24,7 +26,8 @@
 .conri-center-content {
     flex: 1;
     margin: 8px;
-    background: rgba(57, 0, 77, 0.3);
+    //background: rgba(57, 0, 77, 0.3);
+    background: #FFF;
 }
 
 .conri-center-content-small {
@@ -45,4 +48,17 @@
         height: 20%;
         background: rgba(151, 151, 151, 0.5);
     }
+}
+
+@media screen and (max-width: 414px) {
+
+.conri-container {
+    //padding: 0 8px 0 8px;
+    padding: 0px;
+
+    .conri-center-content-small {
+        margin: 0px;
+    }
+}
+
 }

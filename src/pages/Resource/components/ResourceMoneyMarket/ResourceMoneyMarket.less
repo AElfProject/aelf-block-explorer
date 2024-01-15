@@ -1,0 +1,56 @@
+@menuBtnActiveColor: rgba(255, 255, 255, 0.25);
+
+.resource-head {
+  height: 50px;
+  line-height: 50px;
+  background: @bgBlankWhite;
+  color: @textContext;
+  font-size: 16px;
+  text-indent: 30px;
+}
+
+.resource-body {
+  padding: 0 !important;
+  background-size: 100% 100%;
+  .resource-market-body {
+    background: @bgBlankWhite;
+  }
+}
+
+.menu-button {
+  height: 60px;
+  font-size: 18px;
+  color: @textContext;
+  text-align: center;
+  line-height: 60px;
+  background: @bgBlankWhite;
+  border-radius: 30px;
+  cursor: pointer;
+  &.active {
+    background: @menuBtnActiveColor;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .resource-market-body {
+    margin: 20px;
+  }
+  .resource-body {
+    padding: 0 0;
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .menu-container {
+    display: flex;
+    justify-content: space-around;
+    .menu-btn-container {
+      .menu-button {
+        padding: 0 10px;
+      }
+    }
+  }
+  .resource-market-body {
+    margin: 8px;
+  }
+}

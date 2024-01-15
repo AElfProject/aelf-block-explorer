@@ -1,0 +1,30 @@
+@import "../../assets/less/_variables";
+.home-item {
+  margin-top: 8px;
+  padding: 0 12px;
+  div.ant-col {
+    text-align: left !important;
+  }
+  &-time {
+    color: #999999;
+  }
+  .home-item-title {
+    text-align: left !important;
+    white-space: nowrap;
+    > a.home-title-link {
+      text-align: left !important;
+      color: @primary-color;
+    }
+  }
+  .gap-bottom-small {
+    margin-bottom: 8px;
+  }
+  .gap-top-small {
+    margin-top: 8px;
+  }
+  div.home-item-right.ant-col {
+    .home-item-title {
+      text-align: right !important;
+    }
+  }
+}

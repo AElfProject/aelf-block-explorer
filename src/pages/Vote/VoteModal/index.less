@@ -1,0 +1,143 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-09-24 16:15:00
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-09 21:07:21
+ * @Description: file content
+ */
+//  todo: use alias instead
+@import "../../../index.less";
+
+.ant-table-tbody > tr.ant-table-row-selected td {
+  background: none;
+}
+
+.ant-table-thead > tr.ant-table-row-selected > td.ant-table-column-sort,
+.ant-table-tbody > tr.ant-table-row-selected > td.ant-table-column-sort {
+  background: none;
+}
+
+.ant-btn-round.ant-btn-sm {
+  background: @bgMain;
+  border: none;
+  &:hover {
+    background: @bgMainHover;
+  }
+}
+
+.vote-modal {
+  overflow: visible; // Make table enable overflow
+  .table-container {
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    min-width: 569px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden; // Required
+    background: #fff;
+    padding: 10px;
+  }
+  .ant-tabs {
+    overflow: visible; // Make table enable overflow
+    margin: 0 32px;
+
+    .ant-tabs-bar {
+      margin: 0;
+    }
+    &.ant-tabs-top {
+      .ant-tabs-nav {
+        margin: 0;
+        &:before {
+          border: 0;
+        }
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      height: 0;
+    }
+  }
+
+  .ant-table-wrapper {
+    .ant-table-body {
+      margin: 0;
+      tr > th {
+        padding: 14px 10px;
+      }
+    }
+  }
+
+  .vote-modal-form {
+    width: auto;
+    .ant-picker {
+      width: 100%;
+      input {
+        text-align: center;
+      }
+    }
+  }
+
+  .ant-tabs-nav-scroll {
+    text-align: left;
+    label {
+      color: @tipColor;
+    }
+  }
+  .modal-mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9;
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+@media (max-width: @smallScreenWidth) {
+  .vote-modal .ant-tabs {
+    margin: 0 8px;
+  }
+}
+
+@media (max-width: 575px) {
+  .vote-modal .ant-form .ant-form-item .ant-form-item-label label {
+    margin-left: 0;
+  }
+}
+
+.react-datepicker__day--selected {
+  background-color: #cfc1db;
+  color: @textContext;
+  &:hover {
+    background-color: #cfc1db;
+  }
+}
+.react-datepicker__day--keyboard-selected {
+  background-color: #cfc1db;
+  color: @textContext;
+  &:hover {
+    background-color: #cfc1db;
+  }
+}
+.react-datepicker-custom-container {
+  border: 1px solid rgba(217, 217, 217);
+  width: 100%;
+  border-radius: 3px;
+  height: 32px;
+  text-align: center;
+  &:hover {
+    border-color: @primary-color;
+  }
+  &::placeholder {
+    color: #bfbfbf;
+  }
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(92, 40, 169, 0.3);
+    border-color: @primary-color;
+    outline: none;
+  }
+}

@@ -3,30 +3,30 @@
  * @author zhouminghui
 */
 
-import React, {PureComponent} from 'react';
-import svgList from '../../assets/svgList';
+import React, { PureComponent } from 'react';
+// import svgList from '../../assets/svgList';
+import svgList from '../../assets/svgs';
 
 export default class Svg extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      style: this.props.style,
+    };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            style: this.props.style
-        };
-    }
+  render() {
+    const { icon } = this.props;
+    const svg = svgList[icon];
 
-    render() {
-        let icon = this.props.icon;
-        let svg = svgList[icon];
-
-        return (
-            <div
-                style={this.state.style}
-                className={this.props.className}
-                onClick={this.props.click}
-                dangerouslySetInnerHTML={{__html: svg}}
-                {...this.props}
-            ></div>
-        );
-    }
+    return (
+      <div
+        style={this.state.style}
+        className={this.props.className}
+        onClick={this.props.click}
+        dangerouslySetInnerHTML={{ __html: svg }}
+        {...this.props}
+      />
+    );
+  }
 }

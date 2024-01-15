@@ -1,0 +1,202 @@
+/*
+ * @Author: Alfred Yang
+ * @Github: https://github.com/cat-walk
+ * @Date: 2019-12-09 14:57:57
+ * @LastEditors: Alfred Yang
+ * @LastEditTime: 2019-12-09 15:17:21
+ * @Description: file content
+ */
+.apply-node-modal.ant-modal {
+  text-align: center;
+  overflow: hidden;
+  .ant-modal-close-x {
+    color: rgba(16, 16, 16, 1);
+  }
+  .ant-modal-footer {
+    padding-top: 8px;
+    padding-bottom: 24px;
+    background-color: #fff;
+    .ant-btn {
+      width: 214px;
+      height: 40px;
+      border-radius: 4px;
+      background: var(--color-brand-default, #266cd3);
+    }
+  }
+  .ant-modal-content {
+    .ant-modal-header {
+      padding: 17px 16px;
+      border-bottom: 1px solid #e6e6e6;
+      .ant-modal-title {
+        padding: 0;
+        line-height: 22px;
+        font-size: 14px;
+        border: none;
+      }
+    }
+    .ant-modal-body {
+      padding: 24px 16px;
+      overflow-y: auto;
+    }
+  }
+
+  .ant-form {
+    width: 100%;
+    border-bottom: 1px solid #e6e6e6;
+    .ant-form-item {
+      border: none;
+      line-height: 20px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      .ant-form-item-row {
+        display: grid;
+        grid-template-columns: 160px auto;
+      }
+      .ant-form-item-label {
+        line-height: 20px;
+        height: 20px;
+        label {
+          margin-left: 0;
+          color: rgba(187, 187, 187, 1);
+          font-size: 12px;
+          height: 20px;
+          vertical-align: bottom;
+        }
+      }
+      .ant-form-item-control {
+        line-height: 20px;
+        margin-left: 20px;
+        .ant-form-item-control-input {
+          min-height: 20px;
+        }
+        .list-item-value {
+          color: rgba(16, 16, 16, 1);
+          svg {
+            color: @gray;
+          }
+        }
+      }
+    }
+    .candidate-admin {
+      line-height: 36px;
+      height: 36px;
+      margin-bottom: 24px;
+      svg {
+        color: @gray;
+      }
+      .ant-row.ant-form-item-row {
+        align-items: baseline;
+      }
+
+      .ant-form-item-label {
+        label {
+          &::before {
+            position: absolute;
+            left: 90px;
+          }
+        }
+      }
+      .ant-form-item-control {
+        display: flex;
+        .ant-form-item-control-input-content {
+          display: flex;
+          height: 36px;
+          align-items: center;
+          input {
+            text-align: left;
+          }
+        }
+      }
+      &-tip {
+        margin-left: 8px;
+        line-height: 32px;
+      }
+    }
+  }
+
+  .tip-color {
+    text-align: left;
+    padding: 8px;
+    border-radius: 4px;
+    background: var(--color-hover, #f7f8fa);
+    display: flex;
+    line-height: 20px;
+    margin: 16px 0 0;
+    .anticon {
+      line-height: 20px;
+    }
+    svg {
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+    }
+    strong {
+      color: @gray;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+  }
+}
+@media (max-width: @lgScreenWidth) {
+  .apply-node-modal.ant-modal {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100%;
+    height: 100vh;
+    .ant-modal-content {
+      height: 100vh;
+      .ant-modal-header {
+        text-align: left;
+        padding-right: 32px;
+      }
+      .ant-modal-body {
+        height: calc(100%-130px);
+        overflow-y: auto;
+      }
+    }
+    .ant-modal-footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      .ant-btn {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: @xsScreenWidth) {
+  .apply-node-modal.ant-modal {
+    .ant-form {
+      .ant-form-item {
+        .ant-form-item-row {
+          grid-template-columns: 1fr;
+        }
+        .ant-form-item-label {
+          margin-bottom: 8px;
+        }
+        .ant-form-item-control {
+          margin-left: 0;
+        }
+      }
+
+      .candidate-admin-tip {
+        position: absolute;
+        left: 95px;
+        top: -32px;
+      }
+    }
+    .tip-color {
+      flex-wrap: wrap;
+      strong {
+        margin-bottom: 8px;
+      }
+      .notice-text {
+        width: 100%;
+      }
+    }
+  }
+}
