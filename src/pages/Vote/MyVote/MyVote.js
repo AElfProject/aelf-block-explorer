@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import moment from "moment";
 
 import StatisticalData from "@components/StatisticalData/";
-import { getAllTeamDesc, fetchPageableCandidateInformation } from "@api/vote";
+import {
+  getAllTeamDesc,
+  fetchPageableCandidateInformation,
+  fetchCount,
+} from "@api/vote";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
 import {
   RANK_NOT_EXISTED_SYMBOL,
@@ -18,6 +22,7 @@ import "./MyVote.style.less";
 import { WebLoginInstance } from "../../../utils/webLogin";
 import { isActivityBrowser } from "../../../utils/isWebView";
 
+const TableItemCount = 20;
 class MyVote extends Component {
   constructor(props) {
     super(props);
@@ -89,6 +94,29 @@ class MyVote extends Component {
     return res;
   }
 
+  async fetchTotal() {
+    const res = await fetchCount(this.props.electionContract, "");
+    const total = res.value?.length || 0;
+    return total;
+  }
+
+  async fetchAllCandidateInfo() {
+    const total = await this.fetchTotal();
+    const { electionContract } = this.props;
+    let start = 0;
+    let result = [];
+    while (start <= total) {
+      // eslint-disable-next-line no-await-in-loop
+      const res = await fetchPageableCandidateInformation(electionContract, {
+        start,
+        length: TableItemCount,
+      });
+      result = result.concat(res ? res.value : []);
+      start += 20;
+    }
+    return result;
+  }
+
   fetchTableDataAndStatistData() {
     const { electionContract, currentWallet } = this.props;
     if (!electionContract) return;
@@ -101,11 +129,7 @@ class MyVote extends Component {
     Promise.all([
       this.fetchElectorVote(currentWallet, electionContract),
       getAllTeamDesc(),
-      fetchPageableCandidateInformation(electionContract, {
-        start: 0,
-        // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
-        length: 20,
-      }),
+      this.fetchAllCandidateInfo(),
       electionContract.GetElectorVoteWithAllRecords.call({
         value: currentWallet.address,
       }),
@@ -131,7 +155,7 @@ class MyVote extends Component {
       };
       // }
     }
-    const allNodeInfo = (resArr[2] ? resArr[2].value : [])
+    const allNodeInfo = (resArr[2] || [])
       .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
       .map((item, index) => {
         item.rank = index + 1;
