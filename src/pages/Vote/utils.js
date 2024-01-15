@@ -9,7 +9,7 @@
 import moment from "moment";
 import { fetchPageableCandidateInformation, fetchCount } from "@api/vote";
 
-const TableItemCount = 2;
+const TableItemCount = 20;
 
 // todo: instead the code in page MyVote
 export const getFormatedLockTime = (vote) => {
