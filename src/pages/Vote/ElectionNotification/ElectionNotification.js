@@ -31,6 +31,7 @@ import CandidateApplyModal from "./CandidateApplyModal/CandidateApplyModal";
 import { getTokenDecimal } from "../../../utils/utils";
 import { WebLoginInstance } from "../../../utils/webLogin";
 import { onlyOkModal } from "../../../components/SimpleModal/index.tsx";
+import { fetchAllCandidateInfo } from "../utils";
 
 const electionNotifiStatisData = {
   termEndTime: {
@@ -224,8 +225,9 @@ class ElectionNotification extends PureComponent {
       },
       {
         contract: electionContract,
-        method: "GetVotesAmount",
-        processor: (value) => value / ELF_DECIMAL,
+        method: "GetPageableCandidateInformation",
+        processor: (value) =>
+          value.reduce((x, y) => x + y.obtainedVotesAmount / ELF_DECIMAL, 0),
         statisDataKey: "currentVotesAmount",
         dataKey: "num",
       },
@@ -237,12 +239,20 @@ class ElectionNotification extends PureComponent {
         dataKey: "num",
       },
     ];
+
     const list = await Promise.all(
       dataSource.map(async (item) => {
         const { contract, dataKey, method, processor, statisDataKey } = item;
         try {
-          const r = await contract[method].call();
-
+          let r;
+          if (method === "GetPageableCandidateInformation") {
+            r = await fetchAllCandidateInfo(contract);
+            return {
+              statisDataKey,
+              [dataKey]: processor(r),
+            };
+          }
+          r = await contract[method].call();
           return {
             statisDataKey,
             [dataKey]: processor((r || { value: 0 }).value),

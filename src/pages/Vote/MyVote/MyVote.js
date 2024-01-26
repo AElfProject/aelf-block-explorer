@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import moment from "moment";
 
 import StatisticalData from "@components/StatisticalData/";
-import { getAllTeamDesc, fetchPageableCandidateInformation } from "@api/vote";
+import {
+  getAllTeamDesc,
+} from "@api/vote";
 import publicKeyToAddress from "@utils/publicKeyToAddress";
 import {
   RANK_NOT_EXISTED_SYMBOL,
@@ -17,6 +19,7 @@ import addressFormat from "../../../utils/addressFormat";
 import "./MyVote.style.less";
 import { WebLoginInstance } from "../../../utils/webLogin";
 import { isActivityBrowser } from "../../../utils/isWebView";
+import { fetchAllCandidateInfo } from "../utils";
 
 class MyVote extends Component {
   constructor(props) {
@@ -101,11 +104,7 @@ class MyVote extends Component {
     Promise.all([
       this.fetchElectorVote(currentWallet, electionContract),
       getAllTeamDesc(),
-      fetchPageableCandidateInformation(electionContract, {
-        start: 0,
-        // length: A_NUMBER_LARGE_ENOUGH_TO_GET_ALL // FIXME:
-        length: 20,
-      }),
+      fetchAllCandidateInfo(electionContract),
       electionContract.GetElectorVoteWithAllRecords.call({
         value: currentWallet.address,
       }),
@@ -131,7 +130,7 @@ class MyVote extends Component {
       };
       // }
     }
-    const allNodeInfo = (resArr[2] ? resArr[2].value : [])
+    const allNodeInfo = (resArr[2] || [])
       .sort((a, b) => +b.obtainedVotesAmount - +a.obtainedVotesAmount)
       .map((item, index) => {
         item.rank = index + 1;
