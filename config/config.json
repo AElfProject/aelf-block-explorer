@@ -18,23 +18,23 @@
   "schemeIds": [
     {
       "type": "Citizen Welfare",
-      "schemeId": "32effe6aad9d6e529e884fc7cbca47bfb90c6236dab6e6c2e942e7483090d41b"
+      "schemeId": "e20cba90f8365e4770eb84af5846a1beb2957e7160e7d7d05c182466b4a5eac7"
     },
     {
       "type": "Backup Subsidy",
-      "schemeId": "97c31794f133f3ca7e9c3b08e797398a245c220f7d00878c3ab1e3ef91af965c"
+      "schemeId": "68677c41cbc852a565a64854c65192bd1e2b7f518793af1c86255221ea89ce8f"
     },
     {
       "type": "Welcome Reward",
-      "schemeId": "976eafd3bbd8dddbaefb3513ace018a1adb5dc3a84fa82022787823c26887383"
+      "schemeId": "b5c37a7b7b01fde21ade77fc2b3caf945c69efe9cf13931300086421ca745ae8"
     },
     {
       "type": "Miner Basic Reward",
-      "schemeId": "6da0ba4043fdf0dd966e2fa35402f58c1eb04f7cd718152e93f4559f230f1554"
+      "schemeId": "71117439a7b9f7a8bead7c7619409dc9f5ed9888fc3c550f5736165f00058c82"
     },
     {
       "type": "Flexible Reward",
-      "schemeId": "f0d6ae7bd14592ef88c2448f8e80441f9dba1382614a27a3a186d165531ef510"
+      "schemeId": "ce47e375f676a9a4cfd866ab0256837884fa54ea38a1519de37577827374d394"
     }
   ],
   "voteContractAddr": "2aoPatvMevjmhwsU1S9pkH2vnkNAuaiUaiU6JDroKNKe3fBQns",
