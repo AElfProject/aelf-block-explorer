@@ -1,8 +1,9 @@
 import { Button, Select } from 'antd';
 import type { PaginationProps } from 'antd';
 import './pagination.css';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import IconFont from '@_components/IconFont';
+import { useDebounceFn } from 'ahooks';
 import clsx from 'clsx';
 
 function JumpButton({ disabled, className, name, onChange }) {
@@ -30,7 +31,7 @@ export interface IEpPaginationProps extends PaginationProps {
   isMobile?: boolean;
   defaultCurrent?: number;
   total: number;
-  defaultValue?: number;
+  defaultPageSize?: number;
   showSizeChanger?: boolean;
   pageChange?: (page: number, pageSize?: number) => void;
   pageSizeChange?: (value: number) => void;
@@ -41,7 +42,7 @@ export default function EpPagination({
   current,
   pageSize = 25,
   defaultCurrent = 1,
-  defaultValue = 25,
+  defaultPageSize = 25,
   total,
   isMobile,
   showSizeChanger = true,
@@ -53,26 +54,15 @@ export default function EpPagination({
     { value: 100, label: 100 },
   ],
 }: IEpPaginationProps) {
-  const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSizeValue, setPageSizeValue] = useState<number>(defaultValue);
+  const [pageNum, setPageNum] = useState<number>(defaultCurrent);
+  const [pageSizeValue, setPageSizeValue] = useState<number>(defaultPageSize);
+
   useEffect(() => {
-    setPageNum(defaultCurrent);
-  }, [defaultCurrent]);
-  useEffect(() => {
-    setPageNum(current as number);
+    current && setPageNum(current as number);
   }, [current]);
   useEffect(() => {
-    setPageSizeValue(pageSize);
+    pageSize && setPageSizeValue(pageSize);
   }, [pageSize]);
-
-  const pageNumRef = useRef<any>(null);
-  useEffect(() => {
-    pageNumRef.current = pageNum;
-  }, [pageNum]);
-  const pageSizeRef = useRef<any>(null);
-  useEffect(() => {
-    pageSizeRef.current = pageSizeValue;
-  }, [pageSizeValue]);
 
   const totalPage = useMemo(() => {
     return Math.floor((total + pageSize - 1) / pageSize);
@@ -87,44 +77,38 @@ export default function EpPagination({
   }, [pageNum, totalPage]);
 
   const prevChange = () => {
-    if (pageNum === 1) {
-      pageNumRef.current = 1;
-    } else {
-      pageNumRef.current = pageNum - 1;
-    }
-    setPageNum(pageNumRef.current);
-    pageChange && pageChange(pageNumRef.current);
+    const page = pageNum === 1 ? pageNum : pageNum - 1;
+    setPageNum(page);
+    pageChange && pageChange(page);
   };
+
+  const { run: runPrevChange } = useDebounceFn(prevChange, { wait: 300 });
 
   const nextChange = () => {
-    if (pageNum === totalPage) {
-      pageNumRef.current = totalPage;
-    } else {
-      pageNumRef.current = pageNum + 1;
-    }
-    setPageNum(pageNumRef.current);
-    pageChange && pageChange(pageNumRef.current);
+    const page = pageNum === totalPage ? totalPage : pageNum + 1;
+    setPageNum(page);
+    pageChange && pageChange(page);
   };
+  const { run: runNextChange } = useDebounceFn(nextChange, { wait: 300 });
 
   const jumpFirst = () => {
-    pageNumRef.current = 1;
-    setPageNum(pageNumRef.current);
-    pageChange && pageChange(pageNumRef.current, pageSize);
+    setPageNum(1);
+    pageChange && pageChange(1, pageSize);
   };
+
+  const { run: debounceJumpFirst } = useDebounceFn(jumpFirst, { wait: 300 });
 
   const jumpLast = () => {
-    pageNumRef.current = totalPage;
-    setPageNum(pageNumRef.current);
-    pageChange && pageChange(pageNumRef.current, pageSize);
+    setPageNum(totalPage);
+    pageChange && pageChange(totalPage, pageSize);
   };
+  const { run: debounceJumpLast } = useDebounceFn(jumpLast, { wait: 300 });
 
   const sizeChange = (value) => {
-    pageNumRef.current = 1;
-    setPageNum(pageNumRef.current);
-    pageChange && pageChange(pageNumRef.current, pageSize);
-    pageSizeRef.current = value;
-    setPageSizeValue(pageSizeRef.current);
-    pageSizeChange && pageSizeChange(pageSizeRef.current);
+    setPageNum(1);
+    pageChange && pageChange(1, pageSize);
+    setPageSizeValue(value);
+    pageSizeChange && pageSizeChange(value);
   };
 
   return (
@@ -150,18 +134,18 @@ export default function EpPagination({
             type="primary"
             ghost
             className="!px-2 !text-xs !leading-5 mr-2 first-button"
-            onClick={jumpFirst}>
+            onClick={debounceJumpFirst}>
             First
           </Button>
         </div>
         <div className="pagination-prev w-8">
-          <JumpButton disabled={isFirstPage} onChange={prevChange} className="prev" name="left-arrow" />
+          <JumpButton disabled={isFirstPage} onChange={runPrevChange} className="prev" name="left-arrow" />
         </div>
         <div className="pagination-page">
           <div className="text-xs leading-5 text-base-200">{`Page ${current || pageNum} of ${totalPage}`}</div>
         </div>
         <div className="pagination-next">
-          <JumpButton disabled={isLastPage} onChange={nextChange} className="next" name="right-arrow" />
+          <JumpButton disabled={isLastPage} onChange={runNextChange} className="next" name="right-arrow" />
         </div>
         <div className="pagination-last">
           <Button
@@ -169,7 +153,7 @@ export default function EpPagination({
             type="primary"
             ghost
             className="!px-2 ml-2 !text-xs !leading-5 last-button"
-            onClick={jumpLast}>
+            onClick={debounceJumpLast}>
             Last
           </Button>
         </div>

@@ -101,7 +101,7 @@ export default function TableApp({
             total={total}
             options={options}
             pageSize={pageSize}
-            defaultValue={pageSize}
+            defaultPageSize={pageSize}
             defaultCurrent={defaultCurrent}
             showSizeChanger={false}
             pageChange={pageChange}
@@ -113,16 +113,16 @@ export default function TableApp({
         loading={loading}
         pagination={false}
         scroll={{ x: 'max-content' }}
-        {...params}
         locale={{
           emptyText: emptyStatus({ emptyType, emptyText }),
         }}
+        {...params}
       />
       <EpPagination
         current={pageNum}
         isMobile={isMobile}
         options={options}
-        defaultValue={pageSize}
+        defaultPageSize={pageSize}
         total={total}
         pageSize={pageSize}
         defaultCurrent={defaultCurrent}

@@ -21,6 +21,12 @@
       .header-top {
         @apply flex items-center !important; 
       }
+      .ant-table-column-sorters {
+        @apply !flex-row-reverse;
+        .ant-table-column-sorter {
+          @apply ms-0 me-1;
+        }
+      }
     }
     .ant-table-tbody {
       @apply text-xs leading-5 text-base-100;
@@ -28,6 +34,7 @@
         @apply leading-none;
       }
     }
+    
   }
   .ant-pagination {
     .ant-pagination-item {

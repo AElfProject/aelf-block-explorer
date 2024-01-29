@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { TableProps } from 'antd';
+import { SorterResult } from 'antd/es/table/interface';
+import { useEffect, useRef, useState } from 'react';
+import { useDebounce } from 'react-use';
 // interface IParams {
 //   page: number;
 //   pageSize: number;
@@ -56,16 +59,61 @@ export default function useTableData<T, U>({
       setLoading(false);
     }
   };
+
+  const [searchText, setSearchText] = useState<string>('');
+  const mounted = useRef(false);
+  useDebounce(
+    () => {
+      if (!mounted.current) {
+        mounted.current = true;
+        return;
+      }
+      setCurrentPage(1);
+      setPageSize(defaultPageSize);
+      getData({ page: 1, pageSize: defaultPageSize, sort: sortedInfo, searchText });
+    },
+    300,
+    [searchText],
+  );
+
+  const searchChange = (value) => {
+    setSearchText(value);
+  };
+
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<T>>({});
+  const handleChange: TableProps<T>['onChange'] = (pagination, filters, sorter) => {
+    setSortedInfo(sorter as SorterResult<T>);
+    setCurrentPage(1);
+    setPageSize(defaultPageSize);
+    getData({ page: 1, pageSize: defaultPageSize, sort: sorter, searchText });
+  };
+
   const pageChange = async (page: number) => {
     setCurrentPage(page);
-    getData({ page, pageSize: pageSize });
+    getData({ page, pageSize: pageSize, sort: sortedInfo, searchText });
   };
+
+  useEffect(() => {
+    getData({ page: currentPage, pageSize: pageSize, sort: sortedInfo, searchText });
+  }, []);
 
   const pageSizeChange = async (size) => {
     setPageSize(size);
     setCurrentPage(1);
-    getData({ page: 1, pageSize: size });
+    getData({ page: 1, pageSize: size, sort: sortedInfo, searchText });
   };
 
-  return { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange };
+  return {
+    searchText,
+    loading,
+    sortedInfo,
+    total,
+    data,
+    currentPage,
+    pageSize,
+    pageChange,
+    pageSizeChange,
+    handleChange,
+    searchChange,
+  };
 }

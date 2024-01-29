@@ -10,6 +10,7 @@ interface IToolTip
   pointAtCenter?: boolean;
   children: ReactNode;
   mode: 'light' | 'dark';
+  className?: string;
   placement?: TooltipPlacement;
   trigger?: 'click' | 'hover';
 }
@@ -18,6 +19,7 @@ export default function EPTooltip({
   children,
   pointAtCenter = true,
   trigger,
+  className,
   placement = 'topLeft',
   mode = 'dark',
   ...params
@@ -25,7 +27,7 @@ export default function EPTooltip({
   const { isMobileSSR: isMobile } = useMobileContext();
   return (
     <Tooltip
-      overlayClassName={clsx(mode === 'light' ? 'tooltip-light' : 'tooltip-dark')}
+      overlayClassName={clsx(mode === 'light' ? 'tooltip-light' : 'tooltip-dark', className)}
       color={mode === 'dark' ? '#1D2A51' : '#FFFFFF'}
       trigger={trigger || (isMobile ? 'click' : 'hover')}
       arrow={{ pointAtCenter: pointAtCenter }}
