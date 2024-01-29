@@ -973,6 +973,11 @@ class VoteContainer extends Component {
               cancelFlag = true;
               clearInterval(interval);
               return reject();
+            } else if (result?.Status === "NODEVALIDATIONFAILED") {
+              message.error(error?.Error || error?.message);
+              cancelFlag = true;
+              clearInterval(interval);
+              return reject();
             } else if (result?.Status === "MINED") {
               getStateJudgment(result.Status, transactionId);
               cancelFlag = true;
