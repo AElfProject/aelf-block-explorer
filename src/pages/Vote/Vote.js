@@ -1076,7 +1076,7 @@ class VoteContainer extends Component {
             type: item.type,
             amounts: allProfitsMap,
             oneTimeProfits: oneTimeClaimableProfitsMap,
-            claimaedProfits: 0,
+            // claimaedProfits: 0,
             schemeId: item.schemeId,
             title: item.title,
           };
