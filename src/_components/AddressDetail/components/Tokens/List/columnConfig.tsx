@@ -2,14 +2,18 @@ import IconFont from '@_components/IconFont';
 import { thousandsNumber } from '@_utils/formatter';
 import { TokensListItemType } from '@_types/commonDetail';
 import { ColumnsType } from 'antd/es/table';
+import EPSortIcon from '@_components/EPSortIcon';
 
-export default function getColumns(): ColumnsType<TokensListItemType> {
+export default function getColumns(sortedInfo): ColumnsType<TokensListItemType> {
   return [
     {
       dataIndex: 'asset',
       width: 219,
       key: 'asset',
       title: 'Token Name',
+      sorter: true,
+      sortIcon: ({ sortOrder }) => <EPSortIcon sortOrder={sortOrder} />,
+      sortOrder: sortedInfo.columnKey === 'asset' ? sortedInfo.order : null,
       render: (text) => {
         return (
           <div className="flex items-center">
@@ -24,9 +28,7 @@ export default function getColumns(): ColumnsType<TokensListItemType> {
       width: 218,
       dataIndex: 'symbol',
       key: 'symbol',
-      render: (text) => (
-        <span className="inline-block leading-5 max-w-[181px] text-base-100 truncate mx-1">{text}</span>
-      ),
+      render: (text) => <span className="inline-block leading-5 max-w-[181px] text-base-100 truncate">{text}</span>,
     },
     {
       title: 'Quantity',
@@ -34,9 +36,7 @@ export default function getColumns(): ColumnsType<TokensListItemType> {
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text) => (
-        <span className="inline-block leading-5 max-w-[124px] text-base-100 truncate mx-1">
-          {thousandsNumber(text)}
-        </span>
+        <span className="inline-block leading-5 max-w-[124px] text-base-100 truncate">{thousandsNumber(text)}</span>
       ),
     },
     {

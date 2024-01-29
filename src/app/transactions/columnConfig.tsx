@@ -15,6 +15,7 @@ import IconFont from '@_components/IconFont';
 import Method from '@_components/Method';
 import ContractToken from '@_components/ContractToken';
 import EPTooltip from '@_components/EPToolTip';
+import TransactionsView from '@_components/TransactionsView';
 enum Status {
   Success = 'Success',
   fail = 'Fail',
@@ -26,11 +27,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: 72,
       dataIndex: '',
       key: 'view',
-      render: () => (
-        <div className="border cursor-pointer bg-white rounded border-color-divider w-6 h-6 flex justify-center items-center focus:bg-color-divider">
-          <IconFont type="view" />
-        </div>
-      ),
+      render: (record) => <TransactionsView record={record} />,
     },
     {
       dataIndex: 'transactionHash',

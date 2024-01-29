@@ -13,7 +13,7 @@ function Status({ status }: { status: StatusEnum }) {
   return (
     <div
       className={clsx(
-        'h-6 px-2 flex border rounded',
+        'confirm-status h-6 px-2 flex border items-center rounded',
         (status === StatusEnum.Confirmed || status === StatusEnum.Success) && 'bg-confirm-bg border-confirm-br',
         status === StatusEnum.Unconfrimed && 'border-color-divider bg-F7',
         status === StatusEnum.Fail && 'bg-pink_fill border-pink_stroke',

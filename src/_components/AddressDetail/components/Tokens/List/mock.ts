@@ -10,7 +10,7 @@ const data = Array.from(new Array(100).keys()).map((item) => {
     totalPriceInUsd: 44444444.0,
   };
 });
-export default async function fetchData({ page, pageSize }): Promise<{
+export default async function fetchData({ page, pageSize, ...params }): Promise<{
   total: number;
   list: TokensListItemType[];
 }> {
