@@ -41,7 +41,11 @@ function App() {
   });
 
   const webLoginContext = useWebLogin();
-  WebLoginInstance.get().setWebLoginContext(webLoginContext);
+
+  useEffect(() => {
+    WebLoginInstance.get().setWebLoginContext(webLoginContext);
+    console.log(webLoginContext, "webLoginContext");
+  }, [webLoginContext]);
   console.log(webLoginContext.wallet);
 
   const back2Top = useCallback(() => {

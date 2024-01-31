@@ -40,21 +40,28 @@ setGlobalConfig({
     },
     requestDefaults: {
       timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
-      baseURL: `${portkeyApiServer}`,
+      baseURL: "/v1",
     },
-    network: {
-      defaultNetwork: NETWORK_TYPE,
-      networkList: [
-        {
-          name: CHAINS_LINK_NAMES[CHAIN_ID],
-          walletType: "aelf",
-          networkType: NETWORK_TYPE,
-          isActive: true,
-          apiUrl: portkeyApiServer,
-          graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
-          connectUrl,
-        },
-      ],
+    // network: {
+    //   defaultNetwork: NETWORK_TYPE,
+    //   networkList: [
+    //     {
+    //       name: CHAINS_LINK_NAMES[CHAIN_ID],
+    //       walletType: "aelf",
+    //       networkType: NETWORK_TYPE,
+    //       isActive: true,
+    //       apiUrl: portkeyApiServer,
+    //       graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
+    //       connectUrl,
+    //     },
+    //   ],
+    // },
+  },
+  portkeyV2: {
+    networkType: NETWORK_TYPE === "TESTNET" ? "TESTNET" : "MAINNET",
+    requestDefaults: {
+      baseURL: "/v2",
+      timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
     },
   },
   aelfReact: {

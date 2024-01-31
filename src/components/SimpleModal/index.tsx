@@ -15,6 +15,7 @@ export const onlyOkModal = ({ message }: IOnlyOkModal) => {
     icon: null,
     cancelButtonProps: { style: { display: "none" } },
     transitionName: "ant-fade",
+    zIndex: 10100,
   });
 };
 
