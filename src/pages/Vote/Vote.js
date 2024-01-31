@@ -166,6 +166,7 @@ class VoteContainer extends Component {
       // isPluginLock: false,
       dividendLoading: false,
       claimLoading: {},
+      claimDisabled: false,
     };
 
     this.isPhone = isPhoneCheck();
@@ -952,6 +953,7 @@ class VoteContainer extends Component {
   // todo: use this method instead repeat code
   checkTransactionResult(res, modalToClose, intervalFlag) {
     const { aelf } = this.props;
+    const { dividends } = this.state;
     const transactionId =
       res?.TransactionId ||
       res?.result?.TransactionId ||
@@ -985,6 +987,13 @@ class VoteContainer extends Component {
               // close modal
               if (modalToClose) {
                 setTimeout(() => {
+                  if (modalToClose === "dividendModalVisible") {
+                    // all profit has been got
+                    const getAllFlag = dividends.amounts.every((ele) => {
+                      return JSON.stringify(ele.amounts) === "{}";
+                    });
+                    if (!getAllFlag) return;
+                  }
                   this.changeModalVisible(modalToClose, false);
                 }, 500);
               }
@@ -999,6 +1008,7 @@ class VoteContainer extends Component {
             );
             message.info(`Your transaction id is: ${transactionId}`);
           }
+          clearInterval(interval);
           return reject();
         }, 60000);
       } else {
@@ -1081,7 +1091,6 @@ class VoteContainer extends Component {
             type: item.type,
             amounts: allProfitsMap,
             oneTimeProfits: oneTimeClaimableProfitsMap,
-            // claimaedProfits: 0,
             schemeId: item.schemeId,
             title: item.title,
           };
@@ -1129,44 +1138,16 @@ class VoteContainer extends Component {
     handleDividendClick();
   }
 
-  // handleDividendsClaimaedProfits(originDividends) {
-  //   // todo: delete test
-  //   const amounts = originDividends.amounts.map((ele) => {
-  //     return {
-  //       ...ele,
-  //       amounts: ele.amounts["ELF"]
-  //         ? {
-  //             ELF: ele.amounts["ELF"] - ele.oneTimeProfits["ELF"],
-  //           }
-  //         : {},
-  //       claimaedProfits: ele.amounts["ELF"] ? ele.oneTimeProfits["ELF"] : 0,
-  //     };
-  //   });
-  //   const total = {
-  //     ELF:
-  //       originDividends.total["ELF"] -
-  //       amounts.reduce((accumulator, currentValue) => {
-  //         return accumulator + currentValue.claimaedProfits;
-  //       }, 0),
-  //   };
-
-  //   const dividends = {
-  //     total,
-  //     amounts,
-  //   };
-  //   console.log(dividends, "dividends");
-  //   this.setState({
-  //     dividends,
-  //   });
-  // }
-
   claimProfits(item) {
     const { schemeId } = item;
     const needMoreTime = item.amounts["ELF"] > item.oneTimeProfits["ELF"];
     const { currentWallet } = this.props;
-    const { profitContractFromExt, dividends: originDividends } = this.state;
+    const { profitContractFromExt, claimLoading, claimDisabled } = this.state;
     const webLoginContext = WebLoginInstance.get().getWebLoginContext();
     const { loginState } = webLoginContext;
+    this.setState({
+      claimDisabled: true,
+    });
     if (loginState === WebLoginState.logined) {
       WebLoginInstance.get()
         .callContract({
@@ -1178,6 +1159,9 @@ class VoteContainer extends Component {
           },
         })
         .then((res) => {
+          this.setState({
+            claimDisabled: false,
+          });
           const { error, errorMessage } = res;
           if (+error === 0 || !error) {
             (needMoreTime
@@ -1192,6 +1176,7 @@ class VoteContainer extends Component {
                 await this.fetchProfitAmount();
                 this.setState({
                   claimLoading: {
+                    ...claimLoading,
                     [item.title]: false,
                   },
                 });
@@ -1199,16 +1184,18 @@ class VoteContainer extends Component {
               .catch((err) => {
                 this.setState({
                   claimLoading: {
+                    ...claimLoading,
                     [item.title]: false,
                   },
                 });
-                message.error(err.Error || err.message);
+                message.error(err?.Error || err?.message);
                 console.error("handleClaimDividendClick", err);
               });
           } else {
             message.error(errorMessage.message);
             this.setState({
               claimLoading: {
+                ...claimLoading,
                 [item.title]: false,
               },
             });
@@ -1216,7 +1203,9 @@ class VoteContainer extends Component {
         })
         .catch((err) => {
           this.setState({
+            claimDisabled: false,
             claimLoading: {
+              ...claimLoading,
               [item.title]: false,
             },
           });
@@ -1226,8 +1215,10 @@ class VoteContainer extends Component {
   }
 
   handleClaimDividendClick(item) {
+    const { claimLoading } = this.state;
     this.setState({
       claimLoading: {
+        ...claimLoading,
         [item.title]: true,
       },
     });
@@ -1325,6 +1316,7 @@ class VoteContainer extends Component {
       voteConfirmLoading,
       redeemConfirmLoading,
       claimLoading,
+      claimDisabled,
       voteLoading,
     } = this.state;
 
@@ -1483,6 +1475,7 @@ class VoteContainer extends Component {
             dividends={dividends}
             handleClaimDividendClick={this.handleClaimDividendClick}
             claimLoading={claimLoading}
+            claimDisabled={claimDisabled}
           />
 
           <Modal
