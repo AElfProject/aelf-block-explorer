@@ -12,8 +12,8 @@ const blocks = Array.from(new Array(100).keys()).map((item) => {
     burntFee: '1,550.00011273 ELF',
   };
 });
-export default async function fetchData({ page, pageSize }): Promise<IBlocksData> {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+export default async function fetchData({ page, pageSize }): Promise<any> {
+  await new Promise((resolve) => setTimeout(resolve, 200));
   return {
     total: 100,
     blocks: blocks.slice((page - 1) * pageSize, page * pageSize),

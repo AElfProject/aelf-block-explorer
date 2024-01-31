@@ -27,6 +27,7 @@ const getConnectionBuilder = (url: string) => {
   return connect;
 };
 const initOverview = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   return {
     tokenPriceInUsd: 2,
     tokenPricePercent: '2',
