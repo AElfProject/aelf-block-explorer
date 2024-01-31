@@ -1009,7 +1009,7 @@ class VoteContainer extends Component {
             message.info(`Your transaction id is: ${transactionId}`);
           }
           clearInterval(interval);
-          return reject();
+          return resolve();
         }, 60000);
       } else {
         setTimeout(() => {
@@ -1142,12 +1142,29 @@ class VoteContainer extends Component {
     const { schemeId } = item;
     const needMoreTime = item.amounts["ELF"] > item.oneTimeProfits["ELF"];
     const { currentWallet } = this.props;
-    const { profitContractFromExt, claimLoading, claimDisabled } = this.state;
+    const { profitContractFromExt } = this.state;
     const webLoginContext = WebLoginInstance.get().getWebLoginContext();
     const { loginState } = webLoginContext;
     this.setState({
       claimDisabled: true,
     });
+    // setTimeout(() => {
+    //   this.setState({
+    //     claimDisabled: false,
+    //   });
+    //   setTimeout(() => {
+    //     console.log(
+    //       { ...this.state.claimLoading, [item.title]: false },
+    //       "xxxx"
+    //     );
+    //     this.setState({
+    //       claimLoading: {
+    //         ...this.state.claimLoading,
+    //         [item.title]: false,
+    //       },
+    //     });
+    //   }, 8000);
+    // }, 1000);
     if (loginState === WebLoginState.logined) {
       WebLoginInstance.get()
         .callContract({
@@ -1176,7 +1193,7 @@ class VoteContainer extends Component {
                 await this.fetchProfitAmount();
                 this.setState({
                   claimLoading: {
-                    ...claimLoading,
+                    ...this.state.claimLoading,
                     [item.title]: false,
                   },
                 });
@@ -1184,7 +1201,7 @@ class VoteContainer extends Component {
               .catch((err) => {
                 this.setState({
                   claimLoading: {
-                    ...claimLoading,
+                    ...this.state.claimLoading,
                     [item.title]: false,
                   },
                 });
@@ -1195,7 +1212,7 @@ class VoteContainer extends Component {
             message.error(errorMessage.message);
             this.setState({
               claimLoading: {
-                ...claimLoading,
+                ...this.state.claimLoading,
                 [item.title]: false,
               },
             });
@@ -1205,7 +1222,7 @@ class VoteContainer extends Component {
           this.setState({
             claimDisabled: false,
             claimLoading: {
-              ...claimLoading,
+              ...this.state.claimLoading,
               [item.title]: false,
             },
           });
@@ -1215,13 +1232,19 @@ class VoteContainer extends Component {
   }
 
   handleClaimDividendClick(item) {
-    const { claimLoading } = this.state;
     this.setState({
       claimLoading: {
-        ...claimLoading,
+        ...this.state.claimLoading,
         [item.title]: true,
       },
     });
+    // console.log(
+    //   {
+    //     ...claimLoading,
+    //     [item.title]: true,
+    //   },
+    //   "yyy"
+    // );
     // now only ELF
     const needMoreTime = item.amounts["ELF"] > item.oneTimeProfits["ELF"];
     if (needMoreTime) {
