@@ -23,7 +23,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       dataIndex: '',
       key: 'view',
       render: () => (
-        <div className="border cursor-pointer bg-white rounded border-color-divider w-6 h-6 flex justify-center items-center focus:bg-color-divider">
+        <div className="flex size-6 cursor-pointer items-center justify-center rounded border border-color-divider bg-white focus:bg-color-divider">
           <IconFont type="view" />
         </div>
       ),
@@ -41,7 +41,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       render: (text) => {
         return (
           <div className="flex items-center">
-            <Link className="text-link text-xs block w-[120px] truncate leading-5" href={`tx/${text}`}>
+            <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${text}`}>
               {text}
             </Link>
           </div>
@@ -51,7 +51,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: (
         <div
-          className="time text-link cursor-pointer font-medium"
+          className="time cursor-pointer font-medium text-link"
           onClick={handleTimeChange}
           onKeyDown={handleTimeChange}>
           {timeFormat}

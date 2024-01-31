@@ -1,29 +1,43 @@
 {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "jest": true,
+    "node": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "extends": [
     "eslint:recommended",
-    "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "eslint-config-prettier",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:tailwindcss/recommended"
   ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
-    }
+    },
+    "ecmaVersion": 11,
+    "sourceType": "module"
   },
-  "ignorePatterns": ["build/**", "next.config.js"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "tailwindcss"],
   "rules": {
-    "@typescript-eslint/no-explicit-any": 0,
-    "@typescript-eslint/no-unsafe-assignment": 0,
-    "@typescript-eslint/ban-ts-comment": 0,
-    "@typescript-eslint/no-var-requires": 0,
-    "react-hooks/exhaustive-deps": 1,
-    "@typescript-eslint/no-unused-vars": 1
-  },
-  "env": {
-    "browser": true,
-    "node": true
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
+    "tailwindcss/classnames-order": "warn",
+    "tailwindcss/no-custom-classname": "warn",
+    "tailwindcss/no-contradicting-classname": "error"
   }
 }
