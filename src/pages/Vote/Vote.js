@@ -974,12 +974,12 @@ class VoteContainer extends Component {
               getStateJudgment(result.Status, transactionId);
               cancelFlag = true;
               clearInterval(interval);
-              return reject();
+              return reject(error);
             } else if (result?.Status === "NODEVALIDATIONFAILED") {
               message.error(error?.Error || error?.message);
               cancelFlag = true;
               clearInterval(interval);
-              return reject();
+              return reject(error);
             } else if (result?.Status === "MINED") {
               getStateJudgment(result.Status, transactionId);
               cancelFlag = true;
@@ -1000,7 +1000,7 @@ class VoteContainer extends Component {
               return resolve();
             }
           });
-        }, 4000);
+        }, 7000);
         setTimeout(() => {
           if (!cancelFlag) {
             message.info(
@@ -1188,7 +1188,7 @@ class VoteContainer extends Component {
                     [item.title]: false,
                   },
                 });
-                message.error(err?.Error || err?.message);
+                // message.error(err?.Error || err?.message);
                 console.error("handleClaimDividendClick", err);
               });
           } else {
