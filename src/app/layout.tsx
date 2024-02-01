@@ -18,6 +18,7 @@ import { isMobileOnServer } from '@_utils/isMobile';
 import { Suspense } from 'react';
 import { IExplorerItem, INetworkItem } from '@_types';
 import request from '@_api';
+import StyleRegistry from './StyleRegistry';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -57,27 +58,29 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body>
-        <div className="box-border relative min-h-screen bg-global-grey">
-          <StyledComponentsRegistry>
-            <Suspense>
-              <Header
-                priceSSR={price}
-                previousPriceSSR={previousPrice}
-                isMobileSSR={isMobile}
-                explorerList={explorerList}
-                networkList={networkList}
-                menuList={menuList}
-              />
-            </Suspense>
-            <RootProvider isMobileSSR={isMobile}>
+        <div className="relative box-border min-h-screen bg-global-grey">
+          <StyleRegistry>
+            <StyledComponentsRegistry>
               <Suspense>
-                <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>
+                <Header
+                  priceSSR={price}
+                  previousPriceSSR={previousPrice}
+                  isMobileSSR={isMobile}
+                  explorerList={explorerList}
+                  networkList={networkList}
+                  menuList={menuList}
+                />
               </Suspense>
-            </RootProvider>
-            <Suspense>
-              <Footer isMobileSSR={isMobile} />
-            </Suspense>
-          </StyledComponentsRegistry>
+              <RootProvider isMobileSSR={isMobile}>
+                <Suspense>
+                  <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>
+                </Suspense>
+              </RootProvider>
+              <Suspense>
+                <Footer isMobileSSR={isMobile} />
+              </Suspense>
+            </StyledComponentsRegistry>
+          </StyleRegistry>
         </div>
       </body>
     </html>
