@@ -18,7 +18,7 @@ import ContractToken from '@_components/ContractToken';
 export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<IActivityTableData> {
   return [
     {
-      title: <IconFont type="question-circle" className='flex justify-center size-full'/>,
+      title: <IconFont type="question-circle" className='flex justify-center size-full' />,
       width: 40,
       dataIndex: '',
       key: 'view',
@@ -35,7 +35,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: (
         <div>
           <span>Txn Hash</span>
-          <IconFont type="question-circle" className='ml-1'/>
+          <IconFont type="question-circle" className='ml-1' />
         </div>
       ),
       render: (text) => {

@@ -1,0 +1,62 @@
+'use client';
+import Table from '@_components/Table';
+import getColumns from './column';
+import { useMemo, useState } from 'react';
+import { ColumnsType } from 'antd/es/table';
+import { HolderItem, ItemSymbolDetailHolders } from '../type';
+import { fetchHolderData } from '../mock';
+import { useMobileContext } from '@app/pageProvider';
+import useTableData from '@_hooks/useTable';
+export interface HolderProps {
+  holder: ItemSymbolDetailHolders
+}
+export default function Holder(props: HolderProps) {
+  const { isMobileSSR: isMobile } = useMobileContext();
+  const { holder } = props;
+  const disposeData = (data: ItemSymbolDetailHolders) => {
+    return {
+      total: data.total,
+      list: [...data.list],
+    };
+  };
+  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
+    HolderItem,
+    ItemSymbolDetailHolders
+  >({
+    SSRData: disposeData(holder),
+    fetchData: fetchHolderData,
+    disposeData: disposeData,
+  });
+  const [timeFormat, setTimeFormat] = useState<string>('Age');
+  const columns = useMemo<ColumnsType<HolderItem>>(() => {
+    return getColumns({
+      timeFormat,
+      handleTimeChange: () => {
+        setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
+      },
+    });
+  }, [timeFormat]);
+
+  const multiTitle = total > 100 && 'More than > 100 transactions found';
+  const multiTitleDesc = total > 100 && `Showing the last 500k records`;
+
+  return (
+    <div>
+      <Table
+        headerLeftNode={`A total of ${total} records found`}
+        titleType="multi"
+        loading={loading}
+        dataSource={data}
+        columns={columns}
+        isMobile={isMobile}
+        rowKey="transactionHash"
+        total={total}
+        pageSize={pageSize}
+        pageNum={currentPage}
+        pageChange={pageChange}
+        pageSizeChange={pageSizeChange}
+        multiTitle={multiTitle}
+        multiTitleDesc={multiTitleDesc}></Table>
+    </div>
+  );
+}

@@ -22,6 +22,6 @@ export function middleware(request: NextRequest) {
   // return NextResponse.redirect(new URL('/blocks', request.url));
 }
 
-// export const config = {
-//   matcher: '/search/:path*',
-// };
+export const config = {
+  matcher: '/search/:path*',
+};

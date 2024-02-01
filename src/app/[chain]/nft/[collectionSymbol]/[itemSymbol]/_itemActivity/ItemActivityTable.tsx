@@ -3,29 +3,28 @@ import Table from '@_components/Table';
 import getColumns from './column';
 import { useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
-import { IActivityTableData } from './type';
-import { fetchData } from './mock';
+import { IActivityTableData, ItemSymbolDetailActivity } from '../type';
+import { fetchActiveData } from '../mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
-interface IActivityTableDataWithAmount {
-  total: number;
-  data: IActivityTableData[];
+export interface ItemActivityTableProps {
+  activeData: ItemSymbolDetailActivity
 }
-
-export default function ItemActivityTable({ SSRData }) {
+export default function ItemActivityTable(props: ItemActivityTableProps) {
   const { isMobileSSR: isMobile } = useMobileContext();
-  const disposeData = (data) => {
+  const { activeData } = props;
+  const disposeData = (data: ItemSymbolDetailActivity) => {
     return {
       total: data.total,
-      list: [...data.data],
+      list: [...data.list],
     };
   };
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
     IActivityTableData,
-    IActivityTableDataWithAmount
+    ItemSymbolDetailActivity
   >({
-    SSRData: disposeData(SSRData),
-    fetchData: fetchData,
+    SSRData: disposeData(activeData),
+    fetchData: fetchActiveData,
     disposeData: disposeData,
   });
   const [timeFormat, setTimeFormat] = useState<string>('Age');
@@ -44,6 +43,7 @@ export default function ItemActivityTable({ SSRData }) {
   return (
     <div>
       <Table
+        headerLeftNode={`A total of ${total} records found`}
         titleType="multi"
         loading={loading}
         dataSource={data}

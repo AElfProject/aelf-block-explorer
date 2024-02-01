@@ -30,6 +30,7 @@ export interface ICommonTableProps<T> extends TableProps<T> {
   pageChange?: (page: number, pageSize?: number) => void;
   pageSizeChange?: (value: number) => void;
   emptyPic?: string;
+  headerLeftNode?: ReactNode;
 }
 
 export type EmptyType = 'nodata' | 'search' | 'internet';
@@ -82,6 +83,7 @@ export default function TableApp({
   options,
   titleType,
   emptyText,
+  headerLeftNode,
   ...params
 }: ICommonTableProps<any>) {
   return (
@@ -94,6 +96,7 @@ export default function TableApp({
             multiTitle={multiTitle}
             titleType={titleType}
           />
+          {headerLeftNode}
         </div>
         <div className="header-pagination">
           <EpPagination

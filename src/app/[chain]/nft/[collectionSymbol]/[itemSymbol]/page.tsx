@@ -8,15 +8,16 @@
 import { notFound } from 'next/navigation';
 // import request from '@_api';
 import NFTDetails from './NFTDetails';
-import { fetchData } from './_itemActivity/mock';
+import { fetchActiveData, fetchHolderData, fetchOverviewData } from './mock';
 export default async function NFTDetailsPage({ params }: { params: ChainId & CollectionSymbol & ItemSymbol }) {
   if (!params.collectionSymbol) {
     return notFound();
   }
-  const data = await fetchData({ page: 1, pageSize: 25 });
-  if (!data) {
-    return notFound();
-  }
+  const [activity, holder, overview] = await Promise.all([
+    fetchActiveData({ page: 1, pageSize: 10 }),
+    fetchHolderData({ page: 1, pageSize: 10 }),
+    fetchOverviewData()
+  ]);
 
-  return <NFTDetails SSRData={data} />;
+  return <NFTDetails activity={activity} holder={holder} overview={overview} />;
 }
