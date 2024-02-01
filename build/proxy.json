@@ -10,13 +10,13 @@
     "secure": false
   },
   {
-    "target": "http://192.168.66.139:8000",
+    "target": "https://explorer-test.aelf.io/",
     "context": ["/api/blockChain"],
     "headers": {
-      "Host": "192.168.66.139:8000"
+      "Host": "explorer-test.aelf.io"
     },
     "pathRewrite": {
-      "^/api/blockChain": "/api/blockChain"
+      "^/api/blockChain": "/chain/api/blockChain"
     },
     "changeOrigin": true,
     "secure": false
@@ -43,13 +43,10 @@
   },
   {
     "description": "链节点，只需要更改target",
-    "target": "http://192.168.66.139:8000",
+    "target": "https://explorer-test.aelf.io",
     "context": ["/chain"],
     "headers": {
-      "Host": "192.168.66.139:8000"
-    },
-    "pathRewrite": {
-      "^/chain/api": "/api"
+      "Host": "explorer-test.aelf.io"
     },
     "changeOrigin": true,
     "secure": false
