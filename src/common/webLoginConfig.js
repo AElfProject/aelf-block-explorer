@@ -27,8 +27,8 @@ const connectUrl = {
       : "https://auth-portkey.portkey.finance",
   v2:
     NETWORK_TYPE === "TESTNET"
-      ? "https://aa-portkey-test.portkey.finance"
-      : "https://aa-portkey.portkey.finance",
+      ? "https://auth-aa-portkey-test.portkey.finance"
+      : "https://auth-aa-portkey.portkey.finance",
 };
 
 setGlobalConfig({

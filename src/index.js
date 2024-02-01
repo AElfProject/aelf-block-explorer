@@ -15,6 +15,7 @@ import { WebLoginProvider, PortkeyProvider, getConfig } from "aelf-web-login";
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from "antd/lib/locale-provider/en_US";
 import "@portkey/did-ui-react/dist/assets/index.css";
+import "@portkey-v1/did-ui-react/dist/assets/index.css";
 import "aelf-web-login/dist/assets/index.css";
 // import { AppIncrStore } from './Store';
 import store from "./redux/store";
