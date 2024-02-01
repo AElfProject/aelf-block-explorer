@@ -8,8 +8,8 @@ micro-app[name='governance'] {
   .scan-card-wrapper .scan-content {
     @apply justify-center flex;
   }
-  .ant-pagination-prev,
-  .ant-pagination-next {
+  .explorer-pagination-prev,
+  .explorer-pagination-next {
     button {
       @apply !flex !justify-center !items-center;
     }
@@ -18,7 +18,7 @@ micro-app[name='governance'] {
 
 .governance-skeleton {
   @apply h-[calc(100vh-474px)];
-  .ant-skeleton-content {
+  .explorer-skeleton-content {
     @apply h-full;
   }
 }
