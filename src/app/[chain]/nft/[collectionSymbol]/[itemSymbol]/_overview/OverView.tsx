@@ -37,7 +37,7 @@ export default function OverView(props: OverViewProps) {
         <div className="nft-detail-label">
           <div className="nft-detail-label-left">
             <IconFont type="box" />
-            <span>Properties &lpar;{overview.properties.total}&rpar;</span>
+            <span>Properties &#40;{overview.properties.total}&#41;</span>
           </div>
           <div className="nft-detail-label-right">
             <IconFont type="Down" />

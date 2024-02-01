@@ -38,12 +38,12 @@ async function fetchActiveData({ page, pageSize }): Promise<ItemSymbolDetailActi
   };
 }
 
-const holderList: HolderItem[] = Array.from(new Array(100).keys()).map((item) => {
+const holderList: HolderItem[] = Array.from(new Array(100).keys()).map((item, i) => {
   return {
-    rank: 10,
+    rank: i,
     "address": {
-      "name": "",
-      "address": "",
+      "name": "name" + i,
+      "address": "address" + i,
       "addressType": 0,
       "isManager": false,
       "isProducer": true
