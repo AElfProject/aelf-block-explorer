@@ -1148,23 +1148,6 @@ class VoteContainer extends Component {
     this.setState({
       claimDisabled: true,
     });
-    // setTimeout(() => {
-    //   this.setState({
-    //     claimDisabled: false,
-    //   });
-    //   setTimeout(() => {
-    //     console.log(
-    //       { ...this.state.claimLoading, [item.title]: false },
-    //       "xxxx"
-    //     );
-    //     this.setState({
-    //       claimLoading: {
-    //         ...this.state.claimLoading,
-    //         [item.title]: false,
-    //       },
-    //     });
-    //   }, 8000);
-    // }, 1000);
     if (loginState === WebLoginState.logined) {
       WebLoginInstance.get()
         .callContract({
@@ -1238,13 +1221,6 @@ class VoteContainer extends Component {
         [item.title]: true,
       },
     });
-    // console.log(
-    //   {
-    //     ...claimLoading,
-    //     [item.title]: true,
-    //   },
-    //   "yyy"
-    // );
     // now only ELF
     const needMoreTime = item.amounts["ELF"] > item.oneTimeProfits["ELF"];
     if (needMoreTime) {
