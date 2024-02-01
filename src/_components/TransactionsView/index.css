@@ -5,7 +5,7 @@
   @apply !bg-color-divider;
 }
 .transaction-tooltip {
-  .ant-tooltip-inner {
+  .explorer-tooltip-inner {
     @apply !p-0;
   }
 }

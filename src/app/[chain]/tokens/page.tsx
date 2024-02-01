@@ -6,5 +6,5 @@
  * @Description: Tokens
  */
 export default function Tokens({ params }: { params: ChainId }) {
-  return <div>Tokens, my chainId is {params.chain}</div>;
+  return <div>Tokens, my chainId is {params.chain}.</div>;
 }

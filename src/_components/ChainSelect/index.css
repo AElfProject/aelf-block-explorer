@@ -1,41 +1,41 @@
 .chain-select-container {
   @apply py-2 mr-5;
-  .ant-select-selector {
+  .explorer-select-selector {
     @apply !border-[#266CD3] !px-2 !py-[5px] h-8 flex justify-center align-middle;
-    .ant-select-selection-search {
+    .explorer-select-selection-search {
       @apply !h-[22px] !text-[14px] !leading-[22px] !text-link;
       input {
         @apply !h-[22px] !leading-[22px];
       }
     }
-    .ant-select-selection-item {
+    .explorer-select-selection-item {
       @apply text-link !h-[22px] !leading-[22px] !pr-[21px];
     }
   }
-  .ant-select-arrow {
+  .explorer-select-arrow {
     svg {
       @apply !text-link;
     }
   }
-  .ant-select-single.ant-select-open {
-    .ant-select-selection-item {
+  .explorer-select-single.explorer-select-open {
+    .explorer-select-selection-item {
       @apply !text-link;
     }
   }
 }
 
-.chain-select-options.ant-select-dropdown {
+.chain-select-options.explorer-select-dropdown {
   @apply !px-2 !pt-2 !pb-1 !mt-6 !top-[82px];
-  .ant-select-item {
+  .explorer-select-item {
     @apply min-h-[32px] !py-[6px] !px-2 !mb-1;
-    .ant-select-item-option-content {
+    .explorer-select-item-option-content {
       @apply h-5 leading-5;
     }
   }
-  .ant-select-item-option-selected {
+  .explorer-select-item-option-selected {
     @apply !bg-transparent !font-[400] !text-link;
   }
-  .ant-select-item-option-active {
+  .explorer-select-item-option-active {
     @apply !bg-[#D8DDE5];
   }
 }

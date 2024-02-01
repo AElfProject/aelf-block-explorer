@@ -1,49 +1,53 @@
 .ep-table {
-  .ant-table {
-    .ant-table-cell {
+  .explorer-table {
+    .explorer-table-cell {
       @apply py-3 pr-4 pl-0 bg-white border-none;
 
       box-shadow: 0 -1px 0 0 #E6E6E6 inset;
     }
-    .ant-table-cell:first-child {
+    .explorer-table-cell:first-child {
       @apply pl-4 !important;
     }
-    .ant-table-thead {
-      .ant-table-cell::before {
+    .explorer-table-thead {
+      @apply border-none;
+      .explorer-table-cell::before {
         @apply bg-inherit w-0 h-0 !important; 
       }
-      .ant-table-cell:first-child {
-        @apply pl-4 !important;
+      .explorer-table-cell:first-child {
+        @apply rounded-none pl-4 !important;
       }
-      .ant-table-cell {
+      .explorer-table-cell:last-child {
+        @apply rounded-none !important;
+      }
+      .explorer-table-cell {
         @apply py-2 pr-4 pl-0 text-xs bg-white border-none leading-5 text-base-100 font-medium !important; 
       }
       .header-top {
         @apply flex items-center !important; 
       }
-      .ant-table-column-sorters {
+      .explorer-table-column-sorters {
         @apply !flex-row-reverse;
-        .ant-table-column-sorter {
+        .explorer-table-column-sorter {
           @apply ms-0 me-1;
         }
       }
     }
-    .ant-table-tbody {
+    .explorer-table-tbody {
       @apply text-xs leading-5 text-base-100;
-      .ant-table-cell {
+      .explorer-table-cell {
         @apply leading-none;
       }
     }
     
   }
-  .ant-pagination {
-    .ant-pagination-item {
+  .explorer-pagination {
+    .explorer-pagination-item {
       @apply hidden;
     }
-    .ant-pagination-jump-prev,.ant-pagination-jump-next {
+    .explorer-pagination-jump-prev,.explorer-pagination-jump-next {
       @apply hidden;
     }
-    .ant-pagination-item-1 {
+    .explorer-pagination-item-1 {
       @apply inline-block h-[1.875rem] px-2 bg-F7 border-D0;
     }
   } 
