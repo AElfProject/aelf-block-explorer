@@ -20,7 +20,7 @@ interface MarketPlace {
   marketUrl: string;
 }
 
-interface Address {
+export interface Address {
   name: string;
   address: string;
   addressType: number;

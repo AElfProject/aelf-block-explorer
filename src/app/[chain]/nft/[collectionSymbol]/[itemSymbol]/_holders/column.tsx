@@ -6,128 +6,59 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { IActivityTableData } from '../type';
-import { formatDate } from '@_utils/formatter';
+import { Address, HolderItem } from '../type';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import Link from 'next/link';
 import IconFont from '@_components/IconFont';
 import { Tooltip } from 'antd';
-import ContractToken from '@_components/ContractToken';
 
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<IActivityTableData> {
+export default function getColumns(): ColumnsType<HolderItem> {
   return [
     {
-      title: <IconFont type="question-circle" className='flex justify-center size-full' />,
+      title: <span>Rank</span>,
       width: 40,
-      dataIndex: '',
-      key: 'view',
-      render: () => (
-        <div className="flex size-6 cursor-pointer items-center justify-center rounded border border-color-divider bg-white focus:bg-color-divider">
-          <IconFont type="view" />
-        </div>
-      ),
+      dataIndex: 'rank',
+      key: 'rank',
+      render: (text) => <span>{text}</span>
     },
     {
-      dataIndex: 'transactionHash',
+      dataIndex: 'address',
       width: 224,
-      key: 'transactionHash',
+      key: 'address',
       title: (
         <div>
-          <span>Txn Hash</span>
-          <IconFont type="question-circle" className='ml-1' />
+          <span>Address</span>
         </div>
       ),
-      render: (text) => {
-        return (
-          <div className="flex items-center">
-            <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${text}`}>
-              {text}
-            </Link>
-          </div>
-        );
-      },
-    },
-    {
-      title: (
-        <div
-          className="time cursor-pointer font-medium text-link"
-          onClick={handleTimeChange}
-          onKeyDown={handleTimeChange}>
-          {timeFormat}
-        </div>
-      ),
-      width: 224,
-      dataIndex: 'timestamp',
-      key: 'timestamp',
-      render: (text) => {
-        return <div className="text-xs leading-5">{formatDate(text, timeFormat)}</div>;
-      },
-    },
-    {
-      title: 'Action',
-      width: 112,
-      dataIndex: 'action',
-      key: 'action',
-      render: (text, record) => {
-        return (
-          <div>
-            <span>{text}</span>
-            {record.action === 'Sale' && <IconFont type="view" />}
-          </div>
-        );
-      },
-    },
-    {
-      title: 'Price',
-      width: 240,
-      dataIndex: 'price',
-      key: 'price',
-      render: (text, record) => {
-        return (
-          record.action === 'Sales' && (
-            <div>
-              <span>{text}</span>
-              <span>(0.2003ELF)</span>
-            </div>
-          )
-        );
-      },
-    },
-    {
-      dataIndex: 'from',
-      title: 'From',
-      width: 196,
-      render: (from) => {
-        const { address } = from;
+      render: (address: Address) => {
+        const { name } = address;
         return (
           <div className="address flex items-center">
-            <Tooltip title={addressFormat(address)} overlayClassName="table-item-tooltip-white">
-              <Link className="text-link" href={`/address/${addressFormat(address)}`}>
-                {addressFormat(hiddenAddress(address, 4, 4))}
+            <IconFont className="mr-1 text-xs" type="Contract" />
+            <Tooltip title={addressFormat(name)} overlayClassName="table-item-tooltip-white">
+              <Link className="text-link" href={`/address/${addressFormat(name)}`}>
+                {addressFormat(hiddenAddress(name, 4, 4))}
               </Link>
             </Tooltip>
-            <Copy value={addressFormat(address)} />
-            <div className="flex items-center"></div>
+            <Copy value={addressFormat(name)} />
           </div>
         );
       },
     },
     {
-      title: '',
+      title: <span>Quantity</span>,
       width: 40,
-      dataIndex: '',
-      key: 'from_to',
-      render: () => <IconFont className="text-[24px]" type="fromto" />,
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (quantity) => <span>{quantity}</span>
     },
     {
-      dataIndex: 'to',
-      title: 'To',
-      // width: 196,
-      render: (to) => {
-        const { address } = to;
-        return <ContractToken address={address} />;
-      },
+      title: <span>Percentage</span>,
+      width: 40,
+      dataIndex: 'percentage',
+      key: 'percentage',
+      render: (percentage) => <span>{percentage}</span>
     },
   ];
 }
