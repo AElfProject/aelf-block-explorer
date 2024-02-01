@@ -11,12 +11,7 @@ import VConsole from "vconsole";
 import { scheme } from "@portkey/utils";
 // 为组件内建文案提供统一的国际化支持。
 import { ConfigProvider } from "antd";
-<<<<<<< HEAD
 import { WebLoginProvider, PortkeyProvider, getConfig } from "aelf-web-login";
-=======
-import { PortkeyProvider } from "@portkey/did-ui-react";
-import { WebLoginProvider } from "aelf-web-login";
->>>>>>> 48bbf2ce8bd012359b89ab369685c96304c834f0
 // import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from "antd/lib/locale-provider/en_US";
 import "@portkey/did-ui-react/dist/assets/index.css";

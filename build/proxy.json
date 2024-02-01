@@ -80,6 +80,16 @@
     "secure": false
   },
   {
+    "description": "portkeyV2 indexer",
+    "target": "https://dapp-aa-portkey.portkey.finance",
+    "context": ["/Portkey_V2_DID"],
+    "headers": {
+      "Host": "dapp-aa-portkey.portkey.finance"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
     "description": "portkey services",
     "target": "https://did-portkey-test.portkey.finance",
     "context": ["/v1/api"],
