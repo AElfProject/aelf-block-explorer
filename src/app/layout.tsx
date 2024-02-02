@@ -13,7 +13,6 @@ import Header from '@_components/Header';
 import Footer from '@_components/Footer';
 import MainContainer from '@_components/Main';
 import { headers } from 'next/headers';
-import StyledComponentsRegistry from '@_lib/AntdRegistry';
 import { isMobileOnServer } from '@_utils/isMobile';
 import { Suspense } from 'react';
 import { IExplorerItem, INetworkItem } from '@_types';
@@ -60,7 +59,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <div className="relative box-border min-h-screen bg-global-grey">
           <StyleRegistry>
-            <StyledComponentsRegistry>
+            <RootProvider isMobileSSR={isMobile}>
               <Suspense>
                 <Header
                   priceSSR={price}
@@ -71,15 +70,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   menuList={menuList}
                 />
               </Suspense>
-              <RootProvider isMobileSSR={isMobile}>
-                <Suspense>
-                  <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>
-                </Suspense>
-              </RootProvider>
+              <Suspense>
+                <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>
+              </Suspense>
               <Suspense>
                 <Footer isMobileSSR={isMobile} />
               </Suspense>
-            </StyledComponentsRegistry>
+            </RootProvider>
           </StyleRegistry>
         </div>
       </body>

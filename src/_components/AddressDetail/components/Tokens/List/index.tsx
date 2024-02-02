@@ -65,12 +65,12 @@ export default function TokensList({ SSRData = { total: 0, list: [] } }) {
     <div className="token-list px-4">
       <div
         className={clsx(
-          'header-container flex items-center justify-between py-4',
+          'token-header-container flex items-center justify-between py-4',
           isMobile && 'flex-col !items-start',
         )}>
-        <div className={clsx(isMobile && 'flex-col mb-3', 'title-container')}>
-          <div className="total text-base-100 text-sm leading-[22px]">Tokens (7)</div>
-          <div className="info text-xs text-base-200 leading-5">Total Value : $78,330.38</div>
+        <div className={clsx(isMobile && 'mb-3 flex-col', 'title-container')}>
+          <div className="total text-sm leading-[22px] text-base-100">Tokens (7)</div>
+          <div className="info text-xs leading-5 text-base-200">Total Value : $78,330.38</div>
         </div>
         <div className="tool-container">
           <EPSearch
