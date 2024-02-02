@@ -1173,7 +1173,6 @@ class VoteContainer extends Component {
                     [item.title]: false,
                   },
                 });
-                console.log(this.state.dividends, "this.state.dividends");
                 // all profit has been got
                 const allFlag = this.state.dividends.amounts.every((ele) => {
                   return JSON.stringify(ele.amounts) === "{}";
