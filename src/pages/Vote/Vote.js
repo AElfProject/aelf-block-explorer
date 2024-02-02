@@ -985,15 +985,8 @@ class VoteContainer extends Component {
               cancelFlag = true;
               clearInterval(interval);
               // close modal
-              if (modalToClose) {
+              if (modalToClose === "claimDividendModalVisible") {
                 setTimeout(() => {
-                  if (modalToClose === "dividendModalVisible") {
-                    // all profit has been got
-                    const getAllFlag = dividends.amounts.every((ele) => {
-                      return JSON.stringify(ele.amounts) === "{}";
-                    });
-                    if (!getAllFlag) return;
-                  }
                   this.changeModalVisible(modalToClose, false);
                 }, 500);
               }
@@ -1180,6 +1173,13 @@ class VoteContainer extends Component {
                     [item.title]: false,
                   },
                 });
+                // all profit has been got
+                const allFlag = this.state.dividends.amounts.every((ele) => {
+                  return JSON.stringify(ele.amounts) === "{}";
+                });
+                if (allFlag) {
+                  this.changeModalVisible("dividendModalVisible", false);
+                }
               })
               .catch((err) => {
                 this.setState({
