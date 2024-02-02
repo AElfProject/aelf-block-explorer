@@ -1093,6 +1093,15 @@ class VoteContainer extends Component {
           amounts: dividendAmounts,
         };
         console.log(dividends, "fetchProfitAmount");
+        const allFlag = dividends.amounts.every((ele) => {
+          console.log(
+            JSON.stringify(ele.amounts) === "{}",
+            ele.amounts,
+            "xxxxx"
+          );
+          return JSON.stringify(ele.amounts) === "{}";
+        });
+        console.log(allFlag, "allFlag");
         this.setState({
           dividends,
         });
@@ -1173,10 +1182,18 @@ class VoteContainer extends Component {
                     [item.title]: false,
                   },
                 });
+                console.log(this.state.dividends, "this.state.dividends");
                 // all profit has been got
                 const allFlag = this.state.dividends.amounts.every((ele) => {
+                  console.log(
+                    JSON.stringify(ele.amounts) === "{}",
+                    ele.amounts,
+                    "====="
+                  );
                   return JSON.stringify(ele.amounts) === "{}";
                 });
+                console.log(allFlag, "allFlag=====");
+                debugger;
                 if (allFlag) {
                   this.changeModalVisible("dividendModalVisible", false);
                 }
