@@ -65,11 +65,11 @@ export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
     <div className="asset-list px-4">
       <div
         className={clsx(
-          'header-container flex items-center justify-between py-4',
+          'asset-header-container flex items-center justify-between py-4',
           isMobile && 'flex-col !items-start',
         )}>
         <div className={clsx('title-container', isMobile && 'mb-3')}>
-          <div className="total text-base-100 text-sm leading-[22px]">NFT Assets (7)</div>
+          <div className="total text-sm leading-[22px] text-base-100">NFT Assets (7)</div>
         </div>
         <div className="tool-container">
           <EPSearch

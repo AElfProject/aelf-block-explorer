@@ -62,7 +62,7 @@ export default function HeaderMenu({ isMobile, networkList, menuList }: IProps) 
     },
     {
       label: (
-        <div>
+        <div className="flex items-center">
           <span className="submenu-title-wrapper">BlockChain</span>
           {!isMobile && <IconFont className="submenu-right-arrow" type="menu-down" />}
         </div>
@@ -98,7 +98,7 @@ export default function HeaderMenu({ isMobile, networkList, menuList }: IProps) 
     },
     {
       label: (
-        <div>
+        <div className="flex items-center">
           <span className="submenu-title-wrapper">Governance</span>
           <IconFont className="submenu-right-arrow" type="menu-down" />
         </div>
@@ -131,7 +131,7 @@ export default function HeaderMenu({ isMobile, networkList, menuList }: IProps) 
   return (
     <div className={clsx(`${clsPrefix}`)}>
       <div className={`${clsPrefix}-content`}>
-        <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items}></Menu>
+        <Menu className="flex-1" onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items}></Menu>
         {!isMobile && <ChainSelect networkList={networkList}></ChainSelect>}
       </div>
     </div>

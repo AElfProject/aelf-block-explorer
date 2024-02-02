@@ -16,6 +16,7 @@ import microApp from '@micro-zoe/micro-app';
 import { usePathname, useRouter } from 'next/navigation';
 import 'aelf-design/css';
 import { AELFDProvider } from 'aelf-design';
+import { PREFIXCLS } from '@_lib/AntdThemeConfig';
 
 const MobileContext = createContext<any>({});
 
@@ -73,18 +74,18 @@ export default function RootProvider({ children, isMobileSSR }) {
   }, [pathname, router]);
 
   return (
-    <ConfigProvider>
-      <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
-        <ReduxProvider store={store}>
-          <AELFDProvider prefixCls="explorer">{children}</AELFDProvider>
-        </ReduxProvider>
-        {isGovernance && (
-          <>
-            <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
-            {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
-          </>
-        )}
-      </MobileContext.Provider>
-    </ConfigProvider>
+    <AELFDProvider prefixCls={PREFIXCLS}>
+      <ConfigProvider prefixCls={PREFIXCLS}>
+        <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
+          <ReduxProvider store={store}>{children}</ReduxProvider>
+          {isGovernance && (
+            <>
+              <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
+              {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
+            </>
+          )}
+        </MobileContext.Provider>
+      </ConfigProvider>
+    </AELFDProvider>
   );
 }
