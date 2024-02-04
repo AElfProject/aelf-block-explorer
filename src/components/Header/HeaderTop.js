@@ -36,7 +36,7 @@ export default function HeaderTop({
       const { price: priceRes, previousPrice: previousPriceRes } =
         await fetchPriceAndPrevious();
       dispatch(setPriceAndHistoryPrice(priceRes, previousPriceRes));
-      if (CHAIN_ID === "AELF" && NETWORK_TYPE === "MAIN" && !isMobile) {
+      if (NETWORK_TYPE === "MAIN" && !isMobile) {
         setPrice(priceRes);
         setPreviousPrice(previousPriceRes);
         jumpFlag = true;

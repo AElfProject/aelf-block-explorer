@@ -125,13 +125,13 @@ function getFormDesc(allowance) {
   };
 }
 
-function getOkProps(loadings, allowanceInfo, inputAmount) {
+function getOkProps(loadings, allowanceInfo, inputToken) {
   return {
     loading: loadings.actionLoading || loadings.tokenLoading,
     disabled:
       loadings.tokenLoading ||
       +allowanceInfo.allowance === 0 ||
-      inputAmount !== 0,
+      inputToken - allowanceInfo.allowance !== 0,
   };
 }
 
@@ -156,6 +156,7 @@ const ApproveTokenModal = (props) => {
     spender: "",
   });
   const [inputAmount, setInputAmount] = useState(0);
+  const [inputToken, setInputToken] = useState(0);
   const [loadings, setLoadings] = useState({
     tokenLoading: true,
     actionLoading: true,
@@ -166,8 +167,8 @@ const ApproveTokenModal = (props) => {
   );
 
   const okProps = useMemo(
-    () => getOkProps(loadings, allowanceInfo, inputAmount),
-    [loadings, allowanceInfo, inputAmount]
+    () => getOkProps(loadings, allowanceInfo, inputToken),
+    [loadings, allowanceInfo, inputToken]
   );
 
   const { wallet: webLoginWallet, callContract } = useWebLogin();
@@ -184,6 +185,7 @@ const ApproveTokenModal = (props) => {
           form.setFieldsValue({
             amount: res.allowance,
           });
+          setInputToken(res.allowance);
         })
         .catch((err) => {
           setLoadings({
@@ -237,7 +239,14 @@ const ApproveTokenModal = (props) => {
           symbol: tokenSymbol,
         }
       );
-      console.log(result);
+      if (!result) {
+        // user cancel
+        setLoadings({
+          actionLoading: false,
+          tokenLoading: false,
+        });
+        return;
+      }
       const txId = result.TransactionId || result.result.TransactionId;
       const txResult = await getTxResult(aelf, txId, 0, 6000);
       message.info(`Transactions ${txId} is ${txResult.Status}`);
@@ -252,6 +261,7 @@ const ApproveTokenModal = (props) => {
           form.setFieldsValue({
             amount: res.allowance,
           });
+          setInputToken(res.allowance);
         })
         .catch((err) => {
           message.error(err.message || "Network Error");
@@ -268,6 +278,7 @@ const ApproveTokenModal = (props) => {
 
   function handleValueChange({ amount }) {
     setInputAmount(amount - allowanceInfo.allowance);
+    setInputToken(amount);
   }
 
   return (
@@ -302,7 +313,10 @@ const ApproveTokenModal = (props) => {
           <Button
             type="primary"
             loading={loadings.tokenLoading}
-            disabled={allowanceInfo.balance === 0 || inputAmount === 0}
+            disabled={
+              allowanceInfo.balance === 0 ||
+              inputToken - allowanceInfo.allowance === 0
+            }
             onClick={handleStake}
           >
             Stake

@@ -1,36 +1,44 @@
 .only-ok-modal {
-  width: 720px;
+  width: 442px;
   .ant-modal-content {
     border-radius: 8px;
+    line-height: 20px;
     .ant-modal-body {
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
       .ant-modal-confirm-title {
-        margin: 24px 0;
+        margin: auto;
+        font-size: 14px;
+      }
+      .ant-modal-confirm-content {
+        margin-top: 0;
       }
       .ant-modal-confirm-btns {
         display: flex;
+        justify-content: center;
         .ant-btn {
-          width: 240px;
+          width: 214px;
           height: 40px;
-          margin: 32px auto 0;
+          border-radius: 4px;
+          margin-left: 0;
+          background: var(--color-brand-default, #266cd3);
         }
       }
     }
   }
 }
 .only-ok-modal-mobile {
-  padding: 0 8px 24px;
-  .ant-modal-content {
-    border-radius: 8px;
-    .ant-modal-body {
-      margin: 40px 16px 32px;
-      .ant-modal-confirm-btns {
-        display: flex;
-        .ant-btn {
-          width: 240px;
-          height: 40px;
-          margin: 16px auto 0;
-        }
-      }
+  width: calc(100vw - 24px);
+  border-radius: 8px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  .ant-modal-content .ant-modal-body {
+    display: block;
+    .ant-modal-confirm-btns .ant-btn {
+      width: 100%;
     }
   }
 }

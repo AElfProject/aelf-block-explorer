@@ -99,6 +99,8 @@ const INPUT_NUMBER_TIP = "Your should input a number";
 const BETWEEN_ZEOR_AND_BALANCE_TIP = "Too large value";
 const SELECT_SOMETHING_TIP = "Please select something to continue";
 const NEED_PLUGIN_AUTHORIZE_TIP = "Need plugin's authorization.";
+const RUN_INDIVIDUAL_NODES_TIP =
+  "BPs need to run individual nodes for both MainChain AELF and all the SideChains.";
 const UNKNOWN_ERROR_TIP =
   "Sorry, it seems that we encountered an unknown error.";
 const NO_AUTHORIZATION_ERROR_TIP =
@@ -457,6 +459,7 @@ export {
   INPUT_NUMBER_TIP,
   BETWEEN_ZEOR_AND_BALANCE_TIP,
   SELECT_SOMETHING_TIP,
+  RUN_INDIVIDUAL_NODES_TIP,
   NEED_PLUGIN_AUTHORIZE_TIP,
   UNKNOWN_ERROR_TIP,
   NO_AUTHORIZATION_ERROR_TIP,

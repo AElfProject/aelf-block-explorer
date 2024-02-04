@@ -157,15 +157,21 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Tooltip
-              title={addressFormat(text)}
-              overlayClassName="table-item-tooltip__white"
-            >
-              <Link to={`/address/${addressFormat(text)}`}>
-                <span>{addressFormat(hiddenAddress(text))}</span>
-              </Link>
-            </Tooltip>
-            <CopyButton value={addressFormat(text)} />
+            {text ? (
+              <>
+                <Tooltip
+                  title={addressFormat(text)}
+                  overlayClassName="table-item-tooltip__white"
+                >
+                  <Link to={`/address/${addressFormat(text)}`}>
+                    <span>{addressFormat(hiddenAddress(text))}</span>
+                  </Link>
+                </Tooltip>
+                <CopyButton value={addressFormat(text)} />
+              </>
+            ) : (
+              "-"
+            )}
             <IconFont type="right2" />
           </div>
         );
@@ -178,15 +184,22 @@ export default (timeFormat, price, handleFormatChange) => {
       render: (text) => {
         return (
           <div className="address">
-            <Tooltip
-              title={addressFormat(text)}
-              overlayClassName="table-item-tooltip__white"
-            >
-              <Link to={`/address/${addressFormat(text)}`}>
-                {addressFormat(hiddenAddress(text))}
-              </Link>
-            </Tooltip>
-            <CopyButton value={addressFormat(text)} />
+            {text ? (
+              <>
+                <Tooltip
+                  title={addressFormat(text)}
+                  overlayClassName="table-item-tooltip__white"
+                >
+                  <Link to={`/address/${addressFormat(text)}`}>
+                    {addressFormat(hiddenAddress(text))}
+                  </Link>
+                </Tooltip>
+
+                <CopyButton value={addressFormat(text)} />
+              </>
+            ) : (
+              "-"
+            )}
           </div>
         );
       },

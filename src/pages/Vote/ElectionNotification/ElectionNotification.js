@@ -31,6 +31,7 @@ import CandidateApplyModal from "./CandidateApplyModal/CandidateApplyModal";
 import { getTokenDecimal } from "../../../utils/utils";
 import { WebLoginInstance } from "../../../utils/webLogin";
 import { onlyOkModal } from "../../../components/SimpleModal/index.tsx";
+import { fetchAllCandidateInfo } from "../utils";
 
 const electionNotifiStatisData = {
   termEndTime: {
@@ -38,6 +39,7 @@ const electionNotifiStatisData = {
     title: "Current Term's Countdown (-th term)",
     isCountdown: true,
     resetTime: 1000 * 60 * 60 * 24 * 7,
+    tooltip: ELECTION_NOTIFI_DATA_TIP,
   },
   currentNodesAmount: {
     id: 1,
@@ -223,8 +225,9 @@ class ElectionNotification extends PureComponent {
       },
       {
         contract: electionContract,
-        method: "GetVotesAmount",
-        processor: (value) => value / ELF_DECIMAL,
+        method: "GetPageableCandidateInformation",
+        processor: (value) =>
+          value.reduce((x, y) => x + y.obtainedVotesAmount / ELF_DECIMAL, 0),
         statisDataKey: "currentVotesAmount",
         dataKey: "num",
       },
@@ -236,12 +239,20 @@ class ElectionNotification extends PureComponent {
         dataKey: "num",
       },
     ];
+
     const list = await Promise.all(
       dataSource.map(async (item) => {
         const { contract, dataKey, method, processor, statisDataKey } = item;
         try {
-          const r = await contract[method].call();
-
+          let r;
+          if (method === "GetPageableCandidateInformation") {
+            r = await fetchAllCandidateInfo(contract);
+            return {
+              statisDataKey,
+              [dataKey]: processor(r),
+            };
+          }
+          r = await contract[method].call();
           return {
             statisDataKey,
             [dataKey]: processor((r || { value: 0 }).value),
@@ -361,7 +372,7 @@ class ElectionNotification extends PureComponent {
         !currentWallet.nightElfInfo
       ) {
         onlyOkModal({
-          message: `Becoming candidate nodes with smart contract wallet addresses are currently not supported.`,
+          message: `Becoming a candidate node with smart contract wallet address is not supported.`,
         });
         this.setState({
           applyModalVisible: false,
@@ -445,20 +456,15 @@ class ElectionNotification extends PureComponent {
     const { electionContract } = this.props;
 
     return (
-      <section>
-        <StatisticalData
-          data={statisData}
-          spinning={statisDataLoading}
-          style={{ marginBottom: 20 }}
-          tooltip={ELECTION_NOTIFI_DATA_TIP}
-        />
-        <div className="election-blank" />
+      <section className="election-notification">
+        <div className="statistical-data-content">
+          <StatisticalData data={statisData} spinning={statisDataLoading} />
+        </div>
         <ElectionRuleCard
           isCandidate={isCandidate}
           quitElection={this.quitElection}
           displayApplyModal={this.displayApplyModal}
         />
-        <div className="election-blank" />
         <MyWalletCard
           multiTokenContract={multiTokenContract}
           electionContract={electionContract}
@@ -471,7 +477,6 @@ class ElectionNotification extends PureComponent {
           changeVoteState={changeVoteState}
           checkExtensionLockStatus={checkExtensionLockStatus}
         />
-        <div className="election-blank" />
         <NodeTable
           electionContract={electionContract}
           consensusContract={consensusContract}

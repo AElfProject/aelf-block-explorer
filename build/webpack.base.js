@@ -153,6 +153,51 @@ const baseConfig = {
           fullySpecified: false, // disable the behavior
         },
       },
+      {
+        test: /\.proto$/,
+        use: {
+          loader: 'protobufjs-loader',
+          options: {
+            /* Import paths provided to pbjs.
+             *
+             * default: webpack import paths (i.e. config.resolve.modules)
+             */
+            paths: [path.resolve(ROOT, "src/protobuf")],
+
+            /* Additional command line arguments passed to pbjs.
+             *
+             * default: []
+             */
+            pbjsArgs: ['--no-encode'],
+
+            /* Enable Typescript declaration file generation via pbts.
+             *
+             * Declaration files will be written every time the loader runs.
+             * They'll be saved in the same directory as the protobuf file
+             * being processed, with a `.d.ts` extension.
+             *
+             * This only works if you're using the 'static-module' target
+             * for pbjs (i.e. the default target).
+             *
+             * The value here can be a config object or a boolean; set it to
+             * true to enable pbts with default configuration.
+             *
+             * default: false
+             */
+            pbts: {
+              /* Additional command line arguments passed to pbts.
+               */
+              args: ['--no-comments'],
+            },
+
+            /* Set the "target" flag to pbjs.
+             *
+             * default: 'static-module'
+             */
+            target: 'json-module',
+          },
+        },
+      },
     ],
   },
   plugins: [

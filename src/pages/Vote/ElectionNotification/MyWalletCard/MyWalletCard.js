@@ -7,19 +7,22 @@
  * @Description: file content
  */
 import React, { PureComponent } from "react";
+import { Link } from "react-router-dom";
 import { Button, message, Spin } from "antd";
 import moment from "moment";
-import { SyncOutlined, WalletFilled, LogoutOutlined } from "@ant-design/icons";
+import { SyncOutlined, LogoutOutlined } from "@ant-design/icons";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import { ELF_DECIMAL, SYMBOL } from "@src/constants";
 import { WebLoginState } from "aelf-web-login";
 import { connect } from "react-redux";
+import CopyButton from "../../../../components/CopyButton/CopyButton";
 import { isPhoneCheck } from "../../../../utils/deviceCheck";
 import Dividends from "../../../../components/Dividends";
 import addressFormat from "../../../../utils/addressFormat";
 import "./MyWalletCard.less";
 import { WebLoginInstance } from "../../../../utils/webLogin";
 import { isActivityBrowser } from "../../../../utils/isWebView";
+import IconFont from "../../../../components/IconFont";
 
 class MyWalletCard extends PureComponent {
   constructor(props) {
@@ -41,7 +44,6 @@ class MyWalletCard extends PureComponent {
 
   componentDidMount() {
     const {
-      currentWallet,
       changeVoteState,
       electionContract,
       multiTokenContract,
@@ -87,7 +89,6 @@ class MyWalletCard extends PureComponent {
       });
     }
     if (shouldRefreshMyWallet) {
-      console.log(44444);
       changeVoteState(
         {
           shouldRefreshMyWallet: false,
@@ -265,22 +266,26 @@ class MyWalletCard extends PureComponent {
     const walletItems = [
       {
         type: "Total assets",
-        value: thousandsCommaWithDecimal(totalAssets),
+        value: thousandsCommaWithDecimal(totalAssets) || "-",
+        class: "assets",
       },
       {
         type: "Balance",
-        value: thousandsCommaWithDecimal(balance),
+        value: thousandsCommaWithDecimal(balance) || "-",
+        class: "balance",
       },
       {
         type: "Claimable profit",
         value: (
-          <Dividends className="wallet-dividends" dividends={dividends.total} />
+          <Dividends
+            className="wallet-dividends"
+            dividends={dividends.total || "-"}
+          />
         ),
         extra: (
           <Button
             type="primary"
             size="small"
-            shape="round"
             className="my-wallet-card-body-wallet-content-withdraw-btn"
             disabled={isActivityBrowser()}
             onClick={handleDividendClick}
@@ -288,105 +293,125 @@ class MyWalletCard extends PureComponent {
             Claim
           </Button>
         ),
+        class: "profit",
       },
       {
         type: "Active votes",
-        value: thousandsCommaWithDecimal(activeVotedVotesAmount),
+        value: thousandsCommaWithDecimal(activeVotedVotesAmount) || "-",
+        class: "active-votes",
       },
       {
         type: "Redeemed votes",
-        value: thousandsCommaWithDecimal(withdrawnVotedVotesAmount),
+        value: thousandsCommaWithDecimal(withdrawnVotedVotesAmount) || "-",
+        class: "redeemed-votes",
       },
       {
         type: "Earliest vote expired time",
-        value: thousandsCommaWithDecimal(lastestUnlockTime),
+        value: thousandsCommaWithDecimal(lastestUnlockTime) || "-",
+        class: "time",
       },
     ];
 
     return (
       <section className="my-wallet-card">
-        <Spin spinning={loading}>
-          <div className="my-wallet-card-header">
-            <h2 className="my-wallet-card-header-title">
-              <WalletFilled className="card-header-icon" />
-              My Wallet
-            </h2>
-            {!isActivityBrowser() &&
-              (loginState === WebLoginState.initial ||
-                loginState === WebLoginState.lock ||
-                loginState === WebLoginState.logining) && (
+        <div className="my-wallet-content">
+          <Spin spinning={loading}>
+            <div className="my-wallet-card-header">
+              <h2 className="my-wallet-card-header-title">
+                <IconFont
+                  type="vote-group"
+                  className="card-header-icon wallet-icon"
+                />
+                My Wallet
+              </h2>
+              <div>
+                {!isActivityBrowser() &&
+                  (loginState === WebLoginState.initial ||
+                    loginState === WebLoginState.lock ||
+                    loginState === WebLoginState.logining) && (
+                    <Button
+                      type="text"
+                      className="my-wallet-card-header-sync-btn login-btn"
+                      onClick={this.loginOrUnlock}
+                    >
+                      <IconFont type="vote-login" />
+                      Log In
+                    </Button>
+                  )}
+
+                {!this.isPhone && currentWallet?.address && (
+                  <Button
+                    type="text"
+                    className="my-wallet-card-header-sync-btn logout-btn"
+                    disabled={!currentWallet?.address}
+                    onClick={this.extensionLogout}
+                  >
+                    <LogoutOutlined />
+                    Log Out
+                  </Button>
+                )}
+
                 <Button
                   type="text"
-                  className="my-wallet-card-header-sync-btn update-btn"
-                  onClick={this.loginOrUnlock}
+                  className="my-wallet-card-header-sync-btn refresh-btn "
+                  disabled={!currentWallet?.address}
+                  onClick={this.handleUpdateWalletClick}
                 >
-                  Login
+                  <IconFont type="reload" />
+                  Refresh
                 </Button>
-              )}
-            <Button
-              type="text"
-              className="my-wallet-card-header-sync-btn update-btn"
-              disabled={!currentWallet?.address}
-              onClick={this.handleUpdateWalletClick}
-            >
-              Refresh
-              <SyncOutlined spin={loading} />
-            </Button>
-
-            {!this.isPhone && currentWallet?.address && (
-              <Button
-                type="text"
-                className="my-wallet-card-header-sync-btn update-btn"
-                disabled={!currentWallet?.address}
-                onClick={this.extensionLogout}
-              >
-                Logout
-                <LogoutOutlined className="card-header-icon" />
-              </Button>
-            )}
-          </div>
-          <div className="my-wallet-card-body-wallet-title">
-            {isPhoneCheck() ? (
+              </div>
+            </div>
+            <div className="my-wallet-card-body-wallet-title">
               <>
-                <div>
+                <div className="name">
                   <span className="my-wallet-card-body-wallet-title-key">
-                    Name:{" "}
+                    Name:
                   </span>
-                  <span className="primary-color">{currentWallet?.name}</span>
+                  <span className="my-wallet-card-body-wallet-title-value">
+                    {currentWallet?.name || "-"}
+                  </span>
                 </div>
-                <div>
+                <div className="address">
                   <span className="my-wallet-card-body-wallet-title-key">
-                    Address:{" "}
+                    Address:
                   </span>
-                  <span className="primary-color">{formattedAddress}</span>
+                  <span className="my-wallet-card-body-wallet-title-value">
+                    {formattedAddress ? (
+                      <>
+                        <Link
+                          className="info"
+                          to={`/address/${formattedAddress}`}
+                          title={formattedAddress}
+                        >
+                          {formattedAddress}
+                        </Link>
+                        <CopyButton value={formattedAddress} />
+                      </>
+                    ) : (
+                      "-"
+                    )}
+                  </span>
                 </div>
               </>
-            ) : (
-              <>
-                <span className="my-wallet-card-body-wallet-title-key">
-                  Name:{" "}
-                </span>
-                <span className="primary-color">{currentWallet?.name}</span>
-                <span className="my-wallet-card-body-wallet-title-blank" />
-                <span className="my-wallet-card-body-wallet-title-key">
-                  Address:{" "}
-                </span>
-                <span className="primary-color">{formattedAddress}</span>
-              </>
-            )}
-          </div>
-          <div className="my-wallet-card-body">
-            <ul className="my-wallet-card-body-wallet-content">
-              {walletItems.map((item) => (
-                <li key={item.type}>
-                  <span className="item-type">{item.type}:</span>
-                  <span className="item-value">{item.value}</span>
-                  <span className="item-extra">{item.extra}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Spin>
+            </div>
+            <div className="my-wallet-card-body">
+              <ul className="my-wallet-card-body-wallet-content">
+                {walletItems.map((item) => (
+                  <li key={item.type} className={item.class}>
+                    <span className="item-type">{item.type}:</span>
+                    <span>
+                      <span className="item-value">{item.value}</span>
+                      {item.extra && (
+                        <span className="item-extra">{item.extra}</span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Spin>
+        </div>
       </section>
     );
   }

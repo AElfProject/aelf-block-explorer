@@ -69,9 +69,34 @@ button {
   .ellipsis;
 }
 
+.vote-wrapper {
+  header {
+    max-width: 1200px;
+    margin: auto;
+    padding: 24px 0 0;
+    color: @mine-shaft;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+  }
+}
+@media (max-width: @lgScreenWidth) {
+  .vote-wrapper {
+    padding: 0 20px;
+  }
+}
+
 // specific for current page
 .vote-container {
   padding: 20px 0;
+  &.vote-menu {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-bottom: 0 !important;
+  }
+  &.vote-content {
+    margin-top: 0 !important;
+  }
   .ant-tabs-tab {
     &:hover > a {
       color: #40a9ff !important;
@@ -83,7 +108,8 @@ button {
     }
   }
   .ant-menu {
-    background: @bgBlankGrey;
+    background: #fff;
+    padding-left: 16px;
     .ant-menu-item {
       font-size: 14px;
       font-weight: 500;
@@ -399,7 +425,6 @@ button {
   white-space: pre-line;
 }
 
-// todo: Consider to using a more proper name to instead table-btn
 .table-btn {
   line-height: 1;
   border: none;
@@ -418,6 +443,64 @@ button {
   }
   &.redeem-btn {
     background-color: @buyColor;
+  }
+}
+
+.node-table-wrapper {
+  td.ant-table-cell-fix-right {
+    .node-table-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 8px;
+      .table-btn {
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        display: flex;
+        height: 24px;
+        padding: 0px;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        &.ant-btn-default[disabled] {
+          border: 1px solid var(--color-border, #d0d0d0);
+          background: var(--color-hover, #f7f8fa);
+          color: var(--color-border, #d0d0d0);
+        }
+        &.vote-btn {
+          background: var(--color-brand-default, #266cd3);
+          &:hover {
+            background: var(--color-brand-hover, #327dec);
+          }
+        }
+        &.redeem-btn {
+          background-color: @buyColor;
+        }
+      }
+    }
+  }
+  @media (max-width: 1182px) {
+    td.ant-table-cell-fix-right {
+      padding-right: 0 !important;
+      padding-left: 8px !important;
+      .node-table-btn-group {
+        button:first-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  @media (max-width: @lgScreenWidth) {
+    td.ant-table-cell-fix-right {
+      padding-right: 0 !important;
+      padding-left: 8px !important;
+      .node-table-btn-group {
+        .table-btn {
+          font-size: 10px;
+        }
+      }
+    }
   }
 }
 
@@ -505,7 +588,6 @@ button {
     }
   }
 }
-// }
 
 // todo: Limit the work range to certain item such as the Calendar inner Modal
 .ant-picker-dropdown {
@@ -524,6 +606,21 @@ button {
         }
       }
     }
+  }
+}
+
+.vote-btn-loading.ant-modal {
+  height: 54px;
+
+  .ant-modal-content {
+    border-radius: 8px;
+  }
+  .ant-modal-body {
+    padding: 16px;
+    text-align: center;
+  }
+  .ant-modal-close-x {
+    display: none;
   }
 }
 

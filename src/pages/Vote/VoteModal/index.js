@@ -299,7 +299,13 @@ class VoteModal extends Component {
                       }
                       maxDate={new Date(moment().add(1080, "d"))}
                       showYearDropdown
-                      selected={datePickerTime}
+                      selected={
+                        this.formRef?.current?.getFieldValue("lockTime")
+                          ? new Date(
+                              this.formRef?.current?.getFieldValue("lockTime")
+                            )
+                          : null
+                      }
                       onChange={(date) => {
                         this.setState({
                           datePickerTime: date,

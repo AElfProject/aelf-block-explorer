@@ -61,7 +61,7 @@ const ProposalList = () => {
   const { aelf, logStatus, isALLSettle, wallet, currentWallet } = common;
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(params.search);
-  const [activeKey, setActiveKey] = useState(params.proposalType);
+  const [activeKey, setActiveKey] = useState();
 
   const { wallet: webLoginWallet, callContract } = useWebLogin();
 
@@ -137,44 +137,29 @@ const ProposalList = () => {
       window.location.hash = Object.keys(keyFromHash)[index];
     }
   };
-
+  useEffect(() => {
+    if (!activeKey) return;
+    fetchList({
+      ...params,
+      pageNum: 1,
+      proposalType: activeKey,
+      status: proposalStatus.ALL,
+      isContract: 0,
+      search: "",
+    });
+  }, [activeKey]);
   const changeKey = () => {
     const { hash } = window.location;
     const key = keyFromHash[hash];
     setActiveKey(key || proposalTypes.PARLIAMENT);
     return key || proposalTypes.PARLIAMENT;
   };
-
-  useEffectOnce(() => {
-    const key = changeKey();
-    fetchList({
-      ...params,
-      pageNum: 1,
-      proposalType: key,
-      status: proposalStatus.ALL,
-      isContract: 0,
-      search: "",
-    });
+  window.addEventListener("hashchange", () => {
+    changeKey();
   });
-
-  useEffect(() => {
-    const onHashChange = () => {
-      const key = changeKey();
-      fetchList({
-        ...params,
-        pageNum: 1,
-        proposalType: key,
-        status: proposalStatus.ALL,
-        isContract: 0,
-        search: "",
-      });
-      console.log("hashchange");
-    };
-    window.addEventListener("hashchange", onHashChange);
-    return () => {
-      window.removeEventListener("hashchange", onHashChange);
-    };
-  }, []);
+  useEffectOnce(() => {
+    changeKey();
+  });
 
   const send = async (id, action) => {
     if (params.proposalType === proposalTypes.REFERENDUM) {

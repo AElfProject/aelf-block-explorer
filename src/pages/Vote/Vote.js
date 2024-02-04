@@ -13,7 +13,7 @@ import moment from "moment";
 import { isPhoneCheck } from "@utils/deviceCheck";
 import { thousandsCommaWithDecimal } from "@utils/formater";
 import getContractAddress from "@utils/getContractAddress";
-import config, { schemeIds } from "@config/config";
+import config, { schemeIds as originSchemeIds } from "@config/config";
 import { connect } from "react-redux";
 import { setContractWithName } from "@actions/voteContracts.ts";
 import Decimal from "decimal.js";
@@ -46,7 +46,6 @@ import addressFormat from "../../utils/addressFormat";
 import { withRouter } from "../../routes/utils";
 import { WebLoginInstance } from "../../utils/webLogin";
 import { fakeWallet } from "../../common/utils";
-import { onlyOkModal } from "../../components/SimpleModal/index.tsx";
 
 const voteConfirmFormItemLayout = {
   labelCol: {
@@ -59,6 +58,22 @@ const voteConfirmFormItemLayout = {
   },
 };
 
+const handleschemeIds = (arr) => {
+  const map = {
+    "Citizen Welfare": "Voter Basic Rewards",
+    "Backup Subsidy": "Candidate Node Rewards",
+    "Miner Basic Reward": "BP Basic Rewards",
+    "Welcome Reward": "New BP Rewards",
+    "Flexible Reward": "Voter Flexible Rewards",
+  };
+  const result = arr.map((ele) => {
+    ele.title = map[ele.type];
+    return ele;
+  });
+  [result[2], result[3]] = [result[3], result[2]];
+  return result;
+};
+const schemeIds = handleschemeIds(originSchemeIds);
 class VoteContainer extends Component {
   constructor(props) {
     super(props);
@@ -96,6 +111,7 @@ class VoteContainer extends Component {
       switchVoteAmount: 0,
       voteFromExpiredVoteAmount: null,
       voteType: FROM_WALLET,
+      voteLoading: false,
       switchVoteSelectedRowKeys: [],
       voteFromExpiredSelectedRowKeys: [],
       dividendModalVisible: false,
@@ -489,7 +505,11 @@ class VoteContainer extends Component {
     };
 
     const { [role]: fun } = role2Fun;
-
+    if (voteType === FROM_WALLET && this.props.currentWallet?.address) {
+      this.setState({
+        voteLoading: true,
+      });
+    }
     if (shouldDetectLock && fun) {
       // const { currentWallet } = this.props;
       // To make sure that all the operation use wallet take effects on the correct wallet
@@ -612,8 +632,8 @@ class VoteContainer extends Component {
       targetpublickey: targetPublicKey,
       nodename: nodeName = "",
     } = ele.dataset;
-    this.getWalletBalance()
-      .then((res) => {
+    this.getWalletBalance().then(
+      (res) => {
         // todo: unify balance formater: InputNumber's and thousandsCommaWithDecimal's
         const balance = +res.balance / ELF_DECIMAL;
         const formattedBalance = thousandsCommaWithDecimal(balance);
@@ -626,11 +646,17 @@ class VoteContainer extends Component {
           formattedBalance,
           nodeName,
         });
+        this.setState({
+          voteLoading: false,
+        });
         this.changeModalVisible("voteModalVisible", true);
-      })
-      .then(() => {
-        this.changeModalVisible("voteModalVisible", true);
-      });
+      },
+      () => {
+        this.setState({
+          voteLoading: false,
+        });
+      }
+    );
   }
 
   handleRedeemClick(ele) {
@@ -1004,6 +1030,7 @@ class VoteContainer extends Component {
             type: item.type,
             amounts: value,
             schemeId: item.schemeId,
+            title: item.title,
           };
         });
         const dividends = {
@@ -1094,7 +1121,7 @@ class VoteContainer extends Component {
 
   renderSecondaryLevelNav() {
     return (
-      <section className="vote-container vote-container-simple basic-container basic-container-white">
+      <section className="vote-container vote-container-simple basic-container basic-container-white vote-menu">
         <Menu selectedKeys={[window.location.pathname]} mode="horizontal">
           <Menu.Item
             key={routePaths.electionNotifi}
@@ -1161,6 +1188,7 @@ class VoteContainer extends Component {
       voteConfirmLoading,
       redeemConfirmLoading,
       claimLoading,
+      voteLoading,
     } = this.state;
 
     const path2Component = [
@@ -1214,10 +1242,11 @@ class VoteContainer extends Component {
 
     const secondaryLevelNav = this.renderSecondaryLevelNav();
     return (
-      <div>
+      <div className="vote-wrapper">
+        <header>Vote</header>
         {secondaryLevelNav}
         <section
-          className="vote-container vote-container-simple basic-container basic-container-white"
+          className="vote-container vote-container-simple basic-container basic-container-white vote-content"
           onClick={this.handleClick}
         >
           <Routes>
@@ -1319,6 +1348,16 @@ class VoteContainer extends Component {
             setClaimLoading={this.setClaimLoading}
             claimLoading={claimLoading}
           />
+
+          <Modal
+            open={voteLoading}
+            centered
+            footer={null}
+            className="vote-btn-loading"
+            width={252}
+          >
+            Loading...
+          </Modal>
         </section>
       </div>
     );
