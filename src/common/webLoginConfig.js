@@ -39,6 +39,17 @@ setGlobalConfig({
     useLocalStorage: true,
     graphQLUrl: graphQLUrl.v1,
     connectUrl: connectUrl.v1,
+    loginConfig: {
+      loginMethodsOrder: [
+        "Email",
+        "Telegram",
+        "Google",
+        "Phone",
+        "Apple",
+        "Scan",
+      ],
+      recommendIndexes: [0, 1],
+    },
     socialLogin: {
       Portkey: isWebview()
         ? undefined
