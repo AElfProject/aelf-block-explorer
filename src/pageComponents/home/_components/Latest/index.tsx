@@ -4,7 +4,6 @@ import './index.css';
 import IconFont from '@_components/IconFont';
 import { getFormattedDate } from '@_utils/timeUtils';
 import Link from 'next/link';
-import { Tooltip } from 'antd';
 import { IBlockItem, ITransactionItem } from '@pageComponents/home/type';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import clsx from 'clsx';

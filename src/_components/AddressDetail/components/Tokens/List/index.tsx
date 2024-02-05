@@ -26,7 +26,9 @@ export default function TokensList({ SSRData = { total: 0, list: [] } }) {
     }
     getData();
   });
-  const columns = getColumns();
+  const columns = getColumns({
+    columnKey: '',
+  });
 
   const pageChange = async (page: number) => {
     setLoading(true);

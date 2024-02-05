@@ -1,5 +1,6 @@
 import IconFont from '@_components/IconFont';
-import { Button, message } from 'antd';
+import { message } from 'antd';
+import { Button } from 'aelf-design';
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
 import { getZip } from '@_utils/file';

@@ -2,7 +2,7 @@ import Detail from '@_components/AddressDetail';
 import { TitleEnum } from '@_types/commonDetail';
 import fetchData from './mock';
 export default async function AddressDetails({ params }: { params: HashParams }) {
-  const data = await fetchData({ address: params.hash });
+  const data = await fetchData();
   return (
     <Detail SSRData={data} title={data.contractName ? TitleEnum.Contract : TitleEnum.Address} hash={params.hash} />
   );

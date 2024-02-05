@@ -8,7 +8,7 @@ import { fetchHolderData } from '../mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 export interface HolderProps {
-  holder: ItemSymbolDetailHolders
+  holder: ItemSymbolDetailHolders;
 }
 export default function Holder(props: HolderProps) {
   const { isMobileSSR: isMobile } = useMobileContext();

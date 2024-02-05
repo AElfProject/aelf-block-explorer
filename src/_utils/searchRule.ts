@@ -8,7 +8,6 @@ function addressFormat(address: string, prefix = null, chainId = null) {
   return `${prefix || SYMBOL}_${address}_${chainId || CHAIN_ID}`;
 }
 
-/* eslint-disable import/prefer-default-export */
 export function getHandleSearch(navigate, value) {
   const searchRules = {
     hash: async (val) => {

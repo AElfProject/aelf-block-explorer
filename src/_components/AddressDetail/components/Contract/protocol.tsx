@@ -1,7 +1,7 @@
 import CodeBlock from '@_components/CodeBlock';
 import IconFont from '@_components/IconFont';
 import { handelCopy } from '@_utils/copy';
-import { Button } from 'antd';
+import { Button } from 'aelf-design';
 import { useState } from 'react';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
@@ -32,9 +32,9 @@ export default function Protocol({
       <div
         className={clsx(isMobile && 'flex-col !items-start', 'source-header flex items-center justify-between py-4')}>
         <div className="flex items-center">
-          <IconFont className="text-xs mr-1" type="protocol" />
-          <span className="inline-block text-sm text-base-100 leading-[22px]">Contract Protocol Buffers </span>
-          <IconFont className="text-xs ml-1" type="question-circle" />
+          <IconFont className="mr-1 text-xs" type="protocol" />
+          <span className="inline-block text-sm leading-[22px] text-base-100">Contract Protocol Buffers </span>
+          <IconFont className="ml-1 text-xs" type="question-circle" />
         </div>
         <div className={clsx('view flex items-center', isMobile && 'mt-2')}>
           <Button

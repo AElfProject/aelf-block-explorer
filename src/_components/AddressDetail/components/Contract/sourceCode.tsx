@@ -1,5 +1,6 @@
 import IconFont from '@_components/IconFont';
-import { Button, message } from 'antd';
+import { message } from 'antd';
+import { Button } from 'aelf-design';
 import CodeViewer from './CodeViewer';
 import { handelCopy } from '@_utils/copy';
 import Download from '@_components/Download';
@@ -43,7 +44,7 @@ export default function SourceCode() {
       <div
         className={clsx(isMobile && 'flex-col !items-start', 'source-header flex items-center justify-between py-4')}>
         <div>
-          <IconFont className="text-xs mr-1" type="contract-aa3pc9ha" />
+          <IconFont className="mr-1 text-xs" type="contract-aa3pc9ha" />
           <span className="inline-block text-sm leading-[22px] text-base-100">Contract Source Code</span>
         </div>
         <div className={clsx(isMobile && 'mt-2', 'view flex items-center')}>
