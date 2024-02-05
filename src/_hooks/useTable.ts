@@ -1,4 +1,4 @@
-import { TableProps } from 'antd';
+import { ITableProps } from 'aelf-design';
 import { SorterResult } from 'antd/es/table/interface';
 import { useEffect, useRef, useState } from 'react';
 import { useDebounce } from 'react-use';
@@ -81,7 +81,7 @@ export default function useTableData<T, U>({
   };
 
   const [sortedInfo, setSortedInfo] = useState<SorterResult<T>>({});
-  const handleChange: TableProps<T>['onChange'] = (pagination, filters, sorter) => {
+  const handleChange: ITableProps<T>['onChange'] = (pagination, filters, sorter) => {
     setSortedInfo(sorter as SorterResult<T>);
     setCurrentPage(1);
     setPageSize(defaultPageSize);

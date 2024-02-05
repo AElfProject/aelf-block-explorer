@@ -13,7 +13,7 @@ import './detail.css';
 import BaseInfo from './baseinfo';
 import ExtensionInfo from './ExtensionInfo';
 import { DetailData } from './type';
-import type { TabsProps } from 'antd';
+import type { ITabsProps } from 'aelf-design';
 import Table from '@_components/Table';
 import getColumns from '@app/transactions/columnConfig';
 import { ITableDataType } from '@app/transactions/type';
@@ -57,7 +57,7 @@ export default function Detail({ SSRData }) {
   const moreChange = useCallback(() => {
     setShowMore(!showMore);
   }, [showMore]);
-  const items: TabsProps['items'] = [
+  const items: ITabsProps['items'] = [
     {
       key: '',
       label: 'Overview',
@@ -93,7 +93,7 @@ export default function Detail({ SSRData }) {
   return (
     <div className={clsx('token-detail-container')}>
       <HeadTitle content="Blocks">
-        <span className="text-base-200 ml-2 block text-xs leading-5">#{detailData.blockHeight}</span>
+        <span className="ml-2 block text-xs leading-5 text-base-200">#{detailData.blockHeight}</span>
       </HeadTitle>
 
       <div className="detail-table">

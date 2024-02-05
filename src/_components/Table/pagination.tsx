@@ -1,4 +1,5 @@
-import { Button, Select } from 'antd';
+import { Select } from 'antd';
+import { Button } from 'aelf-design';
 import type { PaginationProps } from 'antd';
 import './pagination.css';
 import { useEffect, useMemo, useState } from 'react';
@@ -133,7 +134,7 @@ export default function EpPagination({
             disabled={isFirstPage}
             type="primary"
             ghost
-            className="!px-2 !text-xs !leading-5 mr-2 first-button"
+            className="first-button mr-2 !px-2 !text-xs !leading-5"
             onClick={debounceJumpFirst}>
             First
           </Button>
@@ -152,7 +153,7 @@ export default function EpPagination({
             disabled={isLastPage}
             type="primary"
             ghost
-            className="!px-2 ml-2 !text-xs !leading-5 last-button"
+            className="last-button ml-2 !px-2 !text-xs !leading-5"
             onClick={debounceJumpLast}>
             Last
           </Button>

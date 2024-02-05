@@ -12,13 +12,13 @@ import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import Link from 'next/link';
 import IconFont from '@_components/IconFont';
-import { Tooltip } from 'antd';
+import { Tooltip } from 'aelf-design';
 import ContractToken from '@_components/ContractToken';
 
 export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<IActivityTableData> {
   return [
     {
-      title: <IconFont type="question-circle" className='flex justify-center size-full'/>,
+      title: <IconFont type="question-circle" className="flex size-full justify-center" />,
       width: 40,
       dataIndex: '',
       key: 'view',
@@ -35,7 +35,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: (
         <div>
           <span>Txn Hash</span>
-          <IconFont type="question-circle" className='ml-1'/>
+          <IconFont type="question-circle" className="ml-1" />
         </div>
       ),
       render: (text) => {

@@ -1,5 +1,5 @@
 import IconFont from '@_components/IconFont';
-import { Input } from 'antd';
+import { Input } from 'aelf-design';
 import './index.css';
 
 export default function EPSearch({ placeholder = 'Search Token Name  Token Symbol', ...params }) {

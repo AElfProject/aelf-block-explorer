@@ -5,11 +5,11 @@ import IconFont from '@_components/IconFont';
 import { Collapse, CollapseProps, TabsProps, Dropdown } from 'antd';
 import OverViewDetail from './OverViewDetail';
 import OverViewProperty from './OverViewProperty';
-import { ItemSymbolDetailOverview } from '../type'
+import { ItemSymbolDetailOverview } from '../type';
 
 export interface OverViewProps {
-  overview: ItemSymbolDetailOverview,
-  onHolderClick: () => void,
+  overview: ItemSymbolDetailOverview;
+  onHolderClick: () => void;
 }
 export default function OverView(props: OverViewProps) {
   const { overview, onHolderClick } = props;
@@ -44,9 +44,7 @@ export default function OverView(props: OverViewProps) {
           </div>
         </div>
       ),
-      children: (
-        <OverViewProperty overview={overview} />
-      ),
+      children: <OverViewProperty overview={overview} />,
     },
   ];
   if (overview.description) {
@@ -75,7 +73,7 @@ export default function OverView(props: OverViewProps) {
           </div>
         </div>
       ),
-    })
+    });
   }
   return (
     <div className="ntf-overview-wrap">
@@ -99,5 +97,5 @@ export default function OverView(props: OverViewProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

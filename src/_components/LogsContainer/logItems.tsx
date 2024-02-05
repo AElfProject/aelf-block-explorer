@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ILogsProps } from './type';
 import CodeBlock from '@_components/CodeBlock';
-import { Button } from 'antd';
+import { Button } from 'aelf-design';
 import './logItem.css';
 function LogItems({ data }: { data: ILogsProps }) {
   const [result] = useState(

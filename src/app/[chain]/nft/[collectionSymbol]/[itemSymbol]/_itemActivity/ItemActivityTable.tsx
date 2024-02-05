@@ -8,7 +8,7 @@ import { fetchActiveData } from '../mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 export interface ItemActivityTableProps {
-  activeData: ItemSymbolDetailActivity
+  activeData: ItemSymbolDetailActivity;
 }
 export default function ItemActivityTable(props: ItemActivityTableProps) {
   const { isMobileSSR: isMobile } = useMobileContext();
