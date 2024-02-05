@@ -71,31 +71,10 @@ const devConfig = {
     // inline: false,
     historyApiFallback: true,
     proxy: proxyServer,
-    // before(app) {
-    //   app.all("*", (req, res, next) => {
-    //     let mockFile = mockMapper[req.path];
-    //     if (isObject(mockFile)) {
-    //       mockFile = mockFile[req.query.path];
-    //     }
-    //     if (mockFile && devMode === "local") {
-    //       res.sendFile(
-    //         path.resolve(__dirname, mockFile),
-    //         {
-    //           headers: {
-    //             "Content-Type": "application/json; charset=utf-8",
-    //           },
-    //         },
-    //         (err) => {
-    //           err && console.error(err);
-    //         }
-    //       );
-    //     } else {
-    //       next();
-    //     }
-    //   });
-    // },
     headers: {
       "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
     },
   },
 };
