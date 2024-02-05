@@ -5,8 +5,8 @@
  * @LastEditTime: 2023-08-01 17:13:27
  * @Description: Tokens
  */
-import TokensList from './tokensList';
 import fetchData from './mock';
+import TokensList from './tokensList';
 
 export default async function TokensPage({ params }: { params: ChainId }) {
   console.log('chainId', params);

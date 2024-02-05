@@ -29,14 +29,14 @@ html{
 }
 body {
   @apply lg:min-w-[768px] bg-F7 select-none relative h-full w-full overflow-x-hidden overflow-y-auto;
-  .ant-dropdown-menu{
-    .ant-dropdown-menu-item{
+  .explorer-dropdown-menu{
+    .explorer-dropdown-menu-item{
       @apply !text-xs !leading-20 !text-base-100 !px-2 !py-[6px];
       &:hover{
         @apply !bg-[#D8DDE5]
       }
     }
-    .ant-dropdown-menu-item-selected{
+    .explorer-dropdown-menu-item-selected{
       @apply !text-link;
     }
   }

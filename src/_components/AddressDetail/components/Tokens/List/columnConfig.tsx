@@ -13,12 +13,12 @@ export default function getColumns(sortedInfo): ColumnsType<TokensListItemType> 
       title: 'Token Name',
       sorter: true,
       sortIcon: ({ sortOrder }) => <EPSortIcon sortOrder={sortOrder} />,
-      sortOrder: sortedInfo.columnKey === 'asset' ? sortedInfo.order : null,
+      sortOrder: sortedInfo?.columnKey === 'asset' ? sortedInfo.order : null,
       render: (text) => {
         return (
           <div className="flex items-center">
             <IconFont className="text-2xl" type="Aelf-transfer" />
-            <span className="inline-block leading-5 max-w-[175px] text-base-100 truncate mx-1">{text}</span>
+            <span className="mx-1 inline-block max-w-[175px] truncate leading-5 text-base-100">{text}</span>
           </div>
         );
       },
@@ -28,7 +28,7 @@ export default function getColumns(sortedInfo): ColumnsType<TokensListItemType> 
       width: 218,
       dataIndex: 'symbol',
       key: 'symbol',
-      render: (text) => <span className="inline-block leading-5 max-w-[181px] text-base-100 truncate">{text}</span>,
+      render: (text) => <span className="inline-block max-w-[181px] truncate leading-5 text-base-100">{text}</span>,
     },
     {
       title: 'Quantity',
@@ -36,7 +36,7 @@ export default function getColumns(sortedInfo): ColumnsType<TokensListItemType> 
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text) => (
-        <span className="inline-block leading-5 max-w-[124px] text-base-100 truncate">{thousandsNumber(text)}</span>
+        <span className="inline-block max-w-[124px] truncate leading-5 text-base-100">{thousandsNumber(text)}</span>
       ),
     },
     {
@@ -53,7 +53,7 @@ export default function getColumns(sortedInfo): ColumnsType<TokensListItemType> 
       key: 'pricePercentChange24h',
       render: () => (
         <span className="text-rise-red">
-          <IconFont className="text-xs mr-1" type="down-aa9i0lma" />
+          <IconFont className="mr-1 text-xs" type="down-aa9i0lma" />
           4.75%
         </span>
       ),

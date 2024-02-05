@@ -73,16 +73,16 @@
         }
       }
     }
-    .ant-collapse-ghost{
+    .explorer-collapse-ghost{
 
-      .ant-collapse-item{
+      .explorer-collapse-item{
         border-bottom:1px solid ;
         @apply !text-xs !leading-20 !border-0 !border-b !border-color-divider last:!border-b-0;
       }
-      .ant-collapse-header{
+      .explorer-collapse-header{
         @apply !p-0;
       }
-      .ant-collapse-content-box{
+      .explorer-collapse-content-box{
         @apply !p-0;
       }
     }

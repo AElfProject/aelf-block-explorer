@@ -1,3 +1,4 @@
+/* stylelint-disable no-duplicate-selectors */
 .ep-pagination {
   @apply flex justify-between items-center p-4;
   .submenu-right-arrow {
@@ -6,30 +7,30 @@
       @apply w-4 h-4;
     }
   }
-  .ant-select {
+  .explorer-select {
     @apply mx-2 w-auto  !important;
-    .ant-select-selector {
+    .explorer-select-selector {
       @apply border py-2 rounded border-D0 flex items-center !important;
-      .ant-select-selection-item {
+      .explorer-select-selection-item {
         @apply pe-5 font-normal text-base-100 leading-5 text-xs;
       }
     }
   }
   .ep-pagination-right {
     @apply flex items-center;
-    .ant-pagination-simple-pager {
+    .explorer-pagination-simple-pager {
       @apply hidden;
     }
-    .ant-btn-primary {
+    .explorer-btn-primary {
       @apply rounded !important ;
     }
     .pagination-first {
-      .ant-btn-primary.ant-btn-background-ghost:disabled {
+      .explorer-btn-primary.explorer-btn-background-ghost:disabled {
         @apply bg-F7 border-D0 text-base-200 !important;
       }
     }
     .pagination-last {
-      .ant-btn-primary.ant-btn-background-ghost:disabled {
+      .explorer-btn-primary.explorer-btn-background-ghost:disabled {
         @apply bg-F7 border-D0 text-base-200 !important;
       }
     }
@@ -51,7 +52,7 @@
           @apply text-base-200;
         }
       }
-      .ant-btn-primary:disabled {
+      .explorer-btn-primary:disabled {
         @apply bg-F7 border-D0 text-base-200 !important;
         .active-icon {
           svg {
@@ -61,7 +62,7 @@
       }
     }
     .pagination-next {
-      .ant-btn-primary:disabled {
+      .explorer-btn-primary:disabled {
         @apply bg-F7 border-D0 text-base-200 !important;
       }
     }
@@ -80,10 +81,11 @@
         }
       }
     }
-    .ant-pagination-disabled {
+    .explorer-pagination-disabled {
       @apply bg-F7 !important;
       .prev:hover,.next:hover {
         @apply bg-F7  bg-F7 border-D0 !important;
+
         cursor: auto;
       }
     }

@@ -27,15 +27,9 @@ export default function Holder(props: HolderProps) {
     fetchData: fetchHolderData,
     disposeData: disposeData,
   });
-  const [timeFormat, setTimeFormat] = useState<string>('Age');
   const columns = useMemo<ColumnsType<HolderItem>>(() => {
-    return getColumns({
-      timeFormat,
-      handleTimeChange: () => {
-        setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
-      },
-    });
-  }, [timeFormat]);
+    return getColumns();
+  }, []);
 
   const multiTitle = total > 100 && 'More than > 100 transactions found';
   const multiTitleDesc = total > 100 && `Showing the last 500k records`;
@@ -43,7 +37,7 @@ export default function Holder(props: HolderProps) {
   return (
     <div>
       <Table
-        headerLeftNode={`A total of ${total} records found`}
+        headerLeftNode={`A total of ${total} holders found`}
         titleType="multi"
         loading={loading}
         dataSource={data}

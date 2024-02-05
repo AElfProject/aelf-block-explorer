@@ -23,9 +23,9 @@
     }
   }
   &-right {
-    .ant-card {
+    .explorer-card {
       @apply flex absolute right-5 top-14 shadow-[0_6px_24px_0_rgba(0,0,0,0.24)] z-[999];
-      .ant-card-body {
+      .explorer-card-body {
         @apply p-2;
       }
       p {
