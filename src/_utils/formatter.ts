@@ -44,3 +44,8 @@ export const thousandsNumber = (number: string | number): string => {
   if (number === '' || Number.isNaN(num)) return '-';
   return `${num.toLocaleString(undefined, { maximumFractionDigits: 8 })}`;
 };
+
+export const stringToDotString = (str?: string, maxLength?: number) => {
+  if (!str || !maxLength) return '';
+  return str.length > maxLength ? str.substring(0, maxLength) + '...' : str;
+};

@@ -5,10 +5,12 @@
  * @LastEditTime: 2023-08-01 17:13:09
  * @Description: TokenSysbol
  */
-export default function TokenSysbol({ params }: { params: ChainId & TokenSymbol }) {
+import Detail from './detail';
+
+export default function TokenSymbol({ params }: { params: ChainId & TokenSymbol }) {
   return (
     <div>
-      Tokens, my chainId is {params.chain}, my tokenSysbol is {params.tokenSymbol}
+      <Detail />
     </div>
   );
 }

@@ -5,6 +5,11 @@
  * @LastEditTime: 2023-08-01 17:13:27
  * @Description: Tokens
  */
-export default function Tokens({ params }: { params: ChainId }) {
-  return <div>Tokens, my chainId is {params.chain}</div>;
+import TokensList from './tokensList';
+import fetchData from './mock';
+
+export default async function TokensPage({ params }: { params: ChainId }) {
+  console.log('chainId', params);
+  const data = await fetchData({ page: 1, pageSize: 50 });
+  return <TokensList SSRData={data} />;
 }

@@ -17,7 +17,7 @@ export default function HeadTitle({
   className?: string;
 }) {
   return (
-    <div className={clsx(className, 'py-5 header-title flex items-end bg-inherit')}>
+    <div className={clsx(className, 'header-title flex items-end bg-inherit py-5')}>
       <div className="text-xl font-bold not-italic text-base-100">{content}</div>
       {children}
     </div>

@@ -94,6 +94,7 @@ export default function useTableData<T, U>({
   };
 
   useEffect(() => {
+    console.log('useTable');
     getData({ page: currentPage, pageSize: pageSize, sort: sortedInfo, searchText });
   }, []);
 

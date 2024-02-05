@@ -8,12 +8,12 @@
 
 'use client';
 
-import { Provider as ReduxProvider } from 'react-redux';
 import store from '@_store';
-import { ConfigProvider, Skeleton } from 'antd';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import microApp from '@micro-zoe/micro-app';
+import { ConfigProvider, Skeleton } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
 
 const MobileContext = createContext<any>({});
 
@@ -71,7 +71,15 @@ export default function RootProvider({ children, isMobileSSR }) {
   }, [pathname, router]);
 
   return (
-    <ConfigProvider>
+    <ConfigProvider
+      theme={{
+        components: {
+          Descriptions: {
+            // contentColor: '#252525',
+            itemPaddingBottom: 0,
+          },
+        },
+      }}>
       <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
         <ReduxProvider store={store}>{children}</ReduxProvider>
         {isGovernance && (
