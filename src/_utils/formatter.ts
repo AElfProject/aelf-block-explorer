@@ -31,6 +31,11 @@ export const validateVersion = (version): boolean => {
   return regex.test(version);
 };
 
+export const validateNumber = (value: any) => {
+  const num = Number(value);
+  return !Number.isNaN(num);
+};
+
 export const numberFormatter = (number: string, symbol = SYMBOL): string => {
   const num = Number(number);
   if (Number.isNaN(num)) {

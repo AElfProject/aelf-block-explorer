@@ -7,11 +7,11 @@ import { fetchHoldersData } from '../../mock';
 import { IHolderItem, IHolderTableData } from '../../type';
 import getColumns from './columns';
 
-interface TransfersListProps {
+interface HoldersProps {
   SSRData: IHolderTableData;
 }
 
-export default function Transfers({ SSRData }: TransfersListProps) {
+export default function Holders({ SSRData }: HoldersProps) {
   const { isMobileSSR: isMobile } = useMobileContext();
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<

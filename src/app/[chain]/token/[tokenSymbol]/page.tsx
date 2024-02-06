@@ -6,11 +6,17 @@
  * @Description: TokenSysbol
  */
 import Detail from './detail';
+import { fetchHoldersData, fetchTokenDetailData, fetchTransfersData } from './mock';
 
-export default function TokenSymbol({ params }: { params: ChainId & TokenSymbol }) {
+export default async function TokenSymbol({ params: { chain, tokenSymbol } }: { params: ChainId & TokenSymbol }) {
+  const [tokenDetail, transfersList, holdersList] = await Promise.all([
+    fetchTokenDetailData({ chainId: chain, symbol: tokenSymbol }),
+    fetchTransfersData({ page: 1, pageSize: 50 }),
+    fetchHoldersData({ page: 1, pageSize: 50 }),
+  ]);
   return (
     <div>
-      <Detail />
+      <Detail tokenDetail={tokenDetail} transfersList={transfersList} holdersList={holdersList} />
     </div>
   );
 }

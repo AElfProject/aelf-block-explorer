@@ -17,6 +17,7 @@ import { ConfigProvider, Skeleton } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
+import { ANTD_THEME_CONFIG } from './themTokenConfig';
 
 const MobileContext = createContext<any>({});
 
@@ -75,7 +76,7 @@ export default function RootProvider({ children, isMobileSSR }) {
 
   return (
     <AELFDProvider prefixCls={PREFIXCLS}>
-      <ConfigProvider prefixCls={PREFIXCLS}>
+      <ConfigProvider prefixCls={PREFIXCLS} theme={ANTD_THEME_CONFIG}>
         <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
           <ReduxProvider store={store}>{children}</ReduxProvider>
           {isGovernance && (

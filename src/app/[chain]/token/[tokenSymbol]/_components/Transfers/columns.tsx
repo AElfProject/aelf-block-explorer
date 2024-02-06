@@ -33,7 +33,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       render: (text, record) => (
         <div className="flex items-center">
           {record.status === TTransactionStatus.fail && <IconFont className="ml-1" type="question-circle-error" />}
-          <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${text}`}>
+          <Link className="block text-xs leading-5 text-link" href={`tx/${text}`}>
             {text}
           </Link>
           <Copy value={text} />

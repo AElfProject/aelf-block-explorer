@@ -24,11 +24,14 @@ const transfersList: ITransferItem[] = Array.from(new Array(100).keys()).map((ke
   quantity: 1212121,
 }));
 
-export async function fetchTransfersData({ page, pageSize }): Promise<ITransferTableData> {
+export async function fetchTransfersData({ page, pageSize, search = '' }): Promise<ITransferTableData> {
   console.log('fetchTransfersData');
   await new Promise((resolve) => setTimeout(resolve, 200));
   const transfers = transfersList.slice((page - 1) * pageSize, page * pageSize);
   return {
+    isAddress: true,
+    balance: 123456,
+    value: 1234.55,
     total: 10000,
     list: transfers,
   };
@@ -56,7 +59,7 @@ export async function fetchHoldersData({ page, pageSize }): Promise<IHolderTable
   };
 }
 
-export async function fetchTokenDetailData({ page, pageSize }): Promise<ITokenDetail> {
+export async function fetchTokenDetailData({ chainId, symbol }): Promise<ITokenDetail> {
   await new Promise((resolve) => setTimeout(resolve, 200));
   return {
     token: {
@@ -65,20 +68,13 @@ export async function fetchTokenDetailData({ page, pageSize }): Promise<ITokenDe
       imageUrl: '',
     },
     totalSupply: '1000000000',
+    circulatingSupply: '123456',
     holders: 10000,
-    holderPercentChange24h: 0.00913,
+    holderPercentChange24h: -0.00913,
     totalTransfers: '123456',
     priceInUsd: 0.17,
     pricePercentChange24h: 12.1,
     contractAddress: 'ELF_rAWnCCYQgZAwMopFje6iAYEZkpbnF1zEDYs7U7WZihWZQpEQM_AELF',
     decimals: 8,
-    transfers: {
-      total: 20000,
-      list: transfersList.slice(0, 50),
-    },
-    holdersList: {
-      total: 2000,
-      list: holdersList.slice(0, 50),
-    },
   };
 }

@@ -12,6 +12,9 @@ export interface ITransferItem {
 }
 
 export interface ITransferTableData {
+  isAddress: boolean;
+  balance: number;
+  value: number;
   total: number;
   list: ITransferItem[];
 }
@@ -31,6 +34,7 @@ export interface IHolderTableData {
 export interface ITokenDetail {
   token: IToken;
   totalSupply: string;
+  circulatingSupply: string;
   holders: number;
   holderPercentChange24h: number;
   totalTransfers: string;
@@ -38,12 +42,10 @@ export interface ITokenDetail {
   pricePercentChange24h: number;
   contractAddress: string;
   decimals: number;
-  transfers: {
-    total: number;
-    list: ITransferItem[];
-  };
-  holdersList: {
-    total: number;
-    list: IHolderItem[];
-  };
+}
+
+export enum SearchType {
+  txHash = 'txHash',
+  address = 'address',
+  other = 'other',
 }
