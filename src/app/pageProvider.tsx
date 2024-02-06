@@ -16,7 +16,7 @@ import microApp from '@micro-zoe/micro-app';
 import { usePathname, useRouter } from 'next/navigation';
 import 'aelf-design/css';
 import { AELFDProvider } from 'aelf-design';
-import { PREFIXCLS } from '@_lib/AntdThemeConfig';
+import { PREFIXCLS, THEME_CONFIG } from '@_lib/AntdThemeConfig';
 
 const MobileContext = createContext<any>({});
 
@@ -74,8 +74,8 @@ export default function RootProvider({ children, isMobileSSR }) {
   }, [pathname, router]);
 
   return (
-    <AELFDProvider prefixCls={PREFIXCLS}>
-      <ConfigProvider prefixCls={PREFIXCLS}>
+    <AELFDProvider prefixCls={PREFIXCLS} theme={THEME_CONFIG}>
+      <ConfigProvider prefixCls={PREFIXCLS} theme={THEME_CONFIG}>
         <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
           <ReduxProvider store={store}>{children}</ReduxProvider>
           {isGovernance && (

@@ -1,13 +1,11 @@
-import EPSearch from '@_components/EPSearch';
 import Table from '@_components/Table';
 import { useState } from 'react';
 import fetchData from './mock';
 import getColumns from './columnConfig';
 import './index.css';
 import { TokensListItemType } from '@_types/commonDetail';
-import { useDebounce, useEffectOnce } from 'react-use';
+import { useEffectOnce } from 'react-use';
 import { useMobileContext } from '@app/pageProvider';
-import clsx from 'clsx';
 export default function TokensList({ SSRData = { total: 0, list: [] } }) {
   const { isMobileSSR: isMobile } = useMobileContext();
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -56,36 +54,28 @@ export default function TokensList({ SSRData = { total: 0, list: [] } }) {
     setTotal(data.total);
     setLoading(false);
   };
-  useDebounce(
-    () => {
-      searchChange();
-    },
-    300,
-    [searchText],
-  );
+
   return (
     <div className="token-list px-4">
-      <div
-        className={clsx(
-          'token-header-container flex items-center justify-between py-4',
-          isMobile && 'flex-col !items-start',
-        )}>
-        <div className={clsx(isMobile && 'mb-3 flex-col', 'title-container')}>
-          <div className="total text-sm leading-[22px] text-base-100">Tokens (7)</div>
-          <div className="info text-xs leading-5 text-base-200">Total Value : $78,330.38</div>
-        </div>
-        <div className="tool-container">
-          <EPSearch
-            value={searchText}
-            onChange={({ currentTarget }) => {
-              setSearchText(currentTarget.value);
-            }}
-          />
-        </div>
-      </div>
-      <div className="table-container">
+      <div className="table-container py-4">
         <Table
-          titleType="multi"
+          showTopSearch
+          headerTitle={{
+            multi: {
+              title: 'Tokens (7)',
+              desc: 'Total Value : $78,330.38',
+            },
+          }}
+          topSearchProps={{
+            value: searchText,
+            placeholder: 'Search Token Name  Token Symbol',
+            onChange: ({ currentTarget }) => {
+              setSearchText(currentTarget.value);
+            },
+            onSearchChange: () => {
+              searchChange();
+            },
+          }}
           loading={loading}
           options={[
             {

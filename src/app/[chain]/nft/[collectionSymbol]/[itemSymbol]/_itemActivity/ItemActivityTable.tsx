@@ -44,7 +44,12 @@ export default function ItemActivityTable(props: ItemActivityTableProps) {
     <div>
       <Table
         headerLeftNode={`A total of ${total} records found`}
-        titleType="multi"
+        headerTitle={{
+          multi: {
+            title: multiTitle || '',
+            desc: multiTitleDesc || '',
+          },
+        }}
         loading={loading}
         dataSource={data}
         columns={columns}
@@ -54,9 +59,7 @@ export default function ItemActivityTable(props: ItemActivityTableProps) {
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}
-        pageSizeChange={pageSizeChange}
-        multiTitle={multiTitle}
-        multiTitleDesc={multiTitleDesc}></Table>
+        pageSizeChange={pageSizeChange}></Table>
     </div>
   );
 }

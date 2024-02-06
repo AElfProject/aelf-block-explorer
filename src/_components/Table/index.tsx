@@ -5,22 +5,37 @@ import { SortOrder } from 'antd/es/table/interface';
 import CommonEmpty from './empty';
 import IconFont from '@_components/IconFont';
 import { Table, Pagination, ITableProps } from 'aelf-design';
+import EPSearch from '@_components/EPSearch';
 import clsx from 'clsx';
+import { ISearchProps } from 'aelf-design';
+import { isReactNode } from '@_utils/typeUtils';
 
-type HeaderTitleType = 'single' | 'multi';
+export interface ITableSearch extends ISearchProps {
+  value: string;
+  onSearchChange: (value: string) => void;
+}
+
+export interface IHeaderTitleProps {
+  single?: {
+    title: string;
+  };
+  multi?: {
+    title: string;
+    desc: string | boolean;
+  };
+}
 
 export interface ICommonTableProps<T> extends ITableProps<T> {
   total: number;
   pageNum?: number;
   pageSize?: number;
   isMobile?: boolean;
+  showTopSearch?: boolean;
+  headerTitle?: IHeaderTitleProps | ReactNode;
   defaultCurrent?: number;
   className?: string;
-  titleType: HeaderTitleType;
-  singleTitle?: string;
+  topSearchProps?: ITableSearch;
   options?: any[];
-  multiTitle?: string | boolean;
-  multiTitleDesc?: string | boolean;
   order?: SortOrder | undefined | null;
   field?: string | null;
   loading?: boolean | SpinProps;
@@ -47,20 +62,19 @@ function emptyStatus({ emptyType, emptyText }) {
   return <CommonEmpty type={type} desc={emptyText} />;
 }
 
-function HeaderTitle({ titleType, singleTitle, multiTitle, multiTitleDesc }): ReactNode {
-  if (titleType === 'multi') {
+function HeaderTitle(props: IHeaderTitleProps): ReactNode {
+  if (props.multi) {
     return (
       <>
-        <div className="total-text text-sm font-normal leading-22 text-base-100">{multiTitle}</div>
-        <div className="bottom-text text-xs font-normal leading-5 text-base-200">{multiTitleDesc}</div>
+        <div className="total-text text-sm font-normal leading-22 text-base-100">{props.multi.title}</div>
+        <div className="bottom-text text-xs font-normal leading-5 text-base-200">{props.multi.desc}</div>
       </>
     );
   } else {
     return (
       <div className="single align-center flex">
-        {/* <iconpark-icon width="0.75rem" height="0.75rem" name="Rank"></iconpark-icon> */}
         <IconFont className="text-xs" type="Rank" />
-        <div className="total-tex ml-1 text-sm font-normal leading-22  text-base-100 ">{singleTitle}</div>
+        <div className="total-tex ml-1 text-sm font-normal leading-22  text-base-100 ">{props.single?.title}</div>
       </div>
     );
   }
@@ -73,42 +87,53 @@ export default function TableApp({
   pageSize,
   defaultCurrent,
   total,
-  singleTitle,
-  multiTitleDesc,
-  multiTitle,
+  showTopSearch,
+  topSearchProps,
   pageChange,
   emptyType,
   pageSizeChange,
   options,
-  titleType,
+  headerTitle,
   emptyText,
   headerLeftNode,
   ...params
 }: ICommonTableProps<any>) {
   return (
     <div className="ep-table rounded-lg bg-white shadow-table">
-      <div className={clsx('ep-table-header p-4', `ep-table-header-${isMobile ? 'mobile' : 'pc'}`)}>
+      <div
+        className={clsx(
+          'ep-table-header',
+          showTopSearch ? 'py-4' : 'p-4',
+          `ep-table-header-${isMobile ? 'mobile' : 'pc'}`,
+        )}>
         <div className="header-left">
-          <HeaderTitle
-            singleTitle={singleTitle}
-            multiTitleDesc={multiTitleDesc}
-            multiTitle={multiTitle}
-            titleType={titleType}
-          />
+          {isReactNode(headerTitle) ? headerTitle : <HeaderTitle {...headerTitle} />}
           {headerLeftNode}
         </div>
         <div className="header-pagination">
-          <Pagination
-            current={pageNum}
-            total={total}
-            options={options}
-            pageSize={pageSize}
-            defaultPageSize={pageSize}
-            defaultCurrent={defaultCurrent}
-            showSizeChanger={false}
-            pageChange={pageChange}
-            pageSizeChange={pageSizeChange}
-          />
+          {showTopSearch ? (
+            <EPSearch
+              {...topSearchProps}
+              onPressEnter={({ currentTarget }) => {
+                topSearchProps?.onSearchChange(currentTarget.value);
+              }}
+              onClear={({ currentTarget }) => {
+                topSearchProps?.onSearchChange(currentTarget.value);
+              }}
+            />
+          ) : (
+            <Pagination
+              current={pageNum}
+              total={total}
+              options={options}
+              pageSize={pageSize}
+              defaultPageSize={pageSize}
+              defaultCurrent={defaultCurrent}
+              showSizeChanger={false}
+              pageChange={pageChange}
+              pageSizeChange={pageSizeChange}
+            />
+          )}
         </div>
       </div>
       <Table

@@ -1,7 +1,7 @@
 'use client';
 import Table from '@_components/Table';
 import getColumns from './column';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { HolderItem, ItemSymbolDetailHolders } from '../type';
 import { fetchHolderData } from '../mock';
@@ -38,7 +38,12 @@ export default function Holder(props: HolderProps) {
     <div>
       <Table
         headerLeftNode={`A total of ${total} holders found`}
-        titleType="multi"
+        headerTitle={{
+          multi: {
+            title: multiTitle || '',
+            desc: multiTitleDesc || '',
+          },
+        }}
         loading={loading}
         dataSource={data}
         columns={columns}
@@ -48,9 +53,7 @@ export default function Holder(props: HolderProps) {
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}
-        pageSizeChange={pageSizeChange}
-        multiTitle={multiTitle}
-        multiTitleDesc={multiTitleDesc}></Table>
+        pageSizeChange={pageSizeChange}></Table>
     </div>
   );
 }

@@ -74,7 +74,12 @@ export default function Detail({ SSRData }) {
       label: 'Transactions',
       children: (
         <Table
-          titleType="multi"
+          headerTitle={{
+            multi: {
+              title: multiTitle,
+              desc: multiTitleDesc,
+            },
+          }}
           dataSource={tableData}
           columns={columns}
           isMobile={isMobile}
@@ -83,9 +88,7 @@ export default function Detail({ SSRData }) {
           pageSize={pageSize}
           pageNum={currentPage}
           pageChange={pageChange}
-          pageSizeChange={pageSizeChange}
-          multiTitle={multiTitle}
-          multiTitleDesc={multiTitleDesc}></Table>
+          pageSizeChange={pageSizeChange}></Table>
       ),
     },
   ];
