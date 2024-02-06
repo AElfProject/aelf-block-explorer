@@ -75,25 +75,28 @@ export default function Events({ SSRData = { total: 0, list: [] } }) {
 
   return (
     <div className="event-container">
-      <div className={clsx('event-header', isMobile && 'flex-col !items-start')}>
-        <div className="tips">
-          Tips：Contract events are developer-defined mechanisms that allow users to observe and understand specific
-          operations within a contract. These operations can include changes in state, user interactions, and important
-          notifications. By examining events, users can gain valuable insights into the contract&apos;s internal
-          workings, including event names, parameters, transaction hashes, block numbers, and other pertinent data.
-        </div>
-        <div className={clsx('search-box', isMobile && 'mt-2')}>
-          <EPSearch
-            value={searchText}
-            onChange={({ currentTarget }) => {
-              setSearchText(currentTarget.value);
-            }}
-          />
-        </div>
-      </div>
       <Table
-        titleType="multi"
         loading={loading}
+        headerTitle={
+          <div className="tips">
+            Tips：Contract events are developer-defined mechanisms that allow users to observe and understand specific
+            operations within a contract. These operations can include changes in state, user interactions, and
+            important notifications. By examining events, users can gain valuable insights into the contract&apos;s
+            internal workings, including event names, parameters, transaction hashes, block numbers, and other pertinent
+            data.
+          </div>
+        }
+        topSearchProps={{
+          value: searchText,
+          placeholder: 'Search Token Name  Token Symbol',
+          onChange: ({ currentTarget }) => {
+            setSearchText(currentTarget.value);
+          },
+          onSearchChange: () => {
+            searchChange();
+          },
+        }}
+        showTopSearch
         dataSource={data}
         columns={columns}
         isMobile={isMobile}

@@ -4,14 +4,14 @@ import useTableData from '@_hooks/useTable';
 import { useMobileContext } from '@app/pageProvider';
 import { useMemo } from 'react';
 import { fetchHoldersData } from '../../mock';
-import { IHolderItem, IHolderTableData } from '../../type';
+import { IHolderItem, IHolderTableData, ITokenSearchProps } from '../../type';
 import getColumns from './columns';
 
-interface HoldersProps {
+interface HoldersProps extends ITokenSearchProps {
   SSRData: IHolderTableData;
 }
 
-export default function Holders({ SSRData }: HoldersProps) {
+export default function Holders({ SSRData, searchType, search, onSearchChange, onSearchInputChange }: HoldersProps) {
   const { isMobileSSR: isMobile } = useMobileContext();
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
@@ -29,8 +29,19 @@ export default function Holders({ SSRData }: HoldersProps) {
   return (
     <div>
       <Table
-        titleType="multi"
-        multiTitle={title}
+        headerTitle={{
+          single: {
+            title,
+          },
+        }}
+        topSearchProps={{
+          value: search || '',
+          onChange: ({ currentTarget }) => {
+            onSearchInputChange(currentTarget.value);
+          },
+          onSearchChange,
+        }}
+        showTopSearch
         loading={loading}
         dataSource={data}
         columns={columns}

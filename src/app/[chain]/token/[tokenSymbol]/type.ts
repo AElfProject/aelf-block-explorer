@@ -31,6 +31,13 @@ export interface IHolderTableData {
   list: IHolderItem[];
 }
 
+export interface ITokenSearchProps {
+  searchType: SearchType;
+  onSearchInputChange: (value: string) => void;
+  onSearchChange: (value: string) => void;
+  search?: string;
+}
+
 export interface ITokenDetail {
   token: IToken;
   totalSupply: string;

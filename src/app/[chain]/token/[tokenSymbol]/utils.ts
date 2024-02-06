@@ -1,8 +1,8 @@
 import { isAElfAddress, isTxHash } from '@_utils/isAElfAddress';
 import { SearchType } from './type';
 export const formatSearchValue = (val: string) => {
+  if (!val) return '';
   let tempValue = val.trim();
-  if (!tempValue) return '';
 
   if (tempValue.indexOf('_') > 0) {
     [, tempValue] = tempValue.split('-');

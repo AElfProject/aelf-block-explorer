@@ -1,4 +1,4 @@
-import { Tooltip, TooltipProps } from 'antd';
+import { Tooltip, ITooltipProps } from 'aelf-design';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 import './index.css';
@@ -6,7 +6,7 @@ import { useMobileContext } from '@app/pageProvider';
 import { TooltipPlacement } from 'antd/es/tooltip';
 
 interface IToolTip
-  extends Omit<TooltipProps, 'children' | 'color' | 'overlayClassName' | 'trigger' | 'arrow' | 'placement'> {
+  extends Omit<ITooltipProps, 'children' | 'color' | 'overlayClassName' | 'trigger' | 'arrow' | 'placement'> {
   pointAtCenter?: boolean;
   children: ReactNode;
   mode: 'light' | 'dark';

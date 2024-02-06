@@ -8,13 +8,11 @@ import { Descriptions, DescriptionsProps } from 'antd';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { fetchTransfersData } from '../../mock';
-import { ITransferItem, ITransferTableData, SearchType } from '../../type';
+import { ITokenSearchProps, ITransferItem, ITransferTableData, SearchType } from '../../type';
 import getColumns from './columns';
 
-interface TransfersProps {
+interface TransfersProps extends ITokenSearchProps {
   SSRData: ITransferTableData;
-  searchType: SearchType;
-  search?: string;
 }
 
 const labelStyle: React.CSSProperties = {
@@ -29,7 +27,13 @@ const contentStyle: React.CSSProperties = {
   lineHeight: '22px',
 };
 
-export default function Transfers({ SSRData, search, searchType }: TransfersProps) {
+export default function Transfers({
+  SSRData,
+  search,
+  searchType,
+  onSearchChange,
+  onSearchInputChange,
+}: TransfersProps) {
   const { isMobileSSR: isMobile } = useMobileContext();
   const [timeFormat, setTimeFormat] = useState<string>('Date Time (UTC)');
 
@@ -98,31 +102,44 @@ export default function Transfers({ SSRData, search, searchType }: TransfersProp
   );
   return (
     <div>
-      <div className="mx-4 border-b border-b-[#e6e6e6] pb-4">
-        {searchType === SearchType.address && (
-          <Descriptions
-            contentStyle={contentStyle}
-            labelStyle={labelStyle}
-            colon={false}
-            layout="vertical"
-            column={4}
-            items={searchByHolder}
-          />
-        )}
-        {searchType === SearchType.txHash && (
-          <Descriptions
-            contentStyle={contentStyle}
-            labelStyle={labelStyle}
-            colon={false}
-            layout="vertical"
-            column={4}
-            items={searchByHash}
-          />
-        )}
-      </div>
+      {searchType !== SearchType.other && (
+        <div className="mx-4 border-b border-b-[#e6e6e6] pb-4">
+          {searchType === SearchType.address && (
+            <Descriptions
+              contentStyle={contentStyle}
+              labelStyle={labelStyle}
+              colon={false}
+              layout="vertical"
+              column={4}
+              items={searchByHolder}
+            />
+          )}
+          {searchType === SearchType.txHash && (
+            <Descriptions
+              contentStyle={contentStyle}
+              labelStyle={labelStyle}
+              colon={false}
+              layout="vertical"
+              column={4}
+              items={searchByHash}
+            />
+          )}
+        </div>
+      )}
       <Table
-        titleType="multi"
-        multiTitle={title}
+        headerTitle={{
+          single: {
+            title,
+          },
+        }}
+        topSearchProps={{
+          value: search || '',
+          onChange: ({ currentTarget }) => {
+            onSearchInputChange(currentTarget.value);
+          },
+          onSearchChange,
+        }}
+        showTopSearch
         loading={loading}
         dataSource={data}
         columns={columns}

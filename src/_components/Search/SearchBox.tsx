@@ -15,7 +15,7 @@ import { useUpdateDataByQuery, useSelected, useHighlight } from '@_hooks/useSear
 import { ISearchProps } from './type';
 import { useSearchContext } from './SearchProvider';
 import { setQuery, setClear } from './action';
-import { Button } from 'antd';
+import { Button } from 'aelf-design';
 import IconFont from '@_components/IconFont';
 
 const randomId = () => `searchbox-${(0 | (Math.random() * 6.04e7)).toString(36)}`;
@@ -73,7 +73,7 @@ const Search = ({
       <Button
         className="search-button"
         type="primary"
-        icon={<IconFont className="w-4 h-4" type="search" />}
+        icon={<IconFont className="size-4" type="search" />}
         onClick={onSearchHandler}
       />
     );
@@ -111,7 +111,7 @@ const Search = ({
         )}
         {hasEnterButton && (
           <div className="search-input-enter" onClick={onSearchHandler}>
-            <IconFont className="w-3 h-3" type="Union" />
+            <IconFont className="size-3" type="Union" />
           </div>
         )}
       </div>

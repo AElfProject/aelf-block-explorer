@@ -20,7 +20,7 @@ export default function getColumns(): ColumnsType<HolderItem> {
       width: 40,
       dataIndex: 'rank',
       key: 'rank',
-      render: (text) => <span>{text}</span>
+      render: (text) => <span>{text}</span>,
     },
     {
       dataIndex: 'address',
@@ -51,14 +51,14 @@ export default function getColumns(): ColumnsType<HolderItem> {
       width: 40,
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (quantity) => <span>{quantity}</span>
+      render: (quantity) => <span>{quantity}</span>,
     },
     {
       title: <span>Percentage</span>,
       width: 40,
       dataIndex: 'percentage',
       key: 'percentage',
-      render: (percentage) => <span>{percentage}</span>
+      render: (percentage) => <span>{percentage}</span>,
     },
   ];
 }

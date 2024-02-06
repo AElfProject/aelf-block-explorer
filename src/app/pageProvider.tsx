@@ -8,7 +8,7 @@
 
 'use client';
 
-import { PREFIXCLS } from '@_lib/AntdThemeConfig';
+import { PREFIXCLS, THEME_CONFIG } from '@_lib/AntdThemeConfig';
 import store from '@_store';
 import microApp from '@micro-zoe/micro-app';
 import { AELFDProvider } from 'aelf-design';
@@ -17,7 +17,6 @@ import { ConfigProvider, Skeleton } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { ANTD_THEME_CONFIG } from './themTokenConfig';
 
 const MobileContext = createContext<any>({});
 
@@ -75,8 +74,8 @@ export default function RootProvider({ children, isMobileSSR }) {
   }, [pathname, router]);
 
   return (
-    <AELFDProvider prefixCls={PREFIXCLS}>
-      <ConfigProvider prefixCls={PREFIXCLS} theme={ANTD_THEME_CONFIG}>
+    <AELFDProvider prefixCls={PREFIXCLS} theme={THEME_CONFIG}>
+      <ConfigProvider prefixCls={PREFIXCLS} theme={THEME_CONFIG}>
         <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
           <ReduxProvider store={store}>{children}</ReduxProvider>
           {isGovernance && (
