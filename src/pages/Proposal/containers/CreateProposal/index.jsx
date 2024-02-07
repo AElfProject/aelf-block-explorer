@@ -83,7 +83,7 @@ const CreateProposal = () => {
   const [withoutApprovalProps, setWithoutApprovalProps] = useState({});
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
 
-  const { wallet: webLoginWallet, callContract } = useWebLogin();
+  const { wallet: webLoginWallet, callContract, version } = useWebLogin();
   const { did } = useComponentFlex();
 
   // open without approval modal
@@ -326,7 +326,10 @@ const CreateProposal = () => {
         let caHash = "";
         if (currentWallet.portkeyInfo || currentWallet.discoverInfo) {
           did.setConfig({
-            graphQLUrl: getConfig().portkey.graphQLUrl,
+            graphQLUrl:
+              version === "v1"
+                ? getConfig().portkey.graphQLUrl
+                : getConfig().portkeyV2.graphQLUrl,
           });
           const holderInfo = await did.didGraphQL.getHolderInfoByManager({
             caAddresses: [currentWallet.address],
