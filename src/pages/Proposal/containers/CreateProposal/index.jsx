@@ -16,7 +16,7 @@ import {
   uint8ToBase64,
 } from "@redux/common/utils";
 import debounce from "lodash.debounce";
-import { getConfig, useWebLogin, did } from "aelf-web-login";
+import { getConfig, useWebLogin, useComponentFlex } from "aelf-web-login";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
@@ -84,6 +84,7 @@ const CreateProposal = () => {
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
 
   const { wallet: webLoginWallet, callContract } = useWebLogin();
+  const { did } = useComponentFlex();
 
   // open without approval modal
   const onOpenWithoutApprovalModal = (params) => {
