@@ -1,0 +1,5 @@
+.token-detail {
+  .ep-table-header {
+    @apply px-4;
+  }
+}

@@ -8,15 +8,15 @@
 
 'use client';
 
-import { Provider as ReduxProvider } from 'react-redux';
-import store from '@_store';
-import { ConfigProvider, Skeleton } from 'antd';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import microApp from '@micro-zoe/micro-app';
-import { usePathname, useRouter } from 'next/navigation';
-import 'aelf-design/css';
-import { AELFDProvider } from 'aelf-design';
 import { PREFIXCLS, THEME_CONFIG } from '@_lib/AntdThemeConfig';
+import store from '@_store';
+import microApp from '@micro-zoe/micro-app';
+import { AELFDProvider } from 'aelf-design';
+import 'aelf-design/css';
+import { ConfigProvider, Skeleton } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
 
 const MobileContext = createContext<any>({});
 

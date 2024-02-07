@@ -1,17 +1,16 @@
-import React, { ReactNode } from 'react';
-import { SpinProps } from 'antd';
-import './index.css';
-import { SortOrder } from 'antd/es/table/interface';
-import CommonEmpty from './empty';
-import IconFont from '@_components/IconFont';
-import { Table, Pagination, ITableProps } from 'aelf-design';
 import EPSearch from '@_components/EPSearch';
-import clsx from 'clsx';
-import { ISearchProps } from 'aelf-design';
+import IconFont from '@_components/IconFont';
 import { isReactNode } from '@_utils/typeUtils';
+import { ISearchProps, ITableProps, Pagination, Table } from 'aelf-design';
+import { SpinProps } from 'antd';
+import { SortOrder } from 'antd/es/table/interface';
+import clsx from 'clsx';
+import { ReactNode } from 'react';
+import CommonEmpty from './empty';
+import './index.css';
 
 export interface ITableSearch extends ISearchProps {
-  value: string;
+  value?: string;
   onSearchChange: (value: string) => void;
 }
 
