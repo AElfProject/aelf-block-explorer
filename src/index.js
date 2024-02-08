@@ -60,28 +60,6 @@ if (module.hot) {
   module.hot.accept();
 }
 
-const continueDefaultBehaviour = () => {
-  const downloadUrl = "https://portkey.finance/";
-  const href = scheme.formatScheme({
-    action: "linkDapp",
-    domain: window.location.host,
-    custom: {
-      url: window.location.href,
-    },
-  });
-  window.location.href = href;
-  setTimeout(() => {
-    const hidden =
-      window.document.hidden ||
-      window.document.mozHidden ||
-      window.document.msHidden ||
-      window.document.webkitHidden;
-    if (typeof hidden !== "undefined" && hidden === true) {
-      return;
-    }
-    window.location.href = downloadUrl;
-  }, 2000);
-};
 const container = document.getElementById("app");
 const isMobile = isPhoneCheck();
 ReactDOM.render(
@@ -109,11 +87,6 @@ ReactDOM.render(
             autoLogoutOnChainMismatch: true,
             autoLogoutOnDisconnected: true,
             autoLogoutOnNetworkMismatch: true,
-            onClick: isMobile
-              ? () => {
-                  continueDefaultBehaviour();
-                }
-              : null,
           }}
         >
           <App />
