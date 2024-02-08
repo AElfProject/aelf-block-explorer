@@ -13,8 +13,6 @@ import Home from '../pageComponents/home/page';
 import { IOverviewSSR } from '../pageComponents/home/type';
 import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 
-const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
-const HOST = process.env.NEXT_PUBLIC_API_URL;
 const getConnectionBuilder = (url: string) => {
   const connect = new HubConnectionBuilder()
     .withUrl(url, {
@@ -38,26 +36,6 @@ const initOverview = async () => {
     accounts: 7,
     citizenWelfare: '8',
   };
-  //TODO
-  // const connect = getConnectionBuilder(`${HOST}/signalr-hubs/overview`);
-  // return new Promise((resolve, reject) => {
-  //   connect
-  //     ?.start()
-  //     .then(async () => {
-  //       await connect.invoke('RequestOverview', {
-  //         CHAIN_ID: CHAIN_ID,
-  //       });
-  //       connect.on('ReceiveOverview', ({ code, data }) => {
-  //         if (code === '20000') {
-  //           resolve(data);
-  //         }
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       reject(error);
-  //     });
-  // });
 };
 
 export default async function HomePage() {

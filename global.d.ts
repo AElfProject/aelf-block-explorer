@@ -17,3 +17,5 @@ type CollectionSymbol = {
 type ItemSymbol = {
   itemSymbol: string;
 };
+
+type Chain = 'AELF' | 'tDVV' | 'tDVW';

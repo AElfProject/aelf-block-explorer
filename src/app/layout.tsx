@@ -18,6 +18,7 @@ import { Suspense } from 'react';
 import { IExplorerItem, INetworkItem } from '@_types';
 import request from '@_api';
 import StyleRegistry from './StyleRegistry';
+import { fetchCMS } from '@_api/fetchCMS';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -34,14 +35,7 @@ async function fetchData() {
   // const res = await request.common.getPrice({ cache: 'no-store' } as Request);
   return res;
 }
-async function fetchExplorerList() {
-  const result = await request.cms.explorerList();
-  return result?.data;
-}
-async function fetchNetworkList() {
-  const result = await request.cms.networkList();
-  return result?.data;
-}
+
 async function fetchMenuList() {
   const result = await request.cms.menuList();
   return result?.data;
@@ -51,8 +45,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { price, previousPrice } = data;
   const headersList = headers();
   const isMobile = isMobileOnServer(headersList);
-  const explorerList: IExplorerItem[] = await fetchExplorerList();
-  const networkList: INetworkItem[] = await fetchNetworkList();
+  const { chainArr, currentChain, mainNetUrl, sideNetUrl } = await fetchCMS();
+
   const menuList = await fetchMenuList();
   return (
     <html lang="en">
@@ -62,12 +56,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <RootProvider isMobileSSR={isMobile}>
               <Suspense>
                 <Header
-                  priceSSR={price}
-                  previousPriceSSR={previousPrice}
-                  isMobileSSR={isMobile}
-                  explorerList={explorerList}
-                  networkList={networkList}
-                  menuList={menuList}
+                  chainArr={chainArr}
+                  currentChain={currentChain}
+                  mainNetUrl={mainNetUrl}
+                  sideNetUrl={sideNetUrl}
                 />
               </Suspense>
               <Suspense>

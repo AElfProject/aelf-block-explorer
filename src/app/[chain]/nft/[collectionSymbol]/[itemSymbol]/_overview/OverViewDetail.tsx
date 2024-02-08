@@ -2,7 +2,7 @@ import IconFont from '@_components/IconFont';
 import { Dropdown, Tooltip } from 'aelf-design';
 import Image from 'next/image';
 import { ItemSymbolDetailOverview } from '../type';
-import { IsMain } from '@_utils/isMainNet';
+import { isMainNet } from '@_utils/isMainNet';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -89,7 +89,7 @@ export default function OverViewDetail(props: OverViewDetailProps) {
         </div>
         <div className="nft-detail-item-right">{overview.quantity}</div>
       </li>
-      {IsMain && (
+      {isMainNet && (
         <li className="nft-detail-item">
           <div className="nft-detail-item-left">
             <IconFont type="question-circle" />
