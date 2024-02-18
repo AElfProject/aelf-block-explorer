@@ -24,6 +24,7 @@ module.exports = {
         },
         link: '#266CD3',
         D0: '#D0D0D0',
+        '00': '#000000',
         32: '#327DEC',
         F7: '#F7F8FA',
         'color-divider': '#E6E6E6',
@@ -54,6 +55,13 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
+      gridTemplateColumns: {
+        'item-lg': 'repeat(6, 208px)',
+        item: 'repeat(2, 154px)',
+      },
+      flex: {
+        '00auto': '0 0 auto',
       },
     },
   },

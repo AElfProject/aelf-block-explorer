@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { SpinProps } from 'antd';
 import './index.css';
 import { SortOrder } from 'antd/es/table/interface';
@@ -13,6 +13,8 @@ import { isReactNode } from '@_utils/typeUtils';
 export interface ITableSearch extends ISearchProps {
   value: string;
   onSearchChange: (value: string) => void;
+  onClear?: () => void;
+  onPressEnter?: (value: string) => void;
 }
 
 export interface IHeaderTitleProps {
@@ -24,7 +26,7 @@ export interface IHeaderTitleProps {
     desc: string | boolean;
   };
 }
-
+const MemoTable = React.memo(Table);
 export interface ICommonTableProps<T> extends ITableProps<T> {
   total: number;
   pageNum?: number;
@@ -79,7 +81,7 @@ function HeaderTitle(props: IHeaderTitleProps): ReactNode {
     );
   }
 }
-
+const scroll = { x: 'max-content' };
 export default function TableApp({
   loading = false,
   pageNum,
@@ -98,6 +100,12 @@ export default function TableApp({
   headerLeftNode,
   ...params
 }: ICommonTableProps<any>) {
+  const locale = useMemo(() => {
+    return {
+      emptyText: emptyStatus({ emptyType, emptyText }),
+    };
+  }, [emptyType, emptyText]);
+
   return (
     <div className="ep-table rounded-lg bg-white shadow-table">
       <div
@@ -116,9 +124,11 @@ export default function TableApp({
               {...topSearchProps}
               onPressEnter={({ currentTarget }) => {
                 topSearchProps?.onSearchChange(currentTarget.value);
+                topSearchProps?.onPressEnter?.(currentTarget.value);
               }}
               onClear={({ currentTarget }) => {
                 topSearchProps?.onSearchChange(currentTarget.value);
+                topSearchProps?.onClear?.();
               }}
             />
           ) : (
@@ -136,14 +146,7 @@ export default function TableApp({
           )}
         </div>
       </div>
-      <Table
-        loading={loading}
-        scroll={{ x: 'max-content' }}
-        locale={{
-          emptyText: emptyStatus({ emptyType, emptyText }),
-        }}
-        {...params}
-      />
+      <MemoTable loading={loading} scroll={scroll} locale={locale} {...params} />
       <div className="p-4">
         <Pagination
           current={pageNum}

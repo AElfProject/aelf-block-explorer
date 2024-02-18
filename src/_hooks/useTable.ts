@@ -27,6 +27,7 @@ interface TableDataProps<T, U> {
   SSRData: IFetchDataItems<T>;
   filterParams?: object;
   disposeData?: IDisposeData<T, U>;
+  defaultSearch?: string;
 }
 
 export default function useTableData<T, U>({
@@ -35,6 +36,7 @@ export default function useTableData<T, U>({
   SSRData,
   filterParams,
   disposeData,
+  defaultSearch,
 }: TableDataProps<T, U>) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(defaultPageSize);
@@ -60,7 +62,7 @@ export default function useTableData<T, U>({
     }
   };
 
-  const [searchText, setSearchText] = useState<string>('');
+  const [searchText, setSearchText] = useState<string>(defaultSearch ?? '');
   const mounted = useRef(false);
   useDebounce(
     () => {

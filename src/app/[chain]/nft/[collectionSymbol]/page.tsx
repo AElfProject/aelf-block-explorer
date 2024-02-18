@@ -1,15 +1,17 @@
-/*
- * @Author: aelf-lxy
- * @Date: 2023-07-31 16:19:21
- * @LastEditors: aelf-lxy
- * @LastEditTime: 2023-08-01 17:12:07
- * @Description: CollectionDetails
- */
-export default function CollectionDetails({ params }: { params: ChainId & CollectionSymbol }) {
-  console.log(params);
+import CollectionDetail from './_Detail/index';
+import { URL_QUERY_KEY } from './_Detail/type';
+
+export default function Collection({
+  params,
+  searchParams,
+}: {
+  params: ChainId & CollectionSymbol;
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const search = (searchParams[URL_QUERY_KEY] ?? '').toString();
   return (
     <div>
-      CollectionDetails, my chainId is {params.chain}, my collectionSymbol is {params.collectionSymbol}
+      <CollectionDetail params={params} search={search} />
     </div>
   );
 }
