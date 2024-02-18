@@ -27,7 +27,6 @@ import { isPhoneCheckWithWindow } from "../../utils/deviceCheck";
 const PAGE_SIZE = 25;
 const interval = 60 * 1000; // 1 minute
 const delay = 5 * 60 * 1000; // 5 minute
-const TokenIcon = require("../../assets/images/tokenLogo.png");
 
 let blockHeight = 0;
 

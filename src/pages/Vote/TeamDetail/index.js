@@ -406,7 +406,7 @@ class TeamDetail extends PureComponent {
     return (
       <section className={`${clsPrefix}`}>
         {topTeamInfo}
-        <StatisticalData data={staticsData} inline />
+        <StatisticalData data={staticsData} />
         <section className={`${clsPrefix}-intro card-container`}>
           <h5 className="card-header">
             <EditOutlined className="card-header-icon" />

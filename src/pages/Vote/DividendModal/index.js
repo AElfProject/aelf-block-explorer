@@ -23,10 +23,9 @@ const DividendModal = (props) => {
     handleClaimDividendClick,
     loading,
     claimLoading,
-    setClaimLoading,
+    claimDisabled,
   } = props;
   const tokenCounts = useMemo(() => getTokenCounts(dividends), [dividends]);
-  console.log(dividends.amounts, "dividends.amounts");
   return (
     <Modal
       className="dividend-modal"
@@ -68,12 +67,11 @@ const DividendModal = (props) => {
                 </div>
                 <div className="text-right">
                   <Button
-                    disabled={tokenCounts[index] === 0}
+                    disabled={tokenCounts[index] === 0 || claimDisabled}
                     type="primary"
-                    loading={claimLoading}
+                    loading={claimLoading[item.title]}
                     onClick={() => {
-                      setClaimLoading(true);
-                      handleClaimDividendClick(item.schemeId);
+                      handleClaimDividendClick(item);
                     }}
                   >
                     Claim Rewards
