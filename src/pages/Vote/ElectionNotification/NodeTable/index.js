@@ -424,7 +424,6 @@ class NodeTable extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   processNodesData(resArr) {
-    console.log(resArr, "resArr");
     const { producedBlocks } = this.state;
     let totalActiveVotesAmount = 0;
     const nodeInfos = resArr[0] || [];
