@@ -80,16 +80,39 @@
     "secure": false
   },
   {
+    "description": "portkeyV2 indexer",
+    "target": "https://dapp-aa-portkey.portkey.finance",
+    "context": ["/Portkey_V2_DID"],
+    "headers": {
+      "Host": "dapp-aa-portkey.portkey.finance"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
     "description": "portkey services",
     "target": "https://did-portkey-test.portkey.finance",
-    "context": ["/portkey"],
+    "context": ["/v1/api"],
     "headers": {
       "Host": "did-portkey-test.portkey.finance"
     },
     "changeOrigin": true,
     "secure": false,
     "pathRewrite": {
-      "^/portkey/api": "/api"
+      "^/v1/api": "/api"
+    }
+  },
+  {
+    "description": "portkeyV2 services",
+    "target": "https://aa-portkey-test.portkey.finance",
+    "context": ["/v2/api"],
+    "headers": {
+      "Host": "aa-portkey-test.portkey.finance"
+    },
+    "changeOrigin": true,
+    "secure": false,
+    "pathRewrite": {
+      "^/v2/api": "/api"
     }
   }
 ]
