@@ -31,6 +31,11 @@ export const validateVersion = (version): boolean => {
   return regex.test(version);
 };
 
+export const validateNumber = (value: any) => {
+  const num = Number(value);
+  return !Number.isNaN(num);
+};
+
 export const numberFormatter = (number: string, symbol = SYMBOL): string => {
   const num = Number(number);
   if (Number.isNaN(num)) {
@@ -43,4 +48,9 @@ export const thousandsNumber = (number: string | number): string => {
   const num = Number(number);
   if (number === '' || Number.isNaN(num)) return '-';
   return `${num.toLocaleString(undefined, { maximumFractionDigits: 8 })}`;
+};
+
+export const stringToDotString = (str?: string, maxLength?: number) => {
+  if (!str || !maxLength) return '';
+  return str.length > maxLength ? str.substring(0, maxLength) + '...' : str;
 };

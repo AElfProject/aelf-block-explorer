@@ -9,4 +9,9 @@ export const THEME_CONFIG: ThemeConfig = {
     colorBorder: '#D0D0D0',
     colorPrimaryBorder: '#D0D0D0',
   },
+  components: {
+    Descriptions: {
+      itemPaddingBottom: 0,
+    },
+  },
 };

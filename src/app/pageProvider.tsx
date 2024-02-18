@@ -8,15 +8,16 @@
 
 'use client';
 
-import { Provider as ReduxProvider } from 'react-redux';
-import store from '@_store';
-import { ConfigProvider, Skeleton } from 'antd';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import microApp from '@micro-zoe/micro-app';
-import { usePathname, useRouter } from 'next/navigation';
-import 'aelf-design/css';
-import { AELFDProvider } from 'aelf-design';
 import { PREFIXCLS, THEME_CONFIG } from '@_lib/AntdThemeConfig';
+import { makeStore, AppStore } from '@_store';
+// import { wrapper } from '@_store';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import microApp from '@micro-zoe/micro-app';
+import { AELFDProvider } from 'aelf-design';
+import 'aelf-design/css';
+import { ConfigProvider, Skeleton } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
+import { Provider as ReduxProvider } from 'react-redux';
 
 const MobileContext = createContext<any>({});
 
@@ -25,7 +26,12 @@ const useMobileContext = () => {
 };
 export { useMobileContext };
 
-export default function RootProvider({ children, isMobileSSR }) {
+function RootProvider({ children, isMobileSSR }) {
+  const storeRef = useRef<AppStore>();
+  if (!storeRef.current) {
+    storeRef.current = makeStore();
+  }
+
   const router = useRouter();
   const pathname = usePathname();
   const isGovernance = useMemo(() => {
@@ -77,7 +83,8 @@ export default function RootProvider({ children, isMobileSSR }) {
     <AELFDProvider prefixCls={PREFIXCLS} theme={THEME_CONFIG}>
       <ConfigProvider prefixCls={PREFIXCLS} theme={THEME_CONFIG}>
         <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
-          <ReduxProvider store={store}>{children}</ReduxProvider>
+          <ReduxProvider store={storeRef.current}>{children}</ReduxProvider>
+          {/* {children} */}
           {isGovernance && (
             <>
               <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
@@ -89,3 +96,5 @@ export default function RootProvider({ children, isMobileSSR }) {
     </AELFDProvider>
   );
 }
+
+export default RootProvider;
