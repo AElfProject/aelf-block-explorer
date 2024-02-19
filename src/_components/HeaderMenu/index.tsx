@@ -1,16 +1,22 @@
 import { Menu } from 'antd';
 import { MenuProps } from 'rc-menu';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import './index.css';
 import IconFont from '@_components/IconFont';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import ChainSelect from '@_components/ChainSelect';
+import { IMenuItem, INetworkItem } from '@_types';
+import { getPathnameFirstSlash } from '@_utils/urlUtils';
+interface IProps {
+  networkList: INetworkItem[];
+  menuList: IMenuItem[];
+}
 import { useMobileContext } from '@app/pageProvider';
 
 const clsPrefix = 'header-menu-container';
-export default function HeaderMenu() {
+export default function HeaderMenu({ networkList, menuList }: IProps) {
   const { isMobileSSR: isMobile } = useMobileContext();
   const router = useRouter();
   const jump = (url) => {
@@ -119,9 +125,8 @@ export default function HeaderMenu() {
     },
   ];
   const pathname = usePathname();
-  const [current, setCurrent] = useState(pathname);
+  const [current, setCurrent] = useState(pathname === '/' ? '/' : getPathnameFirstSlash(pathname));
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e.key);
     setCurrent(e.key);
   };
 

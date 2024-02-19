@@ -1,5 +1,4 @@
 micro-app[name='governance'] {
-  @apply mt-[-40px];
   .header-fixed-container,
   .header-blank,
   .footer {
@@ -14,11 +13,7 @@ micro-app[name='governance'] {
       @apply !flex !justify-center !items-center;
     }
   }
-}
-
-.governance-skeleton {
-  @apply h-[calc(100vh-474px)];
-  .explorer-skeleton-content {
-    @apply h-full;
+  .body-container {
+    top: 100px;
   }
 }
