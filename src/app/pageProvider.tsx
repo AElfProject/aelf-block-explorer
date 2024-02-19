@@ -56,15 +56,15 @@ export default function RootProvider({ children, isMobileSSR }) {
     // window.addEventListener('popstate', onPopstate);
     microApp.addDataListener('governance', ({ pathname: path }) => {
       // jump at remote app
-      setTimeout(
-        () =>
-          window.scroll({
-            top: 0,
-            left: 0,
-            behavior: 'smooth',
-          }),
-        0,
-      );
+      // setTimeout(
+      //   () =>
+      //     window.scroll({
+      //       top: 0,
+      //       left: 0,
+      //       behavior: 'smooth',
+      //     }),
+      //   0,
+      // );
       router.push(path);
     });
     return () => {
@@ -77,13 +77,15 @@ export default function RootProvider({ children, isMobileSSR }) {
     <AELFDProvider prefixCls={PREFIXCLS}>
       <ConfigProvider prefixCls={PREFIXCLS}>
         <MobileContext.Provider value={{ isMobileSSR: isMobileSSR }}>
-          <ReduxProvider store={store}>{children}</ReduxProvider>
-          {isGovernance && (
-            <>
-              <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
-              {!show && <Skeleton className="governance-skeleton" paragraph={{ rows: 4 }} />}
-            </>
-          )}
+          <ReduxProvider store={store}>
+            {isGovernance && (
+              <>
+                <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
+                {!show && <Skeleton className="relative top-[104px] h-[calc(100vh-514px)]" />}
+              </>
+            )}
+            {children}
+          </ReduxProvider>
         </MobileContext.Provider>
       </ConfigProvider>
     </AELFDProvider>

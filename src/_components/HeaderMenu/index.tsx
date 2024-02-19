@@ -1,6 +1,6 @@
 import { Menu } from 'antd';
 import { MenuProps } from 'rc-menu';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 const clsPrefix = 'header-menu-container';
 import './index.css';
@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import ChainSelect from '@_components/ChainSelect';
 import { IMenuItem, INetworkItem } from '@_types';
+import { getPathnameFirstSlash } from '@_utils/urlUtils';
 interface IProps {
   isMobile: boolean;
   networkList: INetworkItem[];
@@ -122,9 +123,8 @@ export default function HeaderMenu({ isMobile, networkList, menuList }: IProps) 
     },
   ];
   const pathname = usePathname();
-  const [current, setCurrent] = useState(pathname);
+  const [current, setCurrent] = useState(pathname === '/' ? '/' : getPathnameFirstSlash(pathname));
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e.key);
     setCurrent(e.key);
   };
 
