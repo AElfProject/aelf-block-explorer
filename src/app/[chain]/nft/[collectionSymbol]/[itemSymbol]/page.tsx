@@ -6,6 +6,7 @@
  * @Description: collection item
  */
 import { notFound } from 'next/navigation';
+import './index.css';
 // import request from '@_api';
 import NFTDetails from './NFTDetails';
 import { fetchActiveData, fetchHolderData, fetchOverviewData } from './mock';

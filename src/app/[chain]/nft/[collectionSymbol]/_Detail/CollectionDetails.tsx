@@ -10,7 +10,6 @@ import Inventory from './_inventory/Inventory';
 import ItemHoldersTable from './_holders/HoldersTable';
 import { CollectionDetailData, CollectionTransfersData, URL_QUERY_KEY } from './type';
 import { useEffect, useRef, useState } from 'react';
-import { SearchContext } from './context';
 
 export interface NFTDetailsProps {
   overview: CollectionDetailData;

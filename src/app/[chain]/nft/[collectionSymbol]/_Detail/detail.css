@@ -18,9 +18,12 @@
     .collection-overview-data-item {
       @apply font-[400] h-[40px];
       .title {
-        @apply text-[10px] text-base-200;
+        @apply text-[10px] text-base-200 flex items-center;
         .icon {
-          @apply mr-[4px];
+          @apply mr-[4px] w-[12px] h-[12px] inline-block;
+          .anticon, svg {
+            @apply w-full h-full;
+          }
         }
       }
       .desc {

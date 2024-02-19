@@ -8,6 +8,7 @@ import { Collapse, CollapseProps, TabsProps, Dropdown } from 'antd';
 import { CollectionDetailData } from '../type';
 
 import '../detail.css';
+import ContractToken from '@_components/ContractToken';
 
 export interface OverViewProps {
   overview: CollectionDetailData;
@@ -53,7 +54,9 @@ export default function OverView(props: OverViewProps) {
                 </span>
                 CONTRACT
               </div>
-              <div className="desc">{overview.contractAddress}</div>
+              <div className="desc">
+                <ContractToken address={overview.contractAddress} />
+              </div>
             </li>
             <li className="collection-overview-data-item">
               <div className="title">

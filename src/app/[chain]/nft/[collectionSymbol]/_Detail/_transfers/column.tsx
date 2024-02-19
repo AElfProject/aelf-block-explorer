@@ -55,7 +55,9 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       render: (text) => {
         return (
           <div className="flex items-center">
-            <Button className="method-button">{text}</Button>
+            <Button className="method-button">
+              <span className="truncate">{text}</span>
+            </Button>
           </div>
         );
       },
@@ -126,12 +128,12 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       key: 'item',
       render: (item: CollectionTransferItemProperty) => (
         <div className="collection-transfer-item">
-          <div className="mr-[4px]">
+          <div className="mr-[4px] w-[40px] h-[40px] rounded-lg">
             <img src={item.imageUrl} alt="" />
           </div>
           <div>
-            <div className="name">{item.name}</div>
-            <div className="symbol">{item.symbol}</div>
+            <div className="name w-[140px] truncate h-[20px] leading-[20px]">{item.name}</div>
+            <div className="symbol w-[124px] truncate h-[18px] leading-[20px]">{item.symbol}</div>
           </div>
         </div>
       ),

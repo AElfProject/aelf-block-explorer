@@ -25,7 +25,6 @@ export interface IHeaderTitleProps {
     desc: string | boolean;
   };
 }
-const MemoTable = React.memo(Table);
 export interface ICommonTableProps<T> extends ITableProps<T> {
   total: number;
   pageNum?: number;
@@ -62,7 +61,7 @@ function emptyStatus({ emptyType, emptyText }) {
   }
   return <CommonEmpty type={type} desc={emptyText} />;
 }
-
+const MemoTable = React.memo(Table);
 function HeaderTitle(props: IHeaderTitleProps): ReactNode {
   if (props.multi) {
     return (

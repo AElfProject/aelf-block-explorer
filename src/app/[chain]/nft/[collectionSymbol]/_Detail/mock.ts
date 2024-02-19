@@ -16,7 +16,7 @@ const transferList: CollectionTransfer[] = Array.from(new Array(100).keys()).map
   const mockCollectionTransfer: CollectionTransfer = {
     transactionHash: '0x1234567890abcdef' + i,
     status: 'success',
-    method: 'transfer',
+    method: 'transfertruncatetruncatetruncate',
     timestamp: '2022-01-01T00:00:00Z',
     from: {
       name: 'Alice',
@@ -34,19 +34,19 @@ const transferList: CollectionTransfer[] = Array.from(new Array(100).keys()).map
     },
     value: 100,
     item: {
-      symbol: 'NFT',
-      name: 'My NFT',
-      imageUrl: 'https://etherscan.io/token/images/boredapeyc_32.png',
+      symbol: 'Unisocks.Fi - Genesis Air Unisocks.Fi - Genesis Air Unisocks.Fi - Genesis Air Unisocks.Fi - Genesis Air',
+      name: 'Unisocks.Fi - Genesis Air Unisocks.Fi - Genesis Air Unisocks.Fi - Genesis Air Unisocks.Fi',
+      imageUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
     },
   };
   return mockCollectionTransfer;
 });
 export interface TransfersQueryParams {
-  chainId: string; // 主链/侧链
+  chainId: string;
   skipCount: number;
   maxResultCount: number;
   symbol: string;
-  search?: string; // 搜索 Address、Txn Hash、Symbol
+  search?: string;
 }
 // { page, pageSize }
 async function fetchTransferList(params: TransfersQueryParams): Promise<CollectionTransfersData> {
@@ -123,11 +123,11 @@ const inventoryItemList: InventoryItem[] = Array.from(new Array(100).keys()).map
 });
 
 interface InventoryListParams {
-  chainId: string; // 主链/侧链
+  chainId: string;
   skipCount: number;
   maxResultCount: number;
   collection: string;
-  search: string; // 搜索 Address、Symbol
+  search: string;
 }
 async function fetchInventoryList(p: InventoryListParams): Promise<CollectionInventoryData> {
   await new Promise((resolve) => setTimeout(resolve, 1000));
