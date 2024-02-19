@@ -16,7 +16,7 @@ export default async function NFTDetailsPage({ params }: { params: ChainId & Col
   const [activity, holder, overview] = await Promise.all([
     fetchActiveData({ page: 1, pageSize: 10 }),
     fetchHolderData({ page: 1, pageSize: 10 }),
-    fetchOverviewData()
+    fetchOverviewData(),
   ]);
 
   return <NFTDetails activity={activity} holder={holder} overview={overview} />;

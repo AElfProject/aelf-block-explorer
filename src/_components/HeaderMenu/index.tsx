@@ -2,7 +2,6 @@ import { Menu } from 'antd';
 import { MenuProps } from 'rc-menu';
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-const clsPrefix = 'header-menu-container';
 import './index.css';
 import IconFont from '@_components/IconFont';
 import Link from 'next/link';
@@ -11,11 +10,14 @@ import ChainSelect from '@_components/ChainSelect';
 import { IMenuItem, INetworkItem } from '@_types';
 import { getPathnameFirstSlash } from '@_utils/urlUtils';
 interface IProps {
-  isMobile: boolean;
   networkList: INetworkItem[];
   menuList: IMenuItem[];
 }
-export default function HeaderMenu({ isMobile, networkList, menuList }: IProps) {
+import { useMobileContext } from '@app/pageProvider';
+
+const clsPrefix = 'header-menu-container';
+export default function HeaderMenu({ networkList, menuList }: IProps) {
+  const { isMobileSSR: isMobile } = useMobileContext();
   const router = useRouter();
   const jump = (url) => {
     // microApp.setData('governance', { path: url });
@@ -128,11 +130,13 @@ export default function HeaderMenu({ isMobile, networkList, menuList }: IProps) 
     setCurrent(e.key);
   };
 
+  console.log('headermenu');
+
   return (
     <div className={clsx(`${clsPrefix}`)}>
       <div className={`${clsPrefix}-content`}>
         <Menu className="flex-1" onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items}></Menu>
-        {!isMobile && <ChainSelect networkList={networkList}></ChainSelect>}
+        {!isMobile && <ChainSelect />}
       </div>
     </div>
   );

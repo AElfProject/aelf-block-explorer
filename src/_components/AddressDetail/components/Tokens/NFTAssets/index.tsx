@@ -1,4 +1,3 @@
-import EPSearch from '@_components/EPSearch';
 import Table from '@_components/Table';
 import { useState } from 'react';
 import fetchData from './mock';
@@ -6,7 +5,6 @@ import getColumns from './columnConfig';
 import './index.css';
 import { NftsItemType } from '@_types/commonDetail';
 import { useDebounce, useEffectOnce } from 'react-use';
-import clsx from 'clsx';
 import { useMobileContext } from '@app/pageProvider';
 export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -63,7 +61,7 @@ export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
   const { isMobileSSR: isMobile } = useMobileContext();
   return (
     <div className="asset-list px-4">
-      <div
+      {/* <div
         className={clsx(
           'asset-header-container flex items-center justify-between py-4',
           isMobile && 'flex-col !items-start',
@@ -79,11 +77,27 @@ export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
             }}
           />
         </div>
-      </div>
-      <div className="table-container">
+      </div> */}
+      <div className="table-container p-4">
         <Table
-          titleType="multi"
           loading={loading}
+          showTopSearch
+          headerTitle={{
+            multi: {
+              title: 'NFT Assets',
+              desc: 'Total Value : $78,330.38',
+            },
+          }}
+          topSearchProps={{
+            value: searchText,
+            placeholder: 'Search Token Name  Token Symbol',
+            onChange: ({ currentTarget }) => {
+              setSearchText(currentTarget.value);
+            },
+            onSearchChange: () => {
+              searchChange();
+            },
+          }}
           options={[
             {
               label: 10,

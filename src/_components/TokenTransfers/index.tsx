@@ -47,7 +47,11 @@ export default function List({ SSRData }) {
   return (
     <div>
       <Table
-        titleType="single"
+        headerTitle={{
+          single: {
+            title: singleTitle,
+          },
+        }}
         loading={loading}
         dataSource={data}
         columns={columns}
@@ -57,8 +61,7 @@ export default function List({ SSRData }) {
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}
-        pageSizeChange={pageSizeChange}
-        singleTitle={singleTitle}></Table>
+        pageSizeChange={pageSizeChange}></Table>
     </div>
   );
 }

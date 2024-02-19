@@ -1,14 +1,5 @@
 import { isAElfAddress } from '@_utils/isAElfAddress';
 
-const SYMBOL = 'ELF';
-const CHAIN_ID = 'AELF';
-
-function addressFormat(address: string, prefix = null, chainId = null) {
-  if (!address) return '';
-  return `${prefix || SYMBOL}_${address}_${chainId || CHAIN_ID}`;
-}
-
-/* eslint-disable import/prefer-default-export */
 export function getHandleSearch(navigate, value) {
   const searchRules = {
     hash: async (val) => {
@@ -22,7 +13,7 @@ export function getHandleSearch(navigate, value) {
       // searchRules[isBlock ? 'block' : 'transaction'](val);
     },
     address: (val) => {
-      navigate(`/address/${addressFormat(val)}`);
+      navigate(`/address/${val}`);
     },
     transaction: async (val) => {
       navigate(`/tx/${val}`);

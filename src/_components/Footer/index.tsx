@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import { isMobileDevices } from '@_utils/isMobile';
 const FoorterBgTets = '/image/footer-bg.png';
 // const NetworkType = process.env.NEXT_PUBLIC_NETWORK_TYPE;
-const IsMain = !!(process.env.NEXT_PUBLIC_NETWORK_TYPE === 'MAIN');
+const isMainNet = !!(process.env.NEXT_PUBLIC_NETWORK_TYPE === 'MAIN');
 const clsPrefix = 'footer-container';
 interface IProps {
   isMobileSSR: boolean;
@@ -26,15 +26,15 @@ export default function Footer({ isMobileSSR }: IProps) {
     setIsMobile(isMobileDevices());
   }, []);
   return (
-    <div className={clsx(clsPrefix, IsMain && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
-      {!IsMain && (
+    <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
+      {!isMainNet && (
         <Image src={`${FoorterBgTets}`} alt={''} width="1400" height="330" className={`${clsPrefix}-bg`}></Image>
       )}
       <div className={clsx(`${clsPrefix}-wrapper`)}>
         <div className={`${clsPrefix}-content`}>
           <div className="left">
             <div className="title">
-              <IconFont type={IsMain ? 'aelf-header-top-change' : 'aelf-header-top-test-change'}></IconFont>
+              <IconFont type={isMainNet ? 'aelf-header-top-change' : 'aelf-header-top-test-change'}></IconFont>
               <span className="text">Powered by AELF</span>
             </div>
             <div className="description">
@@ -63,7 +63,7 @@ export default function Footer({ isMobileSSR }: IProps) {
             </div>
           </div>
         </div>
-        <BackToTopButton isDark={IsMain}></BackToTopButton>
+        <BackToTopButton isDark={isMainNet}></BackToTopButton>
         <div className={`${clsPrefix}-link`}>
           <IconFont type="telegram" onClick={() => (window.location.href = 'https://t.me/aelfblockchain')}></IconFont>
           <IconFont

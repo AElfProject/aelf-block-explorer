@@ -10,3 +10,11 @@ export const isAElfAddress = (address: string) => {
     return false;
   }
 };
+
+export const isTxHash = (id: string) => {
+  if (!id) return false;
+
+  const isTxId = [64];
+  const { length } = id;
+  return isTxId.includes(length);
+};

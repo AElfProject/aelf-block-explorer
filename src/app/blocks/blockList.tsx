@@ -68,7 +68,12 @@ export default function BlockList({ SSRData }) {
     <div>
       <HeadTitle content="Blocks"></HeadTitle>
       <Table
-        titleType="multi"
+        headerTitle={{
+          multi: {
+            title: multiTitle,
+            desc: '(Showing blocks between #17785761 to #17785785)',
+          },
+        }}
         loading={loading}
         dataSource={data}
         columns={columns}
@@ -78,9 +83,7 @@ export default function BlockList({ SSRData }) {
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}
-        pageSizeChange={pageSizeChange}
-        multiTitle={multiTitle}
-        multiTitleDesc="(Showing blocks between #17785761 to #17785785)"></Table>
+        pageSizeChange={pageSizeChange}></Table>
     </div>
   );
 }

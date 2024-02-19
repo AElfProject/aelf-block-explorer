@@ -60,7 +60,12 @@ export default function List({ SSRData }) {
     <div>
       <HeadTitle content="Contracts"></HeadTitle>
       <Table
-        titleType="multi"
+        headerTitle={{
+          multi: {
+            title: multiTitle,
+            desc: '(Showing the last 1,000 contracts only)',
+          },
+        }}
         loading={loading}
         dataSource={data}
         columns={columns}
@@ -70,9 +75,7 @@ export default function List({ SSRData }) {
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}
-        pageSizeChange={pageSizeChange}
-        multiTitle={multiTitle}
-        multiTitleDesc="(Showing the last 1,000 contracts only)"></Table>
+        pageSizeChange={pageSizeChange}></Table>
     </div>
   );
 }
