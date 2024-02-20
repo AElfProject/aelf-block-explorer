@@ -624,6 +624,47 @@ button {
   }
 }
 
+.claim-dividend-modal {
+  .ant-modal-content {
+    border-radius: 8px;
+    .ant-modal-body {
+      padding: 0;
+      .ant-modal-confirm-title {
+        display: flex;
+        padding: 17px 16px;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 22px;
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .ant-modal-confirm-content {
+        margin-top: 0;
+        padding: 24px 16px 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .ant-modal-confirm-btns {
+        margin-top: 8px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .ant-btn-default {
+          display: none;
+        }
+        .ant-btn-primary {
+          margin-left: 0;
+          width: 214px;
+          height: 40px;
+        }
+      }
+    }
+  }
+}
+
 // todo: Centralized manage the page body's margins
 @media (max-width: @smallScreenWidth) {
   .card-container {

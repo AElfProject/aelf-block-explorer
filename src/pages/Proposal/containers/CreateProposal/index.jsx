@@ -16,7 +16,7 @@ import {
   uint8ToBase64,
 } from "@redux/common/utils";
 import debounce from "lodash.debounce";
-import { getConfig, useWebLogin, did } from "aelf-web-login";
+import { getConfig, useWebLogin, useComponentFlex } from "aelf-web-login";
 import NormalProposal from "./NormalProposal";
 import ContractProposal, { contractMethodType } from "./ContractProposal";
 import {
@@ -83,7 +83,8 @@ const CreateProposal = () => {
   const [withoutApprovalProps, setWithoutApprovalProps] = useState({});
   const [withoutApprovalOpen, setWithoutApprovalOpen] = useState(false);
 
-  const { wallet: webLoginWallet, callContract } = useWebLogin();
+  const { wallet: webLoginWallet, callContract, version } = useWebLogin();
+  const { did } = useComponentFlex();
 
   // open without approval modal
   const onOpenWithoutApprovalModal = (params) => {
@@ -325,7 +326,10 @@ const CreateProposal = () => {
         let caHash = "";
         if (currentWallet.portkeyInfo || currentWallet.discoverInfo) {
           did.setConfig({
-            graphQLUrl: getConfig().portkey.graphQLUrl,
+            graphQLUrl:
+              version === "v1"
+                ? getConfig().portkey.graphQLUrl
+                : getConfig().portkeyV2.graphQLUrl,
           });
           const holderInfo = await did.didGraphQL.getHolderInfoByManager({
             caAddresses: [currentWallet.address],

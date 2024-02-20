@@ -9,18 +9,27 @@ import {
 } from "@config/config";
 import isWebview from "../utils/isWebView";
 
-const graphQLServer =
-  NETWORK_TYPE === "TESTNET"
-    ? "https://dapp-portkey-test.portkey.finance/Portkey_DID"
-    : "https://dapp-portkey.portkey.finance/Portkey_DID";
-const portkeyApiServer =
-  NETWORK_TYPE === "TESTNET"
-    ? "https://did-portkey-test.portkey.finance"
-    : "https://did-portkey.portkey.finance";
-export const connectUrl =
-  NETWORK_TYPE === "TESTNET"
-    ? "https://auth-portkey-test.portkey.finance"
-    : "https://auth-portkey.portkey.finance";
+const graphQLUrl = {
+  v1:
+    NETWORK_TYPE === "TESTNET"
+      ? "https://dapp-portkey-test.portkey.finance/Portkey_DID/PortKeyIndexerCASchema/graphql"
+      : "https://dapp-portkey.portkey.finance/Portkey_DID/PortKeyIndexerCASchema/graphql",
+  v2:
+    NETWORK_TYPE === "TESTNET"
+      ? "https://dapp-aa-portkey-test.portkey.finance/Portkey_V2_DID/PortKeyIndexerCASchema/graphql"
+      : "https://dapp-aa-portkey.portkey.finance/Portkey_V2_DID/PortKeyIndexerCASchema/graphql",
+};
+
+const connectUrl = {
+  v1:
+    NETWORK_TYPE === "TESTNET"
+      ? "https://auth-portkey-test.portkey.finance"
+      : "https://auth-portkey.portkey.finance",
+  v2:
+    NETWORK_TYPE === "TESTNET"
+      ? "https://auth-aa-portkey-test.portkey.finance"
+      : "https://auth-aa-portkey.portkey.finance",
+};
 
 setGlobalConfig({
   appName: APPNAME,
@@ -28,8 +37,19 @@ setGlobalConfig({
   networkType: NETWORK_TYPE === "TESTNET" ? "TESTNET" : "MAIN",
   portkey: {
     useLocalStorage: true,
-    graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
-    connectUrl,
+    graphQLUrl: graphQLUrl.v1,
+    connectUrl: connectUrl.v1,
+    loginConfig: {
+      loginMethodsOrder: [
+        "Email",
+        "Telegram",
+        "Google",
+        "Phone",
+        "Apple",
+        "Scan",
+      ],
+      recommendIndexes: [0, 1],
+    },
     socialLogin: {
       Portkey: isWebview()
         ? undefined
@@ -40,21 +60,16 @@ setGlobalConfig({
     },
     requestDefaults: {
       timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
-      baseURL: `${portkeyApiServer}`,
+      baseURL: "/v1",
     },
-    network: {
-      defaultNetwork: NETWORK_TYPE,
-      networkList: [
-        {
-          name: CHAINS_LINK_NAMES[CHAIN_ID],
-          walletType: "aelf",
-          networkType: NETWORK_TYPE,
-          isActive: true,
-          apiUrl: portkeyApiServer,
-          graphQLUrl: `${graphQLServer}/PortKeyIndexerCASchema/graphql`,
-          connectUrl,
-        },
-      ],
+  },
+  portkeyV2: {
+    networkType: NETWORK_TYPE === "TESTNET" ? "TESTNET" : "MAINNET",
+    graphQLUrl: graphQLUrl.v2,
+    connectUrl: connectUrl.v2,
+    requestDefaults: {
+      baseURL: "/v2",
+      timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
     },
   },
   aelfReact: {
