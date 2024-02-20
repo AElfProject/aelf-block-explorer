@@ -17,3 +17,6 @@ type CollectionSymbol = {
 type ItemSymbol = {
   itemSymbol: string;
 };
+
+type NftCollectionPageParams = ChainId & CollectionSymbol;
+type Chain = 'AELF' | 'tDVV' | 'tDVW';

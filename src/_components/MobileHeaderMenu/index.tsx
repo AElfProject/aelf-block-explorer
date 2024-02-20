@@ -6,18 +6,18 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
+import { useAppSelector } from '@_store';
 interface IProps {
-  explorerList: IExplorerItem[];
-  networkList: INetworkItem[];
   menuList: IMenuItem[];
 }
 const NETWORK_TYPE = process.env.NEXT_PUBLIC_NETWORK_TYPE;
-const IsMain = !!(NETWORK_TYPE === 'MAIN');
-const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
+const isMainNet = !!(NETWORK_TYPE === 'MAIN');
 type MenuItem = Required<MenuProps>['items'][number];
 
-export default function MobileHeaderMenu({ explorerList, networkList, menuList }: IProps) {
+export default function MobileHeaderMenu() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  const { chainArr } = useAppSelector((state) => state.getChainId);
   const toggleMenu = () => {
     setShowMobileMenu(!showMobileMenu);
   };
@@ -65,27 +65,27 @@ export default function MobileHeaderMenu({ explorerList, networkList, menuList }
     });
   };
   const items: MenuProps['items'] = [
-    ...convertMenuItems(menuList),
+    // ...convertMenuItems(menuList),
     { type: 'divider' },
-    getItem(
-      'Explorers',
-      'explorers',
-      explorerList.map((ele) => {
-        return getItem(<Link href={ele.url}>{ele.title}</Link>, ele.netWorkType);
-      }),
-    ),
+    // getItem(
+    //   'Explorers',
+    //   'explorers',
+    //   explorerList.map((ele) => {
+    //     return getItem(<Link href={ele.url}>{ele.title}</Link>, ele.netWorkType);
+    //   }),
+    // ),
     getItem(
       'Networks',
       'networks',
-      networkList?.map((ele) => {
-        return getItem(<Link href={ele.chainsLink}>{ele.chainsLinkName}</Link>, ele.chainId);
+      chainArr?.map((ele) => {
+        return getItem(<Link href="#">{ele}</Link>, ele);
       }),
     ),
   ];
 
   return (
-    <div className={`header-navbar-mobile-more ${IsMain ? 'header-navbar-main-mobile-more' : ''}`}>
-      <IconFont type={IsMain ? 'moremainnet' : 'moretestnet'} onClick={() => toggleMenu()} />
+    <div className={`header-navbar-mobile-more ${isMainNet ? 'header-navbar-main-mobile-more' : ''}`}>
+      <IconFont type={isMainNet ? 'moremainnet' : 'moretestnet'} onClick={() => toggleMenu()} />
       {showMobileMenu && (
         <Drawer
           visible={showMobileMenu}
@@ -93,7 +93,7 @@ export default function MobileHeaderMenu({ explorerList, networkList, menuList }
           closable={false}
           zIndex={40}
           maskStyle={{ background: 'transparent' }}
-          className={`header-drawer-menu-wrapper ${IsMain ? 'header-main-drawer-menu-wrapper' : ''} ${
+          className={`header-drawer-menu-wrapper ${isMainNet ? 'header-main-drawer-menu-wrapper' : ''} ${
             pathname === '/' && 'home-header-drawer-menu-wrapper'
           }`}
           rootClassName={`header-drawer-menu-root-wrapper`}

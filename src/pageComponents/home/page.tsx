@@ -21,7 +21,6 @@ import tpsData from './mock';
 const BannerPc = '/image/banner_pc.png';
 const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
-// const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
 const HOST = process.env.NEXT_PUBLIC_API_URL;
 
 interface IProps {
@@ -225,6 +224,7 @@ export default function Home({ isMobile, overviewSSR }: IProps) {
     const data = tpsData;
     return <TPSChart isMobile={isMobile} data={data}></TPSChart>;
   };
+
   return (
     <main className={clsx(`${clsPrefix}`, isMobile && `${clsPrefix}-mobile`)}>
       <div className="banner-section">
