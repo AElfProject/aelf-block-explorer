@@ -1,17 +1,14 @@
 'use client';
-import AddressWithCopy from '@_components/AddressWithCopy';
 import Table from '@_components/Table';
 import useTableData from '@_hooks/useTable';
-import { thousandsNumber } from '@_utils/formatter';
 import { useMobileContext } from '@app/pageProvider';
 import { Descriptions, DescriptionsProps } from 'antd';
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import { fetchTransfersData } from '../../mock';
-import { ITokenSearchProps, ITransferItem, ITransferTableData, SearchType } from '../../type';
+import { ITokenSearchProps, ITransferItem, ITransferTableData, SearchType, TTransferSearchData } from '../../type';
 import getColumns from './columns';
-
-interface TransfersProps extends ITokenSearchProps {
+import { getSearchByHashItems, getSearchByHolderItems } from './utils';
+interface ITransfersProps extends ITokenSearchProps {
   SSRData: ITransferTableData;
 }
 
@@ -27,24 +24,40 @@ const contentStyle: React.CSSProperties = {
   lineHeight: '22px',
 };
 
-export default function Transfers({
-  SSRData,
-  search,
-  searchType,
-  onSearchChange,
-  onSearchInputChange,
-}: TransfersProps) {
+export interface ITransfersRef {
+  setSearchStr: (val: string) => void;
+}
+
+const Transfers = ({ SSRData, search, searchType, onSearchChange, onSearchInputChange }: ITransfersProps, ref) => {
   const { isMobileSSR: isMobile } = useMobileContext();
   const [timeFormat, setTimeFormat] = useState<string>('Date Time (UTC)');
+  const [address, setAddress] = useState<string>('');
+  const [searchData, setSearchData] = useState<TTransferSearchData>();
 
-  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
+  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange, setSearchText } = useTableData<
     ITransferItem,
     ITransferTableData
   >({
     SSRData,
+    defaultPageSize: 50,
     fetchData: fetchTransfersData,
-    // disposeData,
+    disposeData: (res: ITransferTableData) => {
+      const { balance, value, list, total } = res;
+      setSearchData({ balance, value });
+      return { list, total };
+    },
   });
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      setSearchStr(val: string) {
+        setAddress(val);
+        setSearchText(val);
+      },
+    }),
+    [setSearchText],
+  );
 
   const columns = useMemo(
     () =>
@@ -54,52 +67,17 @@ export default function Transfers({
       }),
     [timeFormat],
   );
-  const title = useMemo(() => `A total of ${total} tokens found`, [total]);
+  const title = useMemo(() => `A total of ${total} ${total <= 1 ? 'token' : 'tokens'} found`, [total]);
 
   const searchByHolder: DescriptionsProps['items'] = useMemo(
-    () => [
-      {
-        key: 'desc',
-        label: 'Filtered By Token Txn Hash',
-        children: <AddressWithCopy address={search || ''} />,
-        labelStyle: {
-          color: '#252525',
-          fontWeight: 500,
-        },
-        span: 2,
-      },
-      {
-        key: 'balance',
-        label: 'BALANCE',
-        children: thousandsNumber(SSRData.balance),
-      },
-      {
-        key: 'value',
-        label: 'VALUE',
-        children: thousandsNumber(SSRData.value),
-      },
-    ],
-    [SSRData.balance, SSRData.value, search],
+    () => getSearchByHolderItems(address, isMobile, searchData),
+    [address, isMobile, searchData],
   );
   const searchByHash: DescriptionsProps['items'] = useMemo(
-    () => [
-      {
-        key: 'desc',
-        label: 'Filtered By Token Holder',
-        labelStyle: {
-          color: '#252525',
-          fontWeight: 500,
-        },
-        children: (
-          <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${search}`}>
-            {search}
-          </Link>
-        ),
-        span: 2,
-      },
-    ],
-    [search],
+    () => getSearchByHashItems(address, isMobile),
+    [address, isMobile],
   );
+
   return (
     <div>
       {searchType !== SearchType.other && (
@@ -144,7 +122,7 @@ export default function Transfers({
         dataSource={data}
         columns={columns}
         isMobile={isMobile}
-        rowKey="rank"
+        rowKey="transactionHash"
         total={total}
         pageSize={pageSize}
         pageNum={currentPage}
@@ -153,4 +131,6 @@ export default function Transfers({
       />
     </div>
   );
-}
+};
+
+export default forwardRef<ITransfersRef, ITransfersProps>(Transfers);

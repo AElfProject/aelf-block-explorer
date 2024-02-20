@@ -1,5 +1,6 @@
 import EPTooltip from '@_components/EPToolTip';
 import IconFont from '@_components/IconFont';
+import { useMobileContext } from '@app/pageProvider';
 import { FontWeightEnum, Typography } from 'aelf-design';
 import { Divider, Flex } from 'antd';
 import { useCallback, useMemo } from 'react';
@@ -15,6 +16,8 @@ export default function OverviewCard({ items, dataSource, breakIndex }: IOvervie
     const col2Items = items.slice(col2StartIndex);
     return [col1Items, col2Items];
   }, [breakIndex, items]);
+
+  const { isMobileSSR: isMobile } = useMobileContext();
 
   const renderItem = useCallback(
     (item: IOverviewItem, index: number) => {
@@ -45,7 +48,6 @@ export default function OverviewCard({ items, dataSource, breakIndex }: IOvervie
     },
     [dataSource],
   );
-
   return (
     <Flex className="overview-card" vertical>
       <Flex className="mb-5">
@@ -53,7 +55,7 @@ export default function OverviewCard({ items, dataSource, breakIndex }: IOvervie
           Overview
         </Text>
       </Flex>
-      <Flex>
+      <Flex vertical={isMobile} gap={isMobile ? 8 : 0}>
         <Flex vertical gap={16} flex={1}>
           {col1Items?.map((item, index) => renderItem(item, index))}
         </Flex>

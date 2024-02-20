@@ -97,6 +97,7 @@ export default function TableApp({
   headerLeftNode,
   ...params
 }: ICommonTableProps<any>) {
+  const { onSearchChange, ...searchProps } = topSearchProps || {};
   return (
     <div className="ep-table rounded-lg bg-white shadow-table">
       <div
@@ -112,12 +113,12 @@ export default function TableApp({
         <div className="header-pagination">
           {showTopSearch ? (
             <EPSearch
-              {...topSearchProps}
+              {...searchProps}
               onPressEnter={({ currentTarget }) => {
-                topSearchProps?.onSearchChange(currentTarget.value);
+                onSearchChange?.(currentTarget.value);
               }}
               onClear={({ currentTarget }) => {
-                topSearchProps?.onSearchChange(currentTarget.value);
+                onSearchChange?.(currentTarget.value);
               }}
             />
           ) : (

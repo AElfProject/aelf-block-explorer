@@ -1,9 +1,20 @@
-import { ColumnsType } from 'antd/es/table';
-import { ITokensTableItem } from './type';
-import TokenCell from './_components/TokenCell';
-import { thousandsNumber } from '@_utils/formatter';
+import EPTooltip from '@_components/EPToolTip';
 import IconFont from '@_components/IconFont';
+import TokenTableCell from '@_components/TokenTableCell';
+import { thousandsNumber } from '@_utils/formatter';
+import { ColumnsType } from 'antd/es/table';
 import clsx from 'clsx';
+import TokenImage from './_components/TokenImage';
+import { ITokensTableItem } from './type';
+
+const getHolderPercentChange24h = (record: ITokensTableItem) => {
+  const { holderPercentChange24h, holders } = record;
+  const num = Number(holderPercentChange24h);
+  if (Number.isNaN(num)) return '';
+  if (num > 0) return `A ${num}% increase in token holders from the previous day count of ${thousandsNumber(holders)}`;
+  if (num < 0) return `A ${num}% decrease in token holders from the previous day count of ${thousandsNumber(holders)}`;
+  return 'No change in token holders from the previous day count';
+};
 
 export default function getColumns({ currentPage, pageSize, ChangeOrder }): ColumnsType<ITokensTableItem> {
   return [
@@ -19,10 +30,14 @@ export default function getColumns({ currentPage, pageSize, ChangeOrder }): Colu
       width: '432px',
       dataIndex: 'token',
       key: 'token',
-      render: (text) => <TokenCell token={text} />,
+      render: (text) => (
+        <TokenTableCell token={text}>
+          <TokenImage token={text} />
+        </TokenTableCell>
+      ),
     },
     {
-      title: 'Total Supply',
+      title: 'Maximum Supply',
       width: '320px',
       dataIndex: 'totalSupply',
       key: 'totalSupply',
@@ -39,21 +54,23 @@ export default function getColumns({ currentPage, pageSize, ChangeOrder }): Colu
       title: (
         <div className="flex cursor-pointer" onClick={ChangeOrder}>
           <IconFont className="mr-1 text-xs" type="Rank" />
-          <div className="text-link">Holders</div>
+          <EPTooltip mode="dark" title="Sorted in descending order Click for ascending order">
+            <div className="text-link">Holder</div>
+          </EPTooltip>
         </div>
       ),
       width: '208px',
       dataIndex: 'holders',
       key: 'holders',
-      // sorter: (a, b) => a.holders - b.holders,
-      // sortOrder: sortedInfo.columnKey === 'holders' ? sortedInfo.order : null,
       render: (text, record) => {
         const { holderPercentChange24h } = record;
         return (
           <div className="text-xs leading-5">
             <div>{text}</div>
             <div className={clsx(holderPercentChange24h >= 0 ? 'text-[#00A186]' : 'text-[#FF4D4F]')}>
-              {holderPercentChange24h}
+              <EPTooltip title={getHolderPercentChange24h(record)} mode="dark">
+                {holderPercentChange24h}
+              </EPTooltip>
             </div>
           </div>
         );

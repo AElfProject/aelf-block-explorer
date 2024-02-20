@@ -8,7 +8,7 @@ import NumberPercentGroup from '../NumberPercentGroup';
 const TokenDetailItems: IOverviewItem[] = [
   {
     key: 'totalSupply',
-    label: 'TOTAL SUPPLY',
+    label: 'MAXIMUM SUPPLY',
     format: thousandsNumber,
     tooltip: 'The maximum number of tokens that will ever exist in the lifetime of the cryptocurrency.',
   },

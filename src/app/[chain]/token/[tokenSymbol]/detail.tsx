@@ -3,12 +3,12 @@ import EPTabs from '@_components/EPTabs';
 import HeadTitle from '@_components/HeaderTitle';
 import { FontWeightEnum, Typography } from 'aelf-design';
 import { TabsProps } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import Holders from './_components/Holders';
 import OverView from './_components/Overview';
-import Transfers from './_components/Transfers';
+import Transfers, { ITransfersRef } from './_components/Transfers';
 import './index.css';
-import { fetchTransfersData } from './mock';
 import { IHolderTableData, ITokenDetail, ITransferTableData, SearchType } from './type';
 import { formatSearchValue, getSearchType } from './utils';
 
@@ -23,24 +23,27 @@ interface IDetailProps {
 export default function Detail({ tokenDetail, transfersList, holdersList }: IDetailProps) {
   const [search, setSearch] = useState<string>('2K6gPkMBMfxatiZLYkUDPmp429BbKZCUCSpuysj4PCeiHo3V7v');
   const [searchType, setSearchType] = useState<SearchType>(SearchType.other);
+  const router = useRouter();
+  const transfersRef = useRef<ITransfersRef>(null);
 
   const onSearchInputChange = useCallback((value) => {
     setSearch(value);
   }, []);
 
-  const onSearchChange = useCallback(
-    (val) => {
-      console.log('search value', val);
-      setSearch(val);
-      const value = formatSearchValue(val);
-      if (!value) {
-        //Todo: refresh
-      }
-      setSearchType(getSearchType(value));
-      fetchTransfersData({ page: 1, pageSize: 50, search });
-    },
-    [search],
-  );
+  const onSearchChange = useCallback((val) => {
+    console.log('search value', val);
+    const value = formatSearchValue(val);
+    const searchType = getSearchType(value);
+    if (searchType === SearchType.other) {
+      console.log('refresh');
+      // router.refresh();
+      window.location.reload();
+      return;
+    }
+    transfersRef?.current?.setSearchStr(val);
+    setSearchType(searchType);
+    // fetchTransfersData({ page: 1, pageSize: 50, searchText: val });
+  }, []);
 
   const items: TabsProps['items'] = useMemo(() => {
     const transfersItem = {
@@ -48,6 +51,7 @@ export default function Detail({ tokenDetail, transfersList, holdersList }: IDet
       label: 'Transfers',
       children: (
         <Transfers
+          ref={transfersRef}
           search={search}
           searchType={searchType}
           SSRData={transfersList}
@@ -77,11 +81,6 @@ export default function Detail({ tokenDetail, transfersList, holdersList }: IDet
 
     return [transfersItem, holdersItem];
   }, [holdersList, onSearchChange, onSearchInputChange, search, searchType, transfersList]);
-
-  useEffect(() => {
-    const val = formatSearchValue(search);
-    setSearchType(getSearchType(val));
-  }, [search]);
 
   return (
     <div className="token-detail">

@@ -37,7 +37,7 @@ export interface ITokenSearchProps {
   onSearchChange: (value: string) => void;
   search?: string;
 }
-
+export type TTransferSearchData = Pick<ITransferTableData, 'balance' | 'value'>;
 export interface ITokenDetail {
   token: IToken;
   totalSupply: string;

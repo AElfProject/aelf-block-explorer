@@ -11,7 +11,7 @@ interface HoldersProps extends ITokenSearchProps {
   SSRData: IHolderTableData;
 }
 
-export default function Holders({ SSRData, searchType, search, onSearchChange, onSearchInputChange }: HoldersProps) {
+export default function Holders({ SSRData, search, onSearchChange, onSearchInputChange }: HoldersProps) {
   const { isMobileSSR: isMobile } = useMobileContext();
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
@@ -19,12 +19,12 @@ export default function Holders({ SSRData, searchType, search, onSearchChange, o
     IHolderTableData
   >({
     SSRData,
+    defaultPageSize: 50,
     fetchData: fetchHoldersData,
-    // disposeData,
   });
 
   const columns = useMemo(() => getColumns({ currentPage, pageSize }), [currentPage, pageSize]);
-  const title = useMemo(() => `A total of ${total} tokens found`, [total]);
+  const title = useMemo(() => `A total of ${total} ${total <= 1 ? 'token' : 'tokens'} found`, [total]);
 
   return (
     <div>
@@ -46,7 +46,7 @@ export default function Holders({ SSRData, searchType, search, onSearchChange, o
         dataSource={data}
         columns={columns}
         isMobile={isMobile}
-        rowKey="rank"
+        rowKey="index"
         total={total}
         pageSize={pageSize}
         pageNum={currentPage}
