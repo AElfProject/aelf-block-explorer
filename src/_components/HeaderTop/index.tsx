@@ -23,7 +23,7 @@ interface IProps {
 }
 export default function HeaderTop({ price, range, mainNetUrl, sideNetUrl }: IProps) {
   const { isMobile } = useResponsive();
-  console.log('isMobile', isMobile);
+  console.log(isMobile, 'isMobile');
   const { currentChain } = useAppSelector((state) => state.getChainId);
   const isShowPrice = currentChain === 'AELF' && isMainNet;
 
