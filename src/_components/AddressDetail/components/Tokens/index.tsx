@@ -23,7 +23,9 @@ export default function Tokens() {
         </div>
       </div>
       <TokensList SSRData={{ total: 0, list: [] }} />
-      <Divider className="!m-0" />
+      <div className="px-4">
+        <Divider className="!m-0" />
+      </div>
       <NFTAssets SSRData={{ total: 0, list: [] }} />
     </div>
   );
