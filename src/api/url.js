@@ -1,7 +1,6 @@
 export const VIEWER_ACCOUNT_LIST = "/viewer/accountList";
 export const VIEWER_CONTRACTS_LIST = "/viewer/list";
 export const VIEWER_BALANCES = "/viewer/balances";
-export const VIEWER_BALANCES_V2 = "/viewer/balances/v2";
 export const VIEWER_TRANSFER_LIST = "/viewer/transferList";
 export const VIEWER_HISTORY = "/viewer/history";
 export const VIEWER_GET_FILE = "/viewer/getFile";

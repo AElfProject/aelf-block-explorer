@@ -43,7 +43,7 @@ export default function Tokens({ balances, prices, dataLoading, pagination }) {
           current={pageNum}
           pageSize={pageSize}
           total={total}
-          pageSizeOptions={["2", "25", "50", "100"]}
+          pageSizeOptions={["10", "25", "50", "100"]}
           onChange={handlePageChange}
           onShowSizeChange={(current, size) => handlePageChange(1, size)}
         />

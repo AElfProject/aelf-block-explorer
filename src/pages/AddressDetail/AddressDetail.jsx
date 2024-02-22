@@ -9,7 +9,7 @@ import QrCode from "./components/QrCode/QrCode";
 import { get, getContractNames } from "../../utils";
 import {
   TOKEN_PRICE,
-  VIEWER_BALANCES_V2,
+  VIEWER_BALANCES,
   VIEWER_GET_FILE,
   VIEWER_HISTORY,
 } from "../../api/url";
@@ -67,38 +67,43 @@ export default function AddressDetail() {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      setTokensLoading(true);
       setPageNum(size === pageSize ? page : 1);
       setPageSize(size);
-      setTotal(0);
     },
     [pageSize]
   );
 
   const fetchBalances = useCallback(async () => {
     setTokensLoading(true);
-    const result = await get(VIEWER_BALANCES_V2, {
+    const result = await get(VIEWER_BALANCES, {
       address,
-      pageSize,
-      pageNum,
     });
     if (result?.code === 0) {
       const { data } = result;
-      const { list, total } = data;
-      setBalances(list);
-      setTotal(total);
+      setBalances(data);
+      setTotal(data.length);
     } else {
       nav("/search-failed");
     }
-  }, [address, pageSize, pageNum]);
+  }, [address]);
+
+  const tokenList = useMemo(() => {
+    const prev = (pageNum - 1) * pageSize;
+    const start = prev > 0 ? prev : 0;
+    return balances.slice(start, pageNum * pageSize);
+  }, [balances, pageNum, pageSize]);
 
   const fetchPrice = useCallback(async () => {
     if (balances?.length) {
       setPrices({});
       await Promise.allSettled(
-        balances?.map((item) =>
-          get(TOKEN_PRICE, { fsym: item.symbol, tsyms: "USD" })
-        )
+        balances?.map((item) => {
+          const isFT = /^[a-z0-9]+$/i.test(item.symbol);
+          if (!isFT) {
+            return {};
+          }
+          return get(TOKEN_PRICE, { fsym: item.symbol, tsyms: "USD" });
+        })
       ).then((res) => {
         setTokensLoading(false);
         res.forEach(({ value: item }) => {
@@ -214,7 +219,7 @@ export default function AddressDetail() {
       <section className="more-info">
         <Tabs activeKey={activeKey} onTabClick={(key) => changeTab(key)}>
           {CommonTabPane({
-            balances,
+            balances: tokenList,
             prices,
             tokensLoading,
             address,
