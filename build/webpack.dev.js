@@ -64,7 +64,7 @@ const devConfig = {
     // webpack5 require
     static: OUTPUT_PATH,
     host: "0.0.0.0",
-    port: 3000,
+    port: 3001,
     compress: true,
     hot: true,
     // hotOnly: true,
