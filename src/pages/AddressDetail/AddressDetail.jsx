@@ -50,7 +50,8 @@ export default function AddressDetail() {
   const [tokensLoading, setTokensLoading] = useState(true);
   const [contractInfo, setContractInfo] = useState(undefined);
   const [contractHistory, setContractHistory] = useState(undefined);
-
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
   const address = formatAddress(prefixAddress);
   const isCA = useMemo(() => !!contracts[address], [contracts, address]);
 
@@ -63,16 +64,30 @@ export default function AddressDetail() {
     return isCA ? "Contract" : "Address";
   }, [isCA]);
 
+  const handlePageChange = useCallback(
+    (page, size) => {
+      setBalances([]);
+      setTokensLoading(true);
+      setPageNum(size === pageSize ? page : 1);
+      setPageSize(size);
+    },
+    [pageSize]
+  );
+
   const fetchBalances = useCallback(async () => {
     setTokensLoading(true);
-    const result = await get(VIEWER_BALANCES, { address });
+    const result = await get(VIEWER_BALANCES, {
+      address,
+      pageSize,
+      pageNum,
+    });
     if (result?.code === 0) {
       const { data } = result;
       setBalances(data);
     } else {
       nav("/search-failed");
     }
-  }, [address]);
+  }, [address, pageSize, pageNum]);
 
   const fetchPrice = useCallback(async () => {
     if (balances.length) {
@@ -195,13 +210,22 @@ export default function AddressDetail() {
       <Overview prices={prices} elfBalance={elfBalance} />
       <section className="more-info">
         <Tabs activeKey={activeKey} onTabClick={(key) => changeTab(key)}>
-          {CommonTabPane({ balances, prices, tokensLoading, address }).map(
-            ({ children, ...props }) => (
-              <Tabs.TabPane key={props.key} tab={props.tab}>
-                {children}
-              </Tabs.TabPane>
-            )
-          )}
+          {CommonTabPane({
+            balances,
+            prices,
+            tokensLoading,
+            address,
+            tokenPagination: {
+              pageNum,
+              pageSize,
+              total: 50,
+              handlePageChange,
+            },
+          }).map(({ children, ...props }) => (
+            <Tabs.TabPane key={props.key} tab={props.tab}>
+              {children}
+            </Tabs.TabPane>
+          ))}
           {isCA &&
             ContractTabPane({
               contractInfo,
