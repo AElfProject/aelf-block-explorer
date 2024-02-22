@@ -9,6 +9,7 @@ export default function CommonTabPane({
   prices,
   tokensLoading,
   address,
+  tokenPagination,
 }) {
   return [
     {
@@ -19,6 +20,7 @@ export default function CommonTabPane({
           balances={balances}
           prices={prices}
           dataLoading={tokensLoading}
+          pagination={tokenPagination}
         />
       ),
     },
