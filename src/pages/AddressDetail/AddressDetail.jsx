@@ -9,7 +9,7 @@ import QrCode from "./components/QrCode/QrCode";
 import { get, getContractNames } from "../../utils";
 import {
   TOKEN_PRICE,
-  VIEWER_BALANCES,
+  VIEWER_BALANCES_V2,
   VIEWER_GET_FILE,
   VIEWER_HISTORY,
 } from "../../api/url";
@@ -52,11 +52,12 @@ export default function AddressDetail() {
   const [contractHistory, setContractHistory] = useState(undefined);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  const [total, setTotal] = useState(0);
   const address = formatAddress(prefixAddress);
   const isCA = useMemo(() => !!contracts[address], [contracts, address]);
 
   const elfBalance = useMemo(
-    () => balances.find((item) => item.symbol === "ELF")?.balance,
+    () => balances?.find((item) => item.symbol === "ELF")?.balance,
     [balances]
   );
 
@@ -66,34 +67,36 @@ export default function AddressDetail() {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      setBalances([]);
       setTokensLoading(true);
       setPageNum(size === pageSize ? page : 1);
       setPageSize(size);
+      setTotal(0);
     },
     [pageSize]
   );
 
   const fetchBalances = useCallback(async () => {
     setTokensLoading(true);
-    const result = await get(VIEWER_BALANCES, {
+    const result = await get(VIEWER_BALANCES_V2, {
       address,
       pageSize,
       pageNum,
     });
     if (result?.code === 0) {
       const { data } = result;
-      setBalances(data);
+      const { list, total } = data;
+      setBalances(list);
+      setTotal(total);
     } else {
       nav("/search-failed");
     }
   }, [address, pageSize, pageNum]);
 
   const fetchPrice = useCallback(async () => {
-    if (balances.length) {
+    if (balances?.length) {
       setPrices({});
       await Promise.allSettled(
-        balances.map((item) =>
+        balances?.map((item) =>
           get(TOKEN_PRICE, { fsym: item.symbol, tsyms: "USD" })
         )
       ).then((res) => {
@@ -218,7 +221,7 @@ export default function AddressDetail() {
             tokenPagination: {
               pageNum,
               pageSize,
-              total: 50,
+              total,
               handlePageChange,
             },
           }).map(({ children, ...props }) => (
