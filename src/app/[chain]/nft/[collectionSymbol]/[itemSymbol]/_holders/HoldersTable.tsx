@@ -7,11 +7,12 @@ import { HolderItem, ItemSymbolDetailHolders } from '../type';
 import { fetchHolderData } from '../mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
+import useResponsive from '@_hooks/useResponsive';
 export interface HolderProps {
   holder: ItemSymbolDetailHolders;
 }
 export default function Holder(props: HolderProps) {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
   const { holder } = props;
   const disposeData = (data: ItemSymbolDetailHolders) => {
     return {

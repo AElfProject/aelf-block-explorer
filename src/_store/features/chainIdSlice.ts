@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from '@_store';
 import { HYDRATE } from 'next-redux-wrapper';
+import { ChainItem } from '@_types';
 
 export interface IChainState {
-  chainArr: Chain[];
+  chainArr: ChainItem[];
   currentChain: Chain | undefined;
 }
 const initialState: IChainState = {

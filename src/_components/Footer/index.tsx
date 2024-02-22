@@ -13,9 +13,8 @@ import BackToTopButton from '@_components/BackToTopBtn';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { isMobileDevices } from '@_utils/isMobile';
+import { isMainNet } from '@_utils/isMainNet';
 const FoorterBgTets = '/image/footer-bg.png';
-// const NetworkType = process.env.NEXT_PUBLIC_NETWORK_TYPE;
-const isMainNet = !!(process.env.NEXT_PUBLIC_NETWORK_TYPE === 'MAIN');
 const clsPrefix = 'footer-container';
 interface IProps {
   isMobileSSR: boolean;

@@ -6,22 +6,15 @@ import { setCurrentChain } from '@_store/features/chainIdSlice';
 const { Option } = Select;
 import './index.css';
 
-const FULLMAPPING = {
-  AELF: 'MainChain AELF',
-  tDVV: 'SideChain tDVV',
-};
-
 export default function ChainSelect() {
   const { chainArr, currentChain } = useAppSelector((state) => state.getChainId);
 
   const dispatch = useAppDispatch();
 
   const onSelectHandler = (value: string) => {
-    console.log(value);
     dispatch(setCurrentChain(value));
   };
 
-  console.log('currentChain', currentChain);
   return (
     <div className="chain-select-container">
       <Select
@@ -32,8 +25,8 @@ export default function ChainSelect() {
         getPopupContainer={() => document.querySelector('.header-container')!}>
         {chainArr?.map((item) => {
           return (
-            <Option on className="common-select-option-wrapper chain-select-option" key={item} value={item}>
-              {FULLMAPPING[`${item}`]}
+            <Option on className="common-select-option-wrapper chain-select-option" key={item.key} value={item.key}>
+              {chainArr.find((ele) => ele.key === item.key)!.label}
             </Option>
           );
         })}

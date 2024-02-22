@@ -15,7 +15,7 @@ import MainContainer from '@_components/Main';
 import { headers } from 'next/headers';
 import { isMobileOnServer } from '@_utils/isMobile';
 import { Suspense } from 'react';
-import { IExplorerItem, INetworkItem } from '@_types';
+import { NetworkItem } from '@_types';
 import request from '@_api';
 import StyleRegistry from './StyleRegistry';
 import { fetchCMS } from '@_api/fetchCMS';
@@ -36,17 +36,12 @@ async function fetchData() {
   return res;
 }
 
-async function fetchMenuList() {
-  const result = await request.cms.menuList();
-  return result?.data;
-}
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const data = await fetchData();
   const { price, previousPrice } = data;
   const headersList = headers();
   const isMobile = isMobileOnServer(headersList);
-  const { chainArr, currentChain, mainNetUrl, sideNetUrl } = await fetchCMS();
-  const menuList = await fetchMenuList();
+  const { headerMenuList, footerMenuList, chainInfos, netInfos } = await fetchCMS();
   return (
     <html lang="en">
       <body>
@@ -54,18 +49,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <StyleRegistry>
             <RootProvider isMobileSSR={isMobile}>
               <Suspense>
-                <Header
-                  chainArr={chainArr}
-                  currentChain={currentChain}
-                  mainNetUrl={mainNetUrl}
-                  sideNetUrl={sideNetUrl}
-                />
+                <Header chainInfos={chainInfos} netInfos={netInfos} headerMenuList={headerMenuList} />
               </Suspense>
               <Suspense>
                 <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>
               </Suspense>
               <Suspense>
-                <Footer isMobileSSR={isMobile} />
+                <Footer isMobileSSR={isMobile} footerMenuList={footerMenuList} />
               </Suspense>
             </RootProvider>
           </StyleRegistry>

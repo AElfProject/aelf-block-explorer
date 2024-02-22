@@ -8,9 +8,10 @@ import copy from 'copy-to-clipboard';
 import { useState } from 'react';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
+import useResponsive from '@_hooks/useResponsive';
 
 export default function SourceCode() {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
   const files = [
     {
       name: 'AllCalculateFeeCoefficients.cs',

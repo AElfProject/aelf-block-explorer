@@ -19,6 +19,7 @@
     }
   }
   &-mobile {
+    @apply mx-[-12px];
     .search-section {
       @apply px-3 w-full;
     }

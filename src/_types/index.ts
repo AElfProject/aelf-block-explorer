@@ -6,15 +6,18 @@ export interface IExplorerItem {
   url: string;
   netWorkType: string;
 }
-export interface INetworkItem {
-  id: number;
-  chainId: string;
-  chainsLinkName: string;
-  chainsLink: string;
+export interface NetworkItem {
+  key: string;
+  label: string;
+  path: string;
 }
-export interface IMenuItem {
+export interface ChainItem {
+  label: string;
+  key: string;
+}
+export interface MenuItem {
   id: number;
   label: string;
-  link: string;
-  children: IMenuItem[];
+  path: string;
+  children: MenuItem[];
 }

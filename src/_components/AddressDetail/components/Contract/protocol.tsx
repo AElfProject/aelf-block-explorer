@@ -5,6 +5,7 @@ import { Button } from 'aelf-design';
 import { useState } from 'react';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
+import useResponsive from '@_hooks/useResponsive';
 
 export default function Protocol({
   value = JSON.stringify({
@@ -20,7 +21,7 @@ export default function Protocol({
   }),
 }) {
   const [full, setFull] = useState(false);
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
   const fullCode = () => {
     setFull(!full);
   };

@@ -9,6 +9,7 @@ import { useDebounce, useEffectOnce } from 'react-use';
 import EPSearch from '@_components/EPSearch';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
+import useResponsive from '@_hooks/useResponsive';
 
 export default function Events({ SSRData = { total: 0, list: [] } }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -71,7 +72,7 @@ export default function Events({ SSRData = { total: 0, list: [] } }) {
     [searchText],
   );
 
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
 
   return (
     <div className="event-container">

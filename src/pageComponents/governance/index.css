@@ -18,3 +18,11 @@ micro-app[name='governance'] {
     margin-bottom: 104px;
   }
 }
+.mobile-micro-app {
+  .App {
+    .body-container {
+      top: 56px;
+      margin-bottom: 56px;
+    }
+  }
+}

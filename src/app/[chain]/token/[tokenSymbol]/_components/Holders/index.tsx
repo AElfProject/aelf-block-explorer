@@ -6,13 +6,14 @@ import { useMemo } from 'react';
 import { fetchHoldersData } from '../../mock';
 import { IHolderItem, IHolderTableData, ITokenSearchProps } from '../../type';
 import getColumns from './columns';
+import useResponsive from '@_hooks/useResponsive';
 
 interface HoldersProps extends ITokenSearchProps {
   SSRData: IHolderTableData;
 }
 
 export default function Holders({ SSRData, searchType, search, onSearchChange, onSearchInputChange }: HoldersProps) {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
     IHolderItem,

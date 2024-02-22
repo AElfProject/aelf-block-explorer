@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import './index.css';
 import { useMobileContext } from '@app/pageProvider';
 import { TooltipPlacement } from 'antd/es/tooltip';
+import useResponsive from '@_hooks/useResponsive';
 
 interface IToolTip
   extends Omit<ITooltipProps, 'children' | 'color' | 'overlayClassName' | 'trigger' | 'arrow' | 'placement'> {
@@ -24,7 +25,7 @@ export default function EPTooltip({
   mode = 'dark',
   ...params
 }: IToolTip) {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
   return (
     <Tooltip
       overlayClassName={clsx(mode === 'light' ? 'tooltip-light' : 'tooltip-dark', className)}

@@ -85,7 +85,11 @@ function RootProvider({ children, isMobileSSR }) {
           <ReduxProvider store={storeRef.current}>
             {isGovernance && (
               <>
-                <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
+                <micro-app
+                  name="governance"
+                  url={process.env.NEXT_PUBLIC_REMOTE_URL}
+                  keep-alive
+                  class={isMobileSSR ? 'mobile-micro-app' : ''}></micro-app>
                 {!show && <Skeleton className="relative top-[104px] mb-[104px] h-[calc(100vh-434px)]" />}
               </>
             )}

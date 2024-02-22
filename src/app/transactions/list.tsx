@@ -8,13 +8,14 @@ import { ITableDataType } from './type';
 import fetchData from './mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
+import useResponsive from '@_hooks/useResponsive';
 interface ITransactionsData {
   total: number;
   data: ITableDataType[];
 }
 
 export default function List({ SSRData, showHeader = true }) {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
   const disposeData = (data) => {
     return {
       total: data.total,

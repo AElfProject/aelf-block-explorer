@@ -1,5 +1,5 @@
 .footer-container {
-  @apply bg-white bottom-0 w-full h-[330px] relative mt-10;
+  @apply bg-white bottom-0 w-full h-[330px] relative;
   &-bg {
     @apply absolute top-0 left-0;
   }

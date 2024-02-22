@@ -49,7 +49,7 @@ export default function getColumns(): ColumnsType<ITableDataType> {
         <div>
           <span>Percentage</span>
           <EPTooltip title="Percentage" mode="light">
-            <IconFont className="text-xs ml-[6px]" type="question-circle" />
+            <IconFont className="ml-[6px] text-xs" type="question-circle" />
           </EPTooltip>
         </div>
       ),
@@ -61,7 +61,7 @@ export default function getColumns(): ColumnsType<ITableDataType> {
         <div>
           <span>Transfers</span>
           <EPTooltip title="Transfers" mode="light">
-            <IconFont className="text-xs ml-[6px]" type="question-circle" />
+            <IconFont className="ml-[6px] text-xs" type="question-circle" />
           </EPTooltip>
         </div>
       ),

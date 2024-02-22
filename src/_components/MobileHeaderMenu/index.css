@@ -12,7 +12,7 @@
     @apply !h-auto;
   }
   .header-drawer-menu-wrapper {
-    @apply shadow-[0_6px_24px_0_rgba(0,0,0,0.24)] rounded-[0px_0px_8px_8px];
+    @apply shadow-[0_6px_24px_0_rgba(0,0,0,0.24)] rounded-[0px_0px_8px_8px] mt-[56px];
     .explorer-drawer-header {
       @apply h-[112px] flex-auto;
     }

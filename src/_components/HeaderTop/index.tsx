@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import clsx from 'clsx';
 import './index.css';
@@ -7,6 +8,7 @@ import MobileHeaderMenu from '@_components/MobileHeaderMenu';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@_store';
 import useResponsive from '@_hooks/useResponsive';
+import { MenuItem, NetworkItem } from '@_types';
 
 // at public file
 const TopIconMain = '/image/aelf-header-top.svg';
@@ -18,22 +20,20 @@ const clsPrefix = 'header-top-container';
 interface IProps {
   price: number;
   range: string;
-  mainNetUrl: string;
-  sideNetUrl: string;
+  netInfos: NetworkItem[];
+  headerMenuList: MenuItem[];
 }
-export default function HeaderTop({ price, range, mainNetUrl, sideNetUrl }: IProps) {
+export default function HeaderTop({ price, range, netInfos, headerMenuList }: IProps) {
   const { isMobile } = useResponsive();
-  console.log(isMobile, 'isMobile');
   const { currentChain } = useAppSelector((state) => state.getChainId);
   const isShowPrice = currentChain === 'AELF' && isMainNet;
-
   const pathname = usePathname();
   const isHideSearch = pathname === '/' || pathname.includes('search-');
-  const finalUrl = isMainNet ? sideNetUrl : mainNetUrl;
-  console.log(finalUrl, 'finalUrl');
+  const networkType = process.env.NEXT_PUBLIC_NETWORK_TYPE;
+  const finalUrl = netInfos.find((ele) => ele.key === networkType)?.path;
 
   return (
-    <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`)}>
+    <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
       <div className={clsx(`${clsPrefix}-content`)}>
         <Image
           className={clsx(`${clsPrefix}-icon`)}
@@ -53,7 +53,7 @@ export default function HeaderTop({ price, range, mainNetUrl, sideNetUrl }: IPro
             </div>
           )}
 
-          {!isHideSearch && (
+          {/* {!isHideSearch && (
             <Search
               searchIcon={true}
               searchButton={false}
@@ -69,7 +69,7 @@ export default function HeaderTop({ price, range, mainNetUrl, sideNetUrl }: IPro
               placeholder={'Search by Address / Txn Hash / Block'}
               lightMode={!isMainNet}
             />
-          )}
+          )} */}
           <div className={clsx(`${clsPrefix}-right`)} onClick={() => (window.location.href = finalUrl)}>
             <div className={clsx(`${clsPrefix}-explorer-change`)}>
               <Image
@@ -81,8 +81,7 @@ export default function HeaderTop({ price, range, mainNetUrl, sideNetUrl }: IPro
             </div>
           </div>
         </>
-
-        {isMobile && <MobileHeaderMenu />}
+        {isMobile && <MobileHeaderMenu headerMenuList={headerMenuList} netInfos={netInfos} />}
       </div>
     </div>
   );
