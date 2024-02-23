@@ -30,6 +30,16 @@ const connectUrl = {
       ? "https://auth-aa-portkey-test.portkey.finance"
       : "https://auth-aa-portkey.portkey.finance",
 };
+const serviceUrl = {
+  v1:
+    NETWORK_TYPE === "TESTNET"
+      ? "https://did-portkey-test.portkey.finance"
+      : "https://aa-portkey-test.portkey.finance",
+  v2:
+    NETWORK_TYPE === "TESTNET"
+      ? "https://did-portkey.portkey.finance"
+      : "https://aa-portkey.portkey.finance",
+};
 
 setGlobalConfig({
   appName: APPNAME,
@@ -62,6 +72,7 @@ setGlobalConfig({
       timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
       baseURL: "/v1",
     },
+    serviceUrl: serviceUrl.v1,
   },
   portkeyV2: {
     networkType: NETWORK_TYPE === "TESTNET" ? "TESTNET" : "MAINNET",
@@ -71,6 +82,7 @@ setGlobalConfig({
       baseURL: "/v2",
       timeout: NETWORK_TYPE === "TESTNET" ? 300000 : 80000,
     },
+    serviceUrl: serviceUrl.v2,
   },
   aelfReact: {
     appName: APPNAME,
