@@ -6,7 +6,7 @@ import './index.css';
 import { NftsItemType } from '@_types/commonDetail';
 import { useDebounce, useEffectOnce } from 'react-use';
 import { useMobileContext } from '@app/pageProvider';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -59,7 +59,7 @@ export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
     300,
     [searchText],
   );
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   return (
     <div className="asset-list px-4">
       {/* <div

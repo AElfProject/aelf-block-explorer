@@ -7,12 +7,12 @@ import { IActivityTableData, ItemSymbolDetailActivity } from '../type';
 import { fetchActiveData } from '../mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export interface ItemActivityTableProps {
   activeData: ItemSymbolDetailActivity;
 }
 export default function ItemActivityTable(props: ItemActivityTableProps) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const { activeData } = props;
   const disposeData = (data: ItemSymbolDetailActivity) => {
     return {

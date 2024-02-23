@@ -10,14 +10,14 @@ import { Divider } from 'antd';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
 import EPTooltip from '@_components/EPToolTip';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 export default function DetailContainer({
   infoList,
 }: {
   infoList: { label: string; value: React.ReactNode | string; tip?: React.ReactNode | string }[];
 }) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   return (
     <div className="wrap basic px-4">
       {infoList.map((item) => {

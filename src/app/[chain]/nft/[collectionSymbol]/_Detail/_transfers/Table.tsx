@@ -8,7 +8,7 @@ import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 import { fetchTransferList } from '../mock';
 import { useParams } from 'next/navigation';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export interface ItemActivityTableProps {
   transferList: CollectionTransfersData;
   search?: string;
@@ -17,7 +17,7 @@ export interface ItemActivityTableProps {
 export default function ItemActivityTable(props: ItemActivityTableProps) {
   const { collectionSymbol, chain } = useParams<NftCollectionPageParams>();
   const { transferList, topSearchProps, search } = props;
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const disposeData = (data: CollectionTransfersData) => {
     return {
       total: data.total,

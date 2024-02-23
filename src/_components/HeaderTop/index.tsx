@@ -7,7 +7,7 @@ import { isMainNet } from '@_utils/isMainNet';
 import MobileHeaderMenu from '@_components/MobileHeaderMenu';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@_store';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 import { MenuItem, NetworkItem } from '@_types';
 
 // at public file
@@ -24,7 +24,7 @@ interface IProps {
   headerMenuList: MenuItem[];
 }
 export default function HeaderTop({ price, range, networkList, headerMenuList }: IProps) {
-  const { isMobile } = useResponsive();
+  const isMobile = useMobileAll();
   const { defaultChain } = useAppSelector((state) => state.getChainId);
   const isShowPrice = defaultChain === 'AELF' && isMainNet;
   const pathname = usePathname();

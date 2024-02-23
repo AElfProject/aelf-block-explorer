@@ -16,7 +16,7 @@ export const chainIdSlice = createSlice({
   name: 'getChainId',
   initialState,
   reducers: {
-    setdefaultChain: (state, action) => {
+    setDefaultChain: (state, action) => {
       state.defaultChain = action.payload;
     },
     setChainArr: (state, action) => {
@@ -32,6 +32,6 @@ export const chainIdSlice = createSlice({
     },
   },
 });
-export const { setdefaultChain, setChainArr } = chainIdSlice.actions;
+export const { setDefaultChain, setChainArr } = chainIdSlice.actions;
 export const chainInfo = (state: AppState) => state.getChainId;
 export default chainIdSlice.reducer;

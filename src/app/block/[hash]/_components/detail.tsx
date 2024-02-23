@@ -21,10 +21,10 @@ import { ColumnsType } from 'antd/es/table';
 import MoreContainer from '@_components/MoreContainer';
 import EPTabs from '@_components/EPTabs';
 import { useMobileContext } from '@app/pageProvider';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 export default function Detail({ SSRData }) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const [detailData] = useState<DetailData>(SSRData);
   const [showMore, setShowMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);

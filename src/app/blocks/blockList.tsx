@@ -14,7 +14,7 @@ import { ColumnsType } from 'antd/es/table';
 import fetchData from './mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 export interface ITableData {
   blockHeight: number;
@@ -35,7 +35,7 @@ export interface IBlocksData {
 }
 
 export default function BlockList({ SSRData }) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const disposeData = (data) => {
     return {
       total: data.total,

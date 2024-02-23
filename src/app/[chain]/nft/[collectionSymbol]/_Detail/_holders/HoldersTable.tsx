@@ -8,7 +8,7 @@ import { fetchHolderData } from '../mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 import { useParams } from 'next/navigation';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 export interface HolderProps {
   topSearchProps?: ITableSearch;
@@ -20,7 +20,7 @@ const holder: CollectionHoldersData = {
 };
 export default function Holder(props: HolderProps) {
   const { topSearchProps, search } = props;
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const { collectionSymbol, chain } = useParams<NftCollectionPageParams>();
   const disposeData = (data: CollectionHoldersData) => {
     return {

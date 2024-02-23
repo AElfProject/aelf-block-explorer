@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import { useAppDispatch, useAppSelector } from '@_store';
-import { setdefaultChain } from '@_store/features/chainIdSlice';
+import { setDefaultChain } from '@_store/features/chainIdSlice';
 import { getPathnameFirstSlash } from '@_utils/urlUtils';
 import { isMainNet } from '@_utils/isMainNet';
 interface IProps {
@@ -58,7 +58,7 @@ export default function MobileHeaderMenu({ headerMenuList, networkList }: IProps
   };
   const dispatch = useAppDispatch();
   const onSelectHandler = (value: string) => {
-    dispatch(setdefaultChain(value));
+    dispatch(setDefaultChain(value));
   };
   const items: MenuProps['items'] = [
     ...convertMenuItems(headerMenuList),
@@ -84,11 +84,11 @@ export default function MobileHeaderMenu({ headerMenuList, networkList }: IProps
       <IconFont type={isMainNet ? 'moremainnet' : 'moretestnet'} onClick={() => toggleMenu()} />
       {showMobileMenu && (
         <Drawer
-          visible={showMobileMenu}
+          open={showMobileMenu}
           placement="top"
           closable={false}
           zIndex={40}
-          maskStyle={{ background: 'transparent' }}
+          styles={{ mask: { background: 'transparent' } }}
           className={`header-drawer-menu-wrapper ${isMainNet ? 'header-main-drawer-menu-wrapper' : ''} ${
             pathname === '/' && 'home-header-drawer-menu-wrapper'
           }`}

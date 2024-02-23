@@ -1,7 +1,7 @@
 'use client';
 import { Select } from 'antd';
 import { useAppDispatch, useAppSelector } from '@_store';
-import { setdefaultChain } from '@_store/features/chainIdSlice';
+import { setDefaultChain } from '@_store/features/chainIdSlice';
 
 const { Option } = Select;
 import './index.css';
@@ -12,7 +12,7 @@ export default function ChainSelect() {
   const dispatch = useAppDispatch();
 
   const onSelectHandler = (value: string) => {
-    dispatch(setdefaultChain(value));
+    dispatch(setDefaultChain(value));
   };
 
   return (

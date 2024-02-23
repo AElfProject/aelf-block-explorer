@@ -10,7 +10,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import ChainSelect from '@_components/ChainSelect';
 import { MenuItem, NetworkItem } from '@_types';
 import { getPathnameFirstSlash } from '@_utils/urlUtils';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 interface IProps {
   networkList: NetworkItem[];
   headerMenuList: MenuItem[];
@@ -18,7 +18,7 @@ interface IProps {
 
 const clsPrefix = 'header-menu-container';
 export default function HeaderMenu({ networkList, headerMenuList }: IProps) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const router = useRouter();
   const jump = (url) => {
     // microApp.setData('governance', { path: url });
@@ -133,8 +133,6 @@ export default function HeaderMenu({ networkList, headerMenuList }: IProps) {
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
   };
-
-  console.log('current', pathname, getPathnameFirstSlash(pathname));
 
   return (
     <div className={clsx(`${clsPrefix}`)}>

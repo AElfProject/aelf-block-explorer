@@ -13,9 +13,9 @@ import ContractToken from '@_components/ContractToken';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export default function BaseInfo({ data }: { data: TxnSData }) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const renderInfo = useMemo(() => {
     return [
       {

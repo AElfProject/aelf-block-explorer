@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import { useMobileContext } from '@app/pageProvider';
 import './index.css';
 import EPTooltip from '@_components/EPToolTip';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export default function AddressDetail({
   SSRData,
   title,
@@ -92,7 +92,7 @@ export default function AddressDetail({
       value: (
         <div className="flex items-center">
           <span className="inline-block max-w-[120px] truncate text-sm leading-[22px] text-link">{lastTxnSend}</span>
-          <span className="inline-block  text-xs leading-5 text-base-100">from 20 sece ago</span>
+          <span className="inline-block text-xs leading-5 text-base-100">from 20 sece ago</span>
         </div>
       ),
     },
@@ -160,7 +160,7 @@ export default function AddressDetail({
     },
   ];
 
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   return (
     <div className="address-detail">
       <div className="address-header">

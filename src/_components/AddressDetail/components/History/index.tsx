@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMobileContext } from '@app/pageProvider';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 enum EventMapEnum {
   CodeUpdated = 'Code Updated',
   AuthorChanged = 'Author Changed',
@@ -17,7 +17,7 @@ enum EventMapEnum {
 }
 export default function History({ SSRData = [], onTabClick }: { SSRData: IHistory[]; onTabClick: (string) => void }) {
   const [history, setHistory] = useState<IHistory[]>(SSRData);
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const router = useRouter();
   useEffectOnce(() => {
     async function getData() {

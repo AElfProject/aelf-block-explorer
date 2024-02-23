@@ -7,14 +7,14 @@ import { useCallback, useMemo } from 'react';
 import getColumns from './columnConfig';
 import fetchData from './mock';
 import { ITokensTableData, ITokensTableItem } from './type';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 interface TokensListProps {
   SSRData: ITokensTableData;
 }
 
 export default function TokensList({ SSRData }: TokensListProps) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
     ITokensTableItem,

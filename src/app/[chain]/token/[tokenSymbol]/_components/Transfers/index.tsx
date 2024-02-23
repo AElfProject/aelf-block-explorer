@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { fetchTransfersData } from '../../mock';
 import { ITokenSearchProps, ITransferItem, ITransferTableData, SearchType } from '../../type';
 import getColumns from './columns';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 interface TransfersProps extends ITokenSearchProps {
   SSRData: ITransferTableData;
@@ -35,7 +35,7 @@ export default function Transfers({
   onSearchChange,
   onSearchInputChange,
 }: TransfersProps) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const [timeFormat, setTimeFormat] = useState<string>('Date Time (UTC)');
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<

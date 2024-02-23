@@ -8,10 +8,10 @@ import CodeBlock from '@_components/CodeBlock';
 import SizeBytes from '@_components/SizeBytes';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 export default function ExtensionInfo({ data }: { data: TxnSData }) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
   const renderInfo = useMemo(() => {
     return [
       {

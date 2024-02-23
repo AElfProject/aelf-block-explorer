@@ -14,7 +14,7 @@ import { ColumnsType } from 'antd/es/table';
 import fetchData from './mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
-import useResponsive from '@_hooks/useResponsive';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export interface ITableDataType {
   address: string;
   contractName: string;
@@ -31,7 +31,7 @@ export interface IResponseData {
 }
 
 export default function List({ SSRData }) {
-  const { isMobile } = useResponsive();
+  const { isMobile } = useMobileAll();
 
   const columns = useMemo<ColumnsType<ITableDataType>>(() => {
     return getColumns();
