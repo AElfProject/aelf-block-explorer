@@ -34,10 +34,10 @@ const serviceUrl = {
   v1:
     NETWORK_TYPE === "TESTNET"
       ? "https://did-portkey-test.portkey.finance"
-      : "https://aa-portkey-test.portkey.finance",
+      : "https://did-portkey.portkey.finance",
   v2:
     NETWORK_TYPE === "TESTNET"
-      ? "https://did-portkey.portkey.finance"
+      ? "https://aa-portkey-test.portkey.finance"
       : "https://aa-portkey.portkey.finance",
 };
 
