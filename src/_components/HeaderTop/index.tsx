@@ -20,17 +20,17 @@ const clsPrefix = 'header-top-container';
 interface IProps {
   price: number;
   range: string;
-  netInfos: NetworkItem[];
+  networkList: NetworkItem[];
   headerMenuList: MenuItem[];
 }
-export default function HeaderTop({ price, range, netInfos, headerMenuList }: IProps) {
+export default function HeaderTop({ price, range, networkList, headerMenuList }: IProps) {
   const { isMobile } = useResponsive();
-  const { currentChain } = useAppSelector((state) => state.getChainId);
-  const isShowPrice = currentChain === 'AELF' && isMainNet;
+  const { defaultChain } = useAppSelector((state) => state.getChainId);
+  const isShowPrice = defaultChain === 'AELF' && isMainNet;
   const pathname = usePathname();
   const isHideSearch = pathname === '/' || pathname.includes('search-');
   const networkType = process.env.NEXT_PUBLIC_NETWORK_TYPE;
-  const finalUrl = netInfos.find((ele) => ele.key === networkType)?.path;
+  const finalUrl = networkList.find((ele) => ele.key === networkType)?.path;
 
   return (
     <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
@@ -81,7 +81,7 @@ export default function HeaderTop({ price, range, netInfos, headerMenuList }: IP
             </div>
           </div>
         </>
-        {isMobile && <MobileHeaderMenu headerMenuList={headerMenuList} netInfos={netInfos} />}
+        {isMobile && <MobileHeaderMenu headerMenuList={headerMenuList} networkList={networkList} />}
       </div>
     </div>
   );

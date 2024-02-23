@@ -9,14 +9,16 @@ import { useMobileContext } from '@app/pageProvider';
 import useResponsive from '@_hooks/useResponsive';
 
 const clsPrefix = 'header-container';
-export default function Header({ chainInfos, netInfos, headerMenuList }) {
+export default function Header({ chainList, networkList, headerMenuList, defaultChain }) {
   const { isMobile } = useResponsive();
-  const { chainList, currentChain } = chainInfos;
-  useInit(chainList, currentChain);
+  const chainArr = chainList.map((ele) => ele.chainList_id);
+  useInit(chainArr, defaultChain);
+  const headerList = headerMenuList.map((ele) => ele.headerMenu_id);
+  const networkArr = networkList.map((ele) => ele.network_id);
   return (
     <div className={clsx(clsPrefix)}>
-      <HeaderTop price={100} range={'99'} netInfos={netInfos} headerMenuList={headerMenuList} />
-      {!isMobile && <HeaderMenu headerMenuList={headerMenuList} netInfos={netInfos} />}
+      <HeaderTop price={100} range={'99'} networkList={networkList} headerMenuList={headerList} />
+      {!isMobile && <HeaderMenu headerMenuList={headerList} networkList={networkArr} />}
     </div>
   );
 }

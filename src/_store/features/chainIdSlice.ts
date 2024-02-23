@@ -5,19 +5,19 @@ import { ChainItem } from '@_types';
 
 export interface IChainState {
   chainArr: ChainItem[];
-  currentChain: Chain | undefined;
+  defaultChain: Chain | undefined;
 }
 const initialState: IChainState = {
   chainArr: [],
-  currentChain: undefined,
+  defaultChain: undefined,
 };
 
 export const chainIdSlice = createSlice({
   name: 'getChainId',
   initialState,
   reducers: {
-    setCurrentChain: (state, action) => {
-      state.currentChain = action.payload;
+    setdefaultChain: (state, action) => {
+      state.defaultChain = action.payload;
     },
     setChainArr: (state, action) => {
       state.chainArr = action.payload;
@@ -32,6 +32,6 @@ export const chainIdSlice = createSlice({
     },
   },
 });
-export const { setCurrentChain, setChainArr } = chainIdSlice.actions;
+export const { setdefaultChain, setChainArr } = chainIdSlice.actions;
 export const chainInfo = (state: AppState) => state.getChainId;
 export default chainIdSlice.reducer;

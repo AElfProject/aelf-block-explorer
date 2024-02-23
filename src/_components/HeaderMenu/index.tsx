@@ -12,12 +12,12 @@ import { MenuItem, NetworkItem } from '@_types';
 import { getPathnameFirstSlash } from '@_utils/urlUtils';
 import useResponsive from '@_hooks/useResponsive';
 interface IProps {
-  netInfos: NetworkItem[];
+  networkList: NetworkItem[];
   headerMenuList: MenuItem[];
 }
 
 const clsPrefix = 'header-menu-container';
-export default function HeaderMenu({ netInfos, headerMenuList }: IProps) {
+export default function HeaderMenu({ networkList, headerMenuList }: IProps) {
   const { isMobile } = useResponsive();
   const router = useRouter();
   const jump = (url) => {

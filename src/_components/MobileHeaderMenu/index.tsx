@@ -7,16 +7,16 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import { useAppDispatch, useAppSelector } from '@_store';
-import { setCurrentChain } from '@_store/features/chainIdSlice';
+import { setdefaultChain } from '@_store/features/chainIdSlice';
 import { getPathnameFirstSlash } from '@_utils/urlUtils';
 import { isMainNet } from '@_utils/isMainNet';
 interface IProps {
   headerMenuList: MenuItem[];
-  netInfos: NetworkItem[];
+  networkList: NetworkItem[];
 }
 type AntdMenuItem = Required<MenuProps>['items'][number];
 
-export default function MobileHeaderMenu({ headerMenuList, netInfos }: IProps) {
+export default function MobileHeaderMenu({ headerMenuList, networkList }: IProps) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const { chainArr } = useAppSelector((state) => state.getChainId);
@@ -58,7 +58,7 @@ export default function MobileHeaderMenu({ headerMenuList, netInfos }: IProps) {
   };
   const dispatch = useAppDispatch();
   const onSelectHandler = (value: string) => {
-    dispatch(setCurrentChain(value));
+    dispatch(setdefaultChain(value));
   };
   const items: MenuProps['items'] = [
     ...convertMenuItems(headerMenuList),
@@ -66,7 +66,7 @@ export default function MobileHeaderMenu({ headerMenuList, netInfos }: IProps) {
     getItem(
       'Explorers',
       'explorers',
-      netInfos.map((ele) => {
+      networkList.map((ele) => {
         return getItem(<Link href={ele.path}>{ele.label}</Link>, ele.key);
       }),
     ),

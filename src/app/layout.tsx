@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { price, previousPrice } = data;
   const headersList = headers();
   const isMobile = isMobileOnServer(headersList);
-  const { headerMenuList, footerMenuList, chainInfos, netInfos } = await fetchCMS();
+  const { headerMenuList, footerMenuList, chainList, networkList, defaultChain } = await fetchCMS();
   return (
     <html lang="en">
       <body>
@@ -49,7 +49,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <StyleRegistry>
             <RootProvider isMobileSSR={isMobile}>
               <Suspense>
-                <Header chainInfos={chainInfos} netInfos={netInfos} headerMenuList={headerMenuList} />
+                <Header
+                  chainList={chainList}
+                  networkList={networkList}
+                  headerMenuList={headerMenuList}
+                  defaultChain={defaultChain}
+                />
               </Suspense>
               <Suspense>
                 <MainContainer isMobileSSR={isMobile}>{children}</MainContainer>

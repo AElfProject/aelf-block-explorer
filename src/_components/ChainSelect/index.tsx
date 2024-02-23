@@ -1,18 +1,18 @@
 'use client';
 import { Select } from 'antd';
 import { useAppDispatch, useAppSelector } from '@_store';
-import { setCurrentChain } from '@_store/features/chainIdSlice';
+import { setdefaultChain } from '@_store/features/chainIdSlice';
 
 const { Option } = Select;
 import './index.css';
 
 export default function ChainSelect() {
-  const { chainArr, currentChain } = useAppSelector((state) => state.getChainId);
+  const { chainArr, defaultChain } = useAppSelector((state) => state.getChainId);
 
   const dispatch = useAppDispatch();
 
   const onSelectHandler = (value: string) => {
-    dispatch(setCurrentChain(value));
+    dispatch(setdefaultChain(value));
   };
 
   return (
@@ -20,7 +20,7 @@ export default function ChainSelect() {
       <Select
         className="chain-select common-select-wrapper"
         popupClassName="chain-select-options"
-        defaultValue={currentChain}
+        defaultValue={defaultChain}
         onSelect={onSelectHandler}
         getPopupContainer={() => document.querySelector('.header-container')!}>
         {chainArr?.map((item) => {
