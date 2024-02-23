@@ -42,5 +42,5 @@ export default async function HomePage() {
   const headersList = headers();
   const isMobile = isMobileOnServer(headersList);
   const overview = (await initOverview()) as IOverviewSSR;
-  return <Home isMobile={isMobile} overviewSSR={overview}></Home>;
+  return <Home overviewSSR={overview}></Home>;
 }

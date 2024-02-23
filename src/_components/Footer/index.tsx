@@ -14,16 +14,19 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { isMobileDevices } from '@_utils/isMobile';
 import { isMainNet } from '@_utils/isMainNet';
+import useResponsive from '@_hooks/useResponsive';
 const FoorterBgTets = '/image/footer-bg.png';
 const clsPrefix = 'footer-container';
 interface IProps {
   isMobileSSR: boolean;
+  // footerMenuList:
 }
-export default function Footer({ isMobileSSR }: IProps) {
+export default function Footer({ isMobileSSR, footerMenuList }: IProps) {
   const [isMobile, setIsMobile] = useState(isMobileSSR);
+  const { isMobile: isClientMobile } = useResponsive();
   useEffect(() => {
-    setIsMobile(isMobileDevices());
-  }, []);
+    setIsMobile(isClientMobile);
+  }, [isClientMobile]);
   return (
     <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
       {!isMainNet && (
