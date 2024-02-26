@@ -18,6 +18,8 @@ import 'aelf-design/css';
 import { ConfigProvider, Skeleton } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { Provider as ReduxProvider } from 'react-redux';
+import { useIsGovernance } from '@_hooks/useIsPath';
+import useResponsive from '@_hooks/useResponsive';
 
 const MobileContext = createContext<any>({});
 
@@ -31,12 +33,14 @@ function RootProvider({ children, isMobileSSR }) {
   if (!storeRef.current) {
     storeRef.current = makeStore();
   }
-
+  const [isMobile, setIsMobile] = useState(isMobileSSR);
+  const { isMobile: isMobileClient } = useResponsive();
+  useEffect(() => {
+    setIsMobile(isMobileClient);
+  }, [isMobileClient]);
   const router = useRouter();
   const pathname = usePathname();
-  const isGovernance = useMemo(() => {
-    return ['/proposal', '/vote', '/resource'].find((ele) => pathname.startsWith(ele));
-  }, [pathname]);
+  const isGovernance = useIsGovernance();
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (!isGovernance) {
@@ -86,11 +90,15 @@ function RootProvider({ children, isMobileSSR }) {
           <ReduxProvider store={storeRef.current}>
             {isGovernance && (
               <>
-                <micro-app name="governance" url={process.env.NEXT_PUBLIC_REMOTE_URL} keep-alive></micro-app>
-                {!show && <Skeleton className="relative top-[104px] h-[calc(100vh-514px)]" />}
+                <micro-app
+                  name="governance"
+                  url={process.env.NEXT_PUBLIC_REMOTE_URL}
+                  keep-alive
+                  class={isMobile ? 'mobile-micro-app' : ''}></micro-app>
+                {!show && <Skeleton className="relative top-[104px] mb-[104px] h-[calc(100vh-434px)]" />}
               </>
             )}
-            {children}
+            <div className={isGovernance && 'no-use-main'}>{children}</div>
           </ReduxProvider>
         </MobileContext.Provider>
       </ConfigProvider>

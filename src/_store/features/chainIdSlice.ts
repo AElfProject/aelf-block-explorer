@@ -1,22 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from '@_store';
 import { HYDRATE } from 'next-redux-wrapper';
+import { ChainItem } from '@_types';
 
 export interface IChainState {
-  chainArr: Chain[];
-  currentChain: Chain | undefined;
+  chainArr: ChainItem[];
+  defaultChain: Chain | undefined;
 }
 const initialState: IChainState = {
   chainArr: [],
-  currentChain: undefined,
+  defaultChain: undefined,
 };
 
 export const chainIdSlice = createSlice({
   name: 'getChainId',
   initialState,
   reducers: {
-    setCurrentChain: (state, action) => {
-      state.currentChain = action.payload;
+    setDefaultChain: (state, action) => {
+      state.defaultChain = action.payload;
     },
     setChainArr: (state, action) => {
       state.chainArr = action.payload;
@@ -31,6 +32,6 @@ export const chainIdSlice = createSlice({
     },
   },
 });
-export const { setCurrentChain, setChainArr } = chainIdSlice.actions;
+export const { setDefaultChain, setChainArr } = chainIdSlice.actions;
 export const chainInfo = (state: AppState) => state.getChainId;
 export default chainIdSlice.reducer;

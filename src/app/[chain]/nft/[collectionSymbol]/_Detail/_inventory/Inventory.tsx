@@ -5,6 +5,7 @@ import { useMobileContext } from '@app/pageProvider';
 import { CollectionInventoryData, InventoryItem } from '../type';
 import { fetchInventoryList } from '../mock';
 import { useParams } from 'next/navigation';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export interface InventoryProps {
   search?: string;
   topSearchProps?: ITableSearch;
@@ -15,7 +16,7 @@ const inventoryList: CollectionInventoryData = {
 };
 
 export default function Inventory(props: InventoryProps) {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useMobileAll();
   const { collectionSymbol, chain } = useParams<NftCollectionPageParams>();
   const { topSearchProps, search } = props;
 

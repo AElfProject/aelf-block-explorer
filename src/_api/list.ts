@@ -21,10 +21,9 @@ const Common_API_List = {
 };
 
 const CMS_API_List = {
-  menuList: 'http://localhost:8058/items/menuList?fields=*,children.*',
-  networkList: 'http://localhost:8058/items/networkList',
-  explorerList: 'http://localhost:8058/items/explorerList',
+  getGlobalConfig: `${process.env.NEXT_PUBLIC_CMS_URL}/items/globalConfig?fields%5B%5D=*&fields%5B%5D=networkList.network_id.*&deep%5BnetworkList%5D%5B_sort%5D=-network_id.index&fields%5B%5D=headerMenuList.headerMenu_id.*&fields%5B%5D=headerMenuList.headerMenu_id.children.*&deep%5BheaderMenuList%5D%5B_sort%5D=-headerMenu_id.index&deep%5BheaderMenuList%5D%5BheaderMenu_id%5D%5Bchildren%5D%5B_sort%5D=-index&fields%5B%5D=footerMenuList.footerMenu_id.*&fields%5B%5D=footerMenuList.footerMenu_id.children.*&deep%5BfooterMenuList%5D%5B_sort%5D=-footerMenu_id.index&deep%5BfooterMenuList%5D%5BfooterMenu_id%5D%5Bchildren%5D%5B_sort%5D=-index&fields%5B%5D=chainList.chainList_id.*&deep%5BchainList%5D%5B_sort%5D=-chainList_id.index`,
 };
+
 export const Socket_API_List = {
   overview: '/signalr-hubs/overview',
 };

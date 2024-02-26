@@ -21,6 +21,7 @@ import clsx from 'clsx';
 import { useMobileContext } from '@app/pageProvider';
 import './index.css';
 import EPTooltip from '@_components/EPToolTip';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 export default function AddressDetail({
   SSRData,
   title,
@@ -57,10 +58,10 @@ export default function AddressDetail({
         <span>
           {tokenBalance ? (
             <span>
-              <span className="mr-1 text-sm inline-block leading-[22px]">{`$${numberFormatter(
+              <span className="mr-1 inline-block text-sm leading-[22px]">{`$${numberFormatter(
                 String(tokenTotalPriceInUsd),
               )}`}</span>
-              <span className="text-xs inline-block leading-5">{`(@ $${numberFormatter(
+              <span className="inline-block text-xs leading-5">{`(@ $${numberFormatter(
                 String(tokenPriceInUsd),
                 '',
               )}/ELF)`}</span>
@@ -81,8 +82,8 @@ export default function AddressDetail({
       label: 'LAST TXN SENT',
       value: (
         <div className="flex items-center">
-          <span className="text-link inline-block truncate max-w-[120px] text-sm leading-[22px]">{lastTxnSend}</span>
-          <span className="text-base-100 inline-block text-xs leading-5">from 20 sece ago</span>
+          <span className="inline-block max-w-[120px] truncate text-sm leading-[22px] text-link">{lastTxnSend}</span>
+          <span className="inline-block text-xs leading-5 text-base-100">from 20 sece ago</span>
         </div>
       ),
     },
@@ -90,8 +91,8 @@ export default function AddressDetail({
       label: 'FIRST TXN SENT',
       value: (
         <div className="flex items-center">
-          <span className="text-link inline-block truncate max-w-[120px] text-sm leading-[22px]">{lastTxnSend}</span>
-          <span className="text-base-100  inline-block text-xs leading-5">from 20 sece ago</span>
+          <span className="inline-block max-w-[120px] truncate text-sm leading-[22px] text-link">{lastTxnSend}</span>
+          <span className="inline-block text-xs leading-5 text-base-100">from 20 sece ago</span>
         </div>
       ),
     },
@@ -104,10 +105,10 @@ export default function AddressDetail({
     {
       label: 'AUTHOR',
       value: (
-        <div className="text-sm leading-[22px] flex items-center">
+        <div className="flex items-center text-sm leading-[22px]">
           <span className="text-link">{addressFormat(hiddenAddress(author))}</span>
           <span className="mx-1">at txn</span>
-          <span className="inline-block text-link max-w-[120px] truncate">b12da253552df07b12da253552df07</span>
+          <span className="inline-block max-w-[120px] truncate text-link">b12da253552df07b12da253552df07</span>
         </div>
       ),
     },
@@ -159,13 +160,13 @@ export default function AddressDetail({
     },
   ];
 
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useMobileAll();
   return (
     <div className="address-detail">
       <div className="address-header">
         <HeadTitle className={isMobile && 'flex-col !items-start'} content={title}>
-          <div className={clsx('code-box ml-2', isMobile && '!ml-0 flex items-center flex-wrap')}>
-            <span className="text-sm leading-[22px] break-all ">
+          <div className={clsx('code-box ml-2', isMobile && '!ml-0 flex flex-wrap items-center')}>
+            <span className="break-all text-sm leading-[22px] ">
               {hash}
               <Copy className="!ml-4" value={hash} />
               <EPTooltip
@@ -174,14 +175,14 @@ export default function AddressDetail({
                 getPopupContainer={(node) => node}
                 trigger="click"
                 title={<QrCode value={hash} />}>
-                <IconFont className="text-xs cursor-pointer ml-4" type="QR-Code" />
+                <IconFont className="ml-4 cursor-pointer text-xs" type="QR-Code" />
               </EPTooltip>
             </span>
           </div>
         </HeadTitle>
       </div>
       <div className={clsx(isMobile && 'flex-col', 'address-overview flex')}>
-        <Overview title="Overview" className={clsx(isMobile && '!mr-0 mb-4', 'flex-1 mr-4')} items={OverviewInfo} />
+        <Overview title="Overview" className={clsx(isMobile && '!mr-0 mb-4', 'mr-4 flex-1')} items={OverviewInfo} />
         <Overview
           title="MoreInfo"
           className="flex-1"

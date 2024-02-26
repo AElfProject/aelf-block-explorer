@@ -72,4 +72,7 @@
       @apply ml-0;
     }
   }
+  .header-top-container-right {
+    @apply flex flex-1 justify-end;
+  }
 }

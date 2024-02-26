@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMobileContext } from '@app/pageProvider';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 enum EventMapEnum {
   CodeUpdated = 'Code Updated',
   AuthorChanged = 'Author Changed',
@@ -16,7 +17,7 @@ enum EventMapEnum {
 }
 export default function History({ SSRData = [], onTabClick }: { SSRData: IHistory[]; onTabClick: (string) => void }) {
   const [history, setHistory] = useState<IHistory[]>(SSRData);
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useMobileAll();
   const router = useRouter();
   useEffectOnce(() => {
     async function getData() {
@@ -32,7 +33,7 @@ export default function History({ SSRData = [], onTabClick }: { SSRData: IHistor
         <div className="description-item">
           <span className="label">Author: </span>
           <div
-            className="text-link break-words text-xs leading-5"
+            className="break-words text-xs leading-5 text-link"
             onClick={() => {
               if (author !== address) router.push('`/address/${addressFormat(author)}#contract`');
               onTabClick('contract');
@@ -50,7 +51,7 @@ export default function History({ SSRData = [], onTabClick }: { SSRData: IHistor
         </div>
         <div className="description-item">
           <span className="label">Transaction Hash: </span>
-          <Link className="text-link text-xs break-words leading-5" href={`/tx/${txId}`}>
+          <Link className="break-words text-xs leading-5 text-link" href={`/tx/${txId}`}>
             {txId}
           </Link>
         </div>
@@ -60,7 +61,7 @@ export default function History({ SSRData = [], onTabClick }: { SSRData: IHistor
         </div>
         <div className="description-item">
           <span className="label">Block: </span>
-          <Link className="text-link text-xs break-words leading-5" href={`/block/${blockHeight}`}>
+          <Link className="break-words text-xs leading-5 text-link" href={`/block/${blockHeight}`}>
             {blockHeight}
           </Link>
         </div>

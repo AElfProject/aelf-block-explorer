@@ -1,20 +1,22 @@
 import { MenuOutlined } from '@ant-design/icons';
 import IconFont from '@_components/IconFont';
-import { IExplorerItem, IMenuItem, INetworkItem } from '@_types';
+import { MenuItem, NetworkItem } from '@_types';
 import { Drawer, Menu, MenuProps } from 'antd';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
-import { useAppSelector } from '@_store';
+import { useAppDispatch, useAppSelector } from '@_store';
+import { setDefaultChain } from '@_store/features/chainIdSlice';
+import { getPathnameFirstSlash } from '@_utils/urlUtils';
+import { isMainNet } from '@_utils/isMainNet';
 interface IProps {
-  menuList: IMenuItem[];
+  headerMenuList: MenuItem[];
+  networkList: NetworkItem[];
 }
-const NETWORK_TYPE = process.env.NEXT_PUBLIC_NETWORK_TYPE;
-const isMainNet = !!(NETWORK_TYPE === 'MAIN');
-type MenuItem = Required<MenuProps>['items'][number];
+type AntdMenuItem = Required<MenuProps>['items'][number];
 
-export default function MobileHeaderMenu() {
+export default function MobileHeaderMenu({ headerMenuList, networkList }: IProps) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const { chainArr } = useAppSelector((state) => state.getChainId);
@@ -22,34 +24,21 @@ export default function MobileHeaderMenu() {
     setShowMobileMenu(!showMobileMenu);
   };
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
+    setCurrent(e.key);
+    setShowMobileMenu(false);
   };
 
   const pathname = usePathname();
-  const [selectKeys, setSelectKeys] = useState(['']);
-  useEffect(() => {
-    const keys: string[] = [];
-    if (pathname === '/') {
-      keys.push('/');
-    } else {
-      // start with /
-      // we search from index 1
-      const position = pathname.slice(1).indexOf('/');
-      const key = pathname.slice(0, position === -1 ? 0 : position);
-      keys.push(key);
-    }
-    setSelectKeys(keys);
-    setShowMobileMenu(false);
-  }, [pathname]);
-
+  const secondSlashIndex = pathname.slice(1).indexOf('/');
+  const [current, setCurrent] = useState(secondSlashIndex === -1 ? pathname : getPathnameFirstSlash(pathname));
   const router = useRouter();
-  function getItem(label: React.ReactNode, key: React.Key, children?: MenuItem[], type?: 'group'): MenuItem {
+  function getItem(label: React.ReactNode, key: React.Key, children?: AntdMenuItem[], type?: 'group'): AntdMenuItem {
     return {
       key,
       children,
       label,
       type,
-    } as MenuItem;
+    } as AntdMenuItem;
   }
   const jump = (url) => {
     window.history.pushState(null, '', url);
@@ -58,27 +47,34 @@ export default function MobileHeaderMenu() {
   };
   const convertMenuItems = (list) => {
     return list?.map((ele) => {
-      if (!ele.children?.length) {
-        return getItem(<a onClick={() => jump(ele.link)}>{ele.label}</a>, ele.link);
+      const { children, path, label } = ele;
+      if (!children?.length) {
+        const secondSlashIndex = path.slice(1).indexOf('/');
+        const key = secondSlashIndex === -1 ? path : getPathnameFirstSlash(path);
+        return getItem(<a onClick={() => jump(path)}>{label}</a>, key);
       }
-      return getItem(ele.label, ele.link, convertMenuItems(ele.children));
+      return getItem(label, path, convertMenuItems(children));
     });
   };
+  const dispatch = useAppDispatch();
+  const onSelectHandler = (value: string) => {
+    dispatch(setDefaultChain(value));
+  };
   const items: MenuProps['items'] = [
-    // ...convertMenuItems(menuList),
+    ...convertMenuItems(headerMenuList),
     { type: 'divider' },
-    // getItem(
-    //   'Explorers',
-    //   'explorers',
-    //   explorerList.map((ele) => {
-    //     return getItem(<Link href={ele.url}>{ele.title}</Link>, ele.netWorkType);
-    //   }),
-    // ),
+    getItem(
+      'Explorers',
+      'explorers',
+      networkList.map((ele) => {
+        return getItem(<Link href={ele.path}>{ele.label}</Link>, ele.key);
+      }),
+    ),
     getItem(
       'Networks',
       'networks',
       chainArr?.map((ele) => {
-        return getItem(<Link href="#">{ele}</Link>, ele);
+        return getItem(<a onClick={() => onSelectHandler(ele.key)}>{ele.label}</a>, ele.label);
       }),
     ),
   ];
@@ -88,22 +84,21 @@ export default function MobileHeaderMenu() {
       <IconFont type={isMainNet ? 'moremainnet' : 'moretestnet'} onClick={() => toggleMenu()} />
       {showMobileMenu && (
         <Drawer
-          visible={showMobileMenu}
+          open={showMobileMenu}
           placement="top"
           closable={false}
           zIndex={40}
-          maskStyle={{ background: 'transparent' }}
+          styles={{ mask: { background: 'transparent' } }}
           className={`header-drawer-menu-wrapper ${isMainNet ? 'header-main-drawer-menu-wrapper' : ''} ${
             pathname === '/' && 'home-header-drawer-menu-wrapper'
           }`}
           rootClassName={`header-drawer-menu-root-wrapper`}
-          onClose={() => toggleMenu()}
-          title={<>header drawer menu</>}>
+          onClose={() => toggleMenu()}>
           <Menu
             onClick={onClick}
             style={{ width: 256 }}
             expandIcon={<IconFont className="submenu-right-arrow" type="Down"></IconFont>}
-            defaultSelectedKeys={selectKeys}
+            selectedKeys={[current]}
             mode="inline"
             items={items}
           />
