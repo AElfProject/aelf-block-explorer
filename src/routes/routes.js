@@ -8,6 +8,7 @@ import { Navigate, useNavigate, useRoutes } from "react-router";
 import { useLocation } from "react-use";
 import unfetch from "unfetch";
 import { ProposalRouter } from "../pages/Proposal/routes";
+import { WebLoginInstance } from "../utils/webLogin";
 
 // Notice: we need register the route in Breadcurmb.js.
 // If not, we will always turn to '/'
@@ -53,8 +54,13 @@ export const PageRouter = () => {
     };
     const onDataListener = (data) => {
       // if (data.path && data.path !== pathname) {
-      navigate(data.path);
+      // navigate(data.path);
       // }
+      if (data.type === "logoutSilently") {
+        WebLoginInstance.get().logoutAsync({
+          noModal: true
+        });
+      }
     };
     if (window.microApp) {
       window.fetch = unfetch;

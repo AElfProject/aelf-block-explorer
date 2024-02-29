@@ -34,11 +34,11 @@ export class WebLoginInstance {
     });
   }
 
-  async logoutAsync() {
+  async logoutAsync(option) {
     return new Promise((resolve, reject) => {
       this._logoutResolve = resolve;
       this._logoutReject = reject;
-      this._context.logout();
+      this._context.logout(option);
     });
   }
 
