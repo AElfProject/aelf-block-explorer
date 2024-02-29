@@ -4,7 +4,7 @@
  * @author huangzongzhe,longyue,zhouminghui
  */
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM, { unmountComponentAtNode } from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
 import VConsole from "vconsole";
@@ -25,7 +25,7 @@ import "./index.less";
 import "./portkey.less";
 
 import "./common/webLoginConfig";
-
+import "./public-path";
 import App from "./App";
 import { WALLET_IMG } from "./common/constants";
 import { isPhoneCheck } from "./common/utils";
@@ -59,9 +59,14 @@ getNodesInfo();
 if (module.hot) {
   module.hot.accept();
 }
+window.addEventListener("unmount", () => {
+  const root = document.getElementById("app");
+  root && unmountComponentAtNode(root);
+});
 
 const container = document.getElementById("app");
 const isMobile = isPhoneCheck();
+
 ReactDOM.render(
   <ConfigProvider locale={en_US}>
     <Provider store={store}>
