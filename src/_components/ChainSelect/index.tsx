@@ -1,5 +1,6 @@
 'use client';
 import { Select } from 'antd';
+import microApp from '@micro-zoe/micro-app';
 import { useAppDispatch, useAppSelector } from '@_store';
 import { setDefaultChain } from '@_store/features/chainIdSlice';
 
@@ -11,8 +12,11 @@ export default function ChainSelect() {
 
   const dispatch = useAppDispatch();
 
-  const onSelectHandler = (value: string) => {
-    dispatch(setDefaultChain(value));
+  const onChangeHandler = (value: string) => {
+    microApp.setData('governance', { type: 'logoutSilently' });
+    setTimeout(() => {
+      dispatch(setDefaultChain(value));
+    }, 1000);
   };
 
   return (
@@ -21,8 +25,7 @@ export default function ChainSelect() {
         className="chain-select common-select-wrapper"
         popupClassName="chain-select-options"
         defaultValue={defaultChain}
-        onSelect={onSelectHandler}
-        getPopupContainer={() => document.querySelector('.header-container')!}>
+        onChange={onChangeHandler}>
         {chainArr?.map((item) => {
           return (
             <Option on className="common-select-option-wrapper chain-select-option" key={item.key} value={item.key}>

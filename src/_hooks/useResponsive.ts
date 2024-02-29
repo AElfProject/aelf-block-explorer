@@ -33,7 +33,7 @@ export default function useResponsive() {
 }
 
 export const useMobileAll = () => {
-  const isMobileSSR = useMobileContext();
+  const { isMobileSSR } = useMobileContext();
   const [isMobile, setIsMobile] = useState(isMobileSSR);
   const { isMobile: isMobileClient } = useResponsive();
   useEffect(() => {
