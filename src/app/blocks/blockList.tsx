@@ -34,14 +34,15 @@ export interface IBlocksData {
   blocks: ITableData[];
 }
 
+const disposeData = (data) => {
+  return {
+    total: data.total,
+    list: [...data.blocks],
+  };
+};
+
 export default function BlockList({ SSRData }) {
   const { isMobile } = useMobileAll();
-  const disposeData = (data) => {
-    return {
-      total: data.total,
-      list: [...data.blocks],
-    };
-  };
 
   const [timeFormat, setTimeFormat] = useState<string>('Age');
   const columns = useMemo<ColumnsType<ITableData>>(() => {
@@ -61,6 +62,8 @@ export default function BlockList({ SSRData }) {
     fetchData: fetchData,
     disposeData: disposeData,
   });
+
+  console.log(1111);
 
   const multiTitle = useMemo(() => {
     return `A total of ${total} transactions found`;

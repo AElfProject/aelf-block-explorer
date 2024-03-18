@@ -2,14 +2,13 @@ import EPSearch from '@_components/EPSearch';
 import IconFont from '@_components/IconFont';
 import { isReactNode } from '@_utils/typeUtils';
 import { ISearchProps, ITableProps, Pagination, Table } from 'aelf-design';
-import { SpinProps } from 'antd';
 import { SortOrder } from 'antd/es/table/interface';
 import clsx from 'clsx';
 import React, { ReactNode, useMemo } from 'react';
 import CommonEmpty from './empty';
 import './index.css';
 
-export interface ITableSearch extends ISearchProps {
+export interface ITableSearch extends Omit<ISearchProps, 'onPressEnter'> {
   value?: string;
   onSearchChange: (value: string) => void;
   onClear?: () => void;
@@ -38,7 +37,6 @@ export interface ICommonTableProps<T> extends ITableProps<T> {
   options?: any[];
   order?: SortOrder | undefined | null;
   field?: string | null;
-  loading?: boolean | SpinProps;
   emptyType?: 'nodata' | 'search' | 'internet' | ReactNode | (() => ReactNode) | null;
   emptyText?: string;
   pageChange?: (page: number, pageSize?: number) => void;
@@ -81,7 +79,6 @@ function HeaderTitle(props: IHeaderTitleProps): ReactNode {
 }
 const scroll = { x: 'max-content' };
 export default function TableApp({
-  loading = false,
   pageNum,
   isMobile,
   pageSize,
@@ -125,8 +122,8 @@ export default function TableApp({
                 onSearchChange?.(currentTarget.value);
                 topSearchProps?.onPressEnter?.(currentTarget.value);
               }}
-              onClear={({ currentTarget }) => {
-                onSearchChange?.(currentTarget.value);
+              onClear={() => {
+                topSearchProps?.onSearchChange('');
                 topSearchProps?.onClear?.();
               }}
             />
@@ -145,7 +142,7 @@ export default function TableApp({
           )}
         </div>
       </div>
-      <MemoTable loading={loading} scroll={scroll} locale={locale} {...params} />
+      <MemoTable scroll={scroll} locale={locale} {...params} />
       <div className="p-4">
         <Pagination
           current={pageNum}

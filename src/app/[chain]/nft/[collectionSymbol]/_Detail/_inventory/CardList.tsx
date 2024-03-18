@@ -10,9 +10,9 @@ import clsx from 'clsx';
 import { ISearchProps } from 'aelf-design';
 import { isReactNode } from '@_utils/typeUtils';
 import { InventoryItem } from '../type';
+import { ITableSearch } from '@_components/Table';
 
 const { Meta } = Card;
-
 
 export interface IHeaderTitleProps {
   single?: {
@@ -147,8 +147,8 @@ export default function CardList({
                   topSearchProps?.onSearchChange(currentTarget.value);
                   topSearchProps?.onPressEnter?.(currentTarget.value);
                 }}
-                onClear={({ currentTarget }) => {
-                  topSearchProps?.onSearchChange(currentTarget.value);
+                onClear={() => {
+                  topSearchProps?.onSearchChange('');
                   topSearchProps?.onClear?.();
                 }}
               />

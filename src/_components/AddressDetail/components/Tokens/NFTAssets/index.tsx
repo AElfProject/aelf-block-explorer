@@ -61,25 +61,8 @@ export default function NFTAssets({ SSRData = { total: 0, list: [] } }) {
   );
   const { isMobile } = useMobileAll();
   return (
-    <div className="asset-list px-4">
-      {/* <div
-        className={clsx(
-          'asset-header-container flex items-center justify-between py-4',
-          isMobile && 'flex-col !items-start',
-        )}>
-        <div className={clsx('title-container', isMobile && 'mb-3')}>
-          <div className="total text-sm leading-[22px] text-base-100">NFT Assets (7)</div>
-        </div>
-        <div className="tool-container">
-          <EPSearch
-            value={searchText}
-            onChange={({ currentTarget }) => {
-              setSearchText(currentTarget.value);
-            }}
-          />
-        </div>
-      </div> */}
-      <div className="table-container p-4">
+    <div className="asset-list">
+      <div className="table-container p-4 pb-0">
         <Table
           loading={loading}
           showTopSearch

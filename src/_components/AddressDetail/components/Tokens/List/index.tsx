@@ -58,7 +58,7 @@ export default function TokensList({ SSRData = { total: 0, list: [] } }) {
 
   return (
     <div className="token-list px-4">
-      <div className="table-container py-4">
+      <div className="table-container py-4 pb-0">
         <Table
           showTopSearch
           headerTitle={{
