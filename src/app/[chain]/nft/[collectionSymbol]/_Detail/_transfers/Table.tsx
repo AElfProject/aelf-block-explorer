@@ -55,7 +55,7 @@ export default function ItemActivityTable(props: ItemActivityTableProps) {
 
   useEffect(() => {
     searchChange(search);
-  }, [search]);
+  }, [search, searchChange]);
 
   return (
     <div className="collection-transfers-table">

@@ -1,12 +1,6 @@
 import { ITableProps } from 'aelf-design';
 import { SorterResult } from 'antd/es/table/interface';
-import { useEffect, useRef, useState } from 'react';
-import { useDebounce } from 'react-use';
-// interface IParams {
-//   page: number;
-//   pageSize: number;
-//   [propName: string]: any;
-// }
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface IFetchDataItems<T> {
   total: number;
@@ -43,40 +37,36 @@ export default function useTableData<T, U>({
   const [loading, setLoading] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [data, setData] = useState<T[]>(SSRData.list);
-  const getData = async (params) => {
-    setLoading(true);
-    try {
-      const res = await fetchData({ ...params, ...filterParams });
-      if (disposeData) {
-        const result = disposeData(res);
-        setData(result.list);
-        setTotal(result.total);
-      } else {
-        const result = res as IFetchDataItems<T>;
-        setData(result.list);
-        setTotal(result.total);
+
+  const disposeRef = useRef(disposeData);
+  disposeRef.current = disposeData;
+
+  const fetchDataRef = useRef(fetchData);
+  fetchDataRef.current = fetchData;
+
+  const getData = useCallback(
+    async (params) => {
+      setLoading(true);
+      try {
+        const res = await fetchDataRef.current({ ...params, ...filterParams });
+        if (disposeRef.current) {
+          const result = disposeRef.current(res);
+          setData(result.list);
+          setTotal(result.total);
+        } else {
+          const result = res as IFetchDataItems<T>;
+          setData(result.list);
+          setTotal(result.total);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
       }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-    }
-  };
+    },
+    [filterParams],
+  );
 
   const [searchText, setSearchText] = useState<string>(defaultSearch ?? '');
-  const mounted = useRef(false);
-  useDebounce(
-    () => {
-      if (!mounted.current) {
-        mounted.current = true;
-        return;
-      }
-      setCurrentPage(1);
-      setPageSize(defaultPageSize);
-      getData({ page: 1, pageSize: defaultPageSize, sort: sortedInfo, searchText });
-    },
-    300,
-    [searchText],
-  );
 
   const searchChange = (value) => {
     setSearchText(value);
@@ -87,23 +77,20 @@ export default function useTableData<T, U>({
     setSortedInfo(sorter as SorterResult<T>);
     setCurrentPage(1);
     setPageSize(defaultPageSize);
-    getData({ page: 1, pageSize: defaultPageSize, sort: sorter, searchText });
   };
 
   const pageChange = async (page: number) => {
     setCurrentPage(page);
-    getData({ page, pageSize: pageSize, sort: sortedInfo, searchText });
   };
 
   useEffect(() => {
     console.log('useTable');
     getData({ page: currentPage, pageSize: pageSize, sort: sortedInfo, searchText });
-  }, []);
+  }, [currentPage, pageSize, sortedInfo, searchText, getData]);
 
   const pageSizeChange = async (size) => {
     setPageSize(size);
     setCurrentPage(1);
-    getData({ page: 1, pageSize: size, sort: sortedInfo, searchText });
   };
 
   return {

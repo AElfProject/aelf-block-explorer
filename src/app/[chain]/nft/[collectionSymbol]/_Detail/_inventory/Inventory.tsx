@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import CardList, { ITableSearch } from './CardList';
+import CardList from './CardList';
 import useTableData from '@_hooks/useTable';
 import { useMobileContext } from '@app/pageProvider';
 import { CollectionInventoryData, InventoryItem } from '../type';
 import { fetchInventoryList } from '../mock';
 import { useParams } from 'next/navigation';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { ITableSearch } from '@_components/Table';
 export interface InventoryProps {
   search?: string;
   topSearchProps?: ITableSearch;
