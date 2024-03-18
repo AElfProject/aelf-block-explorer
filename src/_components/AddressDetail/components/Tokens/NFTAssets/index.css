@@ -1,0 +1,8 @@
+.asset-list {
+  .shadow-table  {
+    @apply shadow-none;
+  }
+  .footer-pagination-container {
+    @apply px-0;
+  }
+}

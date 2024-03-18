@@ -1,0 +1,8 @@
+.log-item {
+  .log-button {
+    @apply bg-link px-8 border-none h-8 hover:bg-32;
+  }
+  .log-button:active {
+    @apply bg-button_active;
+  }
+}

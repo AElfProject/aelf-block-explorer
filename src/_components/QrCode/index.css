@@ -1,0 +1,9 @@
+.qr-code {
+  @apply text-xs pt-7 px-6 pb-6 text-center;
+  canvas {
+    display: inline-block;
+  }
+  .code-txt {
+    @apply mt-4 text-scorpion;
+  }
+}

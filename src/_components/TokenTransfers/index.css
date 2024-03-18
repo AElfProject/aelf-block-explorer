@@ -1,0 +1,8 @@
+.in-out-container {
+  .in-container {
+    @apply w-9 h-6 px-2 flex box-border items-center rounded text-positive text-xs leading-5 font-medium justify-center border-confirm-br bg-confirm-bg;
+  }
+  .out-container {
+    @apply w-9 h-6 px-2 flex box-border items-center rounded text-warning text-xs leading-5 font-medium justify-center border-yellow-stroke bg-yellow-fill;
+  }
+}

@@ -1,0 +1,5 @@
+.address-detail {
+  .ep-table-header {
+    @apply pt-0;
+  }
+}

@@ -1,0 +1,8 @@
+.ace-editor {
+  background-color: #f8f9fa!important;
+  .ace_marker-layer {
+    .ace_active-line {
+      background: rgb(36 99 180 / 12%);
+    }
+  }
+}

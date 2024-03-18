@@ -1,0 +1,31 @@
+.not-found-wrap{
+  @apply text-xs rounded-lg font-normal flex justify-center items-center flex-col bg-white shadow-table min-h-[412px];
+  .not-found-logo-wrap{
+    @apply w-16 h-16 relative flex justify-center items-center;
+  }
+  .not-found-h1{
+    @apply mt-3 text-main-blue text-xl font-medium;
+  }
+  .not-found-h2{
+    @apply leading-20 text-base-200;
+  }
+  .not-found-h3{
+    @apply leading-20 text-[#FAAD14] flex;
+  }
+  .not-found-icon{
+    @apply mr-1;
+    svg{
+      @apply w-3 h-3;
+    }
+  }
+  .not-found-btn{
+    @apply mt-3 bg-link rounded text-xs text-white w-[104px] h-8 text-center leading-8 cursor-pointer;
+    &:hover{
+      @apply bg-32;
+    }
+    &:active{
+      @apply bg-button_active
+    }
+  }
+  
+}

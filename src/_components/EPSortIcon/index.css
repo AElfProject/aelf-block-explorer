@@ -1,0 +1,19 @@
+.ep-sorter {
+  @apply mr-1;
+  .down-sorter {
+    @apply mt-[1.42px];
+  }
+
+  .up-sorter,.down-sorter {
+    @apply w-[6px] h-[3.29px];
+    svg {
+      @apply text-D0;
+    }
+  }
+
+  .active {
+    svg {
+      @apply !text-base-100;
+    }
+  }
+}

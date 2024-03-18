@@ -1,0 +1,11 @@
+.overview-card {
+  @apply rounded-lg bg-white p-4;
+
+  box-shadow: 0 8px 16px 0 rgba(0 0 0 0.04);
+
+  .card-divider {
+    height: auto;
+    margin-inline: 16px;
+    border-inline-start: 1px solid #e6e6e6;
+  }
+}

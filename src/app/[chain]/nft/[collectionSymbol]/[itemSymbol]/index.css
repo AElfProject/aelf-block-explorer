@@ -1,0 +1,16 @@
+body {
+  .nft-detail-dropdown {
+    .explorer-dropdown-menu {
+      @apply w-[192px] h-[192px] overflow-scroll pr-0 p-[8px];
+    }
+    .explorer-dropdown-menu-item-active {
+      @apply !bg-white;
+    }
+    .explorer-dropdown-menu-item + .explorer-dropdown-menu-item {
+      @apply mt-[4px];
+    }
+    .explorer-dropdown-menu-item{
+      @apply !text-xs !leading-20 !text-link !py-[6px] !px-[8px] h-[32px];
+    }   
+  }
+}

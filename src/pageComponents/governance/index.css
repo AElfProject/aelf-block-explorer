@@ -1,0 +1,28 @@
+micro-app[name='governance'] {
+  .header-fixed-container,
+  .header-blank,
+  .footer {
+    @apply hidden;
+  }
+  .scan-card-wrapper .scan-content {
+    @apply justify-center flex;
+  }
+  .explorer-pagination-prev,
+  .explorer-pagination-next {
+    button {
+      @apply !flex !justify-center !items-center;
+    }
+  }
+  .body-container {
+    top: 104px;
+    margin-bottom: 104px;
+  }
+}
+.mobile-micro-app {
+  .App {
+    .body-container {
+      top: 56px;
+      margin-bottom: 56px;
+    }
+  }
+}
