@@ -18,13 +18,13 @@ import { IOverviewSSR } from './type';
 import Latest from './_components/Latest';
 import TPSChart from './_components/TPSChart';
 import tpsData from './mock';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 const BannerPc = '/image/banner_pc.png';
 const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
 const HOST = process.env.NEXT_PUBLIC_API_URL;
 
 interface IProps {
-  isMobile: boolean;
   overviewSSR: IOverviewSSR;
 }
 const getConnectionBuilder = (url: string) => {
@@ -38,7 +38,8 @@ const getConnectionBuilder = (url: string) => {
     .build();
   return connect;
 };
-export default function Home({ isMobile, overviewSSR }: IProps) {
+export default function Home({ overviewSSR }: IProps) {
+  const isMobile = useMobileAll();
   const OverView: React.FC = () => {
     const [connection, setConnection] = useState<null | HubConnection>(null);
     const [overview, setOverView] = useState<IOverviewSSR>(overviewSSR);

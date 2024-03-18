@@ -1,20 +1,16 @@
-export interface IPrice {
-  [key: string]: number;
+export interface NetworkItem {
+  key: string;
+  label: string;
+  path: string;
 }
-export interface IExplorerItem {
-  title: string;
-  url: string;
-  netWorkType: string;
+export interface ChainItem {
+  label: string;
+  key: string;
 }
-export interface INetworkItem {
-  id: number;
-  chainId: string;
-  chainsLinkName: string;
-  chainsLink: string;
-}
-export interface IMenuItem {
+export interface MenuItem {
   id: number;
   label: string;
-  link: string;
-  children: IMenuItem[];
+  path: string;
+  children: MenuItem[];
+  key?: string;
 }

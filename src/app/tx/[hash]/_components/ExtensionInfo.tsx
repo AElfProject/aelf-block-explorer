@@ -8,9 +8,10 @@ import CodeBlock from '@_components/CodeBlock';
 import SizeBytes from '@_components/SizeBytes';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 
 export default function ExtensionInfo({ data }: { data: TxnSData }) {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useMobileAll();
   const renderInfo = useMemo(() => {
     return [
       {
@@ -41,7 +42,7 @@ export default function ExtensionInfo({ data }: { data: TxnSData }) {
               {numberFormatter(data.burntFee)}
               <DollarCurrencyRate />
             </div>
-            {!isMobile && <div className="h-6 w-[1px] mx-2 bg-color-divider"></div>}
+            {!isMobile && <div className="mx-2 h-6 w-[1px] bg-color-divider"></div>}
             <div className="flex items-center">
               {numberFormatter(data.burntFee, 'USDT')} <DollarCurrencyRate />
             </div>

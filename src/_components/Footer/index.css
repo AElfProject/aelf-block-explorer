@@ -39,7 +39,7 @@
           @apply font-[700] text-[14px] leading-[22px];
         }
         .text {
-          @apply mt-1 text-[12px] font-[400] leading-5 text-[#595959];
+          @apply mt-1 text-[12px] font-[400] leading-5 text-[#595959] hover:cursor-pointer;
         }
       }
     }

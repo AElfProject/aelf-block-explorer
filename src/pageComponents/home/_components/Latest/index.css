@@ -59,14 +59,21 @@
     }
   }
   .link {
-    @apply rounded-b-lg px-4 py-[14px] flex justify-center align-middle text-[10px] font-[500] leading-[18px] text-base-200 bg-[#F7F8FA] shadow-[0_1px_0_0_#E6E6E6_inset];
+    @apply rounded-b-lg px-4 py-[14px] flex justify-center align-middle text-[10px] font-[500] leading-[18px] text-base-200 bg-[#F7F8FA] shadow-[0_1px_0_0_#E6E6E6_inset] hover:text-link;
     a {
-      @apply hover:text-link;
-    }
-    .anticon {
-      @apply ml-2;
-      svg {
-        @apply hover:text-link;
+      @apply hover:text-link text-base-200;
+      &:hover {
+        .anticon {
+          svg {
+            @apply text-link;
+          }
+        }
+      }
+      .anticon {
+        @apply ml-2;
+        svg {
+          @apply text-base-200;
+        }
       }
     }
   }

@@ -8,13 +8,14 @@ import fetchData from './mock';
 import { numberFormatter } from '@_utils/formatter';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
+import useResponsive from '@_hooks/useResponsive';
 export interface IResponseData {
   total: number;
   data: TokenTransfersItemType[];
 }
 
 export default function List({ SSRData }) {
-  const { isMobileSSR: isMobile } = useMobileContext();
+  const { isMobile } = useResponsive();
   const disposeData = (data) => {
     return {
       total: data.total,

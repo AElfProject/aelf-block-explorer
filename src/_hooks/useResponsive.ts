@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWindowSize } from 'react-use';
 import { isMobileDevices } from '@_utils/isMobile';
+import { useMobileContext } from '@app/pageProvider';
 
 export default function useResponsive() {
   const { width } = useWindowSize();
@@ -30,3 +31,13 @@ export default function useResponsive() {
     is2XL,
   };
 }
+
+export const useMobileAll = () => {
+  const isMobileSSR = useMobileContext();
+  const [isMobile, setIsMobile] = useState(isMobileSSR);
+  const { isMobile: isMobileClient } = useResponsive();
+  useEffect(() => {
+    setIsMobile(isMobileClient);
+  }, [isMobileClient]);
+  return useMemo(() => isMobile, [isMobile]);
+};

@@ -7,7 +7,11 @@ import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import { fetchTransfersData } from '../../mock';
 import { ITokenSearchProps, ITransferItem, ITransferTableData, SearchType, TTransferSearchData } from '../../type';
 import getColumns from './columns';
+
 import { getSearchByHashItems, getSearchByHolderItems } from './utils';
+
+import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+
 interface ITransfersProps extends ITokenSearchProps {
   SSRData: ITransferTableData;
 }
@@ -24,12 +28,15 @@ const contentStyle: React.CSSProperties = {
   lineHeight: '22px',
 };
 
+
 export interface ITransfersRef {
   setSearchStr: (val: string) => void;
 }
 
 const Transfers = ({ SSRData, search, searchType, onSearchChange, onSearchInputChange }: ITransfersProps, ref) => {
-  const { isMobileSSR: isMobile } = useMobileContext();
+
+  const { isMobile } = useMobileAll();
+
   const [timeFormat, setTimeFormat] = useState<string>('Date Time (UTC)');
   const [address, setAddress] = useState<string>('');
   const [searchData, setSearchData] = useState<TTransferSearchData>();
