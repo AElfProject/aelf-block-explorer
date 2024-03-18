@@ -14,7 +14,11 @@ import { ITransferItem } from '../../type';
 export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITransferItem> {
   return [
     {
-      title: <IconFont className="ml-[6px] text-xs" type="question-circle" />,
+      title: (
+        <EPTooltip mode="dark" title="See preview of the transaction details.">
+          <IconFont className="ml-[6px] text-xs" type="question-circle" />
+        </EPTooltip>
+      ),
       width: 72,
       dataIndex: '',
       key: 'view',
@@ -24,7 +28,11 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: (
         <div className="cursor-pointer font-medium">
           <span>Txn Hash</span>
-          <IconFont className="ml-1" type="question-circle" />
+          <EPTooltip
+            mode="dark"
+            title="A TxHash or transaction hash is a unique 64 character identifier that is generated whenever a transaction is executed.">
+            <IconFont className="ml-1" type="question-circle" />
+          </EPTooltip>
         </div>
       ),
       width: 208,
@@ -44,7 +52,9 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: (
         <div className="cursor-pointer font-medium">
           <span>Method</span>
-          <IconFont className="ml-1" type="question-circle" />
+          <EPTooltip mode="dark" title="Function executed based on input data.">
+            <IconFont className="ml-1" type="question-circle" />
+          </EPTooltip>
         </div>
       ),
       width: 168,
@@ -98,6 +108,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'To',
       dataIndex: 'to',
+      key: 'to',
       width: 180,
       render: (text) => {
         const { address } = JSON.parse(text);

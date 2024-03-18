@@ -1,4 +1,3 @@
-import React, { ReactNode, useMemo } from 'react';
 import EPSearch from '@_components/EPSearch';
 import IconFont from '@_components/IconFont';
 import { isReactNode } from '@_utils/typeUtils';
@@ -6,6 +5,7 @@ import { ISearchProps, ITableProps, Pagination, Table } from 'aelf-design';
 import { SpinProps } from 'antd';
 import { SortOrder } from 'antd/es/table/interface';
 import clsx from 'clsx';
+import React, { ReactNode, useMemo } from 'react';
 import CommonEmpty from './empty';
 import './index.css';
 
@@ -98,6 +98,7 @@ export default function TableApp({
   headerLeftNode,
   ...params
 }: ICommonTableProps<any>) {
+  const { onSearchChange, ...searchProps } = topSearchProps || {};
   const locale = useMemo(() => {
     return {
       emptyText: emptyStatus({ emptyType, emptyText }),
@@ -119,13 +120,13 @@ export default function TableApp({
         <div className="header-pagination">
           {showTopSearch ? (
             <EPSearch
-              {...topSearchProps}
+              {...searchProps}
               onPressEnter={({ currentTarget }) => {
-                topSearchProps?.onSearchChange(currentTarget.value);
+                onSearchChange?.(currentTarget.value);
                 topSearchProps?.onPressEnter?.(currentTarget.value);
               }}
               onClear={({ currentTarget }) => {
-                topSearchProps?.onSearchChange(currentTarget.value);
+                onSearchChange?.(currentTarget.value);
                 topSearchProps?.onClear?.();
               }}
             />

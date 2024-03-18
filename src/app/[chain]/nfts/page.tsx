@@ -5,6 +5,11 @@
  * @LastEditTime: 2023-08-01 17:12:23
  * @Description: NFTs
  */
-export default function Nfts({ params }: { params: ChainId }) {
-  return <div>Nfts, my chainId is {params.chain}</div>;
+
+import List from './list';
+import fetchData from './mock';
+export default async function Nfts({ params }: { params: ChainId }) {
+  console.log('chainId:', params);
+  const data = await fetchData({ page: 1, pageSize: 50 });
+  return <List SSRData={data} />;
 }

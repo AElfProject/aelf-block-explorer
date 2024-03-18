@@ -24,8 +24,8 @@ const transfersList: ITransferItem[] = Array.from(new Array(100).keys()).map((ke
   quantity: 1212121,
 }));
 
-export async function fetchTransfersData({ page, pageSize, search = '' }): Promise<ITransferTableData> {
-  console.log('fetchTransfersData');
+export async function fetchTransfersData({ page, pageSize, searchText = '' }): Promise<ITransferTableData> {
+  console.log('fetchTransfersData-searched', searchText);
   await new Promise((resolve) => setTimeout(resolve, 200));
   const transfers = transfersList.slice((page - 1) * pageSize, page * pageSize);
   return {

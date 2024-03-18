@@ -118,5 +118,6 @@ export default function useTableData<T, U>({
     pageSizeChange,
     handleChange,
     searchChange,
+    setSearchText,
   };
 }

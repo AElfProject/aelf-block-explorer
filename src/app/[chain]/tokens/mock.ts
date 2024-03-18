@@ -1,10 +1,10 @@
-import { ITokensTableItem, ITokensTableData } from './type';
+import { ITokensTableData, ITokensTableItem } from './type';
 
 const tokensList: ITokensTableItem[] = Array.from(new Array(100).keys()).map((key) => ({
   rank: key,
   token: {
     name: 'ELF',
-    symbol: 'ELF',
+    symbol: 'ELF1234567890987654323456eweweewesdsdsdsddsdsddd',
     imageUrl: '',
   },
   totalSupply: '100000',
