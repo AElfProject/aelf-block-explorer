@@ -35,7 +35,7 @@ export default function Events() {
           return <Link to={`/tx/${txId}`}>{txId}</Link>;
         },
       },
-      { title: "Method", width: 196, ellipsis: true, dataIndex: "name" },
+      { title: "Log Event", width: 196, ellipsis: true, dataIndex: "name" },
       {
         title: "Logs",
         dataIndex: "data",
@@ -100,7 +100,7 @@ export default function Events() {
                   </span>
                 </p>
                 <p>
-                  <span className="label">Method</span>
+                  <span className="label">Log Event</span>
                   <span className="value">{item.name}</span>
                 </p>
                 <p>
