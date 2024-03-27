@@ -8,6 +8,7 @@ import {
   NEED_PLUGIN_AUTHORIZE_TIP,
   FEE_TIP,
 } from "@src/constants";
+import { thousandsCommaWithDecimal } from "@utils/formater";
 import { ELF_DECIMAL } from "../constants";
 import TableLayer from "../../../components/TableLayer/TableLayer";
 
@@ -135,13 +136,12 @@ class RedeemModal extends PureComponent {
       activeVoteRecordsForOneCandidate.reduce(
         (total, current) => total + +current.amount,
         0
-      );
-
+      ) / ELF_DECIMAL;
     const redeemableVoteAmountForOneCandidate =
       redeemableVoteRecordsForOneCandidate.reduce(
         (total, current) => total + +current.amount,
         0
-      );
+      ) / ELF_DECIMAL;
     const redeemVoteSelectedRowKeys = this.formRef.current?.getFieldValue(
       "redeemVoteSelectedRowKeys"
     );
