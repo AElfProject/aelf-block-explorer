@@ -8,6 +8,7 @@ import {
   NEED_PLUGIN_AUTHORIZE_TIP,
   FEE_TIP,
 } from "@src/constants";
+import BigNumber from "bignumber.js";
 import { ELF_DECIMAL } from "../constants";
 import TableLayer from "../../../components/TableLayer/TableLayer";
 
@@ -131,17 +132,18 @@ class RedeemModal extends PureComponent {
       currentWallet,
     } = this.props;
 
-    const activeVoteAmountForOneCandidate =
+    const activeVoteAmountForOneCandidate = +BigNumber(
       activeVoteRecordsForOneCandidate.reduce(
         (total, current) => total + +current.amount,
         0
-      );
-
-    const redeemableVoteAmountForOneCandidate =
+      )
+    ).div(ELF_DECIMAL);
+    const redeemableVoteAmountForOneCandidate = +BigNumber(
       redeemableVoteRecordsForOneCandidate.reduce(
         (total, current) => total + +current.amount,
         0
-      );
+      )
+    ).div(ELF_DECIMAL);
     const redeemVoteSelectedRowKeys = this.formRef.current?.getFieldValue(
       "redeemVoteSelectedRowKeys"
     );
