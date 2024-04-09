@@ -34,7 +34,13 @@ export default function Transactions({ address }) {
       order: "DESC",
     });
     const { transactions = [] } = result;
-    _total = Math.max(_total, pageIndex * pageSize + 1);
+    const length = transactions.length;
+    if (length < pageSize) {
+      // the last page
+      _total = pageIndex * pageSize;
+    } else {
+      _total = Math.max(_total, pageIndex * pageSize + 1);
+    }
     setTotal(_total);
     setDataSource(transactions);
     setDataLoading(false);
