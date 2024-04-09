@@ -6,6 +6,7 @@ import useMobile from "../../../../hooks/useMobile";
 import { get } from "../../../../utils";
 
 import "./Transactions.styles.less";
+let _total = 0;
 
 export default function Transactions({ address }) {
   const isMobile = useMobile();
@@ -14,7 +15,6 @@ export default function Transactions({ address }) {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [dataSource, setDataSource] = useState(undefined);
-  let _total = 0;
 
   const handlePageChange = useCallback(
     (page, size) => {
