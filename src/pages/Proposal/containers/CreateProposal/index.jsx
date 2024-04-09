@@ -453,6 +453,7 @@ const CreateProposal = () => {
               address
             );
             if (minedRes.status === "success") {
+              dataLayer.push({'event': 'apply-contract', 'contractAction': `${isUpdate}? 'update': 'deploy'`, 'approvalMode': 'withoutApproval'});
               const { contractAddress, contractName, contractVersion } =
                 minedRes;
               // open modal
@@ -532,6 +533,7 @@ const CreateProposal = () => {
           address: currentWallet.address,
         });
       }
+      dataLayer.push({'event': 'apply-contract', 'contractAction': `${isUpdate}? 'update': 'deploy'`, 'approvalMode': 'bpApproval'});
       setApplyModal({
         visible: true,
         title: proposalId
