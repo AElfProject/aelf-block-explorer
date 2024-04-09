@@ -14,6 +14,7 @@ export default function Transactions({ address }) {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [dataSource, setDataSource] = useState(undefined);
+  let _total = 0;
 
   const handlePageChange = useCallback(
     (page, size) => {
@@ -32,8 +33,9 @@ export default function Transactions({ address }) {
       address,
       order: "DESC",
     });
-    const { transactions = [], total: resTotal = 0 } = result;
-    setTotal(resTotal);
+    const { transactions = [] } = result;
+    _total = Math.max(_total, pageIndex * pageSize + 1);
+    setTotal(_total);
     setDataSource(transactions);
     setDataLoading(false);
   }, [address, pageSize, pageIndex]);
