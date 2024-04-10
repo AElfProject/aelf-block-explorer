@@ -64,6 +64,7 @@ export default function Transactions({ address }) {
           onChange={handlePageChange}
           onShowSizeChange={(current, size) => handlePageChange(1, size)}
         />
+        <span className="page-index">第{pageIndex}页</span>
       </div>
     </div>
   );
