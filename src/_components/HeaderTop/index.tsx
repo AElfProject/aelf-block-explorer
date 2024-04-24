@@ -70,7 +70,7 @@ export default function HeaderTop({ price, range, networkList, headerMenuList }:
               lightMode={!isMainNet}
             />
           )} */}
-          <div className={clsx(`${clsPrefix}-right`)} onClick={() => (window.location.href = finalUrl)}>
+          <div className={clsx(`${clsPrefix}-right`)} onClick={() => (window.location.href = finalUrl || '')}>
             <div className={clsx(`${clsPrefix}-explorer-change`)}>
               <Image
                 className={`${clsPrefix}-change-icon`}

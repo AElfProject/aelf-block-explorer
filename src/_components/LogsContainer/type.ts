@@ -1,8 +1,13 @@
 export interface ILogsProps {
   address: string;
-  name: string;
+  eventName: string;
+  contractInfo: {
+    name: string;
+    address: string;
+    addressType: number;
+    isManager: boolean;
+    isProducer: boolean;
+  };
   indexed: never[];
-  timestamp?: string;
   nonIndexed: string;
-  decode: string; //decode json
 }

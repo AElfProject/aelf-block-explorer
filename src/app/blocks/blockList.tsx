@@ -15,23 +15,12 @@ import fetchData from './mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
-
-export interface ITableData {
-  blockHeight: number;
-  timestamp: string;
-  txns: number;
-  Producer: {
-    name: string;
-    chain_id: string;
-  };
-  blockHash?: string;
-  reward: string;
-  burntFee: string;
-}
+import { IBlocksResponseItem } from '@_api/type';
+import { pageSizeOption } from '@_utils/contant';
 
 export interface IBlocksData {
   total: number;
-  blocks: ITableData[];
+  blocks: IBlocksResponseItem[];
 }
 
 const disposeData = (data) => {
@@ -45,7 +34,7 @@ export default function BlockList({ SSRData }) {
   const { isMobile } = useMobileAll();
 
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const columns = useMemo<ColumnsType<ITableData>>(() => {
+  const columns = useMemo<ColumnsType<IBlocksResponseItem>>(() => {
     return getColumns({
       timeFormat,
       handleTimeChange: () => {
@@ -55,7 +44,7 @@ export default function BlockList({ SSRData }) {
   }, [timeFormat]);
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
-    ITableData,
+    IBlocksResponseItem,
     IBlocksData
   >({
     SSRData: disposeData(SSRData),
@@ -84,6 +73,7 @@ export default function BlockList({ SSRData }) {
         isMobile={isMobile}
         rowKey="blockHeight"
         total={total}
+        options={pageSizeOption}
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}

@@ -12,10 +12,8 @@ interface HoldersProps extends ITokenSearchProps {
   SSRData: IHolderTableData;
 }
 
-
 export default function Holders({ SSRData, searchType, search, onSearchChange, onSearchInputChange }: HoldersProps) {
   const { isMobile } = useMobileAll();
-
 
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
     IHolderItem,

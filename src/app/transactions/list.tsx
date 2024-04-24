@@ -9,6 +9,7 @@ import fetchData from './mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { pageSizeOption } from '@_utils/contant';
 interface ITransactionsData {
   total: number;
   data: ITableDataType[];
@@ -64,6 +65,7 @@ export default function List({ SSRData, showHeader = true }) {
         isMobile={isMobile}
         rowKey="transactionHash"
         total={total}
+        options={pageSizeOption}
         pageSize={pageSize}
         pageNum={currentPage}
         pageChange={pageChange}

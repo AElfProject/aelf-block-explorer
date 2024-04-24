@@ -9,7 +9,7 @@ import './index.css';
 
 export default function ChainSelect() {
   const { chainArr, defaultChain } = useAppSelector((state) => state.getChainId);
-
+  console.log(chainArr, defaultChain, 'defaultChain');
   const dispatch = useAppDispatch();
 
   const onChangeHandler = (value: string) => {
@@ -24,11 +24,12 @@ export default function ChainSelect() {
       <Select
         className="chain-select common-select-wrapper"
         popupClassName="chain-select-options"
-        defaultValue={defaultChain}
+        value={defaultChain}
+        popupMatchSelectWidth={false}
         onChange={onChangeHandler}>
         {chainArr?.map((item) => {
           return (
-            <Option on className="common-select-option-wrapper chain-select-option" key={item.key} value={item.key}>
+            <Option className="common-select-option-wrapper chain-select-option" key={item.key} value={item.key}>
               {chainArr.find((ele) => ele.key === item.key)!.label}
             </Option>
           );

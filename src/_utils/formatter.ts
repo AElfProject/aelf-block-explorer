@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 const SYMBOL = process.env.NEXT_PUBLIC_SYMBOL;
 dayjs.extend(utc);
-export const formatDate = (date: string, type: string, format = 'YYYY-MM-DD HH:mm:ss') => {
+export const formatDate = (date: string | number, type: string, format = 'YYYY-MM-DD HH:mm:ss') => {
   if (date) {
     if (type === 'Date Time (UTC)') {
       return dayjs.utc(date).format(format);

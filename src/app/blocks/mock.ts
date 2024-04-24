@@ -1,13 +1,11 @@
-import { IBlocksData } from './blockList';
 const blocks = Array.from(new Array(100).keys()).map((item) => {
   return {
     blockHeight: 165018684 + item,
     timestamp: '2023-08-14T08:20:16.3833194Z',
-    txns: item,
-    Producer: {
-      name: '29JHMRj99HfhiNUfXFu6jbfujTnZS4KC8NGx3zJeHCKbjbQDP4',
-      chain_id: 'AELF',
-    },
+    transactionCount: item,
+    timeSpan: '8.0',
+    producerName: 'AELF',
+    producerAddress: '29JHMRj99HfhiNUfXFu6jbfujTnZS4KC8NGx3zJeHCKbjbQDP4',
     reward: '0.00112726 ELF',
     burntFee: '1,550.00011273 ELF',
   };

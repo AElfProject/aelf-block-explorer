@@ -23,22 +23,22 @@ enum Status {
 export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableDataType> {
   return [
     {
-      title: <IconFont className="text-xs ml-[6px]" type="question-circle" />,
+      title: <IconFont className="ml-[6px] text-xs" type="question-circle" />,
       width: 72,
       dataIndex: '',
       key: 'view',
       render: (record) => <TransactionsView record={record} />,
     },
     {
-      dataIndex: 'transactionHash',
+      dataIndex: 'transactionId',
       width: 168,
-      key: 'transactionHash',
+      key: 'transactionId',
       title: 'Txn Hash',
       render: (text, records) => {
         return (
           <div className="flex items-center">
             {records.status === Status.fail && <IconFont className="mr-1" type="question-circle-error" />}
-            <Link className="text-link text-xs block w-[120px] truncate leading-5" href={`tx/${text}`}>
+            <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${text}`}>
               {text}
             </Link>
           </div>
@@ -47,9 +47,9 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     },
     {
       title: (
-        <div className="text-link cursor-pointer font-medium">
+        <div className="cursor-pointer font-medium text-link">
           <span>Method</span>
-          <IconFont className="text-xs ml-1" type="question-circle" />
+          <IconFont className="ml-1 text-xs" type="question-circle" />
         </div>
       ),
       width: 128,
@@ -63,7 +63,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       dataIndex: 'blockHeight',
       key: 'blockHeight',
       render: (text) => (
-        <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
+        <Link className="block text-xs leading-5 text-link" href={`block/${text}`}>
           {text}
         </Link>
       ),
@@ -71,7 +71,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: (
         <div
-          className="time text-link cursor-pointer font-medium"
+          className="time cursor-pointer font-medium text-link"
           onClick={handleTimeChange}
           onKeyDown={handleTimeChange}>
           {timeFormat}
@@ -122,8 +122,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'Value',
       width: 178,
-      key: 'txnValue',
-      dataIndex: 'txnValue',
+      key: 'transactionFee',
+      dataIndex: 'transactionFee',
       render: (text) => {
         return <span className="text-base-100">{text + 'ELF'}</span>;
       },
@@ -131,8 +131,8 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'Txn Fee',
       width: 178,
-      key: 'txnFee',
-      dataIndex: 'txnFee',
+      key: 'transactionFee',
+      dataIndex: 'transactionFee',
       render: (text) => {
         return <span className="text-base-200">{text + 'ELF'}</span>;
       },

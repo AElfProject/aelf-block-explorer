@@ -30,7 +30,7 @@ function LogsContainer({ Logs = [] }: { Logs: ILogsProps[] }) {
                   label: 'Name',
                   value: (
                     <div className="name-container">
-                      <div className="mb-2">{item.name}</div>
+                      <div className="mb-2">{item.eventName}</div>
                       <LogItems data={item} />
                     </div>
                   ),

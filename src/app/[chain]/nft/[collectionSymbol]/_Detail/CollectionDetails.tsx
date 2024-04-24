@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from 'react';
 export interface NFTDetailsProps {
   overview: CollectionDetailData;
   transferList: CollectionTransfersData;
-  search: string;
+  search?: string;
 }
 function updateUrlParams(obj) {
   const params = new URLSearchParams(window.location.search);
@@ -37,7 +37,7 @@ export default function NFTDetails(props: NFTDetailsProps) {
   const { overview, transferList } = props;
   const tabRef = useRef<EPTabsRef>(null);
   const [text, setSearchText] = useState<string>('');
-  const [searchVal, setSearchVal] = useState<string>(props.search);
+  const [searchVal, setSearchVal] = useState<string>(props.search || '');
 
   // only trigger when onPress / onClear
   const handleSearchChange = (val) => {

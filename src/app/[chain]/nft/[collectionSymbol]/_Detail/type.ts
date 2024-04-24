@@ -1,5 +1,5 @@
-import { ISearchProps } from "aelf-design";
-import { execOnce } from "next/dist/shared/lib/utils";
+import { ISearchProps } from 'aelf-design';
+import { execOnce } from 'next/dist/shared/lib/utils';
 
 // Collection detail api return type
 export interface NftCollection {
@@ -119,5 +119,5 @@ export interface ITableSearch extends ISearchProps {
   value: string;
   onSearchChange: (value: string) => void;
   onClear?: () => void;
-  onPressEnter?: (value: string) => void;
+  // onPressEnter?: (value: string) => void;
 }
