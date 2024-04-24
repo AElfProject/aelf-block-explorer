@@ -1,5 +1,4 @@
 import DetailContainer from '@_components/DetailContainer';
-import { TxnSData } from '../type';
 import { useMemo } from 'react';
 import { numberFormatter } from '@_utils/formatter';
 import DollarCurrencyRate from '@_components/DollarCurrencyRate';
@@ -9,8 +8,9 @@ import SizeBytes from '@_components/SizeBytes';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { ITransactionDetailData } from '@_api/type';
 
-export default function ExtensionInfo({ data }: { data: TxnSData }) {
+export default function ExtensionInfo({ data }: { data: ITransactionDetailData }) {
   const { isMobile } = useMobileAll();
   const renderInfo = useMemo(() => {
     return [
@@ -56,7 +56,7 @@ export default function ExtensionInfo({ data }: { data: TxnSData }) {
       {
         label: 'Transaction Ref Block Number ',
         tip: 'Transaction Ref Block Number ',
-        value: <Link href={`/block/${data.TransactionRefBlockNumber}`}>{data.TransactionRefBlockNumber}</Link>,
+        value: <Link href={`/block/${data.transactionRefBlockNumber}`}>{data.transactionRefBlockNumber}</Link>,
       },
       {
         label: 'Transaction Ref Block Prefix ',

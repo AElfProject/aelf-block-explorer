@@ -8,8 +8,8 @@
 import DetailContainer from '@_components/DetailContainer';
 import CodeBlock from '@_components/CodeBlock';
 import { useMemo } from 'react';
-import { DetailData } from './type';
-export default function ExtensionInfo({ data }: { data: DetailData }) {
+import { IBlocksDetailData } from '@_api/type';
+export default function ExtensionInfo({ data }: { data: IBlocksDetailData }) {
   const renderInfo = useMemo(() => {
     return [
       {

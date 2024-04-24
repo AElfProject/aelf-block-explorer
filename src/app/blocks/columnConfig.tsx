@@ -6,12 +6,12 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { ITableData } from './blockList';
 import { formatDate } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableData> {
+import { IBlocksResponseItem } from '@_api/type';
+export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<IBlocksResponseItem> {
   return [
     {
       title: 'Block',
@@ -19,7 +19,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       dataIndex: 'blockHeight',
       key: 'blockHeight',
       render: (text) => (
-        <Link className="text-link text-xs block leading-5" href={`block/${text}`}>
+        <Link className="block text-xs leading-5 text-link" href={`block/${text}`}>
           {text}
         </Link>
       ),
@@ -27,7 +27,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: (
         <div
-          className="time text-link cursor-pointer font-medium"
+          className="time cursor-pointer font-medium text-link"
           onClick={handleTimeChange}
           onKeyDown={handleTimeChange}>
           {timeFormat}
@@ -43,25 +43,29 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       title: 'Txn',
       width: '208px',
-      key: 'txns',
-      dataIndex: 'txns',
+      key: 'transactionCount',
+      dataIndex: 'transactionCount',
       render: (text) => (
-        <Link className="text-link text-xs block leading-5" href={`Transactions/${text}`}>
+        <Link className="block text-xs leading-5 text-link" href={`Transactions/${text}`}>
           {text}
         </Link>
       ),
     },
     {
       title: 'Producer',
-      key: 'Producer',
+      key: 'producerAddress',
       width: '320px',
-      dataIndex: 'Producer',
-      render: ({ name }) => (
+      dataIndex: 'producerAddress',
+      render: (name) => (
         <div className="flex items-center">
           <Link
-            className="text-link text-xs block leading-5"
+            className="block text-xs leading-5 text-link"
             title={`${addressFormat(name)}`}
-            href={`/address/${addressFormat(name)}`}>{`${addressFormat(hiddenAddress(name, 4, 4))}`}</Link>
+            href=""
+            // href={`/address/${addressFormat(name)}`}
+          >
+            {`${addressFormat(hiddenAddress(name, 4, 4))}`}
+          </Link>
           <Copy value={addressFormat(name)} />
         </div>
       ),

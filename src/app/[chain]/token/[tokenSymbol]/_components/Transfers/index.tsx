@@ -28,13 +28,11 @@ const contentStyle: React.CSSProperties = {
   lineHeight: '22px',
 };
 
-
 export interface ITransfersRef {
   setSearchStr: (val: string) => void;
 }
 
 const Transfers = ({ SSRData, search, searchType, onSearchChange, onSearchInputChange }: ITransfersProps, ref) => {
-
   const { isMobile } = useMobileAll();
 
   const [timeFormat, setTimeFormat] = useState<string>('Date Time (UTC)');

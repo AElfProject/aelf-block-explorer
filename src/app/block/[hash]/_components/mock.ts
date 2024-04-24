@@ -7,7 +7,6 @@ export default async function fetchData({ blockHeight }: { blockHeight: number }
     txns: 2449,
     status: 'Unfonfirmd',
     chainId: 'AELF',
-    miner: 'ELF_29JHMRj99HfhiNUfXFu6jbfujTnZS4KC8NGx3zJeHCKbjbQDP4_AELF',
     reward: '0.125 ELF',
     previousBlockHash: '40f93d6e72070cbb6d3dbb7f46f74304e539610b545810fd58a3ebd2d888ff9c',
     blockSize: 6579,

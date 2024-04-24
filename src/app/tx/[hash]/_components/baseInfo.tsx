@@ -6,7 +6,6 @@ import { formatDate, numberFormatter } from '@_utils/formatter';
 import dayjs from 'dayjs';
 import Copy from '@_components/Copy';
 import DollarCurrencyRate from '@_components/DollarCurrencyRate';
-import { TxnSData } from '../type';
 import Link from 'next/link';
 import Method from '@_components/Method';
 import ContractToken from '@_components/ContractToken';
@@ -14,7 +13,8 @@ import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
-export default function BaseInfo({ data }: { data: TxnSData }) {
+import { ITransactionDetailData } from '@_api/type';
+export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
   const { isMobile } = useMobileAll();
   const renderInfo = useMemo(() => {
     return [
@@ -23,8 +23,8 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
         tip: 'Transactions Hash ',
         value: (
           <div>
-            {data.transactionHash}
-            <Copy value={data.transactionHash} />
+            {data.transactionId}
+            <Copy value={data.transactionId} />
           </div>
         ),
       },
@@ -43,7 +43,7 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
         value: (
           <div className="flex items-center">
             <IconFont className="mr-1" type="correct" />
-            <Link href={`block/${data.block}`}>{data.block}</Link>
+            <Link href={`block/${data.blockHeight}`}>{data.blockHeight}</Link>
           </div>
         ),
       },
@@ -73,7 +73,7 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
         tip: 'From ',
         value: (
           <div className="text-link">
-            {JSON.parse(data.from).address} <Copy value={JSON.parse(data.from).address} />
+            {data.from.address} <Copy value={data.from.address} />
           </div>
         ),
       },
@@ -92,9 +92,9 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
               <div>
                 <span className="font10px mx-1 inline-block leading-[18px] text-base-200">From</span>
                 <span className="font10px inline-block leading-[18px] text-link">
-                  {addressFormat(hiddenAddress(data.transactionHash))}
+                  {addressFormat(hiddenAddress(data.transactionId))}
                 </span>
-                <Copy value={addressFormat(data.transactionHash)} />
+                <Copy value={addressFormat(data.transactionId)} />
                 <span className="font10px mx-1 inline-block leading-[18px] text-base-200">To</span>
                 <span className="font10px inline-block leading-[18px] text-link">OKEX3</span>
                 <Copy value="OKEX3" />
@@ -116,8 +116,8 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
               <div>
                 <IconFont type="arrow" />
                 <span className="mx-1 text-base-200">From</span>
-                <span className="text-link">{addressFormat(hiddenAddress(data.transactionHash))}</span>
-                <Copy value={addressFormat(data.transactionHash)} />
+                <span className="text-link">{addressFormat(hiddenAddress(data.transactionId))}</span>
+                <Copy value={addressFormat(data.transactionId)} />
               </div>
               <div>
                 <span className="mx-1 text-base-200">To</span>
@@ -160,8 +160,8 @@ export default function BaseInfo({ data }: { data: TxnSData }) {
                   <span className="ml-1 inline-block text-link">OKEX3</span>
                   <Copy value="OKEX3" />
                   <span className="mx-1 inline-block text-base-200">To</span>
-                  <span className="inline-block text-link">{addressFormat(hiddenAddress(data.transactionHash))}</span>
-                  <Copy value={addressFormat(data.transactionHash)} />
+                  <span className="inline-block text-link">{addressFormat(hiddenAddress(data.transactionId))}</span>
+                  <Copy value={addressFormat(data.transactionId)} />
                 </div>
               </div>
             </div>

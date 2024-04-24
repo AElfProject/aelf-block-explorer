@@ -22,7 +22,7 @@ function LogItems({ data }: { data: ILogsProps }) {
     <div className="log-item">
       {
         <>
-          <CodeBlock value={hasDecoded ? data.decode : result} />
+          <CodeBlock value={hasDecoded ? JSON.stringify(data.contractInfo) : result} />
           <Button type="primary" className="log-button mt-2 text-xs leading-5" onClick={decode}>
             {hasDecoded ? 'Encode' : 'Decode'}
           </Button>

@@ -1,7 +1,7 @@
 export default async function fetchData({ transactionHash }: { transactionHash: string }): Promise<any> {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   const res = {
-    transactionHash: transactionHash,
+    transactionId: transactionHash,
     previousTransactionHash: transactionHash + 1,
     nextTransactionHash: transactionHash + 2,
     status: 'Failed',

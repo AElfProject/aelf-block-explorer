@@ -12,7 +12,6 @@ import { useMemo, useState, useCallback } from 'react';
 import './detail.css';
 import BaseInfo from './baseinfo';
 import ExtensionInfo from './ExtensionInfo';
-import { DetailData } from './type';
 import type { ITabsProps } from 'aelf-design';
 import Table from '@_components/Table';
 import getColumns from '@app/transactions/columnConfig';
@@ -22,10 +21,11 @@ import MoreContainer from '@_components/MoreContainer';
 import EPTabs from '@_components/EPTabs';
 import { useMobileContext } from '@app/pageProvider';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { IBlocksDetailData } from '@_api/type';
 
 export default function Detail({ SSRData }) {
   const { isMobile } = useMobileAll();
-  const [detailData] = useState<DetailData>(SSRData);
+  const [detailData] = useState<IBlocksDetailData>(SSRData);
   const [showMore, setShowMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);

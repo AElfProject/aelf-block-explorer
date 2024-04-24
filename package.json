@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=test next dev",
-    "build:test": "NODE_ENV=test next build",
-    "build": "NODE_ENV=production next build",
+    "dev": "NODE_ENV=test NEXT_PUBLIC_APP_ENV=test next dev",
+    "build:test": "NODE_ENV=test NEXT_PUBLIC_APP_ENV=test next build",
+    "build": "NODE_ENV=production NEXT_PUBLIC_APP_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
     "release": "release-it"
