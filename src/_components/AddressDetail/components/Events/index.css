@@ -1,0 +1,8 @@
+.event-container {
+  .ep-table-header {
+    @apply px-4;
+  }
+  .tips {
+    @apply flex-1 text-xs left-5 mr-4;
+  }
+}

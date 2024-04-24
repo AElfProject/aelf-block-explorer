@@ -1,0 +1,15 @@
+.tps-chart-container {
+  @apply bg-white mt-4 rounded-lg;
+  h3 {
+    @apply flex align-middle h-[52px] px-4 py-[15px] shadow-[0_-1px_0_0_#E6E6E6_inset];
+  }
+  .chart {
+    @apply h-[297px] p-4 flex;
+  }
+  &-mobile {
+    @apply mt-4 mx-3;
+    .chart {
+      @apply h-[260px];
+    }
+  }
+}

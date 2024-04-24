@@ -1,0 +1,40 @@
+.header-menu-container {
+  @apply bg-white h-12;
+  &-content {
+    @apply max-w-[1400px] mx-auto pl-2 h-full flex justify-between align-middle;
+    .explorer-menu-light.explorer-menu-horizontal {
+      @apply border-y-0 my-auto leading-[48px];
+      .explorer-menu-overflow-item,
+      .explorer-menu-item,
+      .explorer-menu-submenu {
+        @apply px-3;
+        &::after {
+          @apply !border-b-0;
+        }
+        &:hover {
+          @apply !text-[#327DEC];
+        }
+        .submenu-title-wrapper {
+          @apply mr-2;
+        }
+        .submenu-right-arrow {
+          svg {
+            @apply w-4 h-4;
+          }
+        }
+      }
+    }
+  }
+}
+.header-menu-container-popup.explorer-menu-submenu-popup {
+  @apply pt-[1px];
+  .explorer-menu-vertical {
+    @apply !pb-1 !pt-2 !min-w-[119px];
+    .explorer-menu-item {
+      @apply h-8 leading-5 px-2 py-[6px] mt-0 mb-1 flex align-middle text-[12px] mx-2 w-[103px] overflow-hidden;
+      &:hover {
+        @apply !bg-[#D8DDE5] !text-button_active;
+      }
+    }
+  }
+}

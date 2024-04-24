@@ -1,0 +1,9 @@
+.tx-detail-container {
+  .header-title {
+    display: flex;
+    align-items: center !important;
+  }
+  .jump-link {
+    @apply ml-2;
+  }
+}

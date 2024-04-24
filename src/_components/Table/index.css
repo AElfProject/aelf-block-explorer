@@ -1,0 +1,71 @@
+.ep-table {
+  .explorer-table {
+    .explorer-table-cell {
+      @apply py-3 pr-4 pl-0 bg-white border-none;
+
+      box-shadow: 0 -1px 0 0 #E6E6E6 inset;
+    }
+    .explorer-table-cell:first-child {
+      @apply pl-4 !important;
+    }
+    .explorer-table-thead {
+      @apply border-none;
+      .explorer-table-cell::before {
+        @apply bg-inherit w-0 h-0 !important; 
+      }
+      .explorer-table-cell:first-child {
+        @apply rounded-none pl-4 !important;
+      }
+      .explorer-table-cell:last-child {
+        @apply rounded-none !important;
+      }
+      .explorer-table-cell {
+        @apply py-2 pr-4 pl-0 text-xs bg-white border-none leading-5 text-base-100 font-medium !important; 
+      }
+      .header-top {
+        @apply flex items-center !important; 
+      }
+      .explorer-table-column-sorters {
+        @apply !flex-row-reverse;
+        .explorer-table-column-sorter {
+          @apply ms-0 me-1;
+        }
+      }
+    }
+    .explorer-table-tbody {
+      @apply text-xs leading-5 text-base-100;
+      .explorer-table-cell {
+        @apply leading-none;
+      }
+    }
+    
+  }
+  .explorer-pagination {
+    .explorer-pagination-item {
+      @apply hidden;
+    }
+    .explorer-pagination-jump-prev,.explorer-pagination-jump-next {
+      @apply hidden;
+    }
+    .explorer-pagination-item-1 {
+      @apply inline-block h-[1.875rem] px-2 bg-F7 border-D0;
+    }
+  } 
+
+  .ep-table-header {
+    @apply flex items-center justify-between !important;
+    .ep-pagination {
+      @apply p-0 !important;
+    }
+  }
+
+  .ep-table-header-mobile {
+    @apply flex items-start flex-col !important;
+    .header-left {
+      @apply flex-1 flex-shrink-0 mb-3;
+    }
+    .header-pagination {
+      @apply flex-1 flex-shrink-0;
+    }
+  }
+}

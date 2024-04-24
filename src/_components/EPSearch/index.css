@@ -1,0 +1,14 @@
+.ep-search{
+  .explorer-input-prefix {
+    margin-inline-end: 8px;
+  }
+  .explorer-input-affix-wrapper {
+    @apply p-2 box-border border-D0 w-[312px] h-[38px] rounded;
+    svg {
+      @apply text-base-200;
+    }
+  }
+  .explorer-input {
+    @apply text-xs leading-5;
+  }
+}

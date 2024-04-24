@@ -1,0 +1,22 @@
+.back-to-top-contrainer {
+  @apply absolute right-[20px] left-auto hover:cursor-pointer flex top-[30px];
+  .anticon {
+    svg {
+      @apply w-3 h-3  text-[#252525];
+    }
+    @apply mr-1;
+  }
+  .text {
+    @apply text-[12px] text-[#252525];
+  }
+}
+.back-to-top-main {
+  .anticon {
+    svg {
+      @apply text-white;
+    }
+  }
+  .text {
+    @apply text-white;
+  }
+}

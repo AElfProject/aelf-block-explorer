@@ -1,0 +1,27 @@
+.transaction-view {
+  @apply border cursor-pointer bg-white rounded border-color-divider w-6 h-6 box-border flex justify-center items-center focus:!bg-color-divider;
+}
+.transaction-view:focus {
+  @apply !bg-color-divider;
+}
+.transaction-tooltip {
+  .explorer-tooltip-inner {
+    @apply !p-0;
+  }
+}
+
+.preview-view {
+  @apply min-w-[203px] min-h-[106px];
+  .header {
+    @apply shadow-title_bot;
+  }
+  .main {
+    @apply p-2;
+    .label {
+      @apply text-base-200 text-xs leading-5 mr-2;
+    }
+    .status,.fee {
+      @apply flex items-center justify-between;
+    }
+  }
+}
