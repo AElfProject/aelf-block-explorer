@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@_store';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 import { MenuItem, NetworkItem } from '@_types';
+import { useEnvContext } from 'next-runtime-env';
 
 // at public file
 const TopIconMain = '/image/aelf-header-top.svg';
@@ -29,7 +30,8 @@ export default function HeaderTop({ price, range, networkList, headerMenuList }:
   const isShowPrice = defaultChain === 'AELF' && isMainNet;
   const pathname = usePathname();
   const isHideSearch = pathname === '/' || pathname.includes('search-');
-  const networkType = process.env.NEXT_PUBLIC_NETWORK_TYPE;
+  const { NEXT_PUBLIC_NETWORK_TYPE } = useEnvContext();
+  const networkType = NEXT_PUBLIC_NETWORK_TYPE;
   const finalUrl = networkList.find((ele) => ele.key === networkType)?.path;
 
   return (
