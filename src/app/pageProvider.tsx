@@ -20,6 +20,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Provider as ReduxProvider } from 'react-redux';
 import { useIsGovernance } from '@_hooks/useIsPath';
 import useResponsive from '@_hooks/useResponsive';
+import { useEnvContext } from 'next-runtime-env';
 
 const MobileContext = createContext<any>({});
 
@@ -29,6 +30,7 @@ const useMobileContext = () => {
 export { useMobileContext };
 
 function RootProvider({ children, isMobileSSR }) {
+  const { NEXT_PUBLIC_REMOTE_URL } = useEnvContext();
   const storeRef = useRef<AppStore>();
   if (!storeRef.current) {
     storeRef.current = makeStore();
@@ -92,7 +94,7 @@ function RootProvider({ children, isMobileSSR }) {
               <>
                 <micro-app
                   name="governance"
-                  url={process.env.NEXT_PUBLIC_REMOTE_URL}
+                  url={NEXT_PUBLIC_REMOTE_URL}
                   keep-alive
                   class={isMobile ? 'mobile-micro-app' : ''}></micro-app>
                 {!show && <Skeleton className="relative top-[104px] mb-[104px] h-[calc(100vh-434px)]" />}
