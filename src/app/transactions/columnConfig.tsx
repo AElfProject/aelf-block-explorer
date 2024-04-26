@@ -15,7 +15,11 @@ import TransactionsView from '@_components/TransactionsView';
 import { ITransactionsResponseItem, TransactionStatus } from '@_api/type';
 import EPTooltip from '@_components/EPToolTip';
 
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITransactionsResponseItem> {
+export default function getColumns({
+  timeFormat,
+  handleTimeChange,
+  chainId = 'AELF',
+}): ColumnsType<ITransactionsResponseItem> {
   return [
     {
       title: (
@@ -37,9 +41,13 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
         return (
           <div className="flex items-center">
             {records.status === TransactionStatus.Failed && <IconFont className="mr-1" type="question-circle-error" />}
-            <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${text}`}>
-              {text}
-            </Link>
+            <EPTooltip title={text} mode="dark">
+              <Link
+                className="block w-[120px] truncate text-xs leading-5 text-link"
+                href={`/${chainId}/tx/${text}?blockHeight=${records.blockHeight}`}>
+                {text}
+              </Link>
+            </EPTooltip>
           </div>
         );
       },
@@ -91,7 +99,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: 196,
       render: (fromData) => {
         const { address } = fromData;
-        return <ContractToken address={address} name={fromData.name} type={fromData.addressType} />;
+        return <ContractToken address={address} name={fromData.name} chainId={chainId} type={fromData.addressType} />;
       },
     },
     {
@@ -104,10 +112,9 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       dataIndex: 'to',
       title: 'To',
-      width: 196,
       render: (toData) => {
         const { address } = toData;
-        return <ContractToken address={address} name={toData.name} type={toData.addressType} />;
+        return <ContractToken address={address} name={toData.name} chainId={chainId} type={toData.addressType} />;
       },
     },
     {

@@ -19,8 +19,10 @@ import SizeBytes from '@_components/SizeBytes';
 import DollarCurrencyRate from '@_components/DollarCurrencyRate';
 import addressFormat from '@_utils/urlUtils';
 import { StatusEnum } from '@_types/status';
+import { useParams } from 'next/navigation';
 export default function BaseInfo({ data }) {
   const router = useRouter();
+  const { chain } = useParams();
   const isFirst = data.preBlockHeight === 0;
   const isLast = data.nextBlockHeight === 0;
   const jump = useCallback(
@@ -93,9 +95,9 @@ export default function BaseInfo({ data }) {
         value: (
           <div className="text-xs leading-5">
             <span className="text-link">
-              {data.producer.name ? data.producer.name : addressFormat(data.producer.address)}
+              {data.producer.name ? data.producer.name : addressFormat(data.producer.address, chain as string)}
             </span>
-            <Copy value={data.producer.address} />
+            <Copy value={addressFormat(data.producer.address, chain as string)} />
             <span className="ml-1">in 0.5 secs</span>
           </div>
         ),

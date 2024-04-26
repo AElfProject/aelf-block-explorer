@@ -11,7 +11,7 @@ import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
 import { IBlocksResponseItem } from '@_api/type';
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<IBlocksResponseItem> {
+export default function getColumns({ timeFormat, handleTimeChange, chianId }): ColumnsType<IBlocksResponseItem> {
   return [
     {
       title: 'Block',
@@ -19,7 +19,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       dataIndex: 'blockHeight',
       key: 'blockHeight',
       render: (text) => (
-        <Link className="block text-xs leading-5 text-link" href={`block/${text}`}>
+        <Link className="block text-xs leading-5 text-link" href={`/${chianId}/block/${text}`}>
           {text}
         </Link>
       ),
@@ -60,13 +60,11 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
         <div className="flex items-center">
           <Link
             className="block text-xs leading-5 text-link"
-            title={`${addressFormat(address)}`}
-            href=""
-            // href={`/address/${addressFormat(name)}`}
-          >
-            {record.producerName ? record.producerName : `${addressFormat(hiddenAddress(address, 4, 4))}`}
+            title={`${addressFormat(address, chianId)}`}
+            href={`${chianId}/address/${addressFormat(address, chianId)}`}>
+            {record.producerName ? record.producerName : `${addressFormat(hiddenAddress(address, 4, 4), chianId)}`}
           </Link>
-          <Copy value={addressFormat(address)} />
+          <Copy value={addressFormat(address, chianId)} />
         </div>
       ),
     },

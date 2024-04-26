@@ -1,6 +1,6 @@
 import DetailContainer from '@_components/DetailContainer';
 import { useMemo } from 'react';
-import ConfirmStatus from '@_components/ConfirmedStatus';
+import ConfirmStatus from '@_components/TransactionsStatus';
 import IconFont from '@_components/IconFont';
 import { formatDate, numberFormatter } from '@_utils/formatter';
 import dayjs from 'dayjs';
@@ -14,6 +14,7 @@ import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 import { ITransactionDetailData } from '@_api/type';
+import { AddressType } from '@_types/common';
 export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
   const { isMobile } = useMobileAll();
   const renderInfo = useMemo(() => {
@@ -82,7 +83,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
         tip: 'Interacted With(To) ',
         value: (
           <div>
-            <ContractToken address="AELF.Contract.Token" />
+            <ContractToken address="AELF.Contract.Token" type={AddressType.Contract} chainId="AELF" />
             <div className={clsx('mt-2 flex items-center leading-[18px]', isMobile && 'flex-col !items-start')}>
               <div>
                 <IconFont className="text-xs" type="Tab" />

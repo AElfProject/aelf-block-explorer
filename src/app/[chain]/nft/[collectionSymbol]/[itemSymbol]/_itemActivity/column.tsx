@@ -14,6 +14,7 @@ import Link from 'next/link';
 import IconFont from '@_components/IconFont';
 import { Tooltip } from 'aelf-design';
 import ContractToken from '@_components/ContractToken';
+import { AddressType } from '@_types/common';
 
 export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<IActivityTableData> {
   return [
@@ -126,7 +127,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       // width: 196,
       render: (to) => {
         const { address } = to;
-        return <ContractToken address={address} />;
+        return <ContractToken address={address} type={AddressType.address} chainId="AELF" />;
       },
     },
   ];
