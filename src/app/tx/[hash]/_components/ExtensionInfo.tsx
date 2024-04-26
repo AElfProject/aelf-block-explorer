@@ -16,18 +16,32 @@ export default function ExtensionInfo({ data }: { data: ITransactionDetailData }
     return [
       {
         label: 'Transaction Fee ',
-        tip: 'Transaction Fee ',
+        tip: 'The amount of token paid to process the transaction in ELF and fiat value. The transaction fee equals the Size fee + Method Fee - Exempted Fee.',
         value: (
-          <div className="flex items-center">
-            <span>{numberFormatter(data.transactionFee)}</span>
-            <DollarCurrencyRate />
+          <div className={clsx('flex', isMobile ? 'flex-col items-start' : 'items-center')}>
+            {data.transactionFees.length > 0
+              ? data.transactionFees.map((transactionFee, idx) => {
+                  return (
+                    <div
+                      key={idx}
+                      className={clsx(
+                        'flex items-center',
+                        idx !== 0 && !isMobile && 'border-0 border-l bg-color-divider',
+                      )}>
+                      <span>{numberFormatter(transactionFee.amount + '')}</span>
+                      <span>{transactionFee.symbol}</span>
+                      <DollarCurrencyRate nowPrice={transactionFee.nowPrice} tradePrice={transactionFee.tradePrice} />
+                    </div>
+                  );
+                })
+              : '-'}
           </div>
         ),
       },
       {
         label: 'Resources Fee ',
-        tip: 'Resources Fee ',
-        value: numberFormatter(data.resourcesFee),
+        tip: 'The amount of resource tokens paid to process the transaction.',
+        value: <span>{data.resourcesFee ? numberFormatter(data.resourcesFee) : '-'}</span>,
       },
       {
         label: 'divider1',
@@ -35,17 +49,25 @@ export default function ExtensionInfo({ data }: { data: ITransactionDetailData }
       },
       {
         label: 'Burnt Fee ',
-        tip: 'Burnt Fee ',
+        tip: 'Each transaction will burn 10% of its Size Fee.',
         value: (
-          <div className={clsx(isMobile && 'flex-col !items-start', 'flex items-center')}>
-            <div className={clsx(isMobile && 'mb-2', 'flex items-center')}>
-              {numberFormatter(data.burntFee)}
-              <DollarCurrencyRate />
-            </div>
-            {!isMobile && <div className="mx-2 h-6 w-[1px] bg-color-divider"></div>}
-            <div className="flex items-center">
-              {numberFormatter(data.burntFee, 'USDT')} <DollarCurrencyRate />
-            </div>
+          <div className={clsx('flex', isMobile ? 'flex-col items-start' : 'items-center')}>
+            {data.burntFees.length > 0
+              ? data.burntFees.map((burntFee, idx) => {
+                  return (
+                    <div
+                      key={idx}
+                      className={clsx(
+                        'flex items-center',
+                        idx !== 0 && !isMobile && 'border-0 border-l bg-color-divider',
+                      )}>
+                      <span>{numberFormatter(burntFee.amount + '')}</span>
+                      <span>{burntFee.symbol}</span>
+                      <DollarCurrencyRate nowPrice={burntFee.nowPrice} tradePrice={burntFee.tradePrice} />
+                    </div>
+                  );
+                })
+              : '-'}
           </div>
         ),
       },
@@ -55,17 +77,17 @@ export default function ExtensionInfo({ data }: { data: ITransactionDetailData }
       },
       {
         label: 'Transaction Ref Block Number ',
-        tip: 'Transaction Ref Block Number ',
+        tip: 'The block number referenced by this transaction at the time of its creation.',
         value: <Link href={`/block/${data.transactionRefBlockNumber}`}>{data.transactionRefBlockNumber}</Link>,
       },
       {
         label: 'Transaction Ref Block Prefix ',
-        tip: 'Transaction Ref Block Prefix ',
-        value: data.transactionRefBlockPrefix,
+        tip: 'The hash header referenced by this transaction at the time of its creation.',
+        value: <span>{data.transactionRefBlockPrefix || '-'}</span>,
       },
       {
         label: 'Transaction Parameters ',
-        tip: 'Transaction Parameters ',
+        tip: 'The input parameters of the transaction.',
         value: <CodeBlock value={data.transactionParams} />,
       },
       {
@@ -74,17 +96,17 @@ export default function ExtensionInfo({ data }: { data: ITransactionDetailData }
       },
       {
         label: 'Return Value ',
-        tip: 'Return Value ',
+        tip: 'The output parameters of the transaction.',
         value: <span>{data.returnValue || '-'}</span>,
       },
       {
         label: 'Transaction Signature ',
-        tip: 'Transaction Signature ',
-        value: data.transactionSignature,
+        tip: 'The signature of the transaction is used to verify the authenticity and integrity of the transaction, ensuring its security and immutability.',
+        value: <span>{data.transactionSignature || '-'}</span>,
       },
       {
         label: 'Transaction Size ',
-        tip: 'Transaction Size ',
+        tip: 'The size of the transaction.',
         value: <SizeBytes size={Number(data.transactionSize)} />,
       },
     ];

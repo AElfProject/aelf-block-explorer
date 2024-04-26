@@ -132,6 +132,7 @@ export interface IInlines {
 export interface ITokensTransferrdItem {
   from: IFromInfo;
   to: IFromInfo;
+  name: string;
   symbol: string;
   amount: number;
   nowPrice: string;
@@ -141,13 +142,9 @@ export interface ITokensTransferrdItem {
 
 export type TTokensTransferrd = ITokensTransferrdItem[];
 
-export interface INftsTransferredItem {
-  from: IFromInfo;
-  to: IFromInfo;
-  amount: string;
-  name: string;
-  symbol: string;
-  isCollection: boolean;
+export interface INftsTransferredItem extends ITokensTransferrdItem {
+  imageBase64?: string;
+  isCollection?: boolean;
 }
 
 export type TNftsTransferred = INftsTransferredItem[];
@@ -155,7 +152,8 @@ export type TNftsTransferred = INftsTransferredItem[];
 export interface ITransactionValues {
   symbol: string;
   amount: number;
-  priceInUsd: string;
+  nowPrice: string;
+  tradePrice: string;
 }
 
 export interface ITransactionDetailData {
@@ -168,9 +166,9 @@ export interface ITransactionDetailData {
   from: IFromInfo;
   to: IFromInfo;
   tokenTransferreds: TTokensTransferrd;
-  nftsTransferred: TNftsTransferred;
+  nftsTransferreds: TNftsTransferred;
   transactionValues: ITransactionValues[];
-  transactionFees: [];
+  transactionFees: ITransactionValues[];
   resourcesFee: string;
   burntFees: ITransactionValues[];
   transactionRefBlockNumber: string;
@@ -183,17 +181,9 @@ export interface ITransactionDetailData {
   error: string;
   transactionSize: string;
   resourceFee: string;
+  logEvents: ILogsProps[];
+}
 
-  // TODO: Not necessarily needed here
-  previousTransactionHash: string;
-  nextTransactionHash: string;
-  // blockHash: string;
-  // txnValue: string;
-  value: string;
-  burntFee: string;
-  // burntFeeInUsd: string;
-  // TransactionRefBlockNumber: string;
-  transactionFee: string;
-  logs: ILogsProps[];
-  total: number;
+export interface ITransactionDetailDataList {
+  list: ITransactionDetailData[];
 }
