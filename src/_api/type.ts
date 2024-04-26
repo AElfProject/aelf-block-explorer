@@ -1,11 +1,26 @@
 import { ILogsProps } from '@_components/LogsContainer/type';
-import { StatusEnum } from '@_types/status';
 
 export type TChainID = 'AELF' | 'tDVV' | 'tDVW';
 
 export interface IBurntFee {
   usdFee: number;
   elfFee: number;
+}
+
+export enum TransactionStatusText {
+  Mined = 'Success',
+  Conflict = 'Conflict',
+  Failed = 'Failed',
+}
+
+export enum TransactionStatus {
+  NotExisted,
+  Pending,
+  Failed,
+  Mined,
+  Conflict,
+  PendingValidation,
+  NodeValidationFailed,
 }
 
 export interface IProducer {
@@ -31,7 +46,7 @@ export interface ITransactionsRequestParams {
 
 export interface ITransactionsResponseItem {
   transactionId: string;
-  status: StatusEnum;
+  status: TransactionStatus;
   method: string;
   blockHeight: number;
   timestamp: string;
@@ -145,7 +160,7 @@ export interface ITransactionValues {
 
 export interface ITransactionDetailData {
   transactionId: string;
-  status: StatusEnum;
+  status: TransactionStatus;
   blockHeight: string;
   blockConfirmations: number;
   timestamp: number;

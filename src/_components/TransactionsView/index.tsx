@@ -2,15 +2,16 @@ import IconFont from '@_components/IconFont';
 import EPTooltip from '../EPToolTip/index';
 import './index.css';
 import Link from 'next/link';
-import ConfirmStatus from '@_components/ConfirmedStatus';
+import Status from '@_components/TransactionsStatus';
+import { addSymbol, divDecimals } from '@_utils/formatter';
 export default function TransactionsView({ record }) {
   const PreviewCard = () => {
     return (
       <div className="preview-view">
-        <div className="header p-2 flex justify-between items-center">
-          <div className="title text-base-100 text-sm leading-[22px]">Preview</div>
+        <div className="header flex items-center justify-between p-2">
+          <div className="title text-sm leading-[22px] text-base-100">Preview</div>
           <div className="more text-xs leading-5">
-            <Link className="text-xs inline-block leading-5" href={`tx/${record.transactionHash}`}>
+            <Link className="inline-block text-xs leading-5" href={`tx/${record.transactionId}`}>
               See More Details
             </Link>
           </div>
@@ -19,12 +20,12 @@ export default function TransactionsView({ record }) {
           <div className="status mb-2">
             <div className="label">Status :</div>
             <div className="value">
-              <ConfirmStatus status={record.status} />
+              <Status status={record.status} />
             </div>
           </div>
           <div className="fee">
             <div className="label">Transaction Fee :</div>
-            <div className="value text-xs leading-5 text-base-100">0.12543286 ELF</div>
+            <div className="value text-xs leading-5 text-base-100">{addSymbol(divDecimals(record.transactionFee))}</div>
           </div>
         </div>
       </div>

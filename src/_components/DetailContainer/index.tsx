@@ -7,10 +7,9 @@
  */
 import IconFont from '@_components/IconFont';
 import { Divider } from 'antd';
-import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
 import EPTooltip from '@_components/EPToolTip';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 
 export default function DetailContainer({
   infoList,
@@ -27,7 +26,7 @@ export default function DetailContainer({
           <div key={item.label} className={clsx(isMobile ? 'flex flex-col' : 'row flex items-start', 'py-2')}>
             <div className={clsx('label mr-4 flex w-[312px] items-center', isMobile && 'mb-2')}>
               {item.tip && (
-                <EPTooltip title={item.label} mode="dark">
+                <EPTooltip title={item.tip} mode="dark">
                   <IconFont className="text-sm" style={{ marginRight: '4px' }} type="question-circle" />
                 </EPTooltip>
               )}
