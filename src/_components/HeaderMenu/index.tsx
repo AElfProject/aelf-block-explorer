@@ -23,9 +23,9 @@ export default function HeaderMenu({ networkList, headerMenuList }: IProps) {
   const router = useRouter();
   const jump = useMemoizedFn((url) => {
     // microApp.setData('governance', { path: url });
-    window.history.pushState(null, '', url);
-    window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
     router.replace(url);
+    // window.history?.pushState(null, '', url);
+    // window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
   });
 
   // TODO: use cms

@@ -15,12 +15,12 @@ import ExtensionInfo from './ExtensionInfo';
 import type { ITabsProps } from 'aelf-design';
 import Table from '@_components/Table';
 import getColumns from '@app/transactions/columnConfig';
-import { ITableDataType } from '@app/transactions/type';
 import { ColumnsType } from 'antd/es/table';
 import MoreContainer from '@_components/MoreContainer';
 import EPTabs from '@_components/EPTabs';
 import { useMobileAll } from '@_hooks/useResponsive';
-import { IBlocksDetailData } from '@_api/type';
+import { IBlocksDetailData, ITransactionsResponseItem } from '@_api/type';
+import { pageSizeOption } from '@_utils/contant';
 
 export default function Detail({ SSRData }) {
   console.log(SSRData, 'SSRData');
@@ -29,9 +29,9 @@ export default function Detail({ SSRData }) {
   const [showMore, setShowMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);
-  const [total] = useState<number>(SSRData.total);
+  const [total] = useState<number>(SSRData.transactions.length);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
+  const columns = useMemo<ColumnsType<ITransactionsResponseItem>>(() => {
     return getColumns({
       timeFormat,
       handleTimeChange: () => {
@@ -52,7 +52,8 @@ export default function Detail({ SSRData }) {
     setPageSize(size);
   };
   const tableData = useMemo(() => {
-    return detailData.transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const transactions = detailData.transactions || [];
+    return transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
   }, [currentPage, detailData.transactions, pageSize]);
 
   const moreChange = useCallback(() => {
@@ -70,28 +71,29 @@ export default function Detail({ SSRData }) {
         </div>
       ),
     },
-    // {
-    //   key: 'txns',
-    //   label: 'Transactions',
-    //   children: (
-    //     <Table
-    //       headerTitle={{
-    //         multi: {
-    //           title: multiTitle,
-    //           desc: multiTitleDesc,
-    //         },
-    //       }}
-    //       dataSource={tableData}
-    //       columns={columns}
-    //       isMobile={isMobile}
-    //       rowKey="transactionHash"
-    //       total={total}
-    //       pageSize={pageSize}
-    //       pageNum={currentPage}
-    //       pageChange={pageChange}
-    //       pageSizeChange={pageSizeChange}></Table>
-    //   ),
-    // },
+    {
+      key: 'txns',
+      label: 'Transactions',
+      children: (
+        <Table
+          headerTitle={{
+            multi: {
+              title: multiTitle,
+              desc: multiTitleDesc,
+            },
+          }}
+          dataSource={tableData}
+          columns={columns}
+          isMobile={isMobile}
+          options={pageSizeOption}
+          rowKey="transactionId"
+          total={total}
+          pageSize={pageSize}
+          pageNum={currentPage}
+          pageChange={pageChange}
+          pageSizeChange={pageSizeChange}></Table>
+      ),
+    },
   ];
 
   return (

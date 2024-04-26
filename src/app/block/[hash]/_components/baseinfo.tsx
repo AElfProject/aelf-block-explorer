@@ -39,7 +39,7 @@ export default function BaseInfo({ data }) {
     return [
       {
         label: 'Blocks Height',
-        tip: 'Blocks Height',
+        tip: 'The number of blocks from the genesis block to the current one.',
         value: (
           <div className="flex items-center">
             <span className="mr-2">{data.blockHeight}</span>
@@ -49,7 +49,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Status ',
-        tip: 'Status ',
+        tip: 'The status of the block.',
         value: (
           <div className="flex">
             <ConfirmStatus status={data.confirmed ? StatusEnum.Confirmed : StatusEnum.Unconfrimed} />
@@ -58,7 +58,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Timestamp ',
-        tip: 'Timestamp ',
+        tip: 'The date and time at which the block is produced.',
         value: (
           <div className="value-timestamp">
             <IconFont className="mr-1 !text-xs !leading-5" type="Time" />
@@ -70,7 +70,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Transactions ',
-        tip: 'Transactions ',
+        tip: 'The number of transactions in the block.',
         value: (
           <div className="text-xs leading-5">
             <span className=" cursor-pointer text-link">{data.total} transactions</span>
@@ -80,7 +80,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Chain ID ',
-        tip: 'Chain ID ',
+        tip: 'The chain on which the block is produced.',
         value: <div className="text-xs leading-5">{data.chainId}</div>,
       },
       {
@@ -89,7 +89,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Producer ',
-        tip: 'Producer ',
+        tip: 'The producer of the block.',
         value: (
           <div className="text-xs leading-5">
             <span className="text-link">
@@ -102,7 +102,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Block Reward ',
-        tip: 'Block Reward ',
+        tip: 'The block reward given by aelf network, unaffected by the specific transaction.',
         value: (
           <div className="flex items-center text-xs leading-5">
             <span className="mr-1">{addSymbol(divDecimals(data.reward.elfReward))}</span>
@@ -112,7 +112,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Size ',
-        tip: 'Size ',
+        tip: 'The size of the block.',
         value: <SizeBytes size={data.blockSize} />,
       },
       {
@@ -121,7 +121,7 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Burnt Fees ',
-        tip: 'Burnt Fees ',
+        tip: 'Each transaction will burn 10% of its Size Fee.',
         value: (
           <div className="flex items-center text-xs leading-5">
             <span className="mr-1">{addSymbol(divDecimals(data.burntFee.elfFee))}</span>
