@@ -10,24 +10,27 @@ import DetailContainer from '@_components/DetailContainer';
 import { useCallback, useMemo } from 'react';
 import ConfirmStatus from '@_components/ConfirmedStatus';
 import IconFont from '@_components/IconFont';
-import { formatDate } from '@_utils/formatter';
+import { addSymbol, divDecimals, formatDate } from '@_utils/formatter';
 import dayjs from 'dayjs';
 import Copy from '@_components/Copy';
 import { useRouter } from 'next/navigation';
 import JumpButton, { JumpTypes } from '@_components/JumpButton';
 import SizeBytes from '@_components/SizeBytes';
 import DollarCurrencyRate from '@_components/DollarCurrencyRate';
+import addressFormat from '@_utils/urlUtils';
+import { StatusEnum } from '@_types/status';
 export default function BaseInfo({ data }) {
   const router = useRouter();
-  const disabled = data.blockHeight === 1;
+  const isFirst = data.preBlockHeight === 0;
+  const isLast = data.nextBlockHeight === 0;
   const jump = useCallback(
     (type: JumpTypes) => {
       switch (type) {
         case JumpTypes.Prev:
-          router.push(`/block/${data.blockHeight - 1}`);
+          router.push(`/block/${data.preBlockHeight}`);
           break;
         case JumpTypes.Next:
-          router.push(`/block/${data.blockHeight + 1}`);
+          router.push(`/block/${data.nextBlockHeight}`);
       }
     },
     [data, router],
@@ -40,7 +43,7 @@ export default function BaseInfo({ data }) {
         value: (
           <div className="flex items-center">
             <span className="mr-2">{data.blockHeight}</span>
-            <JumpButton isFirst={disabled} jump={jump} />
+            <JumpButton isFirst={isFirst} isLast={isLast} jump={jump} />
           </div>
         ),
       },
@@ -49,7 +52,7 @@ export default function BaseInfo({ data }) {
         tip: 'Status ',
         value: (
           <div className="flex">
-            <ConfirmStatus status={data.status} />
+            <ConfirmStatus status={data.confirmed ? StatusEnum.Confirmed : StatusEnum.Unconfrimed} />
           </div>
         ),
       },
@@ -60,7 +63,7 @@ export default function BaseInfo({ data }) {
           <div className="value-timestamp">
             <IconFont className="mr-1 !text-xs !leading-5" type="Time" />
             <span>
-              {formatDate(data.timestamp, 'age')}({dayjs(data.timestamp).format('MMM-DD-YYYY hh:mm:ss A [+UTC]')})
+              {formatDate(data.timestamp, 'age')}({dayjs.unix(data.timestamp).format('MMM-DD-YYYY hh:mm:ss Z')})
             </span>
           </div>
         ),
@@ -70,7 +73,7 @@ export default function BaseInfo({ data }) {
         tip: 'Transactions ',
         value: (
           <div className="text-xs leading-5">
-            <span className=" text-link cursor-pointer">{data.total} transactions</span>
+            <span className=" cursor-pointer text-link">{data.total} transactions</span>
             <span className="ml-1">in this block</span>
           </div>
         ),
@@ -89,8 +92,10 @@ export default function BaseInfo({ data }) {
         tip: 'Producer ',
         value: (
           <div className="text-xs leading-5">
-            <span className="text-link">{data.producer.chainId}</span>
-            <Copy value={data.producer.name} />
+            <span className="text-link">
+              {data.producer.name ? data.producer.name : addressFormat(data.producer.address)}
+            </span>
+            <Copy value={data.producer.address} />
             <span className="ml-1">in 0.5 secs</span>
           </div>
         ),
@@ -100,8 +105,8 @@ export default function BaseInfo({ data }) {
         tip: 'Block Reward ',
         value: (
           <div className="flex items-center text-xs leading-5">
-            <span className="mr-1">{data.reward}</span>
-            <DollarCurrencyRate />
+            <span className="mr-1">{addSymbol(divDecimals(data.reward.elfReward))}</span>
+            {data.reward.usdReward && <DollarCurrencyRate price={data.reward.usdReward} />}
           </div>
         ),
       },
@@ -119,10 +124,8 @@ export default function BaseInfo({ data }) {
         tip: 'Burnt Fees ',
         value: (
           <div className="flex items-center text-xs leading-5">
-            <span className="mr-1">{data.burntFee}</span>
-            <div className="flex items-center ml-1 h-6 px-4 rounded bg-ECEEF2">
-              <span className="mr-1">$</span>21.13
-            </div>
+            <span className="mr-1">{addSymbol(divDecimals(data.burntFee.elfFee))}</span>
+            {data.burntFee.usdFee && <DollarCurrencyRate price={data.burntFee.usdFee} />}
           </div>
         ),
       },
@@ -131,6 +134,6 @@ export default function BaseInfo({ data }) {
         value: 'divider',
       },
     ];
-  }, [data, disabled, jump]);
+  }, [data, isFirst, isLast, jump]);
   return <DetailContainer infoList={renderInfo} />;
 }

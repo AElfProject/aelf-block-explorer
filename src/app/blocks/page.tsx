@@ -1,6 +1,9 @@
+import { fetchServerBlocks } from '@_api/fetchBlocks';
 import BlockList from './blockList';
-import fetchData from './mock';
 export default async function BlocksPage() {
-  const data = await fetchData({ page: 1, pageSize: 25 });
+  const data = await fetchServerBlocks({
+    chainId: 'AELF',
+    maxResultCount: 25,
+  });
   return <BlockList SSRData={data} />;
 }

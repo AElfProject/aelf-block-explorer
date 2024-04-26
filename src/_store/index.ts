@@ -37,5 +37,6 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 
 export { makeStore };
 export const wrapper = createWrapper(makeStore, { debug: true });
+export const store: AppStore = makeStore();
 
 // export default store;

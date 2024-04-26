@@ -1,3 +1,5 @@
+import { TChainID } from '@_api/type';
+import { useAppSelector } from '@_store';
 import { ITableProps } from 'aelf-design';
 import { SorterResult } from 'antd/es/table/interface';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -20,12 +22,21 @@ interface TableDataProps<T, U> {
   fetchData: IFetchData<U>;
   SSRData: IFetchDataItems<T>;
   filterParams?: object;
+  mountedRequest?: boolean;
   disposeData?: IDisposeData<T, U>;
   defaultSearch?: string;
 }
 
+export interface ITableParams<T> {
+  page: number;
+  pageSize: number;
+  sort: SorterResult<T>;
+  searchText;
+}
+
 export default function useTableData<T, U>({
   defaultPageSize = 25,
+  mountedRequest = true,
   fetchData,
   SSRData,
   filterParams,
@@ -37,9 +48,9 @@ export default function useTableData<T, U>({
   const [loading, setLoading] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(SSRData.total);
   const [data, setData] = useState<T[]>(SSRData.list);
-
   const disposeRef = useRef(disposeData);
   disposeRef.current = disposeData;
+  const mounted = useRef<boolean>(true);
 
   const fetchDataRef = useRef(fetchData);
   fetchDataRef.current = fetchData;
@@ -48,7 +59,9 @@ export default function useTableData<T, U>({
     async (params) => {
       setLoading(true);
       try {
+        console.log(fetchDataRef.current, 'fetchDataRef.current');
         const res = await fetchDataRef.current({ ...params, ...filterParams });
+        console.log(res, 'res');
         if (disposeRef.current) {
           const result = disposeRef.current(res);
           setData(result.list);
@@ -84,9 +97,13 @@ export default function useTableData<T, U>({
   };
 
   useEffect(() => {
-    console.log('useTable');
+    console.log(mounted.current, 'mounted.current');
+    if (!mountedRequest && mounted.current) {
+      mounted.current = false;
+      return;
+    }
     getData({ page: currentPage, pageSize: pageSize, sort: sortedInfo, searchText });
-  }, [currentPage, pageSize, sortedInfo, searchText, getData]);
+  }, [currentPage, pageSize, sortedInfo, searchText, getData, mountedRequest]);
 
   const pageSizeChange = async (size) => {
     setPageSize(size);

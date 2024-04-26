@@ -6,7 +6,7 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { formatDate } from '@_utils/formatter';
+import { addSymbol, divDecimals, formatDate } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
@@ -56,17 +56,17 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       key: 'producerAddress',
       width: '320px',
       dataIndex: 'producerAddress',
-      render: (name) => (
+      render: (address, record) => (
         <div className="flex items-center">
           <Link
             className="block text-xs leading-5 text-link"
-            title={`${addressFormat(name)}`}
+            title={`${addressFormat(address)}`}
             href=""
             // href={`/address/${addressFormat(name)}`}
           >
-            {`${addressFormat(hiddenAddress(name, 4, 4))}`}
+            {record.producerName ? record.producerName : `${addressFormat(hiddenAddress(address, 4, 4))}`}
           </Link>
-          <Copy value={addressFormat(name)} />
+          <Copy value={addressFormat(address)} />
         </div>
       ),
     },
@@ -75,12 +75,18 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: '208px',
       key: 'reward',
       dataIndex: 'reward',
+      render: (reward: string) => {
+        return <>{addSymbol(divDecimals(reward))}</>;
+      },
     },
     {
       title: 'Burnt Fees',
       width: '208px',
-      key: 'burntFee',
-      dataIndex: 'burntFee',
+      key: 'burntFees',
+      dataIndex: 'burntFees',
+      render: (value: string) => {
+        return <>{addSymbol(divDecimals(value))}</>;
+      },
     },
   ];
 }

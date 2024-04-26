@@ -54,8 +54,7 @@ export interface ITransactionDetailRequestParams {
 
 export interface IBlocksRequestParams {
   chainId: TChainID;
-  blockHeight: number;
-  skipCount: number;
+  blockHeight?: number;
   maxResultCount: number;
 }
 
@@ -67,7 +66,7 @@ export interface IBlocksResponseItem {
   reward: string;
   producerName: string;
   producerAddress: string;
-  burntFee: string;
+  burntFees: string;
 }
 
 export interface IBlocksResponse {
@@ -87,6 +86,8 @@ export interface IBlocksDetailData {
   status: string;
   txns: number;
   chainId: TChainID;
+  nextBlockHeight: number;
+  preBlockHeight: number;
   // miner: string;
   reward: {
     usdPrice: number;

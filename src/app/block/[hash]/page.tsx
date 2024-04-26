@@ -5,9 +5,9 @@
  * @LastEditTime: 2023-08-18 10:34:43
  * @Description: Block
  */
+import { fetchServerBlocksDetail } from '@_api/fetchBlocks';
 import Detail from './_components/detail';
-import fetchData from './_components/mock';
 export default async function Block({ params }: { params: HashParams }) {
-  const data = await fetchData({ blockHeight: Number(params.hash) });
+  const data = await fetchServerBlocksDetail({ blockHeight: Number(params.hash), chainId: 'AELF' });
   return <Detail SSRData={data} />;
 }

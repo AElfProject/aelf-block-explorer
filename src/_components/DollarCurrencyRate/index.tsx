@@ -1,7 +1,8 @@
-export default function DollarCurrencyRate() {
+export default function DollarCurrencyRate({ price }: { price: number | string }) {
   return (
-    <div className="flex items-center ml-1 h-6 px-4 rounded bg-ECEEF2">
-      <span className="mr-1">$</span>21.13
+    <div className="ml-1 flex h-6 items-center rounded bg-ECEEF2 px-4">
+      <span className="mr-1">$</span>
+      {price}
     </div>
   );
 }
