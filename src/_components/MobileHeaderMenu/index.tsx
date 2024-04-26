@@ -59,6 +59,7 @@ export default function MobileHeaderMenu({ headerMenuList, networkList }: IProps
   const dispatch = useAppDispatch();
   const onSelectHandler = (value: string) => {
     dispatch(setDefaultChain(value));
+    router.push(`/?chainId=${value}`);
   };
   const items: MenuProps['items'] = [
     ...convertMenuItems(headerMenuList),

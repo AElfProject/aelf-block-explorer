@@ -4,7 +4,7 @@ import EPTooltip from '@_components/EPToolTip';
 import IconFont from '@_components/IconFont';
 import Method from '@_components/Method';
 import TransactionsView from '@_components/TransactionsView';
-import { TTransactionStatus } from '@_types/common';
+import { AddressType, TTransactionStatus } from '@_types/common';
 import { formatDate, thousandsNumber } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import { ColumnsType } from 'antd/es/table';
@@ -112,7 +112,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: 180,
       render: (text) => {
         const { address } = JSON.parse(text);
-        return <ContractToken address={address} />;
+        return <ContractToken address={address} type={AddressType.address} chainId="AELf" />;
       },
     },
     {

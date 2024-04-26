@@ -16,6 +16,7 @@ import { IBlocksResponse, IBlocksResponseItem } from '@_api/type';
 import { pageSizeOption } from '@_utils/contant';
 import { fetchBlocks } from '@_api/fetchBlocks';
 import { useAppSelector } from '@_store';
+import { useParams } from 'next/navigation';
 
 export enum pageType {
   first,
@@ -67,6 +68,8 @@ export default function BlockList({ SSRData }) {
     },
     [currentPage, data, defaultChain, totalPage],
   );
+
+  const { chain } = useParams();
   const [timeFormat, setTimeFormat] = useState<string>('Age');
   const columns = useMemo<ColumnsType<IBlocksResponseItem>>(() => {
     return getColumns({
@@ -74,6 +77,7 @@ export default function BlockList({ SSRData }) {
       handleTimeChange: () => {
         setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
       },
+      chianId: chain,
     });
   }, [timeFormat]);
 

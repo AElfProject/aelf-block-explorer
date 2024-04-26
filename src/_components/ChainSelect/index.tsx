@@ -3,19 +3,20 @@ import { Select } from 'antd';
 import microApp from '@micro-zoe/micro-app';
 import { useAppDispatch, useAppSelector } from '@_store';
 import { setDefaultChain } from '@_store/features/chainIdSlice';
-
+import { useRouter } from 'next/navigation';
 const { Option } = Select;
 import './index.css';
 
 export default function ChainSelect() {
   const { chainArr, defaultChain } = useAppSelector((state) => state.getChainId);
-  console.log(chainArr, defaultChain, 'defaultChain');
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const onChangeHandler = (value: string) => {
     microApp.setData('governance', { type: 'logoutSilently' });
     setTimeout(() => {
       dispatch(setDefaultChain(value));
+      router.push(`/?chainId=${value}`);
     }, 1000);
   };
 

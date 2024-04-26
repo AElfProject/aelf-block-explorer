@@ -1,5 +1,8 @@
+import { TChainID } from '@_api/type';
+
 type HashParams = {
   hash: string;
+  chain: TChainID;
 };
 
 type ChainId = {

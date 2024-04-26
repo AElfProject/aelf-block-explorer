@@ -7,6 +7,7 @@ import { fetchInventoryList } from '../mock';
 import { useParams } from 'next/navigation';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 import { ITableSearch } from '@_components/Table';
+import { NftCollectionPageParams } from 'global';
 export interface InventoryProps {
   search?: string;
   topSearchProps?: ITableSearch;

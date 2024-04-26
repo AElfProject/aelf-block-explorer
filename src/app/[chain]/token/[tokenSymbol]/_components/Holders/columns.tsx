@@ -2,6 +2,7 @@ import ContractToken from '@_components/ContractToken';
 import { thousandsNumber } from '@_utils/formatter';
 import { ColumnsType } from 'antd/es/table';
 import { IHolderItem } from '../../type';
+import { AddressType } from '@_types/common';
 
 export default function getColumns({ currentPage, pageSize }): ColumnsType<IHolderItem> {
   return [
@@ -19,7 +20,7 @@ export default function getColumns({ currentPage, pageSize }): ColumnsType<IHold
       key: 'address',
       render: (text) => {
         const { address } = JSON.parse(text);
-        return <ContractToken address={address} />;
+        return <ContractToken address={address} type={AddressType.address} chainId="AELf" />;
       },
     },
     {

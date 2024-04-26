@@ -9,6 +9,7 @@ import { CollectionDetailData } from '../type';
 
 import '../detail.css';
 import ContractToken from '@_components/ContractToken';
+import { AddressType } from '@_types/common';
 
 export interface OverViewProps {
   overview: CollectionDetailData;
@@ -55,7 +56,7 @@ export default function OverView(props: OverViewProps) {
                 CONTRACT
               </div>
               <div className="desc">
-                <ContractToken address={overview.contractAddress} />
+                <ContractToken address={overview.contractAddress} type={AddressType.address} chainId="AELF" />
               </div>
             </li>
             <li className="collection-overview-data-item">

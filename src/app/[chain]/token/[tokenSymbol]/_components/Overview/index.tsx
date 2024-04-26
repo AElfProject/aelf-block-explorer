@@ -4,6 +4,7 @@ import { IOverviewItem } from '@_components/OverviewCard/type';
 import { thousandsNumber } from '@_utils/formatter';
 import { ITokenDetail } from '../../type';
 import NumberPercentGroup from '../NumberPercentGroup';
+import { AddressType } from '@_types/common';
 
 const TokenDetailItems: IOverviewItem[] = [
   {
@@ -41,7 +42,7 @@ const TokenDetailItems: IOverviewItem[] = [
     label: 'CONTRACT',
     tooltip:
       'This is the MultiToken contract that defines a common implementation for fungible and non-fungible tokens.',
-    render: (text) => <ContractToken address={text} />,
+    render: (text) => <ContractToken address={text} type={AddressType.address} chainId="AELf" />,
   },
   {
     key: 'decimals',

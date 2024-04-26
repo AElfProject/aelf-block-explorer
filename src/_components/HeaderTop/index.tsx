@@ -7,7 +7,7 @@ import { isMainNet } from '@_utils/isMainNet';
 import MobileHeaderMenu from '@_components/MobileHeaderMenu';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@_store';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 import { MenuItem, NetworkItem } from '@_types';
 import { useEnvContext } from 'next-runtime-env';
 

@@ -11,10 +11,8 @@ import './index.css';
 import IconFont from '@_components/IconFont';
 import BackToTopButton from '@_components/BackToTopBtn';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { isMobileDevices } from '@_utils/isMobile';
 import { isMainNet } from '@_utils/isMainNet';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 import { MenuItem } from '@_types';
 const FoorterBgTets = '/image/footer-bg.png';
 const clsPrefix = 'footer-container';
@@ -24,20 +22,20 @@ interface IProps {
     footerMenu_id: MenuItem;
   }[];
 }
-export default function Footer({ isMobileSSR, footerMenuList }: IProps) {
+export default function Footer({ footerMenuList }: IProps) {
   const isMobile = useMobileAll();
   const rightLinkCom = footerMenuList.map((ele) => {
     const item = ele.footerMenu_id;
     const subItem = item.children.map((element) => {
       return (
-        <span className="text" onClick={() => (window.location.href = element.path)} key={element.label}>
+        <span className="text" onClick={() => window.open(element.path, '_blank')} key={element.label}>
           {element.label}
         </span>
       );
     });
     return (
       <div className={item.key} key={item.key}>
-        <span className="title" onClick={() => (window.location.href = item.path)} key={item.label}>
+        <span className="title" onClick={() => window.open(item.path, '_blank')} key={item.label}>
           {item.label}
         </span>
         {subItem}
@@ -65,17 +63,15 @@ export default function Footer({ isMobileSSR, footerMenuList }: IProps) {
         </div>
         <BackToTopButton isDark={isMainNet}></BackToTopButton>
         <div className={`${clsPrefix}-link`}>
-          <IconFont type="telegram" onClick={() => (window.location.href = 'https://t.me/aelfblockchain')}></IconFont>
-          <IconFont
-            type="medium"
-            onClick={() => (window.location.href = 'https://medium.com/aelfblockchain')}></IconFont>
+          <IconFont type="telegram" onClick={() => window.open('https://t.me/aelfblockchain', '_blank')}></IconFont>
+          <IconFont type="medium" onClick={() => window.open('https://medium.com/aelfblockchain', '_blank')}></IconFont>
           <IconFont
             type="twitter"
-            onClick={() => (window.location.href = 'https://twitter.com/aelfblockchain')}></IconFont>
+            onClick={() => window.open('https://twitter.com/aelfblockchain', '_blank')}></IconFont>
           <IconFont
             type="youtube"
-            onClick={() => (window.location.href = 'http://www.youtube.com/c/aelfblockchain')}></IconFont>
-          <IconFont type="discord" onClick={() => (window.location.href = 'https://discord.gg/bgysa9xjvD')}></IconFont>
+            onClick={() => window.open('http://www.youtube.com/c/aelfblockchain', '_blank')}></IconFont>
+          <IconFont type="discord" onClick={() => window.open('https://discord.gg/bgysa9xjvD', '_blank')}></IconFont>
         </div>
       </div>
       <div className="copywrite">AELF © {new Date().getFullYear()}</div>

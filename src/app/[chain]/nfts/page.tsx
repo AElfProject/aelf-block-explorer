@@ -6,6 +6,7 @@
  * @Description: NFTs
  */
 
+import { ChainId } from 'global';
 import List from './list';
 import fetchData from './mock';
 export default async function Nfts({ params }: { params: ChainId }) {

@@ -9,6 +9,7 @@ import useTableData from '@_hooks/useTable';
 import { fetchTransferList } from '../mock';
 import { useParams } from 'next/navigation';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { NftCollectionPageParams } from 'global';
 export interface ItemActivityTableProps {
   transferList: CollectionTransfersData;
   search?: string;
