@@ -20,7 +20,7 @@ const Block_API_List = {
 
 const Transaction_API_List = {
   getTransaction: '',
-  getTransactionDetail: `${BASE_API}/app/blockchain/transactionDetail?chainId=tDVW&blockHeight=114844339&transactionId=412a0b59572e9c4056b308e6d5b584d649ecb2415580f29f466f62a2c784f24b`,
+  getTransactionDetail: `${SERVER_BASE_API}/app/blockchain/transactionDetail`,
 };
 
 const Common_API_List = {

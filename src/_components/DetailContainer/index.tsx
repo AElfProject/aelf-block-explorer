@@ -8,7 +8,7 @@
 import IconFont from '@_components/IconFont';
 import { Divider } from 'antd';
 import clsx from 'clsx';
-import EPTooltip from '@_components/EPToolTip';
+import { Tooltip } from 'aelf-design';
 import { useMobileAll } from '@_hooks/useResponsive';
 
 export default function DetailContainer({
@@ -26,9 +26,9 @@ export default function DetailContainer({
           <div key={item.label} className={clsx(isMobile ? 'flex flex-col' : 'row flex items-start', 'py-2')}>
             <div className={clsx('label mr-4 flex w-[312px] items-center', isMobile && 'mb-2')}>
               {item.tip && (
-                <EPTooltip title={item.tip} mode="dark">
+                <Tooltip title={item.tip}>
                   <IconFont className="text-sm" style={{ marginRight: '4px' }} type="question-circle" />
-                </EPTooltip>
+                </Tooltip>
               )}
               <div className="label text-xs leading-5 text-base-200">{item.label} :</div>
             </div>
