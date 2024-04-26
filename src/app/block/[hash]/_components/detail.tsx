@@ -19,11 +19,11 @@ import { ITableDataType } from '@app/transactions/type';
 import { ColumnsType } from 'antd/es/table';
 import MoreContainer from '@_components/MoreContainer';
 import EPTabs from '@_components/EPTabs';
-import { useMobileContext } from '@app/pageProvider';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 import { IBlocksDetailData } from '@_api/type';
 
 export default function Detail({ SSRData }) {
+  console.log(SSRData, 'SSRData');
   const { isMobile } = useMobileAll();
   const [detailData] = useState<IBlocksDetailData>(SSRData);
   const [showMore, setShowMore] = useState<boolean>(false);
@@ -70,28 +70,28 @@ export default function Detail({ SSRData }) {
         </div>
       ),
     },
-    {
-      key: 'txns',
-      label: 'Transactions',
-      children: (
-        <Table
-          headerTitle={{
-            multi: {
-              title: multiTitle,
-              desc: multiTitleDesc,
-            },
-          }}
-          dataSource={tableData}
-          columns={columns}
-          isMobile={isMobile}
-          rowKey="transactionHash"
-          total={total}
-          pageSize={pageSize}
-          pageNum={currentPage}
-          pageChange={pageChange}
-          pageSizeChange={pageSizeChange}></Table>
-      ),
-    },
+    // {
+    //   key: 'txns',
+    //   label: 'Transactions',
+    //   children: (
+    //     <Table
+    //       headerTitle={{
+    //         multi: {
+    //           title: multiTitle,
+    //           desc: multiTitleDesc,
+    //         },
+    //       }}
+    //       dataSource={tableData}
+    //       columns={columns}
+    //       isMobile={isMobile}
+    //       rowKey="transactionHash"
+    //       total={total}
+    //       pageSize={pageSize}
+    //       pageNum={currentPage}
+    //       pageChange={pageChange}
+    //       pageSizeChange={pageSizeChange}></Table>
+    //   ),
+    // },
   ];
 
   return (

@@ -14,6 +14,10 @@ const nextConfig = {
       ssr: true,
     },
   },
+  reactStrictMode: false,
+  experimental: {
+    proxyTimeout: 300000,
+  },
   async rewrites() {
     return [
       {
@@ -23,8 +27,9 @@ const nextConfig = {
       },
       {
         source: '/api/:path*',
-        destination: 'http://localhost:3001/api/:path*',
+        destination: 'http://192.168.10.179:8001/api/:path*',
         // permanent: false,
+        basePath: false,
       },
       {
         source: '/chain/:path*',
@@ -51,16 +56,16 @@ const nextConfig = {
         destination: 'http://localhost:3001/Portkey_V2_DID/:path*',
         // permanent: false,
       },
-      {
-        source: '/v1/api/:path*',
-        destination: 'http://localhost:3001/v1/api/:path*',
-        // permanent: false,
-      },
-      {
-        source: '/v2/api/:path*',
-        destination: 'http://localhost:3001/v2/api/:path*',
-        // permanent: false,
-      },
+      // {
+      //   source: '/v1/api/:path*',
+      //   destination: 'http://localhost:3001/v1/api/:path*',
+      //   // permanent: false,
+      // },
+      // {
+      //   source: '/v2/api/:path*',
+      //   destination: 'http://localhost:3001/v2/api/:path*',
+      //   // permanent: false,
+      // },
     ];
   },
   images: {

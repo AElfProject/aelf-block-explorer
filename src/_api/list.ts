@@ -7,13 +7,20 @@
  */
 import { RequestWithParams } from './server';
 
+const BASE_API = '/api'; // server local
+const SERVER_BASE_API = 'http://192.168.10.179:8001/api'; // server
+
 const Block_API_List = {
-  getBlockList: 'https://dummyjson.com/products',
+  getBlockList: `${BASE_API}/app/blockchain/blocks`,
+  getServerBlockList: `${SERVER_BASE_API}/app/blockchain/blocks`,
+  getBlockDetail: `${BASE_API}/app/blockchain/blockDetail`,
+  getServerBlockDetail: `${SERVER_BASE_API}/app/blockchain/blockDetail`,
   query: 'https://dummyjson.com/products/search',
 };
 
 const Transaction_API_List = {
   getTransaction: '',
+  getTransactionDetail: `${BASE_API}/app/blockchain/transactionDetail?chainId=tDVW&blockHeight=114844339&transactionId=412a0b59572e9c4056b308e6d5b584d649ecb2415580f29f466f62a2c784f24b`,
 };
 
 const Common_API_List = {

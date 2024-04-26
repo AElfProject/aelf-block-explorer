@@ -10,7 +10,7 @@ export type RequestWithParams = {
   params?: any;
 } & RequestInit;
 
-const DEFAULT_FETCH_TIMEOUT = 5000;
+const DEFAULT_FETCH_TIMEOUT = 300000;
 const myServer = new Function();
 const timeoutPromise = (delay: number) => {
   return new Promise<{ type: string }>((resolve) => {
@@ -25,7 +25,9 @@ async function service(url: string, options: RequestWithParams) {
   const paramsArr: Array<any> = [];
   if (Object.keys(params).length > 0) {
     for (const item in params) {
-      paramsArr.push(item + '=' + params[item]);
+      if (params[item] !== undefined) {
+        paramsArr.push(item + '=' + params[item]);
+      }
     }
     if (url.search(/\?/) === -1) {
       url += '?' + paramsArr.join('&');
