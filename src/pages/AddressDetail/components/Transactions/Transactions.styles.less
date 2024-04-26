@@ -8,6 +8,11 @@
   .after-table {
     padding-top: 16px;
     background: @bgBlankGrey;
+    display: flex;
+    justify-content: center;
+    .ant-pagination {
+      flex: 1;
+    }
     .ant-pagination-options {
       position: absolute;
       border: none;
@@ -32,5 +37,13 @@
         }
       }
     }
+  }
+  .ant-pagination-item {
+    display: none;
+  }
+  .page-index {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
   }
 }
