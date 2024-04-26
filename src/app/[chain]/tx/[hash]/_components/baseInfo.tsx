@@ -12,7 +12,6 @@ import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import clsx from 'clsx';
 import { useMobileAll } from '@_hooks/useResponsive';
 import { ITransactionDetailData } from '@_api/type';
-import { AddressType } from '@_types/common';
 import { HashAddress, Tag } from 'aelf-design';
 import Image from 'next/image';
 
@@ -75,7 +74,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
         tip: 'The sending party of the transaction.',
         value: (
           <div className="flex flex-row items-center gap-1">
-            <HashAddress size="small" address={data.from.address} />
+            <HashAddress size="small" address={data.from.address} preLen={8} endLen={8} />
             {data.from.isManager && <Tag color="processing">Manager</Tag>}
           </div>
         ),
@@ -86,7 +85,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
         value: (
           <div>
             {/* <ContractToken address="AELF.Contract.Token" /> */}
-            {data.to.address ? <HashAddress size="small" address={data.to.address} /> : '-'}
+            {data.to.address ? <HashAddress size="small" address={data.to.address} preLen={8} endLen={8} /> : '-'}
 
             {/* <div className={clsx('mt-2 flex items-center leading-[18px]', isMobile && 'flex-col !items-start')}>
               <div>
@@ -124,11 +123,11 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
                       <div>
                         <IconFont type="arrow" />
                         <span className="mx-1 text-base-200">From</span>
-                        <HashAddress size="small" address={tokenTransfer.from.address} />
+                        <HashAddress size="small" address={tokenTransfer.from.address} preLen={8} endLen={8} />
                       </div>
                       <div>
                         <span className="mx-1 text-base-200">To</span>
-                        <HashAddress size="small" address={tokenTransfer.to.address} />
+                        <HashAddress size="small" address={tokenTransfer.to.address} preLen={8} endLen={8} />
                       </div>
                       <div className="flex items-center">
                         <span className="mx-1 text-base-200">For</span>
