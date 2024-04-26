@@ -2,25 +2,34 @@ const clsPrefix = 'home-latest';
 import './index.css';
 
 import IconFont from '@_components/IconFont';
-import { getFormattedDate } from '@_utils/timeUtils';
 import Link from 'next/link';
-import { IBlockItem, ITransactionItem } from '@pageComponents/home/type';
+import { ITransactionItem } from '@pageComponents/home/type';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import clsx from 'clsx';
 import EPTooltip from '@_components/EPToolTip';
+import { IBlocksResponseItem } from '@_api/type';
+import { divDecimals, formatDate } from '@_utils/formatter';
+import { useAppSelector } from '@_store';
 
 interface IProps {
   isBlocks: boolean;
   iconType: string;
-  data: IBlockItem[] | ITransactionItem[];
+  data: IBlocksResponseItem[] | ITransactionItem[];
   isMobile: boolean;
 }
 export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
+  const { defaultChain } = useAppSelector((state) => state.getChainId);
   const RewrdInfo = (ele) => {
     return (
       <span className="button">
-        <span className="reward">{isBlocks ? ele.reward : ele.txnValue}</span>
-        <span>ELF</span>
+        {ele.reward ? (
+          <>
+            <span className="reward">{divDecimals(isBlocks ? ele.reward : ele.txnValue)}</span>
+            <span>ELF</span>
+          </>
+        ) : (
+          '-'
+        )}
       </span>
     );
   };
@@ -36,12 +45,12 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
                 <div className="text">
                   <span className="height">
                     {isBlocks ? (
-                      <Link href={`/block/${ele.blockHeight}`}>{ele.blockHeight}</Link>
+                      <Link href={`/${defaultChain}/block/${ele.blockHeight}`}>{ele.blockHeight}</Link>
                     ) : (
                       <Link href={`/txn/${ele.transactionHash}`}>{ele.transactionHash}</Link>
                     )}
                   </span>
-                  <span className="time">{getFormattedDate(ele.timestamp)}</span>
+                  <span className="time">{formatDate(ele.timestamp, 'Age')}</span>
                 </div>
               </div>
               <div className="middle">
@@ -49,13 +58,17 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
                   <>
                     <span className="producer">
                       Producer
-                      <EPTooltip title={ele.producer?.name} mode="dark" pointAtCenter={false}>
-                        <Link href={`${ele.producer?.address}`}>{ele.producer?.name}</Link>
+                      <EPTooltip title={ele.producerName} mode="dark" pointAtCenter={false}>
+                        <Link href={`${defaultChain}/address/${addressFormat(ele.producerAddress, defaultChain)}`}>
+                          {ele.producerName
+                            ? ele.producerName
+                            : `${addressFormat(hiddenAddress(ele.producerAddress || '', 4, 4), defaultChain)}`}
+                        </Link>
                       </EPTooltip>
                     </span>
                     <span className="txns">
-                      <Link href={`/block/${ele.blockHeight}#txns`}>{ele.txns} txns</Link>
-                      <span className="time">in {getFormattedDate(ele.timestamp)}</span>
+                      <Link href={`/${defaultChain}/block/${ele.blockHeight}#txns`}>{ele.transactionCount} txns</Link>
+                      <span className="time">in {formatDate(ele.timestamp, 'Age')}</span>
                       {isMobile && RewrdInfo(ele)}
                     </span>
                   </>
@@ -83,7 +96,7 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
         })}
       </div>
       <div className="link">
-        <Link href={isBlocks ? '/blocks' : '/txs'}>
+        <Link href={isBlocks ? `/${defaultChain}/blocks` : `/${defaultChain}/txs`}>
           View All Blocks<IconFont type="right-arrow-2"></IconFont>
         </Link>
       </div>

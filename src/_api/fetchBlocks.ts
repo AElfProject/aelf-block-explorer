@@ -1,8 +1,16 @@
 import request from '@_api';
-import { IBlocksDetailData, IBlocksDetailRequestParams, IBlocksRequestParams } from './type';
+import { IBlocksDetailData, IBlocksDetailRequestParams, IBlocksRequestParams, TChainID } from './type';
 
 export async function fetchBlocks(params: IBlocksRequestParams) {
   const result = await request.block.getBlockList({
+    params: params,
+  });
+  const { data } = result;
+  return data;
+}
+
+export async function fetchLatestBlocksList(params: { chainId: TChainID }) {
+  const result = await request.block.getLatestBlocksList({
     params: params,
   });
   const { data } = result;

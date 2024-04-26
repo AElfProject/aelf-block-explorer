@@ -11,7 +11,7 @@ import InfoSection from './_components/InfoSection';
 import SearchComp from './_components/SearchWithClient';
 import clsx from 'clsx';
 import './index.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 import { IOverviewSSR } from './type';
 // import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
@@ -23,6 +23,8 @@ const BannerPc = '/image/banner_pc.png';
 const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
 import { useEnvContext } from 'next-runtime-env';
+import { IBlocksResponseItem } from '@_api/type';
+import { fetchLatestBlocksList } from '@_api/fetchBlocks';
 
 interface IProps {
   overviewSSR: IOverviewSSR;
@@ -40,7 +42,17 @@ const getConnectionBuilder = (url: string) => {
 };
 export default function Home({ overviewSSR }: IProps) {
   const { NEXT_PUBLIC_API_URL: HOST } = useEnvContext();
+
+  const fetchBlocksData = useCallback(async () => {
+    const data = await fetchLatestBlocksList({ chainId: 'AELF' });
+    console.log(data, 'data');
+    setBlocks(data.blocks);
+  }, []);
   const isMobile = useMobileAll();
+  useEffect(() => {
+    fetchBlocksData();
+  }, []);
+  const [blocks, setBlocks] = useState<IBlocksResponseItem[]>([]);
   const OverView: React.FC = () => {
     const [connection, setConnection] = useState<null | HubConnection>(null);
     const [overview, setOverView] = useState<IOverviewSSR>(overviewSSR);
@@ -84,78 +96,6 @@ export default function Home({ overviewSSR }: IProps) {
   };
 
   const LatestAll = () => {
-    const blocks = [
-      {
-        blockHeight: 123123123123,
-        timestamp: '1111111',
-        txns: 222,
-        reward: '123',
-        producer: {
-          name: 'hehehehehehehehehehehehehehe',
-          address: 'www.baidu.com',
-        },
-      },
-      {
-        blockHeight: 1,
-        timestamp: '1111111',
-        txns: 222,
-        reward: '123',
-        producer: {
-          name: 'hehehehehehehehehehehehehehe',
-          address: 'www.baidu.com',
-        },
-      },
-      {
-        blockHeight: 2,
-        timestamp: '1111111',
-        txns: 222,
-        reward: '123',
-        producer: {
-          name: 'hehehehehehehehehehehehehehe',
-          address: 'www.baidu.com',
-        },
-      },
-      {
-        blockHeight: 3,
-        timestamp: '1111111',
-        txns: 222,
-        reward: '123',
-        producer: {
-          name: 'hehehehehehehehehehehehehehe',
-          address: 'www.baidu.com',
-        },
-      },
-      {
-        blockHeight: 4,
-        timestamp: '1111111',
-        txns: 222,
-        reward: '123',
-        producer: {
-          name: 'hehehehehehehehehehehehehehe',
-          address: 'www.baidu.com',
-        },
-      },
-      {
-        blockHeight: 1234,
-        timestamp: '1111111',
-        txns: 222,
-        reward: '123',
-        producer: {
-          name: 'hehe',
-          address: 'www.baidu.com',
-        },
-      },
-      {
-        blockHeight: 123456,
-        timestamp: '1111111',
-        txns: 222,
-        reward: '123',
-        producer: {
-          name: 'hehe',
-          address: 'www.baidu.com',
-        },
-      },
-    ];
     const transactions = [
       {
         id: 1,
@@ -217,7 +157,7 @@ export default function Home({ overviewSSR }: IProps) {
     return (
       <div className={clsx('latest-all', isMobile && 'latest-all-mobile')}>
         <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
-        <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest>
+        {/* <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest> */}
       </div>
     );
   };
@@ -246,9 +186,9 @@ export default function Home({ overviewSSR }: IProps) {
           <SearchComp isMobile={isMobile} />
         </div>
       </div>
-      <OverView></OverView>
+      {/* <OverView></OverView> */}
       <LatestAll></LatestAll>
-      <Chart></Chart>
+      {/* <Chart></Chart> */}
       {/* <Link
         className="px-4 py-1 text-sm font-semibold text-purple-600 border border-purple-200 rounded-full hover:text-white hover:bg-base-100 hover:border-transparent "
         href="/address">

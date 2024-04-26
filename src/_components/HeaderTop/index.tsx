@@ -10,6 +10,7 @@ import { useAppSelector } from '@_store';
 import { useMobileAll } from '@_hooks/useResponsive';
 import { MenuItem, NetworkItem } from '@_types';
 import { useEnvContext } from 'next-runtime-env';
+import { useParams, useRouter } from 'next/navigation';
 
 // at public file
 const TopIconMain = '/image/aelf-header-top.svg';
@@ -27,12 +28,15 @@ interface IProps {
 export default function HeaderTop({ price, range, networkList, headerMenuList }: IProps) {
   const isMobile = useMobileAll();
   const { defaultChain } = useAppSelector((state) => state.getChainId);
-  const isShowPrice = defaultChain === 'AELF' && isMainNet;
+  // const isShowPrice = defaultChain === 'AELF' && isMainNet;
+  const isShowPrice = false;
   const pathname = usePathname();
   const isHideSearch = pathname === '/' || pathname.includes('search-');
   const { NEXT_PUBLIC_NETWORK_TYPE } = useEnvContext();
   const networkType = NEXT_PUBLIC_NETWORK_TYPE;
   const finalUrl = networkList.find((ele) => ele.key === networkType)?.path;
+  const { chain } = useParams();
+  const router = useRouter();
 
   return (
     <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
@@ -43,6 +47,9 @@ export default function HeaderTop({ price, range, networkList, headerMenuList }:
           alt={'top-icon'}
           width="96"
           height="32"
+          onClick={() => {
+            router.push(`/?chainId=${chain}`);
+          }}
         />
         <>
           {isShowPrice && (

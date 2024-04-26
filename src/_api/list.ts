@@ -8,10 +8,11 @@
 import { RequestWithParams } from './server';
 
 const BASE_API = '/api'; // server local
-const SERVER_BASE_API = 'http://192.168.10.179:8001/api'; // server
+const SERVER_BASE_API = `${process.env.NEXT_PUBLIC_API_URL}/api`; // server
 
 const Block_API_List = {
   getBlockList: `${BASE_API}/app/blockchain/blocks`,
+  getLatestBlocksList: `${BASE_API}/app/blockchain/latestBlocks`,
   getServerBlockList: `${SERVER_BASE_API}/app/blockchain/blocks`,
   getBlockDetail: `${BASE_API}/app/blockchain/blockDetail`,
   getServerBlockDetail: `${SERVER_BASE_API}/app/blockchain/blockDetail`,
