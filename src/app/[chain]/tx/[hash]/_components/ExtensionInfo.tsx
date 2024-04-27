@@ -1,6 +1,6 @@
 import DetailContainer from '@_components/DetailContainer';
 import { useMemo } from 'react';
-import { numberFormatter } from '@_utils/formatter';
+import { divDecimals, numberFormatter } from '@_utils/formatter';
 import DollarCurrencyRate from '@_components/DollarCurrencyRate';
 import Link from 'next/link';
 import CodeBlock from '@_components/CodeBlock';
@@ -61,7 +61,7 @@ export default function ExtensionInfo({ data }: { data: ITransactionDetailData }
                         'flex items-center',
                         idx !== 0 && !isMobile && 'border-0 border-l bg-color-divider',
                       )}>
-                      <span>{numberFormatter(burntFee.amount + '')}</span>
+                      <span>{divDecimals(burntFee.amount)}</span>
                       <span>{burntFee.symbol}</span>
                       <DollarCurrencyRate nowPrice={burntFee.nowPrice} tradePrice={burntFee.tradePrice} />
                     </div>

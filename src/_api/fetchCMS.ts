@@ -8,8 +8,7 @@ export async function fetchCMS() {
         return child.label === 'Blocks';
       });
     }
-    // return item.headerMenu_id?.path === 'blockchain' || item.headerMenu_id?.path === '/tokens';
-    return item.headerMenu_id?.path === 'blockchain';
+    return item.headerMenu_id?.path === 'blockchain' || item.headerMenu_id?.path === '/tokens';
   });
   data.headerMenuList = headerMenuList;
   return data;

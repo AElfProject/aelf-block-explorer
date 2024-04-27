@@ -16,14 +16,13 @@ const { Title } = Typography;
 
 interface IDetailProps {
   tokenDetail: ITokenDetail;
-  transfersList: ITransferTableData;
-  holdersList: IHolderTableData;
+  // transfersList: ITransferTableData;
+  // holdersList: IHolderTableData;
 }
 
-export default function Detail({ tokenDetail, transfersList, holdersList }: IDetailProps) {
+export default function Detail({ tokenDetail }: IDetailProps) {
   const [search, setSearch] = useState<string>('2K6gPkMBMfxatiZLYkUDPmp429BbKZCUCSpuysj4PCeiHo3V7v');
   const [searchType, setSearchType] = useState<SearchType>(SearchType.other);
-  const router = useRouter();
   const transfersRef = useRef<ITransfersRef>(null);
 
   const onSearchInputChange = useCallback((value) => {
@@ -54,7 +53,7 @@ export default function Detail({ tokenDetail, transfersList, holdersList }: IDet
           ref={transfersRef}
           search={search}
           searchType={searchType}
-          SSRData={transfersList}
+          // SSRData={transfersList}
           onSearchChange={onSearchChange}
           onSearchInputChange={onSearchInputChange}
         />
@@ -68,7 +67,7 @@ export default function Detail({ tokenDetail, transfersList, holdersList }: IDet
         <Holders
           searchType={searchType}
           search={search}
-          SSRData={holdersList}
+          // SSRData={holdersList}
           onSearchChange={onSearchChange}
           onSearchInputChange={onSearchInputChange}
         />
@@ -80,7 +79,7 @@ export default function Detail({ tokenDetail, transfersList, holdersList }: IDet
     }
 
     return [transfersItem, holdersItem];
-  }, [holdersList, onSearchChange, onSearchInputChange, search, searchType, transfersList]);
+  }, [onSearchChange, onSearchInputChange, search, searchType]);
 
   return (
     <div className="token-detail">

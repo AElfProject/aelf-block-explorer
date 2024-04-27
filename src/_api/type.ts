@@ -159,6 +159,7 @@ export interface ITransactionValues {
 export interface ITransactionDetailData {
   transactionId: string;
   status: TransactionStatus;
+  confirmed: boolean;
   blockHeight: string;
   blockConfirmations: number;
   timestamp: number;
@@ -186,4 +187,32 @@ export interface ITransactionDetailData {
 
 export interface ITransactionDetailDataList {
   list: ITransactionDetailData[];
+}
+
+export interface ITokenHoldersRequestParams {
+  chainId: TChainID;
+  symbol: string;
+  skipCount: number;
+  maxResultCount: number;
+}
+
+export interface ITokenTransfersRequestParams {
+  chainId: TChainID;
+  skipCount: number;
+  maxResultCount: number;
+  symbol: string;
+  search: string;
+}
+
+export interface ITokenDetailRequestParams {
+  chainId: TChainID;
+  symbol: string;
+}
+
+export interface TTokenListRequestParams {
+  chainId: TChainID;
+  skipCount: number;
+  maxResultCount: number;
+  sort: number;
+  sortBy: number;
 }

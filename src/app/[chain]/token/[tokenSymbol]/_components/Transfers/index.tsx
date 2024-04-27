@@ -1,20 +1,20 @@
 'use client';
 import Table from '@_components/Table';
-import useTableData from '@_hooks/useTable';
-import { useMobileContext } from '@app/pageProvider';
 import { Descriptions, DescriptionsProps } from 'antd';
-import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
-import { fetchTransfersData } from '../../mock';
-import { ITokenSearchProps, ITransferItem, ITransferTableData, SearchType, TTransferSearchData } from '../../type';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
+import { ITokenSearchProps, ITransferItem, SearchType, TTransferSearchData } from '../../type';
 import getColumns from './columns';
 
 import { getSearchByHashItems, getSearchByHolderItems } from './utils';
 
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
+import { pageSizeOption } from '@_utils/contant';
+import { TChainID } from '@_api/type';
+import { useParams } from 'next/navigation';
+import { getPageNumber } from '@_utils/formatter';
+import { fetchTokenDetailTransfers } from '@_api/fetchTokens';
 
-interface ITransfersProps extends ITokenSearchProps {
-  SSRData: ITransferTableData;
-}
+interface ITransfersProps extends ITokenSearchProps {}
 
 const labelStyle: React.CSSProperties = {
   color: '#858585',
@@ -32,26 +32,39 @@ export interface ITransfersRef {
   setSearchStr: (val: string) => void;
 }
 
-const Transfers = ({ SSRData, search, searchType, onSearchChange, onSearchInputChange }: ITransfersProps, ref) => {
+const Transfers = ({ search, searchType, onSearchChange, onSearchInputChange }: ITransfersProps, ref) => {
   const { isMobile } = useMobileAll();
-
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(50);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(0);
+  const [data, setData] = useState<ITransferItem[]>([]);
   const [timeFormat, setTimeFormat] = useState<string>('Date Time (UTC)');
   const [address, setAddress] = useState<string>('');
   const [searchData, setSearchData] = useState<TTransferSearchData>();
 
-  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange, setSearchText } = useTableData<
-    ITransferItem,
-    ITransferTableData
-  >({
-    SSRData,
-    defaultPageSize: 50,
-    fetchData: fetchTransfersData,
-    disposeData: (res: ITransferTableData) => {
+  const { chain, tokenSymbol } = useParams();
+  const [, setSearchText] = useState<string>('');
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = {
+        chainId: chain as TChainID,
+        symbol: tokenSymbol as string,
+        skipCount: getPageNumber(currentPage, pageSize),
+        maxResultCount: pageSize,
+        search: search || '',
+      };
+      const res = await fetchTokenDetailTransfers(params);
       const { balance, value, list, total } = res;
+      setData(list);
       setSearchData({ balance, value });
-      return { list, total };
-    },
-  });
+      setTotal(total);
+    } catch (error) {
+      setLoading(false);
+    }
+  }, [chain, tokenSymbol, currentPage, pageSize, search]);
 
   useImperativeHandle(
     ref,
@@ -64,11 +77,24 @@ const Transfers = ({ SSRData, search, searchType, onSearchChange, onSearchInputC
     [setSearchText],
   );
 
+  const pageChange = async (page: number) => {
+    setCurrentPage(page);
+  };
+  const pageSizeChange = async (size) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const columns = useMemo(
     () =>
       getColumns({
         timeFormat,
         handleTimeChange: () => setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age'),
+        chain,
       }),
     [timeFormat],
   );
@@ -124,6 +150,7 @@ const Transfers = ({ SSRData, search, searchType, onSearchChange, onSearchInputC
         }}
         showTopSearch
         loading={loading}
+        options={pageSizeOption}
         dataSource={data}
         columns={columns}
         isMobile={isMobile}

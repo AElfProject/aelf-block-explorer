@@ -1,8 +1,9 @@
 import DetailContainer from '@_components/DetailContainer';
 import { useMemo } from 'react';
-import ConfirmStatus from '@_components/TransactionsStatus';
+import TransactionsStatus from '@_components/TransactionsStatus';
+import ConfirmStatus from '@_components/ConfirmedStatus';
 import IconFont from '@_components/IconFont';
-import { formatDate, numberFormatter } from '@_utils/formatter';
+import { divDecimals, formatDate, numberFormatter } from '@_utils/formatter';
 import dayjs from 'dayjs';
 import Copy from '@_components/Copy';
 import DollarCurrencyRate from '@_components/DollarCurrencyRate';
@@ -14,9 +15,13 @@ import { useMobileAll } from '@_hooks/useResponsive';
 import { ITransactionDetailData } from '@_api/type';
 import { HashAddress, Tag } from 'aelf-design';
 import Image from 'next/image';
+import ContractToken from '@_components/ContractToken';
+import { useParams } from 'next/navigation';
+import { StatusEnum } from '@_types/status';
 
 export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
   const { isMobile } = useMobileAll();
+  const { chain } = useParams();
   const renderInfo = useMemo(() => {
     return [
       {
@@ -34,7 +39,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
         tip: 'The status of the transaction.',
         value: (
           <div className="flex">
-            <ConfirmStatus status={data.status} />
+            <TransactionsStatus status={data.status} />
           </div>
         ),
       },
@@ -43,8 +48,11 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
         tip: 'Number of the block in which the transaction is recorded.',
         value: (
           <div className="flex items-center">
-            <IconFont className="mr-1" type="correct" />
-            <Link href={`block/${data.blockHeight}`}>{data.blockHeight}</Link>
+            {data.confirmed && <IconFont className="mr-1" type="correct" />}
+            <Link href={`/${chain}/block/${data.blockHeight}`} className="mr-2">
+              {data.blockHeight}
+            </Link>
+            <ConfirmStatus status={data.confirmed ? StatusEnum.Confirmed : StatusEnum.Unconfrimed} />
           </div>
         ),
       },
@@ -55,7 +63,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
           <div>
             <IconFont className="mr-1" type="Time" />
             <span>
-              {formatDate(data.timestamp, 'age')}({dayjs(data.timestamp).format('MMM-DD-YYYY hh:mm:ss A [+UTC]')})
+              {formatDate(data.timestamp, 'age')}({dayjs(data.timestamp).format('MMM-DD-YYYY hh:mm:ss Z')})
             </span>
           </div>
         ),
@@ -74,7 +82,12 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
         tip: 'The sending party of the transaction.',
         value: (
           <div className="flex flex-row items-center gap-1">
-            <HashAddress size="small" address={data.from.address} preLen={8} endLen={8} />
+            <ContractToken
+              address={data.from.address}
+              name={data.from.name}
+              type={data.from.addressType}
+              chainId={chain as string}
+            />
             {data.from.isManager && <Tag color="processing">Manager</Tag>}
           </div>
         ),
@@ -85,7 +98,16 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
         value: (
           <div>
             {/* <ContractToken address="AELF.Contract.Token" /> */}
-            {data.to.address ? <HashAddress size="small" address={data.to.address} preLen={8} endLen={8} /> : '-'}
+            {data.to.address ? (
+              <ContractToken
+                address={data.to.address}
+                name={data.to.name}
+                type={data.to.addressType}
+                chainId={chain as string}
+              />
+            ) : (
+              '-'
+            )}
 
             {/* <div className={clsx('mt-2 flex items-center leading-[18px]', isMobile && 'flex-col !items-start')}>
               <div>
@@ -131,7 +153,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
                       </div>
                       <div className="flex items-center">
                         <span className="mx-1 text-base-200">For</span>
-                        <span>{numberFormatter(tokenTransfer.amount + '', '')}</span>
+                        <span>{divDecimals(tokenTransfer.amount)}</span>
                         <DollarCurrencyRate nowPrice={tokenTransfer.nowPrice} tradePrice={tokenTransfer.tradePrice} />
                       </div>
                       <div>
@@ -203,7 +225,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
                 <div
                   key={idx}
                   className={clsx('flex items-center', idx !== 0 && !isMobile && 'border-0 border-l bg-color-divider')}>
-                  <span>{numberFormatter(transactionValue.amount + '')}</span>
+                  <span>{divDecimals(transactionValue.amount)}</span>
                   <span>{transactionValue.symbol}</span>
                   <DollarCurrencyRate nowPrice={transactionValue.nowPrice} tradePrice={transactionValue.tradePrice} />
                 </div>

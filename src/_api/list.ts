@@ -24,6 +24,14 @@ const Transaction_API_List = {
   getTransactionDetail: `${SERVER_BASE_API}/app/blockchain/transactionDetail`,
 };
 
+const Token_API_List = {
+  getTokenList: `api/app/token/list`,
+  getServerTokenList: `api/app/token/list`,
+  getTokenDetail: `${SERVER_BASE_API}/app/token/detail`,
+  getTokenDetailTransfers: `api/app/token/transfers`,
+  getTokenDetailHolders: `api/app/token/holders`,
+};
+
 const Common_API_List = {
   getPrice: '',
 };

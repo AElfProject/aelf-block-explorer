@@ -16,7 +16,7 @@ import Copy from '@_components/Copy';
 import { useRouter } from 'next/navigation';
 import JumpButton, { JumpTypes } from '@_components/JumpButton';
 import SizeBytes from '@_components/SizeBytes';
-import DollarCurrencyRate from '@_components/DollarCurrencyRate';
+import DollarCurrency from '@_components/DollarCurrency';
 import addressFormat from '@_utils/urlUtils';
 import { StatusEnum } from '@_types/status';
 import { useParams } from 'next/navigation';
@@ -108,7 +108,7 @@ export default function BaseInfo({ data }) {
         value: (
           <div className="flex items-center text-xs leading-5">
             <span className="mr-1">{addSymbol(divDecimals(data.reward.elfReward))}</span>
-            {data.reward.usdReward && <DollarCurrencyRate price={data.reward.usdReward} />}
+            {data.reward.usdReward && <DollarCurrency price={data.reward.usdReward} />}
           </div>
         ),
       },
@@ -127,7 +127,7 @@ export default function BaseInfo({ data }) {
         value: (
           <div className="flex items-center text-xs leading-5">
             <span className="mr-1">{addSymbol(divDecimals(data.burntFee.elfFee))}</span>
-            {data.burntFee.usdFee && <DollarCurrencyRate price={data.burntFee.usdFee} />}
+            {data.burntFee.usdFee && <DollarCurrency price={data.burntFee.usdFee} />}
           </div>
         ),
       },

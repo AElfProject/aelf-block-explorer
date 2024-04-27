@@ -1,13 +1,14 @@
+import { IFromInfo } from '@_api/type';
 import { IToken } from '@_types/common';
 
 export interface ITransferItem {
-  transactionHash: string;
+  transactionId: string;
   status: string;
   method: string;
   blockHeight: string;
-  timestamp: string;
-  from: string;
-  to: string;
+  blockTime: string;
+  from: IFromInfo;
+  to: IFromInfo;
   quantity: number;
 }
 
@@ -20,7 +21,7 @@ export interface ITransferTableData {
 }
 
 export interface IHolderItem {
-  address: string;
+  address: IFromInfo;
   quantity: string;
   percentage: string;
   value: string;
@@ -49,6 +50,19 @@ export interface ITokenDetail {
   pricePercentChange24h: number;
   contractAddress: string;
   decimals: number;
+}
+
+export interface ITokenListItem {
+  holders: number;
+  totalSupply: number;
+  circulatingSupply: number;
+  holderPercentChange24H: number;
+  token: IToken;
+}
+
+export interface ITokenList {
+  total: number;
+  list: ITokenListItem[];
 }
 
 export enum SearchType {

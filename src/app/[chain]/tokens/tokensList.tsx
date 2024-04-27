@@ -2,12 +2,11 @@
 import HeadTitle from '@_components/HeaderTitle';
 import Table from '@_components/Table';
 import useTableData from '@_hooks/useTable';
-import { useMobileContext } from '@app/pageProvider';
 import { useCallback, useMemo } from 'react';
 import getColumns from './columnConfig';
 import fetchData from './mock';
 import { ITokensTableData, ITokensTableItem } from './type';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 
 interface TokensListProps {
   SSRData: ITokensTableData;

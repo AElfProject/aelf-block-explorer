@@ -25,6 +25,7 @@ const clsPrefix = 'home-container';
 import { useEnvContext } from 'next-runtime-env';
 import { IBlocksResponseItem } from '@_api/type';
 import { fetchLatestBlocksList } from '@_api/fetchBlocks';
+import { Spin } from 'antd';
 
 interface IProps {
   overviewSSR: IOverviewSSR;
@@ -42,11 +43,18 @@ const getConnectionBuilder = (url: string) => {
 };
 export default function Home({ overviewSSR }: IProps) {
   const { NEXT_PUBLIC_API_URL: HOST } = useEnvContext();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchBlocksData = useCallback(async () => {
-    const data = await fetchLatestBlocksList({ chainId: 'AELF' });
-    console.log(data, 'data');
-    setBlocks(data.blocks);
+    setLoading(true);
+    try {
+      const data = await fetchLatestBlocksList({ chainId: 'AELF' });
+      console.log(data, 'data');
+      setLoading(false);
+      setBlocks(data.blocks);
+    } catch (error) {
+      setLoading(false);
+    }
   }, []);
   const isMobile = useMobileAll();
   useEffect(() => {
@@ -155,10 +163,12 @@ export default function Home({ overviewSSR }: IProps) {
       },
     ];
     return (
-      <div className={clsx('latest-all', isMobile && 'latest-all-mobile')}>
-        <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
-        {/* <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest> */}
-      </div>
+      <Spin spinning={loading}>
+        <div className={clsx('latest-all', isMobile && 'latest-all-mobile')}>
+          <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
+          {/* <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest> */}
+        </div>
+      </Spin>
     );
   };
 

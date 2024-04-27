@@ -29,7 +29,7 @@ const nextConfig = {
           },
           {
             source: '/api/:path*',
-            destination: 'http://192.168.10.179:8001/api/:path*',
+            destination: 'https://aelfscan.io/api/:path*',
             // permanent: false,
             basePath: false,
           },

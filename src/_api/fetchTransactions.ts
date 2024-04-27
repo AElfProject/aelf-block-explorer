@@ -7,6 +7,6 @@ export async function fetchTransactionDetails(
   const result = await request.tx.getTransactionDetail({
     params: params,
   });
-  const { data } = result;
+  const data = result?.data;
   return data;
 }
