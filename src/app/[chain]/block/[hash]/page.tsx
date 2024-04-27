@@ -10,5 +10,6 @@ import Detail from './_components/detail';
 import { TChainID } from '@_api/type';
 export default async function Block({ params }: { params: { hash: string; chain: TChainID } }) {
   const data = await fetchServerBlocksDetail({ blockHeight: Number(params.hash), chainId: params.chain });
+  console.log(data, 'data');
   return <Detail SSRData={data} />;
 }
