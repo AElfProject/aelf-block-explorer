@@ -1,4 +1,5 @@
 import { ILogsProps } from '@_components/LogsContainer/type';
+import { SortEnum } from '@_types/common';
 
 export type TChainID = 'AELF' | 'tDVV' | 'tDVW';
 
@@ -194,6 +195,7 @@ export interface ITokenHoldersRequestParams {
   symbol: string;
   skipCount: number;
   maxResultCount: number;
+  // search: string;
 }
 
 export interface ITokenTransfersRequestParams {
@@ -213,6 +215,6 @@ export interface TTokenListRequestParams {
   chainId: TChainID;
   skipCount: number;
   maxResultCount: number;
-  sort: number;
+  sort: SortEnum;
   sortBy: number;
 }

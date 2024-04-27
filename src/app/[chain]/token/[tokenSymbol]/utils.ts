@@ -5,7 +5,7 @@ export const formatSearchValue = (val: string) => {
   let tempValue = val.trim();
 
   if (tempValue.indexOf('_') > 0) {
-    [, tempValue] = tempValue.split('-');
+    [, tempValue] = tempValue.split('_');
   }
 
   return tempValue;
@@ -13,7 +13,6 @@ export const formatSearchValue = (val: string) => {
 
 export const getSearchType = (str: string) => {
   if (!str) return SearchType.other;
-
   if (isAElfAddress(str)) return SearchType.address;
 
   if (isTxHash(str)) return SearchType.txHash;

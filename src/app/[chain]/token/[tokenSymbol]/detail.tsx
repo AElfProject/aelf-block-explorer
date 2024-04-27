@@ -3,13 +3,12 @@ import EPTabs from '@_components/EPTabs';
 import HeadTitle from '@_components/HeaderTitle';
 import { FontWeightEnum, Typography } from 'aelf-design';
 import { TabsProps } from 'antd';
-import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import Holders from './_components/Holders';
 import OverView from './_components/Overview';
 import Transfers, { ITransfersRef } from './_components/Transfers';
 import './index.css';
-import { IHolderTableData, ITokenDetail, ITransferTableData, SearchType } from './type';
+import { ITokenDetail, SearchType } from './type';
 import { formatSearchValue, getSearchType } from './utils';
 
 const { Title } = Typography;
@@ -21,7 +20,9 @@ interface IDetailProps {
 }
 
 export default function Detail({ tokenDetail }: IDetailProps) {
-  const [search, setSearch] = useState<string>('2K6gPkMBMfxatiZLYkUDPmp429BbKZCUCSpuysj4PCeiHo3V7v');
+  console.log(tokenDetail, 'tokenDetail');
+  const [search, setSearch] = useState<string>('');
+  const [searchText, setSearchText] = useState<string>('');
   const [searchType, setSearchType] = useState<SearchType>(SearchType.other);
   const transfersRef = useRef<ITransfersRef>(null);
 
@@ -30,15 +31,9 @@ export default function Detail({ tokenDetail }: IDetailProps) {
   }, []);
 
   const onSearchChange = useCallback((val) => {
-    console.log('search value', val);
+    setSearchText(val);
     const value = formatSearchValue(val);
     const searchType = getSearchType(value);
-    if (searchType === SearchType.other) {
-      console.log('refresh');
-      // router.refresh();
-      window.location.reload();
-      return;
-    }
     transfersRef?.current?.setSearchStr(val);
     setSearchType(searchType);
     // fetchTransfersData({ page: 1, pageSize: 50, searchText: val });
@@ -52,6 +47,7 @@ export default function Detail({ tokenDetail }: IDetailProps) {
         <Transfers
           ref={transfersRef}
           search={search}
+          searchText={searchText}
           searchType={searchType}
           // SSRData={transfersList}
           onSearchChange={onSearchChange}
@@ -67,27 +63,28 @@ export default function Detail({ tokenDetail }: IDetailProps) {
         <Holders
           searchType={searchType}
           search={search}
+          searchText={searchText}
           // SSRData={holdersList}
           onSearchChange={onSearchChange}
           onSearchInputChange={onSearchInputChange}
         />
       ),
     };
-
+    console.log(searchType, 'searchType');
     if (searchType !== SearchType.other) {
       return [transfersItem];
     }
 
     return [transfersItem, holdersItem];
-  }, [onSearchChange, onSearchInputChange, search, searchType]);
+  }, [onSearchChange, onSearchInputChange, search, searchText, searchType]);
 
   return (
     <div className="token-detail">
-      <HeadTitle content={`Token ${tokenDetail.token.name || '--'}`}>
+      <HeadTitle content={`Token ${tokenDetail?.token?.name || '--'}`}>
         <Title
           level={6}
           fontWeight={FontWeightEnum.Bold}
-          className="ml-1 !text-[#858585]">{`(${tokenDetail.token.symbol || '--'})`}</Title>
+          className="ml-1 !text-[#858585]">{`(${tokenDetail?.token?.symbol || '--'})`}</Title>
       </HeadTitle>
       <OverView data={tokenDetail} />
       <EPTabs items={items} selectKey="transfers" />

@@ -1,36 +1,78 @@
 'use client';
 import HeadTitle from '@_components/HeaderTitle';
 import Table from '@_components/Table';
-import useTableData from '@_hooks/useTable';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import getColumns from './columnConfig';
-import fetchData from './mock';
-import { ITokensTableData, ITokensTableItem } from './type';
 import { useMobileAll } from '@_hooks/useResponsive';
+import { ITokenList, ITokenListItem } from '../token/[tokenSymbol]/type';
+import { useParams } from 'next/navigation';
+import { fetchTokenList } from '@_api/fetchTokens';
+import { TChainID } from '@_api/type';
+import { getPageNumber } from '@_utils/formatter';
+import { pageSizeOption } from '@_utils/contant';
+import { SortEnum } from '@_types/common';
 
 interface TokensListProps {
-  SSRData: ITokensTableData;
+  SSRData: ITokenList;
 }
 
 export default function TokensList({ SSRData }: TokensListProps) {
+  console.log(SSRData, 'tokenSSRData');
   const { isMobile } = useMobileAll();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(50);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(SSRData.total);
+  const [data, setData] = useState<ITokenListItem[]>(SSRData.list);
+  const [sort, setSort] = useState<SortEnum>(SortEnum.desc);
 
-  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
-    ITokensTableItem,
-    ITokensTableData
-  >({
-    SSRData,
-    fetchData,
-    // disposeData,
-  });
+  const { chain } = useParams();
 
-  const ChangeOrder = useCallback(() => {}, []);
+  const mountRef = useRef(true);
+
+  const fetchData = useCallback(async () => {
+    const params = {
+      skipCount: getPageNumber(currentPage, pageSize),
+      maxResultCount: 50,
+      chainId: chain as TChainID,
+      sort,
+      sortBy: 2,
+    };
+    setLoading(true);
+    const data = await fetchTokenList(params);
+    setTotal(data.total);
+    setData(data.list);
+    setLoading(false);
+    return data;
+  }, [chain, currentPage, pageSize, sort]);
+
+  useEffect(() => {
+    if (mountRef.current) {
+      mountRef.current = false;
+      return;
+    }
+    fetchData();
+  }, [fetchData]);
+
+  const ChangeOrder = useCallback(() => {
+    if (loading) return;
+    setSort(sort === SortEnum.desc ? SortEnum.asc : SortEnum.desc);
+  }, [loading, sort]);
 
   const columns = useMemo(
-    () => getColumns({ currentPage, pageSize, ChangeOrder }),
-    [ChangeOrder, currentPage, pageSize],
+    () => getColumns({ currentPage, pageSize, sort, ChangeOrder, chain }),
+    [ChangeOrder, chain, currentPage, pageSize, sort],
   );
   const title = useMemo(() => `A total of ${total} ${total <= 1 ? 'token' : 'tokens'} found`, [total]);
+
+  const pageChange = async (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const pageSizeChange = async (page, size) => {
+    setPageSize(size);
+    setCurrentPage(page);
+  };
 
   return (
     <div>
@@ -45,6 +87,7 @@ export default function TokensList({ SSRData }: TokensListProps) {
         dataSource={data}
         columns={columns}
         isMobile={isMobile}
+        options={pageSizeOption}
         rowKey="rank"
         total={total}
         pageSize={pageSize}

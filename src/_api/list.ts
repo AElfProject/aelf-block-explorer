@@ -24,11 +24,11 @@ const Transaction_API_List = {
 };
 
 const Token_API_List = {
-  getTokenList: `api/app/token/list`,
-  getServerTokenList: `api/app/token/list`,
+  getTokenList: `${BASE_API}/app/token/list`,
+  getServerTokenList: `${SERVER_BASE_API}/app/token/list`,
   getTokenDetail: `${SERVER_BASE_API}/app/token/detail`,
-  getTokenDetailTransfers: `api/app/token/transfers`,
-  getTokenDetailHolders: `api/app/token/holders`,
+  getTokenDetailTransfers: `${BASE_API}/app/token/transfers`,
+  getTokenDetailHolders: `${BASE_API}/app/token/holders`,
 };
 
 const Common_API_List = {
@@ -48,6 +48,7 @@ export const API_List = {
   tx: Transaction_API_List,
   common: Common_API_List,
   cms: CMS_API_List,
+  token: Token_API_List,
 };
 
 type REQUEST_FUNCTION = (opt?: RequestWithParams) => Promise<any>;

@@ -26,3 +26,8 @@ export enum AddressType {
   address,
   Contract,
 }
+
+export enum SortEnum {
+  asc,
+  desc,
+}
