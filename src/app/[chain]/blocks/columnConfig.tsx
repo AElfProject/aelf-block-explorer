@@ -6,12 +6,12 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { formatDate } from '@_utils/formatter';
+import { addSymbol, divDecimals, formatDate } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Link from 'next/link';
 import Copy from '@_components/Copy';
 import { IBlocksResponseItem } from '@_api/type';
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<IBlocksResponseItem> {
+export default function getColumns({ timeFormat, handleTimeChange, chianId }): ColumnsType<IBlocksResponseItem> {
   return [
     {
       title: 'Block',
@@ -19,7 +19,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       dataIndex: 'blockHeight',
       key: 'blockHeight',
       render: (text) => (
-        <Link className="block text-xs leading-5 text-link" href={`block/${text}`}>
+        <Link className="block text-xs leading-5 text-link" href={`/${chianId}/block/${text}`}>
           {text}
         </Link>
       ),
@@ -56,17 +56,15 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       key: 'producerAddress',
       width: '320px',
       dataIndex: 'producerAddress',
-      render: (name) => (
+      render: (address, record) => (
         <div className="flex items-center">
           <Link
             className="block text-xs leading-5 text-link"
-            title={`${addressFormat(name)}`}
-            href=""
-            // href={`/address/${addressFormat(name)}`}
-          >
-            {`${addressFormat(hiddenAddress(name, 4, 4))}`}
+            title={`${addressFormat(address, chianId)}`}
+            href={`${chianId}/address/${addressFormat(address, chianId)}`}>
+            {record.producerName ? record.producerName : `${addressFormat(hiddenAddress(address, 4, 4), chianId)}`}
           </Link>
-          <Copy value={addressFormat(name)} />
+          <Copy value={addressFormat(address, chianId)} />
         </div>
       ),
     },
@@ -75,12 +73,18 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: '208px',
       key: 'reward',
       dataIndex: 'reward',
+      render: (reward: string) => {
+        return <>{addSymbol(divDecimals(reward))}</>;
+      },
     },
     {
       title: 'Burnt Fees',
       width: '208px',
-      key: 'burntFee',
-      dataIndex: 'burntFee',
+      key: 'burntFees',
+      dataIndex: 'burntFees',
+      render: (value: string) => {
+        return <>{addSymbol(divDecimals(value))}</>;
+      },
     },
   ];
 }

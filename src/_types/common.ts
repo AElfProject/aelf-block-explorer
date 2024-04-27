@@ -21,3 +21,8 @@ export interface IAddress {
   isManager: false;
   isProducer: true;
 }
+
+export enum AddressType {
+  address,
+  Contract,
+}

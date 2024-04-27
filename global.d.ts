@@ -1,5 +1,8 @@
+import { TChainID } from '@_api/type';
+
 type HashParams = {
   hash: string;
+  chain: TChainID;
 };
 
 type ChainId = {
@@ -20,3 +23,7 @@ type ItemSymbol = {
 
 type NftCollectionPageParams = ChainId & CollectionSymbol;
 type Chain = 'AELF' | 'tDVV' | 'tDVW';
+
+type TSearchParamsForTransactionDetail = {
+  blockHeight: number;
+};

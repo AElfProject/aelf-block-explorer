@@ -6,24 +6,27 @@
  * @Description: columns config
  */
 import { ColumnsType } from 'antd/es/table';
-import { ITableDataType } from './type';
-import { formatDate } from '@_utils/formatter';
-import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
-import Copy from '@_components/Copy';
+import { addSymbol, divDecimals, formatDate } from '@_utils/formatter';
 import Link from 'next/link';
 import IconFont from '@_components/IconFont';
 import Method from '@_components/Method';
 import ContractToken from '@_components/ContractToken';
-import EPTooltip from '@_components/EPToolTip';
 import TransactionsView from '@_components/TransactionsView';
-enum Status {
-  Success = 'Success',
-  fail = 'Fail',
-}
-export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<ITableDataType> {
+import { ITransactionsResponseItem, TransactionStatus } from '@_api/type';
+import EPTooltip from '@_components/EPToolTip';
+
+export default function getColumns({
+  timeFormat,
+  handleTimeChange,
+  chainId = 'AELF',
+}): ColumnsType<ITransactionsResponseItem> {
   return [
     {
-      title: <IconFont className="ml-[6px] text-xs" type="question-circle" />,
+      title: (
+        <EPTooltip title="See preview of the transaction details." mode="dark">
+          <IconFont className="ml-[6px] cursor-pointer text-xs" type="question-circle" />
+        </EPTooltip>
+      ),
       width: 72,
       dataIndex: '',
       key: 'view',
@@ -37,10 +40,14 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       render: (text, records) => {
         return (
           <div className="flex items-center">
-            {records.status === Status.fail && <IconFont className="mr-1" type="question-circle-error" />}
-            <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${text}`}>
-              {text}
-            </Link>
+            {records.status === TransactionStatus.Failed && <IconFont className="mr-1" type="question-circle-error" />}
+            <EPTooltip title={text} mode="dark">
+              <Link
+                className="block w-[120px] truncate text-xs leading-5 text-link"
+                href={`/${chainId}/tx/${text}?blockHeight=${records.blockHeight}`}>
+                {text}
+              </Link>
+            </EPTooltip>
           </div>
         );
       },
@@ -49,7 +56,9 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       title: (
         <div className="cursor-pointer font-medium text-link">
           <span>Method</span>
-          <IconFont className="ml-1 text-xs" type="question-circle" />
+          <EPTooltip title="Function executed based on input data. " mode="dark">
+            <IconFont className="ml-1 text-xs" type="question-circle" />
+          </EPTooltip>
         </div>
       ),
       width: 128,
@@ -88,19 +97,9 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       dataIndex: 'from',
       title: 'From',
       width: 196,
-      render: (text) => {
-        const { address } = JSON.parse(text);
-        return (
-          <div className="address flex items-center">
-            <EPTooltip pointAtCenter={false} title={addressFormat(address)} mode="dark">
-              <Link className="text-link" href={`/address/${addressFormat(address)}`}>
-                {addressFormat(hiddenAddress(address, 4, 4))}
-              </Link>
-            </EPTooltip>
-            <Copy value={addressFormat(address)} />
-            <div className="flex items-center"></div>
-          </div>
-        );
+      render: (fromData) => {
+        const { address } = fromData;
+        return <ContractToken address={address} name={fromData.name} chainId={chainId} type={fromData.addressType} />;
       },
     },
     {
@@ -113,19 +112,18 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
     {
       dataIndex: 'to',
       title: 'To',
-      width: 196,
-      render: (text) => {
-        const { address } = JSON.parse(text);
-        return <ContractToken address={address} />;
+      render: (toData) => {
+        const { address } = toData;
+        return <ContractToken address={address} name={toData.name} chainId={chainId} type={toData.addressType} />;
       },
     },
     {
       title: 'Value',
       width: 178,
-      key: 'transactionFee',
-      dataIndex: 'transactionFee',
+      key: 'transactionValue',
+      dataIndex: 'transactionValue',
       render: (text) => {
-        return <span className="text-base-100">{text + 'ELF'}</span>;
+        return <span className="text-base-100">{addSymbol(divDecimals(text))}</span>;
       },
     },
     {
@@ -134,7 +132,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       key: 'transactionFee',
       dataIndex: 'transactionFee',
       render: (text) => {
-        return <span className="text-base-200">{text + 'ELF'}</span>;
+        return <span className="text-base-200">{addSymbol(divDecimals(text))}</span>;
       },
     },
   ];

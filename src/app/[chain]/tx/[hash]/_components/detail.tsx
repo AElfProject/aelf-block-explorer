@@ -12,6 +12,7 @@ import LogsContainer from '@_components/LogsContainer';
 import EPTabs from '@_components/EPTabs';
 import { ITransactionDetailData } from '@_api/type';
 export default function Detail({ SSRData }: { SSRData: ITransactionDetailData }) {
+  console.log(SSRData, 'SSRData');
   const router = useRouter();
   const [detailData] = useState(SSRData);
   const isFirst = detailData.transactionId === '';
@@ -45,18 +46,16 @@ export default function Detail({ SSRData }: { SSRData: ITransactionDetailData })
       key: 'logs',
       label: (
         <div>
-          Logs<span className="ml-[2px]">({detailData.total})</span>
+          Logs<span className="ml-[2px]">({detailData.logEvents.length})</span>
         </div>
       ),
-      children: <LogsContainer Logs={detailData.logs} />,
+      children: <LogsContainer Logs={detailData.logEvents} />,
     },
   ];
 
   return (
     <div className="tx-detail-container">
-      <HeadTitle content="Transactions Details">
-        <JumpButton isFirst={isFirst} isLast={isLast} jump={jump} />
-      </HeadTitle>
+      <HeadTitle content="Transactions">{/* <JumpButton isFirst={isFirst} isLast={isLast} jump={jump} /> */}</HeadTitle>
       <div className="detail-table">
         <EPTabs items={items} />
       </div>

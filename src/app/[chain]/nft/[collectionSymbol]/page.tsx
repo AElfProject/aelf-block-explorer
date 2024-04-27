@@ -1,3 +1,4 @@
+import { ChainId, CollectionSymbol } from 'global';
 import CollectionDetail from './_Detail/index';
 import { URL_QUERY_KEY } from './_Detail/type';
 

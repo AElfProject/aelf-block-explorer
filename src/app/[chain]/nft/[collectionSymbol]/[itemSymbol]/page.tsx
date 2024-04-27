@@ -10,6 +10,7 @@ import './index.css';
 // import request from '@_api';
 import NFTDetails from './NFTDetails';
 import { fetchActiveData, fetchHolderData, fetchOverviewData } from './mock';
+import { ChainId, CollectionSymbol, ItemSymbol } from 'global';
 export default async function NFTDetailsPage({ params }: { params: ChainId & CollectionSymbol & ItemSymbol }) {
   if (!params.collectionSymbol) {
     return notFound();

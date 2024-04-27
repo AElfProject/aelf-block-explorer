@@ -4,19 +4,22 @@
  * @LastEditTime: 2023-08-15 20:12:44
  * @Description: formatter utils
  */
+import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 const SYMBOL = process.env.NEXT_PUBLIC_SYMBOL;
 dayjs.extend(utc);
-export const formatDate = (date: string | number, type: string, format = 'YYYY-MM-DD HH:mm:ss') => {
+export const formatDate = (date: number, type: string, format = 'YYYY-MM-DD HH:mm:ss Z') => {
   if (date) {
     if (type === 'Date Time (UTC)') {
-      return dayjs.utc(date).format(format);
+      return dayjs.unix(date).format(format);
     }
-    const seconds = dayjs().diff(date, 'seconds');
-    const minutes = dayjs().diff(date, 'minutes');
-    const hours = dayjs().diff(date, 'hours');
-    const days = dayjs().diff(date, 'days');
+    const localTimestampInSeconds = dayjs.unix(dayjs().unix());
+    const time = dayjs.unix(date);
+    const seconds = localTimestampInSeconds.diff(time, 'seconds');
+    const minutes = localTimestampInSeconds.diff(time, 'minutes');
+    const hours = localTimestampInSeconds.diff(time, 'hours');
+    const days = localTimestampInSeconds.diff(time, 'days');
 
     if (minutes < 1) return `${seconds < 0 ? 0 : seconds} secs ago`;
     if (minutes < 60) return `${minutes % 60} mins ago`;
@@ -53,4 +56,17 @@ export const thousandsNumber = (number: string | number): string => {
 export const stringToDotString = (str?: string, maxLength?: number) => {
   if (!str || !maxLength) return '';
   return str.length > maxLength ? str.substring(0, maxLength) + '...' : str;
+};
+
+export const addSymbol = (str: string | number) => {
+  return `${str} ${process.env.NEXT_PUBLIC_SYMBOL}`;
+};
+
+export const divDecimals = (num: number | string, decimals = 8e10) => {
+  const bigNumber = new BigNumber(num);
+  return bigNumber.dividedBy(decimals || 8e10).toNumber();
+};
+
+export const getPageNumber = (page: number, pageSize: number): number => {
+  return Math.floor((page - 1) * pageSize);
 };

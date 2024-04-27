@@ -4,15 +4,15 @@ import Table from '@_components/Table';
 import getColumns from './columnConfig';
 import { useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
-import { ITableDataType } from './type';
 import fetchData from './mock';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
 import { pageSizeOption } from '@_utils/contant';
+import { ITransactionsResponseItem } from '@_api/type';
 interface ITransactionsData {
   total: number;
-  data: ITableDataType[];
+  data: ITransactionsResponseItem[];
 }
 
 export default function List({ SSRData, showHeader = true }) {
@@ -24,7 +24,7 @@ export default function List({ SSRData, showHeader = true }) {
     };
   };
   const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
-    ITableDataType,
+    ITransactionsResponseItem,
     ITransactionsData
   >({
     SSRData: disposeData(SSRData),
@@ -32,7 +32,7 @@ export default function List({ SSRData, showHeader = true }) {
     disposeData: disposeData,
   });
   const [timeFormat, setTimeFormat] = useState<string>('Age');
-  const columns = useMemo<ColumnsType<ITableDataType>>(() => {
+  const columns = useMemo<ColumnsType<ITransactionsResponseItem>>(() => {
     return getColumns({
       timeFormat,
       handleTimeChange: () => {

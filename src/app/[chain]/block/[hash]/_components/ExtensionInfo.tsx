@@ -14,32 +14,32 @@ export default function ExtensionInfo({ data }: { data: IBlocksDetailData }) {
     return [
       {
         label: 'Hash ',
-        tip: 'Hash ',
+        tip: 'The hash of the block header of the current block.',
         value: data.blockHash,
       },
       {
         label: 'Previous Hash ',
-        tip: 'Previous Hash ',
+        tip: 'The hash of the block after which this block was generated, also known as its previous block.',
         value: <span className="text-link">{data.previousBlockHash}</span>,
       },
       {
         label: 'Merkle Tree Root OF Transactions ',
-        tip: 'Merkle Tree Root OF Transactions ',
+        tip: 'The merkle root of the transaction data.',
         value: data.merkleTreeRootOfTransactions,
       },
       {
         label: 'Merkle Tree Root OF World State ',
-        tip: 'Merkle Tree Root OF World State ',
+        tip: 'The merkle root of the transaction result.',
         value: data.merkleTreeRootOfWorldState,
       },
       {
         label: 'Merkle Tree Root OF Transaction State ',
-        tip: 'Merkle Tree Root OF Transaction State ',
+        tip: 'The merkle root of the transaction state.',
         value: data.merkleTreeRootOfTransactionState,
       },
       {
         label: 'Extra Info ',
-        tip: 'Extra Info ',
+        tip: 'Extra info of the block.',
         value: <CodeBlock value={data.extra} />,
       },
       {

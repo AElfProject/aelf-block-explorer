@@ -12,6 +12,7 @@ import { MenuItem, NetworkItem } from '@_types';
 import { getPathnameFirstSlash } from '@_utils/urlUtils';
 import { useMemoizedFn } from 'ahooks';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useAppSelector } from '@_store';
 interface IProps {
   networkList: NetworkItem[];
   headerMenuList: MenuItem[];
@@ -19,13 +20,13 @@ interface IProps {
 
 const clsPrefix = 'header-menu-container';
 export default function HeaderMenu({ networkList, headerMenuList }: IProps) {
-  const { isMobile } = useMobileAll();
+  const { defaultChain } = useAppSelector((state) => state.getChainId);
   const router = useRouter();
   const jump = useMemoizedFn((url) => {
     // microApp.setData('governance', { path: url });
-    window.history.pushState(null, '', url);
-    window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
-    router.replace(url);
+    router.replace(`/${defaultChain}${url}`);
+    // window.history?.pushState(null, '', url);
+    // window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
   });
 
   // TODO: use cms

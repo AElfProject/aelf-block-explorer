@@ -5,20 +5,24 @@ import Link from 'next/link';
 import addressFormat from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import LogItems from './logItems';
+import { useParams } from 'next/navigation';
 function LogsContainer({ Logs = [] }: { Logs: ILogsProps[] }) {
+  const { chain } = useParams();
   return (
     <div className="log-container">
       <div className="log-list">
         {Logs.map((item, index) => (
-          <div key={item.address} className="">
+          <div key={item.contractInfo?.address} className="">
             <DetailContainer
               infoList={[
                 {
                   label: 'Address',
                   value: (
                     <div>
-                      <Link href={`/address${addressFormat(item.address)}`}>{addressFormat(item.address)}</Link>
-                      <Copy value={addressFormat(item.address)} />
+                      <Link href={`/address${addressFormat(item.contractInfo?.address, chain as string)}`}>
+                        {addressFormat(item.contractInfo?.address, chain as string)}
+                      </Link>
+                      {item.contractInfo?.address && <Copy value={addressFormat(item.contractInfo?.address)} />}
                     </div>
                   ),
                 },
@@ -41,7 +45,7 @@ function LogsContainer({ Logs = [] }: { Logs: ILogsProps[] }) {
               <DetailContainer
                 infoList={[
                   {
-                    label: 'divider' + item.address,
+                    label: 'divider' + item.contractInfo?.address,
                     value: 'divider',
                   },
                 ]}

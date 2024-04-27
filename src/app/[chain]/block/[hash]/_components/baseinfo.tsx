@@ -10,24 +10,29 @@ import DetailContainer from '@_components/DetailContainer';
 import { useCallback, useMemo } from 'react';
 import ConfirmStatus from '@_components/ConfirmedStatus';
 import IconFont from '@_components/IconFont';
-import { formatDate } from '@_utils/formatter';
+import { addSymbol, divDecimals, formatDate } from '@_utils/formatter';
 import dayjs from 'dayjs';
 import Copy from '@_components/Copy';
 import { useRouter } from 'next/navigation';
 import JumpButton, { JumpTypes } from '@_components/JumpButton';
 import SizeBytes from '@_components/SizeBytes';
-import DollarCurrencyRate from '@_components/DollarCurrencyRate';
+import DollarCurrency from '@_components/DollarCurrency';
+import addressFormat from '@_utils/urlUtils';
+import { StatusEnum } from '@_types/status';
+import { useParams } from 'next/navigation';
 export default function BaseInfo({ data }) {
   const router = useRouter();
-  const disabled = data.blockHeight === 1;
+  const { chain } = useParams();
+  const isFirst = data.preBlockHeight === 0;
+  const isLast = data.nextBlockHeight === 0;
   const jump = useCallback(
     (type: JumpTypes) => {
       switch (type) {
         case JumpTypes.Prev:
-          router.push(`/block/${data.blockHeight - 1}`);
+          router.push(`/block/${data.preBlockHeight}`);
           break;
         case JumpTypes.Next:
-          router.push(`/block/${data.blockHeight + 1}`);
+          router.push(`/block/${data.nextBlockHeight}`);
       }
     },
     [data, router],
@@ -36,48 +41,48 @@ export default function BaseInfo({ data }) {
     return [
       {
         label: 'Blocks Height',
-        tip: 'Blocks Height',
+        tip: 'The number of blocks from the genesis block to the current one.',
         value: (
           <div className="flex items-center">
             <span className="mr-2">{data.blockHeight}</span>
-            <JumpButton isFirst={disabled} jump={jump} />
+            <JumpButton isFirst={isFirst} isLast={isLast} jump={jump} />
           </div>
         ),
       },
       {
         label: 'Status ',
-        tip: 'Status ',
+        tip: 'The status of the block.',
         value: (
           <div className="flex">
-            <ConfirmStatus status={data.status} />
+            <ConfirmStatus status={data.confirmed ? StatusEnum.Confirmed : StatusEnum.Unconfrimed} />
           </div>
         ),
       },
       {
         label: 'Timestamp ',
-        tip: 'Timestamp ',
+        tip: 'The date and time at which the block is produced.',
         value: (
           <div className="value-timestamp">
             <IconFont className="mr-1 !text-xs !leading-5" type="Time" />
             <span>
-              {formatDate(data.timestamp, 'age')}({dayjs(data.timestamp).format('MMM-DD-YYYY hh:mm:ss A [+UTC]')})
+              {formatDate(data.timestamp, 'age')}({dayjs.unix(data.timestamp).format('MMM-DD-YYYY hh:mm:ss Z')})
             </span>
           </div>
         ),
       },
       {
         label: 'Transactions ',
-        tip: 'Transactions ',
+        tip: 'The number of transactions in the block.',
         value: (
           <div className="text-xs leading-5">
-            <span className=" text-link cursor-pointer">{data.total} transactions</span>
+            <span className=" cursor-pointer text-link">{data.total} transactions</span>
             <span className="ml-1">in this block</span>
           </div>
         ),
       },
       {
         label: 'Chain ID ',
-        tip: 'Chain ID ',
+        tip: 'The chain on which the block is produced.',
         value: <div className="text-xs leading-5">{data.chainId}</div>,
       },
       {
@@ -86,28 +91,30 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Producer ',
-        tip: 'Producer ',
+        tip: 'The producer of the block.',
         value: (
           <div className="text-xs leading-5">
-            <span className="text-link">{data.producer.chainId}</span>
-            <Copy value={data.producer.name} />
+            <span className="text-link">
+              {data.producer.name ? data.producer.name : addressFormat(data.producer.address, chain as string)}
+            </span>
+            <Copy value={addressFormat(data.producer.address, chain as string)} />
             <span className="ml-1">in 0.5 secs</span>
           </div>
         ),
       },
       {
         label: 'Block Reward ',
-        tip: 'Block Reward ',
+        tip: 'The block reward given by aelf network, unaffected by the specific transaction.',
         value: (
           <div className="flex items-center text-xs leading-5">
-            <span className="mr-1">{data.reward}</span>
-            <DollarCurrencyRate />
+            <span className="mr-1">{addSymbol(divDecimals(data.reward.elfReward))}</span>
+            {data.reward.usdReward && <DollarCurrency price={data.reward.usdReward} />}
           </div>
         ),
       },
       {
         label: 'Size ',
-        tip: 'Size ',
+        tip: 'The size of the block.',
         value: <SizeBytes size={data.blockSize} />,
       },
       {
@@ -116,13 +123,11 @@ export default function BaseInfo({ data }) {
       },
       {
         label: 'Burnt Fees ',
-        tip: 'Burnt Fees ',
+        tip: 'Each transaction will burn 10% of its Size Fee.',
         value: (
           <div className="flex items-center text-xs leading-5">
-            <span className="mr-1">{data.burntFee}</span>
-            <div className="flex items-center ml-1 h-6 px-4 rounded bg-ECEEF2">
-              <span className="mr-1">$</span>21.13
-            </div>
+            <span className="mr-1">{addSymbol(divDecimals(data.burntFee.elfFee))}</span>
+            {data.burntFee.usdFee && <DollarCurrency price={data.burntFee.usdFee} />}
           </div>
         ),
       },
@@ -131,6 +136,6 @@ export default function BaseInfo({ data }) {
         value: 'divider',
       },
     ];
-  }, [data, disabled, jump]);
+  }, [data, isFirst, isLast, jump]);
   return <DetailContainer infoList={renderInfo} />;
 }

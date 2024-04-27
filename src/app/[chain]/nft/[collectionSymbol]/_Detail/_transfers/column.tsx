@@ -8,6 +8,7 @@ import Link from 'next/link';
 import IconFont from '@_components/IconFont';
 import { Tooltip } from 'aelf-design';
 import ContractToken from '@_components/ContractToken';
+import { AddressType } from '@_types/common';
 
 export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<CollectionTransfer> {
   return [
@@ -111,7 +112,7 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       width: 196,
       render: (to) => {
         const { address } = to;
-        return <ContractToken address={address} />;
+        return <ContractToken address={address} type={AddressType.address} chainId="AELF" />;
       },
     },
     {
@@ -128,12 +129,12 @@ export default function getColumns({ timeFormat, handleTimeChange }): ColumnsTyp
       key: 'item',
       render: (item: CollectionTransferItemProperty) => (
         <div className="collection-transfer-item">
-          <div className="mr-[4px] w-[40px] h-[40px] rounded-lg">
+          <div className="mr-[4px] size-[40px] rounded-lg">
             <img src={item.imageUrl} alt="" />
           </div>
           <div>
-            <div className="name w-[140px] truncate h-[20px] leading-[20px]">{item.name}</div>
-            <div className="symbol w-[124px] truncate h-[18px] leading-[20px]">{item.symbol}</div>
+            <div className="name h-[20px] w-[140px] truncate leading-[20px]">{item.name}</div>
+            <div className="symbol h-[18px] w-[124px] truncate leading-[20px]">{item.symbol}</div>
           </div>
         </div>
       ),

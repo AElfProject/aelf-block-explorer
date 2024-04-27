@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { PAGE_SIZE } from './type';
 import CollectionDetails from './CollectionDetails';
 import { fetchOverviewData, fetchTransferList } from './mock';
+import { ChainId, CollectionSymbol } from 'global';
 
 export default async function NFTDetailsPage({
   params,

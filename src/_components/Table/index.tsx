@@ -40,7 +40,7 @@ export interface ICommonTableProps<T> extends ITableProps<T> {
   emptyType?: 'nodata' | 'search' | 'internet' | ReactNode | (() => ReactNode) | null;
   emptyText?: string;
   pageChange?: (page: number, pageSize?: number) => void;
-  pageSizeChange?: (value: number) => void;
+  pageSizeChange?: (page: number, pageSize: number) => void;
   emptyPic?: string;
   headerLeftNode?: ReactNode;
 }

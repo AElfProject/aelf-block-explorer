@@ -9,6 +9,7 @@ import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
 import { useParams } from 'next/navigation';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { NftCollectionPageParams } from 'global';
 
 export interface HolderProps {
   topSearchProps?: ITableSearch;

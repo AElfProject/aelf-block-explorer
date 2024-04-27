@@ -9,7 +9,7 @@
   .latest-all {
     @apply flex flex-row mt-4 gap-4;
     > .home-latest {
-      @apply w-[50%];
+      @apply w-[100%];
     }
     &-mobile {
       @apply mx-3 flex flex-wrap;

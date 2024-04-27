@@ -7,13 +7,29 @@
  */
 import { RequestWithParams } from './server';
 
+const BASE_API = '/api'; // server local
+const SERVER_BASE_API = `${process.env.NEXT_PUBLIC_API_URL}/api`; // server
+
 const Block_API_List = {
-  getBlockList: 'https://dummyjson.com/products',
+  getBlockList: `${BASE_API}/app/blockchain/blocks`,
+  getLatestBlocksList: `${BASE_API}/app/blockchain/latestBlocks`,
+  getServerBlockList: `${SERVER_BASE_API}/app/blockchain/blocks`,
+  getBlockDetail: `${BASE_API}/app/blockchain/blockDetail`,
+  getServerBlockDetail: `${SERVER_BASE_API}/app/blockchain/blockDetail`,
   query: 'https://dummyjson.com/products/search',
 };
 
 const Transaction_API_List = {
   getTransaction: '',
+  getTransactionDetail: `${SERVER_BASE_API}/app/blockchain/transactionDetail`,
+};
+
+const Token_API_List = {
+  getTokenList: `api/app/token/list`,
+  getServerTokenList: `api/app/token/list`,
+  getTokenDetail: `${SERVER_BASE_API}/app/token/detail`,
+  getTokenDetailTransfers: `api/app/token/transfers`,
+  getTokenDetailHolders: `api/app/token/holders`,
 };
 
 const Common_API_List = {

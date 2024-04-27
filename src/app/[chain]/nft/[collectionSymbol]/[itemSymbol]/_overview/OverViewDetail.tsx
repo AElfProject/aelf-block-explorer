@@ -8,6 +8,7 @@ import { ItemSymbolDetailOverview } from '../type';
 import { isMainNet } from '@_utils/isMainNet';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { CollectionSymbol, ItemSymbol } from 'global';
 
 export interface OverViewDetailProps {
   overview: ItemSymbolDetailOverview;

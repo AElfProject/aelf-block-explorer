@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-08-01 17:13:27
  * @Description: Tokens
  */
+import { ChainId } from 'global';
 import fetchData from './mock';
 import TokensList from './tokensList';
 

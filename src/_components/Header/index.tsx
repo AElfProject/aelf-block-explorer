@@ -1,22 +1,21 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import HeaderTop from '@_components/HeaderTop';
 import HeaderMenu from '@_components/HeaderMenu';
 import './index.css';
 import clsx from 'clsx';
 import { useMobileAll } from '@_hooks/useResponsive';
 import { useAppDispatch } from '@_store';
-import { setChainArr, setDefaultChain } from '@_store/features/chainIdSlice';
+import { setChainArr } from '@_store/features/chainIdSlice';
 
 const clsPrefix = 'header-container';
-export default function Header({ chainList, networkList, headerMenuList, defaultChain }) {
+export default function Header({ chainList, networkList, headerMenuList }) {
   const isMobile = useMobileAll();
   const chainArr = chainList.map((ele) => ele.chainList_id);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(setChainArr(chainArr));
-    dispatch(setDefaultChain(defaultChain));
-  }, [chainArr, defaultChain]);
+  }, [chainArr]);
   const headerList = headerMenuList.map((ele) => ele.headerMenu_id);
   const networkArr = networkList.map((ele) => ele.network_id);
   return (
