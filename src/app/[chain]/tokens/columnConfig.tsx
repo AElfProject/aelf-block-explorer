@@ -5,18 +5,20 @@ import { thousandsNumber } from '@_utils/formatter';
 import { ColumnsType } from 'antd/es/table';
 import clsx from 'clsx';
 import TokenImage from './_components/TokenImage';
-import { ITokensTableItem } from './type';
+import { ITokenListItem } from '../token/[tokenSymbol]/type';
+import Link from 'next/link';
+import { SortEnum } from '@_types/common';
 
-const getHolderPercentChange24h = (record: ITokensTableItem) => {
-  const { holderPercentChange24h, holders } = record;
-  const num = Number(holderPercentChange24h);
+const getHolderPercentChange24h = (record: ITokenListItem) => {
+  const { holderPercentChange24H, holders } = record;
+  const num = Number(holderPercentChange24H);
   if (Number.isNaN(num)) return '';
   if (num > 0) return `A ${num}% increase in token holders from the previous day count of ${thousandsNumber(holders)}`;
   if (num < 0) return `A ${num}% decrease in token holders from the previous day count of ${thousandsNumber(holders)}`;
   return 'No change in token holders from the previous day count';
 };
 
-export default function getColumns({ currentPage, pageSize, ChangeOrder }): ColumnsType<ITokensTableItem> {
+export default function getColumns({ currentPage, pageSize, ChangeOrder, chain, sort }): ColumnsType<ITokenListItem> {
   return [
     {
       title: '#',
@@ -31,9 +33,11 @@ export default function getColumns({ currentPage, pageSize, ChangeOrder }): Colu
       dataIndex: 'token',
       key: 'token',
       render: (text) => (
-        <TokenTableCell token={text}>
-          <TokenImage token={text} />
-        </TokenTableCell>
+        <Link href={`/${chain}/token/${text.symbol}`}>
+          <TokenTableCell token={text}>
+            <TokenImage token={text} />
+          </TokenTableCell>
+        </Link>
       ),
     },
     {
@@ -53,7 +57,7 @@ export default function getColumns({ currentPage, pageSize, ChangeOrder }): Colu
     {
       title: (
         <div className="flex cursor-pointer" onClick={ChangeOrder}>
-          <IconFont className="mr-1 text-xs" type="Rank" />
+          <IconFont className={`mr-1 text-xs ${sort === SortEnum.asc ? 'scale-y-[-1]' : ''}`} type="Rank" />
           <EPTooltip mode="dark" title="Sorted in descending order Click for ascending order">
             <div className="text-link">Holder</div>
           </EPTooltip>
@@ -63,13 +67,13 @@ export default function getColumns({ currentPage, pageSize, ChangeOrder }): Colu
       dataIndex: 'holders',
       key: 'holders',
       render: (text, record) => {
-        const { holderPercentChange24h } = record;
+        const { holderPercentChange24H } = record;
         return (
           <div className="text-xs leading-5">
             <div>{text}</div>
-            <div className={clsx(holderPercentChange24h >= 0 ? 'text-[#00A186]' : 'text-[#FF4D4F]')}>
+            <div className={clsx(holderPercentChange24H >= 0 ? 'text-[#00A186]' : 'text-[#FF4D4F]')}>
               <EPTooltip title={getHolderPercentChange24h(record)} mode="dark">
-                {holderPercentChange24h}
+                {holderPercentChange24H}%
               </EPTooltip>
             </div>
           </div>

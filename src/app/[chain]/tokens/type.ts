@@ -6,7 +6,7 @@ export interface ITokensTableItem {
   totalSupply: string;
   circulatingSupply: string;
   holders: number;
-  holderPercentChange24h: number;
+  holderPercentChange24H: number;
 }
 
 export interface ITokensTableData {

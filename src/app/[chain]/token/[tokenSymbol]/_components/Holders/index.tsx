@@ -34,6 +34,7 @@ export default function Holders({ search, onSearchChange, onSearchInputChange }:
       const res = await fetchTokenDetailHolders(params);
       setData(res.list);
       setTotal(res.total);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
@@ -43,9 +44,9 @@ export default function Holders({ search, onSearchChange, onSearchInputChange }:
     setCurrentPage(page);
   };
 
-  const pageSizeChange = async (size) => {
+  const pageSizeChange = async (page, size) => {
     setPageSize(size);
-    setCurrentPage(1);
+    setCurrentPage(page);
   };
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function Holders({ search, onSearchChange, onSearchInputChange }:
           },
           onSearchChange,
         }}
-        showTopSearch
+        // showTopSearch
         loading={loading}
         dataSource={data}
         columns={columns}

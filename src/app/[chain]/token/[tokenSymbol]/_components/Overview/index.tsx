@@ -23,7 +23,7 @@ const TokenDetailItems: IOverviewItem[] = [
   {
     key: 'holders',
     label: 'HOLDERS',
-    render: (text, record) => <NumberPercentGroup number={text} percent={record['holderPercentChange24h']} />,
+    render: (text, record) => <NumberPercentGroup number={text} percent={record['holderPercentChange24H']} />,
   },
   {
     key: 'totalTransfers',
@@ -33,20 +33,24 @@ const TokenDetailItems: IOverviewItem[] = [
   {
     key: 'priceInUsd',
     label: 'PRICE',
-    render: (text, record) => (
-      <NumberPercentGroup decorator="$" number={text} percent={record['pricePercentChange24h']} />
-    ),
+    render: (text, record) =>
+      record['pricePercentChange24h'] && record['pricePercentChange24h'] !== 0 ? (
+        <NumberPercentGroup decorator="$" number={text} percent={record['pricePercentChange24h']} />
+      ) : (
+        '--'
+      ),
   },
   {
     key: 'contractAddress',
     label: 'CONTRACT',
     tooltip:
       'This is the MultiToken contract that defines a common implementation for fungible and non-fungible tokens.',
-    render: (text) => <ContractToken address={text} type={AddressType.address} chainId="AELf" />,
+    render: (text) => (text ? <ContractToken address={text} type={AddressType.address} chainId="AELf" /> : '--'),
   },
   {
     key: 'decimals',
     label: 'DECIMAL',
+    render: (text) => (text && text !== 0 ? text : '--'),
   },
 ];
 

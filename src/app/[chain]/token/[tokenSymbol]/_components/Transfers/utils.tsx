@@ -44,7 +44,12 @@ export function getSearchByHolderItems(
   ];
 }
 
-export function getSearchByHashItems(address: string, isMobile: boolean): DescriptionsProps['items'] {
+export function getSearchByHashItems(
+  address: string,
+  isMobile: boolean,
+  chain,
+  blockHeight,
+): DescriptionsProps['items'] {
   const spanWith2col = isMobile ? 4 : 2;
   return [
     {
@@ -55,7 +60,10 @@ export function getSearchByHashItems(address: string, isMobile: boolean): Descri
         fontWeight: 500,
       },
       children: (
-        <Link className="block w-[120px] truncate text-xs leading-5 text-link" href={`tx/${address}`}>
+        <Link
+          className="block w-[400px] truncate text-xs leading-5 text-link"
+          // href={`/${chain}/tx/${address}?blockHeight=${blockHeight}`}>
+          href="">
           {address}
         </Link>
       ),

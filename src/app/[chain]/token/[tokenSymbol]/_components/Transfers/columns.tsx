@@ -103,7 +103,7 @@ export default function getColumns({ timeFormat, handleTimeChange, chain }): Col
       width: 180,
       render: (data) => {
         const { address, addressType } = data;
-        return <ContractToken address={address} type={addressType} chainId={chain} />;
+        return <ContractToken address={address || ''} type={addressType} chainId={chain} />;
       },
     },
     {

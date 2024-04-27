@@ -8,7 +8,7 @@
 'use client';
 import clsx from 'clsx';
 import HeadTitle from '@_components/HeaderTitle';
-import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import './detail.css';
 import BaseInfo from './baseinfo';
 import ExtensionInfo from './ExtensionInfo';
@@ -21,7 +21,6 @@ import EPTabs from '@_components/EPTabs';
 import { useMobileAll } from '@_hooks/useResponsive';
 import { IBlocksDetailData, ITransactionsResponseItem } from '@_api/type';
 import { pageSizeOption } from '@_utils/contant';
-import { useAppSelector } from '@_store';
 import { useParams } from 'next/navigation';
 
 export default function Detail({ SSRData }) {
@@ -52,20 +51,11 @@ export default function Detail({ SSRData }) {
     setCurrentPage(page);
   };
 
-  const pageSizeChange = (size) => {
+  const pageSizeChange = (page, size) => {
+    setCurrentPage(page);
     setPageSize(size);
   };
 
-  const mountedRef = useRef<boolean>(true);
-  const { defaultChain } = useAppSelector((state) => state.getChainId);
-  useEffect(() => {
-    if (mountedRef.current) {
-      mountedRef.current = false;
-      return;
-    }
-    setPageSize(25);
-    setCurrentPage(1);
-  }, [defaultChain]);
   const tableData = useMemo(() => {
     const transactions = detailData.transactions || [];
     return transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize);

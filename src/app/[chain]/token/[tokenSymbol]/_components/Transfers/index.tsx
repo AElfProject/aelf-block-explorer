@@ -32,7 +32,7 @@ export interface ITransfersRef {
   setSearchStr: (val: string) => void;
 }
 
-const Transfers = ({ search, searchType, onSearchChange, onSearchInputChange }: ITransfersProps, ref) => {
+const Transfers = ({ search, searchText, searchType, onSearchChange, onSearchInputChange }: ITransfersProps, ref) => {
   const { isMobile } = useMobileAll();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(50);
@@ -54,17 +54,18 @@ const Transfers = ({ search, searchType, onSearchChange, onSearchInputChange }: 
         symbol: tokenSymbol as string,
         skipCount: getPageNumber(currentPage, pageSize),
         maxResultCount: pageSize,
-        search: search || '',
+        search: searchText || '',
       };
       const res = await fetchTokenDetailTransfers(params);
       const { balance, value, list, total } = res;
       setData(list);
       setSearchData({ balance, value });
       setTotal(total);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
-  }, [chain, tokenSymbol, currentPage, pageSize, search]);
+  }, [chain, tokenSymbol, currentPage, pageSize, searchText]);
 
   useImperativeHandle(
     ref,
@@ -80,9 +81,9 @@ const Transfers = ({ search, searchType, onSearchChange, onSearchInputChange }: 
   const pageChange = async (page: number) => {
     setCurrentPage(page);
   };
-  const pageSizeChange = async (size) => {
+  const pageSizeChange = async (page, size) => {
     setPageSize(size);
-    setCurrentPage(1);
+    setCurrentPage(page);
   };
 
   useEffect(() => {
@@ -96,7 +97,7 @@ const Transfers = ({ search, searchType, onSearchChange, onSearchInputChange }: 
         handleTimeChange: () => setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age'),
         chain,
       }),
-    [timeFormat],
+    [chain, timeFormat],
   );
   const title = useMemo(() => `A total of ${total} ${total <= 1 ? 'token' : 'tokens'} found`, [total]);
 
@@ -105,10 +106,10 @@ const Transfers = ({ search, searchType, onSearchChange, onSearchInputChange }: 
     [address, isMobile, searchData],
   );
   const searchByHash: DescriptionsProps['items'] = useMemo(
-    () => getSearchByHashItems(address, isMobile),
-    [address, isMobile],
+    () => getSearchByHashItems(address, isMobile, chain, data[0]?.blockHeight),
+    [address, chain, data, isMobile],
   );
-
+  console.log(searchType, 'searchType');
   return (
     <div>
       {searchType !== SearchType.other && (

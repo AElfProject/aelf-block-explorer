@@ -6,11 +6,17 @@
  * @Description: Tokens
  */
 import { ChainId } from 'global';
-import fetchData from './mock';
 import TokensList from './tokensList';
+import { fetchServerTokenList } from '@_api/fetchTokens';
+import { TChainID } from '@_api/type';
 
 export default async function TokensPage({ params }: { params: ChainId }) {
-  console.log('chainId', params);
-  const data = await fetchData({ page: 1, pageSize: 50 });
+  const data = await fetchServerTokenList({
+    skipCount: 0,
+    maxResultCount: 50,
+    chainId: params.chain as TChainID,
+    sortBy: 2,
+    sort: 1,
+  });
   return <TokensList SSRData={data} />;
 }
