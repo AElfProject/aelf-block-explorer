@@ -29,10 +29,10 @@ export default function BaseInfo({ data }) {
     (type: JumpTypes) => {
       switch (type) {
         case JumpTypes.Prev:
-          router.push(`/block/${data.preBlockHeight}`);
+          router.push(`/${data.chainId}/block/${data.preBlockHeight}`);
           break;
         case JumpTypes.Next:
-          router.push(`/block/${data.nextBlockHeight}`);
+          router.push(`/${data.chainId}/block/${data.nextBlockHeight}`);
       }
     },
     [data, router],

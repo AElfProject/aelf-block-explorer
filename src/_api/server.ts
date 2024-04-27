@@ -36,14 +36,18 @@ async function service(url: string, options: RequestWithParams) {
     }
   }
 
+  console.log(url, 'url-----------');
+
   try {
     const response = await fetch(url, options);
+
     if (response.ok) {
       return await response.json();
     } else {
       console.log(response.status);
     }
   } catch (error) {
+    console.log(error, 'r');
     // TODO: need to recover
     // return Promise.reject(error);
   }

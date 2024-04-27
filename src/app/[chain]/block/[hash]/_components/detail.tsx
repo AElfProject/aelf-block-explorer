@@ -25,7 +25,6 @@ import { useAppSelector } from '@_store';
 import { useParams } from 'next/navigation';
 
 export default function Detail({ SSRData }) {
-  console.log(SSRData, 'SSRData');
   const { isMobile } = useMobileAll();
   const [detailData] = useState<IBlocksDetailData>(SSRData);
   const [showMore, setShowMore] = useState<boolean>(false);
