@@ -23,8 +23,8 @@ import { useParams } from 'next/navigation';
 export default function BaseInfo({ data }) {
   const router = useRouter();
   const { chain } = useParams();
-  const isFirst = data.preBlockHeight === 0;
-  const isLast = data.nextBlockHeight === 0;
+  const isFirst = data?.preBlockHeight === 0;
+  const isLast = data?.nextBlockHeight === 0;
   const jump = useCallback(
     (type: JumpTypes) => {
       switch (type) {

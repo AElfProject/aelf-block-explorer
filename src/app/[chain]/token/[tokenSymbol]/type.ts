@@ -46,7 +46,7 @@ export interface ITokenDetail {
   circulatingSupply: string;
   holders: number;
   holderPercentChange24h: number;
-  totalTransfers: string;
+  transferCount: number;
   priceInUsd: number;
   pricePercentChange24h: number;
   contractAddress: string;

@@ -26,7 +26,7 @@ const TokenDetailItems: IOverviewItem[] = [
     render: (text, record) => <NumberPercentGroup number={text} percent={record['holderPercentChange24H']} />,
   },
   {
-    key: 'totalTransfers',
+    key: 'transferCount',
     label: 'TOTAL TRANSFERS',
     format: thousandsNumber,
   },

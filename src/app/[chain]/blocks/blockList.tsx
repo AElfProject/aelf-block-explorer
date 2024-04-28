@@ -31,6 +31,7 @@ export interface IBlocksData {
 }
 
 export default function BlockList({ SSRData }) {
+  console.log(SSRData, ' SSRData');
   const { isMobile } = useMobileAll();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);
@@ -79,7 +80,7 @@ export default function BlockList({ SSRData }) {
       },
       chianId: chain,
     });
-  }, [timeFormat]);
+  }, [chain, timeFormat]);
 
   const pageMaxBlock = data[0]?.blockHeight;
   const pageMinBlock = data[data.length - 1]?.blockHeight;

@@ -29,7 +29,7 @@ export default function Detail({ SSRData }) {
   const [showMore, setShowMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);
-  const [total] = useState<number>(SSRData.transactions.length);
+  const [total] = useState<number>(SSRData?.transactions?.length);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
 
   const { chain } = useParams();
@@ -41,7 +41,7 @@ export default function Detail({ SSRData }) {
       },
       chainId: chain as string,
     });
-  }, [timeFormat]);
+  }, [chain, timeFormat]);
 
   const multiTitle = `More than > ${total} transactions found`;
 
@@ -57,9 +57,9 @@ export default function Detail({ SSRData }) {
   };
 
   const tableData = useMemo(() => {
-    const transactions = detailData.transactions || [];
+    const transactions = detailData?.transactions || [];
     return transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-  }, [currentPage, detailData.transactions, pageSize]);
+  }, [currentPage, detailData?.transactions, pageSize]);
 
   const moreChange = useCallback(() => {
     setShowMore(!showMore);
@@ -104,7 +104,7 @@ export default function Detail({ SSRData }) {
   return (
     <div className={clsx('token-detail-container')}>
       <HeadTitle content="Blocks">
-        <span className="ml-2 block text-xs leading-5 text-base-200">#{detailData.blockHeight}</span>
+        <span className="ml-2 block text-xs leading-5 text-base-200">#{detailData?.blockHeight}</span>
       </HeadTitle>
 
       <div className="detail-table">

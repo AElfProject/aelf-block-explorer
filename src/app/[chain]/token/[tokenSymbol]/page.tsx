@@ -17,7 +17,7 @@ export default async function TokenSymbol({
     tokenSymbol: string;
   };
 }) {
-  const tokenDetail = await fetchTokenDetail({ chainId: chain as TChainID, symbol: tokenSymbol });
+  const tokenDetail = await fetchTokenDetail({ chainId: chain as TChainID, symbol: tokenSymbol, cache: 'no-store' });
   console.log(tokenDetail, 'tokenDetail');
   return (
     <div>

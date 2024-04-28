@@ -62,9 +62,9 @@ export const addSymbol = (str: string | number) => {
   return `${str} ${process.env.NEXT_PUBLIC_SYMBOL}`;
 };
 
-export const divDecimals = (num: number | string, decimals = 8e10) => {
+export const divDecimals = (num: number | string, decimals = 1e10) => {
   const bigNumber = new BigNumber(num);
-  return bigNumber.dividedBy(decimals || 8e10).toNumber();
+  return bigNumber.dividedBy(decimals || 1e10).toNumber();
 };
 
 export const getPageNumber = (page: number, pageSize: number): number => {

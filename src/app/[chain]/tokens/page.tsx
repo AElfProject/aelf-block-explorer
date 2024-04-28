@@ -9,14 +9,16 @@ import { ChainId } from 'global';
 import TokensList from './tokensList';
 import { fetchServerTokenList } from '@_api/fetchTokens';
 import { TChainID } from '@_api/type';
+import { SortEnum } from '@_types/common';
 
 export default async function TokensPage({ params }: { params: ChainId }) {
   const data = await fetchServerTokenList({
     skipCount: 0,
     maxResultCount: 50,
     chainId: params.chain as TChainID,
-    sortBy: 2,
-    sort: 1,
+    sortBy: 'HolderCount',
+    sort: SortEnum.desc,
+    cache: 'no-store',
   });
   return <TokensList SSRData={data} />;
 }

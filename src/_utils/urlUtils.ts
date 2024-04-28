@@ -9,7 +9,6 @@ export function getPathnameFirstSlash(pathname: string) {
 }
 export default function addressFormat(address: string, chainId?: string, prefix?: string) {
   const defaultChainId = store.getState().getChainId.defaultChain;
-  console.log(defaultChainId, 'defaultChainId');
   if (!address) return '';
   return `${prefix || SYMBOL}_${address}_${chainId || defaultChainId}`;
 }
