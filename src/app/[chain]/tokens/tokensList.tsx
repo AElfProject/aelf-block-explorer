@@ -36,7 +36,7 @@ export default function TokensList({ SSRData }: TokensListProps) {
       maxResultCount: 50,
       chainId: chain as TChainID,
       sort,
-      sortBy: 'HolderCount',
+      orderBy: 'HolderCount',
     };
     setLoading(true);
     const data = await fetchTokenList(params);

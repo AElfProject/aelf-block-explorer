@@ -8,3 +8,5 @@ export default async function BlocksPage({ params }) {
   });
   return <BlockList SSRData={data} />;
 }
+export const revalidate = 1;
+export const dynamic = 'force-dynamic';

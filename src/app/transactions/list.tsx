@@ -38,6 +38,7 @@ export default function List({ SSRData, showHeader = true }) {
       handleTimeChange: () => {
         setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
       },
+      type: 'tx',
     });
   }, [timeFormat]);
 

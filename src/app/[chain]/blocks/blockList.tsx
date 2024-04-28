@@ -17,6 +17,7 @@ import { pageSizeOption } from '@_utils/contant';
 import { fetchBlocks } from '@_api/fetchBlocks';
 import { useAppSelector } from '@_store';
 import { useParams } from 'next/navigation';
+import { Spin } from 'antd';
 
 export enum pageType {
   first,
@@ -110,24 +111,26 @@ export default function BlockList({ SSRData }) {
   return (
     <div>
       <HeadTitle content="Blocks"></HeadTitle>
-      <Table
-        headerTitle={{
-          multi: {
-            title: multiTitle,
-            desc: `(Showing blocks between #${pageMinBlock} to #${pageMaxBlock})`,
-          },
-        }}
-        loading={loading}
-        dataSource={data}
-        columns={columns}
-        isMobile={isMobile}
-        rowKey="blockHeight"
-        total={total}
-        options={pageSizeOption}
-        pageSize={pageSize}
-        pageNum={currentPage}
-        pageChange={pageChange}
-        pageSizeChange={pageSizeChange}></Table>
+      <Spin spinning={loading}>
+        <Table
+          headerTitle={{
+            multi: {
+              title: multiTitle,
+              desc: `(Showing blocks between #${pageMinBlock} to #${pageMaxBlock})`,
+            },
+          }}
+          loading={false}
+          dataSource={data}
+          columns={columns}
+          isMobile={isMobile}
+          rowKey="blockHeight"
+          total={total}
+          options={pageSizeOption}
+          pageSize={pageSize}
+          pageNum={currentPage}
+          pageChange={pageChange}
+          pageSizeChange={pageSizeChange}></Table>
+      </Spin>
     </div>
   );
 }

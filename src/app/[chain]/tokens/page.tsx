@@ -16,7 +16,7 @@ export default async function TokensPage({ params }: { params: ChainId }) {
     skipCount: 0,
     maxResultCount: 50,
     chainId: params.chain as TChainID,
-    sortBy: 'HolderCount',
+    orderBy: 'HolderCount',
     sort: SortEnum.desc,
     cache: 'no-store',
   });
