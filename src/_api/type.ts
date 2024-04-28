@@ -216,5 +216,5 @@ export interface TTokenListRequestParams extends RequestInit {
   skipCount: number;
   maxResultCount: number;
   sort: SortEnum;
-  sortBy: string;
+  orderBy: string;
 }

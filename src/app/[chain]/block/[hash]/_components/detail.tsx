@@ -40,6 +40,7 @@ export default function Detail({ SSRData }) {
         setTimeFormat(timeFormat === 'Age' ? 'Date Time (UTC)' : 'Age');
       },
       chainId: chain as string,
+      type: 'block',
     });
   }, [chain, timeFormat]);
 

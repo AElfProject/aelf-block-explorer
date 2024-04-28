@@ -19,6 +19,7 @@ export default function getColumns({
   timeFormat,
   handleTimeChange,
   chainId = 'AELF',
+  type,
 }): ColumnsType<ITransactionsResponseItem> {
   return [
     {
@@ -70,9 +71,10 @@ export default function getColumns({
       title: 'Block',
       width: 112,
       dataIndex: 'blockHeight',
+      hidden: type === 'block',
       key: 'blockHeight',
       render: (text) => (
-        <Link className="block text-xs leading-5 text-link" href={`block/${text}`}>
+        <Link className="block text-xs leading-5 text-link" href={`/${chainId}/block/${text}`}>
           {text}
         </Link>
       ),
