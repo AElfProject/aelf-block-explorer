@@ -28,6 +28,6 @@ export enum AddressType {
 }
 
 export enum SortEnum {
-  asc,
-  desc,
+  asc = 'Asc',
+  desc = 'Desc',
 }

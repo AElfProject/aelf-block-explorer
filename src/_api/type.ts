@@ -37,7 +37,7 @@ export interface IFromInfo {
   isProducer: boolean;
 }
 
-export interface ITransactionsRequestParams {
+export interface ITransactionsRequestParams extends RequestInit {
   chainId: TChainID;
   transactionId: string;
   blockHeight: number;
@@ -62,13 +62,13 @@ export interface ITransactionsResponse {
   transactions: ITransactionsResponseItem[];
 }
 
-export interface ITransactionDetailRequestParams {
+export interface ITransactionDetailRequestParams extends RequestInit {
   chainId: TChainID;
   transactionId: string;
   blockHeight: number;
 }
 
-export interface IBlocksRequestParams {
+export interface IBlocksRequestParams extends RequestInit {
   chainId: TChainID;
   blockHeight?: number;
   maxResultCount: number;
@@ -90,7 +90,7 @@ export interface IBlocksResponse {
   blocks: IBlocksResponseItem[];
 }
 
-export interface IBlocksDetailRequestParams {
+export interface IBlocksDetailRequestParams extends RequestInit {
   chainId: TChainID;
   blockHeight: number;
 }
@@ -190,7 +190,7 @@ export interface ITransactionDetailDataList {
   list: ITransactionDetailData[];
 }
 
-export interface ITokenHoldersRequestParams {
+export interface ITokenHoldersRequestParams extends RequestInit {
   chainId: TChainID;
   symbol: string;
   skipCount: number;
@@ -198,7 +198,7 @@ export interface ITokenHoldersRequestParams {
   // search: string;
 }
 
-export interface ITokenTransfersRequestParams {
+export interface ITokenTransfersRequestParams extends RequestInit {
   chainId: TChainID;
   skipCount: number;
   maxResultCount: number;
@@ -206,15 +206,15 @@ export interface ITokenTransfersRequestParams {
   search: string;
 }
 
-export interface ITokenDetailRequestParams {
+export interface ITokenDetailRequestParams extends RequestInit {
   chainId: TChainID;
   symbol: string;
 }
 
-export interface TTokenListRequestParams {
+export interface TTokenListRequestParams extends RequestInit {
   chainId: TChainID;
   skipCount: number;
   maxResultCount: number;
   sort: SortEnum;
-  sortBy: number;
+  sortBy: string;
 }
