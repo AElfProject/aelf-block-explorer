@@ -9,7 +9,7 @@
 import HeadTitle from '@_components/HeaderTitle';
 import Table from '@_components/Table';
 import getColumns from './columnConfig';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { useMobileAll } from '@_hooks/useResponsive';
 import { IBlocksResponse, IBlocksResponseItem } from '@_api/type';
@@ -18,6 +18,7 @@ import { fetchBlocks } from '@_api/fetchBlocks';
 import { useAppSelector } from '@_store';
 import { useParams } from 'next/navigation';
 import { Spin } from 'antd';
+import { reloadBlockListData } from '@/app/actions';
 
 export enum pageType {
   first,
@@ -82,6 +83,9 @@ export default function BlockList({ SSRData }) {
       chianId: chain,
     });
   }, [chain, timeFormat]);
+  useEffect(() => {
+    reloadBlockListData();
+  }, []);
 
   const pageMaxBlock = data[0]?.blockHeight;
   const pageMinBlock = data[data.length - 1]?.blockHeight;

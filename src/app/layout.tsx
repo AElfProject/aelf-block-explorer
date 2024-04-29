@@ -21,11 +21,15 @@ import StyleRegistry from './StyleRegistry';
 import { fetchCMS } from '@_api/fetchCMS';
 import { PublicEnvProvider } from 'next-runtime-env';
 import type { Viewport } from 'next';
-import { revalidatePath } from 'next/cache';
 
 export const metadata: Metadata = {
   title: 'AELF Block Explorer',
   description: 'AELF explorer',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 };
 async function fetchData() {
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -38,7 +42,6 @@ async function fetchData() {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  revalidatePath('/', 'layout');
   const data = await fetchData();
   const { price, previousPrice } = data;
   const headersList = headers();
@@ -46,9 +49,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { headerMenuList, footerMenuList, chainList, networkList } = await fetchCMS();
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
       <body>
         <div className="relative box-border min-h-screen bg-global-grey">
           <PublicEnvProvider>
