@@ -10,20 +10,22 @@ export default function ContractToken({
   name,
   type,
   chainId,
+  showCopy = true,
 }: {
   address: string;
   name?: string;
   type: AddressType;
   chainId: string;
+  showCopy?: boolean;
 }) {
   return type === AddressType.address ? (
     <div className="address flex items-center">
-      <EPTooltip pointAtCenter={false} title={addressFormat(address, chainId)} mode="dark">
-        <Link className="text-link" href={`/${chainId}/address/${addressFormat(address, chainId)}`}>
-          {addressFormat(hiddenAddress(address, 4, 4), chainId)}
+      <EPTooltip pointAtCenter={false} title={addressFormat(address || '', chainId)} mode="dark">
+        <Link className="text-link" href={`/${chainId}/address/${addressFormat(address || '', chainId)}`}>
+          {addressFormat(hiddenAddress(address || '', 4, 4), chainId)}
         </Link>
       </EPTooltip>
-      <Copy value={addressFormat(address, chainId)} />
+      {showCopy && <Copy value={addressFormat(address, chainId)} />}
       <div className="flex items-center"></div>
     </div>
   ) : (
@@ -40,7 +42,7 @@ export default function ContractToken({
         pointAtCenter={false}>
         <Link href={`/${chainId}/address/${addressFormat(address, chainId)}`}>{name}</Link>
       </EPTooltip>
-      <Copy value={addressFormat(address, chainId)} />
+      {showCopy && <Copy value={addressFormat(address, chainId)} />}
     </div>
   );
 }

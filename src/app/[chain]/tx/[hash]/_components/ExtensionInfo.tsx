@@ -5,13 +5,14 @@ import DollarCurrencyRate from '@_components/DollarCurrencyRate';
 import Link from 'next/link';
 import CodeBlock from '@_components/CodeBlock';
 import SizeBytes from '@_components/SizeBytes';
-import { useMobileContext } from '@app/pageProvider';
 import clsx from 'clsx';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 import { ITransactionDetailData } from '@_api/type';
+import { useParams } from 'next/navigation';
 
 export default function ExtensionInfo({ data }: { data: ITransactionDetailData }) {
   const { isMobile } = useMobileAll();
+  const { chain } = useParams();
   const renderInfo = useMemo(() => {
     return [
       {
@@ -78,7 +79,7 @@ export default function ExtensionInfo({ data }: { data: ITransactionDetailData }
       {
         label: 'Transaction Ref Block Number ',
         tip: 'The block number referenced by this transaction at the time of its creation.',
-        value: <Link href={`/block/${data.transactionRefBlockNumber}`}>{data.transactionRefBlockNumber}</Link>,
+        value: <Link href={`/${chain}/block/${data.transactionRefBlockNumber}`}>{data.transactionRefBlockNumber}</Link>,
       },
       {
         label: 'Transaction Ref Block Prefix ',
@@ -110,6 +111,6 @@ export default function ExtensionInfo({ data }: { data: ITransactionDetailData }
         value: <SizeBytes size={Number(data.transactionSize)} />,
       },
     ];
-  }, [data, isMobile]);
+  }, [data, isMobile, chain]);
   return <DetailContainer infoList={renderInfo} />;
 }

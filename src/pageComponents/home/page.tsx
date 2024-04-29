@@ -23,9 +23,12 @@ const BannerPc = '/image/banner_pc.png';
 const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
 import { useEnvContext } from 'next-runtime-env';
-import { IBlocksResponseItem } from '@_api/type';
+import { IBlocksResponseItem, ITransactionsResponseItem, TChainID } from '@_api/type';
 import { fetchLatestBlocksList } from '@_api/fetchBlocks';
 import { Spin } from 'antd';
+import { fetchLatestTransactionList } from '@_api/fetchTransactions';
+import { useAppSelector } from '@_store';
+import { useSearchParams } from 'next/navigation';
 
 interface IProps {
   overviewSSR: IOverviewSSR;
@@ -44,23 +47,43 @@ const getConnectionBuilder = (url: string) => {
 export default function Home({ overviewSSR }: IProps) {
   const { NEXT_PUBLIC_API_URL: HOST } = useEnvContext();
   const [loading, setLoading] = useState<boolean>(false);
+  const [transactionsLoading, setTransactionsLoading] = useState<boolean>(false);
+  const [blocks, setBlocks] = useState<IBlocksResponseItem[]>([]);
+  const { defaultChain } = useAppSelector((state) => state.getChainId);
+  const searchParmas = useSearchParams();
+  const chain = searchParmas.get('chainId') || defaultChain;
+  const [transactions, setTransactions] = useState<ITransactionsResponseItem[]>([]);
 
   const fetchBlocksData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchLatestBlocksList({ chainId: 'AELF' });
+      const data = await fetchLatestBlocksList({ chainId: chain as TChainID });
       console.log(data, 'data');
       setLoading(false);
       setBlocks(data.blocks);
     } catch (error) {
       setLoading(false);
     }
-  }, []);
+  }, [chain]);
+
+  const fetchTransactionData = useCallback(async () => {
+    setTransactionsLoading(true);
+    try {
+      const data = await fetchLatestTransactionList({ chainId: chain as TChainID, maxResultCount: 25 });
+      console.log(data, 'data');
+      setTransactionsLoading(false);
+      setTransactions(data.transactions);
+    } catch (error) {
+      setTransactionsLoading(false);
+    }
+  }, [chain]);
+
   const isMobile = useMobileAll();
   useEffect(() => {
     fetchBlocksData();
+    fetchTransactionData();
   }, []);
-  const [blocks, setBlocks] = useState<IBlocksResponseItem[]>([]);
+
   const OverView: React.FC = () => {
     const [connection, setConnection] = useState<null | HubConnection>(null);
     const [overview, setOverView] = useState<IOverviewSSR>(overviewSSR);
@@ -104,71 +127,19 @@ export default function Home({ overviewSSR }: IProps) {
   };
 
   const LatestAll = () => {
-    const transactions = [
-      {
-        id: 1,
-        transactionHash: '111111113903740370',
-        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        timestamp: 1279407412740,
-        txnValue: 1.23,
-      },
-      {
-        id: 2,
-        transactionHash: '111111113903740370',
-        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        timestamp: 1279407412740,
-        txnValue: 1.23,
-      },
-      {
-        id: 3,
-        transactionHash: '111111113903740370',
-        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        timestamp: 1279407412740,
-        txnValue: 1.23,
-      },
-      {
-        id: 4,
-        transactionHash: '111111113903740370',
-        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        timestamp: 1279407412740,
-        txnValue: 1.23,
-      },
-      {
-        id: 5,
-        transactionHash: '111111113903740370',
-        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        timestamp: 1279407412740,
-        txnValue: 1.23,
-      },
-      {
-        id: 6,
-        transactionHash: '111111113903740370',
-        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        timestamp: 1279407412740,
-        txnValue: 1.23,
-      },
-      {
-        id: 7,
-        transactionHash: '111111113903740370',
-        from: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        to: '2HxX36oXZS89Jvz7kCeUyuWWDXLTiNRkAzfx3EuXq4KSSkH62W',
-        timestamp: 1279407412740,
-        txnValue: 1.23,
-      },
-    ];
     return (
-      <Spin spinning={loading}>
-        <div className={clsx('latest-all', isMobile && 'latest-all-mobile')}>
-          <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
-          {/* <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest> */}
+      <div className={clsx('latest-all', isMobile && 'latest-all-mobile')}>
+        <div className="flex-1">
+          <Spin spinning={loading}>
+            <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
+          </Spin>
         </div>
-      </Spin>
+        <div className="flex-1">
+          <Spin spinning={transactionsLoading}>
+            <Latest iconType="latest-tx" isBlocks={false} data={transactions} isMobile={isMobile}></Latest>
+          </Spin>
+        </div>
+      </div>
     );
   };
 

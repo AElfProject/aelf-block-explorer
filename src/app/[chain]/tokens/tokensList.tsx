@@ -33,7 +33,7 @@ export default function TokensList({ SSRData }: TokensListProps) {
   const fetchData = useCallback(async () => {
     const params = {
       skipCount: getPageNumber(currentPage, pageSize),
-      maxResultCount: 50,
+      maxResultCount: pageSize,
       chainId: chain as TChainID,
       sort,
       orderBy: 'HolderCount',
