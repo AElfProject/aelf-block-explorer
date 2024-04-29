@@ -6,6 +6,7 @@ import addressFormat from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import LogItems from './logItems';
 import { useParams } from 'next/navigation';
+import ContractToken from '@_components/ContractToken';
 function LogsContainer({ Logs = [] }: { Logs: ILogsProps[] }) {
   const { chain } = useParams();
   return (
@@ -19,10 +20,12 @@ function LogsContainer({ Logs = [] }: { Logs: ILogsProps[] }) {
                   label: 'Address',
                   value: (
                     <div>
-                      <Link href={`/address${addressFormat(item.contractInfo?.address, chain as string)}`}>
-                        {addressFormat(item.contractInfo?.address, chain as string)}
-                      </Link>
-                      {item.contractInfo?.address && <Copy value={addressFormat(item.contractInfo?.address)} />}
+                      <ContractToken
+                        address={item.contractInfo.address}
+                        name={item.contractInfo.name}
+                        type={item.contractInfo.addressType}
+                        chainId={chain as string}
+                      />
                     </div>
                   ),
                 },
