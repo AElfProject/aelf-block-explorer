@@ -221,6 +221,6 @@ export interface TTokenListRequestParams extends RequestInit {
 
 export interface TTransactionsListRequestParams extends RequestInit {
   chainId: TChainID;
-  skipCount: number;
+  skipCount?: number;
   maxResultCount: number;
 }

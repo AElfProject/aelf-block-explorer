@@ -24,6 +24,16 @@ export async function fetchTransactionList(params: TTransactionsListRequestParam
   return data;
 }
 
+export async function fetchLatestTransactionList(
+  params: TTransactionsListRequestParams,
+): Promise<ITransactionsResponse> {
+  const result = await request.tx.getLatestTransactionList({
+    params: params,
+  });
+  const data = result?.data;
+  return data;
+}
+
 export async function fetchServerTransactionList(
   params: TTransactionsListRequestParams,
 ): Promise<ITransactionsResponse> {

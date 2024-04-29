@@ -7,9 +7,9 @@
     }
   }
   .latest-all {
-    @apply flex flex-row mt-4 gap-4;
+    @apply w-full flex flex-row mt-4 gap-4;
     > .home-latest {
-      @apply w-[100%];
+      @apply w-[50%] flex-1;
     }
     &-mobile {
       @apply mx-3 flex flex-wrap;

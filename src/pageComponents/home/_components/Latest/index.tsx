@@ -3,18 +3,19 @@ import './index.css';
 
 import IconFont from '@_components/IconFont';
 import Link from 'next/link';
-import { ITransactionItem } from '@pageComponents/home/type';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import clsx from 'clsx';
 import EPTooltip from '@_components/EPToolTip';
-import { IBlocksResponseItem } from '@_api/type';
+import { IBlocksResponseItem, ITransactionsResponseItem } from '@_api/type';
 import { divDecimals, formatDate } from '@_utils/formatter';
 import { useAppSelector } from '@_store';
+import ContractToken from '@_components/ContractToken';
+import { AddressType } from '@_types/common';
 
 interface IProps {
   isBlocks: boolean;
   iconType: string;
-  data: IBlocksResponseItem[] | ITransactionItem[];
+  data: IBlocksResponseItem[] | ITransactionsResponseItem[];
   isMobile: boolean;
 }
 export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
@@ -22,9 +23,9 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
   const RewrdInfo = (ele) => {
     return (
       <span className="button">
-        {ele.reward ? (
+        {ele.reward || ele.transactionFee ? (
           <>
-            <span className="reward">{divDecimals(isBlocks ? ele.reward : ele.txnValue)}</span>
+            <span className="reward">{divDecimals(isBlocks ? ele.reward : ele.transactionFee)}</span>
             <span>ELF</span>
           </>
         ) : (
@@ -39,7 +40,7 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
       <div className="content">
         {data.map((ele) => {
           return (
-            <div className="item" key={ele.blockHeight || ele.id}>
+            <div className="item" key={ele.transactionId || ele.blockHeight}>
               <div className="left">
                 <IconFont type={iconType}></IconFont>
                 <div className="text">
@@ -47,7 +48,11 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
                     {isBlocks ? (
                       <Link href={`/${defaultChain}/block/${ele.blockHeight}`}>{ele.blockHeight}</Link>
                     ) : (
-                      <Link href={`/txn/${ele.transactionHash}`}>{ele.transactionHash}</Link>
+                      <EPTooltip title={ele.transactionId} mode="dark" pointAtCenter={false}>
+                        <Link href={`/${defaultChain}/tx/${ele.transactionId}?blockHeight=${ele.blockHeight}`}>
+                          {ele.transactionId}
+                        </Link>
+                      </EPTooltip>
                     )}
                   </span>
                   <span className="time">{formatDate(ele.timestamp, 'Age')}</span>
@@ -76,15 +81,24 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
                   <>
                     <span className="from">
                       From
-                      <EPTooltip title={ele.from} mode="dark" pointAtCenter={false}>
-                        <Link href={`${ele.from}`}>{addressFormat(hiddenAddress(ele.from))}</Link>
-                      </EPTooltip>
+                      <ContractToken
+                        address={ele?.from?.address}
+                        showCopy={false}
+                        type={ele.from.addressType}
+                        chainId={defaultChain as string}
+                      />
                     </span>
                     <span className="to">
                       To
-                      <EPTooltip title={ele.to} mode="dark" pointAtCenter={false}>
+                      <ContractToken
+                        address={ele.to?.address}
+                        type={AddressType.address}
+                        showCopy={false}
+                        chainId={defaultChain as string}
+                      />
+                      {/* <EPTooltip title={ele.to} mode="dark" pointAtCenter={false}>
                         <Link href={`${ele.to}`}>{addressFormat(hiddenAddress(ele.to))}</Link>
-                      </EPTooltip>
+                      </EPTooltip> */}
                       {isMobile && RewrdInfo(ele)}
                     </span>
                   </>
@@ -96,8 +110,9 @@ export default function Latest({ isBlocks, data, iconType, isMobile }: IProps) {
         })}
       </div>
       <div className="link">
-        <Link href={isBlocks ? `/${defaultChain}/blocks` : `/${defaultChain}/txs`}>
-          View All Blocks<IconFont type="right-arrow-2"></IconFont>
+        <Link href={isBlocks ? `/${defaultChain}/blocks` : `/${defaultChain}/transactions`}>
+          View All {isBlocks ? 'Blocks' : 'Transactions'}
+          <IconFont type="right-arrow-2"></IconFont>
         </Link>
       </div>
     </div>

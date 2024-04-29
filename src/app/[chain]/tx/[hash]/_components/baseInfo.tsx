@@ -18,6 +18,7 @@ import Image from 'next/image';
 import ContractToken from '@_components/ContractToken';
 import { useParams } from 'next/navigation';
 import { StatusEnum } from '@_types/status';
+import TokenImage from '@app/[chain]/tokens/_components/TokenImage';
 
 export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
   const { isMobile } = useMobileAll();
@@ -141,24 +142,24 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
             {data.tokenTransferreds.length > 0
               ? data.tokenTransferreds.map((tokenTransfer, idx) => {
                   return (
-                    <div key={idx} className={clsx(isMobile && 'flex-col !items-start', 'flex items-center')}>
-                      <div>
+                    <div key={idx} className={clsx(isMobile && 'flex-col !items-start', 'mb-4 flex items-center')}>
+                      <div className="flex items-center">
                         <IconFont type="arrow" />
                         <span className="mx-1 text-base-200">From</span>
-                        <HashAddress size="small" address={tokenTransfer.from.address} preLen={8} endLen={8} />
+                        <HashAddress size="small" address={tokenTransfer?.from?.address} preLen={8} endLen={8} />
                       </div>
-                      <div>
+                      <div className="flex items-center">
                         <span className="mx-1 text-base-200">To</span>
-                        <HashAddress size="small" address={tokenTransfer.to.address} preLen={8} endLen={8} />
+                        <HashAddress size="small" address={tokenTransfer?.to?.address} preLen={8} endLen={8} />
                       </div>
                       <div className="flex items-center">
                         <span className="mx-1 text-base-200">For</span>
                         <span>{divDecimals(tokenTransfer.amount)}</span>
                         <DollarCurrencyRate nowPrice={tokenTransfer.nowPrice} tradePrice={tokenTransfer.tradePrice} />
                       </div>
-                      <div>
-                        {/* <Image src={tokenTransfer.imageUrl} alt="" width={16} height={16} /> */}
-                        <span className="text-link">{tokenTransfer.name}</span>
+                      <div className="ml-1 flex items-center">
+                        <TokenImage token={tokenTransfer}></TokenImage>
+                        <span className="mx-1 text-link">{tokenTransfer.name}</span>
                         <span>{`(${tokenTransfer.symbol})`}</span>
                       </div>
                     </div>
@@ -182,7 +183,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
                   return (
                     <div
                       key={idx}
-                      className={clsx(isMobile && 'flex-col !items-start', 'nft-transferred flex items-center')}>
+                      className={clsx(isMobile && 'flex-col !items-start', 'nft-transferred mb-4 flex items-center')}>
                       {/* <Image
                     className={clsx(isMobile && 'mb-2', 'rounded-lg bg-slate-200')}
                     src={nftsTransfer.imageUrl}
@@ -197,7 +198,7 @@ export default function BaseInfo({ data }: { data: ITransactionDetailData }) {
                           <span className="mx-1 inline-block">{idx + 1} Of NFT</span>
                           <span className="inline-block text-link">{`${nftsTransfer.name}(${nftsTransfer.symbol})`}</span>
                         </div>
-                        <div className="flex">
+                        <div className="flex items-center">
                           <span className="mr-1 inline-block">From</span>
                           <HashAddress size="small" address={nftsTransfer.from.address} preLen={8} endLen={8} />
                           <span className="mx-1 inline-block text-base-200">To</span>
