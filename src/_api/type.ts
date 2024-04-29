@@ -70,7 +70,7 @@ export interface ITransactionDetailRequestParams extends RequestInit {
 
 export interface IBlocksRequestParams extends RequestInit {
   chainId: TChainID;
-  blockHeight?: number;
+  skipCount: number;
   maxResultCount: number;
 }
 
@@ -217,4 +217,10 @@ export interface TTokenListRequestParams extends RequestInit {
   maxResultCount: number;
   sort: SortEnum;
   orderBy: string;
+}
+
+export interface TTransactionsListRequestParams extends RequestInit {
+  chainId: TChainID;
+  skipCount: number;
+  maxResultCount: number;
 }

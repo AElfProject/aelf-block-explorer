@@ -5,7 +5,7 @@ export async function fetchCMS() {
   const headerMenuList = data.headerMenuList.filter((item) => {
     if (item.headerMenu_id.path === 'blockchain') {
       item.headerMenu_id.children = item.headerMenu_id.children.filter((child) => {
-        return child.label === 'Blocks';
+        return child.label === 'Blocks' || child.label === 'Transactions';
       });
     }
     return item.headerMenu_id?.path === 'blockchain' || item.headerMenu_id?.path === '/tokens';

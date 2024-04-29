@@ -19,6 +19,7 @@ import { useAppSelector } from '@_store';
 import { useParams } from 'next/navigation';
 import { Spin } from 'antd';
 import { reloadBlockListData } from '@/app/actions';
+import { getPageNumber } from '@_utils/formatter';
 
 export enum pageType {
   first,
@@ -41,24 +42,13 @@ export default function BlockList({ SSRData }) {
   const [total, setTotal] = useState<number>(SSRData.total);
   const [data, setData] = useState<IBlocksResponseItem[]>(SSRData.blocks);
   const { defaultChain } = useAppSelector((state) => state.getChainId);
-  const totalPage = Math.floor((total + pageSize - 1) / pageSize) || 1;
   const { chain } = useParams();
   const fetchData = useCallback(
-    async (pageSize, type: pageType) => {
-      let blockHeight;
-      if (type === pageType.next) {
-        blockHeight = Math.round(data[data.length - 1].blockHeight - 1);
-      } else if (type === pageType.prev) {
-        blockHeight = Math.round(data[0].blockHeight + 1);
-      } else if (type === pageType.last) {
-        blockHeight = Math.round(data[0].blockHeight - pageSize * (totalPage - currentPage));
-      } else {
-        blockHeight = undefined;
-      }
+    async (page, size) => {
       const params = {
         chainId: defaultChain || 'AELF',
-        blockHeight: blockHeight,
-        maxResultCount: pageSize,
+        skipCount: getPageNumber(page, size),
+        maxResultCount: size,
       };
       setLoading(true);
       try {
@@ -70,7 +60,7 @@ export default function BlockList({ SSRData }) {
       }
       setLoading(false);
     },
-    [currentPage, data, defaultChain, totalPage],
+    [defaultChain],
   );
 
   const [timeFormat, setTimeFormat] = useState<string>('Age');
@@ -92,21 +82,13 @@ export default function BlockList({ SSRData }) {
 
   const pageChange = async (page: number) => {
     setCurrentPage(page);
-    if (page === totalPage) {
-      fetchData(pageSize, pageType.last);
-    } else if (page === 1) {
-      fetchData(pageSize, pageType.first);
-    } else if (page > currentPage) {
-      fetchData(pageSize, pageType.next);
-    } else {
-      fetchData(pageSize, pageType.prev);
-    }
+    fetchData(page, pageSize);
   };
 
   const pageSizeChange = async (page: number, pageSize: number) => {
     setPageSize(pageSize);
     setCurrentPage(page);
-    fetchData(pageSize, pageType.first);
+    fetchData(page, pageSize);
   };
 
   const multiTitle = useMemo(() => {

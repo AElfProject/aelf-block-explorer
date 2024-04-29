@@ -91,11 +91,6 @@ export default function useTableData<T, U>({
     setCurrentPage(1);
     setPageSize(defaultPageSize);
   };
-
-  const pageChange = async (page: number) => {
-    setCurrentPage(page);
-  };
-
   useEffect(() => {
     console.log(mounted.current, 'mounted.current');
     if (!mountedRequest && mounted.current) {
@@ -105,9 +100,13 @@ export default function useTableData<T, U>({
     getData({ page: currentPage, pageSize: pageSize, sort: sortedInfo, searchText });
   }, [currentPage, pageSize, sortedInfo, searchText, getData, mountedRequest]);
 
-  const pageSizeChange = async (size) => {
+  const pageChange = async (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const pageSizeChange = async (page, size) => {
     setPageSize(size);
-    setCurrentPage(1);
+    setCurrentPage(page);
   };
 
   return {

@@ -9,7 +9,7 @@ import { numberFormatter } from '@_utils/formatter';
 import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import { TitleEnum } from '@_types/commonDetail';
 import EPTabs from '../EPTabs/index';
-import TransctionList from '@app/transactions/list';
+import TransctionList from '@app/[chain]/transactions/list';
 import TokenTransfers from '@_components/TokenTransfers';
 import NFTTransfers from '@_components/NFTTransfers';
 import History from './components/History';

@@ -27,8 +27,6 @@ export const metadata: Metadata = {
   description: 'AELF explorer',
   icons: {
     icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
   },
 };
 async function fetchData() {
