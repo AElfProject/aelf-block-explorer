@@ -45,11 +45,11 @@ export interface ITokenDetail {
   totalSupply: string;
   circulatingSupply: string;
   holders: number;
+  price: number;
   holderPercentChange24h: number;
   transferCount: number;
-  priceInUsd: number;
   pricePercentChange24h: number;
-  contractAddress: string;
+  tokenContractAddress: string;
   decimals: number;
 }
 
