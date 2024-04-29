@@ -14,7 +14,7 @@ import BaseInfo from './baseinfo';
 import ExtensionInfo from './ExtensionInfo';
 import type { ITabsProps } from 'aelf-design';
 import Table from '@_components/Table';
-import getColumns from '@app/transactions/columnConfig';
+import getColumns from '@app/[chain]/transactions/columnConfig';
 import { ColumnsType } from 'antd/es/table';
 import MoreContainer from '@_components/MoreContainer';
 import EPTabs from '@_components/EPTabs';

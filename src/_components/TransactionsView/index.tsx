@@ -4,14 +4,18 @@ import './index.css';
 import Link from 'next/link';
 import Status from '@_components/TransactionsStatus';
 import { addSymbol, divDecimals } from '@_utils/formatter';
+import { useParams } from 'next/navigation';
 export default function TransactionsView({ record }) {
+  const { chain } = useParams();
   const PreviewCard = () => {
     return (
       <div className="preview-view">
         <div className="header flex items-center justify-between p-2">
           <div className="title text-sm leading-[22px] text-base-100">Preview</div>
           <div className="more text-xs leading-5">
-            <Link className="inline-block text-xs leading-5" href={`tx/${record.transactionId}`}>
+            <Link
+              className="inline-block text-xs leading-5"
+              href={`/${chain}/tx/${record.transactionId}?blockHeight=${record.blockHeight}`}>
               See More Details
             </Link>
           </div>

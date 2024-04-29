@@ -19,7 +19,8 @@ const Block_API_List = {
 };
 
 const Transaction_API_List = {
-  getTransaction: '',
+  getTransactionList: `${BASE_API}/app/blockchain/transactions`,
+  getServerTransactionList: `${SERVER_BASE_API}/app/blockchain/transactions`,
   getTransactionDetail: `${SERVER_BASE_API}/app/blockchain/transactionDetail`,
 };
 

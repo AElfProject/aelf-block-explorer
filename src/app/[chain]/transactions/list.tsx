@@ -2,35 +2,43 @@
 import HeadTitle from '@_components/HeaderTitle';
 import Table from '@_components/Table';
 import getColumns from './columnConfig';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
-import fetchData from './mock';
-import { useMobileContext } from '@app/pageProvider';
-import useTableData from '@_hooks/useTable';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 import { pageSizeOption } from '@_utils/contant';
-import { ITransactionsResponseItem } from '@_api/type';
-interface ITransactionsData {
-  total: number;
-  data: ITransactionsResponseItem[];
-}
+import { ITransactionsResponseItem, TChainID } from '@_api/type';
+import { useParams } from 'next/navigation';
+import { fetchTransactionList } from '@_api/fetchTransactions';
+import { getPageNumber } from '@_utils/formatter';
 
 export default function List({ SSRData, showHeader = true }) {
+  console.log(SSRData, 'transactionSSRData');
   const { isMobile } = useMobileAll();
-  const disposeData = (data) => {
-    return {
-      total: data.total,
-      list: [...data.data],
-    };
-  };
-  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange } = useTableData<
-    ITransactionsResponseItem,
-    ITransactionsData
-  >({
-    SSRData: disposeData(SSRData),
-    fetchData: fetchData,
-    disposeData: disposeData,
-  });
+
+  const { chain } = useParams();
+  const fetchData = useCallback(
+    async (page, pageSize) => {
+      const params = {
+        chainId: chain as TChainID,
+        skipCount: getPageNumber(page, pageSize),
+        maxResultCount: pageSize,
+      };
+      try {
+        const res = await fetchTransactionList(params);
+        setTotal(res.total);
+        setData(res.transactions);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [chain],
+  );
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(25);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(SSRData.total);
+  const [data, setData] = useState<ITransactionsResponseItem[]>(SSRData.transactions);
   const [timeFormat, setTimeFormat] = useState<string>('Age');
   const columns = useMemo<ColumnsType<ITransactionsResponseItem>>(() => {
     return getColumns({
@@ -49,6 +57,17 @@ export default function List({ SSRData, showHeader = true }) {
   const multiTitleDesc = useMemo(() => {
     return `Showing the last 500k records`;
   }, []);
+
+  const pageChange = async (page: number) => {
+    setCurrentPage(page);
+    fetchData(page, pageSize);
+  };
+
+  const pageSizeChange = async (page, size) => {
+    setPageSize(size);
+    setCurrentPage(page);
+    fetchData(page, size);
+  };
 
   return (
     <div>
