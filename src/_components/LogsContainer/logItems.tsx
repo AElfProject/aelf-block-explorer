@@ -7,7 +7,8 @@ function LogItems({ data }: { data: ILogsProps }) {
   const [result] = useState(
     JSON.stringify(
       {
-        ...data,
+        indexed: data.indexed,
+        nonIndexed: data.nonIndexed,
         decode: undefined,
       },
       null,
