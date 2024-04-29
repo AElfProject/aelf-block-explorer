@@ -17,3 +17,6 @@ export default async function Block({ params }: { params: { hash: string; chain:
   console.log(data, 'data');
   return <Detail SSRData={data} />;
 }
+
+export const revalidate = 1;
+export const dynamic = 'force-dynamic';
