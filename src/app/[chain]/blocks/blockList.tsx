@@ -41,6 +41,7 @@ export default function BlockList({ SSRData }) {
   const [data, setData] = useState<IBlocksResponseItem[]>(SSRData.blocks);
   const { defaultChain } = useAppSelector((state) => state.getChainId);
   const totalPage = Math.floor((total + pageSize - 1) / pageSize) || 1;
+  const { chain } = useParams();
   const fetchData = useCallback(
     async (pageSize, type: pageType) => {
       let blockHeight;
@@ -71,7 +72,6 @@ export default function BlockList({ SSRData }) {
     [currentPage, data, defaultChain, totalPage],
   );
 
-  const { chain } = useParams();
   const [timeFormat, setTimeFormat] = useState<string>('Age');
   const columns = useMemo<ColumnsType<IBlocksResponseItem>>(() => {
     return getColumns({

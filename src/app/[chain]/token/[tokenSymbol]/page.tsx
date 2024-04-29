@@ -25,3 +25,6 @@ export default async function TokenSymbol({
     </div>
   );
 }
+
+export const revalidate = 1;
+export const dynamic = 'force-dynamic';

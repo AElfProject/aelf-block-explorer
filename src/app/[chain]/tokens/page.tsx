@@ -22,3 +22,6 @@ export default async function TokensPage({ params }: { params: ChainId }) {
   });
   return <TokensList SSRData={data} />;
 }
+
+export const revalidate = 1;
+export const dynamic = 'force-dynamic';
