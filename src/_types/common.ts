@@ -12,6 +12,7 @@ export interface IToken {
   name: string;
   symbol: string;
   imageUrl: string;
+  decimals: number;
 }
 
 export interface IAddress {

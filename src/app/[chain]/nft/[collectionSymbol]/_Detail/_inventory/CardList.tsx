@@ -39,7 +39,7 @@ export interface Props {
   emptyType?: 'nodata' | 'search' | 'internet' | ReactNode | (() => ReactNode) | null;
   emptyText?: string;
   pageChange?: (page: number, pageSize?: number) => void;
-  pageSizeChange?: (value: number) => void;
+  pageSizeChange?: (value: number, size: number) => void;
   headerLeftNode?: ReactNode;
   options?: any;
 }

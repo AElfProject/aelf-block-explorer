@@ -4,6 +4,7 @@ const nftsList: INFTsTableItem[] = Array.from(new Array(100).keys()).map((key) =
   rank: key,
   nftCollection: {
     name: 'ELF',
+    decimals: 8,
     symbol: 'ELF',
     imageUrl:
       'https://ewell-testnet.s3.ap-northeast-1.amazonaws.com/1707185337825-9ccfd284d9a0301a256ce6ed13e56329.jpeg',
