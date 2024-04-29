@@ -3,7 +3,7 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import './index.css';
 import Search from '@_components/Search';
-import { isMainNet } from '@_utils/isMainNet';
+// import { isMainNet } from '@_utils/isMainNet';
 import MobileHeaderMenu from '@_components/MobileHeaderMenu';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@_store';
@@ -37,6 +37,7 @@ export default function HeaderTop({ price, range, networkList, headerMenuList }:
   const finalUrl = networkList.find((ele) => ele.key === networkType)?.path;
   const { chain } = useParams();
   const router = useRouter();
+  const isMainNet = true;
 
   return (
     <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
