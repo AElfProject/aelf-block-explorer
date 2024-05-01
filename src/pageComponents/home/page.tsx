@@ -11,24 +11,23 @@ import InfoSection from './_components/InfoSection';
 import SearchComp from './_components/SearchWithClient';
 import clsx from 'clsx';
 import './index.css';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 import { IOverviewSSR } from './type';
 // import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
 import Latest from './_components/Latest';
 import TPSChart from './_components/TPSChart';
 import tpsData from './mock';
-import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
+import { useMobileAll } from '@_hooks/useResponsive';
 const BannerPc = '/image/banner_pc.png';
 const BannerMobile = '/image/banner_mobile.png';
 const clsPrefix = 'home-container';
 import { useEnvContext } from 'next-runtime-env';
-import { IBlocksResponseItem, ITransactionsResponseItem, TChainID } from '@_api/type';
-import { fetchLatestBlocksList } from '@_api/fetchBlocks';
 import { Spin } from 'antd';
-import { fetchLatestTransactionList } from '@_api/fetchTransactions';
 import { useAppSelector } from '@_store';
 import { useSearchParams } from 'next/navigation';
+import useHomeSocket from '@_hooks/useHomeSocket';
+import { TChainID } from '@_api/type';
 
 interface IProps {
   overviewSSR: IOverviewSSR;
@@ -46,43 +45,13 @@ const getConnectionBuilder = (url: string) => {
 };
 export default function Home({ overviewSSR }: IProps) {
   const { NEXT_PUBLIC_API_URL: HOST } = useEnvContext();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [transactionsLoading, setTransactionsLoading] = useState<boolean>(false);
-  const [blocks, setBlocks] = useState<IBlocksResponseItem[]>([]);
   const { defaultChain } = useAppSelector((state) => state.getChainId);
   const searchParmas = useSearchParams();
   const chain = searchParmas.get('chainId') || defaultChain;
-  const [transactions, setTransactions] = useState<ITransactionsResponseItem[]>([]);
 
-  const fetchBlocksData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await fetchLatestBlocksList({ chainId: chain as TChainID });
-      console.log(data, 'data');
-      setLoading(false);
-      setBlocks(data.blocks);
-    } catch (error) {
-      setLoading(false);
-    }
-  }, [chain]);
-
-  const fetchTransactionData = useCallback(async () => {
-    setTransactionsLoading(true);
-    try {
-      const data = await fetchLatestTransactionList({ chainId: chain as TChainID, maxResultCount: 25 });
-      console.log(data, 'data');
-      setTransactionsLoading(false);
-      setTransactions(data.transactions);
-    } catch (error) {
-      setTransactionsLoading(false);
-    }
-  }, [chain]);
+  const { blocks, blocksLoading, transactionsLoading, transactions } = useHomeSocket(chain as TChainID);
 
   const isMobile = useMobileAll();
-  useEffect(() => {
-    fetchBlocksData();
-    fetchTransactionData();
-  }, []);
 
   const OverView: React.FC = () => {
     const [connection, setConnection] = useState<null | HubConnection>(null);
@@ -130,7 +99,7 @@ export default function Home({ overviewSSR }: IProps) {
     return (
       <div className={clsx('latest-all', isMobile && 'latest-all-mobile')}>
         <div className="flex-1">
-          <Spin spinning={loading}>
+          <Spin spinning={blocksLoading}>
             <Latest iconType="latest-block" isBlocks={true} data={blocks} isMobile={isMobile}></Latest>
           </Spin>
         </div>
