@@ -5,7 +5,7 @@ import addressFormat, { hiddenAddress } from '@_utils/urlUtils';
 import Copy from '@_components/Copy';
 import Image from 'next/image';
 import { ItemSymbolDetailOverview } from '../type';
-import { isMainNet } from '@_utils/isMainNet';
+import { checkMainNet } from '@_utils/isMainNet';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { CollectionSymbol, ItemSymbol } from 'global';
@@ -18,6 +18,7 @@ export interface OverViewDetailProps {
 export default function OverViewDetail(props: OverViewDetailProps) {
   const params = useParams<CollectionSymbol & ItemSymbol>();
   const { overview, onHolderClick } = props;
+  const isMainNet = checkMainNet();
   return (
     <ul className="nft-detail-ul">
       <li className="nft-detail-item">

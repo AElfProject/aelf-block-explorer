@@ -22,6 +22,7 @@ import { useMobileAll } from '@_hooks/useResponsive';
 import { IBlocksDetailData, ITransactionsResponseItem } from '@_api/type';
 import { pageSizeOption } from '@_utils/contant';
 import { useParams } from 'next/navigation';
+import { useEffectOnce } from 'react-use';
 
 export default function Detail({ SSRData }) {
   const { isMobile } = useMobileAll();
@@ -57,6 +58,15 @@ export default function Detail({ SSRData }) {
     setPageSize(size);
   };
 
+  const [activeKey, setActiveKey] = useState<string>('');
+  useEffectOnce(() => {
+    setActiveKey(window.location.hash.replace('#', ''));
+  });
+
+  const tabChange = (key) => {
+    setActiveKey(key);
+  };
+
   const tableData = useMemo(() => {
     const transactions = detailData?.transactions || [];
     return transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -71,7 +81,7 @@ export default function Detail({ SSRData }) {
       label: 'Overview',
       children: (
         <div className="overview-container pb-4">
-          <BaseInfo data={detailData} />
+          <BaseInfo data={detailData} tabChange={tabChange} />
           {showMore && <ExtensionInfo data={detailData} />}
           <MoreContainer showMore={showMore} onChange={moreChange} />
         </div>
@@ -109,7 +119,7 @@ export default function Detail({ SSRData }) {
       </HeadTitle>
 
       <div className="detail-table">
-        <EPTabs items={items} />
+        <EPTabs selectKey={activeKey} items={items} onTabChange={tabChange} />
       </div>
     </div>
   );
