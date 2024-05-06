@@ -64,8 +64,10 @@ export default function HeaderMenu({ networkList, headerMenuList }: IProps) {
     });
   }, [headerMenuList, jump]);
   const pathname = usePathname();
-  const secondSlashIndex = pathname.slice(1).indexOf('/');
-  const [current, setCurrent] = useState(secondSlashIndex === -1 ? pathname : getPathnameFirstSlash(pathname));
+  const secondSlashIndex = pathname.slice(6).indexOf('/');
+  const [current, setCurrent] = useState(
+    secondSlashIndex === -1 ? pathname.slice(5) : getPathnameFirstSlash(pathname.slice(5)),
+  );
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
   };

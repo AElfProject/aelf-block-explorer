@@ -33,6 +33,11 @@ const Token_API_List = {
   getTokenDetailHolders: `${BASE_API}/app/token/holders`,
 };
 
+const NFT_API_List = {
+  getNFTSList: `${BASE_API}/app/token/nft/collection-list`,
+  getServerNFTSList: `${SERVER_BASE_API}/app/token/nft/collection-list`,
+};
+
 const Common_API_List = {
   getPrice: '',
 };
@@ -51,6 +56,7 @@ export const API_List = {
   common: Common_API_List,
   cms: CMS_API_List,
   token: Token_API_List,
+  nfts: NFT_API_List,
 };
 
 type REQUEST_FUNCTION = (opt?: RequestWithParams) => Promise<any>;

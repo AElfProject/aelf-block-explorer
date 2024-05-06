@@ -6,11 +6,22 @@
  * @Description: NFTs
  */
 
+import { fetchServerNFTSList } from '@_api/fetchNFTS';
+import { TChainID } from '@_api/type';
+import { SortEnum } from '@_types/common';
 import { ChainId } from 'global';
 import List from './list';
-import fetchData from './mock';
 export default async function Nfts({ params }: { params: ChainId }) {
-  console.log('chainId:', params);
-  const data = await fetchData({ page: 1, pageSize: 50 });
+  const data = await fetchServerNFTSList({
+    skipCount: 0,
+    maxResultCount: 50,
+    chainId: params.chain as TChainID,
+    orderBy: 'HolderCount',
+    sort: SortEnum.desc,
+    cache: 'no-store',
+  });
   return <List SSRData={data} />;
 }
+
+export const revalidate = 1;
+export const dynamic = 'force-dynamic';

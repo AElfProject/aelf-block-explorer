@@ -100,7 +100,9 @@ function RootProvider({ children, isMobileSSR }) {
                 {!show && <Skeleton className="relative top-[104px] mb-[104px] h-[calc(100vh-434px)]" />}
               </>
             )}
-            <div className={isGovernance && 'no-use-main'}>{children}</div>
+            <div className={isGovernance ? 'no-use-main' : 'flex min-h-screen flex-col justify-between'}>
+              {children}
+            </div>
           </ReduxProvider>
         </MobileContext.Provider>
       </ConfigProvider>
