@@ -31,7 +31,7 @@ const nextConfig = {
             source: '/api/:path*',
             destination: 'https://aelfscan.io/api/:path*',
             // permanent: false,
-            basePath: false,
+            // basePath: false,
           },
           {
             source: '/chain/:path*',

@@ -20,7 +20,7 @@ import DollarCurrency from '@_components/DollarCurrency';
 import addressFormat from '@_utils/urlUtils';
 import { StatusEnum } from '@_types/status';
 import { useParams } from 'next/navigation';
-export default function BaseInfo({ data }) {
+export default function BaseInfo({ data, tabChange }) {
   const router = useRouter();
   const { chain } = useParams();
   const isFirst = data?.preBlockHeight === 0;
@@ -75,7 +75,13 @@ export default function BaseInfo({ data }) {
         tip: 'The number of transactions in the block.',
         value: (
           <div className="text-xs leading-5">
-            <span className=" cursor-pointer text-link">{data.total} transactions</span>
+            <span
+              className=" cursor-pointer text-link"
+              onClick={() => {
+                tabChange('txns');
+              }}>
+              {data.total} transactions
+            </span>
             <span className="ml-1">in this block</span>
           </div>
         ),
@@ -136,6 +142,6 @@ export default function BaseInfo({ data }) {
         value: 'divider',
       },
     ];
-  }, [data, isFirst, isLast, jump]);
+  }, [data, isFirst, isLast, jump, chain, tabChange]);
   return <DetailContainer infoList={renderInfo} />;
 }

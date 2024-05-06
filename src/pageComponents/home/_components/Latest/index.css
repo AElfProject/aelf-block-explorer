@@ -1,7 +1,7 @@
 .home-latest {
   @apply bg-white rounded-[8px] shadow-[0_8px_16px_0_rgba(0,0,0,0.04)];
   .title {
-    @apply px-4 py-[15px] h-[52px] text-[14px] font-[500] leading-[22px] text-base-100 shadow-[0_-1px_0_0_#E6E6E6_inset];
+    @apply px-4 py-[15px] h-[52px] text-[16px] font-[500] leading-[24px] text-base-100 shadow-[0_-1px_0_0_#E6E6E6_inset];
   }
   .content {
     @apply h-[480px] px-4 overflow-auto;
@@ -18,25 +18,28 @@
         .text {
           @apply flex flex-col justify-center;
           .height {
-            @apply text-[12px] font-[400] leading-5 text-link max-w-[99px] overflow-hidden text-ellipsis whitespace-nowrap;
+            @apply text-[14px] font-[400] leading-[22px] text-link max-w-[99px] overflow-hidden text-ellipsis whitespace-nowrap;
           }
           .time {
-            @apply text-[10px] font-[400] leading-[18px] text-base-200;
+            @apply text-xs font-[400] leading-5 text-base-200;
           }
         }
       }
       .middle {
         @apply flex flex-wrap flex-col justify-center w-[203px];
         .producer {
-          @apply text-[12px] font-[400] leading-5 w-full overflow-hidden text-ellipsis whitespace-nowrap;
+          @apply text-[14px] font-[400] leading-[22px] w-full overflow-hidden text-ellipsis whitespace-nowrap;
           a {
             @apply text-link ml-2;
           }
         }
         .txns {
-          @apply text-[10px] font-[400] leading-[18px] text-base-200;
+          @apply text-[14px] font-[400] leading-[22px] text-base-200;
           a {
             @apply text-link mr-1;
+          }
+          .time {
+            @apply text-xs leading-5;
           }
         }
         .from,
@@ -59,7 +62,7 @@
     }
   }
   .link {
-    @apply rounded-b-lg px-4 py-[14px] flex justify-center align-middle text-[10px] font-[500] leading-[18px] text-base-200 bg-[#F7F8FA] shadow-[0_1px_0_0_#E6E6E6_inset] hover:text-link;
+    @apply rounded-b-lg px-4 py-[16px] flex justify-center align-middle text-[12px] font-[500] leading-5 text-base-200 bg-[#F7F8FA] shadow-[0_1px_0_0_#E6E6E6_inset] hover:text-link;
     a {
       @apply hover:text-link text-base-200;
       &:hover {
