@@ -3,7 +3,6 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import './index.css';
 import Search from '@_components/Search';
-// import { isMainNet } from '@_utils/isMainNet';
 import MobileHeaderMenu from '@_components/MobileHeaderMenu';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@_store';

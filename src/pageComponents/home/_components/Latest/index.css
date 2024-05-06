@@ -44,7 +44,7 @@
         }
         .from,
         .to {
-          @apply text-[12px] font-[400] leading-5 text-base-100 flex;
+          @apply text-[14px] font-[400] leading-[22px] text-base-100 flex;
           a {
             @apply ml-2 text-link w-[134px] inline-block;
           }

@@ -1,4 +1,6 @@
 import request from '@_api';
+
+const showPath = ['blockchain', '/tokens', '/nfts'];
 export async function fetchCMS() {
   const result = await request.cms.getGlobalConfig();
   const { data } = result;
@@ -8,7 +10,7 @@ export async function fetchCMS() {
         return child.label === 'Blocks' || child.label === 'Transactions';
       });
     }
-    return item.headerMenu_id?.path === 'blockchain' || item.headerMenu_id?.path === '/tokens';
+    return showPath.includes(item.headerMenu_id?.path);
   });
   data.headerMenuList = headerMenuList;
   return data;

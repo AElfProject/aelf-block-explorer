@@ -12,5 +12,5 @@ import clsx from 'clsx';
 import { useMobileAll } from '@_hooks/useResponsive';
 export default function MainContainer({ children, isMobileSSR }) {
   const isMobile = useMobileAll();
-  return <div className={clsx(isMobile && 'main-container-mobile', 'main-container')}>{children}</div>;
+  return <div className={clsx(isMobile && 'main-container-mobile', 'main-container w-full')}>{children}</div>;
 }
