@@ -9,6 +9,7 @@ import { checkMainNet } from '@_utils/isMainNet';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { CollectionSymbol, ItemSymbol } from 'global';
+import { useEnvContext } from 'next-runtime-env';
 
 export interface OverViewDetailProps {
   overview: ItemSymbolDetailOverview;
@@ -18,7 +19,8 @@ export interface OverViewDetailProps {
 export default function OverViewDetail(props: OverViewDetailProps) {
   const params = useParams<CollectionSymbol & ItemSymbol>();
   const { overview, onHolderClick } = props;
-  const isMainNet = checkMainNet();
+  const { NEXT_PUBLIC_NETWORK_TYPE } = useEnvContext();
+  const isMainNet = checkMainNet(NEXT_PUBLIC_NETWORK_TYPE);
   return (
     <ul className="nft-detail-ul">
       <li className="nft-detail-item">

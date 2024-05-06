@@ -11,6 +11,7 @@ import { useMobileAll } from '@_hooks/useResponsive';
 import { MenuItem, NetworkItem } from '@_types';
 import { useEnvContext } from 'next-runtime-env';
 import { useParams, useRouter } from 'next/navigation';
+import { checkMainNet } from '@_utils/isMainNet';
 
 // at public file
 const TopIconMain = '/image/aelf-header-top.svg';
@@ -37,8 +38,8 @@ export default function HeaderTop({ price, range, networkList, headerMenuList }:
   const finalUrl = networkList.find((ele) => ele.key === networkType)?.path;
   const { chain } = useParams();
   const router = useRouter();
-  const isMainNet = true;
 
+  const isMainNet = checkMainNet(NEXT_PUBLIC_NETWORK_TYPE);
   return (
     <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
       <div className={clsx(`${clsPrefix}-content`)}>

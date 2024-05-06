@@ -9,6 +9,7 @@ import './index.css';
 import { useAppDispatch, useAppSelector } from '@_store';
 import { setDefaultChain } from '@_store/features/chainIdSlice';
 import { getPathnameFirstSlash } from '@_utils/urlUtils';
+import { useEnvContext } from 'next-runtime-env';
 import { checkMainNet } from '@_utils/isMainNet';
 interface IProps {
   headerMenuList: MenuItem[];
@@ -27,6 +28,8 @@ export default function MobileHeaderMenu({ headerMenuList, networkList }: IProps
     setCurrent(e.key);
     setShowMobileMenu(false);
   };
+  const { NEXT_PUBLIC_NETWORK_TYPE } = useEnvContext();
+  const isMainNet = checkMainNet(NEXT_PUBLIC_NETWORK_TYPE);
 
   const pathname = usePathname();
   const secondSlashIndex = pathname.slice(1).indexOf('/');
@@ -79,7 +82,7 @@ export default function MobileHeaderMenu({ headerMenuList, networkList }: IProps
       }),
     ),
   ];
-  const isMainNet = checkMainNet();
+
   return (
     <div className={`header-navbar-mobile-more ${isMainNet ? 'header-navbar-main-mobile-more' : ''}`}>
       <IconFont type={isMainNet ? 'moremainnet' : 'moretestnet'} onClick={() => toggleMenu()} />

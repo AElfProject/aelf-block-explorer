@@ -11,9 +11,10 @@ import './index.css';
 import IconFont from '@_components/IconFont';
 import BackToTopButton from '@_components/BackToTopBtn';
 import Image from 'next/image';
-import { checkMainNet } from '@_utils/isMainNet';
 import { useMobileAll } from '@_hooks/useResponsive';
 import { MenuItem } from '@_types';
+import { useEnvContext } from 'next-runtime-env';
+import { checkMainNet } from '@_utils/isMainNet';
 const FoorterBgTets = '/image/footer-bg.png';
 const clsPrefix = 'footer-container';
 interface IProps {
@@ -23,6 +24,8 @@ interface IProps {
   }[];
 }
 export default function Footer({ footerMenuList }: IProps) {
+  const { NEXT_PUBLIC_NETWORK_TYPE } = useEnvContext();
+  const isMainNet = checkMainNet(NEXT_PUBLIC_NETWORK_TYPE);
   const isMobile = useMobileAll();
   const rightLinkCom = footerMenuList.map((ele) => {
     const item = ele.footerMenu_id;
@@ -42,8 +45,6 @@ export default function Footer({ footerMenuList }: IProps) {
       </div>
     );
   });
-
-  const isMainNet = checkMainNet();
   return (
     <div className={clsx(clsPrefix, isMainNet && `${clsPrefix}-main`, isMobile && `${clsPrefix}-mobile`)}>
       {!isMainNet && (
