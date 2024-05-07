@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 // import request from '@_api';
 import { PAGE_SIZE } from './type';
 import CollectionDetails from './CollectionDetails';
-import { fetchOverviewData, fetchTransferList } from './mock';
+import { fetchTransferList } from './mock';
 import { ChainId, CollectionSymbol } from 'global';
 import { fetchServerCollectionDetail } from '@_api/fetchNFTS';
 import { TChainID } from '@_api/type';

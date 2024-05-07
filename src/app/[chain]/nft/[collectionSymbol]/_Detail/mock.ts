@@ -87,24 +87,25 @@ async function fetchHolderData(p: HolderQueryParams): Promise<CollectionHoldersD
   };
 }
 
-const overview: CollectionDetailData = {
-  nftCollection: {
-    name: 'My NFT Collection',
-    imageUrl: 'https://etherscan.io/token/images/boredapeyc_32.png',
-    symbol: 'NFT',
-  },
-  items: 1000,
-  holders: 500,
-  totalTransfers: '10000',
-  floorPriceInUsd: 10.5,
-  floorAmount: 1,
-  contractAddress: '0x1234567890abcdef',
-};
+// const overview: CollectionDetailData = {
+//   nftCollection: {
+//     name: 'My NFT Collection',
+//     imageUrl: 'https://etherscan.io/token/images/boredapeyc_32.png',
+//     symbol: 'NFT',
+//     decimals: 0,
+//   },
+//   items: 1000,
+//   holders: 500,
+//   totalTransfers: '10000',
+//   floorPriceInUsd: 10.5,
+//   floorAmount: 1,
+//   contractAddress: '0x1234567890abcdef',
+// };
 
-const fetchOverviewData = async (): Promise<CollectionDetailData> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return overview;
-};
+// const fetchOverviewData = async (): Promise<CollectionDetailData> => {
+//   await new Promise((resolve) => setTimeout(resolve, 1000));
+//   return overview;
+// };
 
 const inventoryItemList: InventoryItem[] = Array.from(new Array(100).keys()).map((item, i) => {
   const mockCollectionItem: InventorySymbol = {
@@ -138,11 +139,11 @@ async function fetchInventoryList(p: InventoryListParams): Promise<CollectionInv
 }
 export {
   transferList,
-  overview,
+  // overview,
   holderList,
   inventoryItemList,
   fetchTransferList,
   fetchHolderData,
-  fetchOverviewData,
+  // fetchOverviewData,
   fetchInventoryList,
 };
