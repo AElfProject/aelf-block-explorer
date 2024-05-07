@@ -224,3 +224,20 @@ export interface TTransactionsListRequestParams extends RequestInit {
   skipCount?: number;
   maxResultCount: number;
 }
+
+// collection
+
+export interface ICollectionDetailRequestParams extends RequestInit {
+  chainId: TChainID;
+  collectionSymbol: string;
+}
+
+export interface ICollectionTransfersRequestParams extends RequestInit {
+  chainId: TChainID;
+  skipCount: number;
+  maxResultCount: number;
+  collectionSymbol: string;
+  search: string;
+  orderBy: string;
+  sort: string;
+}
