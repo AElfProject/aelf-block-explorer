@@ -3,7 +3,7 @@
     .explorer-table-cell {
       @apply py-3 pr-4 pl-0 bg-white border-none;
 
-      box-shadow: 0 -1px 0 0 #E6E6E6 inset;
+      box-shadow: 0 -1px 0 0 #e6e6e6 inset;
     }
     .explorer-table-cell:first-child {
       @apply pl-4 !important;
@@ -11,7 +11,7 @@
     .explorer-table-thead {
       @apply border-none;
       .explorer-table-cell::before {
-        @apply bg-inherit w-0 h-0 !important; 
+        @apply bg-inherit w-0 h-0 !important;
       }
       .explorer-table-cell:first-child {
         @apply rounded-none pl-4 !important;
@@ -20,10 +20,10 @@
         @apply rounded-none !important;
       }
       .explorer-table-cell {
-        @apply py-2 pr-4 pl-0 text-xs bg-white border-none leading-5 text-base-100 font-medium !important; 
+        @apply py-2 pr-4 pl-0 text-xs bg-white border-none leading-5 text-base-100 font-medium !important;
       }
       .header-top {
-        @apply flex items-center !important; 
+        @apply flex items-center !important;
       }
       .explorer-table-column-sorters {
         @apply !flex-row-reverse;
@@ -33,24 +33,24 @@
       }
     }
     .explorer-table-tbody {
-      @apply text-xs leading-5 text-base-100;
+      @apply text-sm leading-[22px] text-base-100;
       .explorer-table-cell {
-        @apply leading-none;
+        @apply text-sm leading-[22px];
       }
     }
-    
   }
   .explorer-pagination {
     .explorer-pagination-item {
       @apply hidden;
     }
-    .explorer-pagination-jump-prev,.explorer-pagination-jump-next {
+    .explorer-pagination-jump-prev,
+    .explorer-pagination-jump-next {
       @apply hidden;
     }
     .explorer-pagination-item-1 {
       @apply inline-block h-[1.875rem] px-2 bg-F7 border-D0;
     }
-  } 
+  }
 
   .ep-table-header {
     @apply flex items-center justify-between !important;

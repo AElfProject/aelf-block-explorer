@@ -35,6 +35,7 @@ const tabMap = {
 };
 export default function NFTDetails(props: NFTDetailsProps) {
   const { overview, transferList } = props;
+  console.log(overview, 'collection detail');
   const tabRef = useRef<EPTabsRef>(null);
   const [text, setSearchText] = useState<string>('');
   const [searchVal, setSearchVal] = useState<string>(props.search || '');

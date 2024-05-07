@@ -36,6 +36,8 @@ const Token_API_List = {
 const NFT_API_List = {
   getNFTSList: `${BASE_API}/app/token/nft/collection-list`,
   getServerNFTSList: `${SERVER_BASE_API}/app/token/nft/collection-list`,
+  getServerCollectionDetail: `${SERVER_BASE_API}/app/token/nft/collection-detail`,
+  getNFTTransfers: `${BASE_API}/app/token/nft/transfers`,
 };
 
 const Common_API_List = {

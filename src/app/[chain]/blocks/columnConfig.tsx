@@ -19,7 +19,7 @@ export default function getColumns({ timeFormat, handleTimeChange, chianId }): C
       dataIndex: 'blockHeight',
       key: 'blockHeight',
       render: (text) => (
-        <Link className="block text-xs leading-5 text-link" href={`/${chianId}/block/${text}`}>
+        <Link className="block text-sm leading-[22px] text-link" href={`/${chianId}/block/${text}`}>
           {text}
         </Link>
       ),
@@ -37,7 +37,7 @@ export default function getColumns({ timeFormat, handleTimeChange, chianId }): C
       dataIndex: 'timestamp',
       key: 'timestamp',
       render: (text) => {
-        return <div className="text-xs leading-5">{formatDate(text, timeFormat)}</div>;
+        return <div className="text-sm leading-[22px]">{formatDate(text, timeFormat)}</div>;
       },
     },
     {
@@ -46,7 +46,7 @@ export default function getColumns({ timeFormat, handleTimeChange, chianId }): C
       key: 'transactionCount',
       dataIndex: 'transactionCount',
       render: (text, record) => (
-        <Link className="block text-xs leading-5 text-link" href={`/${chianId}/block/${record.blockHeight}#txns`}>
+        <Link className="block text-sm leading-[22px] text-link" href={`/${chianId}/block/${record.blockHeight}#txns`}>
           {text}
         </Link>
       ),
@@ -59,7 +59,7 @@ export default function getColumns({ timeFormat, handleTimeChange, chianId }): C
       render: (address, record) => (
         <div className="flex items-center">
           <Link
-            className="block text-xs leading-5 text-link"
+            className="block text-sm leading-[22px] text-link"
             title={`${addressFormat(address, chianId)}`}
             href=""
             // href={`${chianId}/address/${addressFormat(address, chianId)}`}

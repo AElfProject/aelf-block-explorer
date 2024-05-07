@@ -1,21 +1,16 @@
+import { IToken } from '@_types/common';
 import { ISearchProps } from 'aelf-design';
-import { execOnce } from 'next/dist/shared/lib/utils';
 
 // Collection detail api return type
-export interface NftCollection {
-  name: string;
-  imageUrl: string;
-  symbol: string;
-}
 
 export interface CollectionDetailData {
-  nftCollection: NftCollection;
+  nftCollection: IToken;
   items: number;
   holders: number;
-  totalTransfers: string;
-  floorPriceInUsd: number;
-  floorAmount: number;
-  contractAddress: string;
+  transferCount: number;
+  floorPriceOfUsd: number;
+  floorPrice: number;
+  tokenContractAddress: string;
 }
 
 export interface CollectionDetailApiResponse {

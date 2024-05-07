@@ -44,7 +44,7 @@ export default function getColumns({
             {records.status === TransactionStatus.Failed && <IconFont className="mr-1" type="question-circle-error" />}
             <EPTooltip title={text} mode="dark">
               <Link
-                className="block w-[120px] truncate text-xs leading-5 text-link"
+                className="block w-[120px] truncate text-link"
                 href={`/${chainId}/tx/${text}?blockHeight=${records.blockHeight}`}>
                 {text}
               </Link>
@@ -74,7 +74,7 @@ export default function getColumns({
       hidden: type === 'block',
       key: 'blockHeight',
       render: (text) => (
-        <Link className="block text-xs leading-5 text-link" href={`/${chainId}/block/${text}`}>
+        <Link className="block text-link" href={`/${chainId}/block/${text}`}>
           {text}
         </Link>
       ),
@@ -92,7 +92,7 @@ export default function getColumns({
       dataIndex: 'timestamp',
       key: 'timestamp',
       render: (text) => {
-        return <div className="text-xs leading-5">{formatDate(text, timeFormat)}</div>;
+        return <div>{formatDate(text, timeFormat)}</div>;
       },
     },
     {
