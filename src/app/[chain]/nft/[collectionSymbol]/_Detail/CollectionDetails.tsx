@@ -13,7 +13,6 @@ import { useEffect, useRef, useState } from 'react';
 
 export interface NFTDetailsProps {
   overview: CollectionDetailData;
-  transferList: CollectionTransfersData;
   search?: string;
 }
 function updateUrlParams(obj) {
@@ -34,7 +33,7 @@ const tabMap = {
   [TabKey.inventory]: 'Inventory',
 };
 export default function NFTDetails(props: NFTDetailsProps) {
-  const { overview, transferList } = props;
+  const { overview } = props;
   console.log(overview, 'collection detail');
   const tabRef = useRef<EPTabsRef>(null);
   const [text, setSearchText] = useState<string>('');
@@ -114,7 +113,7 @@ export default function NFTDetails(props: NFTDetailsProps) {
     const { key } = obj;
     let children = <div></div>;
     if (key === TabKey.empty) {
-      children = <TransfersTable transferList={transferList} topSearchProps={topSearchProps} search={searchVal} />;
+      children = <TransfersTable topSearchProps={topSearchProps} search={searchVal} />;
     } else if (key === TabKey.balances) {
       children = <HoldersTable topSearchProps={topSearchProps} search={searchVal} />;
     } else {

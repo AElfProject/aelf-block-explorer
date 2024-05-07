@@ -9,19 +9,21 @@ import IconFont from '@_components/IconFont';
 import { Tooltip } from 'aelf-design';
 import ContractToken from '@_components/ContractToken';
 import { AddressType } from '@_types/common';
+import TransactionsView from '@_components/TransactionsView';
+import EPTooltip from '@_components/EPToolTip';
 
 export default function getColumns({ timeFormat, handleTimeChange }): ColumnsType<CollectionTransfer> {
   return [
     {
-      title: <IconFont type="question-circle" className="flex size-full justify-center" />,
+      title: (
+        <EPTooltip title="See preview of the transaction details." mode="dark">
+          <IconFont className="ml-[6px] cursor-pointer text-xs" type="question-circle" />
+        </EPTooltip>
+      ),
       width: 56,
       dataIndex: '',
       key: 'view',
-      render: () => (
-        <div className="flex size-6 cursor-pointer items-center justify-center rounded border border-color-divider bg-white focus:bg-color-divider">
-          <IconFont type="view" />
-        </div>
-      ),
+      render: (record) => <TransactionsView record={record} />,
     },
     {
       dataIndex: 'transactionHash',

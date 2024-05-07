@@ -1,49 +1,51 @@
 'use client';
 import Table, { ITableSearch } from '@_components/Table';
 import getColumns from './column';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
 import { CollectionTransfersData, CollectionTransfer } from '../type';
 import { useMobileContext } from '@app/pageProvider';
 import useTableData from '@_hooks/useTable';
-import { fetchTransferList } from '../mock';
 import { useParams } from 'next/navigation';
 import useResponsive, { useMobileAll } from '@_hooks/useResponsive';
-import { NftCollectionPageParams } from 'global';
+import { NftCollectionPageParams, CollectionSymbol } from 'global';
+import { getPageNumber } from '@_utils/formatter';
+import { fetchNFTTransfers } from '@_api/fetchNFTS';
+import { TChainID } from '@_api/type';
 export interface ItemActivityTableProps {
-  transferList: CollectionTransfersData;
   search?: string;
   topSearchProps?: ITableSearch;
 }
 export default function ItemActivityTable(props: ItemActivityTableProps) {
   const { collectionSymbol, chain } = useParams<NftCollectionPageParams>();
-  const { transferList, topSearchProps, search } = props;
+  const { topSearchProps, search } = props;
   const { isMobile } = useMobileAll();
-  const disposeData = (data: CollectionTransfersData) => {
-    return {
-      total: data.total,
-      list: [...data.transfers],
-    };
-  };
-  const fetchTableData = async ({ page, pageSize }) => {
-    return fetchTransferList({
-      maxResultCount: pageSize,
-      skipCount: (page - 1) * pageSize,
-      search: search ?? '',
-      symbol: collectionSymbol,
-      chainId: chain,
-    });
-  };
 
-  const { loading, total, data, currentPage, pageSize, pageChange, pageSizeChange, searchChange } = useTableData<
-    CollectionTransfer,
-    CollectionTransfersData
-  >({
-    SSRData: disposeData(transferList),
-    fetchData: fetchTableData,
-    disposeData: disposeData,
-    defaultSearch: search,
-  });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(50);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(0);
+  const [data, setData] = useState<CollectionTransfer[]>([]);
+
+  const fetchTableData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await fetchNFTTransfers({
+        maxResultCount: pageSize,
+        skipCount: getPageNumber(currentPage, pageSize),
+        search: search ?? '',
+        collectionSymbol: collectionSymbol,
+        chainId: chain as TChainID,
+      });
+      setData(data.list);
+      setTotal(data.total);
+      console.log(data, 'data');
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  }, [pageSize, currentPage, search, collectionSymbol, chain]);
+
   const [timeFormat, setTimeFormat] = useState<string>('Age');
   const columns = useMemo<ColumnsType<CollectionTransfer>>(() => {
     return getColumns({
@@ -54,9 +56,18 @@ export default function ItemActivityTable(props: ItemActivityTableProps) {
     });
   }, [timeFormat]);
 
+  const pageChange = async (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const pageSizeChange = async (page, size) => {
+    setPageSize(size);
+    setCurrentPage(page);
+  };
+
   useEffect(() => {
-    searchChange(search);
-  }, [search, searchChange]);
+    fetchTableData();
+  }, [fetchTableData]);
 
   return (
     <div className="collection-transfers-table">

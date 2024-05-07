@@ -14,6 +14,7 @@ import ContractToken from '@_components/ContractToken';
 import TransactionsView from '@_components/TransactionsView';
 import { ITransactionsResponseItem, TransactionStatus } from '@_api/type';
 import EPTooltip from '@_components/EPToolTip';
+import Copy from '@_components/Copy';
 
 export default function getColumns({
   timeFormat,
@@ -49,6 +50,7 @@ export default function getColumns({
                 {text}
               </Link>
             </EPTooltip>
+            <Copy value={text}></Copy>
           </div>
         );
       },

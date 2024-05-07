@@ -1,5 +1,5 @@
 import request from '@_api';
-import { ICollectionDetailRequestParams, TTokenListRequestParams } from './type';
+import { ICollectionDetailRequestParams, ICollectionTransfersRequestParams, TTokenListRequestParams } from './type';
 import { INFTsTableData } from '@app/[chain]/nfts/type';
 import { CollectionDetailData, CollectionTransfersData } from '@app/[chain]/nft/[collectionSymbol]/_Detail/type';
 
@@ -32,7 +32,7 @@ export async function fetchServerCollectionDetail(
   return data;
 }
 
-export async function fetchNFTTransfers(params: ICollectionDetailRequestParams): Promise<CollectionTransfersData> {
+export async function fetchNFTTransfers(params: ICollectionTransfersRequestParams): Promise<CollectionTransfersData> {
   const result = await request.nfts.getNFTTransfers({
     params: params,
   });
