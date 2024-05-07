@@ -49,14 +49,14 @@ export interface TransfersQueryParams {
   search?: string;
 }
 // { page, pageSize }
-async function fetchTransferList(params: TransfersQueryParams): Promise<CollectionTransfersData> {
-  console.log('fetchTransferList', params);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return {
-    total: 100,
-    transfers: transferList.slice(params.skipCount, params.maxResultCount),
-  };
-}
+// async function fetchTransferList(params: TransfersQueryParams): Promise<CollectionTransfersData> {
+//   console.log('fetchTransferList', params);
+//   await new Promise((resolve) => setTimeout(resolve, 1000));
+//   return {
+//     total: 100,
+//     transfers: transferList.slice(params.skipCount, params.maxResultCount),
+//   };
+// }
 
 const holderList: HolderItem[] = Array.from(new Array(100).keys()).map((item, i) => {
   const mockAddress: Address = {
@@ -142,7 +142,7 @@ export {
   // overview,
   holderList,
   inventoryItemList,
-  fetchTransferList,
+  // fetchTransferList,
   fetchHolderData,
   // fetchOverviewData,
   fetchInventoryList,

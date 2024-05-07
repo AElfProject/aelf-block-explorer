@@ -18,5 +18,5 @@ export default function Copy({ value, className }: { value: string; className?: 
       message.error('Copy failed, please copy by yourself.');
     }
   };
-  return <IconFont className={clsx(className, 'copy-btn ml-1 size-3 text-sm')} type="Copy" onClick={handleCopy} />;
+  return <IconFont className={clsx(className, 'copy-btn ml-1 text-sm')} type="Copy" onClick={handleCopy} />;
 }

@@ -48,7 +48,7 @@ export interface CollectionTransfer {
 }
 export interface CollectionTransfersData {
   total: number;
-  transfers: CollectionTransfer[];
+  list: CollectionTransfer[];
 }
 export interface CollectionTransfersApiResponse {
   code: string;

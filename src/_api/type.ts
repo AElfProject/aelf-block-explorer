@@ -238,6 +238,6 @@ export interface ICollectionTransfersRequestParams extends RequestInit {
   maxResultCount: number;
   collectionSymbol: string;
   search: string;
-  orderBy: string;
-  sort: string;
+  orderBy?: string;
+  sort?: string;
 }
