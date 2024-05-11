@@ -7,7 +7,7 @@ import useMobile from "../../../hooks/useMobile";
 import TableLayer from "../../../components/TableLayer/TableLayer";
 import { get } from "../../../utils";
 import { VIEWER_ACCOUNT_LIST } from "../../../api/url";
-import { numberFormatter, symbolListToTokenName } from "../../../utils/formater";
+import { numberFormatter, symbolListToTokenName, symbolToTokenName } from "../../../utils/formater";
 import addressFormat, { hiddenAddress } from "../../../utils/addressFormat";
 import CopyButton from "../../../components/CopyButton/CopyButton";
 
@@ -15,6 +15,7 @@ export default function Holders() {
   const isMobile = useMobile();
   const nav = useNavigate();
   const { symbol } = useParams();
+  const tokenName = symbolToTokenName(symbol);
   const [dataLoading, setDataLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -62,7 +63,7 @@ export default function Holders() {
         width: isMobile ? 156 : 280,
         dataIndex: "balance",
         render(balance) {
-          return `${numberFormatter(balance)} ${symbol}`;
+          return `${numberFormatter(balance)} ${tokenName || symbol}`;
         },
       },
       {

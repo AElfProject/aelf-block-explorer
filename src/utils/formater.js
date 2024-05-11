@@ -84,11 +84,11 @@ const symbolToTokenName = (str, symbols = ["SGR-1"]) => {
   }
 };
 
-const symbolListToTokenName = (list,symbols = ['SGR-1'],key = 'symbol') => {
+const symbolListToTokenName = (list, symbols = ['SGR-1'], key = 'symbol') => {
   if (!list) return;
   list.forEach(item => {
     if (!item) return;
-    item[key] = symbolToTokenName(item[key]);
+    item.tokenName = symbolToTokenName(item[key]);
   });
 }
 
