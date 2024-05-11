@@ -9,6 +9,7 @@ import { get } from "../../utils";
 import { VIEWER_GET_ALL_TOKENS } from "../../api/url";
 
 import "./Tokens.styles.less";
+import { symbolListToTokenName } from '../../utils/formater';
 
 export default function Tokens() {
   const isMobile = useMobile();
@@ -38,6 +39,8 @@ export default function Tokens() {
     if (result.code === 0) {
       const { data } = result;
       setActualTotal(data.total);
+      // SGR-1 -> SGR
+      symbolListToTokenName(data.list);
       setDataSource(data.list);
       setDataLoading(false);
     }

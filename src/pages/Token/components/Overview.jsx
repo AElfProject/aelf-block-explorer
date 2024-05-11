@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import AddressLink from "../../../components/AddressLink";
 import CopyButton from "../../../components/CopyButton/CopyButton";
 import addressFormat from "../../../utils/addressFormat";
-import { numberFormatter } from "../../../utils/formater";
+import { numberFormatter, symbolToTokenName } from "../../../utils/formater";
 
 export default function Overview({ tokenInfo = {}, price = 0 }) {
   const { symbol } = useParams();
@@ -21,11 +21,11 @@ export default function Overview({ tokenInfo = {}, price = 0 }) {
       { title: "Price", value: `$${numberFormatter(price)}` },
       {
         title: "Total Supply",
-        value: `${numberFormatter(totalSupply)} ${symbol}`,
+        value: `${numberFormatter(totalSupply)} ${symbolToTokenName(symbol)}`,
       },
       {
         title: "Circulating Supply",
-        value: `${numberFormatter(supply)} ${symbol}`,
+        value: `${numberFormatter(supply)} ${symbolToTokenName(symbol)}`,
       },
       {
         title: "Holders",

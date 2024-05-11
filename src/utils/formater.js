@@ -75,6 +75,23 @@ const base64ToByteArray = (base64String) => {
   return byteArray;
 };
 
+const symbolToTokenName = (str, symbols = ["SGR-1"]) => {
+  // e.g. SGR-1 -> SGR
+  if (symbols.includes(str)) {
+    return str.split("-")[0];
+  } else {
+    return str;
+  }
+};
+
+const symbolListToTokenName = (list,symbols = ['SGR-1'],key = 'symbol') => {
+  if (!list) return;
+  list.forEach(item => {
+    if (!item) return;
+    item[key] = symbolToTokenName(item[key]);
+  });
+}
+
 export {
   hexStringToByteArray,
   thousandsComma,
@@ -85,4 +102,6 @@ export {
   centerEllipsis,
   byteArrayToHexString,
   base64ToByteArray,
+  symbolToTokenName,
+  symbolListToTokenName,
 };
