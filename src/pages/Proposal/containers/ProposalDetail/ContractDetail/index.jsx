@@ -30,13 +30,6 @@ function getContractName(address) {
   );
 }
 
-const decodeParams = (contract, contractMethod, contractParams) => {
-  const decoded = contract[contractMethod].unpackPackedInput(
-    base64ToHex(contractParams)
-  );
-  return JSON.stringify(decoded,null,2);
-}
-
 const ContractDetail = (props) => {
   const {
     aelf,
