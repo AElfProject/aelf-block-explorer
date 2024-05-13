@@ -7,7 +7,7 @@ import useMobile from "../../../hooks/useMobile";
 import TableLayer from "../../../components/TableLayer/TableLayer";
 import { get } from "../../../utils";
 import { VIEWER_ACCOUNT_LIST } from "../../../api/url";
-import { numberFormatter, symbolListToTokenName, symbolToTokenName } from "../../../utils/formater";
+import { numberFormatter, symbolListToSymbolAliasName, symbolToSymbolAlias } from "../../../utils/formater";
 import addressFormat, { hiddenAddress } from "../../../utils/addressFormat";
 import CopyButton from "../../../components/CopyButton/CopyButton";
 
@@ -15,7 +15,7 @@ export default function Holders() {
   const isMobile = useMobile();
   const nav = useNavigate();
   const { symbol } = useParams();
-  const tokenName = symbolToTokenName(symbol);
+  const alias = symbolToSymbolAlias(symbol);
   const [dataLoading, setDataLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -63,7 +63,7 @@ export default function Holders() {
         width: isMobile ? 156 : 280,
         dataIndex: "balance",
         render(balance) {
-          return `${numberFormatter(balance)} ${tokenName || symbol}`;
+          return `${numberFormatter(balance)} ${alias || symbol}`;
         },
       },
       {
@@ -91,7 +91,7 @@ export default function Holders() {
     });
     setDataLoading(false);
     if (result.code === 0) {
-      symbolListToTokenName(result.data.list);
+      symbolListToSymbolAliasName(result.data.list);
       setDataSource(result.data.list);
       setActualTotal(result.data.total);
     } else {

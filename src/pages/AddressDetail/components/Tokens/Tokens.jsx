@@ -5,7 +5,7 @@ import useMobile from "../../../../hooks/useMobile";
 import getColumn from "./columnConfig";
 
 import "./Tokens.styles.less";
-import { symbolListToTokenName } from '../../../../utils/formater';
+import { symbolListToSymbolAliasName } from '../../../../utils/formater';
 
 export default function Tokens({ balances, prices, dataLoading, pagination }) {
   const isMobile = useMobile();
@@ -20,7 +20,7 @@ export default function Tokens({ balances, prices, dataLoading, pagination }) {
       return other;
     }
     const list = [elf,...other];
-    symbolListToTokenName(list)
+    symbolListToSymbolAliasName(list)
     return list;
   }, [balances]);
 

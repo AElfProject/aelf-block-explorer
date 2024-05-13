@@ -240,7 +240,7 @@ const getColumnConfig = ({
         return (
           <div className="token">
             {withLogo ? logoFragment : ""}
-            {record.tokenName || symbol}
+            {record.alias || symbol}
           </div>
         );
       },

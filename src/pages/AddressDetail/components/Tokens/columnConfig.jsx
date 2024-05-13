@@ -9,7 +9,7 @@ export default ({ prices, isMobile }) => {
       dataIndex: "symbol",
       width: isMobile ? 94 : 376,
       render(symbol, record) {
-        return symbol ? <Link to={`/token/${symbol}`}>{record.tokenName || symbol}</Link> : "-";
+        return symbol ? <Link to={`/token/${symbol}`}>{record.alias || symbol}</Link> : "-";
       },
     },
     {

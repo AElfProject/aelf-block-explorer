@@ -7,7 +7,7 @@ import { get } from "../../../../utils";
 import getColumnConfig from "../Transfers/columnConfig";
 
 import "./Transfers.styles.less";
-import { symbolListToTokenName } from '../../../../utils/formater';
+import { symbolListToSymbolAliasName } from '../../../../utils/formater';
 
 export default function NFTTransfers({ address }) {
   const isMobile = useMobile();
@@ -50,7 +50,7 @@ export default function NFTTransfers({ address }) {
     if (result.code === 0) {
       const { data } = result;
       setTotal(data.total);
-      symbolListToTokenName(data.list);
+      symbolListToSymbolAliasName(data.list);
       setDataSource(data.list);
     }
     setDataLoading(false);
