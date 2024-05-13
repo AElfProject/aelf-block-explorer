@@ -7,7 +7,7 @@ import useMobile from "../../../hooks/useMobile";
 import TableLayer from "../../../components/TableLayer/TableLayer";
 import { get } from "../../../utils";
 import { VIEWER_ACCOUNT_LIST } from "../../../api/url";
-import { numberFormatter, symbolListToSymbolAliasName, symbolToSymbolAlias } from "../../../utils/formater";
+import { numberFormatter, symbolListToSymbolAlias, symbolToSymbolAlias } from "../../../utils/formater";
 import addressFormat, { hiddenAddress } from "../../../utils/addressFormat";
 import CopyButton from "../../../components/CopyButton/CopyButton";
 
@@ -91,7 +91,7 @@ export default function Holders() {
     });
     setDataLoading(false);
     if (result.code === 0) {
-      symbolListToSymbolAliasName(result.data.list);
+      symbolListToSymbolAlias(result.data.list);
       setDataSource(result.data.list);
       setActualTotal(result.data.total);
     } else {

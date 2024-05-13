@@ -84,7 +84,7 @@ const symbolToSymbolAlias = (str, symbols = ["SGR-1"]) => {
   }
 };
 
-const symbolListToSymbolAliasName = (list, symbols = ['SGR-1'], key = 'symbol') => {
+const symbolListToSymbolAlias = (list, symbols = ['SGR-1'], key = 'symbol') => {
   if (!list) return;
   list.forEach(item => {
     if (!item) return;
@@ -103,5 +103,5 @@ export {
   byteArrayToHexString,
   base64ToByteArray,
   symbolToSymbolAlias,
-  symbolListToSymbolAliasName,
+  symbolListToSymbolAlias,
 };
