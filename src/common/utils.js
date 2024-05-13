@@ -230,14 +230,12 @@ export async function getTokenAllInfo(symbol) {
   }
 }
 
-export async function getTokenList(search = "") {
+export async function getTokenList(params) {
   let tokens;
   try {
     const { list = [] } = await request(
       config.API_PATH.GET_TOKEN_LIST,
-      {
-        search,
-      },
+      params,
       {
         method: "GET",
       }

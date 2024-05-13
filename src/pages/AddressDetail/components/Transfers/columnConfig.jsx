@@ -224,7 +224,7 @@ const getColumnConfig = ({
       title: "Token",
       dataIndex: "symbol",
       width: isMobile ? 96 : 80,
-      render(symbol) {
+      render(symbol, record) {
         const defaultIcon = (
           <span className="default-icon">
             {symbol.slice(0, 1).toUpperCase()}
@@ -240,7 +240,7 @@ const getColumnConfig = ({
         return (
           <div className="token">
             {withLogo ? logoFragment : ""}
-            {symbol}
+            {record.symbolAlias || symbol}
           </div>
         );
       },
