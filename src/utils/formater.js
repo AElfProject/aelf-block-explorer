@@ -88,7 +88,7 @@ const symbolListToSymbolAlias = (list, symbols = ['SGR-1'], key = 'symbol') => {
   if (!list) return;
   list.forEach(item => {
     if (!item) return;
-    item.alias = symbolToSymbolAlias(item[key]);
+    item.symbolAlias = symbolToSymbolAlias(item[key]);
   });
 }
 

@@ -15,7 +15,7 @@ export default function Holders() {
   const isMobile = useMobile();
   const nav = useNavigate();
   const { symbol } = useParams();
-  const alias = symbolToSymbolAlias(symbol);
+  const symbolAlias = symbolToSymbolAlias(symbol);
   const [dataLoading, setDataLoading] = useState(true);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -63,7 +63,7 @@ export default function Holders() {
         width: isMobile ? 156 : 280,
         dataIndex: "balance",
         render(balance) {
-          return `${numberFormatter(balance)} ${alias || symbol}`;
+          return `${numberFormatter(balance)} ${symbolAlias || symbol}`;
         },
       },
       {

@@ -17,7 +17,7 @@ const getColumnConfig = (isMobile, preTotal) => {
       dataIndex: "symbol",
       width: isMobile ? 96 : 180,
       render(symbol, record) {
-        return <Link to={`/token/${symbol}`}>{record.alias || symbol}</Link>;
+        return <Link to={`/token/${symbol}`}>{record.symbolAlias || symbol}</Link>;
       },
     },
     {
@@ -26,7 +26,7 @@ const getColumnConfig = (isMobile, preTotal) => {
       width: isMobile ? 156 : 230,
       render(totalSupply, record) {
         return `${numberFormatter(totalSupply)} ${
-          record.alias || record.symbol
+          record.symbolAlias || record.symbol
         }`;
       },
     },
@@ -36,7 +36,7 @@ const getColumnConfig = (isMobile, preTotal) => {
       width: isMobile ? 156 : 260,
       render(supply, record) {
         return `${numberFormatter(supply)} ${
-          record.alias || record.symbol
+          record.symbolAlias || record.symbol
         }`;
       },
     },

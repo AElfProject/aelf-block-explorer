@@ -22,7 +22,7 @@ const keyFromHash = {
 export default function Token() {
   const isMobile = useMobile();
   const { symbol } = useParams();
-  const alias = symbolToSymbolAlias(symbol);
+  const symbolAlias = symbolToSymbolAlias(symbol);
   const nav = useNavigate();
   const [tokenInfo, setTokenInfo] = useState(undefined);
   const [price, setPrice] = useState(0);
@@ -80,7 +80,7 @@ export default function Token() {
       )}
     >
       <h2>
-        Token<span>{alias || symbol}</span>
+        Token<span>{symbolAlias || symbol}</span>
       </h2>
       <Overview tokenInfo={tokenInfo} price={price} />
       <section className="more-info">
