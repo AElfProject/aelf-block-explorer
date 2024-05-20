@@ -62,6 +62,12 @@ const ProposalList = () => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(params.search);
   const [activeKey, setActiveKey] = useState();
+  const [loading, setLoading] = useState({
+    Release: {},
+    Approve: {},
+    Reject: {},
+    Abstain: {},
+  });
 
   const { wallet: webLoginWallet, callContract } = useWebLogin();
 
@@ -154,6 +160,13 @@ const ProposalList = () => {
   });
 
   const send = async (id, action) => {
+    setLoading({
+      ...loading,
+      [action]: {
+        ...loading[action],
+        [id]: true,
+      }
+    });
     if (params.proposalType === proposalTypes.REFERENDUM) {
       const [proposal] = list.filter((item) => item.proposalId === id);
       setProposalInfo({
@@ -169,20 +182,20 @@ const ProposalList = () => {
         return;
       }
 
-      sendTransactionWith(
+      await sendTransactionWith(
         callContract,
         getContractAddress(params.proposalType),
         action,
         id
       );
-
-      // await sendTransaction(
-      //   wallet,
-      //   getContractAddress(params.proposalType),
-      //   action,
-      //   id
-      // );
     }
+    setLoading({
+      ...loading,
+      [action]: {
+        ...loading[action],
+        [id]: false,
+      }
+    });
   };
 
   async function handleConfirm(action) {
@@ -210,12 +223,26 @@ const ProposalList = () => {
       return;
     }
     const id = event.currentTarget.getAttribute("proposal-id");
+    setLoading({
+      ...loading,
+      Release: {
+        ...loading[action],
+        [id]: true,
+      },
+    });
     await sendTransactionWith(
       callContract,
       getContractAddress(params.proposalType),
       "Release",
       id
     );
+    setLoading({
+      ...loading,
+      Release: {
+        ...loading[action],
+        [id]: false,
+      },
+    });
   };
   const handleApprove = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
@@ -305,6 +332,7 @@ const ProposalList = () => {
                       {...item}
                       logStatus={logStatus}
                       currentAccount={currentWallet.address}
+                      loading={loading}
                       handleRelease={handleRelease}
                       handleAbstain={handleAbstain}
                       handleApprove={handleApprove}
