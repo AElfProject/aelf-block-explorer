@@ -26,6 +26,7 @@ import { useWebLogin } from "aelf-web-login";
 import { showAccountInfoSyncingModal } from "../../../../components/SimpleModal/index.tsx";
 import Total from "../../../../components/Total";
 import constants, {
+  API_PATH,
   LOADING_STATUS,
   LOG_STATUS,
 } from "../../../../redux/common/constants";
@@ -39,6 +40,8 @@ import {
 } from "../../../../redux/common/utils";
 import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";
+import { request } from "../../../../common/request";
+import { GET_PROPOSALS_LIST } from "@redux/actions/proposalList";
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -165,7 +168,7 @@ const ProposalList = () => {
       [action]: {
         ...loading[action],
         [id]: true,
-      }
+      },
     });
     if (params.proposalType === proposalTypes.REFERENDUM) {
       const [proposal] = list.filter((item) => item.proposalId === id);
@@ -194,7 +197,7 @@ const ProposalList = () => {
       [action]: {
         ...loading[action],
         [id]: false,
-      }
+      },
     });
   };
 
@@ -216,45 +219,82 @@ const ProposalList = () => {
       visible: false,
     });
   }
-
+  const updateVotedStatus = async (proposalId) => {
+    const data = await request(
+      API_PATH.GET_PROPOSAL_INFO,
+      {
+        address: currentWallet.address,
+        proposalId,
+      },
+      { method: "GET" }
+    );
+    const votedStatus = data?.proposal?.votedStatus;
+    dispatch({
+      type: GET_PROPOSALS_LIST.GET_PROPOSALS_LIST_SUCCESS,
+      payload: {
+        ...proposalList,
+        list: list.map((ele) => {
+          if (ele.proposalId === proposalId) {
+            ele.votedStatus = votedStatus;
+          }
+          return ele;
+        }),
+      },
+    });
+    return votedStatus;
+  };
   const handleRelease = async (event) => {
     if (!webLoginWallet.accountInfoSync.syncCompleted) {
       showAccountInfoSyncingModal();
       return;
     }
     const id = event.currentTarget.getAttribute("proposal-id");
-    setLoading({
-      ...loading,
-      Release: {
-        ...loading[action],
-        [id]: true,
-      },
-    });
-    await sendTransactionWith(
-      callContract,
-      getContractAddress(params.proposalType),
-      "Release",
-      id
-    );
-    setLoading({
-      ...loading,
-      Release: {
-        ...loading[action],
-        [id]: false,
-      },
-    });
+    const votedStatus = await updateVotedStatus(id);
+    if (votedStatus === "none") {
+      setLoading({
+        ...loading,
+        Release: {
+          ...loading[action],
+          [id]: true,
+        },
+      });
+      await sendTransactionWith(
+        callContract,
+        getContractAddress(params.proposalType),
+        "Release",
+        id
+      );
+      setLoading({
+        ...loading,
+        Release: {
+          ...loading[action],
+          [id]: false,
+        },
+      });
+    }
   };
+
   const handleApprove = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
-    await send(id, "Approve");
+    // update votedStatus
+    const votedStatus = await updateVotedStatus(id);
+    if (votedStatus === "none") {
+      await send(id, "Approve");
+    }
   };
   const handleReject = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
-    await send(id, "Reject");
+    const votedStatus = await updateVotedStatus(id);
+    if (votedStatus === "none") {
+      await send(id, "Reject");
+    }
   };
   const handleAbstain = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
-    await send(id, "Abstain");
+    const votedStatus = await updateVotedStatus(id);
+    if (votedStatus === "none") {
+      await send(id, "Abstain");
+    }
   };
 
   return (

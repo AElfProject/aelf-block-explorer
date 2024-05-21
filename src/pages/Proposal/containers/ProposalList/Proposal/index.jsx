@@ -150,7 +150,7 @@ const Proposal = (props) => {
                 type="link"
                 size="small"
                 onClick={handleRelease}
-                loading={loading.Release[proposalId]}
+                loading={loading.Release[proposalId] && canThisUserVote}
               >
                 Release&gt;
               </Button>
@@ -195,7 +195,7 @@ const Proposal = (props) => {
               shape="round"
               proposal-id={proposalId}
               onClick={handleApprove}
-              loading={loading.Approve[proposalId]}
+              loading={loading.Approve[proposalId] && canThisUserVote}
             >
               Approve
             </ButtonWithLoginCheck>
@@ -205,7 +205,7 @@ const Proposal = (props) => {
               disabled={!canThisUserVote}
               proposal-id={proposalId}
               onClick={handleReject}
-              loading={loading.Reject[proposalId]}
+              loading={loading.Reject[proposalId] && canThisUserVote}
             >
               &nbsp;Reject&nbsp;
             </ButtonWithLoginCheck>
@@ -216,7 +216,7 @@ const Proposal = (props) => {
             disabled={!canThisUserVote}
             onClick={handleAbstain}
             proposal-id={proposalId}
-            loading={loading.Abstain[proposalId]}
+            loading={loading.Abstain[proposalId] && canThisUserVote}
           >
             Abstain
           </ButtonWithLoginCheck>

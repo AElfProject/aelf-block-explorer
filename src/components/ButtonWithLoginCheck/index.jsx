@@ -1,7 +1,6 @@
 import React from "react";
 import { WebLoginState, useWebLogin } from "aelf-web-login";
 import { Button } from "antd";
-import debounce from "lodash.debounce";
 import { showAccountInfoSyncingModal } from "../SimpleModal/index.tsx";
 
 export default function ButtonWithLoginCheck({
@@ -26,7 +25,7 @@ export default function ButtonWithLoginCheck({
           return;
         }
       }
-      debounce(onClick?.(event), 300);
+      onClick?.(event);
     }
   };
 
