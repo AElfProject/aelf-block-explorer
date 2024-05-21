@@ -42,6 +42,7 @@ import { removePrefixOrSuffix, sendHeight } from "../../../../common/utils";
 import removeHash from "../../../../utils/removeHash";
 import { request } from "../../../../common/request";
 import { GET_PROPOSALS_LIST } from "@redux/actions/proposalList";
+import { debounce } from "lodash";
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -249,52 +250,60 @@ const ProposalList = () => {
       return;
     }
     const id = event.currentTarget.getAttribute("proposal-id");
-    const votedStatus = await updateVotedStatus(id);
-    if (votedStatus === "none") {
-      setLoading({
-        ...loading,
-        Release: {
-          ...loading[action],
-          [id]: true,
-        },
-      });
-      await sendTransactionWith(
-        callContract,
-        getContractAddress(params.proposalType),
-        "Release",
-        id
-      );
-      setLoading({
-        ...loading,
-        Release: {
-          ...loading[action],
-          [id]: false,
-        },
-      });
-    }
+    debounce(async () => {
+      const votedStatus = await updateVotedStatus(id);
+      if (votedStatus === "none") {
+        setLoading({
+          ...loading,
+          Release: {
+            ...loading[action],
+            [id]: true,
+          },
+        });
+        await sendTransactionWith(
+          callContract,
+          getContractAddress(params.proposalType),
+          "Release",
+          id
+        );
+        setLoading({
+          ...loading,
+          Release: {
+            ...loading[action],
+            [id]: false,
+          },
+        });
+      }
+    }, 200)();
   };
 
   const handleApprove = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
     // update votedStatus
-    const votedStatus = await updateVotedStatus(id);
-    if (votedStatus === "none") {
-      await send(id, "Approve");
-    }
+    debounce(async () => {
+      const votedStatus = await updateVotedStatus(id);
+      if (votedStatus === "none") {
+        await send(id, "Approve");
+      }
+    }, 200)();
   };
   const handleReject = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
-    const votedStatus = await updateVotedStatus(id);
-    if (votedStatus === "none") {
-      await send(id, "Reject");
-    }
+    debounce(async () => {
+      const votedStatus = await updateVotedStatus(id);
+      if (votedStatus === "none") {
+        await send(id, "Reject");
+      }
+    }, 200)();
   };
   const handleAbstain = async (event) => {
     const id = event.currentTarget.getAttribute("proposal-id");
-    const votedStatus = await updateVotedStatus(id);
-    if (votedStatus === "none") {
-      await send(id, "Abstain");
-    }
+    debounce(async () => {
+      const votedStatus = await updateVotedStatus(id);
+      if (votedStatus === "none") {
+        await send(id, "Abstain");
+      }
+    }, 200)();
   };
 
   return (
