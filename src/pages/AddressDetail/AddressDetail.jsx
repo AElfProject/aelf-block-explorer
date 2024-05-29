@@ -50,12 +50,14 @@ export default function AddressDetail() {
   const [tokensLoading, setTokensLoading] = useState(true);
   const [contractInfo, setContractInfo] = useState(undefined);
   const [contractHistory, setContractHistory] = useState(undefined);
-
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const [total, setTotal] = useState(0);
   const address = formatAddress(prefixAddress);
   const isCA = useMemo(() => !!contracts[address], [contracts, address]);
 
   const elfBalance = useMemo(
-    () => balances.find((item) => item.symbol === "ELF")?.balance,
+    () => balances?.find((item) => item.symbol === "ELF")?.balance,
     [balances]
   );
 
@@ -63,24 +65,45 @@ export default function AddressDetail() {
     return isCA ? "Contract" : "Address";
   }, [isCA]);
 
+  const handlePageChange = useCallback(
+    (page, size) => {
+      setPageNum(size === pageSize ? page : 1);
+      setPageSize(size);
+    },
+    [pageSize]
+  );
+
   const fetchBalances = useCallback(async () => {
     setTokensLoading(true);
-    const result = await get(VIEWER_BALANCES, { address });
+    const result = await get(VIEWER_BALANCES, {
+      address,
+    });
     if (result?.code === 0) {
       const { data } = result;
       setBalances(data);
+      setTotal(data.length);
     } else {
       nav("/search-failed");
     }
   }, [address]);
 
+  const tokenList = useMemo(() => {
+    const prev = (pageNum - 1) * pageSize;
+    const start = prev > 0 ? prev : 0;
+    return balances.slice(start, pageNum * pageSize);
+  }, [balances, pageNum, pageSize]);
+
   const fetchPrice = useCallback(async () => {
-    if (balances.length) {
+    if (balances?.length) {
       setPrices({});
       await Promise.allSettled(
-        balances.map((item) =>
-          get(TOKEN_PRICE, { fsym: item.symbol, tsyms: "USD" })
-        )
+        balances?.map((item) => {
+          const isFT = /^[a-z0-9]+$/i.test(item.symbol);
+          if (!isFT) {
+            return {};
+          }
+          return get(TOKEN_PRICE, { fsym: item.symbol, tsyms: "USD" });
+        })
       ).then((res) => {
         setTokensLoading(false);
         res.forEach(({ value: item }) => {
@@ -195,13 +218,22 @@ export default function AddressDetail() {
       <Overview prices={prices} elfBalance={elfBalance} />
       <section className="more-info">
         <Tabs activeKey={activeKey} onTabClick={(key) => changeTab(key)}>
-          {CommonTabPane({ balances, prices, tokensLoading, address }).map(
-            ({ children, ...props }) => (
-              <Tabs.TabPane key={props.key} tab={props.tab}>
-                {children}
-              </Tabs.TabPane>
-            )
-          )}
+          {CommonTabPane({
+            balances: tokenList,
+            prices,
+            tokensLoading,
+            address,
+            tokenPagination: {
+              pageNum,
+              pageSize,
+              total,
+              handlePageChange,
+            },
+          }).map(({ children, ...props }) => (
+            <Tabs.TabPane key={props.key} tab={props.tab}>
+              {children}
+            </Tabs.TabPane>
+          ))}
           {isCA &&
             ContractTabPane({
               contractInfo,

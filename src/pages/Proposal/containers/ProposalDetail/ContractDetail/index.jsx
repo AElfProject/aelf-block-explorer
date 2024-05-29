@@ -61,7 +61,14 @@ const ContractDetail = (props) => {
       try {
         setParams(JSON.stringify(JSON.parse(contractParams), null, 2));
       } catch (e) {
-        setParams(contractParams);
+        getContract(aelf, contractAddress).then((contract) => {
+          const decoded = contract[contractMethod].unpackPackedInput(
+            base64ToHex(contractParams)
+          );
+          setParams(JSON.stringify(decoded, null, 2));
+        }).catch(e => {
+          setParams(contractParams);
+        })
       }
     } else if (contractParams) {
       getContract(aelf, contractAddress)

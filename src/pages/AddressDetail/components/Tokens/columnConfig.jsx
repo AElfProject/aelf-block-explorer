@@ -8,8 +8,8 @@ export default ({ prices, isMobile }) => {
       title: "Token Name",
       dataIndex: "symbol",
       width: isMobile ? 94 : 376,
-      render(symbol) {
-        return symbol ? <Link to={`/token/${symbol}`}>{symbol}</Link> : "-";
+      render(symbol, record) {
+        return symbol ? <Link to={`/token/${symbol}`}>{record.symbolAlias || symbol}</Link> : "-";
       },
     },
     {

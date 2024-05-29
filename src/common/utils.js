@@ -16,6 +16,7 @@ const { ellipticEc } = AElf.wallet;
 
 const { proposalStatus } = constants;
 const bpRecord = [
+  [1708497260000, 21], // 2024.02.21 19 -> 21BPs
   [1675926610000, 19], // 2023.02.09 17 -> 19BPs
   [1642057800000, 17], // 2022.01.13 15 -> 17BPs
   [1641453000000, 15], // 2022.01.06 13 -> 15BP
@@ -229,14 +230,12 @@ export async function getTokenAllInfo(symbol) {
   }
 }
 
-export async function getTokenList(search = "") {
+export async function getTokenList(params) {
   let tokens;
   try {
     const { list = [] } = await request(
       config.API_PATH.GET_TOKEN_LIST,
-      {
-        search,
-      },
+      params,
       {
         method: "GET",
       }

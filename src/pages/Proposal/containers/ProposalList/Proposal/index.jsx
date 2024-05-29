@@ -25,8 +25,8 @@ import "./index.less";
 import VoteChart from "../../../components/VoteChart";
 import { PRIMARY_COLOR } from "../../../../../common/constants";
 import addressFormat from "../../../../../utils/addressFormat";
-import { NETWORK_TYPE } from '../../../../../../config/config';
-import { getBPCount } from '../../../../../common/utils';
+import { NETWORK_TYPE } from "../../../../../../config/config";
+import { getBPCount } from "../../../../../common/utils";
 import ButtonWithLoginCheck from "../../../../../components/ButtonWithLoginCheck";
 
 const { proposalTypes, proposalStatus, proposalActions } = constants;
@@ -86,6 +86,7 @@ const Proposal = (props) => {
     proposer,
     organizationInfo,
     status,
+    loading,
     approvals,
     rejections,
     abstentions,
@@ -100,7 +101,10 @@ const Proposal = (props) => {
     handleAbstain,
   } = props;
 
-  const bpCountNumber = NETWORK_TYPE === 'MAIN' ? getBPCount(status,expiredTime,releasedTime) : bpCount;
+  const bpCountNumber =
+    NETWORK_TYPE === "MAIN"
+      ? getBPCount(status, expiredTime, releasedTime)
+      : bpCount;
   const canThisUserVote =
     (status === proposalStatus.PENDING || status === proposalStatus.APPROVED) &&
     votedStatus === "none" &&
@@ -146,6 +150,7 @@ const Proposal = (props) => {
                 type="link"
                 size="small"
                 onClick={handleRelease}
+                loading={loading.Release[proposalId] && canThisUserVote}
               >
                 Release&gt;
               </Button>
@@ -190,6 +195,7 @@ const Proposal = (props) => {
               shape="round"
               proposal-id={proposalId}
               onClick={handleApprove}
+              loading={loading.Approve[proposalId] && canThisUserVote}
             >
               Approve
             </ButtonWithLoginCheck>
@@ -199,6 +205,7 @@ const Proposal = (props) => {
               disabled={!canThisUserVote}
               proposal-id={proposalId}
               onClick={handleReject}
+              loading={loading.Reject[proposalId] && canThisUserVote}
             >
               &nbsp;Reject&nbsp;
             </ButtonWithLoginCheck>
@@ -209,6 +216,7 @@ const Proposal = (props) => {
             disabled={!canThisUserVote}
             onClick={handleAbstain}
             proposal-id={proposalId}
+            loading={loading.Abstain[proposalId] && canThisUserVote}
           >
             Abstain
           </ButtonWithLoginCheck>

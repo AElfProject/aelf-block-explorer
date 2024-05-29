@@ -6,6 +6,7 @@ import useMobile from "../../../../hooks/useMobile";
 import { get } from "../../../../utils";
 
 import "./Transactions.styles.less";
+let _total = 0;
 
 export default function Transactions({ address }) {
   const isMobile = useMobile();
@@ -32,8 +33,15 @@ export default function Transactions({ address }) {
       address,
       order: "DESC",
     });
-    const { transactions = [], total: resTotal = 0 } = result;
-    setTotal(resTotal);
+    const { transactions = [] } = result;
+    const length = transactions.length;
+    if (length < pageSize) {
+      // the last page
+      _total = pageIndex * pageSize;
+    } else {
+      _total = Math.max(_total, pageIndex * pageSize + 1);
+    }
+    setTotal(_total);
     setDataSource(transactions);
     setDataLoading(false);
   }, [address, pageSize, pageIndex]);
@@ -56,6 +64,7 @@ export default function Transactions({ address }) {
           onChange={handlePageChange}
           onShowSizeChange={(current, size) => handlePageChange(1, size)}
         />
+        <span className="page-index">page {pageIndex}</span>
       </div>
     </div>
   );

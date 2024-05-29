@@ -13,6 +13,7 @@ import Holders from "./components/Holders";
 import Contract from "./components/Contract";
 import useMobile from "../../hooks/useMobile";
 import removeHash from '../../utils/removeHash'
+import { symbolToSymbolAlias } from '../../utils/formater';
 
 const keyFromHash = {
   "#balances": "holders",
@@ -21,6 +22,7 @@ const keyFromHash = {
 export default function Token() {
   const isMobile = useMobile();
   const { symbol } = useParams();
+  const symbolAlias = symbolToSymbolAlias(symbol);
   const nav = useNavigate();
   const [tokenInfo, setTokenInfo] = useState(undefined);
   const [price, setPrice] = useState(0);
@@ -78,7 +80,7 @@ export default function Token() {
       )}
     >
       <h2>
-        Token<span>{symbol}</span>
+        Token<span>{symbolAlias || symbol}</span>
       </h2>
       <Overview tokenInfo={tokenInfo} price={price} />
       <section className="more-info">

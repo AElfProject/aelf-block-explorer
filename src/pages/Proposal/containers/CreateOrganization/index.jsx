@@ -218,11 +218,13 @@ const FIELDS_MAP = {
     placeholder: "Input the address list of proposers, separated by commas",
     rules: [
       {
-        required: false,
+        required: true,
         type: "string",
-        // message: 'Please input the correct proposers list',
-        validator: validateAddressList,
+        message: "Please input the correct proposers list",
       },
+      ({ getFieldValue }) => ({
+        validator: validateAddressList,
+      }),
     ],
   },
 };
@@ -379,7 +381,7 @@ const CreateOrganization = () => {
 
   // const [whiteList, setWhiteList] = useState([]);
   useEffect(() => {
-    getTokenList().then((tokens) => {
+    getTokenList({ voteValid: true }).then((tokens) => {
       setTokenList(Object.keys(tokens).map((key) => tokens[key]));
     });
     getWhiteList().then((arr) => {
@@ -417,7 +419,7 @@ const CreateOrganization = () => {
 
       if (param.proposalReleaseThreshold) {
         const thredshold = param.proposalReleaseThreshold;
-        param.proposalReleaseThreshold = {}
+        param.proposalReleaseThreshold = {};
         // eslint-disable-next-line no-restricted-syntax, guard-for-in
         for (const key in thredshold) {
           const val = thredshold[key];
@@ -433,9 +435,8 @@ const CreateOrganization = () => {
         showAccountInfoSyncingModal();
         return;
       }
-      
+
       console.log("callContract", param);
-      // debugger;
       const result = await WebLoginInstance.get().callContract({
         contractAddress: getContractAddress(formValue.proposalType),
         methodName: "CreateOrganization",
@@ -544,6 +545,7 @@ const CreateOrganization = () => {
           <FormItem
             label={FIELDS_MAP.proposers.label}
             {...FIELDS_MAP.proposers}
+            required
           >
             <TextArea placeholder={FIELDS_MAP.proposers.placeholder} autoSize />
           </FormItem>
