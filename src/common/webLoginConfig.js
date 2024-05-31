@@ -97,7 +97,7 @@ setGlobalConfig({
       },
       tDVV: {
         chainId: "tDVV",
-        rpcUrl: DEFAUTRPCSERVER,
+        rpcUrl: "https://tdvv-public-node.aelf.io",
       },
     },
   },
