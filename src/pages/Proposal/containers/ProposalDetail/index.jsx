@@ -46,7 +46,10 @@ import OrganizationCard from "./OrganizationCard";
 import ContractDetail from "./ContractDetail";
 import config from "../../../../common/config";
 import "./index.less";
-import { getContractAddress, sendTransactionWith } from "../../../../redux/common/utils";
+import {
+  getContractAddress,
+  sendTransactionWith,
+} from "../../../../redux/common/utils";
 import ApproveTokenModal from "../../components/ApproveTokenModal";
 import {
   getBPCount,
@@ -57,7 +60,7 @@ import {
 import { PRIMARY_COLOR } from "../../../../common/constants";
 import removeHash from "../../../../utils/removeHash";
 import addressFormat from "../../../../utils/addressFormat";
-import { NETWORK_TYPE } from '../../../../../config/config';
+import { NETWORK_TYPE } from "../../../../../config/config";
 
 const { viewer } = config;
 const { Title } = Typography;
@@ -104,7 +107,8 @@ CountDown.defaultProps = {
 };
 
 function Extra(props) {
-  const { status, logStatus, currentWallet, proposer, handleRelease } = props;
+  const { status, logStatus, currentWallet, proposer, handleRelease, loading } =
+    props;
   const canRelease =
     logStatus === LOG_STATUS.LOGGED &&
     currentWallet &&
@@ -116,7 +120,12 @@ function Extra(props) {
       </Tag>
       {status === proposalStatus.APPROVED && canRelease ? (
         // eslint-disable-next-line max-len
-        <Button type="link" size="small" onClick={handleRelease}>
+        <Button
+          type="link"
+          size="small"
+          onClick={handleRelease}
+          loading={loading.Release}
+        >
           Release&gt;
         </Button>
       ) : null}
@@ -142,6 +151,7 @@ const ProposalDetail = () => {
   const common = useSelector((state) => state.common);
   const [visible, setVisible] = useState(false);
   const [activeKey, setActiveKey] = useState("proposal");
+  const [loading, setLoading] = useState({});
   const { logStatus, aelf, wallet, currentWallet, isALLSettle } = common;
   const [info, setInfo] = useState({
     proposal: {},
@@ -207,14 +217,17 @@ const ProposalDetail = () => {
   const { wallet: webLoginWallet, callContract } = useWebLogin();
 
   const bpCountNumber = useMemo(() => {
-    if (NETWORK_TYPE === 'MAIN') {
-      return getBPCount(status, expiredTime, releasedTime)
+    if (NETWORK_TYPE === "MAIN") {
+      return getBPCount(status, expiredTime, releasedTime);
     }
     return info.bpList.length;
-    
   }, [info.bpList, status, expiredTime, releasedTime, NETWORK_TYPE]);
 
   const send = async (action) => {
+    setLoading({
+      ...loading,
+      [action]: true,
+    });
     if (proposalType === proposalTypes.REFERENDUM) {
       setVisible(action);
     } else {
@@ -230,6 +243,10 @@ const ProposalDetail = () => {
         proposalId
       );
     }
+    setLoading({
+      ...loading,
+      [action]: false,
+    });
   };
 
   function goBack() {
@@ -315,6 +332,7 @@ const ProposalDetail = () => {
                 currentWallet={currentWallet}
                 logStatus={logStatus}
                 handleRelease={handleRelease}
+                loading={loading}
               />
             }
           />
@@ -421,6 +439,7 @@ const ProposalDetail = () => {
                   handleReject={handleReject}
                   handleAbstain={handleAbstain}
                   organization={info.organization}
+                  loading={loading}
                 />
                 <OrganizationCard
                   className="gap-top-large"

@@ -251,29 +251,26 @@ const ProposalList = () => {
     }
     const id = event.currentTarget.getAttribute("proposal-id");
     debounce(async () => {
-      const votedStatus = await updateVotedStatus(id);
-      if (votedStatus === "none") {
-        setLoading({
-          ...loading,
-          Release: {
-            ...loading[action],
-            [id]: true,
-          },
-        });
-        await sendTransactionWith(
-          callContract,
-          getContractAddress(params.proposalType),
-          "Release",
-          id
-        );
-        setLoading({
-          ...loading,
-          Release: {
-            ...loading[action],
-            [id]: false,
-          },
-        });
-      }
+      setLoading({
+        ...loading,
+        Release: {
+          ...loading["Release"],
+          [id]: true,
+        },
+      });
+      await sendTransactionWith(
+        callContract,
+        getContractAddress(params.proposalType),
+        "Release",
+        id
+      );
+      setLoading({
+        ...loading,
+        Release: {
+          ...loading["Release"],
+          [id]: false,
+        },
+      });
     }, 200)();
   };
 
