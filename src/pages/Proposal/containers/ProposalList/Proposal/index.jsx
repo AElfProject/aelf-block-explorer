@@ -150,7 +150,7 @@ const Proposal = (props) => {
                 type="link"
                 size="small"
                 onClick={handleRelease}
-                loading={loading.Release[proposalId] && canThisUserVote}
+                loading={loading.Release[proposalId]}
               >
                 Release&gt;
               </Button>

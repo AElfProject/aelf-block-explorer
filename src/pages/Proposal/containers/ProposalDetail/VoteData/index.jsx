@@ -27,6 +27,7 @@ const VoteData = (props) => {
     handleAbstain,
     expiredTime,
     organization,
+    loading,
   } = props;
   const [canThisUserVote, setCanThisVote] = useState(false);
   useEffect(() => {
@@ -39,8 +40,8 @@ const VoteData = (props) => {
     );
   }, [status, votedStatus, expiredTime, canVote]);
   return (
-    <Card title='Voting Data' className='vote-data'>
-      <Row type='flex'>
+    <Card title="Voting Data" className="vote-data">
+      <Row type="flex">
         <Col sm={14} xs={24}>
           <VoteChart
             proposalType={proposalType}
@@ -55,33 +56,36 @@ const VoteData = (props) => {
           sm={8}
           offset={2}
           xs={{ span: 24, offset: 0 }}
-          className='vote-data-button'
+          className="vote-data-button"
         >
           <div>
             <Button
-              type='primary'
+              type="primary"
               disabled={!canThisUserVote}
-              className='approve-color gap-right'
-              shape='round'
+              className="approve-color gap-right"
+              shape="round"
               onClick={handleApprove}
+              loading={loading.Approve}
             >
               Approve
             </Button>
           </div>
           <div>
             <Button
-              className='gap-right-large'
-              type='danger'
-              shape='round'
+              className="gap-right-large"
+              type="danger"
+              shape="round"
               disabled={!canThisUserVote}
               onClick={handleReject}
+              loading={loading.Reject}
             >
               &nbsp;Reject&nbsp;&nbsp;
             </Button>
             <Button
-              type='link'
+              type="link"
               disabled={!canThisUserVote}
               onClick={handleAbstain}
+              loading={loading.Abstain}
             >
               Abstain
             </Button>
