@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useEffectOnce } from "react-use";
 import {
   Tabs,
   Pagination,
@@ -91,23 +92,51 @@ const OrganizationList = () => {
   const handleTabChange = (key) => {
     if (key === proposalTypes.PARLIAMENT) {
       removeHash();
+      fetchList({
+        ...params,
+        pageNum: 1,
+        proposalType: key,
+        search: "",
+      });
       setActiveKey(proposalTypes.PARLIAMENT);
     } else {
       const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
       window.location.hash = Object.keys(keyFromHash)[index];
     }
+  };
+
+  const changeKey = () => {
+    const { hash } = window.location;
+    const key = keyFromHash[hash];
+    setActiveKey(key || proposalTypes.PARLIAMENT);
+    return key || proposalTypes.PARLIAMENT;
+  };
+
+  useEffectOnce(() => {
+    const key = changeKey();
     fetchList({
       ...params,
       pageNum: 1,
       proposalType: key,
       search: "",
     });
-  };
-  window.addEventListener("hashchange", () => {
-    const { hash } = window.location;
-    const key = keyFromHash[hash];
-    setActiveKey(key || proposalTypes.PARLIAMENT);
   });
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const key = changeKey();
+      fetchList({
+        ...params,
+        pageNum: 1,
+        proposalType: key,
+        search: "",
+      });
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+    };
+  }, []);
 
   const editOrganization = (orgAddress) => {
     const org = list.filter((item) => item.orgAddress === orgAddress)[0];
