@@ -52,7 +52,7 @@ const formItemLayout = {
 const switchVotePagination = {
   showQuickJumper: true,
   total: 0,
-  showTotal: (total) => `Total ${total} items`,
+  showTotal: total => `Total ${total} items`,
   pageSize: 3,
 };
 
@@ -109,7 +109,7 @@ function getColumns() {
       dataIndex: "amount",
       key: "voteAmount",
       sorter: (a, b) => a.amount - b.amount,
-      render: (value) => value / ELF_DECIMAL,
+      render: value => value / ELF_DECIMAL,
     },
     {
       title: "Lock Time",
@@ -204,7 +204,7 @@ class VoteModal extends Component {
     };
 
     const switchVoteRecord = switchableVoteRecords.find(
-      (record) => record.key === switchVoteSelectedRowKeys[0]
+      record => record.key === switchVoteSelectedRowKeys[0]
     );
     const switchVoteAmount = switchVoteRecord && switchVoteRecord.amount;
 
@@ -306,7 +306,7 @@ class VoteModal extends Component {
                             )
                           : null
                       }
-                      onChange={(date) => {
+                      onChange={date => {
                         this.setState({
                           datePickerTime: date,
                         });
@@ -328,8 +328,9 @@ class VoteModal extends Component {
                     />
                   ) : (
                     <DatePicker
+                      popupClassName="vote-lock-time-date"
                       disabledDate={disabledDate}
-                      onChange={(value) => {
+                      onChange={value => {
                         this.setState({
                           datePickerTime: new Date(value),
                         });
@@ -445,7 +446,7 @@ class VoteModal extends Component {
     }, 60 * 1000);
 
     this.formRef.current.validateFields(formItemsNeedToValidate).then(
-      (values) => {
+      values => {
         changeVoteState(values, () => {
           // The switch/case is for the future's product require changing.
           switch (voteType) {
@@ -463,13 +464,13 @@ class VoteModal extends Component {
           }
         });
       },
-      (err) => {
+      err => {
         setVoteConfirmLoading(false);
       }
     );
   }
 
-  getColumnSearchProps = (dataIndex) => ({
+  getColumnSearchProps = dataIndex => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -478,12 +479,12 @@ class VoteModal extends Component {
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={(node) => {
+          ref={node => {
             this.searchInput = node;
           }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
+          onChange={e =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
@@ -507,12 +508,12 @@ class VoteModal extends Component {
         </Button>
       </div>
     ),
-    filterIcon: (filtered) => (
+    filterIcon: filtered => (
       <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: (visible) => {
+    onFilterDropdownVisibleChange: visible => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
       }
@@ -615,7 +616,7 @@ class VoteModal extends Component {
                 {...formItemLayout}
                 onSubmit={this.handleSubmit}
               >
-                {form.formItems.map((item) => (
+                {form.formItems.map(item => (
                   // todo: there are repeat code in form
 
                   <Form.Item

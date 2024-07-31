@@ -1,19 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { connect } from 'react-redux';
-import { useLocation } from 'react-router';
-import { NETWORK_TYPE } from '../../../config/config';
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { useLocation } from "react-router";
+import { NETWORK_TYPE } from "../../../config/config";
 
-import './footer.styles.less';
+import "./footer.styles.less";
 
 const BrowserFooter = () => {
-  const { pathname } = useLocation()
-  const [isNoFooter, setIsNoFooter] = useState(false)
-  const NO_FOOTER_LIST = useMemo(() => ['search-invalid', 'search-failed'], [])
+  const { pathname } = useLocation();
+  const [isNoFooter, setIsNoFooter] = useState(false);
+  const NO_FOOTER_LIST = useMemo(() => ["search-invalid", "search-failed"], []);
   useEffect(() => {
-    const firstPathName = pathname.split('/')[1]
-    setIsNoFooter(NO_FOOTER_LIST.includes(firstPathName))
-
-  }, [pathname])
+    const firstPathName = pathname.split("/")[1];
+    setIsNoFooter(NO_FOOTER_LIST.includes(firstPathName));
+  }, [pathname]);
 
   return isNoFooter ? (
     <></>
@@ -40,24 +39,17 @@ const BrowserFooter = () => {
             <div className="list">
               <a
                 target="_blank"
+                href="https://x.com/aelfblockchain"
+                rel="noreferrer"
+              >
+                X
+              </a>
+              <a
+                target="_blank"
                 href="https://t.me/aelfblockchain"
                 rel="noreferrer"
               >
                 Telegram
-              </a>
-              <a
-                target="_blank"
-                href="https://medium.com/aelfblockchain"
-                rel="noreferrer"
-              >
-                Medium
-              </a>
-              <a
-                target="_blank"
-                href="https://twitter.com/aelfblockchain"
-                rel="noreferrer"
-              >
-                Twitter
               </a>
               <a
                 target="_blank"
@@ -78,11 +70,7 @@ const BrowserFooter = () => {
           <div className="link-list technology">
             <p>Technology</p>
             <div className="list">
-              <a
-                target="_blank"
-                href="https://docs.aelf.io/en/latest/introduction/introduction.html"
-                rel="noreferrer"
-              >
+              <a target="_blank" href="https://docs.aelf.com/" rel="noreferrer">
                 Dev Docs
               </a>
               <a
