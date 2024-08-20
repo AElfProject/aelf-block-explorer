@@ -29,6 +29,7 @@ export const BLOCK_INFO_API_URL = "/block/blockInfo";
 const ADDRESS_TXS_API_URL = "/address/transactions";
 const ADDRESS_BALANCE_API_URL = "/api/address/balance";
 const VIEWER_GET_ALL_TOKENS = "/viewer/getAllTokens";
+const VIEWER_GET_ALL_TOKENS_V2 = "/app/token/list";
 const TPS_LIST_API_URL = "/tps/all";
 const ADDRESS_TOKENS_API_URL = "/address/tokens";
 const ELF_REALTIME_PRICE_URL = "/token/price";
@@ -133,7 +134,7 @@ const BLOCKS_LIST_COLUMNS = [
     dataIndex: "block_height",
     key: "block_height",
     width: 150,
-    render: (text) => <Link to={`/block/${text}`}> {text} </Link>,
+    render: text => <Link to={`/block/${text}`}> {text} </Link>,
   },
   {
     title: "Block Hash",
@@ -188,9 +189,7 @@ const BLOCKS_LIST_COLUMNS = [
     title: "Time",
     dataIndex: "time",
     key: "time",
-    render: (time) => (
-      <span> {dayjs(time).format("YYYY/MM/DD HH:mm:ss")} </span>
-    ),
+    render: time => <span> {dayjs(time).format("YYYY/MM/DD HH:mm:ss")} </span>,
     //     return <span> {dayjs().from(dayjs(time), true)} </span>;
   },
 ];
@@ -228,7 +227,7 @@ const ALL_TXS_LIST_COLUMNS = [
     dataIndex: "address_from",
     key: "address_from",
     ellipsis: true,
-    render: (text) => (
+    render: text => (
       <Link to={`/address/${text}`} title={addressFormat(text)}>
         {" "}
         {addressFormat(text)}
@@ -327,7 +326,7 @@ const RESOURCE_DETAILS_COLUMN = [
     key: "tx_id",
     align: "center",
     ellipsis: true,
-    render: (text) => <Link to={`/tx/${text}`}>{text}</Link>,
+    render: text => <Link to={`/tx/${text}`}>{text}</Link>,
   },
   {
     title: "Time",
@@ -335,7 +334,7 @@ const RESOURCE_DETAILS_COLUMN = [
     key: "time",
     align: "center",
     width: 160,
-    render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
+    render: text => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
   },
   {
     title: "Type(Resource)",
@@ -349,7 +348,7 @@ const RESOURCE_DETAILS_COLUMN = [
     key: "method",
     align: "center",
     width: 80,
-    render: (text) => (
+    render: text => (
       <span className={`${(text || "buy").toLocaleLowerCase()}-color`}>
         {text}
       </span>
@@ -427,6 +426,7 @@ export {
   ADDRESS_TXS_API_URL,
   ADDRESS_BALANCE_API_URL,
   VIEWER_GET_ALL_TOKENS,
+  VIEWER_GET_ALL_TOKENS_V2,
   ADDRESS_TOKENS_API_URL,
   TPS_LIST_API_URL,
   ELF_REALTIME_PRICE_URL,
