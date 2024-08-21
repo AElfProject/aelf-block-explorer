@@ -10,6 +10,16 @@
     "secure": false
   },
   {
+    "description": "explorer v2 API",
+    "target": "https://testnet.aelfscan.io",
+    "context": ["/api/app"],
+    "headers": {
+      "Host": "testnet.aelfscan.io"
+    },
+    "changeOrigin": true,
+    "secure": false
+  },
+  {
     "target": "https://explorer-test.aelf.io/",
     "context": ["/api/blockChain"],
     "headers": {
