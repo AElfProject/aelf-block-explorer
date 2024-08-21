@@ -4,7 +4,8 @@ import { useEffectOnce } from "react-use";
 import "./TokenTags.style.less";
 import IconFont from "../../../../components/IconFont";
 import { get } from "../../../../utils";
-import { VIEWER_GET_ALL_TOKENS } from "../../../../constants";
+import { VIEWER_GET_ALL_TOKENS_V2 } from "../../../../constants";
+import { CHAIN_ID } from "@src/constants";
 
 export default function TokenTag({ values, isDone, price }) {
   const [showMore, setShowMore] = useState(false);
@@ -15,7 +16,7 @@ export default function TokenTag({ values, isDone, price }) {
 
   const elfFirst = useMemo(() => {
     const keys = Object.keys(values);
-    const withoutELF = keys.filter((key) => key !== "ELF");
+    const withoutELF = keys.filter(key => key !== "ELF");
 
     if (keys.length === withoutELF.length) {
       return keys;
@@ -24,14 +25,17 @@ export default function TokenTag({ values, isDone, price }) {
   }, [values]);
 
   const getDecimal = useCallback(async () => {
-    const result = await get(VIEWER_GET_ALL_TOKENS, {
-      pageSize: 5000,
-      pageNum: 1,
+    const result = await get(VIEWER_GET_ALL_TOKENS_V2, {
+      skipCount: 0,
+      maxResultCount: 1000,
+      chainId: CHAIN_ID,
     });
     const { data = { list: [] } } = result;
     const { list } = data;
     setDecimals(
-      Object.fromEntries(list.map((item) => [item.symbol, item.decimals]))
+      Object.fromEntries(
+        list.map(item => [item.token?.symbol, item.token?.decimals])
+      )
     );
   }, []);
 
@@ -58,7 +62,7 @@ export default function TokenTag({ values, isDone, price }) {
       <div className={`tags-wrap  ${showMore && "more"}`}>
         <div className="tags-container">
           {isDone || forceDone ? (
-            elfFirst.map((key) => {
+            elfFirst.map(key => {
               const decimal = decimals[key] || 0;
               const val = values[key] / 10 ** decimal;
               return (
