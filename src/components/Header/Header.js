@@ -11,6 +11,7 @@ import clsx from "clsx";
 import { getPathnameFirstSlash } from "@utils/urlUtils";
 import { setIsSmallScreen } from "@actions/common";
 import { MenuOutlined } from "@ant-design/icons";
+import { EXPLORER_V2_LINK } from "../../common/constants";
 import "./header.styles.less";
 import Search from "../Search/Search";
 import ChainSelect from "../ChainSelect/ChainSelect";
@@ -111,7 +112,7 @@ class BrowserHeader extends PureComponent {
         ["/vote", "/vote"],
         ["/voteold", "/vote"],
       ];
-      const target = whiteList.find((item) => item[0] === pathname);
+      const target = whiteList.find(item => item[0] === pathname);
       const showSearch = this.getSearchStatus();
 
       if (target && current !== target[1]) {
@@ -135,7 +136,7 @@ class BrowserHeader extends PureComponent {
     }, this.interval);
   }
 
-  handleClick = (e) => {
+  handleClick = e => {
     clearTimeout(this.timerTimeout);
     this.timerTimeout = setTimeout(() => {
       const { isSmallScreen } = this.props;
@@ -191,7 +192,7 @@ class BrowserHeader extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   renderPhoneMenu() {
-    const networkHTML = networkList.map((item) => {
+    const networkHTML = networkList.map(item => {
       let classSelected = "";
       if (NETWORK_TYPE === item.netWorkType) {
         classSelected = "header-chain-selected";
@@ -436,17 +437,26 @@ class BrowserHeader extends PureComponent {
               {!this.isPhone && <ChainSelect chainList={chainList} />}
             </nav>
           </div>
+          <div className="v2-notification">
+            <a
+              target="_blank"
+              href={EXPLORER_V2_LINK[NETWORK_TYPE]}
+              rel="noreferrer"
+            >
+              The current browser will no longer be supported. Please click here
+              to use the aelfscan explorer.
+            </a>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({ ...state.common });
+const mapStateToProps = state => ({ ...state.common });
 
-const mapDispatchToProps = (dispatch) => ({
-  setIsSmallScreen: (isSmallScreen) =>
-    dispatch(setIsSmallScreen(isSmallScreen)),
+const mapDispatchToProps = dispatch => ({
+  setIsSmallScreen: isSmallScreen => dispatch(setIsSmallScreen(isSmallScreen)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrowserHeader);

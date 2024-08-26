@@ -3,7 +3,7 @@ import AElf from "aelf-sdk";
 import Decimal from "decimal.js";
 import { aelf } from "../utils";
 import config from "../../config/config";
-import Root from '../protobuf/virtual_transaction.proto';
+import Root from "../protobuf/virtual_transaction.proto";
 
 const resourceDecimals = config.resourceTokens.reduce(
   (acc, v) => ({
@@ -30,7 +30,7 @@ export const rand16Num = (len = 0) => {
   return result.join("");
 };
 
-export const removeAElfPrefix = (name) => {
+export const removeAElfPrefix = name => {
   if (/^(AElf\.)(.*?)+/.test(name)) {
     return name.split(".")[name.split(".").length - 1];
   }
@@ -68,7 +68,7 @@ export async function getTokenDecimal(symbol) {
 export async function getFee(transaction) {
   const fee = AElf.pbUtils.getTransactionFee(transaction.Logs || []);
   const resourceFees = AElf.pbUtils.getResourceFee(transaction.Logs || []);
-  const decimals = await Promise.all(fee.map((f) => getTokenDecimal(f.symbol)));
+  const decimals = await Promise.all(fee.map(f => getTokenDecimal(f.symbol)));
   return {
     fee: fee
       .map((f, i) => ({
@@ -85,7 +85,7 @@ export async function getFee(transaction) {
         {}
       ),
     resources: resourceFees
-      .map((v) => ({
+      .map(v => ({
         ...v,
         amount: new Decimal(v.amount || 0)
           .dividedBy(`1e${resourceDecimals[v.symbol]}`)
@@ -122,7 +122,7 @@ function decodeBase64(str) {
   return buffer;
 }
 
-function getDeserializeLogResult(serializedData,dataType) {
+function getDeserializeLogResult(serializedData, dataType) {
   let deserializeLogResult = serializedData.reduce((acc, v) => {
     let deserialize = dataType.decode(decodeBase64(v));
     deserialize = dataType.toObject(deserialize, {
@@ -138,7 +138,7 @@ function getDeserializeLogResult(serializedData,dataType) {
       ...acc,
       ...deserialize,
     };
-  },{});
+  }, {});
   // eslint-disable-next-line max-len
   deserializeLogResult = AElf.utils.transform.transform(
     dataType,
@@ -162,26 +162,26 @@ export async function deserializeLog(log) {
   if (NonIndexed) {
     serializedData.push(NonIndexed);
   }
-  
-  if (Name === 'VirtualTransactionCreated') {
+
+  if (Name === "VirtualTransactionCreated") {
     // VirtualTransactionCreated is system-default
     try {
       const dataType = Root.VirtualTransactionCreated;
-      return getDeserializeLogResult(serializedData,dataType);
+      return getDeserializeLogResult(serializedData, dataType);
     } catch (e) {
       // if normal contract has a method called VirtualTransactionCreated
       const dataType = proto.lookupType(Name);
-      return getDeserializeLogResult(serializedData,dataType);
+      return getDeserializeLogResult(serializedData, dataType);
     }
   } else {
     // other method
     const dataType = proto.lookupType(Name);
-    return getDeserializeLogResult(serializedData,dataType);
+    return getDeserializeLogResult(serializedData, dataType);
   }
 }
 
 export function deserializeLogs(logs) {
-  return Promise.all(logs.map((log) => deserializeLog(log)));
+  return Promise.all(logs.map(log => deserializeLog(log)));
 }
 
 export function getOmittedStr(str = "", front = 8, rear = 4) {
@@ -200,7 +200,7 @@ export const callGetMethod = async (params, fnName) => {
   return con[contractMethod][fnName](param);
 };
 
-export const isJsonString = (str) => {
+export const isJsonString = str => {
   try {
     if (typeof JSON.parse(str) === "object") {
       return true;
@@ -209,4 +209,14 @@ export const isJsonString = (str) => {
     // nothing
   }
   return false;
+};
+
+export const getTypeOfToken = str => {
+  if (/^[a-zA-Z]+-0$/.test(str)) {
+    return "collectionSymbol";
+  } else if (/^[a-zA-Z]+-[0-9]+$/.test(str)) {
+    return "itemSymbol";
+  } else {
+    return "token";
+  }
 };

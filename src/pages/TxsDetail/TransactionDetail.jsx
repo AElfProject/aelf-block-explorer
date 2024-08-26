@@ -12,6 +12,8 @@ import useMobile from "../../hooks/useMobile";
 import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 import { withRouter } from "../../routes/utils";
 import removeHash from "../../utils/removeHash";
+import { EXPLORER_V2_LINK } from "../../common/constants";
+import { CHAIN_ID, NETWORK_TYPE } from "../../../config/config";
 
 const { TabPane } = Tabs;
 
@@ -44,13 +46,13 @@ function TransactionDetail(props) {
     const logs = [...parsedLogs];
     if (Logs.length) {
       const arr = Logs.filter(
-        (item) =>
+        item =>
           item.Name === "Transferred" ||
           item.Name === "CrossChainTransferred" ||
           item.Name === "CrossChainReceived"
       );
       arr.forEach((item, index) => {
-        deserializeLog(item).then((res) => {
+        deserializeLog(item).then(res => {
           logs.push({ ...res, key: arr[index].Name + arr[index].Address });
           setParsedLogs([...logs]);
         });
@@ -63,7 +65,7 @@ function TransactionDetail(props) {
   const logIsAllParsed = useMemo(() => {
     const { Logs = [] } = info || {};
     const arr = Logs.filter(
-      (item) =>
+      item =>
         item.Name === "Transferred" ||
         item.Name === "CrossChainTransferred" ||
         item.Name === "CrossChainReceived"
@@ -88,9 +90,9 @@ function TransactionDetail(props) {
   }
 
   const getData = useCallback(
-    (res) => {
+    res => {
       getContractNames()
-        .then((names) => {
+        .then(names => {
           const { isSystemContract, contractName: nameOfContract } =
             names[res.Transaction.To] || {};
           const name = isSystemContract
@@ -101,7 +103,7 @@ function TransactionDetail(props) {
         .catch(() => {
           window.location.href = "/search-failed";
         });
-      getInfoBackUp(res).then((backup) => {
+      getInfoBackUp(res).then(backup => {
         setInfo({ ...res, ...backup });
       });
     },
@@ -136,19 +138,19 @@ function TransactionDetail(props) {
       });
     aelf.chain
       .getTxResult(id)
-      .then((res) => {
+      .then(res => {
         if (res.Status === "NOTEXISTED") {
           window.location.href = `/search-invalid/${res.TransactionId}`;
         } else {
           getData(res);
         }
       })
-      .catch((e) => {
+      .catch(e => {
         getData(e);
       });
   }, [id]);
 
-  const changeTab = (key) => {
+  const changeTab = key => {
     if (key === "overview") {
       removeHash();
       setActiveKey("overview");
@@ -171,8 +173,19 @@ function TransactionDetail(props) {
         isMobile && "mobile"
       }`}
     >
-      <h2>Transaction Details</h2>
-      <Tabs activeKey={activeKey} onChange={(key) => changeTab(key)}>
+      <h2>
+        Transaction Details
+        <a
+          className="view-on-v2"
+          target="_blank"
+          href={`${EXPLORER_V2_LINK[NETWORK_TYPE]}${CHAIN_ID}/tx/${id}`}
+          rel="noreferrer"
+        >
+          View the transaction hash on aelfscan
+        </a>
+      </h2>
+
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)}>
         <TabPane tab="Overview" key="overview">
           <div className="overview-container">
             <CustomSkeleton loading={!info}>

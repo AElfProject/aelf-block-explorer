@@ -13,6 +13,8 @@ import TransactionList from "./components/TransactionList";
 import CustomSkeleton from "../../components/CustomSkeleton/CustomSkeleton";
 import { withRouter } from "../../routes/utils";
 import removeHash from "../../utils/removeHash";
+import { EXPLORER_V2_LINK } from "../../common/constants";
+import { CHAIN_ID, NETWORK_TYPE } from "../../../config/config";
 
 const { TabPane } = Tabs;
 function BlockDetail(props) {
@@ -63,7 +65,7 @@ function BlockDetail(props) {
   }, [props]);
 
   const merge = useCallback((data = [], contractNames) => {
-    return (data || []).map((item) => ({
+    return (data || []).map(item => ({
       ...item,
       contractName: contractNames[item.address_to],
     }));
@@ -72,7 +74,7 @@ function BlockDetail(props) {
   const getChainStatus = useCallback(() => {
     return aelf.chain
       .getChainStatus()
-      .then((result) => {
+      .then(result => {
         return result;
       })
       .catch(() => {
@@ -89,13 +91,11 @@ function BlockDetail(props) {
         block_hash: blockHash,
       };
 
-      let data = await get("/block/transactions", getTxsOption).catch(
-        (error) => {
-          console.log(">>>>error", error);
-          window.location.href = "/search-failed";
-        }
-      );
-      const contractNames = await getContractNames().catch((error) => {
+      let data = await get("/block/transactions", getTxsOption).catch(error => {
+        console.log(">>>>error", error);
+        window.location.href = "/search-failed";
+      });
+      const contractNames = await getContractNames().catch(error => {
         console.log(">>>>error", error);
         window.location.href = "/search-failed";
       });
@@ -109,7 +109,7 @@ function BlockDetail(props) {
   );
 
   const getDataFromHeight = useCallback(
-    async (height) => {
+    async height => {
       try {
         const result = await aelf.chain
           .getBlockByHeight(height, false)
@@ -132,7 +132,7 @@ function BlockDetail(props) {
   );
 
   const getDataFromHash = useCallback(
-    async (blockHash) => {
+    async blockHash => {
       const { params, location } = props;
       const { id } = params;
       const txsList = await getTxsList(blockHash);
@@ -243,7 +243,7 @@ function BlockDetail(props) {
     [pageId]
   );
 
-  const changeTab = (key) => {
+  const changeTab = key => {
     if (key === "overview") {
       removeHash();
       setActiveKey("overview");
@@ -269,8 +269,16 @@ function BlockDetail(props) {
         Block
         {blockHeight && <Tag className="block-height">#{blockHeight}</Tag>}
         {blockHeight && jumpLink}
+        <a
+          className="view-on-v2"
+          target="_blank"
+          href={`${EXPLORER_V2_LINK[NETWORK_TYPE]}${CHAIN_ID}/block/${pageId}`}
+          rel="noreferrer"
+        >
+          View the block on aelfscan
+        </a>
       </h2>
-      <Tabs activeKey={activeKey} onChange={(key) => changeTab(key)}>
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)}>
         <TabPane tab="Overview" key="overview">
           <div className="overview-container">
             <CustomSkeleton loading={!blockInfo}>
