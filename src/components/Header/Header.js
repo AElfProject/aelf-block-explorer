@@ -413,6 +413,16 @@ class BrowserHeader extends PureComponent {
 
     return (
       <div className={`header-fixed-container ${onlyMenu}${isMainNet}`}>
+        <div className="v2-notification">
+          <a
+            target="_blank"
+            href={EXPLORER_V2_LINK[NETWORK_TYPE]}
+            rel="noreferrer"
+          >
+            The current explorer will no longer be supported. Please click here
+            to use the aelfscan explorer.
+          </a>
+        </div>
         <div>
           {!this.isPhone && (
             <HeaderTop
@@ -436,16 +446,6 @@ class BrowserHeader extends PureComponent {
               )}
               {!this.isPhone && <ChainSelect chainList={chainList} />}
             </nav>
-          </div>
-          <div className="v2-notification">
-            <a
-              target="_blank"
-              href={EXPLORER_V2_LINK[NETWORK_TYPE]}
-              rel="noreferrer"
-            >
-              The current browser will no longer be supported. Please click here
-              to use the aelfscan explorer.
-            </a>
           </div>
         </div>
       </div>
