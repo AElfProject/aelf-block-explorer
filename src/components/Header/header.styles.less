@@ -17,6 +17,14 @@
   background-color: @bgBlankWhite;
   height: fit-content;
   font-family: @font-header-sets;
+  .v2-notification {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 2px;
+  }
 }
 
 .header-container {
@@ -560,7 +568,7 @@
   .header-fixed-container {
     height: @header-top-height;
     &.only-menu {
-      height: 56px;
+      height: 108px;
     }
   }
   .header-container,

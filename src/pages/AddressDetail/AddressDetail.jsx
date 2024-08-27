@@ -22,6 +22,9 @@ import ContractTabPane from "./components/ContractTabPane";
 import { isAddress } from "../../utils/utils";
 import addressFormat from "../../utils/addressFormat";
 import removeHash from "../../utils/removeHash";
+import { CHAIN_ID } from "../../constants";
+import { EXPLORER_V2_LINK } from "../../common/constants";
+import { NETWORK_TYPE } from "../../../config/config";
 
 const keyFromHash = {
   "#txns": "transactions",
@@ -32,7 +35,7 @@ const keyFromHash = {
   "#history": "history",
 };
 // compatible with old url
-const formatAddress = (prefixAddress) => {
+const formatAddress = prefixAddress => {
   if (prefixAddress.indexOf("_") > -1) {
     return prefixAddress.split("_")[1];
   }
@@ -57,7 +60,7 @@ export default function AddressDetail() {
   const isCA = useMemo(() => !!contracts[address], [contracts, address]);
 
   const elfBalance = useMemo(
-    () => balances?.find((item) => item.symbol === "ELF")?.balance,
+    () => balances?.find(item => item.symbol === "ELF")?.balance,
     [balances]
   );
 
@@ -97,18 +100,18 @@ export default function AddressDetail() {
     if (balances?.length) {
       setPrices({});
       await Promise.allSettled(
-        balances?.map((item) => {
+        balances?.map(item => {
           const isFT = /^[a-z0-9]+$/i.test(item.symbol);
           if (!isFT) {
             return {};
           }
           return get(TOKEN_PRICE, { fsym: item.symbol, tsyms: "USD" });
         })
-      ).then((res) => {
+      ).then(res => {
         setTokensLoading(false);
         res.forEach(({ value: item }) => {
           if (item && item.USD) {
-            setPrices((v) => ({ ...v, [item.symbol]: item.USD }));
+            setPrices(v => ({ ...v, [item.symbol]: item.USD }));
           }
         });
       });
@@ -163,7 +166,7 @@ export default function AddressDetail() {
   }, [isCA, fetchFile]);
 
   useEffectOnce(() => {
-    getContractNames().then((res) => setContracts(res));
+    getContractNames().then(res => setContracts(res));
   });
 
   useEffect(() => {
@@ -173,12 +176,12 @@ export default function AddressDetail() {
     }
   }, [address]);
 
-  const changeTab = (key) => {
+  const changeTab = key => {
     if (key === "tokens") {
       removeHash();
       setActiveKey("tokens");
     } else {
-      const index = Object.values(keyFromHash).findIndex((ele) => ele === key);
+      const index = Object.values(keyFromHash).findIndex(ele => ele === key);
       window.location.hash = Object.keys(keyFromHash)[index];
     }
   };
@@ -207,17 +210,27 @@ export default function AddressDetail() {
           <Tooltip
             placement={isMobile ? "bottomRight" : "bottom"}
             color="white"
-            getPopupContainer={(node) => node}
+            getPopupContainer={node => node}
             trigger="click"
             title={<QrCode value={`${addressFormat(address)}`} />}
           >
             <IconFont type="code" />
           </Tooltip>
+          <a
+            className="view-on-v2"
+            target="_blank"
+            href={`${
+              EXPLORER_V2_LINK[NETWORK_TYPE]
+            }${CHAIN_ID}/address/${addressFormat(address)}`}
+            rel="noreferrer"
+          >
+            View the address on aelfscan
+          </a>
         </p>
       </section>
       <Overview prices={prices} elfBalance={elfBalance} />
       <section className="more-info">
-        <Tabs activeKey={activeKey} onTabClick={(key) => changeTab(key)}>
+        <Tabs activeKey={activeKey} onTabClick={key => changeTab(key)}>
           {CommonTabPane({
             balances: tokenList,
             prices,
@@ -241,7 +254,7 @@ export default function AddressDetail() {
               address,
               codeHash,
               activeKey,
-              onTabClick: (key) => {
+              onTabClick: key => {
                 setActiveKey(key);
               },
             }).map(({ children, ...props }) => (
