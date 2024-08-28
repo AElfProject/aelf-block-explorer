@@ -21,9 +21,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    padding: 2px;
+    height: 56px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    padding: 12px 16px;
+    &.test-net-notification {
+      background-color: @headerbgColor4;
+    }
+    a {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -558,6 +566,13 @@
 }
 
 @media screen and (max-width: 1160px) {
+  .header-fixed-container {
+    .v2-notification {
+      font-size: 14px;
+      height: auto;
+    }
+  }
+
   .header-container,
   .header-navbar {
     max-width: 1160px;
