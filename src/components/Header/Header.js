@@ -413,15 +413,17 @@ class BrowserHeader extends PureComponent {
 
     return (
       <div className={`header-fixed-container ${onlyMenu}${isMainNet}`}>
-        <div className="v2-notification">
-          <a
-            target="_blank"
-            href={EXPLORER_V2_LINK[NETWORK_TYPE]}
-            rel="noreferrer"
-          >
-            The current explorer will no longer be supported. Please click here
-            to use the aelfscan explorer.
-          </a>
+        <div className={`v2-notification ${isMainNet}-notification`}>
+          <span>
+            📣 The current explorer will no longer be supported. Please&nbsp;
+            <a
+              target="_blank"
+              href={EXPLORER_V2_LINK[NETWORK_TYPE]}
+              rel="noreferrer"
+            >
+              click here to use the aelfscan explorer
+            </a>
+          </span>
         </div>
         <div>
           {!this.isPhone && (
