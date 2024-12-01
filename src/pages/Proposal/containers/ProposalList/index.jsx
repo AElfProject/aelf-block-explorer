@@ -133,6 +133,14 @@ const ProposalList = () => {
   const handleTabChange = (key) => {
     if (key === proposalTypes.PARLIAMENT) {
       removeHash();
+      fetchList({
+        ...params,
+        pageNum: 1,
+        proposalType: key,
+        status: proposalStatus.ALL,
+        isContract: 0,
+        search: "",
+      });
       setActiveKey(proposalTypes.PARLIAMENT);
     } else {
       const index = Object.values(keyFromHash).findIndex((ele) => ele === key);

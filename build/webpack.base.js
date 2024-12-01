@@ -36,6 +36,7 @@ const baseConfig = {
   },
   resolve: {
     alias: {
+      // unfetch: "unfetch/dist/unfetch.js",
       process: "process/browser",
       "aelf-sdk": "aelf-sdk/dist/aelf.umd.js",
       "react-use": "react-use/lib",

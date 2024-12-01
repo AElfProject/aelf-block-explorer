@@ -101,7 +101,7 @@ function App() {
   return (
     <Suspense fallback={null}>
       <div className="App">
-        <BrowserRouter>
+        <BrowserRouter basename={window.__MICRO_APP_BASE_ROUTE__ || "/"}>
           <BrowserHeader />
           <HeaderBlank />
           <BrowserBreadcrumb />
